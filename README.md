@@ -12,11 +12,11 @@ This is a set of scripts formely jQuery Plugins for Bootstap, and now dependency
 var sidemenu = new affix(element, options);
 
 //call the affix function via data attributes
-<div class="content" data-spy="affix" data-target=".selector">
+&lt;div class="content" data-spy="affix" data-target=".selector">
   //this is when you need to stick to a certain ELEMENT
-</div>
+&lt;/div>
 
 
-<div class="content" data-spy="affix" data-offset-top="250">
+&lt;div class="content" data-spy="affix" data-offset-top="250">
   //this is when you need to stick to a certain position to top
-</div>
+&lt;/div>
