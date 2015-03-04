@@ -16,7 +16,12 @@ var sidemenu = new affix(element, options);
   //this is when you need to stick to a certain ELEMENT
 &lt;/div>
 
+//OR
 
 &lt;div class="content" data-spy="affix" data-offset-top="250">
   //this is when you need to stick to a certain position to top
 &lt;/div>
+
+
+# Bootrstrap Vanilla JS License
+The scripts are released under the MIT license.
