@@ -6,8 +6,7 @@ function affix(element,options) {
 	this.element = (typeof(element) === 'object') ? element : document.querySelector(element);
 	this.target = (options.target) ? ((typeof(options.target) === 'object') ? options.target : document.querySelector(options.target)) : document.querySelector(this.element.getAttribute('data-target'));
 	this.targetOffset = (this.target) ? (this.target.offsetTop - this.target.scrollTop + this.target.parentNode.offsetTop - this.target.parentNode.scrollTop) : this.element.getAttribute('data-offset-top');
-if (this.element && (this.target || (this.options && this.options.offset.top) || this.element.getAttribute('data-offset-top') )) { this.init(); }
-	
+	if (this.element && (this.target || (this.options && this.options.offset.top) || this.element.getAttribute('data-offset-top') )) { this.init(); }
 }
 
 //AFFIX METHODS
@@ -33,11 +32,13 @@ affix.prototype = {
 		return window.pageYOffset;
 	},
 	pin: function () {
-		if (this.element.classList) this.element.classList.add('affix'); else this.element.className += 'affix';
+		var reg = new RegExp("(\\s|^)" + 'affix' + "(\\s|$)");
+		if ( this.element.className && !reg.test(this.element.className) ) this.element.className += ' affix';
 		this.affixed = true;
 	},
-	unPin: function () {
-		if (this.element.classList) this.element.classList.remove('affix'); else this.element.className = '';
+	unPin: function () { 
+		var reg = new RegExp("(\\s|^)" + 'affix' + "(\\s|$)");
+		if ( this.element.className && reg.test(this.element.className) ) this.element.className = this.element.className.replace(reg, " ").replace(/(^\s*)|(\s*$)/g,"");
 		this.affixed = false;
 	},
 
