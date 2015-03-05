@@ -4,16 +4,16 @@
 //AFFIX DEFINITION
 function affix(element,options) {
 	this.element = (typeof(element) === 'object') ? element : document.querySelector(element);
-	this.target = (this.target) ? ((typeof(options.target) === 'object') ? options.target : document.querySelector(options.target)) : document.querySelector(this.element.dataset.target);
-	this.targetOffset = (this.target) ? (this.target.offsetTop - this.target.scrollTop + this.target.parentNode.offsetTop - this.target.parentNode.scrollTop) : this.element.dataset.offsetTop;
-	if (this.element && (this.target || (this.options && this.options.offset.top) || this.element.dataset.offsetTop)) { this.init(); }
+	this.target = (options.target) ? ((typeof(options.target) === 'object') ? options.target : document.querySelector(options.target)) : document.querySelector(this.element.getAttribute('data-target'));
+	this.targetOffset = (this.target) ? (this.target.offsetTop - this.target.scrollTop + this.target.parentNode.offsetTop - this.target.parentNode.scrollTop) : this.element.getAttribute('data-offset-top');
+if (this.element && (this.target || (this.options && this.options.offset.top) || this.element.getAttribute('data-offset-top') )) { this.init(); }
 	
 }
 
 //AFFIX METHODS
 affix.prototype = {
 	init: function () {
-		this.docked = false;
+		this.affixed = false;
 		this.getPinnedOffset = 0;
 		
 		//events
@@ -24,7 +24,7 @@ affix.prototype = {
 		
 	},
 	offsetTop: function () {
-		return this.element.dataset.offsetTop || this.targetOffset || this.options.offset.top || 0;
+		return (this.targetOffset||null) || (this.options.offset.top||null) || (this.element.getAttribute('data-offset-top')||null) || 0;
 	},
 	checkPosition: function () {
 		this.getPinnedOffset = this.offsetTop;
@@ -34,17 +34,17 @@ affix.prototype = {
 	},
 	pin: function () {
 		if (this.element.classList) this.element.classList.add('affix'); else this.element.className += 'affix';
-		this.docked = true;
+		this.affixed = true;
 	},
 	unPin: function () {
 		if (this.element.classList) this.element.classList.remove('affix'); else this.element.className = '';
-		this.docked = false;
+		this.affixed = false;
 	},
 
 	updatePin: function () {
-		if (this.docked === false && (parseInt(this.offsetTop(),0) - parseInt(this.scrollOffset(),0) < 0)) {
+		if (this.affixed === false && (parseInt(this.offsetTop(),0) - parseInt(this.scrollOffset(),0) < 0)) {
 			this.pin();
-		} else if (this.docked === true && (parseInt(this.scrollOffset(),0) <= parseInt(this.getPinnedOffset(),0) )) {
+		} else if (this.affixed === true && (parseInt(this.scrollOffset(),0) <= parseInt(this.getPinnedOffset(),0) )) {
 			this.unPin();
 		}
 	},
@@ -77,16 +77,17 @@ window.onload = function () {
 	var spy = document.querySelectorAll('[data-spy="affix"]');
 	if (spy) {
 		for ( var i=0; i<spy.length; i++) {
-			var $spy = spy[i];
-			var data = $spy.dataset;
+			if ( spy[i].getAttribute('data-offset-top') !== null || spy[i].getAttribute('data-target') !== null ) {
+				var $spy = spy[i];
+				var data = {};
+				data.offsetTop	= $spy.getAttribute('data-offset-top') || {};
+				data.target		= $spy.getAttribute('data-target') || null;
 
-			data.offset = data.offsetTop || {};
-			data.target = data.target || null;
+				if (data.offsetTop		  != null) data.offsetTop    = data.offsetTop;
+				if (data.target			  != null) data.target  	  = data.target;
 
-			if (data.offsetTop		  != null) data.offset.top    = data.offsetTop;
-			if (data.target			  != null) data.target  	  = data.target;
-
-			return new affix($spy, data);
+				return new affix($spy, data);
+			}
 		}
 	}
 }
