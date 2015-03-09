@@ -21,10 +21,10 @@ var sidemenu = new affix(element, options);
 &lt;/div>
 </pre>
 
-# Bootrstrap Vanilla JS Browser Support
-The scripts are developed for HTML5 browsers, but some may even work with IE8-IE9 as well.
+# Bootrstrap Native JS Browser Support
+The scripts are developed for HTML5 browsers, but some may even work with IE8-IE9 as well, but you may also consider using polyfills.
 
-# More Bootrstrap Vanilla JS
+# More Bootrstrap Native JS
 More plugins are coming on the way: carousel, scrollspy, tabs, toggles
 
 # Bootrstrap Vanilla JS License
