@@ -1,4 +1,4 @@
-# Bootrstrap Vanilla JS (developers wanted) 
+# Bootrstrap Native JS (developers wanted) 
 This is a set of scripts formely jQuery Plugins for Bootstap, and now dependency free scripts to be used on performance driven apps and websites.
 
 # Bootrstrap Affix JS
