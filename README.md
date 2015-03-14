@@ -1,4 +1,4 @@
-# Bootstrap Native JS (developers wanted) 
+# Bootstrap Native Javascript
 This is a set of scripts formely jQuery Plugins for Bootstap, and now dependency free scripts to be used on performance driven apps and websites.
 
 # Bootstrap Affix JS
