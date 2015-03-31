@@ -4,7 +4,7 @@
 <!--[if IE 8]><html class="ie ie8" lang="en"><![endif]-->
 <!--[if IE 9]><html class="ie ie9" lang="en"><![endif]-->
 
-<!--[if !(IE 7) | !(IE 8) | !(IE 9) ]><html lang="en"><![endif]-->
+<!--[if gte IE 9]><!--><html lang="en"><!--<![endif]-->
 
 <head>
     <meta charset="utf-8">
@@ -16,11 +16,12 @@
     <title>Native Javascript for Bootstrap</title>
 	
     <!-- Bootstrap core CSS -->
-    <!--[if lt IE 9]><link href="./assets/css/bootstrap.min.css" rel="stylesheet">	
-    <![endif]-->
-	<!--[if !(lt IE 9) ]>	
+    <!--[if lt IE 9]><!--> 
+	<link href="./assets/css/bootstrap.min.css" rel="stylesheet">	
+    <!--<![endif]-->
+	<!--[if gte IE 9]><!-->  
 	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <![endif]-->	
+    <!--<![endif]-->
 	
     <!-- Custom styles for this template -->
     <link href="./assets/css/theme.css" rel="stylesheet">	
