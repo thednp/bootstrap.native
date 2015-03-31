@@ -1,0 +1,277 @@
+/* REQUIRED STYLING */
+
+/* enables animation for the collapse, has no effect on legacy browsers */
+.collapse { transition: height .3s ease-out; -webkit-transition: height .3s ease-out }
+
+/* REQUIRED STYLING */
+
+
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+
+body {
+  color: #5a5a5a;
+}
+
+footer { padding: 20px 0 10px; background: #e6f0f8 }
+
+/* some typo */
+h1,h2,h3,h4,h5,strong,b { color: #111 }
+h1 { letter-spacing: -2px }
+h2 { letter-spacing: -3px; font-size: 56px; font-weight: bold }
+h3:not(.popover-title) {
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: -2px;
+}
+
+ /* required for scrollspy to work perfect */
+section { clear: both; width: 100%; position: relative; float: left }
+.scrollspy-example { padding: 0 15px; border: 1px solid #ddd; margin-bottom: 20px; -webkit-border-radius: 4px 0 0 4px; border-radius: 4px 0 0 4px; }
+
+hr.clearfix {clear: both; width: 100%; float: left}
+
+/* CONTENT STYLING
+-------------------------------------------------- */
+
+/* some content customization | because why not */
+#exampleTab .nav-tabs, #exampleTab .nav-pills, #exampleTab .navbar-nav, #exampleTab .nav-stacked { margin-bottom: 15px }
+
+#exampleTab .nav-stacked,
+#exampleTab .nav.panel { float: left; margin: 0 15px 20px 0 }
+#exampleTab .nav-list { float: left; margin: 0 15px 20px 0; border-right: 1px solid #ddd }
+
+#exampleTab .nav.panel > li.active > a,
+#exampleTab .nav-list > li.active > a { background: #286090; color: #fff }
+
+#exampleTab .nav.panel > li:first-child > a { border-radius: 3px 3px 0 0; }
+#exampleTab .nav.panel > li:last-child > a { border-radius: 0 0 3px 3px; }
+
+#exampleTab .navbar-nav { background: #eee; width: 100%; border-radius: 3px; }
+#exampleTab .navbar-nav > li:first-child > a { border-radius: 3px 0 0 3px; }
+#exampleTab .navbar-nav > li.active > a { background: #286090; color: #fff }
+
+#exampleTab .nav.nav-stacked .dropdown-menu,
+#exampleTab .nav.panel .dropdown-menu,
+#exampleTab .nav-list .dropdown-menu { margin: 0; top: 0; left: 103%; }
+
+#exampleTab .nav.panel + .tab-content,
+#exampleTab .nav.nav-list + .tab-content { display: table-cell }
+
+#exampleTab .btn-group { position: absolute; top:0; left: 85px }
+#exampleTab .btn-group > .btn { margin: 0}
+
+/* buttons */
+.btn, .form-control {vertical-align: top}
+.btn, .form-control {margin-bottom: 20px; vertical-align: top}
+
+.btn-group {margin-bottom: 20px}
+.btn-group .btn {margin-bottom: 0}
+
+#about {padding-bottom: 20px }
+
+/* scrollspy content example */
+.scrollspy-example {
+  position: relative;
+  height: 150px;
+  overflow: auto;
+}
+
+/* when on mobile, disable affix position */
+#side-nav {clear: both}
+#side-nav .nav.affix,
+#side-nav .nav.affix.affix-bottom { position: relative; margin: 20px 0; }
+
+#side-nav > .nav li.active > a,
+#side-nav > .nav li.active:hover > a { background-color: #e6f0f8 }
+#side-nav > .nav li:hover > a { background-color: #f5f9fc }
+
+/* scrollspy example */
+body > .container,
+.scrollspy-example {position: relative}
+.scrollspy-example > * { float: left; width: 100%; clear: both }
+
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 20;
+}
+
+.navbar-default .navbar-brand { color: #286090 }
+
+.navbar-nav .open .dropdown-menu { left: auto; right:0 }
+
+.navbar-default .navbar-nav>li>a:focus, 
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-inverse .navbar-nav>.active>a, 
+.navbar-inverse .navbar-nav>.active>a:focus, 
+.navbar-inverse .navbar-nav>.active>a:hover { background-color: #286090; color: #fff }
+
+
+/* Flip around the padding for proper display in narrow viewports */
+.navbar-wrapper .container {
+  padding-right: 0;
+  padding-left: 0;
+}
+.navbar-wrapper .navbar {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.navbar-default {border:0; background:#fff}
+.navbar-nav { float: none}
+
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+#myCarousel.carousel {
+  height: 500px;
+  margin-bottom: 40px;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  z-index: 10;
+}
+/* do some transition */ 
+#myCarousel .item {
+  -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
+  transition-timing-function: cubic-bezier(.45,.18,0,1);
+}
+#myCarousel .carousel-caption {
+  -webkit-transition: all 0.3s; 
+  transition: all 0.3s;
+  -webkit-transition-timing-function: cubic-bezier(0,.24,0,1);
+  transition-timing-function: cubic-bezier(0,.24,0,1);
+  opacity: 0;
+}
+/* when going forward, captions slide left */
+#myCarousel .next .carousel-caption {
+  -webkit-transform: translate3d(50%, 0, 0);
+  transform: translate3d(50%, 0, 0);
+}
+#myCarousel .prev .carousel-caption {
+  -webkit-transform: translate3d(-50%, 0, 0);
+  transform: translate3d(-50%, 0, 0);
+}
+/* when going backward, captions move different */
+#myCarousel .right.next .carousel-caption {
+  -webkit-transform: /*translate3d(50%, 0, 0)*/ rotateX(90deg);
+  transform: /*translate3d(50%, 0, 0)*/ rotateX(90deg);
+}
+#myCarousel .right.prev .carousel-caption {
+  -webkit-transform: /*translate3d(-50%, 0, 0)*/ rotateX(-90deg);
+  transform: /*translate3d(-50%, 0, 0)*/ rotateX(-90deg);
+}
+#myCarousel .carousel-caption.slide {
+  -webkit-transform: translate3d( 0%, 0, 0);
+  transform: translate3d(0%, 0, 0);
+  opacity:1;
+  visibility: visible;  
+}
+
+/* Declare heights because of positioning of img element */
+#myCarousel .item {
+  height: 500px; width: 100%;
+  background-color: #777;
+}
+
+.carousel h2 { letter-spacing: -1px; font-size: 30px; font-weight: bold }
+
+.carousel .item.prev,
+.carousel .item.next {display: block}
+
+#myCarousel .carousel-inner > .item > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 500px;
+}
+
+.carousel .btn-default.btn-empty { border-width: 2px; color: #fff; border-color: #fff; background: none transparent }
+.carousel .btn-default.btn-empty:hover { color: #337ab7; background: #fff }
+
+.carousel h1,.carousel h2,.carousel h3,.carousel strong,.carousel b { color: #fff }
+.carousel a { color: #fff; text-decoration:underline }
+.carousel a:hover { color: #eee }
+.carousel a.btn { text-decoration:none }
+
+/* the small carousel thumbnail */
+#carousel-example-generic { margin: 0 }
+#carousel-example-generic,
+#carousel-example-generic .carousel-inner > .item > img { height: auto }
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+@media screen and (max-width: 1200px) {
+	.carousel-caption {
+	  right: 10%;
+	  left: 10%;
+	  padding-bottom: 30px;
+	}
+}
+@media (min-width: 768px) {
+
+	/* affix example */
+	#side-nav .nav.affix { position: fixed !important;  width: 263px; top: 0; }
+	#side-nav .nav.affix.affix-bottom { top: auto;  bottom: 150px; }
+	
+	/* side navigation */
+	#side-nav  { margin-top: 20px; clear: none }
+	#side-nav > .nav > li > ul { margin-top: 2px; height:0; : none; opacity: 0; padding-left: 15px; transition: all 0.3s ease-out; }
+	#side-nav > .nav > li.active > ul { height:460px; opacity: 1 }
+
+	#side-nav > .nav > li { overflow: hidden }
+	#side-nav > .nav li > a { z-index: 1 }
+	#side-nav > .nav li > ul { z-index: 0 }	
+
+  /* Navbar positioning foo */
+  .navbar-wrapper {
+    margin-top: 40px;
+  }
+  .navbar-wrapper .container {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  .navbar-wrapper .navbar {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  /* The navbar becomes detached from the top, so we round the corners */
+  .navbar-wrapper .navbar {
+    border-radius: 4px;
+  }
+  .navbar .navbar-nav {margin-right: 15px; float: right}
+
+  
+  /* Bump up size of carousel content */
+  .carousel-caption p {
+    margin-bottom: 20px;
+    font-size: 21px;
+    line-height: 1.4;
+  }
+  .carousel h2 { letter-spacing: -3px; font-size: 56px; font-weight: bold }
+
+}
+
+/* code wrapping */
+body .syntaxhighlighter {background: none !important; margin: 0  }
+body .syntaxhighlighter table { width: 100% }
+body .syntaxhighlighter .container:before,
+body .syntaxhighlighter .container:after { content: none }
+body .syntaxhighlighter .line.alt1,
+body .syntaxhighlighter .line.alt2 { background: none !important }
+.syntaxhighlighter code {background: none}
+.syntaxhighlighter .container { padding:0; width: 100% !important}

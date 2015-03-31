@@ -1,65 +1,952 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>Native-javascript-for-bootstrap by thednp</title>
+
+<!--[if IE 7]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if IE 9]><html class="ie ie9" lang="en"><![endif]-->
+
+<!--[if !(IE 7) | !(IE 8) | !(IE 9) ]><html lang="en"><![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">Native-javascript-for-bootstrap</h1>
-      <h2 class="project-tagline">Bootstrap 3+ Plugins with no dependency. jQuery free</h2>
-      <a href="https://github.com/thednp/Native-Javascript-for-Bootstrap" class="btn">View on GitHub</a>
-      <a href="https://github.com/thednp/Native-Javascript-for-Bootstrap/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/thednp/Native-Javascript-for-Bootstrap/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
+    <meta name="description" content="">
+    <meta name="keywords" content="Javascript,Native Javascript,native,Bootstrap,plugins,jQuery">
+    <meta name="author" content="">
+    <title>Native Javascript for Bootstrap</title>
+	
+    <!-- Bootstrap core CSS -->
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="./assets/css/theme.css" rel="stylesheet">	
+	
+    <!-- For local testing, you can use this polyfill, it's pretty neat.	-->
+	<!-- <script src="./assets/js/polyfill.min.js"></script>					-->
+	
+    <!-- This is an automated browser upgrade service provided by Financial Times.	-->
+	<script src="https://cdn.polyfill.io/v1/polyfill.min.js"></script>
+    <!-- It doesn't need to be targeted for a specific browser such as IE8 or IE9.	-->
+    <!-- Below you have another one, and more to come let's hope.					-->
+	<!-- <script src="https://cdn.jsdelivr.net/polyfills/polyfill.js"></script>		-->
 
-    <section class="main-content">
-      <h3>
-<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+    <!-- //Respond.js IE8 support of HTML5 elements and media queries				-->
+    <!-- //Note that we have removed the HTML5 shims here, we use a cool polyfill 	-->
+    <!-- //required for our Native Javascript scripts to work properly with HTML5   -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="navbar-wrapper">
+      <div class="container">
+		  <div class="navbar navbar-default navbar-static-top" role="navigation">
+		  
+			<div class="navbar-header">
+			  <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  <a href="https://github.com/thednp/Native-Javascript-for-Bootstrap/" data-toggle="tooltip" data-placement="right" class="navbar-brand" title="Native Javascript for Bootstrap<br>The sweetest Vanilla Javascript library for everyone">Native <span class="hidden-xs hidden-sm">Javascript</span><span class="hidden-lg hidden-md">JS</span> for Bootstrap<span class="hidden">Native Javascript for Bootstrap</span></a>
+			</div>
+			<nav class="collapse navbar-collapse bs-navbar-collapse">
+				<ul class="nav navbar-nav">
+				  <li><a href="#use">Use</a></li>
+				  <li><a href="#examples">Examples</a></li>
+				  <li><a href="#about">About</a></li>
+				  <li class="dropdown"><a href="#" data-toggle="dropdown">Github <span class="caret"></span></a>
+					  <ul class="dropdown-menu">
+						  <li><a href="https://github.com/thednp/Native-Javascript-for-Bootstrap/">Fork</a></li>
+						  <li><a href="https://github.com/thednp/Native-Javascript-for-Bootstrap/archive/master.zip">Download</a></li>
+					  </ul>
+				  </li>
+				 </ul>
+			</nav>
+		  </div>
+      </div>
+    </div>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="7000">
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+        <li data-target="#myCarousel" data-slide-to="4"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="item active">
+          <img src="http://placehold.it/900x500/5677fc/5677fc" alt="">
+          <div class="container">
+            <div class="carousel-caption slide">
+              <h2>Dude, Welcome to Native Javascript!!</h2>
+              <p>These are the jQuery plugins for Bootstrap 3 redeveloped with native Javascript. There are some small differences but only to improve performance while keeping the same basic functionality.</p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="#about" role="button">More</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="http://placehold.it/900x500/673ab7/673ab7" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h2>HTML5 please!</h2>
+              <p>These scripts have been developed for today's standards, for a workflow careless about legacy browsers thanks to <a href="https://polyfill.io" target="_blank">polyfill services</a> that <em>Upgrade the web. Automatically</em>. A helping hand for the legacy browsers.</p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="#about" role="button">More</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="http://placehold.it/900x500/9c27b0/9c27b0" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h2>What's the fuzz?</h2>
+              <p>If you use mainly Bootstrap plugins in your projects, you may drop jQuery right away. What I am talking about is that the comfort of using jQuery has a huge impact on performance. See it to believe it!</p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">See Now</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="http://placehold.it/900x500/E91E63/E91E63" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h2>Explore the freedom</h2>
+              <p>Not to worry, the internet is full of scripts and tutorials, <a href="http://vanilla-js.com/" target="_blank">native Javascript</a> is literally the coolest thing ever! Far more powerful and requires almost <strong>zero</strong> maintenance on very long periods of time.</p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank" role="button">Get started</a> <a class="btn btn-lg btn-default btn-empty" href="http://jstherightway.org" role="button" target="_blank">Full Reference</a> </p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="http://placehold.it/900x500/e51c23/e51c23" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <h2>This was a Carousel example</h2>
+              <p>
+				A script like all the others here were developed from scratch. It works just as the original version with just about the same amount of code, and some smart optimizations.
+			  </p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="#exampleCarousel" role="button">How to use</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+	  
+	  <a href="#myCarousel" class="left carousel-control" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+	  <a href="#myCarousel" class="right carousel-control" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+    </div>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+	<div id="main-container" class="container">
+		<div class="row">
+		<div class="col-sm-9" data-spy="scroll" data-target="#nav-scrollspy">
+			<section id="use">
+				<h2>Use</h2>
+				<h3>Basic</h3>
+				<p>In the future, we may have a CDN link, but for now, you need to download the package, unpack to your application assets folders. Next, simply drop this line (according to your appplication assets folders) before your ending <code>&lt;/body></code> tag.</p>
+				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+					&lt;script type="text/javascript" src="../assets/js/bootstrap-native.min.js">&lt;/script>
+				</span></pre>
+				<h3>Advanced</h3>
+				<p>As most of the scripts manipulate the DOM when ready, there is no need to include a <code>document.ready</code> statement or link the script(s) in the <code>&lt;head></code>. That's your first performance tip if you are new around here. Alternatively you can link individual scripts, exactly the scripts required for your specific page. Perhaps you are using <a href="http://requirejs.org/" target="_blank">require.js</a>. I have no idea how to use it :D</p>
+				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+					&lt;script type="text/javascript" src="../assets/js/affix-native.min.js">&lt;/script>
+					&lt;script type="text/javascript" src="../assets/js/carousel-native.min.js">&lt;/script>
+					&lt;script type="text/javascript" src="../assets/js/buttons-native.min.js">&lt;/script>
+				</span></pre>
+				<h3 id="required_css">Transitions</h3>
+				<p>Since we are not using jQuery to do all the <code>.slideToggle()</code> or <code>.animate()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>collapse</strong> components, so copy this line in your application CSS files.</p>
+				<pre><span class="brush: css; ruler: true; toolbar:false; gutter: false">
+					/* enables CSS3 transition for simple collapses, accordion and also navbar in responsive view */
+					.collapse { transition: height .3s ease-out; -webkit-transition: height .3s ease-out } 
+				</span></pre>
+				<h3>Browser Support</h3>
+				<p>The scripts are tested to work perfect in all major browsers, and legacy browsers starting with IE8, all except transitions because they don't really support CSS3. In order to make legacy browsers behave with the clean and fast code of today's HTML5 standards, make sure you include a polyfill that covers most of the scripts HTML5 code requirements for legacy browsers. There are many more shims and polyfills out there, but this one below seems best, at least for me.</p>
+				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">&lt;script src="https://cdn.polyfill.io/v1/polyfill.min.js">&lt;/script></span></pre>
+				<p>OR give this one a try:</p>
+				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">&lt;script src="https://cdn.jsdelivr.net/polyfills/polyfill.js"&gt;&lt;/script></span></pre>
+				<p>OR include <a href="https://github.com/inexorabletash/polyfill" target="_blank">this one</a> (locate polyfill.min.js) in your application assets folders, it will never fail.</p>
+				<p>Generally the scripts rely heavily on <code>addEventListener</code>, <code>classList</code>, <code>getBoundingClientRect</code>, <code>data-</code> attributes, <code>forEach</code>, <code>CustomEvent</code>, <code>dispatchEvent</code> and other.</p>
+				<p><strong>Remember</strong> that the polyfill link must be in your <code>&lt;head></code>. You can leave it there for all the browsers, but I think you should see this example here how I deleted the HTML5 shims link provided by default Bootstrap themes.</p>
+				<h3>Before you go</h3>
+				<ul>
+					<li>All scripts run their specific functions right away, as long as you use properly their DATA API attributes, including Tooltip and Popover, so all except button state/text toggle, you need to bind a handler for that, like the <a title="Go to Example" data-toggle="tooltip" href="#exampleButton">example shown here</a>.</li>
+					<li>Some functions have been dropped since I personally never found any use of them, each script example will provide detailed info on that.</li>
+					<li>Scripts doing transitions don't make use of any functions to detect <code>transitionend</code>, for performance and other reasons, we all know a fade is 150ms or carousel performs a 600ms slide animation, and we can do a simple option for that.</li>
+					<li>I personally don't use and don't recommend using <a href="http://modernizr.com" target="_blank">Modernizr</a>. However some scripts like carousel, collapse or tabs need to know if the browser is IE9- in order to avoid unwanted behavior and not emulate <code>transitionend</code> when not supported. For that specific reason you should follow the example given here and add via Javascript the <code>ie ie[version]</code> class to your html tag like this: 
+					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">&lt;!--[if IE 8]&gt;&lt;html class="ie ie8" lang="en"&gt;&lt;![endif]--&gt;</span></pre> 
+					or simply 
+					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">&lt;!--[if lt IE 10]&gt;&lt;html class="ie" lang="en"&gt;&lt;![endif]--&gt;</span></pre>
+					Since we only need the <code>ie</code> class. This isn't really a requirement, it's much more like <b>optional</b> to do. Scripts would perform perfect, but tabs for instance would have a 150ms delay of blank space while switching content. Still, this is the best practice I found so far for targeting specific functions to specific browsers.</li>
+				</ul>
+			</section>
+						
+			<section id="examples">
+			  <h2>Examples</h2>
+				<section id="exampleModal">
+					<h3>Modal</h3>
+					<p>
+						Modal has no <a href="http://getbootstrap.com/javascript/#modals-events" target="_blank">events attached</a>, such as <code>show.bs.modal</code> or <code>shown.bs.modal</code>, but if devs would need them, you can have a look at the code of carousel, it implements the events just like the original plugin. 
+						Modal also has no <a href="http://getbootstrap.com/javascript/#modals-methods" target="_blank">method as described in the documentation</a> of the original script, except the options.
+					</p>
+					<h4>Options</h4>
+					<ul>
+						<li><b>content</b> - the modal script comes with a template system instead of a load <b>remote</b> content function (Bootstrap 4 drops it). This option is only for Javascript invocation.</li> 
+						<li><b>duration</b> - if you are customizing the fade animation duration for Modal, you need to provide a duration via Javascript invoke function or <code>data-duration="DURATION"</code> attribute, an option to make sure everything is syncronized. This option is <code>300</code> by default, just like Bootstrap Modal fade duration.</li> 
+						<li><b>keyboard</b> - option to dismiss the current modal via <kbd>Esc</kbd> key. This option is <code>true</code> by default.</li> 
+						<li><b>backdrop</b> - option use / not the backdrop. This option is <code>true</code> by default.</li> 
+					</ul>
+					<h4>Examples</h4>
+					<p>Now let's have a look at some examples and write some more instructions.</p>
+					<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+						  <div class="modal-content">
+							<div class="modal-header">
+							  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+							  <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+							</div>
+							<div class="modal-body">
+							  <h5>Title in a modal</h5>
+							  <p><a href="#">This is</a> a link inside modal, est non commodo luctus, nisi erat porttitor ligula.</p>
+							  <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p> 
+							  <p class="text-warning">If you click this <a href="#" data-dismiss="modal">link</a>, you will close this modal.</p><!---->
+							</div>
+							<div class="modal-footer">
+							  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						  </div>
+						</div>
+					</div>
+					<div id="myModal1" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModal1Label" aria-hidden="true">
+						<div class="modal-dialog">
+						  <div class="modal-content">
 
-<h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+						  </div>
+						</div>
+					</div>				
+					<p>
+						<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal">Launch simple modal</button> 
+						<button id="custom-modal-template" type="button" data-toggle="modal" class="btn btn-default btn-lg" data-target="#myModal1">Launch modal from template</button>
+						<a id="custom-modal-template2" data-toggle="modal" class="btn btn-default btn-lg" href="#myModal1">Same modal, other template</a>
+					</p>
+					<p>The first example above is just about the exact same as the <a href="http://getbootstrap.com/javascript/#live-demo" target="_blank">first example at Bootstrap demo page</a>, everything is exactly the same. The next two examples use the Modal template system. Here's how to do:</p>
+					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+						&lt;!-- first, you need to provide a basic modal structure --&gt;
+						&lt;div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"&gt;
+							&lt;div class="modal-dialog"&gt;
+							  &lt;div class="modal-content"&gt;
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+							  &lt;/div&gt;
+							&lt;/div&gt;
+						&lt;/div&gt;	
+					</span></pre>
+					<p>The backdrop will be added automatically if not otherwise disabled. Ok now we need a trigger.</p>
+					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+						&lt;!-- the modal can be triggered via a button with data-target="#myModal" attribute (example 2) --&gt;
+						&lt;button id="custom-modal-template" type="button" data-toggle="modal" class="btn btn-default btn-lg" data-target="#myModal"&gt;Launch modal from template&lt;/button&gt;	
+						&lt;!-- or a link with href="#myModal" attribute (example 3) --&gt;
+						&lt;a id="custom-modal-template" data-toggle="modal" class="btn btn-default btn-lg" href="#myModal"&gt;Launch modal from template&lt;/a&gt;	
+					</span></pre>
+					<p>Finally we need a proper handler function to use the template system and fill the <code>&lt;div class="modal-content"&gt;</code> element. The example below can be found in the <code>../assets/js/scripts.js</code> file.</p>
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						var modalFrame = document.getElementById('myModal'); // we need a blank modal to fill up
+						var btnModal = document.getElementById('custom-modal-template'); // we grab the button trigger by it's ID
+						btnModal.addEventListener('click', function() {
+							//template content for modal example 2, should work for the third button as well
+							var modal2 = new Modal(modalFrame, {
+							content: 
+							'&lt;div class="modal-header"&gt;'
+							+'&lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;×&lt;/span&gt;&lt;/button&gt;'
+							+'&lt;h4 class="modal-title" id="gridModalLabel"&gt;Modal title&lt;/h4&gt;'
+							+'&lt;/div&gt;'
+							+'&lt;div class="modal-body"&gt;'
+							+'&lt;p&gt;This is where you fill up content you know, etc.&lt;/p&gt;'
+							+'&lt;/div&gt;'
+							+'&lt;div class="modal-footer"&gt;'
+							+'&lt;button type="button" class="btn btn-default" data-dismiss="modal"&gt;Close&lt;/button&gt;'
+							+'&lt;button type="button" class="btn btn-primary"&gt;Save changes&lt;/button&gt;'
+							+'&lt;/div&gt;'});
+						});
+					</span></pre>
+					<p>By changing the <code>innerHTML</code> of <code>the modal-header</code>, <code>modal-body</code> or <code>modal-footer</code> with variables, you can achieve exactly the same as the <a href="http://getbootstrap.com/javascript/#modals-related-target" target="_blank">other examples</a> from the demo of the original plugin.</p>
+				</section>
+				
+				<section id="exampleDropdown">
+					<h3>Dropdown</h3>
+					<p>Dropdown opens the dropdown-menu on click and closes it on click/blur after a 200ms timeout, to properly handle click on it's menu items, including external links. Dropdown doesn't cover the original <a href="http://getbootstrap.com/javascript/#dropdowns-methods" target="_blank">methods</a> or <a href="http://getbootstrap.com/javascript/#dropdowns-events" target="_blank">events</a>, it simply toggles the dropdown.</p>
 
-<h3>
-<a id="rather-drive-stick" class="anchor" href="#rather-drive-stick" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+					<div class="btn-group">
+					  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Simple Dropdown <span class="caret"></span></button>
+					  <ul class="dropdown-menu" role="menu">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li><a href="#">Something else here</a></li>
+						<li class="divider"></li>
+						<li><a href="#">Separated link</a></li>
+					  </ul>
+					</div>
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default">Split Dropdown</button>
+					  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+					  <ul class="dropdown-menu" role="menu">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li><a href="#">Something else here</a></li>
+						<li class="divider"></li>
+						<li><a href="#">Separated link</a></li>
+					  </ul>
+					</div>
+					
+					<ul class="nav nav-pills pull-right">
+						<li class="dropdown">
+						  <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">
+							Pill
+							<span class="caret"></span>
+						  </a>
+						  <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+							<li role="presentation" class="divider"></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+						  </ul>
+						</li>
+						<li class="dropdown">
+						  <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">
+							Dropdown
+							<span class="caret"></span>
+						  </a>
+						  <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+							<li role="presentation" class="divider"></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.cn" target="_blank">Separated link</a></li>
+						  </ul>
+						</li>
+					</ul>							
+			
+				</section>
+								
+				<section id="exampleScrollspy">	
+					<h3>Scrollspy</h3>
+					<p>
+						<strong>ScrollSpy</strong> requires the element and all it's <code>childNodes</code> to have <code>position: relative</code> and fill the entire area, so it does not work on targeting headings. See the notes below the example. 
+						The script does not cover the original <a href="http://getbootstrap.com/javascript/#scrollspy-methods" target="_blank">methods, events or option</a>, can only be controlled via DATA API.
+					</p>
+					<p class="text-danger">The object always targets a <code>.nav</code> component, where the original plugin targets it's wrapper, and this was creating lots of confusion.</p>
+					<h4>Options</h4>
+						<ul>
+							<li><b>target</b> - the only option for Scrollspy, is the target of the container with <code>data-spy="scroll"</code> attribute. Can be set as shown via DATA API or Javascript. See notes for the example below.</li>
+						</ul>
+					<h4>Example</h4>
+					<div data-example-id="embedded-scrollspy">
+						<nav class="navbar navbar-inverse navbar-static">
+							<div class="navbar-header">
+							  <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#scrollSpy-nav">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							  </button>
+							  <a class="navbar-brand" href="#">Project Name</a>
+							</div>
+							<div id="scrollSpy-nav" class="collapse navbar-collapse">
+							  <ul id="navbar-example2" class="nav navbar-nav">
+								<li class="active"><a href="#fat">@fat</a></li>
+								<li class=""><a href="#mdo">@mdo</a></li>
+								<li class="dropdown">
+								  <a href="#" id="navbarDrop1" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+								  <ul class="dropdown-menu" role="menu" aria-labelledby="navbarDrop1">
+									<li class=""><a href="#one" tabindex="-1">one</a></li>
+									<li class=""><a href="#two" tabindex="-1">two</a></li>
+									<li class="divider"></li>
+									<li class=""><a href="#three" tabindex="-1">three</a></li>
+								  </ul>
+								</li>
+							  </ul>
+							</div>
+						</nav>
+						<div data-spy="scroll" data-target="#navbar-example2" class="scrollspy-example">
+						  <div id="fat">
+							  <h4>@fat</h4>
+							  <p>Ad leggings keytar, brunch id art party dolor labore. Pitchfork yr enim lo-fi before they sold out qui. Tumblr farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan. Velit seitan mcsweeney's photo booth 3 wolf moon irure. Cosby sweater lomo jean shorts, williamsburg hoodie minim qui you probably haven't heard of them et cardigan trust fund culpa biodiesel wes anderson aesthetic. Nihil tattooed accusamus, cred irony biodiesel keffiyeh artisan ullamco consequat.</p>
+						  </div>
+						  
+						  <div id="mdo">
+							  <h4>@mdo</h4>
+							  <p>Veniam marfa mustache skateboard, adipisicing fugiat velit pitchfork beard. Freegan beard aliqua cupidatat mcsweeney's vero. Cupidatat four loko nisi, ea helvetica nulla carles. Tattooed cosby sweater food truck, mcsweeney's quis non freegan vinyl. Lo-fi wes anderson +1 sartorial. Carles non aesthetic exercitation quis gentrify. Brooklyn adipisicing craft beer vice keytar deserunt.</p>
+						  </div>
+						  
+						  <div id="one">
+							  <h4>one</h4>
+							  <p>Occaecat commodo aliqua delectus. Fap craft beer deserunt skateboard ea. Lomo bicycle rights adipisicing banh mi, velit ea sunt next level locavore single-origin coffee in magna veniam. High life id vinyl, echo park consequat quis aliquip banh mi pitchfork. Vero VHS est adipisicing. Consectetur nisi DIY minim messenger bag. Cred ex in, sustainable delectus consectetur fanny pack iphone.</p>
+						  </div>
+						  
+						  <div id="two">
+							  <h4>two</h4>
+							  <p>In incididunt echo park, officia deserunt mcsweeney's proident master cleanse thundercats sapiente veniam. Excepteur VHS elit, proident shoreditch +1 biodiesel laborum craft beer. Single-origin coffee wayfarers irure four loko, cupidatat terry richardson master cleanse. Assumenda you probably haven't heard of them art party fanny pack, tattooed nulla cardigan tempor ad. Proident wolf nesciunt sartorial keffiyeh eu banh mi sustainable. Elit wolf voluptate, lo-fi ea portland before they sold out four loko. Locavore enim nostrud mlkshk brooklyn nesciunt.</p>
+						  </div>
+						  
+						  <div id="three">
+							  <h4>three</h4>
+							  <p>Ad leggings keytar, brunch id art party dolor labore. Pitchfork yr enim lo-fi before they sold out qui. Tumblr farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan. Velit seitan mcsweeney's photo booth 3 wolf moon irure. Cosby sweater lomo jean shorts, williamsburg hoodie minim qui you probably haven't heard of them et cardigan trust fund culpa biodiesel wes anderson aesthetic. Nihil tattooed accusamus, cred irony biodiesel keffiyeh artisan ullamco consequat.</p>
+							  <p>Keytar twee blog, culpa messenger bag marfa whatever delectus food truck. Sapiente synth id assumenda. Locavore sed helvetica cliche irony, thundercats you probably haven't heard of them consequat hoodie gluten-free lo-fi fap aliquip. Labore elit placeat before they sold out, terry richardson proident brunch nesciunt quis cosby sweater pariatur keffiyeh ut helvetica artisan. Cardigan craft beer seitan readymade velit. VHS chambray laboris tempor veniam. Anim mollit minim commodo ullamco thundercats.
+							  </p>
+						  </div>
+						</div>
+					  </div>
+					  <p>The above example, is the exact same as for the original plugin. For this example we are having the <code>scrollTarget</code> as the element itself and above it the <code>.nav</code> component to target the Scrollspy object.</p> 
+					  <pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+						<!-- this is our element -->
+						&lt;div data-spy="scroll" data-target="#navbar-example2" class="scrollspy-example"&gt;
+						
+						<!-- this is our element's target, the nav component -->					
+						&lt;ul id="navbar-example2" class="nav"&gt;
+					  </span></pre>
+					  <p>Generally for Scrollspy to work perfect, you would want to avoid incorrect behavior because the element's children don't fill their entire area, you may consider using:</p>
+					  <pre><span class="brush: css; ruler: true; toolbar:false; gutter: false">.scrollspy-example > * { float: left; width: 100%; clear: both }</span></pre>
+					  <p>Also like the original plugin, the other example in this page is the side navigation on the right side that pins to top. This example uses the <code>window</code> as the internal <code>scrollTarget</code>, but you don't have to worry about that, it's just for you to know.</p>
+					  <p class="text-danger"><b>Scrollspy</b> doesn't work with Internet Explorer 8, reason unknown.</p>
+				</section>
+							
+				<section id="exampleTab">
+					<h3>Tab</h3>
+					<p>
+						<b>Tab</b> works with any kind of navigation components in Bootstrap as you can see in the example below. 
+						The script only works via DATA API, and has no support for the original <a href="http://getbootstrap.com/javascript/#tabs-usage" target="_blank">methods or events</a>. 
+						Unlike the original plugin, the animation is smooth because it waits for the current active tab to fade away first before animating the next.
+					</p>
+					<h4>Options</h4>
+						<ul>
+							<li><b>duration</b> - the only option for Tab, is an internal 150ms duration setting to emulate <code>transitionend</code>. If you are using a different fade duration than the default plugin, this can be set via <code>data-duration="DURATION"</code> attribute.</li>
+						</ul>
+						<div style="position: relative">
+					<h4>Example</h4>
+							<div class="btn-group">
+								<button type="button" class="btn btn-success btn-xs" data-toggle="dropdown">Toggle View</button>
+								<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+								<ul class="dropdown-menu pull-right" role="menu">
+								  <li class=""><a href="#" data-nclass="nav nav-tabs">Tabs</a></li>
+								  <li class=""><a href="#" data-nclass="nav nav-pills">Pills Horizontal</a></li>
+								  <li class=""><a href="#" data-nclass="nav nav-pills nav-stacked">Pills Stacked</a></li>
+								  <li class=""><a href="#" data-nclass="list-inline">Inline List</a></li>
+								  <li class=""><a href="#" data-nclass="nav navbar-nav">Navbar</a></li>
+								  <li class=""><a href="#" data-nclass="nav nav-list">Regular Nav</a></li>
+								  <li class=""><a href="#" data-nclass="nav panel panel-primary">Panel</a></li>
+								</ul>
+							</div>
+						</div>
+					<ul id="myTab" class="nav nav-tabs" role="tablist">
+					  <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Home</a></li>
+					  <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile">Profile</a></li>
+					  <li role="presentation" class="dropdown">
+						<a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
+						  <li class=""><a href="#dropdown1" tabindex="-1" role="tab" id="dropdown1-tab" data-toggle="tab" aria-controls="dropdown1" aria-expanded="false">Some tab</a></li>
+						  <li class=""><a href="#dropdown2" tabindex="-1" role="tab" id="dropdown2-tab" data-toggle="tab" aria-controls="dropdown2" aria-expanded="false">Other tab</a></li>
+						</ul>
+					  </li>
+					</ul>
+					<div id="myTabContent" class="tab-content">
+					  <div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab">
+						<p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+					  </div>
+					  <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
+						<p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
+					  </div>
+					  <div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledby="dropdown1-tab">
+						<p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
+					  </div>
+					  <div role="tabpanel" class="tab-pane fade" id="dropdown2" aria-labelledby="dropdown2-tab">
+						<p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater. Lomo wolf viral, mustache readymade thundercats keffiyeh craft beer marfa ethical. Wolf salvia freegan, sartorial keffiyeh echo park vegan.</p>
+					  </div>
+					</div>	
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+				</section>
+				
+				<section id="exampleTooltip">			
+					<h3>Tooltip</h3>
+					<p>This here is an example <a href="#" data-toggle="tooltip" title="This is tooltip title attribute turned into a Tooltip">Tooltip</a> only using <code>data-toggle="tooltip"</code>. Unlike the original Bootstrap Tooltip, the native Javascript version here can do automatic placement, without any additional options required. Another key difference is that this script will never bubble, also worth mentioning it works perfect with IE8+ and is half the size of the original script.</p> 
+					<p>Now let's test all the other placement positions, we start with the <a href="#" title="Testing bottom placement" data-toggle="tooltip" data-placement="bottom">bottom</a> placement, then <a href="#" title="Testing left placement" data-toggle="tooltip" data-placement="left">left</a>, and <a href="#" title="Testing right placement" data-toggle="tooltip" data-placement="right">right</a>.</p>
+					<h4>Options</h4>
+					<ul>
+						<li><b>animation</b> - option to customize the Tooltip animation. If you are using a different animation other than <code>fade</code>, you can specify that via <code>data-animation="ANIMATION"</code> attribute. This will add an additional CSS class to the Tooltip to enable a custom transition. The default value is <code>fade</code>.</li>
+						<li><b>placement</b> - option to set a specific Tooltip placement to <code>top</code>, <code>bottom</code>, <code>left</code> or <code>right</code>, relative to it's target. The default value is <code>top</code>.</li>
+						<li><b>duration</b> - is an internal 150ms duration setting to emulate <code>transitionend</code>. If you are using a different duration than the default plugin, this can be set via <code>data-duration="DURATION"</code> attribute. The default value is <code>150</code>.</li>
+						<li><b>delay</b> - is an internal 100ms delay before generating the tooltip, helpful for legacy browsers to be able to compute the automatic positioning. Can be set via <code>data-delay="DELAY"</code> attribute. The default value is <code>100</code>.</li>
+					</ul>
+					<h4>Examples</h4>					
+					<p>Let's put it to the test! Some heavy testing on the automatic repositioning with very very long tooltips.</p>
+					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip on left">Left</button>
+					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Top</button>
+					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom">Bottom</button>
+					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right">Right</button>
+					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip on left<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
+					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Top</button>
+					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
+					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+					<h4>Additional Note</h4>					
+					<p>You can also enable Tooltip for elements not having the specific DATA API, but have a <code>title="Not null title"</code> attribute. You can do the following:</p>
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						// find all elements with title attribute
+						var elementsTooltip = document.querySelectorAll('[title]');
+						
+						// attach a tooltip for each
+						[].forEach.call(elementsTooltip, function(el) {
+							var elTooltip = new Tooltip(el, {
+								placement: 'top', //string
+								animation: 'slideNfade', // CSS class
+								duration: 200, // integer
+								delay: 150, // integer
+							})
+						});
+					</span></pre>
+					<p>Tooltip always uses the <code>document.body</code> as the container and adds <code>position: relative</code> to it when shown to avoid wrong placements.</p>
+					<p>Tooltip doesn't cover template system like the original, and remember that it can do automatic placement without any additional options.</p>
+					
+				</section>
+				
+				<section id="examplePopover">			
+					<h3>Popover</h3>
+					<p>This here is an example <a href="#" data-toggle="popover" data-title="Popover Title" data-content="This is popover content. Did you feel any difference so far?">Popover</a> using <code>data-toggle="popover"</code>. Unlike the original Bootstrap Popover, this script does not require the Tooltip script and works just about the same as the above except that Popover has, like the original script, the ability to work with templates and trigger options: <code>hover</code> (default), <code>click</code> and <code>focus</code>.</p> 
+					<p>Without further talking, let's test all the options, and placement positions, we start with the <a href="#" data-content="Testing bottom placement" data-toggle="popover" data-placement="bottom">bottom</a> placement, then <a href="#" data-content="Testing left placement" data-toggle="popover" data-placement="left">left</a>, and <a href="#" data-content="Testing right placement" data-toggle="popover" data-placement="right">right</a>.</p>
+					<h4>Options</h4>
+					<ul>
+						<li><b>template</b> - via Javascript, you can dynamically create popovers via the template system. See examples below.</li>
+						<li><b>content</b> - the <code>data-content="CONTENT"</code> attribute to fill the Popover. If the template is not specified via Javascript or the content option is not set, the Popover will not initiate.</li>
+						<li><b>title</b> - the <code>data-title="TITLE"</code> attribute to fill the Popover title.</li>
+						<li><b>trigger</b> - option to change the Popover trigger event: <code>hover</code>, <code>focus</code> and <code>click</code>. In some cases you may want to open Popover on <code>focus</code> for form elements or <code>click</code> for other buttons, you can specify that via <code>data-trigger="EVENT"</code> attribute. The default value is <code>hover</code>.</li>
+						<li><b>animation</b> - option to customize the Popover animation. If you are using a different animation other than <code>fade</code>, you can specify that via <code>data-animation="ANIMATION"</code> attribute. This will add an additional CSS class to the Popover to enable a custom transition. The default value is <code>fade</code>.</li>
+						<li><b>placement</b> - option to set a specific Popover placement to <code>top</code>, <code>bottom</code>, <code>left</code> or <code>right</code>, relative to it's target. The default value is <code>top</code>.</li>
+						<li><b>duration</b> - is an internal 150ms duration setting to emulate <code>transitionend</code>. If you are using a different duration than the default plugin, this can be set via <code>data-duration="DURATION"</code> attribute. The default value is <code>150</code>.</li>
+						<li><b>delay</b> - is an internal 100ms delay before generating the Popover, helpful for legacy browsers to be able to compute the automatic positioning. Can be set via <code>data-delay="DELAY"</code> attribute. The default value is <code>100</code>.</li>
+					</ul>
+					<h4>Examples</h4>	
+					<p>Now we are going to test buttons and Popover with large contents. The last two examples below are using the template system and different trigger options. The Popover generated for the last two examples can be dismissed on window resize or blur (focus out).</p>
+					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="left" data-content="Popover on left">Left</button>
+					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="top" data-content="Popover on top">Top</button>
+					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-content="Popover on bottom">Bottom</button>
+					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="right" data-content="Popover on right">Right</button>
+					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="left" data-content="Popover on left<br> Here we add more content for testing. Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits.">Left</button>
+					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="top" data-content="Popover on top<br> Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. ">Top</button>
+					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-content="Popover on bottom<br> Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">Bottom</button>
+					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="right" data-content="Popover on right<br> Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+					<input style="max-width: 180px; display: inline; width: auto" type="text" value="" class="form-control popover-via-template" placeholder="Focus me" data-toggle="popover">
+					<button type="button" id="popover-via-click" class="btn btn-default" data-trigger="click" data-content="You clicked the button and as a result, this message box simply.. popped.<br>Now simply click anywhere to dismiss.">Click to open</button>
+					<h4>Additional Note</h4>					
+					<p>To use the template system, you can attach a custom handler to a target as the following:</p>
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						//define some variables or get their values from other scripts
+						var someTitleFromOtherCode = 'Sample title';
+						var someContentFromOuterSpace = '<p>Some sample message.</p>';
+						
+						//initiate Popover with the template
+						var popover2 = new Popover('.popover-via-template', { // where .popover-via-template is the text input
+							trigger: 'focus',
+							template: '&lt;div class="popover" role="tooltip"&gt;'
+							+ '&lt;div class="arrow"&gt;&lt;/div&gt;'
+							+ '&lt;h3 class="popover-title"&gt;'+someTitleFromOtherCode+'&lt;/h3&gt;'
+							+ '&lt;div class="popover-content"&gt;'+someContentFromOuterSpace+'&lt;/div&gt;'
+							+ '&lt;/div&gt;'
+						});	
+					</span></pre>					
+					<p>The above code can be found in the <code>../assets/js/scripts.js</code> file.</p>
+					<p><b>Remember</b> - Popover always uses the <code>document.body</code> as the container, just like the Tooltip and does automatic placement without options.</p>
 
-<h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+				</section>
+				
+				<section id="exampleAlert">
+					<h3>Alert</h3>
+					<p><b>Alert</b> does not have any <a href="http://getbootstrap.com/javascript/#alerts-methods" target="_blank">events and methods</a>, it's action simply dismisses the Alert component. Unlike the original plugin, this script can successfully handle later added alerts into the DOM. See Button <a href="#exampleButton">first example below</a>.</p>
+					<div class="alert alert-warning alert-dismissible fade in" role="alert">
+					  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+					  <strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.
+					</div>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+					<div class="alert alert-danger alert-dismissible fade in" role="alert">
+					  <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+					  <h4 id="oh-snap!-you-got-an-error!">Oh snap! You got an error!<a class="anchorjs-link" href="#oh-snap!-you-got-an-error!"></a></h4>
+					  <p>Change this and that and try again. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum.</p>
+					  <p>
+						<button type="button" class="btn btn-danger">Take this action</button>
+						<button type="button" class="btn btn-default">Or do this</button>
+					  </p>
+					</div>			
+					<p><b>Alert</b> also uses a 150ms internal <code>duration</code> to emulate <code>transitionend</code>. No option required or needed really.</p>
+				</section>			
+				
+				<section id="exampleButton">
+					<h3>Button</h3>
+					<p><b>Button</b> script allows you to change the text of a given button. If using a <code>data-loading-text="Loading.."</code> attribute, the button will also change it's state to disabled. The other function of the script is to toggle checkboxes and radio buttons, it's a most awaited form replacement for the good old checks and radios.</p>
+					<h4>Options</h4>
+						<ul>
+							<li><b>STRING-text</b> - the only option for Button, allows you to change a button's text via it's <code>data-OPTION-text="Sample text"</code> attribute.</li>
+						</ul>
+					<h4>Example</h4>
+					<p>This is a quick example of button setting state via string options. Like the original script we make an example for <code>loading</code> state for the button. For the purpose of testing here, the button will come back to original state after a short <code>setTimeout</code> delay.</p>
+					<button type="button" id="myButton" data-toggle="button" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off">Loading state</button>
+					<h4>Basic Usage</h4>
+					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+						<!-- this is the example button -->
+						&lt;button type="button" id="myButton" data-toggle="button" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off"&gt;
+							Loading state
+						&lt;/button&gt;
+					</span></pre>
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						//the method works like this
+						var btn = document.getElementById('myButton');
+						btn.addEventListener('click', function() {
+							new Button(btn,'loading'); //this assumes button has a data-loading-text="Loading..." attribute
+						})	
+					</span></pre>
+					<p>This action will create an additional <code>data-original-title="Loading state"</code> attribute, required for the below <code>reset</code> method.</p>
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						//the reset method works like this
+						new Button(btn,'reset');	
+					</span></pre>
+					<p>Next we will toggle some checkboxes. You should open your console to test the handler functions bound by the <code>change</code> event of the following checkboxes and radio buttons.</p>
+					<div class="btn-group" data-toggle="buttons">
+					  <label class="btn btn-default active">
+						<input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
+					  </label>
+					  <label class="btn btn-default">
+						<input type="checkbox" autocomplete="off"> Checkbox 2
+					  </label>
+					  <label class="btn btn-default">
+						<input type="checkbox" autocomplete="off"> Checkbox 3
+					  </label>
+					</div>
+					<p>Finally we toggle radio buttons.</p>
+					<div class="btn-group" data-toggle="buttons">
+					  <label class="btn btn-default">
+						<input type="radio" name="options" id="option1" autocomplete="off"> Radio 1
+					  </label>
+					  <label class="btn btn-default active">
+						<input type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
+					  </label>
+					  <label class="btn btn-default">
+						<input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
+					  </label>
+					</div>
+					<p>As a quick note, here's the example for checkboxes.</p>
+					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+						&lt;div class="btn-group" data-toggle="buttons"&gt;
+						  &lt;label class="btn btn-default active"&gt;
+							&lt;input type="checkbox" autocomplete="off" checked&gt; Checkbox 1 (pre-checked)
+						  &lt;/label&gt;
+						  &lt;label class="btn btn-default"&gt;
+							&lt;input type="checkbox" autocomplete="off"&gt; Checkbox 2
+						  &lt;/label&gt;
+						  &lt;label class="btn btn-default"&gt;
+							&lt;input type="checkbox" autocomplete="off"&gt; Checkbox 3
+						  &lt;/label&gt;
+						&lt;/div&gt;					
+					</span></pre>
+					<p>The <code>../assets/js/scripts.js</code> file has some console log functions bound by the change of the <code>.btn-group</code> components.</p>
+					
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						//grab all checkboxes
+						var checkBtns = document.querySelectorAll('input[type="checkbox"]'); 
+						
+						//attach a handler to first
+						checkBtns[0].addEventListener('change',function() {
+							// do your stuff when first checkbox changes	
+						})
+						
+						// OR
+						//attach a handler to the first btn-group
+						document.querySelectorAll('[data-toggle="buttons"]')[0].addEventListener('change', function(e) {
+							console.log( 'The button group with checkboxes inside changed' );
+							//do your stuff when btn-group changed
+						});						
+					</span></pre>					
+					<h4>Additional Notes</h4>
+					<p>
+						Button will activate automatically for all <code>.btn-group</code> component instances if they have <code>data-toggle="buttons"</code> and the appropriate input elements inside like our examples here.
+						The script properly covers the "change" event for checkbox and radio buttons, allowing other functions to bind into context. The event is also bound to the <code>.btn-group</code> component. 
+						The script doesn't have any method to control it's toggle functions for checkbox and radio buttons as described by the documentation of the original plugin.
+					</p>
+					<p>Button also doesn't cover <a href="http://getbootstrap.com/javascript/#buttons-single-toggle" target="_blank">single toggle</a>.</p>
 
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+				</section>
+				
+				<section id="exampleCollapse">
+					<h3>Collapse</h3>
+					<p><b>Collapse</b> is a great way to toggle content, and it's also used for collapsible navbar. It's not animating on modern browsers unless you use the <a href="#required_css">provided CSS</a>, and legacy browsers don't support transitions. Unlike other scripts, this is the only component that can be targeted by it's toggle links by it's <code>className</code> via the <code>data-target="className"</code> attribute, along with the traditional <code>data-target="#collapse-id"</code>. The collapsible navbar in Bootstrap for instance works mostly via <code>data-target=".bs-navbar-collapse"</code> attribute.</p>
+					<p>Collapse requires proper wrapping of contents, similar to wells, accordion and responsive navbar examples. With other words, you cannot toggle a bunch of paragraphs at once unless you wrap them into a container and give it a unique ID and a <code>collapse</code> class.</p>
+					<h4>Options</h4>
+						<ul>
+							<li><b>duration</b> - the only option required is a 300ms duration internal setting just as in the provided CSS, to emulate <code>transitionend</code> for modern browsers. If you use a different duration, you can specify that via <code>data-duration="DURATION"</code> attribute.</li>
+						</ul>						
+						
+					<h4>Examples</h4>
+					<p>Here's a quick <b>collapse</b> demonstration, but I would also recommend you to try the navbar on this page on a smaller screen size or on a mobile device. </p>
+					<p>
+					  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="true" aria-controls="collapseExample">Link with href</a>
+					  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">Button with data-target</button>
+					</p>
+					<div class="collapse" id="collapseExample" aria-expanded="false">
+					  <div class="well">
+						Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+					  </div>
+					</div>				
+					
+					<p>Here's an <b>Accordion</b> component, basically a set of <b>Panel</b> components. When the toggle links are clicked, our Collapse object will look for the closest <code>&lt;div class="accordion-className"</code> or <code>&lt;div id="accordion-id"</code> via <code>data-parent="selector"</code>. </p>
+					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+					  <div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingOne">
+						  <h4 class="panel-title" id="-collapsible-group-item-#1-">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							  Collapsible Group Item #1
+							</a>
+						  <a class="anchorjs-link" href="#-collapsible-group-item-#1-"></a></h4>
+						</div>
+						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+						  <div class="panel-body">
+							Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+						  </div>
+						</div>
+					  </div>
+					  <div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingTwo">
+						  <h4 class="panel-title" id="-collapsible-group-item-#2-">
+							<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+							  Collapsible Group Item #2
+							</a>
+						  <a class="anchorjs-link" href="#-collapsible-group-item-#2-"></a></h4>
+						</div>
+						<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+						  <div class="panel-body">
+							Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+						  </div>
+						</div>
+					  </div>
+					  <div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingThree">
+						  <h4 class="panel-title" id="-collapsible-group-item-#3-">
+							<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+							  Collapsible Group Item #3
+							</a>
+						  <a class="anchorjs-link" href="#-collapsible-group-item-#3-"></a></h4>
+						</div>
+						<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+						  <div class="panel-body">
+							Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+						  </div>
+						</div>
+					  </div>
+					</div>				
+					<p>Remember that all toggle links must reference the accordion via <code>data-parent="selector"</code> as described above in order to collapse current opened container.</p>
+				</section>
+				
+				<section id="exampleCarousel">
+					<h3>Carousel</h3>
+					<p><b>Carousel</b> is an excelent content showcase script, and as the original plugin, it handles both <code>slid</code> and <code>slide</code> events, just as shown in the example below.</p>
+					<p>The script uses an internal duration value (default Bootstrap Carousel transition duration) + 100ms more, needed to emulate <code>transitionend</code>, and during this time, all click handlers are disabled to prevent any animation issue or code bubbles, similar to the original script. On legacy browsers this duration is 100ms and your HTML tag needs a class <code>ie</code> for that.</p>
+					<p>When configured to pause on hover, it also adds a <code>paused</code> class to it to help prevent any anomalies. The script does not implement the original methods.</p>
+					<h4>Options</h4>
+						<ul>
+							<li><b>duration</b> - an option to customize the <code>600ms</code> internal duration required to emulate <code>transitionend</code> for modern browsers. If you use a different duration, you can specify that via <code>data-duration="DURATION"</code> attribute. The default value is <code>600</code>.</li>
+							<li><b>interval</b> - the time delay between transitions. If you want to use a different interval, you can specify that via <code>data-interval="INTERVAL"</code> attribute. To disable automatic transition, simply use <code>data-interval="false"</code> attribute. The default value is <code>5000</code>.</li>
+							<li><b>pause</b> - makes possible to pause the carousel transition on mouse hover and touchdown. If you want to disable pause on hover, do that that via <code>data-pause="false"</code> attribute. The default value is <code>hover</code>.</li>
+							<li><b>keyboard</b> - enables the carousel to be controllable via left and right keyboard keys. If you want to enable this option, do that that via <code>data-keyboard="true"</code> attribute. The default value is <code>false</code>.</li>
+						</ul>						
+						
+					<h4>Example</h4>
+					<p> This is a test demonstrating the carousel capabilities and it's events, so open your console, and start clicking, you will be noticed before and after the animation.</p>
+					<div class="thumbnail">
+						<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="false">
+						  <!-- Indicators -->
+						  <ol class="carousel-indicators">
+							<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+							<li data-target="#carousel-example-generic" data-slide-to="1"></li>
+							<li data-target="#carousel-example-generic" data-slide-to="2"></li>
+						  </ol>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="https://help.github.com/pages">https://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+						  <!-- Wrapper for slides -->
+						  <div class="carousel-inner" role="listbox">
+							<div class="item active">
+							  <img src="http://lorempixel.com/837/300/" alt="">
+							  <div class="carousel-caption">
+								<h3>This is another carousel</h3>
+							  </div>
+							</div>
+							<div class="item">
+							  <img src="http://lorempixel.com/837/300/abstract/" alt="">
+							  <div class="carousel-caption">
+								<h3>This is a caption</h3>
+							  </div>
+							</div>
+							<div class="item">
+							  <img src="http://lorempixel.com/837/300/sports" alt="">
+							  <div class="carousel-caption">
+								<h3>This is another caption</h3>
+							  </div>
+							</div>					
+						  </div>
 
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/thednp/Native-Javascript-for-Bootstrap">Native-javascript-for-bootstrap</a> is maintained by <a href="https://github.com/thednp">thednp</a>.</span>
+						  <!-- Controls -->
+						  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							<span class="sr-only">Previous</span>
+						  </a>
+						  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+							<span class="sr-only">Next</span>
+						  </a>
+						</div>				
+					</div>
+					<p>The handlers bound to Carousel's specific events explain what happens with the other <a href="#myCarousel">example in this site's header</a>. Let's have a quick look at it.</p>
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						//demo myCarousel demonstrating the slid and slide events
+						var mainSlider = document.getElementById('myCarousel');
+						mainSlider.addEventListener('slid.bs.carousel', function(e) {
+							// get the caption of current active item before slide
+							var active = mainSlider.querySelector('.item.active .carousel-caption'); 
+							active.classList.remove('slide')
+						});
+						mainSlider.addEventListener('slide.bs.carousel', function(e) {
+							// get the caption of new active item after slide
+							var active = mainSlider.querySelector('.item.active .carousel-caption');
+							active.classList.add('slide')
+						});					
+					</span></pre>
+					<h4>Additional Notes</h4>
+					<p>Carousel does not use DATA API for previous and next navigation controls, which means you can ignore <code>data-slide="prev"</code> and <code>data-slide="next"</code> attributes, but they must have at least <code>class="carousel-control"</code>.</p>
+				</section>
+				
+				<section id="exampleAffix">
+					<h3>Affix</h3>
+					<p><b>Affix</b> is the one little script pinning the side navigation to top once the scroll reaches a certain offset value. It works exactly like the original and requires some additional CSS in order to work properly. When scrolling the page, the given element will receive an <code>affix</code> class once the scroll reaches the target or given offset value, and further more an additional <code>affix-bottom</code> class once the scroll value reaches the maximum scroll height at the given bottom offset.</p>
+					<h4>Options</h4>
+						<ul>
+							<li><b>target</b> - Affix can pin an element to top once the scroll reaches a given other element that via <code>data-target="target-className"</code> or <code>data-target="#target-ID"</code> attribute.</li>
+							<li><b>offsetTop</b> - allows an element to pin to top when reaching a specific scroll value. This can be set via <code>data-offset-top="OFFSET"</code> attribute, where OFFSET is integer. Via Javascript you can also assign a function to our <code>offsetTop</code> option.</li>
+							<li><b>offsetBottom</b> - allows an element to pin to bottom when reaching a specific scroll value. This can be set via <code>data-offset-bottom="OFFSET"</code> attribute, where OFFSET is integer. Via Javascript you can also assign a function to our <code>offsetBottom</code> option.</li>
+						</ul>						
+						
+					<h4>Example</h4>
+					<p>Here we go, we'll have a look at our example here and explain things. First we configure an element to be pinned to top and / or bottom.</p>
+					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+						&lt;ul class="nav nav-stacked" data-spy="affix" data-target="#use" data-offset-bottom="200"&gt;
+					</span></pre>
+					<p>Alternatively, via Javascript we can achieve the same with:</p>
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						//grab the element by it's ID
+						var elToAffix = document.getElementById('myNav');
+						var theAffix = new Affix(elToAffix, {
+							target: '#use',
+							offsetBottom: 200,
+						});
+					</span></pre>
+					<p>Similar to the original plugin, we can make use of a function, we can determine the offsetTop value from the height of the previous element above the initial target:</p>
+					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
+						var elToAffix = document.getElementById('myNav');
+						var theAffix = new Affix(elToAffix, {
+							offsetTop: function(){
+								return document.getElementById('myCarousel').offsetHeight
+							},
+							offsetBottom: 200,
+						});
+					</span></pre>
+					<p>Now we must make sure our element is properly styled to make sure it works properly.</p>
+					<pre><span class="brush: css; ruler: true; toolbar:false; gutter: false">
+						/* this style applies to mobile devices, on screens SMALLER than 768px */
+						/* affix example */
+						#side-nav {clear: both}
+						#side-nav .nav.affix,
+						#side-nav .nav.affix.affix-bottom { position: relative; margin: 20px 0; }
+						
+						/* this style applies to other devices, on screens LARGER than 768px */
+						@media (min-width: 768px) {
+							/* affix example */
+							#side-nav .nav.affix { position: fixed !important;  width: 263px; top: 0; }
+							#side-nav .nav.affix.affix-bottom { top: auto;  bottom: 150px; }
+						}	
+					</span></pre>
+					<h4>Additional Note</h4>
+					<p>Using static values for <code>offsetTop</code> and / or <code>offsetBottom</code> would work best on non-responsive websites, or when the elements don't change their height when window resize occurs.</p>
+					<p>The given <code>../assets/js/script.js</code> also provides a way to automatically resize the pinned element when window resize occurs. Make sure you check that too.</p>
+				</section>
 
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
-    </section>
-
-  
-  </body>
+			</section>
+			
+			<section id="about">
+				<h2>About</h2>
+				<h3>Why Native Javascript?</h3>
+				<p>
+					<strong>Mission</strong> | <a href="https://github.com/thednp/Native-Javascript-for-Bootstrap">The Native Javascript for Bootstrap</a> project was born to help. It doesn't totally and perfectly replace all the functions the jQuery Plugins have for Bootstrap, but the essential tools. 
+					In many cases it performs much better than the original code, like an upgraded version of the original. I've literally learned to code native Javascript developing these scripts here. To sum up, this aims to help me and you transition into a better developer, doing things right from the next big project.
+				</p><p>
+					<strong>Context</strong> | Today's most popular HTML5 framework is <a target="_blank" href="http://getbootstrap.com">Bootstrap</a> and like any other there's ups and downs. We all know about the PROs, but one of the CONs is the <a href="http://jquery.com" target="_blank">jQuery</a> <em>dependency</em>. 
+					Why in the world would you ever drop jQuery? What can you put in it's place? The answer is this this: <em>clean Javascript code</em>. All browsers on all devices support it or they damn should be, because nothing would work, not even jQuery, Zepto, Dojo, AngularJS, whatever. 
+					The latest <a href="http://www.google.com/trends/explore#q=jquery%2C%20mootools%2C%20javascript" target="_blank">trends</a> indicate that jQuery already peaked and is becoming less and less relevant.
+				</p><p>
+					<strong>Perspective</strong> | The standards are now generally adopted and mobile platforms are "on the wave". The future brings more changes and we cannot fix-n-hack or hack-to-fix anymore via jQuery. 
+					Performance is the one and only true goal to follow, so if dropping jQuery and cleaning up the code is the way to go, we'll go for it. jQuery is still so cool and efficient but I feel it's too overpowered with it's cross-browser solutions. 
+					With the new Javascript engines and HTML5 standards, really, why not code native code, it's really <a href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank">not that hard</a>.
+				</p>
+				<h3>Really Write Less, Do More?</h3>
+				<p>Why do I feel this sounds much too bold after only a few weeks of vanilla Javascript? With the given Javascript here and some CSS customizations you can now do alot more than jQuery with the original Bootstrap plugins. As I have shown here, I think I've completely blasted the "do more" myth.</p>
+				<p>If you forgot to check <a href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">performance metrics</a>, go ahead (there are lots more out there, plus a ton of guides on how to boost performance), there is also the page load speed issue I forgot to mention. Imagine you can be drastically improve the page load by dropping jQuery.</p>
+				<p>If we compare the size of jQuery + Bootstrap minified is just about 93Kb(jQuery v1.11.2) + <b>36Kb</b>(Bootstrap 3.3.2) = <kbd>129Kb</kbd>. Our scripts here are (5Kb to) 18Kb + <b>33Kb</b> = (38Kb to) <kbd>51Kb</kbd>, where 18Kb is the <a href="https://cdn.polyfill.io/v1/docs/features/#understanding-polyfill-sizes" target="_blank">maximum size of the minified polyfill</a> for IE8, mostly under 5kb for most modern browsers.</p>
+				<p>This being said, jQuery doesn't make any sense for many of us.</p>
+			</section>
+		</div>
+				
+		<div id="side-nav" class="col-sm-3">
+			<h3 class="visible-xs">Navigation</h3>
+			<ul id="nav-scrollspy" class="nav nav-stacked" data-spy="affix" data-target="#use" data-offset-bottom="200">
+				<li><a href="#myCarousel">Download</a></li>
+				<li><a href="#use">Use</a></li>
+				<li>
+					<a href="#examples">Examples</a>
+					<ul class="nav nav-stacked">
+						<li><a href="#exampleModal">Modal</a></li>
+						<li><a href="#exampleDropdown">Dropdown</a></li>
+						<li><a href="#exampleScrollspy">ScrollSpy</a></li>
+						<li><a href="#exampleTab">Tab</a></li>
+						<li><a href="#exampleTooltip">Tooltip</a></li>
+						<li><a href="#examplePopover">Popover</a></li>
+						<li><a href="#exampleAlert">Alert</a></li>
+						<li><a href="#exampleButton">Button</a></li>
+						<li><a href="#exampleCollapse">Collapse</a></li>
+						<li><a href="#exampleCarousel">Carousel</a></li>
+						<li><a href="#exampleAffix">Affix</a></li>
+					</ul>
+				</li>
+				<li><a href="#about">About</a></li>
+			</ul>
+		</div>
+		</div>
+	</div>
+		
+	<footer>
+		<div class="container">
+			<p class="pull-right"><a href="#myCarousel">Back to top</a></p>
+			<p>NJB &copy; 2015 <a href="http://themeforest.net/user/dnp_theme" target="_blank">dnp_theme</a>.</p>
+		 </div>
+	</footer>
+	
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shThemeEclipse.css" rel="stylesheet" type="text/css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shAutoloader.js" type="text/javascript"></script>	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.js" type="text/javascript"></script>	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushCss.js" type="text/javascript"></script>	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushXml.js" type="text/javascript"></script>	
+	<!--
+    <script type="text/javascript" src="./lib/scrollspy-native.js"></script>
+    <script type="text/javascript" src="./lib/affix-native.js"></script>
+    <script type="text/javascript" src="./lib/carousel-native.js"></script>
+    <script type="text/javascript" src="./lib/dropdown-native.js"></script>
+    <script type="text/javascript" src="./lib/modal-native.js"></script>
+    <script type="text/javascript" src="./lib/tab-native.js"></script>
+    <script type="text/javascript" src="./lib/tooltip-native.js"></script>
+    <script type="text/javascript" src="./lib/popover-native.js"></script>
+    <script type="text/javascript" src="./lib/alert-native.js"></script>
+    <script type="text/javascript" src="./lib/button-native.js"></script>
+    <script type="text/javascript" src="./lib/collapse-native.js"></script>
+	-->
+     <script type="text/javascript" src="./dist/bootstrap-native.min.js"></script> <!---->
+    <script type="text/javascript" src="./assets/js/scripts.js"></script>
+  </body>	
 </html>
-
