@@ -26,6 +26,10 @@
     <!-- Custom styles for this template -->
     <link href="./assets/css/theme.css" rel="stylesheet">	
 	
+	<!-- Synthax highlighter -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shThemeEclipse.css" rel="stylesheet">
+
+	
     <!-- For local testing, you can use this polyfill, it's pretty neat.	-->
 	<!-- <script src="./assets/js/polyfill.min.js"></script>					-->
 	
@@ -542,7 +546,7 @@
 					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
 						//define some variables or get their values from other scripts
 						var someTitleFromOtherCode = 'Sample title';
-						var someContentFromOuterSpace = '<p>Some sample message.</p>';
+						var someContentFromOuterSpace = '&lt;p&gt;Some sample message.&lt;/p&gt;';
 						
 						//initiate Popover with the template
 						var popover2 = new Popover('.popover-via-template', { // where .popover-via-template is the text input
@@ -689,7 +693,7 @@
 					  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="true" aria-controls="collapseExample">Link with href</a>
 					  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">Button with data-target</button>
 					</p>
-					<div class="collapse" id="collapseExample" aria-expanded="false">
+					<div class="collapse" id="collapseExample" aria-expanded="false" role="tab">
 					  <div class="well">
 						Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
 					  </div>
@@ -703,7 +707,7 @@
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
 							  Collapsible Group Item #1
 							</a>
-						  <a class="anchorjs-link" href="#-collapsible-group-item-#1-"></a></h4>
+						  </h4>
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 						  <div class="panel-body">
@@ -717,7 +721,7 @@
 							<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
 							  Collapsible Group Item #2
 							</a>
-						  <a class="anchorjs-link" href="#-collapsible-group-item-#2-"></a></h4>
+						 </h4>
 						</div>
 						<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
 						  <div class="panel-body">
@@ -731,7 +735,7 @@
 							<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
 							  Collapsible Group Item #3
 							</a>
-						  <a class="anchorjs-link" href="#-collapsible-group-item-#3-"></a></h4>
+						  </h4>
 						</div>
 						<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
 						  <div class="panel-body">
@@ -932,7 +936,6 @@
 		 </div>
 	</footer>
 	
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shThemeEclipse.css" rel="stylesheet" type="text/css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.js" type="text/javascript"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shAutoloader.js" type="text/javascript"></script>	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.js" type="text/javascript"></script>	
