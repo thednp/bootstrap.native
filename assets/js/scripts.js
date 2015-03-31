@@ -7,7 +7,7 @@ btnModal1.addEventListener('click', function() {
 	content: 
 	'<div class="modal-header">'
 	+'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>'
-	+'<h4 class="modal-title" id="gridModalLabel">Modal title<a class="anchorjs-link" href="#gridModalLabel"><span class="anchorjs-icon"></span></a></h4>'
+	+'<h4 class="modal-title" id="myModal1Label">Modal title</h4>'
 	+'</div>'
 	+'<div class="modal-body">'
 	+'<p>This is a damn awesome modal content template.</p>'
@@ -29,7 +29,7 @@ btnModal2.addEventListener('click', function() {
 	content: 
 	'<div class="modal-header">'
 	+'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>'
-	+'<h4 class="modal-title" id="gridModalLabel">'+externalContent.title+'<a class="anchorjs-link" href="#gridModalLabel"><span class="anchorjs-icon"></span></a></h4>'
+	+'<h4 class="modal-title" id="myModal1Label">'+externalContent.title+'</h4>'
 	+'</div>'
 	+'<div class="modal-body">'
 	+'<p>'+externalContent.content+'</p>'
