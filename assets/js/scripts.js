@@ -132,19 +132,20 @@ checkBtns[0].addEventListener('change',function() {
 
 
 /* side-nav autoresize on window scroll and resize */
-var sideNav = document.getElementById('side-nav');
-function resetNav() {
-	document.getElementById('nav-scrollspy').style.width = '';
+if ( document.documentElement && !document.documentElement.classList.contains('ie') ) {
+	var sideNav = document.getElementById('side-nav');
+	function resetNav() {
+		document.getElementById('nav-scrollspy').style.width = '';
+	}
+	function adjustNav() {
+		var ww = window.innerWidth || document.documentElement.clientWidth;
+		if ( ww >= 768 ) { 
+			document.getElementById('nav-scrollspy').style.width = sideNav.offsetWidth + 'px';
+		} else { resetNav() }
+	}
+	window.addEventListener('resize', adjustNav, false)// adjust on resize
+	window.addEventListener('load', adjustNav, false)// adjust on load
 }
-function adjustNav() {
-	var ww = window.innerWidth || document.documentElement.clientWidth;
-	if ( ww >= 768 ) { 
-		document.getElementById('nav-scrollspy').style.width = sideNav.offsetWidth + 'px';
-	} else { resetNav() }
-}
-window.addEventListener('resize', adjustNav, false)// adjust on resize
-window.addEventListener('load', adjustNav, false)// adjust on load
-
 
 //syntax highlighter
 SyntaxHighlighter.config.tagName = 'span';
