@@ -828,9 +828,9 @@
 					<p><b>Affix</b> is the one little script pinning the side navigation to top once the scroll reaches a certain offset value. It works exactly like the original and requires some additional CSS in order to work properly. When scrolling the page, the given element will receive an <code>affix</code> class once the scroll reaches the target or given offset value, and further more an additional <code>affix-bottom</code> class once the scroll value reaches the maximum scroll height at the given bottom offset.</p>
 					<h4>Options</h4>
 						<ul>
-							<li><b>target</b> - Affix can pin an element to top once the scroll reaches a given other element that via <code>data-target="target-className"</code> or <code>data-target="#target-ID"</code> attribute.</li>
-							<li><b>offsetTop</b> - allows an element to pin to top when reaching a specific scroll value. This can be set via <code>data-offset-top="OFFSET"</code> attribute, where OFFSET is integer. Via Javascript you can also assign a function to our <code>offsetTop</code> option.</li>
-							<li><b>offsetBottom</b> - allows an element to pin to bottom when reaching a specific scroll value. This can be set via <code>data-offset-bottom="OFFSET"</code> attribute, where OFFSET is integer. Via Javascript you can also assign a function to our <code>offsetBottom</code> option.</li>
+							<li><b>target</b> - Affix can pin an element to top once the scroll reaches it's target offsetTop. You can set the target via <code>data-target="target-className"</code> or <code>data-target="#target-ID"</code> attribute.</li>
+							<li><b>offsetTop</b> - allows an element to pin to top when scroll reaches a specific value. This can be set via <code>data-offset-top="OFFSET"</code> attribute, where OFFSET is integer. Via Javascript you can also assign a function to our <code>offsetTop</code> option.</li>
+							<li><b>offsetBottom</b> - allows an element to pin to bottom at a certain offset relative to the window maximum scroll. This can be set via <code>data-offset-bottom="OFFSET"</code> attribute, where OFFSET is integer. Via Javascript you can also assign a function to our <code>offsetBottom</code> option.</li>
 						</ul>						
 						
 					<h4>Example</h4>
