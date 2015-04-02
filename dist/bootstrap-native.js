@@ -1088,7 +1088,7 @@
 		this.carousel = (typeof element === 'object') ? element : document.querySelector( element );
 		this.options = {}; //replace extend
 		this.options.keyboard = options && options.keyboard === 'true' ? true : false;
-		this.options.pause = options && options.pause ? options.pause : 'hover';
+		this.options.pause = options && options.pause ? options.pause : 'hover'; // false / hover
 		
 		// bootstrap carousel default transition duration / option
 		this.duration = 600;
@@ -1116,7 +1116,7 @@
 	};
 
 	// CAROUSEL METHODS
-	// =========================
+	// ================
 	Carousel.prototype = {
 		init: function() {
 			if ( this.options.interval !== false ){
@@ -1255,98 +1255,80 @@
 			
 			self.indicatorHandler = function(e) {
 				e.preventDefault();
-				var its = e.timeStamp;				
 				var target = e.target;
 				var active = self._getActiveIndex(); // the current active
 				
-				if ((oldTs !== 0) && (its - oldTs < self.options.duration + 100) ) {
-					return false;
-				} else {			
-						
-					if ( target && target.getAttribute('data-slide-to') ) {										
-						var n = parseInt( target.getAttribute('data-slide-to'), 10 );
-						
-						self.index = n;	
-						
-						if( self.index == 0 ) {
-							self.index = 0;
-						} else if ( self.index == self.total - 1 ) {
-							self.index = self.total - 1;
-						}
-						
-						 //determine direction first
-						if  ( (active < self.index ) || (active === self.total - 1 && self.index === 0 ) ) {
-							self.direction = 'left'; // next
-						} else if  ( (active > self.index) || (active === 0 && self.index === self.total -1 ) ) {
-							self.direction = 'right'; // prev
-						}
-					} else { return false; }
+				if ( target && target.getAttribute('data-slide-to') ) {
+					var n = parseInt( target.getAttribute('data-slide-to'), 10 );
 					
-					self._slideTo( self.index, e ); //Do the slide
-					oldTs = its; //Update timestamp buffer
-				}
+					self.index = n;	
+					
+					if( self.index == 0 ) {
+						self.index = 0;
+					} else if ( self.index == self.total - 1 ) {
+						self.index = self.total - 1;
+					}
+					
+					 //determine direction first
+					if  ( (active < self.index ) || (active === self.total - 1 && self.index === 0 ) ) {
+						self.direction = 'left'; // next
+					} else if  ( (active > self.index) || (active === 0 && self.index === self.total -1 ) ) {
+						self.direction = 'right'; // prev
+					}
+				} else { return false; }
+				
+				self._slideTo( self.index, e ); //Do the slide
+
 			},
 			
 			self.controlsHandler = function (e) {
 				var target = e.currentTarget || e.srcElement;
 				e.preventDefault();
-				var ats = e.timeStamp;				
 				var active = self._getActiveIndex(); // the current active
-											
-				if ((oldTs !== 0) && (ats - oldTs < self.options.duration + 100) && !target.dataset  ) {
-					return false;
-				} else {					
+		
+				if ( target === self.next ) {
+					self.index++;
+					self.direction = 'left'; //set direction first
 					
-					if ( target === self.next ) {
-						self.index++;
-						self.direction = 'left'; //set direction first
-						
-						if( self.index == self.total - 1 ) {
-							self.index = self.total - 1;
-						} else if ( self.index == self.total ){
-							self.index = 0
-						}
-					} else if ( target === self.prev ) {
-						self.index--;
-						self.direction = 'right'; //set direction first
-						
-						if( self.index == 0 ) {
-							self.index = 0;
-						} else if ( self.index < 0 ){
-							self.index = self.total - 1
-						}
+					if( self.index == self.total - 1 ) {
+						self.index = self.total - 1;
+					} else if ( self.index == self.total ){
+						self.index = 0
 					}
-								
-					self._slideTo( self.index, e ); //Do the slide
-					oldTs = ats; //Update timestamp buffer
+				} else if ( target === self.prev ) {
+					self.index--;
+					self.direction = 'right'; //set direction first
+					
+					if( self.index == 0 ) {
+						self.index = 0;
+					} else if ( self.index < 0 ){
+						self.index = self.total - 1
+					}
 				}
+							
+				self._slideTo( self.index, e ); //Do the slide
 			}
 			
 			self.keyHandler = function (e) {
-				var ts = e.timeStamp;
-				if ((oldKTs !== 0) && (ts - oldKTs < self.options.duration + 100)) {
-					return false;
-				} else {
-					switch (e.which) {
-						case 39: 
-							e.preventDefault();
-							self.index++;
-							self.direction = 'left';
-							if( self.index == self.total - 1 ) { self.index = self.total - 1; } else 
-							if ( self.index == self.total ){ self.index = 0 }
-							break;
-						case 37:
-							e.preventDefault();
-							self.index--;
-							self.direction = 'right'; 
-							if( self.index == 0 ) { self.index = 0; } else 
-							if ( self.index < 0 ){ self.index = self.total - 1 }							
-							break;
-						default: return;					
-					}
-					self._slideTo( self.index, e ); //Do the slide
-					oldKTs = ts; //Update timestamp buffer
+
+				switch (e.which) {
+					case 39: 
+						e.preventDefault();
+						self.index++;
+						self.direction = 'left';
+						if( self.index == self.total - 1 ) { self.index = self.total - 1; } else 
+						if ( self.index == self.total ){ self.index = 0 }
+						break;
+					case 37:
+						e.preventDefault();
+						self.index--;
+						self.direction = 'right'; 
+						if( self.index == 0 ) { self.index = 0; } else 
+						if ( self.index < 0 ){ self.index = self.total - 1 }							
+						break;
+					default: return;					
 				}
+				self._slideTo( self.index, e ); //Do the slide
 			}
 		}
 	}
@@ -1363,6 +1345,7 @@
 			options.duration = c.getAttribute('data-duration') && c.getAttribute('data-duration') || false;
 		return new Carousel(c, options)
 	});
+	
 
 	// TOOLTIP DEFINITION
 	// ===================
