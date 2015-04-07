@@ -1258,7 +1258,7 @@
 				var target = e.target;
 				var active = self._getActiveIndex(); // the current active
 				
-				if ( target && target.getAttribute('data-slide-to') ) {
+				if ( target && !/active/.test(target.className) && target.getAttribute('data-slide-to') ) {
 					var n = parseInt( target.getAttribute('data-slide-to'), 10 );
 					
 					self.index = n;	
