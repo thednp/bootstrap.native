@@ -550,8 +550,7 @@
 				return a && document.getElementById(a)
 			}
 		}
-	}
-	
+	}	
     
 	// TAB DATA API
 	// =================
@@ -561,6 +560,7 @@
 		options.duration = tab.getAttribute('data-duration') && tab.getAttribute('data-duration') || false;
 		return new Tab(tab,options);
 	});
+	
 
 	// POPOVER DEFINITION
 	// ===================
@@ -680,7 +680,6 @@
 				
 				//append to the container
 				this.options.container.appendChild(this.popover);
-				if (!this.options.container.style.position) this.options.container.style.position = 'relative';
 				this.popover.style.display = 'block';
 			},
 			
@@ -704,23 +703,21 @@
 				var scrollXOffset =  this.getScroll().x;
 								
 				//apply styling
-				if ( this.popover !== null ) {
-					if ( /top/.test(placement) ) { //TOP
-						this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h + 'px';
-						this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px'
-						
-					} else if ( /bottom/.test(placement) ) { //BOTTOM
-						this.popover.style.top = this.rect.top + scrollYOffset + linkDim.h + 'px';
-						this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px';
-						
-					} else if ( /left/.test(placement) ) { //LEFT
-						this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
-						this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w + 'px';
-						
-					} else if ( /right/.test(placement) ) { //RIGHT
-						this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
-						this.popover.style.left = this.rect.left + scrollXOffset + linkDim.w + 'px';
-					}
+				if ( /top/.test(placement) ) { //TOP
+					this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h + 'px';
+					this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px'
+					
+				} else if ( /bottom/.test(placement) ) { //BOTTOM
+					this.popover.style.top = this.rect.top + scrollYOffset + linkDim.h + 'px';
+					this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px';
+					
+				} else if ( /left/.test(placement) ) { //LEFT
+					this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
+					this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w + 'px';
+					
+				} else if ( /right/.test(placement) ) { //RIGHT
+					this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
+					this.popover.style.left = this.rect.left + scrollXOffset + linkDim.w + 'px';
 				}
 			},
 			
@@ -787,6 +784,7 @@
 		options.delay = item.getAttribute('data-delay');
 		return new Popover(item,options);
 	});
+	
 		
 	// BUTTON DEFINITION
 	// ===================
@@ -1388,7 +1386,6 @@
 				clearTimeout(self.link.getAttribute('data-timer'));
 				self.timer = setTimeout( function() {
 					if (self.tooltip === null) {
-						self.options.container.style.position = 'relative';
 						self.createToolTip();
 						self.styleTooltip();
 						self.updateTooltip()
@@ -1403,7 +1400,6 @@
 					if (self.tooltip && self.tooltip !== null) {
 						self.tooltip.classList.remove('in');
 						setTimeout(function() {
-							self.options.container.style.position = '';
 							self.removeToolTip(); // for performance/testing reasons we can keep the tooltips if we want
 						}, self.options.duration);
 					} 
@@ -1441,7 +1437,6 @@
 			this.styleTooltip = function(pos) {
 				this.rect = this.getRect();	
 				var placement = pos || this.options.placement;
-				
 				this.tooltip.setAttribute('class','tooltip '+placement+' '+this.options.animation);
 
 				var linkDim = { w: this.link.offsetWidth, h: this.link.offsetHeight }; //link real dimensions
@@ -1457,23 +1452,21 @@
 				var scrollXOffset =  this.getScroll().x;
 				
 				//apply styling
-				if ( this.tooltip !== null ) {
-					if ( /top/.test(placement) ) { //TOP
-						this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h + 'px';
-						this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px'
-						
-					} else if ( /bottom/.test(placement) ) { //BOTTOM
-						this.tooltip.style.top = this.rect.top + scrollYOffset + linkDim.h + 'px';
-						this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px';
-						
-					} else if ( /left/.test(placement) ) { //LEFT
-						this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
-						this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w + 'px';
-						
-					} else if ( /right/.test(placement) ) { //RIGHT
-						this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
-						this.tooltip.style.left = this.rect.left + scrollXOffset + linkDim.w + 'px';
-					}
+				if ( /top/.test(placement) ) { //TOP
+					this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h + 'px';
+					this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px'
+					
+				} else if ( /bottom/.test(placement) ) { //BOTTOM
+					this.tooltip.style.top = this.rect.top + scrollYOffset + linkDim.h + 'px';
+					this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px';
+					
+				} else if ( /left/.test(placement) ) { //LEFT
+					this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
+					this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w + 'px';
+					
+				} else if ( /right/.test(placement) ) { //RIGHT
+					this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
+					this.tooltip.style.left = this.rect.left + scrollXOffset + linkDim.w + 'px';
 				}
 			},
 			
@@ -1486,7 +1479,7 @@
 				}
 
 				this.styleTooltip(placement);
-				this.tooltip.classList.add('in');
+				self.tooltip.classList.add('in');
 			},
 			this.updatePlacement = function() {
 				var pos = this.options.placement;
@@ -1538,6 +1531,7 @@
 		options.delay = item.getAttribute('data-delay');
 		return new Tooltip(item,options);
 	});
+	
 	
 	// DROPDOWN DEFINITION
 	// ===================
