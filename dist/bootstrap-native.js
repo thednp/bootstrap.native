@@ -1479,7 +1479,7 @@
 				}
 
 				this.styleTooltip(placement);
-				self.tooltip.classList.add('in');
+				this.tooltip.classList.add('in');
 			},
 			this.updatePlacement = function() {
 				var pos = this.options.placement;
