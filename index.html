@@ -150,18 +150,19 @@
 		<div class="col-sm-9" data-spy="scroll" data-target="#nav-scrollspy">
 			<section id="use">
 				<h2>Use</h2>
-				<h3>Basic</h3>
-				<p>In the future, we may have a CDN link, but for now, you need to download the package, unpack to your application assets folders. Next, simply drop this line (according to your appplication assets folders) before your ending <code>&lt;/body></code> tag.</p>
+				<h3>Load from CDN</h3>
+				<p>Thanks to <a href="http://www.jsdelivr.com/">jsdelivr</a> we have a CDN link, so drop this line before your ending <code>&lt;/body></code> tag. </p>
+				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
+					&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.0/bootstrap-native.min.js"&gt;&lt;/script&gt;
+				</span></pre>
+				<p>As most of the scripts manipulate the DOM when ready, there is no need to include a <code>document.ready</code> statement or link the script(s) in the <code>&lt;head&gt;</code>. That's your first performance tip if you are new around here.</p>
+				<h3>Working locally</h3>
+				<p>If you host the file on your project folders, <a href="https://github.com/thednp/bootstrap.native/archive/master.zip">download the package at github</a>, unpack it, copy the file from the <code>dist/</code> folder into your application's assets folder, then simply drop this line (according to your application assets folders) before your ending <code>&lt;/body></code> tag.</p>
 				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
 					&lt;script type="text/javascript" src="../assets/js/bootstrap-native.min.js">&lt;/script>
 				</span></pre>
-				<h3>Advanced</h3>
-				<p>As most of the scripts manipulate the DOM when ready, there is no need to include a <code>document.ready</code> statement or link the script(s) in the <code>&lt;head></code>. That's your first performance tip if you are new around here. Alternatively you can link individual scripts, exactly the scripts required for your specific page. Perhaps you are using <a href="http://requirejs.org/" target="_blank">require.js</a>. I have no idea how to use it :D</p>
-				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
-					&lt;script type="text/javascript" src="../assets/js/affix-native.min.js">&lt;/script>
-					&lt;script type="text/javascript" src="../assets/js/carousel-native.min.js">&lt;/script>
-					&lt;script type="text/javascript" src="../assets/js/buttons-native.min.js">&lt;/script>
-				</span></pre>
+				<p>Alternatively you can link individual scripts, exactly the scripts required for your specific page. The <code>lib</code> folder comes with all scripts in both raw and minified distribution formats, perhaps you are using <a href="http://requirejs.org/" target="_blank">require.js</a>. I have no idea how to use it :D</p>
+
 				<h3 id="required_css">Transitions</h3>
 				<p>Since we are not using jQuery to do all the <code>.slideToggle()</code> or <code>.animate()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>collapse</strong> components, so copy this line in your application CSS files.</p>
 				<pre><span class="brush: css; ruler: true; toolbar:false; gutter: false">
@@ -169,11 +170,11 @@
 					.collapse { transition: height .3s ease-out; -webkit-transition: height .3s ease-out } 
 				</span></pre>
 				<h3>Browser Support</h3>
-				<p>The scripts are tested to work perfect in all major browsers, and legacy browsers starting with IE8, all except transitions because they don't really support CSS3. In order to make legacy browsers behave with the clean and fast code of today's HTML5 standards, make sure you include a polyfill that covers most of the scripts HTML5 code requirements for legacy browsers. There are many more shims and polyfills out there, but this one below seems best, at least for me.</p>
+				<p>The scripts are tested to work perfect in all major browsers, and legacy browsers starting with <kbd>IE8</kbd>. Legacy browsers don't support CSS3 transitions and in order to make legacy browsers behave with the clean and fast code of today's HTML5 standards, make sure you include a polyfill that covers most of the scripts HTML5 code requirements for them. There are many more shims and polyfills out there, but this one below seems best, at least for me.</p>
 				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">&lt;script src="https://cdn.polyfill.io/v1/polyfill.min.js">&lt;/script></span></pre>
 				<p>OR give this one a try:</p>
 				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">&lt;script src="https://cdn.jsdelivr.net/polyfills/polyfill.js"&gt;&lt;/script></span></pre>
-				<p>OR include <a href="https://github.com/inexorabletash/polyfill" target="_blank">this one</a> (locate polyfill.min.js) in your application assets folders, it will never fail.</p>
+				<p>OR include <a href="https://github.com/inexorabletash/polyfill" target="_blank">this one</a> (locate polyfill.min.js) in your application assets folders, it does not cover Carousel's <code>CustomEvent</code> own events <code>slid</code> and <code>slide</code>.</p>
 				<p>Generally the scripts rely heavily on <code>addEventListener</code>, <code>querySelector</code>, <code>classList</code>, <code>getBoundingClientRect</code>, <code>data-</code> attributes, <code>forEach</code>, <code>Event</code>, <code>dispatchEvent</code> and other.</p>
 				<p><strong>Remember</strong> that the polyfill link must be in your <code>&lt;head></code>. You can leave it there for all the browsers, but I think you should see this example here how I deleted the HTML5 shims link provided by default Bootstrap themes.</p>
 				<h3>Before you go</h3>
@@ -883,7 +884,7 @@
 				<h2>About</h2>
 				<h3>Why Native Javascript?</h3>
 				<p>
-					<strong>Mission</strong> | <a href="https://github.com/thednp/bootstrap.native/">The Native Javascript for Bootstrap</a> project was born to help. It doesn't totally and perfectly replace all the functions the jQuery Plugins have for Bootstrap, but the essential tools. 
+					<strong>Mission</strong> | <a href="https://github.com/thednp/bootstrap.native">The Native Javascript for Bootstrap</a> project was born to help. It doesn't totally and perfectly replace all the functions the jQuery Plugins have for Bootstrap, but the essential tools. 
 					In many cases it performs much better than the original code, like an upgraded version of the original. I've literally learned to code native Javascript developing these scripts here. To sum up, this aims to help me and you transition into a better developer, doing things right from the next big project.
 				</p><p>
 					<strong>Context</strong> | Today's most popular HTML5 framework is <a target="_blank" href="http://getbootstrap.com">Bootstrap</a> and like any other there's ups and downs. We all know about the PROs, but one of the CONs is the <a href="http://jquery.com" target="_blank">jQuery</a> <em>dependency</em>. 
@@ -941,20 +942,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.js" type="text/javascript"></script>	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushCss.js" type="text/javascript"></script>	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushXml.js" type="text/javascript"></script>	
-	<!--
-    <script type="text/javascript" src="./lib/scrollspy-native.js"></script>
-    <script type="text/javascript" src="./lib/affix-native.js"></script>
-    <script type="text/javascript" src="./lib/carousel-native.js"></script>
-    <script type="text/javascript" src="./lib/dropdown-native.js"></script>
-    <script type="text/javascript" src="./lib/modal-native.js"></script>
-    <script type="text/javascript" src="./lib/tab-native.js"></script>
-    <script type="text/javascript" src="./lib/tooltip-native.js"></script>
-    <script type="text/javascript" src="./lib/popover-native.js"></script>
-    <script type="text/javascript" src="./lib/alert-native.js"></script>
-    <script type="text/javascript" src="./lib/button-native.js"></script>
-    <script type="text/javascript" src="./lib/collapse-native.js"></script>
-	-->
-     <script type="text/javascript" src="./dist/bootstrap-native.min.js"></script><!-- -->
+
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.0/bootstrap-native.min.js"></script> <!-- now we have CDN -->
     <script type="text/javascript" src="./assets/js/scripts.js"></script>
   </body>	
 </html>
