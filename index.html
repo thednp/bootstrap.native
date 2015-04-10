@@ -20,7 +20,7 @@
 	<link href="./assets/css/bootstrap.min.css" rel="stylesheet">	
     <!--<![endif]-->
 	<!--[if gte IE 9]><!-->  
-	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <!--<![endif]-->
 	
     <!-- Custom styles for this template -->
@@ -487,6 +487,7 @@
 					</ul>
 					<h4>Examples</h4>					
 					<p>Let's put it to the test! Some heavy testing on the automatic repositioning with very very long tooltips.</p>
+					<p>
 					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip on left">Left</button>
 					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Top</button>
 					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom">Bottom</button>
@@ -495,6 +496,7 @@
 					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Top</button>
 					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
 					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+					</p>
 					<h4>Additional Note</h4>					
 					<p>You can also enable Tooltip for elements not having the specific DATA API, but have a <code>title="Not null title"</code> attribute. You can do the following:</p>
 					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
@@ -532,16 +534,18 @@
 					</ul>
 					<h4>Examples</h4>	
 					<p>Now we are going to test buttons and Popover with large contents. The last two examples below are using the template system and different trigger options. The Popover generated for the last two examples can be dismissed on window resize or blur (focus out).</p>
-					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="left" data-content="Popover on left">Left</button>
-					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="top" data-content="Popover on top">Top</button>
-					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-content="Popover on bottom">Bottom</button>
-					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="right" data-content="Popover on right">Right</button>
-					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="left" data-content="Popover on left<br> Here we add more content for testing. Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits.">Left</button>
-					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="top" data-content="Popover on top<br> Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. ">Top</button>
-					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-content="Popover on bottom<br> Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">Bottom</button>
-					<button type="button" class="btn btn-default" data-toggle="popover" data-placement="right" data-content="Popover on right<br> Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
-					<input style="max-width: 180px; display: inline; width: auto" type="text" value="" class="form-control popover-via-template" placeholder="Focus me" data-toggle="popover">
-					<button type="button" id="popover-via-click" class="btn btn-default" data-trigger="click" data-content="You clicked the button and as a result, this message box simply.. popped.<br>Now simply click anywhere to dismiss.">Click to open</button>
+					<p>
+						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="left" data-content="Popover on left">Left</button>
+						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="top" data-content="Popover on top">Top</button>
+						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-content="Popover on bottom">Bottom</button>
+						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="right" data-content="Popover on right">Right</button>
+						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="left" data-content="Popover on left<br> Here we add more content for testing. Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits.">Left</button>
+						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="top" data-content="Popover on top<br> Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. ">Top</button>
+						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-content="Popover on bottom<br> Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">Bottom</button>
+						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="right" data-content="Popover on right<br> Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+						<input style="max-width: 180px; display: inline; width: auto" type="text" value="" class="form-control popover-via-template" placeholder="Focus me" data-toggle="popover">
+						<button type="button" id="popover-via-click" class="btn btn-default" data-trigger="click" data-content="You clicked the button and as a result, this message box simply.. popped.<br>Now simply click anywhere to dismiss.">Click to open</button>
+					</p>
 					<h4>Additional Note</h4>					
 					<p>To use the template system, you can attach a custom handler to a target as the following:</p>
 					<pre><span class="brush: js; ruler: true; toolbar:false; gutter: false">
@@ -593,7 +597,7 @@
 						</ul>
 					<h4>Example</h4>
 					<p>This is a quick example of button setting state via string options. Like the original script we make an example for <code>loading</code> state for the button. For the purpose of testing here, the button will come back to original state after a short <code>setTimeout</code> delay.</p>
-					<button type="button" id="myButton" data-toggle="button" data-loading-text="Loading..." class="btn btn-primary">Loading state</button>
+					<p><button type="button" id="myButton" data-toggle="button" data-loading-text="Loading..." class="btn btn-primary">Loading state</button></p>
 					<h4>Basic Usage</h4>
 					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
 						<!-- this is the example button -->
@@ -614,29 +618,33 @@
 						new Button(btn,'reset');	
 					</span></pre>
 					<p>Next we will toggle some checkboxes. You should open your console to test the handler functions bound by the <code>change</code> event of the following checkboxes and radio buttons.</p>
-					<div class="btn-group" data-toggle="buttons">
-					  <label class="btn btn-default active">
-						<input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
-					  </label>
-					  <label class="btn btn-default">
-						<input type="checkbox" autocomplete="off"> Checkbox 2
-					  </label>
-					  <label class="btn btn-default">
-						<input type="checkbox" autocomplete="off"> Checkbox 3
-					  </label>
-					</div>
+					<p>
+						<span class="btn-group" data-toggle="buttons">
+						  <label class="btn btn-default active">
+							<input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
+						  </label>
+						  <label class="btn btn-default">
+							<input type="checkbox" autocomplete="off"> Checkbox 2
+						  </label>
+						  <label class="btn btn-default">
+							<input type="checkbox" autocomplete="off"> Checkbox 3
+						  </label>
+						</span>
+					</p>
 					<p>Finally we toggle radio buttons.</p>
-					<div class="btn-group" data-toggle="buttons">
-					  <label class="btn btn-default">
-						<input type="radio" name="options" id="option1" autocomplete="off"> Radio 1
-					  </label>
-					  <label class="btn btn-default active">
-						<input type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
-					  </label>
-					  <label class="btn btn-default">
-						<input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
-					  </label>
-					</div>
+					<p>
+						<span class="btn-group" data-toggle="buttons">
+						  <label class="btn btn-default">
+							<input type="radio" name="options" id="option1" autocomplete="off"> Radio 1
+						  </label>
+						  <label class="btn btn-default active">
+							<input type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
+						  </label>
+						  <label class="btn btn-default">
+							<input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
+						  </label>
+						</span>
+					</p>
 					<p>As a quick note, here's the example for checkboxes.</p>
 					<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
 						&lt;div class="btn-group" data-toggle="buttons"&gt;
@@ -943,7 +951,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushCss.js" type="text/javascript"></script>	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushXml.js" type="text/javascript"></script>	
 
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.0/bootstrap-native.min.js"></script> <!-- now we have CDN -->
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.3/bootstrap-native.min.js"></script> <!-- now we have CDN -->
 		
     <script type="text/javascript" src="./assets/js/scripts.js"></script>
   </body>	
