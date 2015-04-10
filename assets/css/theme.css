@@ -67,10 +67,10 @@ hr.clearfix {clear: both; width: 100%; float: left}
 #exampleTab .btn-group > .btn { margin: 0}
 
 /* buttons */
-.btn, .form-control {vertical-align: top}
-.btn, .form-control {margin-bottom: 20px; vertical-align: top}
+p .btn, p .form-control {vertical-align: top}
+p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 
-.btn-group {margin-bottom: 20px}
+p .btn-group {margin-bottom: 20px}
 .btn-group .btn {margin-bottom: 0}
 
 #about {padding-bottom: 20px }
@@ -278,4 +278,4 @@ body .syntaxhighlighter .container:after { content: none }
 body .syntaxhighlighter .line.alt1,
 body .syntaxhighlighter .line.alt2 { background: none !important }
 .syntaxhighlighter code {background: none}
-.syntaxhighlighter .container { padding:0; width: 100% !important}
+.syntaxhighlighter .container { padding:0; width: 860px !important}

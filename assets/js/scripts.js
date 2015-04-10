@@ -85,8 +85,8 @@ btn.addEventListener('click', function() {
 	
 	new Button(btn,'loading');
 	setTimeout(function() {
-		if (btn.nextSibling !== btn.parentNode.querySelector('.alert') )
-			btn.parentNode.insertBefore(success.childNodes[0], btn.nextSibling);
+		if (btn.parentNode.nextSibling !== btn.parentNode.parentNode.querySelector('.alert') )
+			btn.parentNode.parentNode.insertBefore(success.childNodes[0], btn.parentNode.nextSibling);
 		new Button(btn,'reset');
 	}, 2000)
 })
