@@ -278,4 +278,4 @@ body .syntaxhighlighter .container:after { content: none }
 body .syntaxhighlighter .line.alt1,
 body .syntaxhighlighter .line.alt2 { background: none !important }
 .syntaxhighlighter code {background: none}
-.syntaxhighlighter .container { padding:0; width: auto; min-width: 850px}
+.syntaxhighlighter .container { padding:0; width: 100% !important}
