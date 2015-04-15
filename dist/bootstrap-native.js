@@ -969,7 +969,8 @@
 				e.preventDefault();
 				self.btn = self.getTarget(e).btn;
 				self.collapse = self.getTarget(e).collapse;
-				self._close(self.collapse);			
+				self._close(self.collapse);
+				self.btn.classList.remove('collapsed');
 			},
 			this.open = function(e) {
 				e.preventDefault();
@@ -978,6 +979,7 @@
 				self.accordion = self.btn.getAttribute('data-parent') && self.getClosest(self.btn, self.btn.getAttribute('data-parent'));
 				
 				self._open(self.collapse);
+				self.btn.classList.add('collapsed');
 				
 				if ( self.accordion !== null ) {
 					var active = self.accordion.querySelectorAll('.collapse.in');
@@ -1073,7 +1075,7 @@
 		}
     }
 	
-	getOuterHeight = function (el) {
+	var getOuterHeight = function (el) {
 		var s = el.currentStyle || window.getComputedStyle(el);
 		
 		return el.offsetHeight  //we need an accurate margin value
