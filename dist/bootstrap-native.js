@@ -156,7 +156,7 @@
 		this.modal.addEventListener('click', function(e){
 			if ( e.target.parentNode.getAttribute('data-dismiss') === 'modal' || e.target.getAttribute('data-dismiss') === 'modal' || e.target === self.modal ) {
 				e.preventDefault(); self.close()
-			} else { e.stopPropagation(); e.preventDefault(); }
+			}
 		})
     }
 
