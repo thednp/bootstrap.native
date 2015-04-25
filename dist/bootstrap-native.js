@@ -871,8 +871,16 @@
 				var labels = target.querySelectorAll('.btn'); // all the button group buttons
 				var input = label.getElementsByTagName('INPUT')[0];
 				
-				//register the change event and assign to a function
-				var changeEvent = new Event("change"); // The built in event that will be triggered on demand				
+				// The built in event that will be triggered on demand				
+				var changeEvent;
+				if ( Event !== undefined && typeof Event === 'function' && typeof Event !== 'object' ) {
+					changeEvent = new Event('change');
+				} else { // define event type, new Event('type') does not work in any IE
+					changeEvent = document.createEvent('HTMLEvents');
+					changeEvent.initEvent('change', true, true);
+				}				
+				
+				// assign event to a trigger function
 				function triggerChange(t) { t.dispatchEvent(changeEvent) }
 
 				//manage the dom manipulation
