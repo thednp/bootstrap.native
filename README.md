@@ -15,9 +15,6 @@ You can install this package by using either Bower or NPM.
 ## Subsystem compatibility
 `bootstrap.native` is compatible with the CommonJS/RequireJS spec (exporting itself to `module.exports`). It thus can fall back to adding its exports to the `window` object.
 
-# Browser Support
-The scripts are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills IE8-IE9 will thank you.
-
 # Usage
 You can use the scripts either using a traditional script-tag like so:
 
@@ -61,6 +58,9 @@ var myButton = new Button(... $btn and options ...); // Create a button and do a
 As mentioned above, the object properties of the exported object, when using `require()`, are actual classes when `document` and `window` are given - in which case we are sure to be facing an actual browser - and if absent, will be factory methods.
 
 So when using `bootstrap.native` inside of a NodeJS app, make sure you create a proper Browser-like environment first to avoid unexpected behaviour.
+
+# Browser Support
+The scripts are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills IE8-IE9 will thank you.
 
 # Contributors
 - [Ingwie Phoenix](https://github.com/IngwiePhoenix): RequireJS/CommonJS compatibility and usability with common package managers. _Was glad to help!_
