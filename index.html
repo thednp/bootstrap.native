@@ -165,6 +165,22 @@
 				</span></pre>
 				<p>Alternatively you can link individual scripts, exactly the scripts required for your specific page. The <code>lib</code> folder comes with all scripts in both raw and minified distribution formats, perhaps you are using <a href="http://requirejs.org/" target="_blank">require.js</a>. I have no idea how to use it :D</p>
 
+                <p>If you are using a module loader such as RequireJS or CommonJS, you can also use this package via <code>require()</code> as well. In order to use it, you may use code like this:</p>
+                <pre><span class="brush: javascript; ruler: true; toolbar: false; gutter: false">
+                    var bsn = require("bootstrap.native");
+                    // Create a button:
+                    var btn = new bsn.Button(...);
+                </span></pre>
+
+                <p>This package can be installed using NPM or Bower by using either of the commands below. You'll then be able to use the assets from the provided directory.</p>
+                <pre><span class="brush: shell; ruler: true; toolbar: false; gutter: false">
+                    # Via bower:
+                    $ bower install --save bootstrap.native
+
+                    # Via NPM:
+                    $ npm install --save bootstrap.native
+                </span></pre>
+
 				<h3 id="required_css">Transitions</h3>
 				<p>Since we are not using jQuery to do all the <code>.slideToggle()</code> or <code>.animate()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>collapse</strong> components, so copy this line in your application CSS files.</p>
 				<pre><span class="brush: css; ruler: true; toolbar:false; gutter: false">
@@ -952,8 +968,9 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.js" type="text/javascript"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushCss.js" type="text/javascript"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushXml.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushBash.js" type="text/javascript"></script>
 
-	<script type="text/javascript" src="./dist/bootstrap.native.js"></script> <!-- now we have CDN -->
+	<script type="text/javascript" src="./dist/bootstrap-native.js"></script> <!-- now we have CDN -->
 
     <script type="text/javascript" src="./assets/js/scripts.js"></script>
   </body>
