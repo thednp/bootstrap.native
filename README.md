@@ -1,6 +1,6 @@
 # Native Javascript for Bootstrap
-This is a set of scripts developed with vanilla Javascript, with superior performance compared to the original jQuery Plugins for Bootstap 3.
-See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for examples and instructions.
+This is a set of scripts developed with vanilla Javascript, with superior performance compared to the original jQuery Plugins for Bootstap 3. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility.
+See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
 # CDN
 New releases will be available automatically on jsdelivr CDN repositories <a href="http://www.jsdelivr.com/#!bootstrap.native">here</a>.
@@ -30,7 +30,7 @@ You can use the scripts either using a traditional script-tag like so:
 <script type="text/javascript" src="/bower_components/bootstrap.native/dist/bootstrap-native.min.js"></script>
 ```
 
-But it also is possible to use any module loader that supports the RequireJS or CommonJS syntax. An example is RequireJS itself:
+But it's also possible to use any module loader that supports the `RequireJS` or `CommonJS` syntax. An example is `RequireJS` itself:
 
 ```html
 <script type="text/javascript">
@@ -57,13 +57,14 @@ var $btn = document.createElement("button");
 var myButton = new Button(... $btn and options ...); // Create a button and do a test.
 ```
 
-### Note about the factory methods
+### Note About the Factory Methods
 As mentioned above, the object properties of the exported object, when using `require()`, are actual classes when `document` and `window` are given - in which case we are sure to be facing an actual browser - and if absent, will be factory methods.
 
 So when using `bootstrap.native` inside of a NodeJS app, make sure you create a proper Browser-like environment first to avoid unexpected behaviour.
 
+# Contributors
+- [Ingwie Phoenix](https://github.com/IngwiePhoenix): RequireJS/CommonJS compatibility and usability with common package managers. _Was glad to help!_
+- Full contributors list [here](https://github.com/thednp/bootstrap.native/graphs/contributors). Thanks so much!
+
 # License
 The scripts are released under the MIT license.
-
-# Contributors
-- [Ingwie Phoenix](https://github.com/IngwiePhoenix): RequireJS/CommonJS compatibility and usability with common package managers. Was glad to help!
