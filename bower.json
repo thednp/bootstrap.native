@@ -6,12 +6,12 @@
     "dnp_theme"
   ],
   "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
-  "main": "dist/bootstrap.native.min.js",
+  "main": "dist/bootstrap-native.min.js",
   "moduleType": [
     "globals",
     "node"
   ],
-  "keywords": [ "bootstrap.native", "bootstrap", "vanilla.js", "native javascript" ],
+  "keywords": [ "bootstrap.native", "bootstrap", "vanilla js", "native javascript", "vanilla javascript" ],
   "license": "MIT",
   "ignore": [
     "**/.*",
