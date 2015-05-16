@@ -1,5 +1,6 @@
 // Native Javascript for Bootstrap 3 | Gulp build file
-// by: Ingwie Phoenix
+// by dnp_theme
+// Gulp implementation by Ingwie Phoenix
 
 var gulp = require("gulp");
 var uglify = require('gulp-uglify');
