@@ -8,20 +8,20 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Affix = factory();
 	}
 
-})(function(root){
+})(function(){
 
 	//AFFIX DEFINITION
-	var Affix = root.Affix = function(element,options) {
+	var Affix = function(element,options) {
 		this.element = typeof element === 'object' ? element : document.querySelector(element);
 		this.options = {};
 		this.options.target = options.target ? ((typeof(options.target) === 'object') ? options.target : document.querySelector(options.target)) : null; // target is an object
@@ -151,6 +151,8 @@
 			return new Affix(item, options);
 		}
 	})
+
+	return Affix;
 });
 
 // Native Javascript for Bootstrap 3 | Alert
@@ -163,21 +165,21 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Alert = factory();
 	}
 
 })(function(root){
 
 	// ALERT DEFINITION
 	// ===================
-	var Alert = root.Alert = function( element ) {
+	var Alert = function( element ) {
 		this.btn = typeof element === 'object' ? element : document.querySelector(element);
 		this.alert = null;
 		this.duration = 150; // default alert transition duration
@@ -220,6 +222,8 @@
 		return new Alert(item);
 	})
 
+	return Alert;
+
 });
 
 // Native Javascript for Bootstrap 3 | Button
@@ -232,21 +236,21 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Button = factory();
 	}
 
-})(function(root){
+})(function(){
 
 	// BUTTON DEFINITION
 	// ===================
-	var Button = root.Button = function( element, option ) {
+	var Button = function( element, option ) {
 		this.btn = typeof element === 'object' ? element : document.querySelector(element);
 		this.option = typeof option === 'string' ? option : null;
 
@@ -364,6 +368,8 @@
 		return new Button(g);
 	})
 
+	return Button;
+
 });
 
 // Native Javascript for Bootstrap 3 | Carousel
@@ -376,21 +382,21 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Carousel = factory();
 	}
 
-})(function(root){
+})(function(){
 
 	// CAROUSEL DEFINITION
 	// ===================
-	var Carousel = root.Carousel = function( element, options ) {
+	var Carousel = function( element, options ) {
 		this.carousel = (typeof element === 'object') ? element : document.querySelector( element );
 		this.options = {}; //replace extend
 		this.options.keyboard = options && options.keyboard === 'true' ? true : false;
@@ -653,6 +659,8 @@
 		return new Carousel(c, options)
 	})
 
+	return Carousel;
+
 });
 
 // Native Javascript for Bootstrap 3 | Collapse
@@ -665,21 +673,21 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Collapse = factory();
 	}
 
-})(function(root){
+})(function(){
 
 	// COLLAPSE DEFINITION
 	// ===================
-	var Collapse = root.Collapse = function( element, options ) {
+	var Collapse = function( element, options ) {
 		this.btn = typeof element === 'object' ? element : document.querySelector(element);
 		this.accordion = null;
 		this.collapse = null;
@@ -860,6 +868,8 @@
 		})
 	})
 
+	return Collapse;
+
 });
 
 // Native Javascript for Bootstrap 3 | Dropdown
@@ -872,21 +882,21 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Dropdown = factory();
 	}
 
 })(function(root){
 
 	// DROPDOWN DEFINITION
 	// ===================
-	var Dropdown = root.Dropdown = function( element) {
+	var Dropdown = function( element) {
 		this.menu = typeof element === 'object' ? element : document.querySelector(element);
 		this.init();
 	}
@@ -930,6 +940,8 @@
 		return new Dropdown(item);
 	})
 
+	return Dropdown;
+
 });
 
 //Vanilla JS script | Modal for Bootstrap 3
@@ -942,20 +954,20 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Modal = factory();
 	}
 
-})(function(root){
+})(function(){
 
 	//MODAL DEFINITION
-    var Modal = root.Modal = function(element, options) { // element is the trigger button / options.target is the modal
+    var Modal = function(element, options) { // element is the trigger button / options.target is the modal
         this.opened = false;
 
         this.modal = typeof element === 'object' ? element : document.querySelector(element);
@@ -1119,6 +1131,8 @@
 		return new Modal(modal,options)
 	})
 
+	return Modal;
+
 });
 
 // Native Javascript for Bootstrap 3 | Popover
@@ -1131,21 +1145,21 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Popover = factory();
 	}
 
-})(function(root){
+})(function(){
 
 	// POPOVER DEFINITION
 	// ===================
-	var Popover = root.Popover = function( element,options ) {
+	var Popover = function( element,options ) {
 		this.link = typeof element === 'object' ? element : document.querySelector(element);
 		this.title = this.link.getAttribute('data-title') || null;
 		this.content = this.link.getAttribute('data-content') || null;
@@ -1366,6 +1380,8 @@
 		return new Popover(item,options);
 	})
 
+	return Popover;
+
 });
 
 // Native Javascript for Bootstrap 3 | ScrollSpy
@@ -1378,17 +1394,17 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.ScrollSpy = factory();
 	}
 
-})(function(root){
+})(function(){
 
 	//SCROLLSPY DEFINITION
 	var ScrollSpy = function(element,item,options) {
@@ -1538,6 +1554,8 @@
 		}
 	})
 
+	return ScrollSpy;
+
 });
 
 // Native Javascript for Bootstrap 3 | Tab
@@ -1550,21 +1568,21 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Tab = factory();
 	}
 
-})(function(root){
+})(function(){
 
 	// TAB DEFINITION
 	// ===================
-	var Tab = root.Tab = function( element,options ) {
+	var Tab = function( element,options ) {
 		this.tab = typeof element === 'object' ? element : document.querySelector(element);
 		this.tabs = this.tab.parentNode.parentNode;
 		this.dropdown = this.tabs.querySelector('.dropdown');
@@ -1654,6 +1672,8 @@
 		return new Tab(tab,options);
 	})
 
+	return Tab;
+
 });
 
 // Native Javascript for Bootstrap 3 | Tooltip
@@ -1666,21 +1686,21 @@
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			module.exports = factory(exports);
+			module.exports = factory();
 		} else {
 			// Let the user give the factory a Window and Document.
 			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
-		factory(window);
+		window.Tooltip = factory();
 	}
 
 })(function(root){
 
 	// TOOLTIP DEFINITION
 	// ===================
-	var Tooltip = root.Tooltip = function( element,options ) {
+	var Tooltip = function( element,options ) {
 		this.link = typeof element === 'object' ? element : document.querySelector(element);
 		this.title = this.link.getAttribute('title') || this.link.getAttribute('data-original-title');
 		this.tooltip = null;
@@ -1864,5 +1884,7 @@
 		options.delay = item.getAttribute('data-delay');
 		return new Tooltip(item,options);
 	})
+
+	return Tooltip;
 
 });
