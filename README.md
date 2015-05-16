@@ -64,3 +64,6 @@ So when using `bootstrap.native` inside of a NodeJS app, make sure you create a 
 
 # License
 The scripts are released under the MIT license.
+
+# Contributors
+- [Ingwie Phoenix](https://github.com/IngwiePhoenix): RequireJS/CommonJS compatibility and usability with common package managers. Was glad to help!
