@@ -163,16 +163,16 @@
 				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
 					&lt;script type="text/javascript" src="../assets/js/bootstrap-native.min.js">&lt;/script>
 				</span></pre>
-				<p>Alternatively you can link individual scripts, exactly the scripts required for your specific page. The <code>lib</code> folder comes with all scripts in both raw and minified distribution formats, perhaps you are using <a href="http://requirejs.org/" target="_blank">require.js</a>.</p>
-
-                <p>Thanks to <a href="http://ingwie.me/" target="_blank">Ingwie Phoenix</a>, our scripts here can be easily loaded for <code>npm</code>, <code>RequireJS</code> or <code>CommonJS</code>, so if you are using a module loader, you can also use this package via <code>require()</code> as well. Here's how to do it:</p>
+				<p>Alternatively you can link individual scripts, exactly the scripts required for your specific page. The <code>lib</code> folder comes with all scripts in both raw and minified distribution formats, perhaps you are using <a href="http://requirejs.org/" target="_blank">require.js</a> or module loaders, check the next section.</p>
+		<h3>npm, Bower, RequireJS, CommonJS</h3>
+                <p>Thanks to <a href="http://ingwie.me/" target="_blank">Ingwie Phoenix</a>, our scripts here can be easily loaded for <code>npm</code>, <code>Bower</code> , <code>RequireJS</code> or <code>CommonJS</code>, so if you are using a module loader, you can also use this package via <code>require()</code> as well. Here's how to do it:</p>
                 <pre><span class="brush: javascript; ruler: true; toolbar: false; gutter: false">
                     var bsn = require("bootstrap.native");
                     // Create a button:
                     var btn = new bsn.Button(...);
                 </span></pre>
 
-                <p>This package can be installed using NPM or Bower by using either of the commands below. You'll then be able to use the assets from the provided directory.</p>
+                <p>This package can be installed using <code>npm</code> or Bower by using either of the commands below. You'll then be able to use the assets from the provided directory.</p>
                 <pre><span class="brush: javascript; ruler: true; toolbar: false; gutter: false">
                     # Via bower:
                     $ bower install --save bootstrap.native
