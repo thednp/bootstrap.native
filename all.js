@@ -1,3 +1,6 @@
+// Native Javascript for Bootstrap 3 | Bulk require
+// by: Ingwie Phoenix
+
 /**
     @file This file bulk-requires all the native components and
           gives it back as the exports.
