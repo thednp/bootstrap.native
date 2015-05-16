@@ -4,14 +4,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -159,14 +159,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -228,14 +228,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -372,14 +372,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -661,14 +661,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -868,14 +868,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -938,14 +938,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -1127,14 +1127,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -1374,14 +1374,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -1546,14 +1546,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
@@ -1662,14 +1662,14 @@
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
-	if(typeof module == "defined" && typeof exports == "object") {
+	if(typeof module !== "undefined" && typeof exports == "object") {
 		// A commonJS/RequireJS environment
 		if(typeof window != "undefined") {
 			// Window and document exist, so return the factory's return value.
-			exports = factory(exports);
+			module.exports = factory(exports);
 		} else {
 			// Let the user give the factory a Window and Document.
-			exports = factory;
+			module.exports = factory;
 		}
 	} else {
 		// Assume a traditional browser.
