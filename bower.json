@@ -1,24 +1,12 @@
 {
   "name": "bootstrap.native",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "homepage": "http://thednp.github.io/bootstrap.native/",
   "authors": [
     "thednp"
   ],
   "description": "Bootstrap 3's JavaScript re-implemented in vanilla JS! No jQuery required, at all.",
-  "main": [
-      "lib/affix-native.js",
-      "lib/alert-native.js",
-      "lib/button-native.js",
-      "lib/carousel-native.js",
-      "lib/collapse-native.js",
-      "lib/dropdown-native.js",
-      "lib/modal-native.js",
-      "lib/popover-native.js",
-      "lib/scrollspy-native.js",
-      "lib/tab-native.js",
-      "lib/tooltip-native.js"
-  ],
+  "main": "dist/bootstrap.native.min.js",
   "moduleType": [
     "globals",
     "node"
