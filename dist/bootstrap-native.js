@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 | Affix
+// Native Javascript for Bootstrap 3
 // by dnp_theme
 
 (function(factory){
