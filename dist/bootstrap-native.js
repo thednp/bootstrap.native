@@ -1,6 +1,5 @@
 // Native Javascript for Bootstrap 3 | Affix
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -156,7 +155,6 @@
 
 // Native Javascript for Bootstrap 3 | Alert
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -226,7 +224,6 @@
 
 // Native Javascript for Bootstrap 3 | Button
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -371,7 +368,6 @@
 
 // Native Javascript for Bootstrap 3 | Carousel
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -661,7 +657,6 @@
 
 // Native Javascript for Bootstrap 3 | Collapse
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -869,7 +864,6 @@
 
 // Native Javascript for Bootstrap 3 | Dropdown
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -940,7 +934,6 @@
 
 //Vanilla JS script | Modal for Bootstrap 3
 //by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -1130,7 +1123,6 @@
 
 // Native Javascript for Bootstrap 3 | Popover
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -1378,7 +1370,6 @@
 
 // Native Javascript for Bootstrap 3 | ScrollSpy
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -1551,7 +1542,6 @@
 
 // Native Javascript for Bootstrap 3 | Tab
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
@@ -1668,7 +1658,6 @@
 
 // Native Javascript for Bootstrap 3 | Tooltip
 // by dnp_theme
-// Edited by: Ingwie Phoenix
 
 (function(factory){
 
