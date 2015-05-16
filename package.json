@@ -1,0 +1,27 @@
+{
+  "name": "bootstrap.native",
+  "version": "0.9.7",
+  "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
+  "main": "all.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gulp": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thednp/bootstrap.native.git"
+  },
+  "keywords": [ "bootstrap.native", "bootstrap", "vanilla.js", "native javascript" ],
+  "author": "thdnp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thednp/bootstrap.native/issues"
+  },
+  "homepage": "https://thednp.github.io/bootstrap.native/",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0"
+  }
+}
