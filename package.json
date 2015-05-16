@@ -1,7 +1,7 @@
 {
   "name": "bootstrap.native",
   "version": "0.9.7",
-  "description": "Bootstrap 3's JavaScript re-implemented in vanilla JS! No jQuery required, at all.",
+  "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
   "main": "all.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,17 +11,13 @@
     "type": "git",
     "url": "git+https://github.com/thednp/bootstrap.native.git"
   },
-  "keywords": [
-    "bootstrap",
-    "vanilla",
-    "vanilla.js"
-  ],
+  "keywords": [ "bootstrap.native", "bootstrap", "vanilla.js", "native javascript" ],
   "author": "thdnp",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/thednp/bootstrap.native/issues"
   },
-  "homepage": "https://github.com/thednp/bootstrap.native#readme",
+  "homepage": "https://thednp.github.io/bootstrap.native/",
   "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",

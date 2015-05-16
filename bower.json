@@ -5,17 +5,13 @@
   "authors": [
     "thednp"
   ],
-  "description": "Bootstrap 3's JavaScript re-implemented in vanilla JS! No jQuery required, at all.",
+  "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
   "main": "dist/bootstrap.native.min.js",
   "moduleType": [
     "globals",
     "node"
   ],
-  "keywords": [
-    "bootstrap.native",
-    "bootstrap",
-    "vanilla.js"
-  ],
+  "keywords": [ "bootstrap.native", "bootstrap", "vanilla.js", "native javascript" ],
   "license": "MIT",
   "ignore": [
     "**/.*",
