@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/thednp/bootstrap.native.git"
   },
-  "keywords": [ "bootstrap.native", "bootstrap", "vanilla.js", "native javascript" ],
+  "keywords": [ "bootstrap.native", "bootstrap", "vanilla js", "native javascript", "vanilla javascript" ],
   "author": "dnp_theme",
   "license": "MIT",
   "bugs": {
