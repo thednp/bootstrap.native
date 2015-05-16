@@ -67,4 +67,4 @@ So when using `bootstrap.native` inside of a NodeJS app, make sure you create a 
 - Full contributors list [here](https://github.com/thednp/bootstrap.native/graphs/contributors). Thanks so much!
 
 # License
-The scripts are released under the MIT license.
+The scripts are released under the [MIT license](https://github.com/thednp/bootstrap.native/blob/master/LICENSE).
