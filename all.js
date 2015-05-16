@@ -1,5 +1,6 @@
 // Native Javascript for Bootstrap 3 | Bulk require
-// by: Ingwie Phoenix
+// by dnp_theme
+// Require/npm/Bower by Ingwie Phoenix
 
 /**
     @file This file bulk-requires all the native components and
