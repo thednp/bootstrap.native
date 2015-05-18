@@ -303,10 +303,16 @@
 			},
 
 			this.toggle = function(e) {
-				var label = e.target.tagName === 'INPUT' ? e.target.parentNode : e.target; // the .btn label
-				var target = e.currentTarget || e.srcElement; // the button group, the target of the Button function
-				var labels = target.querySelectorAll('.btn'); // all the button group buttons
-				var input = label.getElementsByTagName('INPUT')[0];
+				var parent = e.target.parentNode,
+					label = e.target.tagName === 'LABEL' ? e.target : parent.tagName === 'LABEL' ? parent : null; // the .btn label
+				
+				if ( !label ) return; //react if a label or its immediate child is clicked
+				
+				var target = this, //e.currentTarget || e.srcElement; // the button group, the target of the Button function
+					labels = target.querySelectorAll('.btn'), // all the button group buttons
+					input = label.getElementsByTagName('INPUT')[0];
+					
+				if ( !input ) return; //return if no input found
 
 				// The built in event that will be triggered on demand
 				var changeEvent;
