@@ -6,7 +6,7 @@
     "dnp_theme"
   ],
   "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
-  "main": "dist/bootstrap-native.min.js",
+  "main": "all.js",
   "moduleType": [
     "globals",
     "node"
