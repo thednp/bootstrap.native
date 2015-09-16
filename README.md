@@ -1,5 +1,5 @@
 # Native Javascript for Bootstrap
-This is a set of scripts developed with vanilla Javascript, with superior performance compared to the original jQuery Plugins for Bootstap 3. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility.
+This is a set of scripts developed with native Javascript for <strong>Bootstrap 3</strong> series, and featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility.
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
 # CDN
