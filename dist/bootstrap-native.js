@@ -1,6 +1,7 @@
 // Native Javascript for Bootstrap 3
 // by dnp_theme
 
+// Affix
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -20,7 +21,8 @@
 
 })(function(){
 
-	//AFFIX DEFINITION
+	// AFFIX DEFINITION
+	// ================
 	var Affix = function(element,options) {
 		this.element = typeof element === 'object' ? element : document.querySelector(element);
 		this.options = {};
@@ -124,14 +126,14 @@
 
 		scrollEvent : function(){
 			var self = this;
-			window.addEventListener('scroll', affOnScroll = function() {
+			window.addEventListener('scroll', function() {
 				self.updatePin()
 			}, false);
 
 		},
 		resizeEvent : function(){
 			var self = this;
-			window.addEventListener('resize', affOnResize = function () {
+			window.addEventListener('resize', function () {
 				setTimeout(function(){
 					self.updateAffix()
 				},100);
@@ -140,24 +142,24 @@
 		}
 	};
 
-	var Affixes = document.querySelectorAll('[data-spy="affix"]');
-	[].forEach.call(Affixes, function (item) {
-		var options = {};
+	// AFFIX DATA API
+	// =================
+	var Affixes = document.querySelectorAll('[data-spy="affix"]'), i = 0, afl = Affixes.length;
+	for (i;i<afl;i++) {
+		var item = Affixes[i], options = {};
 			options.offsetTop		= item.getAttribute('data-offset-top');
 			options.offsetBottom	= item.getAttribute('data-offset-bottom');
 			options.target			= item.getAttribute('data-target');
 
 		if ( item && (options.offsetTop !== null || options.offsetBottom !== null || options.target !== null) ) { //don't do anything unless we have something valid to pin
-			return new Affix(item, options);
+			new Affix(item, options);
 		}
-	})
+	}
 
 	return Affix;
 });
 
-// Native Javascript for Bootstrap 3 | Alert
-// by dnp_theme
-
+// Alert
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -191,7 +193,6 @@
 	Alert.prototype = {
 
 		init : function() {
-			var self = this;
 			this.actions();
 			document.addEventListener('click', this.close, false); //delegate to all alerts, including those inserted later into the DOM
 		},
@@ -217,18 +218,16 @@
 
 	// ALERT DATA API
 	// =================
-    var Alerts = document.querySelectorAll('[data-dismiss="alert"]');
-	[].forEach.call(Alerts, function (item) {
-		return new Alert(item);
-	})
+    var Alerts = document.querySelectorAll('[data-dismiss="alert"]'), i = 0, all = Alerts.length;
+	for (i;i<all;i++) {
+		new Alert(Alerts[i]);
+	}
 
 	return Alert;
 
 });
 
-// Native Javascript for Bootstrap 3 | Button
-// by dnp_theme
-
+// Button
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -255,7 +254,7 @@
 		this.option = typeof option === 'string' ? option : null;
 
 		this.init();
-	}
+	};
 
 	// BUTTON METHODS
 	// ================
@@ -309,7 +308,7 @@
 				if ( !label ) return; //react if a label or its immediate child is clicked
 				
 				var target = this, //e.currentTarget || e.srcElement; // the button group, the target of the Button function
-					labels = target.querySelectorAll('.btn'), // all the button group buttons
+					labels = target.querySelectorAll('.btn'), ll = labels.length, i = 0, // all the button group buttons
 					input = label.getElementsByTagName('INPUT')[0];
 					
 				if ( !input ) return; //return if no input found
@@ -349,14 +348,15 @@
 						triggerChange(input); //trigger the change
 						triggerChange(self.btn);
 
-						[].forEach.call(labels, function(l) {
+						for (i;i<ll;i++) {
+							var l = labels[i];
 							if ( l !== label && l.classList.contains('active') )  {
 								var inp = l.getElementsByTagName('INPUT')[0];
 								l.classList.remove('active');
-								inp.removeAttribute('checked');
+								inp.removeAttribute('checked');				
 								triggerChange(inp)	//trigger the change
-							}
-						})
+							}				
+						}
 					}
 				}
 			}
@@ -365,22 +365,21 @@
 
 	// BUTTON DATA API
 	// =================
-    var Buttons = document.querySelectorAll('[data-toggle=button]');
-	[].forEach.call(Buttons, function (b) {
-		return new Button(b);
-	})
-    var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]');
-	[].forEach.call(ButtonGroups, function(g) {
-		return new Button(g);
-	})
+    var Buttons = document.querySelectorAll('[data-toggle=button]'), i = 0, btl = Buttons.length;
+	for (i;i<btl;i++) {
+		new Button(Buttons[i]);
+	}
+	
+    var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]'), j = 0, bgl = ButtonGroups.length;
+	for (j;j<bgl;j++) {
+		new Button(ButtonGroups[j]);
+	}
 
 	return Button;
 
 });
 
-// Native Javascript for Bootstrap 3 | Carousel
-// by dnp_theme
-
+// Carousel
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -462,20 +461,19 @@
 		},
 		pause: function() {
 			var self = this;
-			pauseHandler = function () {
+			var pauseHandler = function () {
 				if ( self.options.interval !==false && !self.carousel.classList.contains('paused')) {
 					self.carousel.classList.add('paused');
 					clearInterval( self.timer );
 					self.timer = null;
 				}
-			}
-			resumeHandler = function() {
+			};
+			var resumeHandler = function() {
 				if ( self.options.interval !==false && self.carousel.classList.contains('paused')) {
 					self.cycle();
 					self.carousel.classList.remove('paused');
 				}
-
-			}
+			};
 			self.carousel.addEventListener( "mouseenter", pauseHandler, false);
 			self.carousel.addEventListener( "mouseleave", resumeHandler, false);
 			self.carousel.addEventListener( "touchstart", pauseHandler, false);
@@ -570,8 +568,6 @@
 		},
 		actions: function() {
 			var self = this;
-			var oldTs = 0, oldKTs = 0;
-
 			self.indicatorHandler = function(e) {
 				e.preventDefault();
 				var target = e.target;
@@ -603,7 +599,6 @@
 			self.controlsHandler = function (e) {
 				var target = e.currentTarget || e.srcElement;
 				e.preventDefault();
-				var active = self._getActiveIndex(); // the current active
 
 				if ( target === self.next ) {
 					self.index++;
@@ -654,24 +649,21 @@
 
 	// CAROUSEL DATA API
 	// =================
-	var Carousels = document.querySelectorAll('[data-ride="carousel"]');
-	[].forEach.call(Carousels, function (item) {
-		var c = item;
-		var options = {};
-			options.interval = c.getAttribute('data-interval') && c.getAttribute('data-interval');
-			options.pause = c.getAttribute('data-pause') && c.getAttribute('data-pause') || 'hover';
-			options.keyboard = c.getAttribute('data-keyboard') && c.getAttribute('data-keyboard') || false;
-			options.duration = c.getAttribute('data-duration') && c.getAttribute('data-duration') || false;
-		return new Carousel(c, options)
-	})
+	var Carousels = document.querySelectorAll('[data-ride="carousel"]'), i = 0, crl = Carousels.length;
+	for (i;i<crl;i++) {
+		var c = Carousels[i], options = {};
+		options.interval = c.getAttribute('data-interval') && c.getAttribute('data-interval');
+		options.pause = c.getAttribute('data-pause') && c.getAttribute('data-pause') || 'hover';
+		options.keyboard = c.getAttribute('data-keyboard') && c.getAttribute('data-keyboard') || false;
+		options.duration = c.getAttribute('data-duration') && c.getAttribute('data-duration') || false;
+		new Carousel(c, options)
+	}
 
 	return Carousel;
 
 });
 
-// Native Javascript for Bootstrap 3 | Collapse
-// by dnp_theme
-
+// Collapse
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -708,7 +700,6 @@
 	Collapse.prototype = {
 
 		init : function() {
-			var self = this;
 			this.actions();
 			this.btn.addEventListener('click', this.toggle, false);
 
@@ -749,10 +740,10 @@
 				self.btn.classList.add('collapsed');
 
 				if ( self.accordion !== null ) {
-					var active = self.accordion.querySelectorAll('.collapse.in');
-					[].forEach.call(active,function(a) {
-						if ( a !== self.collapse) self._close(a)
-					})
+					var active = self.accordion.querySelectorAll('.collapse.in'), al = active.length, i = 0;
+					for (i;i<al;i++) {
+						if ( active[i] !== self.collapse) self._close(active[i]);						
+					}
 				}
 			},
 			this._open = function(c) {
@@ -782,19 +773,17 @@
 				}, self.options.duration)
 			},
 			this.update = function(e) {
-				var evt = e.type;
-				var tg = e.target;
-				var itms = document.querySelectorAll('.collapse.in');
-				[].forEach.call(itms, function(itm) {
-					var oh = self.getMaxHeight(itm).oh;
-					var br = self.getMaxHeight(itm).br;
+				var evt = e.type, tg = e.target,
+					itms = document.querySelectorAll('.collapse.in'), i = 0, il = itms.length;
+				for (i;i<il;i++) {
+					var itm = itms[i],
+						oh = self.getMaxHeight(itm).oh,
+						br = self.getMaxHeight(itm).br;
 
 					if ( evt === 'resize' || ( evt === 'click' && self.getClosest(tg,'.collapse') === itm ) ) {
-						setTimeout(function() {
-							itm.style.height =  oh + br + 'px'
-						}, 300)
+						itm.style.height =  oh + br + 'px'
 					}
-				})
+				}
 			},
 			this.getMaxHeight = function(l) { // get collapse trueHeight and border
 				var t = l.children[0];
@@ -854,33 +843,32 @@
 
 	// COLLAPSE DATA API
 	// =================
-    var Collapses = document.querySelectorAll('[data-toggle="collapse"]');
-	[].forEach.call(Collapses, function (item) {
-		var options = {};
+    var Collapses = document.querySelectorAll('[data-toggle="collapse"]'), i = 0, cll = Collapses.length;
+	for (i;i<cll;i++) {
+		var item = Collapses[i], options = {};
 		options.duration = item.getAttribute('data-duration');
-		return new Collapse(item,options);
-	});
+		new Collapse(item,options);
+	}
 
 	//we must add the height to the pre-opened collapses
 	window.addEventListener('load', function() {
-		var openedCollapses = document.querySelectorAll('.collapse');
-		[].forEach.call(openedCollapses, function(oc) {
+		var openedCollapses = document.querySelectorAll('.collapse'), i = 0, ocl = openedCollapses.length;
+		for (i;i<ocl;i++) {
+			var oc = openedCollapses[i];
 			if (oc.classList.contains('in')) {
 				var s = oc.currentStyle || window.getComputedStyle(oc);
 				var oh = getOuterHeight(oc.children[0]);
 				var br = parseInt(s.borderTop||0) + parseInt(s.borderBottom||0);
-				oc.style.height = oh + br + 'px'
+				oc.style.height = oh + br + 'px';
 			}
-		})
-	})
+		}
+	});
 
 	return Collapse;
 
 });
 
-// Native Javascript for Bootstrap 3 | Dropdown
-// by dnp_theme
-
+// Dropdown
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -941,18 +929,16 @@
 
 	// DROPDOWN DATA API
 	// =================
-    var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]');
-	[].forEach.call(Dropdowns, function (item,index) {
-		return new Dropdown(item);
-	})
+    var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]'), i = 0, ddl = Dropdowns.length;
+	for (i;i<ddl;i++) {
+		new Dropdown(Dropdowns[i]);
+	}
 
 	return Dropdown;
 
 });
 
-//Vanilla JS script | Modal for Bootstrap 3
-//by dnp_theme
-
+// Modal
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -972,7 +958,8 @@
 
 })(function(){
 
-	//MODAL DEFINITION
+	// MODAL DEFINITION
+	// ================
     var Modal = function(element, options) { // element is the trigger button / options.target is the modal
         this.opened = false;
 
@@ -1087,9 +1074,9 @@
 
     Modal.prototype.trigger = function() {
 		var self = this;
-		var triggers = document.querySelectorAll('[data-toggle="modal"]');
-		[].forEach.call(triggers, function(btn,idx) {
-			btn.addEventListener('click', function(e) {
+		var triggers = document.querySelectorAll('[data-toggle="modal"]'), tgl = triggers.length, i = 0;
+		for ( i;i<tgl;i++ ) {
+			triggers[i].addEventListener('click', function(e) {
 				var b = e.target,
 				s = b.getAttribute('data-target') && b.getAttribute('data-target').replace('#','')
 				 || b.getAttribute('href') && b.getAttribute('href').replace('#','');
@@ -1097,7 +1084,7 @@
 					self.open()
 				}
 			})
-		})
+		}
     }
 
     Modal.prototype._resize = function() {
@@ -1128,22 +1115,20 @@
 		})
     }
 
-	var Modals = document.querySelectorAll('.modal');
-	[].forEach.call(Modals,function(modal,idx) {
-		var options = {};
+	var Modals = document.querySelectorAll('.modal'), mdl = Modals.length, i = 0;
+	for ( i;i<mdl;i++ ) {
+		var modal = Modals[i], options = {};
 		options.keyboard = modal.getAttribute('data-keyboard');
 		options.backdrop = modal.getAttribute('data-backdrop');
 		options.duration = modal.getAttribute('data-duration');
-		return new Modal(modal,options)
-	})
+		new Modal(modal,options)
+	}
 
 	return Modal;
 
 });
 
-// Native Javascript for Bootstrap 3 | Popover
-// by dnp_theme
-
+// Popover
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -1176,6 +1161,7 @@
 		this.options.animation = options.animation && options.animation !== 'true' ? options.animation : 'true';
 		this.options.placement = options.placement ? options.placement : 'top';
 		this.options.delay = parseInt(options.delay) || 100;
+		this.options.dismiss = options.dismiss && options.dismiss === 'true' ? true : false;		
 		this.duration = 150;
 		this.options.duration = document.documentElement.classList.contains('ie') ? 0 : (options.duration || this.duration);
 		this.options.container = document.body;
@@ -1192,16 +1178,19 @@
 			this.actions();
 			if (this.options.trigger === 'hover') {
 				this.link.addEventListener('mouseenter', this.open, false);
-				this.link.addEventListener('mouseleave', this.close, false);
+				if (!this.options.dismiss) { this.link.addEventListener('mouseleave', this.close, false); }
 			} else if (this.options.trigger === 'click') {
 				this.link.addEventListener('click', this.toggle, false);
-				this.link.addEventListener('blur', this.close, false);
+				if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false); }					
 			} else if (this.options.trigger === 'focus') {
 				this.link.addEventListener('focus', this.toggle, false);
-				this.link.addEventListener('blur', this.close, false);
+				if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false);	}
 			}
-			if (!document.documentElement.classList.contains('ie') && (this.options.trigger === 'focus' || this.options.trigger === 'click') )
-				window.addEventListener('resize', this.close, false ); // dismiss on window resize
+			
+			if (this.options.dismiss) {	document.addEventListener('click', this.dismiss, false); }
+				
+			if (!document.documentElement.classList.contains('ie') && (this.options.trigger === 'focus' || this.options.trigger === 'click') ) {
+				window.addEventListener('resize', this.close, false ); } // dismiss on window resize 
 		},
 
 		actions : function() {
@@ -1225,7 +1214,11 @@
 				}, self.options.duration );
 				self.link.setAttribute('data-timer',self.timer);
 			},
-
+			this.dismiss = function(e) {
+				if (self.popover && e.target === self.popover.querySelector('.close')) {					
+					self.close();
+				}
+			},
 			this.close = function(e) {
 				clearTimeout(self.link.getAttribute('data-timer'));
 				self.timer = setTimeout( function() {
@@ -1260,7 +1253,12 @@
 					if (this.title !== null) {
 						var popoverTitle = document.createElement('h3');
 						popoverTitle.setAttribute('class','popover-title');
-						popoverTitle.innerHTML = this.title
+						
+						if (this.options.dismiss) {
+							popoverTitle.innerHTML = this.title + '<button type="button" class="close">×</button>';
+						} else {
+							popoverTitle.innerHTML = this.title;
+						}
 						this.popover.appendChild(popoverTitle);
 					}
 
@@ -1271,7 +1269,11 @@
 					this.popover.appendChild(popoverContent);
 
 					//set popover content
-					popoverContent.innerHTML = this.content;
+					if (this.options.dismiss && this.title === null) {
+						popoverContent.innerHTML = this.content + '<button type="button" class="close">×</button>';
+					} else {
+						popoverContent.innerHTML = this.content;
+					}
 
 				} else {  // or create the popover from template
 					var template = document.createElement('div');
@@ -1298,8 +1300,7 @@
 
 
 				//window vertical and horizontal scroll
-				// var scrollYOffset = this.options.container === document.body ? window.pageYOffset || document.documentElement.scrollTop : this.options.container.offsetTop;
-				// var scrollXOffset = this.options.container === document.body ? window.pageXOffset || document.documentElement.scrollLeft : this.options.container.offsetLeft;
+
 				var scrollYOffset = this.getScroll().y;
 				var scrollXOffset =  this.getScroll().x;
 
@@ -1375,24 +1376,23 @@
 
 	// POPOVER DATA API
 	// =================
-    var Popovers = document.querySelectorAll('[data-toggle=popover]');
-	[].forEach.call(Popovers, function (item,index) {
-		var options = {};
+    var Popovers = document.querySelectorAll('[data-toggle=popover]'), i = 0, ppl = Popovers.length;
+	for (i;i<ppl;i++){	
+		var item = Popovers[i], options = {};
 		options.trigger = item.getAttribute('data-trigger'); // click / hover / focus
 		options.animation = item.getAttribute('data-animation'); // true / false
 		options.duration = item.getAttribute('data-duration');
 		options.placement = item.getAttribute('data-placement');
+		options.dismiss = item.getAttribute('data-dismiss');
 		options.delay = item.getAttribute('data-delay');
-		return new Popover(item,options);
-	})
+		new Popover(item,options);
+	}
 
 	return Popover;
 
 });
 
-// Native Javascript for Bootstrap 3 | ScrollSpy
-// by dnp_theme
-
+// ScrollSpy
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -1462,8 +1462,6 @@
 			}
 		},
 		topLimit: function () { // the target offset
-			var s = this.tg.currentStyle || window.getComputedStyle(this.tg);
-			var els = this.element.currentStyle || window.getComputedStyle(this.element);
 			if ( this.scrollTarget === window ) {
 				return this.tg.getBoundingClientRect().top + this.scrollOffset()
 			} else {
@@ -1472,8 +1470,6 @@
 
 		},
 		bottomLimit: function () {
-			var s = this.tg.currentStyle || window.getComputedStyle(this.tg);
-			var els = this.element.currentStyle || window.getComputedStyle(this.element);
 			return this.topLimit() + this.tg.offsetHeight
 		},
 		checkEdges: function () {
@@ -1546,27 +1542,26 @@
 
 	//SCROLLSPY API
 	//=============
-	var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'); // mostly is the document.body or a large container with many elements having id="not-null-id"
-	[].forEach.call(scrollSpyes, function (spy,idx) {
-		var options = {};
-		options.target = spy.getAttribute('data-target') || null;	// this must be a .nav component with id="not-null"
+	var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'), i = 0, ssl = scrollSpyes.length; // mostly is the document.body or a large container with many elements having id="not-null-id"
+	for (i;i<ssl;i++) {
+		var spy = scrollSpyes[i], options = {};
+		options.target = spy.getAttribute('data-target') || null;	// this must be a .nav component with id="not-null"	
 		if ( options.target !== null ) {
-			var menu = options.target === 'object' ?  options.target : document.querySelector(options.target);
-			var items = menu.querySelectorAll('a');
-			[].forEach.call(items, function (item,i) {
+			var menu = options.target === 'object' ?  options.target : document.querySelector(options.target),
+				items = menu.querySelectorAll('a'), j = 0, il = items.length;
+			for (j;j<il;j++) {
+				var item = items[j];
 				if ( item.href && item.getAttribute('href') !== '#' )
-				return new ScrollSpy(spy, item, options);
-			})
+				new ScrollSpy(spy, item, options);
+			}
 		}
-	})
-
+	}
+	
 	return ScrollSpy;
 
 });
 
-// Native Javascript for Bootstrap 3 | Tab
-// by dnp_theme
-
+// Tab
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -1671,20 +1666,18 @@
 
 	// TAB DATA API
 	// =================
-    var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']");
-	[].forEach.call(Tabs, function (tab) {
-		var options = {};
+    var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']"), tbl = Tabs.length, i=0;
+	for ( i;i<tbl;i++ ) {
+		var tab = Tabs[i], options = {};
 		options.duration = tab.getAttribute('data-duration') && tab.getAttribute('data-duration') || false;
-		return new Tab(tab,options);
-	})
+		new Tab(tab,options);
+	}
 
 	return Tab;
 
 });
 
-// Native Javascript for Bootstrap 3 | Tooltip
-// by dnp_theme
-
+// Tooltip
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -1805,8 +1798,6 @@
 				var toolDim = { w : td.w, h: td.h }; //tooltip real dimensions
 
 				//window vertical and horizontal scroll
-				// var scrollYOffset = this.options.container === document.body ? window.pageYOffset || document.documentElement.scrollTop : this.options.container.scrollTop;
-				// var scrollXOffset = this.options.container === document.body ? window.pageXOffset || document.documentElement.scrollLeft : this.options.container.scrollLeft;
 				var scrollYOffset = this.getScroll().y;
 				var scrollXOffset =  this.getScroll().x;
 
@@ -1881,15 +1872,15 @@
 
 	// TOOLTIP DATA API
 	// =================
-    var Tooltips = document.querySelectorAll('[data-toggle=tooltip]');
-	[].forEach.call(Tooltips, function (item,index) {
-		var options = {};
+    var Tooltips = document.querySelectorAll('[data-toggle=tooltip]'), i = 0, tpl = Tooltips.length;
+	for (i;i<tpl;i++){	
+		var item = Tooltips[i], options = {};
 		options.animation = item.getAttribute('data-animation');
 		options.placement = item.getAttribute('data-placement');
 		options.duration = item.getAttribute('data-duration');
 		options.delay = item.getAttribute('data-delay');
-		return new Tooltip(item,options);
-	})
+		new Tooltip(item,options);
+	}
 
 	return Tooltip;
 
