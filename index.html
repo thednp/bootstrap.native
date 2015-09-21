@@ -20,7 +20,7 @@
 	<link href="./assets/css/bootstrap.min.css" rel="stylesheet">
     <!--<![endif]-->
 	<!--[if gte IE 9]><!-->
-	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <!--<![endif]-->
 
     <!-- Custom styles for this template -->
@@ -92,7 +92,7 @@
           <img src="http://placehold.it/900x500/5677fc/5677fc" alt="">
           <div class="container">
             <div class="carousel-caption slide">
-              <h2>Dude, Welcome to Native Javascript!!</h2>
+              <h2>Well, hello there!</h2>
               <p>These are the jQuery plugins for Bootstrap 3 redeveloped with native Javascript. There are some small differences but only to improve performance while keeping the same basic functionality.</p>
               <p><a class="btn btn-lg btn-default btn-empty" href="#about" role="button">More</a></p>
             </div>
@@ -155,7 +155,7 @@
 				<h3>Load from CDN</h3>
 				<p>Thanks to <a href="http://www.jsdelivr.com/">jsdelivr</a> we have a CDN link, so drop this line before your ending <code>&lt;/body></code> tag. Latest releases <a href="http://www.jsdelivr.com/#!bootstrap.native">come here</a>.</p>
 				<pre><span class="brush: xml; ruler: true; toolbar:false; gutter: false">
-					&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.3/bootstrap-native.min.js"&gt;&lt;/script&gt;
+					&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.8/bootstrap-native.min.js"&gt;&lt;/script&gt;
 				</span></pre>
 				<p>As most of the scripts manipulate the DOM when ready, there is no need to include a <code>document.ready</code> statement or link the script(s) in the <code>&lt;head&gt;</code>. That's your first performance tip if you are new around here.</p>
 				<h3>Working locally</h3>
@@ -182,11 +182,14 @@
                     $ npm install --save bootstrap.native
                 </span></pre>
 
-				<h3 id="required_css">Transitions</h3>
-				<p>Since we are not using jQuery to do all the <code>.slideToggle()</code> or <code>.animate()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>collapse</strong> components, so copy this line in your application CSS files.</p>
+				<h3 id="required_css">Additional Styling</h3>
+				<p>Since we are not using jQuery to do all the <code>.slideToggle()</code> or <code>.animate()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>collapse</strong> components, so copy this line in your application CSS files. Also the dismissible popovers require some styling for the closing button.</p>
 				<pre><span class="brush: css; ruler: true; toolbar:false; gutter: false">
 					/* enables CSS3 transition for simple collapses, accordion and also navbar in responsive view */
-					.collapse { transition: height .3s ease-out; -webkit-transition: height .3s ease-out }
+					.collapse { transition: height .3s ease-out; -webkit-transition: height .3s ease-out } 
+					
+					/* styles the close button for the dismissible popovers */
+					.popover .close { position: absolute; top: 7px; right: 10px; }
 				</span></pre>
 				<h3>Browser Support</h3>
 				<p>The scripts are tested to work perfect in all major browsers, and legacy browsers starting with <kbd>IE8</kbd>. Legacy browsers don't support CSS3 transitions and in order to make legacy browsers behave with the clean and fast code of today's HTML5 standards, make sure you include a polyfill that covers most of the scripts HTML5 code requirements for them. There are many more shims and polyfills out there, but this one below seems best, at least for me.</p>
@@ -547,6 +550,7 @@
 						<li><b>title</b> - the <code>data-title="TITLE"</code> attribute to fill the Popover title.</li>
 						<li><b>trigger</b> - option to change the Popover trigger event: <code>hover</code>, <code>focus</code> and <code>click</code>. In some cases you may want to open Popover on <code>focus</code> for form elements or <code>click</code> for other buttons, you can specify that via <code>data-trigger="EVENT"</code> attribute. The default value is <code>hover</code>.</li>
 						<li><b>animation</b> - option to customize the Popover animation. If you are using a different animation other than <code>fade</code>, you can specify that via <code>data-animation="ANIMATION"</code> attribute. This will add an additional CSS class to the Popover to enable a custom transition. The default value is <code>fade</code>.</li>
+						<li><b>dismiss</b> - option to make the Popover dismissible. When used, it will also add an <kbd>X</kbd> button at the top-right of the popover. You can enable this option via <code>data-dismiss="true"</code> attribute. The default value is <code>false</code>.</li>
 						<li><b>placement</b> - option to set a specific Popover placement to <code>top</code>, <code>bottom</code>, <code>left</code> or <code>right</code>, relative to it's target. The default value is <code>top</code>.</li>
 						<li><b>duration</b> - is an internal 150ms duration setting to emulate <code>transitionend</code>. If you are using a different duration than the default plugin, this can be set via <code>data-duration="DURATION"</code> attribute. The default value is <code>150</code>.</li>
 						<li><b>delay</b> - is an internal 100ms delay before generating the Popover, helpful for legacy browsers to be able to compute the automatic positioning. Can be set via <code>data-delay="DELAY"</code> attribute. The default value is <code>100</code>.</li>
@@ -556,12 +560,8 @@
 					<p>
 						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="left" data-content="Popover on left">Left</button>
 						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="top" data-content="Popover on top">Top</button>
-						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-content="Popover on bottom">Bottom</button>
-						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="right" data-content="Popover on right">Right</button>
-						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="left" data-content="Popover on left<br> Here we add more content for testing. Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits.">Left</button>
-						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="top" data-content="Popover on top<br> Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. ">Top</button>
 						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-content="Popover on bottom<br> Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">Bottom</button>
-						<button type="button" class="btn btn-default" data-toggle="popover" data-placement="right" data-content="Popover on right<br> Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+						<button type="button" class="btn btn-default" data-dismiss="true" data-toggle="popover" data-title="Dismissible Popover" data-placement="right" data-content="Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right Dismissible</button>
 						<input style="max-width: 180px; display: inline; width: auto" type="text" value="" class="form-control popover-via-template" placeholder="Focus me" data-toggle="popover">
 						<button type="button" id="popover-via-click" class="btn btn-default" data-trigger="click" data-content="You clicked the button and as a result, this message box simply.. popped.<br>Now simply click anywhere to dismiss.">Click to open</button>
 					</p>
@@ -640,12 +640,15 @@
 					<p>
 						<span class="btn-group" data-toggle="buttons">
 						  <label class="btn btn-default active">
+							<span class="glyphicon glyphicon-plus-sign"></span>
 							<input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
 						  </label>
 						  <label class="btn btn-default">
+							<span class="glyphicon glyphicon-plus-sign"></span>
 							<input type="checkbox" autocomplete="off"> Checkbox 2
 						  </label>
 						  <label class="btn btn-default">
+							<span class="glyphicon glyphicon-plus-sign"></span>
 							<input type="checkbox" autocomplete="off"> Checkbox 3
 						  </label>
 						</span>
@@ -654,12 +657,15 @@
 					<p>
 						<span class="btn-group" data-toggle="buttons">
 						  <label class="btn btn-default">
+							<span class="glyphicon glyphicon-ok-sign"></span>
 							<input type="radio" name="options" id="option1" autocomplete="off"> Radio 1
 						  </label>
 						  <label class="btn btn-default active">
+							<span class="glyphicon glyphicon-ok-sign"></span>
 							<input type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
 						  </label>
 						  <label class="btn btn-default">
+							<span class="glyphicon glyphicon-ok-sign"></span>
 							<input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
 						  </label>
 						</span>

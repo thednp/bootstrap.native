@@ -3,6 +3,9 @@
 /* enables animation for the collapse, has no effect on legacy browsers */
 .collapse { transition: height .3s ease-out; -webkit-transition: height .3s ease-out }
 
+/* styles the close button for the dismissible popovers */
+.popover .close { position: absolute; top: 7px; right: 10px; }
+
 /* REQUIRED STYLING */
 
 
@@ -233,7 +236,7 @@ body > .container,
 	
 	/* side navigation */
 	#side-nav  { margin-top: 20px; clear: none }
-	#side-nav > .nav > li > ul { margin-top: 2px; height:0; : none; opacity: 0; padding-left: 15px; transition: all 0.3s ease-out; }
+	#side-nav > .nav > li > ul { margin-top: 2px; height:0; opacity: 0; padding-left: 15px; transition: all 0.3s ease-out; }
 	#side-nav > .nav > li.active > ul { height:460px; opacity: 1 }
 
 	#side-nav > .nav > li { overflow: hidden }
