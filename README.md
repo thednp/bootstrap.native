@@ -62,6 +62,9 @@ So when using `bootstrap.native` inside of a NodeJS app, make sure you create a 
 # Browser Support
 The scripts are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills IE8-IE9 will thank you.
 
+# Custom Builds
+You can clone the repository, install gulp and run `gulp --ignore component,...` ex: `gulp --ignore carousel,scrollspy`
+
 # Contributors
 - [Ingwie Phoenix](https://github.com/IngwiePhoenix): RequireJS/CommonJS compatibility and usability with common package managers. _Was glad to help!_
 - Full contributors list [here](https://github.com/thednp/bootstrap.native/graphs/contributors). Thanks so much!
