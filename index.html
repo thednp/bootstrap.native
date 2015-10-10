@@ -31,13 +31,14 @@
 	<link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
 
 	
-    <!-- The automated browser upgrade service provided by Financial Times.	 
-	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,getComputedStyle|gated"></script> -->
+    <!-- The automated browser upgrade service provided by Financial Times.	 -->
+	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,getComputedStyle|gated"></script> 
     <!-- Just use it for all browsers on production websites.	-->
 		
-	<!-- For local testing, you can use this polyfill, does all you need for web	  -->
-	<!--[if IE]>
-		<script src="./assets/js/minifill.js"> </script>
+	<!-- For local testing, you can use this polyfill, does all you need for web	  	
+	<script src="./assets/js/minifill.js"> </script>-->
+		
+	<!--[if IE]>	
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	<![endif]-->
 </head>
@@ -642,7 +643,7 @@ new Button(btn,'reset');
 						<span class="btn-group" data-toggle="buttons">
 						  <label class="btn btn-default active">
 							<span class="glyphicon glyphicon-plus-sign"></span>
-							<input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
+							<input type="checkbox" autocomplete="off" checked="checked"> Checkbox 1 (pre-checked)
 						  </label>
 						  <label class="btn btn-default">
 							<span class="glyphicon glyphicon-plus-sign"></span>
@@ -663,7 +664,7 @@ new Button(btn,'reset');
 						  </label>
 						  <label class="btn btn-default active">
 							<span class="glyphicon glyphicon-ok-sign"></span>
-							<input type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
+							<input type="radio" name="options" id="option2" autocomplete="off" checked="checked"> Radio 2 (preselected)
 						  </label>
 						  <label class="btn btn-default">
 							<span class="glyphicon glyphicon-ok-sign"></span>
@@ -969,22 +970,8 @@ var theAffix = new Affix(elToAffix, {
 	<!-- highlighter -->
 	<script src="./assets/js/prism.js" type="text/javascript"></script>		
 
-	<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.9/bootstrap-native.min.js"></script>  now we have CDN -->
-
-	<!-- <script type="text/javascript" src="./lib/tab-native.js"></script>
-    <script type="text/javascript" src="./lib/scrollspy-native.js"></script>
-    <script type="text/javascript" src="./lib/modal-native.js"></script>
-    <script type="text/javascript" src="./lib/dropdown-native.js"></script>
-    <script type="text/javascript" src="./lib/collapse-native.js"></script>
-    <script type="text/javascript" src="./lib/carousel-native.js"></script>
-    <script type="text/javascript" src="./lib/affix-native.js"></script>
-    <script type="text/javascript" src="./lib/alert-native.js"></script>
-    <script type="text/javascript" src="./lib/button-native.js"></script>
-    <script type="text/javascript" src="./lib/popover-native.js"></script>
-    <script type="text/javascript" src="./lib/tooltip-native.js"></script>  -->
-	
-    
-     <script type="text/javascript" src="./dist/bootstrap-native.js"></script>
+	<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.9/bootstrap-native.min.js"></script>  now we have CDN -->    
+     <script type="text/javascript" src="./dist/bootstrap-native.min.js"></script>
 	
 	<script type="text/javascript" src="./assets/js/scripts.js"></script>
   </body>	
