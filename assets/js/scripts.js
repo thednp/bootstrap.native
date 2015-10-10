@@ -41,20 +41,24 @@ btnModal2.addEventListener('click', function() {
 });
 	
 //switch views for tabs
-var tabsToggleView = document.querySelector('#exampleTab .btn-group');
-var tabsDemo = document.querySelector('#myTab');
-tabsToggleView.addEventListener('click', function(e){
-	if ( e.target.tagName === 'A' && e.target.getAttribute('data-nclass') !== undefined ) { 
-		tabsDemo.className = e.target.getAttribute('data-nclass'); tabsToggleView.querySelector('button').innerHTML = 'Viewing ' + e.target.innerHTML 
-	} else {
-		return false;
-	}	
-})
+var exampleTab = document.getElementById('exampleTab');
+var tabsToggleView = document.getElementById('tabSwitcher');
+var tabsDemo = document.getElementById('myTab');
+// if (!/ie8/.test(document.documentElement.className)) {
+	tabsToggleView.addEventListener('click', function(e){
+		e.preventDefault();
+		if ( e.target.tagName === 'A' && e.target.getAttribute('data-nclass') !== undefined ) { 
+			tabsDemo.className = e.target.getAttribute('data-nclass'); tabsToggleView.querySelector('button').innerHTML = 'Viewing ' + e.target.innerHTML 
+		} else {
+			return false;
+		}	
+	})
+// }
 
 //demo alert fun
-var trick = document.querySelector('#exampleAlert .alert-danger'),
+var trick = document.querySelector('.alert-danger'),
 	trickClose = trick.querySelector('.close');
-trickClose.addEventListener('click', function() {
+trickClose.addEventListener('click', function(e) {
 	var title = trick.getElementsByTagName('h4')[0];
 	title.innerHTML = 'Oops you REALLY got no error!';
 	trick.className = 'alert alert-success fade in';
@@ -104,11 +108,11 @@ genericCarousel.addEventListener('slide.bs.carousel', function(e) {
 var mainSlider = document.getElementById('myCarousel');
 mainSlider.addEventListener('slid.bs.carousel', function(e) {
 	var active = mainSlider.querySelector('.item.active .carousel-caption');
-	active.classList.remove('slide')
+	if (active.classList) { active.classList.remove('slide') } else { active.className = active.className.replace(' slide','') }
 });
 mainSlider.addEventListener('slide.bs.carousel', function(e) {
 	var active = mainSlider.querySelector('.item.active .carousel-caption');
-	active.classList.add('slide')
+	if (active.classList) { active.classList.add('slide') } else { active.className += ' slide'; }
 });
 
 //demo for Button toggle
@@ -132,7 +136,7 @@ checkBtns[0].addEventListener('change',function() {
 
 
 /* side-nav autoresize on window scroll and resize */
-if ( document.documentElement && !document.documentElement.classList.contains('ie') ) {
+if ( document.documentElement && !/ie/.test(document.documentElement.className) ) {
 	var sideNav = document.getElementById('side-nav');
 	function resetNav() {
 		document.getElementById('nav-scrollspy').style.width = '';
@@ -146,12 +150,3 @@ if ( document.documentElement && !document.documentElement.classList.contains('i
 	window.addEventListener('resize', adjustNav, false)// adjust on resize
 	window.addEventListener('load', adjustNav, false)// adjust on load
 }
-
-//syntax highlighter
-SyntaxHighlighter.config.tagName = 'span';
-SyntaxHighlighter.all();
-
-//fix jumpy links
-document.addEventListener('click',function(e) {
-	if (e.target.getAttribute('href') === '#') e.preventDefault()
-})

@@ -273,12 +273,42 @@ body > .container,
 
 }
 
+
+/* IE8 without modernizr */
+.ie8 #side-nav .nav.affix { position: fixed !important;  width: 263px; top: 0; }
+.ie8 #side-nav .nav.affix.affix-bottom { top: auto;  bottom: 150px; } 
+
+.ie8 #side-nav  { margin-top: 20px; clear: none }
+.ie8 #side-nav > .nav > li > ul { margin-top: 2px; height:0; opacity: 0; padding-left: 15px; transition: all 0.3s ease-out; }
+.ie8 #side-nav > .nav > li.active > ul { height:460px; opacity: 1 }
+
+.ie8 #side-nav > .nav > li { overflow: hidden }
+.ie8 #side-nav > .nav li > a { z-index: 1 }
+.ie8 #side-nav > .nav li > ul { z-index: 0 }	
+
+.ie8 .navbar-wrapper {  margin-top: 40px; }
+.ie8 .navbar-wrapper .container { padding-right: 15px; padding-left: 15px; }
+.ie8 .navbar-wrapper .navbar { padding-right: 0; padding-left: 0; }
+
+.ie8 .navbar-wrapper .navbar { border-radius: 4px; }
+.ie8 .navbar .navbar-nav {margin-right: 15px; float: right}
+
+/* IE8 without modernizr */
+
+
 /* code wrapping */
-body .syntaxhighlighter {background: none !important; margin: 0  }
-body .syntaxhighlighter table { width: 100% }
-body .syntaxhighlighter .container:before,
-body .syntaxhighlighter .container:after { content: none }
-body .syntaxhighlighter .line.alt1,
-body .syntaxhighlighter .line.alt2 { background: none !important }
-.syntaxhighlighter code {background: none}
-.syntaxhighlighter .container { padding:0; width: 860px !important}
+pre {
+	display: block;
+	padding: 10px 15px !important;
+	/*margin: 0 0 20px !important;*/
+	line-height: 2.08;
+	color: #999;
+	word-break: break-all;
+	background-color: rgb(33,33,33);
+	background-color: rgba(11,11,11,0.8);
+	border: none;
+	border-radius: 4px;
+	text-align: left;
+	position: relative;
+}
+pre code {background: none;padding: 0; font-weight: normal; font-size: 100%;}
