@@ -290,9 +290,7 @@ body > .container,
 .ie8 .navbar-wrapper .container { padding-right: 15px; padding-left: 15px; }
 .ie8 .navbar-wrapper .navbar { padding-right: 0; padding-left: 0; }
 
-.ie8 .navbar-wrapper .navbar { border-radius: 4px; }
 .ie8 .navbar .navbar-nav {margin-right: 15px; float: right}
-
 /* IE8 without modernizr */
 
 
