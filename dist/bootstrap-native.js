@@ -1,7 +1,6 @@
 // Native Javascript for Bootstrap 3
 // by dnp_theme
 
-// Affix
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -21,9 +20,10 @@
 
 })(function(){
 
-	// AFFIX DEFINITION
-	// ================
+	//AFFIX DEFINITION
 	var Affix = function(element,options) {
+		options = options || {};
+		
 		this.element = typeof element === 'object' ? element : document.querySelector(element);
 		this.options = {};
 		this.options.target = options.target ? ((typeof(options.target) === 'object') ? options.target : document.querySelector(options.target)) : null; // target is an object
@@ -74,22 +74,29 @@
 			return window.pageYOffset || document.documentElement.scrollTop
 		},
 		pinTop: function () {
-			if ( this.element.classList && !this.element.classList.contains('affix') ) this.element.classList.add('affix');
-			this.affixed = true
+			if ( !/affix/.test(this.element.className) ) {
+				this.element.className += ' affix';
+				this.affixed = true
+			}
 		},
 		unPinTop: function () {
-			if ( this.element.classList && this.element.classList.contains('affix') ) this.element.classList.remove('affix');
-			this.affixed = false
+			if ( /affix/.test(this.element.className) ) {
+				this.element.className = this.element.className.replace(' affix','');
+				this.affixed = false
+			}
 		},
 		pinBottom: function () {
-			if ( this.element.classList && !this.element.classList.contains('affix-bottom') ) this.element.classList.add('affix-bottom');
-			this.affixedBottom = true
+			if ( !/'affix-bottom'/.test(this.element.className) ) {
+				this.element.className += ' affix-bottom';
+				this.affixedBottom = true
+			}
 		},
 		unPinBottom: function () {
-			if ( this.element.classList && this.element.classList.contains('affix-bottom') ) this.element.classList.remove('affix-bottom');
-			this.affixedBottom = false
+			if ( /'affix-bottom'/.test(this.element.className) ) { 
+				this.element.className = this.element.className.replace(' affix-bottom','');
+				this.affixedBottom = false
+			}
 		},
-
 		updatePin: function () {
 			if (this.affixed === false && (parseInt(this.offsetTop(),0) - parseInt(this.scrollOffset(),0) < 0)) {
 				this.pinTop();
@@ -121,7 +128,8 @@
 		},
 
 		getMaxScroll : function(){
-			return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )
+			return Math.max( document.body.scrollHeight, document.body.offsetHeight, 
+				document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )
 		},
 
 		scrollEvent : function(){
@@ -132,11 +140,11 @@
 
 		},
 		resizeEvent : function(){
-			var self = this;
+			var self = this, dl = /ie/.test(document.documentElement.className) ? 500 : 50;
 			window.addEventListener('resize', function () {
 				setTimeout(function(){
 					self.updateAffix()
-				},100);
+				},dl);
 			}, false);
 
 		}
@@ -159,7 +167,7 @@
 	return Affix;
 });
 
-// Alert
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -205,8 +213,8 @@
 				self.btn = target.getAttribute('data-dismiss') === 'alert' && target.className === 'close' ? target : target.parentNode;
 				self.alert = self.btn.parentNode;
 
-				if ( self.alert !== null && self.btn.getAttribute('data-dismiss') === 'alert' && self.alert.classList.contains('in') ) {
-					self.alert.classList.remove('in');
+				if ( self.alert !== null && self.btn.getAttribute('data-dismiss') === 'alert' && /in/.test(self.alert.className) ) {
+					self.alert.className = self.alert.className.replace(' in','');
 					setTimeout(function() {
 						self.alert && self.alert.parentNode.removeChild(self.alert);
 					}, self.duration);
@@ -227,7 +235,7 @@
 
 });
 
-// Button
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -264,7 +272,7 @@
 			var self = this;
 			this.actions();
 
-			if ( this.btn.classList.contains('btn') ) {
+			if ( /btn/.test(this.btn.className) ) {
 				if ( this.option && this.option !== 'reset' ) {
 
 					this.state = this.btn.getAttribute('data-'+this.option+'-text') || null;
@@ -277,25 +285,36 @@
 				}
 			}
 
-			if (this.btn.classList.contains('btn-group')) {
+			if ( /btn-group/.test(this.btn.className) ) {
 				this.btn.addEventListener('click', this.toggle, false);
 			}
 		},
 
 		actions : function() {
 			var self = this;
+			// The built in event that will be triggered on demand
+			var changeEvent;
+			if ( Event !== undefined && typeof Event === 'function' && typeof Event !== 'object' ) {
+				changeEvent = new Event('change');
+			} else { // define event type, new Event('type') does not work in any IE
+				changeEvent = document.createEvent('HTMLEvents');
+				changeEvent.initEvent('change', true, true);
+			}
+
+			// assign event to a trigger function
+			function triggerChange(t) { t.dispatchEvent(changeEvent) }
 
 			this.setState = function() {
-				if ( self.option === 'loading' ) {
-					self.btn.classList.add('disabled');
-					self.btn.setAttribute('disabled','disabled');
+				if ( this.option === 'loading' ) {
+					this.addClass(this.btn,'disabled');					
+					this.btn.setAttribute('disabled','disabled');
 				}
-				self.btn.innerHTML = self.state;
+				this.btn.innerHTML = this.state;
 			},
 
 			this.reset = function() {
-				if ( self.btn.classList.contains('disabled') || self.btn.getAttribute('disabled') === 'disabled' ) {
-					self.btn.classList.remove('disabled');
+				if ( /disabled/.test(self.btn.className) || self.btn.getAttribute('disabled') === 'disabled' ) {
+					this.removeClass(this.btn,'disabled');	
 					self.btn.removeAttribute('disabled');
 				}
 				self.btn.innerHTML = self.btn.getAttribute('data-original-text');
@@ -313,27 +332,14 @@
 					
 				if ( !input ) return; //return if no input found
 
-				// The built in event that will be triggered on demand
-				var changeEvent;
-				if ( Event !== undefined && typeof Event === 'function' && typeof Event !== 'object' ) {
-					changeEvent = new Event('change');
-				} else { // define event type, new Event('type') does not work in any IE
-					changeEvent = document.createEvent('HTMLEvents');
-					changeEvent.initEvent('change', true, true);
-				}
-
-				// assign event to a trigger function
-				function triggerChange(t) { t.dispatchEvent(changeEvent) }
-
 				//manage the dom manipulation
 				if ( input.type === 'checkbox' ) { //checkboxes
-
-					if ( input.checked )  {
-						label.classList.remove('active');
-						input.removeAttribute('checked');
-					} else {
-						label.classList.add('active');
+					if ( !input.checked || !input.getAttribute('checked'))  {
+						self.addClass(label,'active');
 						input.setAttribute('checked','checked');
+					} else {
+						self.removeClass(label,'active');
+						input.removeAttribute('checked');
 					}
 					triggerChange(input); //trigger the change for the input
 					triggerChange(self.btn) //trigger the change for the btn-group
@@ -341,8 +347,8 @@
 
 				if ( input.type === 'radio' ){ // radio buttons
 
-					if ( !input.checked ) { // don't trigger if already active
-						label.classList.add('active');
+					if ( !input.checked || !input.getAttribute('checked') ) { // don't trigger if already active
+						self.addClass(label,'active');
 						input.setAttribute('checked','checked');
 
 						triggerChange(input); //trigger the change
@@ -350,15 +356,21 @@
 
 						for (i;i<ll;i++) {
 							var l = labels[i];
-							if ( l !== label && l.classList.contains('active') )  {
+							if ( l !== label && /active/.test(l.className) )  {
 								var inp = l.getElementsByTagName('INPUT')[0];
-								l.classList.remove('active');
+								self.removeClass(l,'active');
 								inp.removeAttribute('checked');				
 								triggerChange(inp)	//trigger the change
 							}				
 						}
 					}
 				}
+			},
+			this.addClass = function(el,c) { // where modern browsers fail, use classList	
+				if (el.classList) { el.classList.add(c); } else { el.className += ' '+c; }
+			},
+			this.removeClass = function(el,c) {
+				if (el.classList) { el.classList.remove(c); } else { el.className = el.className.replace(c,'').replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,''); }
 			}
 		}
     }
@@ -379,7 +391,7 @@
 
 });
 
-// Carousel
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -402,14 +414,16 @@
 	// CAROUSEL DEFINITION
 	// ===================
 	var Carousel = function( element, options ) {
+		options = options || {};
+
 		this.carousel = (typeof element === 'object') ? element : document.querySelector( element );
 		this.options = {}; //replace extend
-		this.options.keyboard = options && options.keyboard === 'true' ? true : false;
-		this.options.pause = options && options.pause ? options.pause : 'hover'; // false / hover
+		this.options.keyboard = options.keyboard === 'true' ? true : false;
+		this.options.pause = options.pause ? options.pause : 'hover'; // false / hover
 
 		// bootstrap carousel default transition duration / option
 		this.duration = 600;
-		this.options.duration = document.documentElement.classList.contains('ie') ? 0 : (options.duration || this.duration);
+		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
 
 		var items = this.carousel.querySelectorAll('.item'), il=items.length; //this is an object
 		this.controls = this.carousel.querySelectorAll('.carousel-control');
@@ -462,16 +476,16 @@
 		pause: function() {
 			var self = this;
 			var pauseHandler = function () {
-				if ( self.options.interval !==false && !self.carousel.classList.contains('paused')) {
-					self.carousel.classList.add('paused');
+				if ( self.options.interval !==false && !/paused/.test(self.carousel.className) ) {
+					self.carousel.className += ' paused';
 					clearInterval( self.timer );
 					self.timer = null;
 				}
 			};
 			var resumeHandler = function() {
-				if ( self.options.interval !==false && self.carousel.classList.contains('paused')) {
+				if ( self.options.interval !==false && /paused/.test(self.carousel.className) ) {
 					self.cycle();
-					self.carousel.classList.remove('paused');
+					self.carousel.className = self.carousel.className.replace(' paused','');
 				}
 			};
 			self.carousel.addEventListener( "mouseenter", pauseHandler, false);
@@ -484,7 +498,7 @@
 			var active = self._getActiveIndex(); // the current active
 			//determine type
 			var direction = self.direction;
-			var type = direction === 'left' ? 'next' : 'prev';
+			var dr = direction === 'left' ? 'next' : 'prev';
 
 			//register events
 			var slid = new CustomEvent("slid.bs.carousel");
@@ -497,35 +511,34 @@
 			self.timer = null;
 			self._curentPage( self.indicators[next] );
 
-			if ( this.carousel.classList.contains('slide') && !document.documentElement.classList.contains('ie') ) {
-				self.slides[next].classList.add(type);
+			if ( /slide/.test(this.carousel.className) && !/ie/.test(document.documentElement.className) ) {
+				self.slides[next].className += (' '+dr);
 				self.slides[next].offsetWidth;
-				self.slides[next].classList.add(direction);
-				self.slides[active].classList.add(direction);
+				self.slides[next].className += (' '+direction);
+				self.slides[active].className += (' '+direction);
 
 				setTimeout(function() { //we're gonna fake waiting for the animation to finish, cleaner and better
 					self._addEventListeners();
 
-					self.slides[next].classList.add('active');
-					self.slides[active].classList.remove('active');
+					self.slides[next].className += ' active';
+					self.slides[active].className = self.slides[active].className.replace(' active','');
 
-					self.slides[next].classList.remove(type);
-					self.slides[next].classList.remove(direction);
-					self.slides[active].classList.remove(direction);
+					self.slides[next].className = self.slides[next].className.replace(' '+dr,'');
+					self.slides[next].className = self.slides[next].className.replace(' '+direction,'');
+					self.slides[active].className = self.slides[active].className.replace(' '+direction,'');
 
-
-					if ( self.options.interval !== false && !self.carousel.classList.contains('paused') ){
+					if ( self.options.interval !== false && !/paused/.test(self.carousel.className) ){
 						clearInterval(self.timer); self.cycle();
 					}
 					self.carousel.dispatchEvent(slide) //here we go with the slide
 				}, self.options.duration + 100 );
 			} else {
-				self.slides[next].classList.add('active');
+				self.slides[next].className += ' active';
 				self.slides[next].offsetWidth;
-				self.slides[active].classList.remove('active');
+				self.slides[active].className = self.slides[active].className.replace(' active','');
 				setTimeout(function() {
 					self._addEventListeners();
-					if ( self.options.interval !== false && !self.carousel.classList.contains('paused') ){
+					if ( self.options.interval !== false && !/paused/.test(self.carousel.className) ){
 						clearInterval(self.timer); self.cycle();
 					}
 					self.carousel.dispatchEvent(slide) //here we go with the slide
@@ -663,7 +676,7 @@
 
 });
 
-// Collapse
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -686,12 +699,14 @@
 	// COLLAPSE DEFINITION
 	// ===================
 	var Collapse = function( element, options ) {
+		options = options || {};
+		
 		this.btn = typeof element === 'object' ? element : document.querySelector(element);
 		this.accordion = null;
 		this.collapse = null;
-		this.options = {};
 		this.duration = 300; // default collapse transition duration
-		this.options.duration = document.documentElement.classList.contains('ie') ? 0 : (options.duration || this.duration);
+		this.options = {};
+		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
 		this.init();
 	}
 
@@ -717,7 +732,7 @@
 				self.btn = self.getTarget(e).btn;
 				self.collapse = self.getTarget(e).collapse;
 
-				if (!self.collapse.classList.contains('in')) {
+				if (!/in/.test(self.collapse.className)) {
 					self.open(e)
 				} else {
 					self.close(e)
@@ -728,7 +743,7 @@
 				self.btn = self.getTarget(e).btn;
 				self.collapse = self.getTarget(e).collapse;
 				self._close(self.collapse);
-				self.btn.classList.remove('collapsed');
+				self.btn.className = self.btn.className.replace(' collapsed','');
 			},
 			this.open = function(e) {
 				e.preventDefault();
@@ -737,7 +752,7 @@
 				self.accordion = self.btn.getAttribute('data-parent') && self.getClosest(self.btn, self.btn.getAttribute('data-parent'));
 
 				self._open(self.collapse);
-				self.btn.classList.add('collapsed');
+				self.btn.className += ' collapsed';
 
 				if ( self.accordion !== null ) {
 					var active = self.accordion.querySelectorAll('.collapse.in'), al = active.length, i = 0;
@@ -748,14 +763,13 @@
 			},
 			this._open = function(c) {
 
-				c.classList.add('in');
+				c.className += ' in';
 				c.style.height = 0;
 				c.style.overflow = 'hidden';
 				c.setAttribute('area-expanded','true');
 
 				// the collapse MUST have a childElement div to wrap them all inside, just like accordion/well
-				var oh = this.getMaxHeight(c).oh;
-				var br = this.getMaxHeight(c).br;
+				var oh = this.getMaxHeight(c).oh, br = this.getMaxHeight(c).br;
 
 				c.style.height = oh + br + 'px';
 				setTimeout(function() {
@@ -767,21 +781,23 @@
 				c.style.overflow = 'hidden';
 				c.style.height = 0;
 				setTimeout(function() {
-					c.classList.remove('in');
+					c.className = c.className.replace(' in','');
 					c.style.overflow = '';
 					c.setAttribute('area-expanded','false');
 				}, self.options.duration)
 			},
 			this.update = function(e) {
-				var evt = e.type, tg = e.target,
+				var evt = e.type, tg = e.target, closest = self.getClosest(tg,'.collapse'),
 					itms = document.querySelectorAll('.collapse.in'), i = 0, il = itms.length;
 				for (i;i<il;i++) {
-					var itm = itms[i],
-						oh = self.getMaxHeight(itm).oh,
-						br = self.getMaxHeight(itm).br;
-
-					if ( evt === 'resize' || ( evt === 'click' && self.getClosest(tg,'.collapse') === itm ) ) {
-						itm.style.height =  oh + br + 'px'
+					var itm = itms[i], oh = self.getMaxHeight(itm).oh, br = self.getMaxHeight(itm).br;
+					
+					if ( evt === 'resize' && !/ie/.test(document.documentElement.className) ){
+						setTimeout(function() {
+							itm.style.height =  oh + br + 'px';
+						}, self.options.duration)						
+					} else if ( evt === 'click' && closest === itm ) {
+						itm.style.height =  oh + br + 'px';								
 					}
 				}
 			},
@@ -811,19 +827,14 @@
 			this.getClosest = function (el, s) { //el is the element and s the selector of the closest item to find
 			// source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
 				var f = s.charAt(0);
-
 				for ( ; el && el !== document; el = el.parentNode ) {// Get closest match
 
 					if ( f === '.' ) {// If selector is a class
-						if ( el.classList.contains( s.substr(1) ) ) {
-							return el;
-						}
+						if ( document.querySelector(s) !== undefined ) { return el; }
 					}
 
 					if ( f === '#' ) { // If selector is an ID
-						if ( el.id === s.substr(1) ) {
-							return el;
-						}
+						if ( el.id === s.substr(1) ) { return el; }
 					}
 				}
 				return false;
@@ -832,13 +843,13 @@
     }
 
 	var getOuterHeight = function (el) {
-		var s = el.currentStyle || window.getComputedStyle(el);
+		var s = el && el.currentStyle || window.getComputedStyle(el),
+			mtp = /px/.test(s.marginTop)	? Math.round(s.marginTop.replace('px',''))		: 0,
+			mbp = /px/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('px',''))	: 0,
+			mte = /em/.test(s.marginTop)	? Math.round(s.marginTop.replace('em','')		* parseInt(s.fontSize)) : 0,
+			mbe = /em/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('em','')	* parseInt(s.fontSize)) : 0;
 
-		return el.offsetHeight  //we need an accurate margin value
-			+ parseInt( /px/.test(s.marginTop)		? Math.round(s.marginTop.replace('px',''))		: 0 )
-			+ parseInt( /px/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('px',''))	: 0 )
-			+ parseInt( /em/.test(s.marginTop)		? Math.round(s.marginTop.replace('em','')		* parseInt(s.fontSize)) : 0 )
-			+ parseInt( /em/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('em','')	* parseInt(s.fontSize)) : 0 )
+		return el.offsetHeight + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ) //we need an accurate margin value	
 	}
 
 	// COLLAPSE DATA API
@@ -855,7 +866,7 @@
 		var openedCollapses = document.querySelectorAll('.collapse'), i = 0, ocl = openedCollapses.length;
 		for (i;i<ocl;i++) {
 			var oc = openedCollapses[i];
-			if (oc.classList.contains('in')) {
+			if (/in/.test(oc.className)) {
 				var s = oc.currentStyle || window.getComputedStyle(oc);
 				var oh = getOuterHeight(oc.children[0]);
 				var br = parseInt(s.borderTop||0) + parseInt(s.borderBottom||0);
@@ -868,7 +879,7 @@
 
 });
 
-// Dropdown
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -912,7 +923,12 @@
 
 			self.toggle = function(e) {
 				var target = e.currentTarget || e.srcElement;
-				target.parentNode.classList.toggle('open');
+				if (/open/.test(target.parentNode.className)) {
+					target.parentNode.className = target.parentNode.className.replace(' open','');
+				} else {
+					target.parentNode.className += ' open';
+				}
+				
 				e.preventDefault();
 				return false;
 			}
@@ -921,7 +937,7 @@
 				var target = e.currentTarget || e.srcElement;
 
 				setTimeout(function() { // links inside dropdown-menu don't fire without a short delay
-					target.parentNode.classList.remove('open');
+					target.parentNode.className = target.parentNode.className.replace(' open','');
 				}, 200);
 			}
 		}
@@ -938,7 +954,7 @@
 
 });
 
-// Modal
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -958,19 +974,18 @@
 
 })(function(){
 
-	// MODAL DEFINITION
-	// ================
+	//MODAL DEFINITION
     var Modal = function(element, options) { // element is the trigger button / options.target is the modal
+        options = options || {};
+        
         this.opened = false;
-
         this.modal = typeof element === 'object' ? element : document.querySelector(element);
-
         this.options = {};
 		this.options.backdrop = options.backdrop === 'false' ? false : true;
 		this.options.keyboard = options.keyboard === 'false' ? false : true;
 		this.options.content = options.content;
 		this.duration = options.duration || 300; // the default modal fade duration option
-		this.options.duration = document.documentElement.classList.contains('ie') ? 0 : this.duration;
+		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : this.duration;
 
         this.dialog = this.modal.querySelector('.modal-dialog');
 		this.timer = 0;
@@ -982,10 +997,10 @@
 		if ( this.options.content && this.options.content !== undefined ) {
 			this.content( this.options.content );
 		}
-		this.resize();
 		this.dismiss();
 		this.keydown();
 		this.trigger();
+		if (!/ie8/.test(document.documentElement.className)) { this.resize(); }
 	}
 
     Modal.prototype.open = function() {
@@ -1003,7 +1018,7 @@
 			this.createOverlay();
 		} else { this.overlay = null }
 
-		document.body.classList.add('modal-open');
+		document.body.className += ' modal-open';
 		this.modal.style.display = 'block';
 
 		clearTimeout(self.modal.getAttribute('data-timer'));
@@ -1011,9 +1026,9 @@
 
 			if ( self.overlay !== null ) {
 				self._resize();
-				self.overlay.classList.add('in');
+				self.overlay.className += ' in';
 			}
-			self.modal.classList.add('in');
+			self.modal.className += ' in';
 			self.modal.setAttribute('aria-hidden', false);
 		}, self.options.duration/2);
 		this.modal.setAttribute('data-timer',self.timer);
@@ -1024,11 +1039,11 @@
     Modal.prototype._close = function() {
         var self = this;
 
-        this.modal.classList.remove('in');
+        this.modal.className = this.modal.className.replace(' in','');
 		this.modal.setAttribute('aria-hidden', true);
 
-        if ( this.overlay ) this.overlay.classList.remove('in');
-        document.body.classList.remove('modal-open');
+        if ( this.overlay ) { this.overlay.className = this.overlay.className.replace(' in',''); }
+        document.body.className = document.body.className.replace(' modal-open','');
 
 		clearTimeout(self.modal.getAttribute('data-timer'));
 		this.timer = setTimeout( function() {
@@ -1091,7 +1106,7 @@
 		var self = this, overlay = this.overlay||document.querySelector('.modal-backdrop'),
 			dim = { w: document.documentElement.clientWidth + 'px', h: document.documentElement.clientHeight + 'px' };
 		setTimeout(function() {
-			if ( overlay !== null && overlay.classList.contains('in') ) {
+			if ( overlay !== null && /in/.test(overlay.className) ) {
 				overlay.style.height = dim.h; overlay.style.width = dim.w
 			}
 		}, self.options.duration/2)
@@ -1102,7 +1117,7 @@
 		window.addEventListener('resize',  function() {
 			setTimeout(function() {
 				self._resize()
-			}, 50)
+			}, 100)
 		}, false);
     }
 
@@ -1128,7 +1143,7 @@
 
 });
 
-// Popover
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -1151,6 +1166,8 @@
 	// POPOVER DEFINITION
 	// ===================
 	var Popover = function( element,options ) {
+		options = options || {};
+		
 		this.link = typeof element === 'object' ? element : document.querySelector(element);
 		this.title = this.link.getAttribute('data-title') || null;
 		this.content = this.link.getAttribute('data-content') || null;
@@ -1163,7 +1180,7 @@
 		this.options.delay = parseInt(options.delay) || 100;
 		this.options.dismiss = options.dismiss && options.dismiss === 'true' ? true : false;		
 		this.duration = 150;
-		this.options.duration = document.documentElement.classList.contains('ie') ? 0 : (options.duration || this.duration);
+		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
 		this.options.container = document.body;
 		if ( this.content || this.options.template ) this.init();
 		this.timer = 0 // the link own event timer
@@ -1189,7 +1206,7 @@
 			
 			if (this.options.dismiss) {	document.addEventListener('click', this.dismiss, false); }
 				
-			if (!document.documentElement.classList.contains('ie') && (this.options.trigger === 'focus' || this.options.trigger === 'click') ) {
+			if (!/ie/.test(document.documentElement.className) && (this.options.trigger === 'focus' || this.options.trigger === 'click') ) {
 				window.addEventListener('resize', this.close, false ); } // dismiss on window resize 
 		},
 
@@ -1222,8 +1239,8 @@
 			this.close = function(e) {
 				clearTimeout(self.link.getAttribute('data-timer'));
 				self.timer = setTimeout( function() {
-					if (self.popover && self.popover !== null && self.popover.classList.contains('in')) {
-						self.popover.classList.remove('in');
+					if (self.popover && self.popover !== null && /in/.test(self.popover.className)) {
+						self.popover.className = self.popover.className.replace(' in','');
 						setTimeout(function() {
 							self.removePopover(); // for performance/testing reasons we can keep the popovers if we want
 						}, self.options.duration);
@@ -1333,7 +1350,7 @@
 
 				self.stylePopover(placement);
 
-				self.popover.classList.add('in');
+				self.popover.className += ' in';
 			},
 			this.updatePlacement = function() {
 				var pos = this.options.placement;
@@ -1392,7 +1409,7 @@
 
 });
 
-// ScrollSpy
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -1414,7 +1431,8 @@
 
 	//SCROLLSPY DEFINITION
 	var ScrollSpy = function(element,item,options) {
-
+		options = options || {};
+		
 		//this is the container element we spy it's elements on
 		this.element = typeof element === 'object' ? element : document.querySelector(element);
 
@@ -1458,7 +1476,7 @@
 				this.checkEdges();
 				this.refresh()
 				this.scrollEvent();
-				this.resizeEvent();
+				if (!/ie8/.test(document.documentElement.className)) { this.resizeEvent(); }
 			}
 		},
 		topLimit: function () { // the target offset
@@ -1484,24 +1502,23 @@
 			}
 		},
 		activate: function () {
-			if ( this.parent && this.parent.tagName === 'LI' && !this.parent.classList.contains('active') ) {
-				this.parent.classList.add('active');
+			if ( this.parent && this.parent.tagName === 'LI' && !/active/.test(this.parent.className) ) {
+				this.addClass(this.parent,'active');
 				if ( this.parentParent && this.parentParent.tagName === 'LI' // activate the dropdown as well
-					&& this.parentParent.classList.contains('dropdown')
-					&& !this.parentParent.classList.contains('active') ) { this.parentParent.classList.add('active');}
+					&& /dropdown/.test(this.parentParent.className)
+					&& !/active/.test(this.parentParent.className) ) { this.addClass(this.parentParent,'active'); }
 				this.active = true
 			}
 		},
 		deactivate: function () {
-			if ( this.parent && this.parent.tagName === 'LI' && this.parent.classList.contains('active') ) {
-				this.parent.classList.remove('active');
+			if ( this.parent && this.parent.tagName === 'LI' && /active/.test(this.parent.className) ) {
+				this.removeClass(this.parent,'active');
 				if ( this.parentParent && this.parentParent.tagName === 'LI' // deactivate the dropdown as well
-					&& this.parentParent.classList.contains('dropdown')
-					&& this.parentParent.classList.contains('active') ) { this.parentParent.classList.remove('active'); }
+					&& /dropdown/.test(this.parentParent.className)
+					&& /active/.test(this.parentParent.className) ) { this.removeClass(this.parentParent,'active'); }
 				this.active = false
 			}
 		},
-
 		toggle: function () {
 			if ( this.active === false
 				&& ( this.bottomEdge > this.scrollOffset() && this.scrollOffset() >= this.topEdge )) { //regular use, scroll just entered the element's topLimit or bottomLimit
@@ -1532,11 +1549,18 @@
 		},
 		scrollHeight : function() {
 			if ( this.scrollTarget === window ) {
-				return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight );
+				return Math.max( document.body.scrollHeight, document.body.offsetHeight, 
+					document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight );
 			} else {
 				return this.element.scrollHeight
 			}
-		}
+		},
+		addClass : function(el,c) {	
+			if (el.classList) { el.classList.add(c); } else { el.className += ' '+c; }
+		},
+		removeClass : function(el,c) {
+			if (el.classList) { el.classList.remove(c); } else { el.className = el.className.replace(c,'').replace(/^\s+|\s+$/g,''); }
+		}	
 	};
 
 
@@ -1556,12 +1580,11 @@
 			}
 		}
 	}
-	
+
 	return ScrollSpy;
 
 });
 
-// Tab
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -1584,18 +1607,20 @@
 	// TAB DEFINITION
 	// ===================
 	var Tab = function( element,options ) {
+		options = options || {};
+		
 		this.tab = typeof element === 'object' ? element : document.querySelector(element);
 		this.tabs = this.tab.parentNode.parentNode;
 		this.dropdown = this.tabs.querySelector('.dropdown');
-		if ( this.tabs.classList.contains('dropdown-menu') ) {
+		if ( /dropdown-menu/.test(this.tabs.className) ) {
 			this.dropdown = this.tabs.parentNode;
 			this.tabs = this.tabs.parentNode.parentNode;
 		}
-		this.options = {};
+		this.options = options;
 
 		// default tab transition duration
 		this.duration = 150;
-		this.options.duration = document.documentElement.classList.contains('ie') ? 0 : (options.duration || this.duration);
+		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
 		this.init();
 	}
 
@@ -1604,60 +1629,65 @@
 	Tab.prototype = {
 
 		init : function() {
-			var self = this;
-			self.actions();
-			self.tab.addEventListener('click', self.action, false);
+			this.actions();
+			this.tab.addEventListener('click', this.action, false);
 		},
 
 		actions : function() {
 			var self = this;
 
 			this.action = function(e) {
-				e = e || window.e;
+				e = e || window.e; e.preventDefault();
 				var next = e.target; //the tab we clicked is now the next tab
 				var nextContent = document.getElementById(next.getAttribute('href').replace('#','')); //this is the actual object, the next tab content to activate
-
+				var isDropDown = new RegExp('(?:^|\\s)'+ 'dropdown-menu' +'(?!\\S)');
+				
+				// get current active tab and content
 				var activeTab = self.getActiveTab();
 				var activeContent = self.getActiveContent();
 
-				//toggle "active" class name
-				activeTab.classList.remove('active');
-				next.parentNode.classList.add('active');
-
-				//handle dropdown menu "active" class name
-				if ( !self.tab.parentNode.parentNode.classList.contains('dropdown-menu')){
-					self.dropdown && self.dropdown.classList.remove('active');
-				} else {
-					self.dropdown && self.dropdown.classList.add('active');
+				if ( !/active/.test(next.parentNode.className) ) {
+					// toggle "active" class name
+					self.removeClass(activeTab,'active');
+					self.addClass(next.parentNode,'active');		
+	
+					// handle dropdown menu "active" class name		
+					if ( !(isDropDown.test(self.tab.parentNode.parentNode.className)) ) {
+						if (/active/.test(self.dropdown.className)) self.removeClass(self.dropdown,'active');
+					} else {
+						if (!/active/.test(self.dropdown.className)) self.addClass(self.dropdown,'active');
+					}
+	
+					//1. hide current active content first
+					self.removeClass(activeContent,'in');
+					
+					setTimeout(function() { // console.log(self)
+						//2. toggle current active content from view
+						self.removeClass(activeContent,'active');
+						self.addClass(nextContent,'active');
+					}, self.options.duration);
+					setTimeout(function() {
+						//3. show next active content
+						self.addClass(nextContent,'in');
+					}, self.options.duration*2);
 				}
-
-				//1. hide current active content first
-				activeContent.classList.remove('in');
-
-				setTimeout(function() {
-					//2. toggle current active content from view
-					activeContent.classList.remove('active');
-					nextContent.classList.add('active');
-				}, self.options.duration);
-				setTimeout(function() {
-					//3. show next active content
-					nextContent.classList.add('in');
-				}, self.options.duration*2);
-				e.preventDefault();
 			},
-
+			this.addClass = function(el,c) {
+				if (el.classList) { el.classList.add(c); } else { el.className += ' '+c; }
+			},
+			this.removeClass = function(el,c) {
+				if (el.classList) { el.classList.remove(c); } else { el.className = el.className.replace(c,'').replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,''); }
+			},
 			this.getActiveTab = function() {
-				var activeTabs = self.tabs.querySelectorAll('.active');
-				if ( activeTabs.length === 1 && !activeTabs[0].classList.contains('dropdown') ) {
+				var activeTabs = this.tabs.querySelectorAll('.active');
+				if ( activeTabs.length === 1 && !/dropdown/.test(activeTabs[0].className) ) {
 					return activeTabs[0]
 				} else if ( activeTabs.length > 1 ) {
 					return activeTabs[activeTabs.length-1]
 				}
-
-				console.log(activeTabs.length)
 			},
 			this.getActiveContent = function() {
-				var a = self.getActiveTab().getElementsByTagName('A')[0].getAttribute('href').replace('#','');
+				var a = this.getActiveTab().getElementsByTagName('A')[0].getAttribute('href').replace('#','');
 				return a && document.getElementById(a)
 			}
 		}
@@ -1677,7 +1707,7 @@
 
 });
 
-// Tooltip
+
 (function(factory){
 
 	// CommonJS/RequireJS and "native" compatibility
@@ -1700,6 +1730,8 @@
 	// TOOLTIP DEFINITION
 	// ===================
 	var Tooltip = function( element,options ) {
+		options = options || {};
+		
 		this.link = typeof element === 'object' ? element : document.querySelector(element);
 		this.title = this.link.getAttribute('title') || this.link.getAttribute('data-original-title');
 		this.tooltip = null;
@@ -1709,7 +1741,7 @@
 		this.options.delay = parseInt(options.delay) || 100;
 
 		this.duration = 150;
-		this.options.duration = document.documentElement.classList.contains('ie') ? 0 : (options.duration || this.duration);
+		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
 		this.options.container = options.container || document.body;
 		if ( this.title ) this.init();
 		this.timer = 0 // the link own event timer
@@ -1750,7 +1782,7 @@
 				clearTimeout(self.link.getAttribute('data-timer'));
 				self.timer = setTimeout( function() {
 					if (self.tooltip && self.tooltip !== null) {
-						self.tooltip.classList.remove('in');
+						self.tooltip.className = self.tooltip.className.replace(' in','');
 						setTimeout(function() {
 							self.removeToolTip(); // for performance/testing reasons we can keep the tooltips if we want
 						}, self.options.duration);
@@ -1829,7 +1861,7 @@
 				}
 
 				this.styleTooltip(placement);
-				this.tooltip.classList.add('in');
+				this.tooltip.className += ' in';
 			},
 			this.updatePlacement = function() {
 				var pos = this.options.placement;
