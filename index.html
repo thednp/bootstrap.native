@@ -194,7 +194,7 @@ $ npm install --save bootstrap.native
 	&lt;script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js">&lt;/script>
 &lt;![endif]-->
 </code></pre>
-				<p>As you can see this polyfill combo includes the HTML5 shim for IE8 so make sure you don't miss it. Generally the scripts rely on very few unsupported features, so starting with 0.9.8 versions, some polyfill dependencies have been removed for better usability and reach. The important polyfills are: <code>indexOf</code>, <code>getComputedStyle</code>, <code>Event</code> (includes <code>addEventListener</code> and <code>CustomEvent</code>) and have been packed with <a href="https://github.com/thednp/minifill" target="_blank">minifill</a>. So any of your above choice should do.</p>
+				<p>As you can see this polyfill combo includes the HTML5 shim for IE8 so make sure you don't miss it. Generally the scripts rely on very few unsupported features, so starting with 0.9.8 versions, some polyfill dependencies have been removed for better usability and reach. The important polyfills are: <code>indexOf</code>, <code>getComputedStyle</code>, <code>Event</code> (includes <code>addEventListener</code> and <code>CustomEvent</code>) and have been packed with <a href="https://github.com/thednp/minifill" target="_blank">minifill</a>. Any of the above choice should do, but legacy browsers perform better with minifill.</p>
 				<p><strong>Remember</strong> that the polyfill link(s) must be in your <code>&lt;head></code> so that the browsers can render properly. You can leave it/them there for all the browsers; I really think you should see this example here.</p>
 				
 				<h3>Before you go</h3>
