@@ -640,10 +640,10 @@ new Button(btn,'reset');
 </code></pre>
 					<p>Next we will toggle some checkboxes. You should open your console to test the handler functions bound by the <code>change</code> event of the following checkboxes and radio buttons.</p>
 					<p>
-						<span class="btn-group" data-toggle="buttons">
+						<span id="checkboxButtons" class="btn-group" data-toggle="buttons">
 						  <label class="btn btn-default active">
 							<span class="glyphicon glyphicon-plus-sign"></span>
-							<input type="checkbox" autocomplete="off" checked="checked"> Checkbox 1 (pre-checked)
+							<input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
 						  </label>
 						  <label class="btn btn-default">
 							<span class="glyphicon glyphicon-plus-sign"></span>
@@ -657,14 +657,14 @@ new Button(btn,'reset');
 					</p>
 					<p>Finally we toggle radio buttons.</p>
 					<p>
-						<span class="btn-group" data-toggle="buttons">
+						<span id="radioButtons" class="btn-group" data-toggle="buttons">
 						  <label class="btn btn-default">
 							<span class="glyphicon glyphicon-ok-sign"></span>
 							<input type="radio" name="options" id="option1" autocomplete="off"> Radio 1
 						  </label>
 						  <label class="btn btn-default active">
 							<span class="glyphicon glyphicon-ok-sign"></span>
-							<input type="radio" name="options" id="option2" autocomplete="off" checked="checked"> Radio 2 (preselected)
+							<input type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
 						  </label>
 						  <label class="btn btn-default">
 							<span class="glyphicon glyphicon-ok-sign"></span>
