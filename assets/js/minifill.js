@@ -1,5 +1,4 @@
 // Document
-// HTMLDocument is an extension of Document.  If the browser has HTMLDocument but not Document, the former will suffice as an alias for the latter.
 if (!this.Document){this.Document = this.HTMLDocument; }
 
 // Element
@@ -230,7 +229,7 @@ if (!('CustomEvent' in window) || !('CustomEvent' in Window.prototype)) {
 }
 
 // addEventListener
-if (!window.addEventListener||!Window.prototype.addEventListener) {
+if (!window.addEventListener) {
 	(function (){
 		window.addEventListener = Window.prototype.addEventListener = Document.prototype.addEventListener = Element.prototype.addEventListener = function addEventListener() {
 			var	element = this,
@@ -318,7 +317,7 @@ if (!window.addEventListener||!Window.prototype.addEventListener) {
 }
 
 // Event dispatcher	/ trigger
-if (!window.dispatchEvent||!Window.prototype.dispatchEvent||!Document.prototype.dispatchEvent||!Element.prototype.dispatchEvent) {
+if (!window.dispatchEvent) {
 	(function(){	
 		window.dispatchEvent = Window.prototype.dispatchEvent = Document.prototype.dispatchEvent = Element.prototype.dispatchEvent = function dispatchEvent(event) {
 			if (!arguments.length) {
