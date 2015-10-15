@@ -291,8 +291,9 @@
 		},
 
 		actions : function() {
-			var self = this, isIE = /ie/.test(document.documentElement.className),
-				changeEvent = (('Event' in window) && window.dispatchEvent) ? new Event('change') : null; // The native event that will be triggered on demand for IE
+			var self = this,
+				changeEvent = (('CustomEvent' in window) && window.dispatchEvent) 
+					? new CustomEvent('bs.button.change') : null; // The custom event that will be triggered on demand
 
 			// assign event to a trigger function
 			function triggerChange(t) { if (changeEvent) { t.dispatchEvent(changeEvent); } }
@@ -336,8 +337,8 @@
 						input.getAttribute('checked');						
 						input.removeAttribute('checked');
 					}
-					if (isIE) { triggerChange(input); } //trigger the change for the input
-					if (isIE) { triggerChange(self.btn); } //trigger the change for the btn-group
+					triggerChange(input); //trigger the change for the input
+					triggerChange(self.btn); //trigger the change for the btn-group
 				}
 
 				if ( input.type === 'radio' ) { // radio buttons
@@ -346,7 +347,7 @@
 						input.setAttribute('checked','checked');
 						
 						triggerChange(self.btn); 		
-						if (isIE) { triggerChange(input); } //trigger the change
+						triggerChange(input); //trigger the change
 						
 						for (i;i<ll;i++) {
 							var l = labels[i];
@@ -494,7 +495,7 @@
 			var direction = self.direction;
 			var dr = direction === 'left' ? 'next' : 'prev';
 			var slid = null, slide=null;
-
+			
 			//register events
 			if (('CustomEvent' in window) && window.dispatchEvent) {
 				slid =  new CustomEvent("slid.bs.carousel");
@@ -717,16 +718,28 @@
 			// allows the collapse to expand
 			// ** when window gets resized
 			// ** or via internal clicks handers such as dropwowns or any other
-			document.addEventListener('click', this.update, false);
-			window.addEventListener('resize', this.update, false)
+			window.addEventListener('resize', this.update, false);	
 		},
 
 		actions : function() {
 			var self = this;
+			var getOuterHeight = function (el) {
+				var s = el && el.currentStyle || window.getComputedStyle(el), // the getComputedStyle polyfill would do this for us, but we want to make sure it does
+					btp = s.borderTopWidth || 0,
+					mtp = /px/.test(s.marginTop)	? Math.round(s.marginTop.replace('px',''))		: 0,
+					mbp = /px/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('px',''))	: 0,
+					mte = /em/.test(s.marginTop)	? Math.round(s.marginTop.replace('em','')		* parseInt(s.fontSize)) : 0,
+					mbe = /em/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('em','')	* parseInt(s.fontSize)) : 0;
+		
+				return el.clientHeight + parseInt( btp ) + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ) //we need an accurate margin value
+			};			
 
 			this.toggle = function(e) {
+				var tg = false;				
 				self.btn = self.getTarget(e).btn;
 				self.collapse = self.getTarget(e).collapse;
+				
+				if (!tg){self.collapse.addEventListener('click', self.update, false); tg = true;}
 
 				if (!/in/.test(self.collapse.className)) {
 					self.open(e)
@@ -757,54 +770,45 @@
 					}
 				}
 			},
-			this._open = function(c) {
-
-				c.className += ' in';
-				c.style.height = 0;
-				c.style.overflow = 'hidden';
+			this._open = function(c) {				
+				c.className += ' in';							
 				c.setAttribute('area-expanded','true');
-
-				// the collapse MUST have a childElement div to wrap them all inside, just like accordion/well
-				var oh = this.getMaxHeight(c).oh, br = this.getMaxHeight(c).br;
-
-				c.style.height = oh + br + 'px';
-				setTimeout(function() {
-					c.style.overflow = '';
-				}, self.options.duration)
+				
+				c.style.height = '0px';
+				var ch = this.getMaxHeight(c);
+				this._resize(c,ch);
 			},
 			this._close = function(c) {
-
-				c.style.overflow = 'hidden';
-				c.style.height = 0;
+				c.setAttribute('area-expanded','false');
+				c.className += ' collapsing';
+				c.style.overflowY = 'hidden';
+				c.style.height = '0px';
 				setTimeout(function() {
-					c.className = c.className.replace(' in','');
-					c.style.overflow = '';
-					c.setAttribute('area-expanded','false');
+					c.style.overflowY = '';
+					c.className = c.className.replace(' in collapsing','');					
 				}, self.options.duration)
 			},
 			this.update = function(e) {
-				var evt = e.type, tg = e.target, closest = self.getClosest(tg,'.collapse'),
-					itms = document.querySelectorAll('.collapse.in'), i = 0, il = itms.length;
-				for (i;i<il;i++) {
-					var itm = itms[i], oh = self.getMaxHeight(itm).oh, br = self.getMaxHeight(itm).br;
-					
-					if ( evt === 'resize' && !/ie/.test(document.documentElement.className) ){
-						setTimeout(function() {
-							itm.style.height =  oh + br + 'px';
-						}, self.options.duration)						
-					} else if ( evt === 'click' && closest === itm ) {
-						itm.style.height =  oh + br + 'px';								
-					}
+				var evt = e.type, itms = document.querySelectorAll('.collapse.in'), i = 0, il = itms.length;				
+				if ( evt === 'resize' && !/ie/.test(document.documentElement.className) ) {
+					for (i;i<il;i++) {
+						self._resize(itms[i],self.getMaxHeight(itms[i]))
+					}						
+				} else if ( evt === 'click' ) {
+					self._resize(this,self.getMaxHeight(this))
 				}
 			},
+			this._resize = function(l,h) { // set new resize
+				l.className += ' collapsing';
+				l.style.overflowY = 'hidden';				
+				l.style.height = h + 'px';				
+				setTimeout(function() {
+					l.style.overflowY = '';	
+					l.className = l.className.replace(' collapsing','');
+				}, self.options.duration+50)				
+			},
 			this.getMaxHeight = function(l) { // get collapse trueHeight and border
-				var t = l.children[0];
-				var cs = l.currentStyle || window.getComputedStyle(l);
-
-				return {
-					oh : getOuterHeight(t),
-					br : parseInt(cs.borderTop||0) + parseInt(cs.borderBottom||0)
-				}
+				return getOuterHeight(l.children[0]);
 			},
 			this.getTarget = function(e) {
 				var t = e.currentTarget || e.srcElement,
@@ -824,29 +828,29 @@
 			// source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
 				var f = s.charAt(0);
 				for ( ; el && el !== document; el = el.parentNode ) {// Get closest match
-
 					if ( f === '.' ) {// If selector is a class
 						if ( document.querySelector(s) !== undefined ) { return el; }
 					}
-
 					if ( f === '#' ) { // If selector is an ID
 						if ( el.id === s.substr(1) ) { return el; }
 					}
 				}
 				return false;
-			}
+			};
+			
+			//we must add the height to the pre-opened collapses
+			window.addEventListener('load', function() {
+				var openedCollapses = document.querySelectorAll('.collapse'), i = 0, ocl = openedCollapses.length;
+				for (i;i<ocl;i++) {
+					var oc = openedCollapses[i];
+					if (oc && /in/.test(oc.className)) {
+						var ch = getOuterHeight(oc.children[0]);
+						oc.style.height = ch + 'px';
+					}
+				}
+			});						
 		}
     }
-
-	var getOuterHeight = function (el) {
-		var s = el && el.currentStyle || window.getComputedStyle(el),
-			mtp = /px/.test(s.marginTop)	? Math.round(s.marginTop.replace('px',''))		: 0,
-			mbp = /px/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('px',''))	: 0,
-			mte = /em/.test(s.marginTop)	? Math.round(s.marginTop.replace('em','')		* parseInt(s.fontSize)) : 0,
-			mbe = /em/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('em','')	* parseInt(s.fontSize)) : 0;
-
-		return el.offsetHeight + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ) //we need an accurate margin value	
-	}
 
 	// COLLAPSE DATA API
 	// =================
@@ -856,20 +860,6 @@
 		options.duration = item.getAttribute('data-duration');
 		new Collapse(item,options);
 	}
-
-	//we must add the height to the pre-opened collapses
-	window.addEventListener('load', function() {
-		var openedCollapses = document.querySelectorAll('.collapse'), i = 0, ocl = openedCollapses.length;
-		for (i;i<ocl;i++) {
-			var oc = openedCollapses[i];
-			if (/in/.test(oc.className)) {
-				var s = oc.currentStyle || window.getComputedStyle(oc);
-				var oh = getOuterHeight(oc.children[0]);
-				var br = parseInt(s.borderTop||0) + parseInt(s.borderBottom||0);
-				oc.style.height = oh + br + 'px';
-			}
-		}
-	});
 
 	return Collapse;
 
@@ -1477,14 +1467,14 @@
 		},
 		topLimit: function () { // the target offset
 			if ( this.scrollTarget === window ) {
-				return this.tg.getBoundingClientRect().top + this.scrollOffset()
+				return this.tg.getBoundingClientRect().top + this.scrollOffset() - 5
 			} else {
 				return this.tg.offsetTop;
 			}
 
 		},
 		bottomLimit: function () {
-			return this.topLimit() + this.tg.offsetHeight
+			return this.topLimit() + this.tg.clientHeight
 		},
 		checkEdges: function () {
 			this.topEdge = this.topLimit();
@@ -1580,6 +1570,7 @@
 	return ScrollSpy;
 
 });
+
 
 (function(factory){
 

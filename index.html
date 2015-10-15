@@ -686,30 +686,20 @@ new Button(btn,'reset');
 &lt;/div&gt;
 </code></pre>					
 
-					<p>The <code>../assets/js/scripts.js</code> file has some console log functions bound by the change of the <code>.btn-group</code> components.</p>
-<pre><code class="language-javascript">//grab all checkboxes
-var checkBtns = document.querySelectorAll('input[type="checkbox"]'); 
-
-//attach a handler to first
-checkBtns[0].addEventListener('change',function() {
-	// do your stuff when first checkbox changes	
-})
-
-// OR
-//attach a handler to the first btn-group
-document.querySelectorAll('[data-toggle="buttons"]')[0].addEventListener('change', function(e) {
-	console.log( 'The button group with checkboxes inside changed' );
-	//do your stuff when btn-group changed
-});	
+					<p>The <code>../assets/js/scripts.js</code> file has some console log functions bound by the change of the <code>.btn-group</code> components. When using polyfills and since the <code>change</code> event isn't fired properly on legacy browsers, you can make use of the custom <code>bs.button.change</code> event to bind into context other functions. Example:</p>
+<pre><code class="language-javascript">//let's do some custom binding action
+myCheckBoxesGroup.addEventListener('bs.button.change', function() { 
+	// do something when anything inside the btn-group changes	
+});
+myRadioInput.addEventListener('bs.button.change',function() {
+	// do something only when this specific input changes
+});
 </code></pre>					
 				
 					<h4>Additional Notes</h4>
-					<p>
-						Button will activate automatically for all <code>.btn-group</code> component instances if they have <code>data-toggle="buttons"</code> and the appropriate input elements inside like our examples here.
-						The script properly covers the "change" event for checkbox and radio buttons, allowing other functions to bind into context. The event is also bound to the <code>.btn-group</code> component. 
-						The script doesn't have any method to control it's toggle functions for checkbox and radio buttons as described by the documentation of the original plugin.
-					</p>
-					<p>Button also doesn't cover <a href="http://getbootstrap.com/javascript/#buttons-single-toggle" target="_blank">single toggle</a>.</p>
+					<p>Button will activate automatically for all <code>.btn-group</code> component instances if they have <code>data-toggle="buttons"</code> and the appropriate input elements inside like our examples here.</p>
+					<p>The script properly covers the "change" event for checkbox and radio buttons, but via a custom event called <code>bs.button.change</code>, allowing other functions to bind into context. The event is also bound to the <code>.btn-group</code> component, but to use it, you have to use polyfills for legacy browsers.</p>
+					<p>The script doesn't have any method to control it's toggle functions for checkbox and radio buttons as described by the documentation of the original plugin.	Button also doesn't cover <a href="http://getbootstrap.com/javascript/#buttons-single-toggle" target="_blank">single toggle</a>.</p>
 
 				</section>
 				
@@ -855,6 +845,7 @@ mainSlider.addEventListener('slide.bs.carousel', function(e) {
 </code></pre>
 					<h4>Additional Notes</h4>
 					<p>Carousel does not use DATA API for previous and next navigation controls, which means you can ignore <code>data-slide="prev"</code> and <code>data-slide="next"</code> attributes, but they must have at least <code>class="carousel-control"</code>.</p>
+					<p>The script properly covers both the original custom events <code>slid.bs.carousel</code> and <code>slide.bs.carousel</code>, allowing other functions to bind into context. To use it, you have to use polyfills for legacy browsers.</p>
 				</section>
 				
 				<section id="exampleAffix">

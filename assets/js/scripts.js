@@ -116,24 +116,23 @@ mainSlider.addEventListener('slide.bs.carousel', function(e) {
 });
 
 //demo for Button toggle
-var radioBtns = document.querySelectorAll('[name="options"]'); // radios
 var checkBtns = document.querySelectorAll('input[type="checkbox"]'); // checkboxes
+var radioBtns = document.querySelectorAll('input[type="radio"]'); // radios
 
-document.querySelectorAll('[data-toggle="buttons"]')[0].addEventListener('change', function(e) {
-	console.log( 'The button group with checkboxes inside changed, and you see this 3 times because there are 3 buttons inside the group' );	
+document.getElementById('checkboxButtons').addEventListener('bs.button.change', function() { // checkboxes group
+	console.log( 'The button group with CHECKBOXES changed' );	
 });
-document.querySelectorAll('[data-toggle="buttons"]')[1].addEventListener('change', function(e) {
-	console.log( 'The button group with radios inside changed' );	
-});
-
-radioBtns[0].addEventListener('change', function(e) {
-	console.log( 'This handler is bound by the "change" of the first radio button only.' );	
+checkBtns[0].addEventListener('bs.button.change',function() {
+	console.log( 'Hopa! This handler is bound by the "change" of the FIRST CHECKBOX only.' );	
 });
 
-checkBtns[0].addEventListener('change',function() {
-	console.log( 'Hopa! The first checkbox changed! This handler is bound by the "change" of the first checkbox only.' );	
-})
+document.getElementById('radioButtons').addEventListener('bs.button.change', function() { // radios group
+	console.log( 'The button group with RADIOS changed' );	
+});
 
+radioBtns[0].addEventListener('bs.button.change', function() {
+	console.log( 'This handler is bound by the "change" of the FIRST RADIO button only.' );	
+});
 
 /* side-nav autoresize on window scroll and resize */
 if ( document.documentElement && !/ie/.test(document.documentElement.className) ) {
