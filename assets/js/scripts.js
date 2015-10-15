@@ -119,19 +119,19 @@ mainSlider.addEventListener('slide.bs.carousel', function(e) {
 var checkBtns = document.querySelectorAll('input[type="checkbox"]'); // checkboxes
 var radioBtns = document.querySelectorAll('input[type="radio"]'); // radios
 
-document.getElementById('checkboxButtons').addEventListener('change', function() { // checkboxes group
+document.getElementById('checkboxButtons').addEventListener('bs.button.change', function() { // checkboxes group
 	console.log( 'The button group with CHECKBOXES changed' );	
 });
-checkBtns[0].addEventListener('change',function() {
-	console.log( 'Hopa! The first CHECKBOX changed! This handler is bound by the "change" of the first CHECKBOX only.' );	
+checkBtns[0].addEventListener('bs.button.change',function() {
+	console.log( 'Hopa! This handler is bound by the "change" of the FIRST CHECKBOX only.' );	
 });
 
-document.getElementById('radioButtons').addEventListener('change', function() { // radios group
+document.getElementById('radioButtons').addEventListener('bs.button.change', function() { // radios group
 	console.log( 'The button group with RADIOS changed' );	
 });
 
-radioBtns[0].addEventListener('change', function() {
-	console.log( 'This handler is bound by the "change" of the first RADIO button only.' );	
+radioBtns[0].addEventListener('bs.button.change', function() {
+	console.log( 'This handler is bound by the "change" of the FIRST RADIO button only.' );	
 });
 
 /* side-nav autoresize on window scroll and resize */
