@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3
+// Native Javascript for Bootstrap 3 | Affix
 // by dnp_theme
 
 (function(factory){
@@ -167,6 +167,8 @@
 	return Affix;
 });
 
+// Native Javascript for Bootstrap 3 | Alert
+// by dnp_theme
 
 (function(factory){
 
@@ -235,6 +237,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Button
+// by dnp_theme
 
 (function(factory){
 
@@ -386,6 +390,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Carousel
+// by dnp_theme
 
 (function(factory){
 
@@ -673,6 +679,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Collapse
+// by dnp_theme
 
 (function(factory){
 
@@ -697,7 +705,7 @@
 	// ===================
 	var Collapse = function( element, options ) {
 		options = options || {};
-		
+
 		this.btn = typeof element === 'object' ? element : document.querySelector(element);
 		this.accordion = null;
 		this.collapse = null;
@@ -705,7 +713,7 @@
 		this.options = {};
 		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
 		this.init();
-	}
+	};
 
 	// COLLAPSE METHODS
 	// ================
@@ -718,7 +726,7 @@
 			// allows the collapse to expand
 			// ** when window gets resized
 			// ** or via internal clicks handers such as dropwowns or any other
-			window.addEventListener('resize', this.update, false);	
+			window.addEventListener('resize', this.update, false);
 		},
 
 		actions : function() {
@@ -730,21 +738,21 @@
 					mbp = /px/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('px',''))	: 0,
 					mte = /em/.test(s.marginTop)	? Math.round(s.marginTop.replace('em','')		* parseInt(s.fontSize)) : 0,
 					mbe = /em/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('em','')	* parseInt(s.fontSize)) : 0;
-		
-				return el.clientHeight + parseInt( btp ) + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ) //we need an accurate margin value
-			};			
+
+				return el.clientHeight + parseInt( btp ) + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ); //we need an accurate margin value
+			};
 
 			this.toggle = function(e) {
-				var tg = false;				
+				var tg = false;
 				self.btn = self.getTarget(e).btn;
 				self.collapse = self.getTarget(e).collapse;
-				
+
 				if (!tg){self.collapse.addEventListener('click', self.update, false); tg = true;}
 
 				if (!/in/.test(self.collapse.className)) {
-					self.open(e)
+					self.open(e);
 				} else {
-					self.close(e)
+					self.close(e);
 				}
 			},
 			this.close = function(e) {
@@ -766,14 +774,14 @@
 				if ( self.accordion !== null ) {
 					var active = self.accordion.querySelectorAll('.collapse.in'), al = active.length, i = 0;
 					for (i;i<al;i++) {
-						if ( active[i] !== self.collapse) self._close(active[i]);						
+						if ( active[i] !== self.collapse) self._close(active[i]);
 					}
 				}
 			},
-			this._open = function(c) {				
-				c.className += ' in';							
+			this._open = function(c) {
+				c.className += ' in';
 				c.setAttribute('area-expanded','true');
-				
+
 				c.style.height = '0px';
 				var ch = this.getMaxHeight(c);
 				this._resize(c,ch);
@@ -785,31 +793,35 @@
 				c.style.height = '0px';
 				setTimeout(function() {
 					c.style.overflowY = '';
-					c.className = c.className.replace(' in collapsing','');					
-				}, self.options.duration)
+					c.className = c.className.replace(' in collapsing','');
+				}, self.options.duration);
 			},
 			this.update = function(e) {
-				var evt = e.type, itms = document.querySelectorAll('.collapse.in'), i = 0, il = itms.length;				
+				var evt = e.type, itms = document.querySelectorAll('.collapse.in'), i = 0, il = itms.length;
 				if ( evt === 'resize' && !/ie/.test(document.documentElement.className) ) {
 					for (i;i<il;i++) {
-						self._resize(itms[i],self.getMaxHeight(itms[i]))
-					}						
+						self._resize(itms[i],self.getMaxHeight(itms[i]));
+					}
 				} else if ( evt === 'click' ) {
-					self._resize(this,self.getMaxHeight(this))
+					self._resize(this,self.getMaxHeight(this));
 				}
 			},
 			this._resize = function(l,h) { // set new resize
 				l.className += ' collapsing';
-				l.style.overflowY = 'hidden';				
-				l.style.height = h + 'px';				
+				l.style.overflowY = 'hidden';
+				l.style.height = h + 'px';
 				setTimeout(function() {
-					l.style.overflowY = '';	
+					l.style.overflowY = '';
 					l.className = l.className.replace(' collapsing','');
-				}, self.options.duration+50)				
+				}, self.options.duration+50);
 			},
 			this.getMaxHeight = function(l) { // get collapse trueHeight and border
-				return getOuterHeight(l.children[0]);
-			},
+        var h = 0;
+        for (var k = 0; k < l.children.length; k++) {
+            h += getOuterHeight(l.children[k]);
+        }
+        return h;
+      },
 			this.getTarget = function(e) {
 				var t = e.currentTarget || e.srcElement,
 					h = t.href && t.getAttribute('href').replace('#',''),
@@ -821,7 +833,7 @@
 				return {
 					btn : t,
 					collapse : c
-				}
+				};
 			},
 
 			this.getClosest = function (el, s) { //el is the element and s the selector of the closest item to find
@@ -837,7 +849,7 @@
 				}
 				return false;
 			};
-			
+
 			//we must add the height to the pre-opened collapses
 			window.addEventListener('load', function() {
 				var openedCollapses = document.querySelectorAll('.collapse'), i = 0, ocl = openedCollapses.length;
@@ -848,9 +860,9 @@
 						oc.style.height = ch + 'px';
 					}
 				}
-			});						
+			});
 		}
-    }
+    };
 
 	// COLLAPSE DATA API
 	// =================
@@ -865,6 +877,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Dropdown
+// by dnp_theme
 
 (function(factory){
 
@@ -940,6 +954,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Modal
+// by dnp_theme
 
 (function(factory){
 
@@ -1129,6 +1145,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Popover
+// by dnp_theme
 
 (function(factory){
 
@@ -1395,6 +1413,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | ScrollSpy
+// by dnp_theme
 
 (function(factory){
 
@@ -1571,6 +1591,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Tab
+// by dnp_theme
 
 (function(factory){
 
@@ -1694,6 +1716,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Tooltip
+// by dnp_theme
 
 (function(factory){
 
