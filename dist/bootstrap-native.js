@@ -332,10 +332,12 @@
 						self.addClass(label,'active');
 						input.getAttribute('checked');					
 						input.setAttribute('checked','checked');
+						input.checked = true;
 					} else {
 						self.removeClass(label,'active');
 						input.getAttribute('checked');						
 						input.removeAttribute('checked');
+						input.checked = false;
 					}
 					triggerChange(input); //trigger the change for the input
 					triggerChange(self.btn); //trigger the change for the btn-group
@@ -345,6 +347,7 @@
 					if ( !input.checked ) { // don't trigger if already active
 						self.addClass(label,'active');
 						input.setAttribute('checked','checked');
+						input.checked = true;
 						
 						triggerChange(self.btn); 		
 						triggerChange(input); //trigger the change
@@ -355,6 +358,7 @@
 								var inp = l.getElementsByTagName('INPUT')[0];
 								self.removeClass(l,'active');
 								inp.removeAttribute('checked');
+								input.checked = false;
 								triggerChange(inp); // trigger the change								
 							}				
 						}
