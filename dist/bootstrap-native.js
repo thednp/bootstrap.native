@@ -140,7 +140,9 @@
 
 		},
 		resizeEvent : function(){
-			var self = this, dl = /ie/.test(document.documentElement.className) ? 500 : 50;
+			var self = this, 
+				isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false, 
+				dl = (isIE && isIE < 10) ? 500 : 50;
 			window.addEventListener('resize', function () {
 				setTimeout(function(){
 					self.updateAffix()
@@ -422,7 +424,8 @@
 
 		// bootstrap carousel default transition duration / option
 		this.duration = 600;
-		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
+		this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 
+		this.options.duration = (this.isIE && this.isIE < 10) ? 0 : (options.duration || this.duration);
 
 		var items = this.carousel.querySelectorAll('.item'), il=items.length; //this is an object
 		this.controls = this.carousel.querySelectorAll('.carousel-control');
@@ -512,7 +515,7 @@
 			self.timer = null;
 			self._curentPage( self.indicators[next] );
 
-			if ( /slide/.test(this.carousel.className) && !/ie/.test(document.documentElement.className) ) {
+			if ( /slide/.test(this.carousel.className) && !(this.isIE && this.isIE < 10) ) {
 				self.slides[next].className += (' '+dr);
 				self.slides[next].offsetWidth;
 				self.slides[next].className += (' '+direction);
@@ -704,13 +707,13 @@
 	// ===================
 	var Collapse = function( element, options ) {
 		options = options || {};
-
+		this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false;
 		this.btn = typeof element === 'object' ? element : document.querySelector(element);
 		this.accordion = null;
 		this.collapse = null;
 		this.duration = 300; // default collapse transition duration
 		this.options = {};
-		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
+		this.options.duration = (this.isIE && this.isIE < 10) ? 0 : (options.duration || this.duration);
 		this.init();
 	};
 
@@ -797,7 +800,7 @@
 			},
 			this.update = function(e) {
 				var evt = e.type, itms = document.querySelectorAll('.collapse.in'), i = 0, il = itms.length;
-				if ( evt === 'resize' && !/ie/.test(document.documentElement.className) ) {
+				if ( evt === 'resize' && !(this.isIE && this.isIE < 9) ) { // only filter for IE8-
 					for (i;i<il;i++) {
 						self._resize(itms[i],self.getMaxHeight(itms[i]));
 					}
@@ -974,7 +977,7 @@
 	//MODAL DEFINITION
     var Modal = function(element, options) { // element is the trigger button / options.target is the modal
         options = options || {};
-        
+        this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 
         this.opened = false;
         this.modal = typeof element === 'object' ? element : document.querySelector(element);
         this.options = {};
@@ -982,7 +985,7 @@
 		this.options.keyboard = options.keyboard === 'false' ? false : true;
 		this.options.content = options.content;
 		this.duration = options.duration || 300; // the default modal fade duration option
-		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : this.duration;
+		this.options.duration = (this.isIE && this.isIE < 10) ? 0 : this.duration;
 
         this.dialog = this.modal.querySelector('.modal-dialog');
 		this.timer = 0;
@@ -997,7 +1000,7 @@
 		this.dismiss();
 		this.keydown();
 		this.trigger();
-		if (!/ie8/.test(document.documentElement.className)) { this.resize(); }
+		if (!(this.isIE && this.isIE < 9)) { this.resize(); } // filter IE9- only
 	}
 
     Modal.prototype.open = function() {
@@ -1164,7 +1167,7 @@
 	// ===================
 	var Popover = function( element,options ) {
 		options = options || {};
-		
+		this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 
 		this.link = typeof element === 'object' ? element : document.querySelector(element);
 		this.title = this.link.getAttribute('data-title') || null;
 		this.content = this.link.getAttribute('data-content') || null;
@@ -1177,7 +1180,7 @@
 		this.options.delay = parseInt(options.delay) || 100;
 		this.options.dismiss = options.dismiss && options.dismiss === 'true' ? true : false;		
 		this.duration = 150;
-		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
+		this.options.duration = (this.isIE && this.isIE < 10) ? 0 : (options.duration || this.duration);
 		this.options.container = document.body;
 		if ( this.content || this.options.template ) this.init();
 		this.timer = 0 // the link own event timer
@@ -1203,7 +1206,7 @@
 			
 			if (this.options.dismiss) {	document.addEventListener('click', this.dismiss, false); }
 				
-			if (!/ie/.test(document.documentElement.className) && (this.options.trigger === 'focus' || this.options.trigger === 'click') ) {
+			if (!(this.isIE && this.isIE < 9) && (this.options.trigger === 'focus' || this.options.trigger === 'click') ) {
 				window.addEventListener('resize', this.close, false ); } // dismiss on window resize 
 		},
 
@@ -1434,7 +1437,7 @@
 		this.element = typeof element === 'object' ? element : document.querySelector(element);
 
 		this.options = {};
-
+		this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false;
 		// this is the UL menu component our scrollSpy object will target, configure and required by the container element
 		this.options.target = options.target ? (typeof options.target === 'object' ? options.target : document.querySelector(options.target)) : null;
 
@@ -1473,7 +1476,7 @@
 				this.checkEdges();
 				this.refresh()
 				this.scrollEvent();
-				if (!/ie8/.test(document.documentElement.className)) { this.resizeEvent(); }
+				if (!(this.isIE && this.isIE < 9)) { this.resizeEvent(); }
 			}
 		},
 		topLimit: function () { // the target offset
@@ -1606,7 +1609,7 @@
 	// ===================
 	var Tab = function( element,options ) {
 		options = options || {};
-		
+		this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 		
 		this.tab = typeof element === 'object' ? element : document.querySelector(element);
 		this.tabs = this.tab.parentNode.parentNode;
 		this.dropdown = this.tabs.querySelector('.dropdown');
@@ -1618,7 +1621,7 @@
 
 		// default tab transition duration
 		this.duration = 150;
-		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
+		this.options.duration = (this.isIE && this.isIE < 10)  ? 0 : (options.duration || this.duration);
 		this.init();
 	}
 
@@ -1737,9 +1740,9 @@
 		this.options.animation = options.animation && options.animation !== 'fade' ? options.animation : 'fade';
 		this.options.placement = options.placement ? options.placement : 'top';
 		this.options.delay = parseInt(options.delay) || 100;
-
+		this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false;
 		this.duration = 150;
-		this.options.duration = /ie/.test(document.documentElement.className) ? 0 : (options.duration || this.duration);
+		this.options.duration = this.isIE && this.isIE < 10 ? 0 : (options.duration || this.duration);
 		this.options.container = options.container || document.body;
 		if ( this.title ) this.init();
 		this.timer = 0 // the link own event timer
