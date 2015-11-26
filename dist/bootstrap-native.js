@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3
+// Native Javascript for Bootstrap 3 | Affix
 // by dnp_theme
 
 (function(factory){
@@ -169,6 +169,8 @@
 	return Affix;
 });
 
+// Native Javascript for Bootstrap 3 | Alert
+// by dnp_theme
 
 (function(factory){
 
@@ -237,6 +239,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Button
+// by dnp_theme
 
 (function(factory){
 
@@ -350,7 +354,6 @@
 						self.addClass(label,'active');
 						input.setAttribute('checked','checked');
 						input.checked = true;
-						
 						triggerChange(self.btn); 		
 						triggerChange(input); //trigger the change
 						
@@ -360,7 +363,7 @@
 								var inp = l.getElementsByTagName('INPUT')[0];
 								self.removeClass(l,'active');
 								inp.removeAttribute('checked');
-								input.checked = false;
+								inp.checked = false;
 								triggerChange(inp); // trigger the change								
 							}				
 						}
@@ -392,6 +395,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Carousel
+// by dnp_theme
 
 (function(factory){
 
@@ -680,7 +685,6 @@
 
 });
 
-
 // Native Javascript for Bootstrap 3 | Collapse
 // by dnp_theme
 
@@ -733,16 +737,7 @@
 
 		actions : function() {
 			var self = this;
-			var getOuterHeight = function (el) {
-				var s = el && el.currentStyle || window.getComputedStyle(el), // the getComputedStyle polyfill would do this for us, but we want to make sure it does
-					btp = s.borderTopWidth || 0,
-					mtp = /px/.test(s.marginTop)	? Math.round(s.marginTop.replace('px',''))		: 0,
-					mbp = /px/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('px',''))	: 0,
-					mte = /em/.test(s.marginTop)	? Math.round(s.marginTop.replace('em','')		* parseInt(s.fontSize)) : 0,
-					mbe = /em/.test(s.marginBottom)	? Math.round(s.marginBottom.replace('em','')	* parseInt(s.fontSize)) : 0;
-
-				return el.clientHeight + parseInt( btp ) + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ); //we need an accurate margin value
-			};
+			var currHeight = -1;
 
 			this.toggle = function(e) {
 				var tg = false;
@@ -789,12 +784,16 @@
 				this._resize(c,ch);
 			},
 			this._close = function(c) {
-				c.setAttribute('area-expanded','false');
-				c.className += ' collapsing';
-				c.style.overflowY = 'hidden';
-				c.style.height = '0px';
+                var ch = self.getMaxHeight(c);
+                c.style.height = ch + 'px';
+
+                setTimeout(function () {
+                    c.setAttribute('area-expanded','false');
+                    c.className += ' collapsing';
+                    c.style.overflow = 'hidden';
+                    c.style.height = '0px';
+                }, 1);
 				setTimeout(function() {
-					c.style.overflowY = '';
 					c.className = c.className.replace(' in collapsing','');
 				}, self.options.duration);
 			},
@@ -805,24 +804,25 @@
 						self._resize(itms[i],self.getMaxHeight(itms[i]));
 					}
 				} else if ( evt === 'click' ) {
-					self._resize(this,self.getMaxHeight(this));
+					var maxHeight = self.getMaxHeight(this);
+					if (maxHeight !== currHeight) {
+						self._resize(this, maxHeight);
+					}
 				}
 			},
 			this._resize = function(l,h) { // set new resize
+				currHeight = h;
 				l.className += ' collapsing';
-				l.style.overflowY = 'hidden';
+				l.style.overflow = 'hidden';
 				l.style.height = h + 'px';
 				setTimeout(function() {
-					l.style.overflowY = '';
+					l.style.overflow = null;
+					l.style.height = null;
 					l.className = l.className.replace(' collapsing','');
 				}, self.options.duration+50);
 			},
 			this.getMaxHeight = function(l) { // get collapse trueHeight and border
-				var h = 0;
-				for (var k = 0; k < l.children.length; k++) {
-					h += getOuterHeight(l.children[k]);
-				}
-				return h;
+				return l.scrollHeight;
 			},
 			this.getTarget = function(e) {
 				var t = e.currentTarget || e.srcElement,
@@ -858,7 +858,7 @@
 				for (i;i<ocl;i++) {
 					var oc = openedCollapses[i];
 					if (oc && /in/.test(oc.className)) {
-						var ch = getOuterHeight(oc.children[0]);
+						var ch = self.getMaxHeight(oc);
 						oc.style.height = ch + 'px';
 					}
 				}
@@ -879,6 +879,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Dropdown
+// by dnp_theme
 
 (function(factory){
 
@@ -954,6 +956,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Modal
+// by dnp_theme
 
 (function(factory){
 
@@ -1143,6 +1147,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Popover
+// by dnp_theme
 
 (function(factory){
 
@@ -1409,6 +1415,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | ScrollSpy
+// by dnp_theme
 
 (function(factory){
 
@@ -1585,6 +1593,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Tab
+// by dnp_theme
 
 (function(factory){
 
@@ -1609,7 +1619,7 @@
 	// ===================
 	var Tab = function( element,options ) {
 		options = options || {};
-		this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 		
+		this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 
 		this.tab = typeof element === 'object' ? element : document.querySelector(element);
 		this.tabs = this.tab.parentNode.parentNode;
 		this.dropdown = this.tabs.querySelector('.dropdown');
@@ -1708,6 +1718,8 @@
 
 });
 
+// Native Javascript for Bootstrap 3 | Tooltip
+// by dnp_theme
 
 (function(factory){
 
