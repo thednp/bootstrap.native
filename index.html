@@ -185,28 +185,28 @@ $ npm install --save bootstrap.native
 </code></pre>					
 				
 				<h3>Browser Support</h3>
-				<p>The scripts are tested to work perfect in all major browsers, and legacy browsers starting with <kbd>IE8</kbd>. Legacy browsers don't support CSS3 transitions and in order to make legacy browsers behave with the clean and fast code of today's HTML5 standards, make sure you include a polyfill that covers most of the scripts HTML5 code requirements for them. There are many more shims and polyfills out there, but this one below seems best for production websites.</p>
+				<p>The scripts are tested to work perfect in all major browsers, and legacy browsers starting with <kbd>IE8</kbd>. Legacy browsers don't support <a href="http://caniuse.com/#search=css3" target="_blank">CSS3 transitions</a> and in order to make legacy browsers behave with the clean and fast code of today's HTML5 standards, make sure you include a polyfill that covers most of the scripts HTML5 code requirements for them. Out of many shims and polyfills the best for production websites appears to be:</p>
 <pre><code class="language-markup">&lt;script src="https://cdn.polyfill.io/v2/polyfill.min.js">&lt;/script></code></pre>
 
-				<p>OR give this combo a try:</p>
+				<p>Alternativelly, for Native Javascript for Bootstrap I made a lightweight polyfill with most essential features called <a href="https://github.com/thednp/minifill" target="_blank">minifill</a>, and this can be combined with HTML5 shims on IE8 or generally all IE versions, since most of them don't cover support for the standardized <code>Event</code>:</p>
 <pre><code class="language-markup">&lt;!--[if IE]>
-	&lt;script src="https://cdn.jsdelivr.net/minifill/0.0.1/minifill.min.js"> &lt;/script>
+	&lt;script src="https://cdn.jsdelivr.net/minifill/0.0.2/minifill.min.js"> &lt;/script>
 	&lt;script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js">&lt;/script>
 &lt;![endif]-->
 </code></pre>
-				<p>As you can see this polyfill combo includes the HTML5 shim for IE8 so make sure you don't miss it. Generally the scripts rely on very few unsupported features, so starting with 0.9.8 versions, some polyfill dependencies have been removed for better usability and reach. The important polyfills are: <code>indexOf</code>, <code>getComputedStyle</code>, <code>Event</code> (includes <code>addEventListener</code> and <code>CustomEvent</code>) and have been packed with <a href="https://github.com/thednp/minifill" target="_blank">minifill</a>. Any of the above choice should do, but legacy browsers perform better with minifill.</p>
-				<p><strong>Remember</strong> that the polyfill link(s) must be in your <code>&lt;head></code> so that the browsers can render properly. You can leave it/them there for all the browsers; I really think you should see this example here.</p>
+				<p>Generally the scripts rely on very few unsupported features, so starting with 0.9.8 versions, some polyfill dependencies have been removed for better usability and reach. The important polyfills are: <code>indexOf</code>, <code>getComputedStyle</code>, <code>Event</code> (includes <code>addEventListener</code>, <code>CustomEvent</code> and <code>dispatchEvent</code>) and have been packed with <a href="https://github.com/thednp/minifill" target="_blank">minifill</a>. Any of the above choice should do, but apparently legacy browsers perform better with minifill, and the resons why the automated service renders legacy browsers slow is unknown for now.</p>
+				<p><strong>Remember</strong> that the polyfill link(s) must be in your <code>&lt;head></code>, especially the HTML5 shims, so that the legacy browsers can render the content properly. As for minifill, you can leave it there for all the browsers; I really think you should see this example here.</p>
 				
 				<h3>Before you go</h3>
 				<p><strong>All scripts run their specific functions right away</strong>, including Tooltip and Popover, as long as you use properly their DATA API attributes, so all except Button state/text toggle, you need to bind a handler for that, like the <a title="Go to Example" data-toggle="tooltip" href="#exampleButton">example shown here</a>.</p>
 				<p>When a script targets an element via it's <code>ID</code> attribute, we always use <code>getElementById</code>, for obvious performance reasons. The other cases such as Collapse the target can also be invoked via it's <code>className</code> and <code>querySelector</code> is used. Also Collapse features a <code>getClosest</code> function that works this way, and this function requires valid HTML, also make sure to include the shims.</p>
-				<p><strong>Some functions have been dropped</strong> since I personally never found any use of them, but stay calm, each script example below will provide enough you need for the web but also will provide detailed info on that.</p>
+				<p><strong>Some functions have been dropped</strong> since I personally never found any use of them, but stay calm, each script example below will provide enough you need for the web but also will provide detailed info on what's changed.</p>
 				<p>Scripts doing transitions don't make use of any functions to detect <code>transitionend</code>, for performance and other reasons, we all know a fade is 150ms or carousel performs a 600ms slide animation, and most scripts have a simple option for that.</p>
-				<p><strong>Don't use <a href="http://modernizr.com" target="_blank">Modernizr</a> or <a href="https://github.com/scottjehl/Respond" target="_blank">respond.js</a></strong>, they both make legacy browsers unusable. To target specific browsers, there are <a href="http://browserhacks.com/" target="_blank">plenty of options</a>. Also, the best way to target the Microsoft's legacy browsers IE9- is by using their proprietary synthax. All this is to avoid errors or not emulate <code>transitionend</code> when not supported. For these specific reasons you should follow the example given here and add via Javascript the <code>ie ie[version]</code> class to your html tag like this: </p>
+				<p><strong>Don't use <a href="http://modernizr.com" target="_blank">Modernizr</a> or <a href="https://github.com/scottjehl/Respond" target="_blank">respond.js</a></strong>, they both make legacy browsers unusable. To target specific browsers, there are <a href="http://browserhacks.com/" target="_blank">plenty of options</a>. Also, the best way to target the Microsoft's legacy browsers IE9- is by using their proprietary synthax. All this is to avoid errors or not emulate <code>transitionend</code> when not supported. While you could do something like adding via Javascript the <code>ie ie[version]</code> class to your html tag: </p>
 <pre><code class="language-markup">&lt;!--[if IE 8]&gt;&lt;html class="ie ie8" lang="en"&gt;&lt;![endif]--&gt;</code></pre>
 					or simply
 <pre><code class="language-markup">&lt;!--[if lt IE 10]&gt;&lt;html class="ie" lang="en"&gt;&lt;![endif]--&gt;</code></pre>	
-				<p>Since we only need the <code>ie</code> class really, this would do to some extent, but if you care to dig even deeper, <a href="http://www.paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/" target="_blank">here's a full reference</a> on that. Remember: this isn't really a requirement, it's much more <b>optional</b> than you think. Scripts would perform perfect, but tabs for instance would have a 150ms delay of blank space while switching content.</p>
+				<p>starting with version 1.0.0 this is no longer a requirement, but a note for you to learn about the best practices. If you care to dig even deeper into this practice, <a href="http://www.paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/" target="_blank">here's a full reference</a> on that.</p>
 				<p><strong>About that respond.js thing</strong>, <a href="assets/css/bootstrap-ie8.min.css" target="_blank">here is a 2k file</a> of CSS to make your site's layout look normal on IE8. Why? Because CSS is still faster and better in most cases, while the Javascript will heavily handle the browser's resize event, making it unresponsive and unusable.</p>
 
 			</section>
@@ -227,21 +227,20 @@ $ npm install --save bootstrap.native
 					<p>Now let's have a look at some examples and write some more instructions.</p>
 					<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog">
-						  <div class="modal-content">
-							<div class="modal-header">
-							  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-							  <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-							</div>
-							<div class="modal-body">
-							  <h5>Title in a modal</h5>
-							  <p><a href="http://google.cn">This is</a> a link inside modal, est non commodo luctus, nisi erat porttitor ligula.</p>
-							  <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p> 
-							  <p class="text-warning">If you click this <a href="#" data-dismiss="modal">link</a>, you will close this modal.</p><!---->
-							</div>
-							<div class="modal-footer">
-							  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							</div>
-						  </div>
+							<div class="modal-content"> 
+								<div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button> 
+									<h4 class="modal-title" id="myModalLabel">Modal title</h4> 
+								</div> 
+								<div class="modal-body"> <h4>Text in a modal</h4> <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p> 
+									<h4>Popover in a modal</h4> 
+									<p>This <a href="#" style="margin:-5px 0 0 0" role="button" data-toggle="popover" class="btn btn-default popover-test" data-content="And here's some amazing content. It's very engaging. right?" data-title="A Title">button</a> should trigger a popover on click.</p> 
+									<h4>Tooltips in a modal</h4> 
+									<p><a href="#" class="tooltip-test" data-toggle="tooltip" title="Tooltip">This link</a> and <a href="#" data-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p> 
+									<hr> 
+									<h4>Overflowing text to show scroll behavior</h4> 
+									<p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p> <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p> <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p> <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p> <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p> <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p> <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p> <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p> <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p> 
+								</div> 
+								<div class="modal-footer"> <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> <button type="button" class="btn btn-primary">Save changes</button> </div> </div>
 						</div>
 					</div>
 					<div id="myModal1" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModal1Label" aria-hidden="true">
