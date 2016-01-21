@@ -1731,13 +1731,15 @@
 					self.removeClass(activeTab,'active');
 					self.addClass(next.parentNode,'active');		
 	
-					// handle dropdown menu "active" class name		
-					if ( !(isDropDown.test(self.tab.parentNode.parentNode.className)) ) {
-						if (/active/.test(self.dropdown.className)) self.removeClass(self.dropdown,'active');
-					} else {
-						if (!/active/.test(self.dropdown.className)) self.addClass(self.dropdown,'active');
+					// handle dropdown menu "active" class name
+					if ( self.dropdown ) {
+						if ( !(isDropDown.test(self.tab.parentNode.parentNode.className)) ) {
+							if (/active/.test(self.dropdown.className)) self.removeClass(self.dropdown,'active');
+						} else {
+							if (!/active/.test(self.dropdown.className)) self.addClass(self.dropdown,'active');
+						}
 					}
-	
+					
 					//1. hide current active content first
 					self.removeClass(activeContent,'in');
 					
