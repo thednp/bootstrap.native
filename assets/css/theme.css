@@ -1,7 +1,7 @@
 /* REQUIRED STYLING */
 
 /* enables animation for the collapse, has no effect on legacy browsers */
-.collapse { transition: height .3s ease-out; -webkit-transition: height .3s ease-out }
+.collapse { transition: height .3s ease-out; /*-webkit-transition: height .3s ease-out*/ }
 
 /* styles the close button for the dismissible popovers */
 .popover .close { position: absolute; top: 7px; right: 10px; }

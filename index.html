@@ -7,22 +7,22 @@
 <!--[if gte IE 10 | !IE ]><!--> <html lang="en"> <!--<![endif]-->
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The Bootstrap sweetest native Javascript library for vanilla Javascript lovers.">
-    <meta name="keywords" content="Javascript,Native Javascript,native,Bootstrap,plugins,jQuery">
-    <meta name="author" content="dnp_theme">
-    <title>Native Javascript for Bootstrap</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Bootstrap sweetest native Javascript library for vanilla Javascript lovers.">
+  <meta name="keywords" content="Javascript,Native Javascript,native,Bootstrap,plugins,jQuery">
+  <meta name="author" content="dnp_theme">
+  <title>Native Javascript for Bootstrap</title>
 	
-    <!-- Bootstrap 3 core CSS -->
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap 3 core CSS -->
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
-	<!-- Bootstrap 3 for IE8 -->
+	<!-- Bootstrap 3 CSS for IE8 -->
 	<!--[if IE 8]><link href="./assets/css/bootstrap-ie8.min.css" rel="stylesheet"><![endif]-->
 	
-    <!-- Custom styles for this template -->
-    <link href="./assets/css/theme.css" rel="stylesheet">	
+  <!-- Custom styles for this template -->
+  <link href="./assets/css/theme.css" rel="stylesheet">	
 	
 	<!-- Synthax highlighter -->
 	<link href="./assets/css/prism.css" rel="stylesheet">
@@ -31,13 +31,14 @@
 	<link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
 
 	
-    <!-- The automated browser upgrade service provided by Financial Times.	 
+  <!-- The automated browser upgrade service provided by Financial Times.	 
 	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,getComputedStyle|gated"></script> -->
-    <!-- Just use it for all browsers on production websites.	-->
+  <!-- Just use it for all browsers on production websites.	-->
 		
-	<!-- For local testing, you can use this polyfill, does all you need for web	-->  	
-	<script src="./assets/js/minifill.js"> </script>
-		
+	<!-- For local testing, you can use this polyfill, does all you need for web	  	
+	<script src="https://cdn.jsdelivr.net/minifill/0.0.3/minifill.min.js"> </script>	
+	-->
+  <script src="./assets/js/minifill.js"> </script>
 	<!--[if IE]>	
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	<![endif]-->
@@ -67,12 +68,19 @@
 						  <li><a href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a></li>
 					  </ul>
 				  </li>
+				  <li class="dropdown"><a href="#" data-toggle="dropdown">Share <span class="caret"></span></a>
+					  <ul class="dropdown-menu">
+						  <li><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://thednp.github.io/bootstrap.native/index.html" title="Share KUTE.js on Facebook">Facebook</a></li>
+						  <li><a target="_blank" href="https://twitter.com/home?status=Spread the word about @bootstrap.native by @thednp and download here http://thednp.github.io/bootstrap.native/index.html" title="Share KUTE.js on Twitter">Twitter</a></li>
+						  <li><a target="_blank" href="https://plus.google.com/share?url=http://thednp.github.io/bootstrap.native/index.html" title="Share KUTE.js on Google+">Google+</a></li>
+					  </ul>
+				  </li>
 				 </ul>
 			</nav>
 		  </div>
       </div>
     </div>
-
+    
     <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="7000">
       <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -83,7 +91,7 @@
       </ol>
       <div class="carousel-inner">
         <div class="item active">
-          <img src="//placehold.it/900x500/5677fc/5677fc" alt="">
+          <img src="http://placehold.it/900x500/5677fc/5677fc" alt="">
           <div class="container">
             <div class="carousel-caption slide">
               <h2>It's time to go vanilla!</h2>
@@ -93,7 +101,7 @@
           </div>
         </div>
         <div class="item">
-          <img src="//placehold.it/900x500/673ab7/673ab7" alt="">
+          <img src="http://placehold.it/900x500/673ab7/673ab7" alt="">
           <div class="container">
             <div class="carousel-caption">
               <h2>HTML5 please!</h2>
@@ -103,27 +111,27 @@
           </div>
         </div>
         <div class="item">
-          <img src="//placehold.it/900x500/9c27b0/9c27b0" alt="">
+          <img src="http://placehold.it/900x500/9c27b0/9c27b0" alt="">
           <div class="container">
             <div class="carousel-caption">
               <h2>What's the fuzz?</h2>
               <p>If you use mainly Bootstrap plugins in your projects, you may drop jQuery right away. The lazyness of using jQuery has a huge impact on performance. See it to believe it!</p>
-              <p><a class="btn btn-lg btn-default btn-empty" href="//jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">See Now</a></p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">See Now</a></p>
             </div>
           </div>
         </div>
         <div class="item">
-          <img src="//placehold.it/900x500/E91E63/E91E63" alt="">
+          <img src="http://placehold.it/900x500/E91E63/E91E63" alt="">
           <div class="container">
             <div class="carousel-caption">
               <h2>Explore the freedom</h2>
-              <p>Not to worry, the internet is full of scripts and tutorials, <a href="//vanilla-js.com/" target="_blank">native Javascript</a> is literally the coolest thing ever! Far more powerful and requires almost <strong>zero</strong> maintenance on very long periods of time.</p>
-              <p><a class="btn btn-lg btn-default btn-empty" href="//blog.garstasio.com/you-dont-need-jquery/" target="_blank" role="button">Get started</a> <a class="btn btn-lg btn-default btn-empty" href="//jstherightway.org" role="button" target="_blank">Full Reference</a> </p>
+              <p>Not to worry, the internet is full of scripts and tutorials, <a href="http://vanilla-js.com/" target="_blank">native Javascript</a> is literally the coolest thing ever! Far more powerful and requires almost <strong>zero</strong> maintenance on very long periods of time.</p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank" role="button">Get started</a> <a class="btn btn-lg btn-default btn-empty" href="http://jstherightway.org" role="button" target="_blank">Full Reference</a> </p>
             </div>
           </div>
         </div>
         <div class="item">
-          <img src="//placehold.it/900x500/e51c23/e51c23" alt="">
+          <img src="http://placehold.it/900x500/e51c23/e51c23" alt="">
           <div class="container">
             <div class="carousel-caption">
               <h2>This was a Carousel example</h2>
@@ -147,8 +155,8 @@
 			<section id="use">
 				<h2>Use</h2>
 				<h3>Load from CDN</h3>
-				<p>Thanks to <a href="//www.jsdelivr.com/">jsdelivr</a> we have a CDN link, so drop this line before your ending <code>&lt;/body></code> tag. Latest releases <a href="//www.jsdelivr.com/#!bootstrap.native">come here</a>.</p>
-<pre><code class="language-markup">&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.9/bootstrap-native.min.js"&gt;&lt;/script&gt;</code></pre>
+				<p>Thanks to <a href="http://www.jsdelivr.com/">jsdelivr</a> we have a CDN link, so drop this line before your ending <code>&lt;/body></code> tag. Latest releases <a href="http://www.jsdelivr.com/#!bootstrap.native">come here</a>.</p>
+<pre><code class="language-markup">&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"&gt;&lt;/script&gt;</code></pre>
 
 				<p>As most of the scripts manipulate the DOM when ready, there is no need to include a <code>document.ready</code> statement or link the script(s) in the <code>&lt;head&gt;</code>. That's your first performance tip if you are new around here.</p>
 				
@@ -156,17 +164,17 @@
 				<p>If you host the file on your project folders, <a href="https://github.com/thednp/bootstrap.native/archive/master.zip">download the package at github</a>, unpack it, copy the file from the <code>dist/</code> folder into your application's assets folder, then simply drop this line (according to your application assets folders) before your ending <code>&lt;/body></code> tag.</p>
 <pre><code class="language-markup">&lt;script type="text/javascript" src="../assets/js/bootstrap-native.min.js">&lt;/script></code></pre>				
 
-				<p>Alternatively you can link individual scripts, exactly the scripts required for your specific page. The <code>lib</code> folder comes with all scripts in both raw and minified distribution formats, perhaps you are using <a href="//requirejs.org/" target="_blank">require.js</a> or module loaders, check the next section.</p>
+				<p>Alternatively you can link individual scripts, exactly the scripts required for your specific page. The <code>lib</code> folder comes with all scripts in both raw and minified distribution formats, perhaps you are using <a href="http://requirejs.org/" target="_blank">require.js</a> or module loaders, check the next section.</p>
 		
-		<h3>npm, Bower, RequireJS, CommonJS</h3>
-                <p>Thanks to <a href="//ingwie.me/" target="_blank">Ingwie Phoenix</a>, our scripts here can be easily loaded for <code>npm</code>, <code>Bower</code> , <code>RequireJS</code> or <code>CommonJS</code>, so if you are using a module loader, you can also use this package via <code>require()</code> as well. Here's how to do it:</p>
+		    <h3>npm, Bower, RequireJS, CommonJS</h3>
+        <p>Thanks to <a href="http://ingwie.me/" target="_blank">Ingwie Phoenix</a>, our scripts here can be easily loaded for <code>npm</code>, <code>Bower</code> , <code>RequireJS</code> or <code>CommonJS</code>, so if you are using a module loader, you can also use this package via <code>require()</code> as well. Here's how to do it:</p>
 				
 <pre><code class="language-javascript">var bsn = require("bootstrap.native");
 // Create a button:
 var btn = new bsn.Button(...);
 </code></pre>
 
-                <p>This package can be installed using <code>npm</code> or <code>Bower</code> by using either of the commands below. You'll then be able to use the assets from the provided directory.</p>
+        <p>This package can be installed using <code>npm</code> or <code>Bower</code> by using either of the commands below. You'll then be able to use the assets from the provided directory.</p>
 
 <pre><code class="language-clike"># Via bower:
 $ bower install --save bootstrap.native
@@ -176,37 +184,38 @@ $ npm install --save bootstrap.native
 </code></pre>				
 				
 				<h3 id="required_css">Additional Styling</h3>
-				<p>Since we are not using jQuery to do all the <code>.animate()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>collapse</strong> components, so copy this line in your application CSS files. Also the dismissible popovers require some styling for the closing button.</p>
+				<p>Since we are not using jQuery to do all the <code>.slideToggle()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>Collapse</strong> component, so copy this line in your application CSS files. Also the dismissible <strong>Popover</strong> feature require some styling for the closing button.</p>
 <pre><code class="language-clike">/* enables CSS3 transition for simple collapses, accordion and also navbar in responsive view */
-.collapse { transition: height .3s ease-out; -webkit-transition: height .3s ease-out } 
+.collapse { transition: height .3s ease-out; /*-webkit-transition: height .3s ease-out*/ } 
 
 /* styles the close button for the dismissible popovers */
 .popover .close { position: absolute; top: 7px; right: 10px; }
 </code></pre>					
+				<p>In the above CSS rule for <code>.collapse</code> class the webkit variant is commented because there seem to be some bug with most Safari versions, messing up Collapse animation. You must test <a href="https://github.com/thednp/bootstrap.native/issues/45#issuecomment-201085407">how it works</a> with or without it.</p>
 				
 				<h3>Browser Support</h3>
-				<p>The scripts are tested to work perfect in all major browsers, and legacy browsers starting with <kbd>IE8</kbd>. Legacy browsers don't support <a href="//caniuse.com/#search=css3" target="_blank">CSS3 transitions</a> and in order to make legacy browsers behave with the clean and fast code of today's HTML5 standards, make sure you include a polyfill that covers most of the scripts HTML5 code requirements for them. Out of many shims and polyfills the best for production websites appears to be:</p>
+				<p>The scripts are tested to work perfect in all major browsers, and legacy browsers starting with <kbd>IE8</kbd>. Legacy browsers don't support <a href="http://caniuse.com/#search=css3" target="_blank">CSS3 transitions</a> and in order to make legacy browsers behave with the clean and fast code of today's HTML5 standards, make sure you include a polyfill that covers most of the scripts HTML5 code requirements for them. For production websites use:</p>
 <pre><code class="language-markup">&lt;script src="https://cdn.polyfill.io/v2/polyfill.min.js">&lt;/script></code></pre>
 
 				<p>Alternativelly, for Native Javascript for Bootstrap I made a lightweight polyfill with most essential features called <a href="https://github.com/thednp/minifill" target="_blank">minifill</a>, and this can be combined with HTML5 shims on IE8 or generally all IE versions, since most of them don't cover support for the standardized <code>Event</code>:</p>
-<pre><code class="language-markup">&lt;!--[if IE]>
-	&lt;script src="https://cdn.jsdelivr.net/minifill/0.0.2/minifill.min.js"> &lt;/script>
+<pre><code class="language-markup">&lt;script src="https://cdn.jsdelivr.net/minifill/0.0.3/minifill.min.js"> &lt;/script>
+&lt;!--[if IE]>
 	&lt;script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js">&lt;/script>
 &lt;![endif]-->
 </code></pre>
 				<p>Generally the scripts rely on very few unsupported features, so starting with 0.9.8 versions, some polyfill dependencies have been removed for better usability and reach. The important polyfills are: <code>indexOf</code>, <code>getComputedStyle</code>, <code>Event</code> (includes <code>addEventListener</code>, <code>CustomEvent</code> and <code>dispatchEvent</code>) and have been packed with <a href="https://github.com/thednp/minifill" target="_blank">minifill</a>. Any of the above choice should do, but apparently legacy browsers perform better with minifill, and the resons why the automated service renders legacy browsers slow is unknown for now.</p>
-				<p><strong>Remember</strong> that the polyfill link(s) must be in your <code>&lt;head></code>, especially the HTML5 shims, so that the legacy browsers can render the content properly. As for minifill, you can leave it there for all the browsers; I really think you should see this example here.</p>
+				<p><strong>Remember</strong> that the polyfill link(s) must be in your <code>&lt;head></code>, especially the HTML5 shims, so that the legacy browsers can render the content properly. As for minifill, you can leave it there for all the browsers; make sure you check this example page here.</p>
 				
 				<h3>Before you go</h3>
 				<p><strong>All scripts run their specific functions right away</strong>, including Tooltip and Popover, as long as you use properly their DATA API attributes, so all except Button state/text toggle, you need to bind a handler for that, like the <a title="Go to Example" data-toggle="tooltip" href="#exampleButton">example shown here</a>.</p>
 				<p>When a script targets an element via it's <code>ID</code> attribute, we always use <code>getElementById</code>, for obvious performance reasons. The other cases such as Collapse the target can also be invoked via it's <code>className</code> and <code>querySelector</code> is used. Also Collapse features a <code>getClosest</code> function that works this way, and this function requires valid HTML, also make sure to include the shims.</p>
 				<p><strong>Some functions have been dropped</strong> since I personally never found any use of them, but stay calm, each script example below will provide enough you need for the web but also will provide detailed info on what's changed.</p>
 				<p>Scripts doing transitions don't make use of any functions to detect <code>transitionend</code>, for performance and other reasons, we all know a fade is 150ms or carousel performs a 600ms slide animation, and most scripts have a simple option for that.</p>
-				<p><strong>Don't use <a href="//modernizr.com" target="_blank">Modernizr</a> or <a href="https://github.com/scottjehl/Respond" target="_blank">respond.js</a></strong>, they both make legacy browsers unusable. To target specific browsers, there are <a href="//browserhacks.com/" target="_blank">plenty of options</a>. Also, the best way to target the Microsoft's legacy browsers IE9- is by using their proprietary synthax. All this is to avoid errors or not emulate <code>transitionend</code> when not supported. While you could do something like adding via Javascript the <code>ie ie[version]</code> class to your html tag: </p>
+				<p><strong>Don't use <a href="http://modernizr.com" target="_blank">Modernizr</a> or <a href="https://github.com/scottjehl/Respond" target="_blank">respond.js</a></strong>, they both make legacy browsers unusable. To target specific browsers, there are <a href="http://browserhacks.com/" target="_blank">plenty of options</a>. Also, the best way to target the Microsoft's legacy browsers IE9- is by using their proprietary synthax. All this is to avoid errors or not emulate <code>transitionend</code> when not supported. While you could do something like adding via Javascript the <code>ie ie[version]</code> class to your html tag: </p>
 <pre><code class="language-markup">&lt;!--[if IE 8]&gt;&lt;html class="ie ie8" lang="en"&gt;&lt;![endif]--&gt;</code></pre>
 					or simply
 <pre><code class="language-markup">&lt;!--[if lt IE 10]&gt;&lt;html class="ie" lang="en"&gt;&lt;![endif]--&gt;</code></pre>	
-				<p>starting with version 1.0.0 this is no longer a requirement, but a note for you to learn about the best practices. If you care to dig even deeper into this practice, <a href="//www.paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/" target="_blank">here's a full reference</a> on that.</p>
+				<p>starting with version 1.0.0 this is no longer a requirement, but a note for you to learn about the best practices. If you care to dig even deeper into this practice, <a href="http://www.paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/" target="_blank">here's a full reference</a> on that.</p>
 				<p><strong>About that respond.js thing</strong>, <a href="assets/css/bootstrap-ie8.min.css" target="_blank">here is a 2k file</a> of CSS to make your site's layout look normal on IE8. Why? Because CSS is still faster and better in most cases, while the Javascript will heavily handle the browser's resize event, making it unresponsive and unusable.</p>
 
 			</section>
@@ -215,7 +224,7 @@ $ npm install --save bootstrap.native
 			  <h2>Examples</h2>
 				<section id="exampleModal">
 					<h3>Modal</h3>
-					<p>Modal is a great script for displaying special contents in popups, either by using static content or dynamic content by using the template system. Check the examples below and the additional notes for more information.</p>
+					<p><strong>Modal</strong> is a great script for displaying special contents in popups, either by using static content or dynamic content with the help from the template system. Check the examples below and the additional notes for more information.</p>
 					<h4>Options</h4>
 					<ul>
 						<li><b>content</b> - the modal script comes with a template system instead of a load <b>remote</b> content function (Bootstrap 4 drops it). This option is only for Javascript invocation.</li> 
@@ -255,14 +264,14 @@ $ npm install --save bootstrap.native
 						<button id="custom-modal-template" type="button" data-toggle="modal" class="btn btn-default btn-lg" data-target="#myModal1">Launch modal from template</button>
 						<a id="custom-modal-template2" data-toggle="modal" class="btn btn-default btn-lg" href="#myModal1">Same modal, other template</a>
 					</p>
-					<p>The first example above is just about the exact same as the <a href="//getbootstrap.com/javascript/#live-demo" target="_blank">first example at Bootstrap demo page</a>, everything is exactly the same. The next two examples use the Modal template system. Here's how to do:</p>
+					<p>The first example above is just about the exact same as the <a href="http://getbootstrap.com/javascript/#live-demo" target="_blank">first example at Bootstrap demo page</a>, everything is exactly the same. The next two examples use the Modal template system. Here's how to do:</p>
 <pre><code class="language-markup">&lt;!-- first, you need to provide a basic modal structure --&gt;
 &lt;div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"&gt;
-	&lt;div class="modal-dialog"&gt;
-		&lt;div class="modal-content"&gt;
+  &lt;div class="modal-dialog"&gt;
+    &lt;div class="modal-content"&gt;
 
-		&lt;/div&gt;
-	&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
 					<p>The backdrop will be added automatically if not otherwise disabled. Ok now we need a trigger.</p>
@@ -277,37 +286,38 @@ var modalFrame = document.getElementById('myModal');
 // we grab the button trigger by it's ID
 var btnModal = document.getElementById('custom-modal-template'); 
 btnModal.addEventListener('click', function() {
-	//template content for modal example 2, should work for the third button as well
-	var modal2 = new Modal(modalFrame, {
-	content: 
-	'&lt;div class="modal-header"&gt;'
-	+'&lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;×&lt;/span&gt;&lt;/button&gt;'
-	+'&lt;h4 class="modal-title" id="gridModalLabel"&gt;Modal title&lt;/h4&gt;'
-	+'&lt;/div&gt;'
-	+'&lt;div class="modal-body"&gt;'
-	+'&lt;p&gt;This is where you fill up content you know, etc.&lt;/p&gt;'
-	+'&lt;/div&gt;'
-	+'&lt;div class="modal-footer"&gt;'
-	+'&lt;button type="button" class="btn btn-default" data-dismiss="modal"&gt;Close&lt;/button&gt;'
-	+'&lt;button type="button" class="btn btn-primary"&gt;Save changes&lt;/button&gt;'
-	+'&lt;/div&gt;'});
+  //template content for modal example 2, should work for the third button as well
+  var modal2 = new Modal(modalFrame, {
+  content: 
+  '&lt;div class="modal-header"&gt;'
+  +'&lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;&lt;span aria-hidden="true"&gt;×&lt;/span&gt;&lt;/button&gt;'
+  +'&lt;h4 class="modal-title" id="gridModalLabel"&gt;Modal title&lt;/h4&gt;'
+  +'&lt;/div&gt;'
+  +'&lt;div class="modal-body"&gt;'
+  +'&lt;p&gt;This is where you fill up content you know, etc.&lt;/p&gt;'
+  +'&lt;/div&gt;'
+  +'&lt;div class="modal-footer"&gt;'
+  +'&lt;button type="button" class="btn btn-default" data-dismiss="modal"&gt;Close&lt;/button&gt;'
+  +'&lt;button type="button" class="btn btn-primary"&gt;Save changes&lt;/button&gt;'
+  +'&lt;/div&gt;'});
 });
 </code></pre>
-					<p>By changing the <code>innerHTML</code> of <code>the modal-header</code>, <code>modal-body</code> or <code>modal-footer</code> with variables, you can achieve exactly the same as the <a href="//getbootstrap.com/javascript/#modals-related-target" target="_blank">other examples</a> from the demo of the original plugin.</p>
+					<p>By changing the <code>innerHTML</code> of <code>the modal-header</code>, <code>modal-body</code> or <code>modal-footer</code> with variables, you can achieve exactly the same as the <a href="http://getbootstrap.com/javascript/#modals-related-target" target="_blank">other examples</a> from the demo of the original plugin.</p>
 					
 					<h4>Additional Note</h4>
 					<p>
-						Modal has no <a href="//getbootstrap.com/javascript/#modals-events" target="_blank">events attached</a>, such as <code>show.bs.modal</code> or <code>shown.bs.modal</code>, but if devs would need them, you can have a look at the code of carousel, it implements the events just like the original plugin. 
-						Modal also has no <a href="//getbootstrap.com/javascript/#modals-methods" target="_blank">method as described in the documentation</a> of the original script, except the options.
+						Modal has no <a href="http://getbootstrap.com/javascript/#modals-events" target="_blank">events attached</a>, such as <code>show.bs.modal</code> or <code>shown.bs.modal</code>, but if devs would need them, you can have a look at the code of carousel, it implements the events just like the original plugin. 
+						Modal also has no <a href="http://getbootstrap.com/javascript/#modals-methods" target="_blank">method as described in the documentation</a> of the original script, except the options.
 					</p>
 				</section>
 				
 				<section id="exampleDropdown">
 					<h3>Dropdown</h3>
-					<p>Dropdown opens the dropdown-menu on click and closes it on click/blur after a 200ms timeout, to properly handle click on it's menu items, including external links. Dropdown doesn't cover the original <a href="//getbootstrap.com/javascript/#dropdowns-methods" target="_blank">methods</a> or <a href="//getbootstrap.com/javascript/#dropdowns-events" target="_blank">events</a>, it simply toggles the dropdown.</p>
+					<p><strong>Dropdown</strong> opens the dropdown-menu on click and closes it on click/blur after a 200ms timeout, to allow the click event on it's menu items, including external links. Dropdown doesn't cover the original <a href="http://getbootstrap.com/javascript/#dropdowns-methods" target="_blank">methods</a> or <a href="http://getbootstrap.com/javascript/#dropdowns-events" target="_blank">events</a>, but will properly handle all events, especially <code>blur</code>, even for later added dropdown elements.</p>
+			    <p>Above all, the script will also allow users to dismiss the dropdown by pressing the <kbd>Esc</kbd> button.</p>
 
 					<div class="btn-group">
-					  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Simple Dropdown <span class="caret"></span></button>
+					  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false" tabindex="0">Simple Dropdown <span class="caret"></span></button>
 					  <ul class="dropdown-menu" role="menu">
 						<li><a href="#">Action</a></li>
 						<li><a href="#">Another action</a></li>
@@ -318,28 +328,28 @@ btnModal.addEventListener('click', function() {
 					</div>
 					<div class="btn-group">
 					  <button type="button" class="btn btn-default">Split Dropdown</button>
-					  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+					  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false" tabindex="0"><span class="caret"></span></button>
 					  <ul class="dropdown-menu" role="menu">
 						<li><a href="#">Action</a></li>
 						<li><a href="#">Another action</a></li>
 						<li><a href="#">Something else here</a></li>
 						<li class="divider"></li>
-						<li role="presentation"><a role="menuitem" tabindex="-1" href="//google.cn" target="_blank">External link</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.cn" target="_blank">External link</a></li>
 					  </ul>
 					</div>
 					
 					<ul class="nav nav-pills pull-right">
 						<li class="dropdown">
 						  <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">
-							Pill
-							<span class="caret"></span>
+                Pill
+                <span class="caret"></span>
 						  </a>
 						  <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
 							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
 							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
 							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
 							<li role="presentation" class="divider"></li>
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="//google.cn" target="_blank">External link</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.cn" target="_blank">External link</a></li>
 						  </ul>
 						</li>
 						<li class="dropdown">
@@ -352,18 +362,17 @@ btnModal.addEventListener('click', function() {
 							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
 							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
 							<li role="presentation" class="divider"></li>
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="//google.cn" target="_blank">External link</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.cn" target="_blank">External link</a></li>
 						  </ul>
 						</li>
 					</ul>							
-			
 				</section>
 								
 				<section id="exampleScrollspy">	
 					<h3>Scrollspy</h3>
 					<p>
 						<strong>ScrollSpy</strong> requires the element and all it's <code>childNodes</code> to have <code>position: relative</code> and fill the entire area, so it does not work on targeting headings. See the notes below the example. 
-						The script does not cover the original <a href="//getbootstrap.com/javascript/#scrollspy-methods" target="_blank">methods, events or option</a>, can only be controlled via DATA API.
+						The script does not cover the original <a href="http://getbootstrap.com/javascript/#scrollspy-methods" target="_blank">methods, events or option</a>, can only be controlled via DATA API.
 					</p>
 					<div class="alert alert-warning alert-dismissible fade in" role="alert">
 					  <strong>Remember!</strong> The object always targets a <code>.nav</code> component, where the original plugin targets it's wrapper, and this was creating lots of confusion.
@@ -449,7 +458,7 @@ btnModal.addEventListener('click', function() {
 					<h3>Tab</h3>
 					<p>
 						<b>Tab</b> works with any kind of navigation components in Bootstrap as you can see in the example below. 
-						The script only works via DATA API, and has no support for the original <a href="//getbootstrap.com/javascript/#tabs-usage" target="_blank">methods or events</a>. 
+						The script only works via DATA API, and has no support for the original <a href="http://getbootstrap.com/javascript/#tabs-usage" target="_blank">methods or events</a>. 
 						Unlike the original plugin, the animation is smooth because it waits for the current active tab to fade away first before animating the next.
 					</p>
 					<h4>Options</h4>
@@ -459,7 +468,7 @@ btnModal.addEventListener('click', function() {
 						<div style="position: relative">
 					<h4>Example</h4>
 							<div id="tabSwitcher" class="btn-group">
-								<button type="button" class="btn btn-success btn-xs" data-toggle="dropdown">Toggle View</button>
+								<button type="button" class="btn btn-success btn-xs">Toggle View</button>
 								<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
 								<ul class="dropdown-menu pull-right" role="menu">
 								  <li class=""><a href="#" data-nclass="nav nav-tabs">Tabs</a></li>
@@ -530,15 +539,15 @@ var elementsTooltip = document.querySelectorAll('[title]');
 
 // attach a tooltip for each
 for (var i = 0; i < elementsTooltip.length; i++){
-	new Tooltip(elementsTooltip[i], {
-		placement: 'top', //string
-		animation: 'slideNfade', // CSS class
-		duration: 200, // integer
-		delay: 150, // integer
-	})
+  new Tooltip(elementsTooltip[i], {
+    placement: 'top', //string
+    animation: 'slideNfade', // CSS class
+    duration: 200, // integer
+    delay: 150, // integer
+  })
 }
 </code></pre>
-					<p>Tooltip always uses the <code>document.body</code> as the containe and doesn't cover template system like the original, and remember that it can do automatic placement without any additional options.</p>
+        <p>Tooltip always uses the <code>document.body</code> as the containe and doesn't cover template system like the original, and remember that it can do automatic placement without any additional options.</p>
 					
 				</section>
 				
@@ -576,12 +585,12 @@ var someContentFromOuterSpace = '&lt;p&gt;Some sample message.&lt;/p&gt;';
 
 //initiate Popover with the template
 var popover2 = new Popover('.popover-via-template', { // where .popover-via-template is the text input
-	trigger: 'focus',
-	template: '&lt;div class="popover" role="tooltip"&gt;'
-	+ '&lt;div class="arrow"&gt;&lt;/div&gt;'
-	+ '&lt;h3 class="popover-title"&gt;'+someTitleFromOtherCode+'&lt;/h3&gt;'
-	+ '&lt;div class="popover-content"&gt;'+someContentFromOuterSpace+'&lt;/div&gt;'
-	+ '&lt;/div&gt;'
+  trigger: 'focus',
+  template: '&lt;div class="popover" role="tooltip"&gt;'
+  + '&lt;div class="arrow"&gt;&lt;/div&gt;'
+  + '&lt;h3 class="popover-title"&gt;'+someTitleFromOtherCode+'&lt;/h3&gt;'
+  + '&lt;div class="popover-content"&gt;'+someContentFromOuterSpace+'&lt;/div&gt;'
+  + '&lt;/div&gt;'
 });	
 </code></pre>					
 					<p>The above code can be found in the <code>../assets/js/scripts.js</code> file.</p>
@@ -591,7 +600,7 @@ var popover2 = new Popover('.popover-via-template', { // where .popover-via-temp
 				
 				<section id="exampleAlert">
 					<h3>Alert</h3>
-					<p><b>Alert</b> does not have any <a href="//getbootstrap.com/javascript/#alerts-methods" target="_blank">events and methods</a>, it's action simply dismisses the Alert component. This script can successfully handle later added alerts into the DOM. See Button <a href="#exampleButton">first example below</a>.</p>
+					<p><b>Alert</b> does not have any <a href="http://getbootstrap.com/javascript/#alerts-methods" target="_blank">events and methods</a>, it's action simply dismisses the Alert component. This script can successfully handle later added alerts into the DOM. See Button <a href="#exampleButton">first example below</a>.</p>
 					<div class="alert alert-warning alert-dismissible fade in" role="alert">
 					  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
 					  <strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.
@@ -622,13 +631,13 @@ var popover2 = new Popover('.popover-via-template', { // where .popover-via-temp
 					<h4>Basic Usage</h4>
 <pre><code class="language-markup">&lt;!-- this is the example button --&gt;
 &lt;button type="button" id="myButton" data-toggle="button" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off"&gt;
-	Loading state
+  Loading state
 &lt;/button&gt;
 </code></pre>						
 <pre><code class="language-javascript">//the method works like this
 var btn = document.getElementById('myButton');
 btn.addEventListener('click', function() {
-	new Button(btn,'loading'); //this assumes button has a data-loading-text="Loading..." attribute
+  new Button(btn,'loading'); //this assumes button has a data-loading-text="Loading..." attribute
 });
 </code></pre>
 
@@ -673,32 +682,32 @@ new Button(btn,'reset');
 					</p>
 					<p>As a quick note, here's the example for checkboxes.</p>
 <pre><code class="language-markup">&lt;div class="btn-group" data-toggle="buttons"&gt;
-	&lt;label class="btn btn-default active"&gt;
-		&lt;input type="checkbox" autocomplete="off" checked&gt; Checkbox 1 (pre-checked)
-	&lt;/label&gt;
-	&lt;label class="btn btn-default"&gt;
-		&lt;input type="checkbox" autocomplete="off"&gt; Checkbox 2
-	&lt;/label&gt;
-	&lt;label class="btn btn-default"&gt;
-		&lt;input type="checkbox" autocomplete="off"&gt; Checkbox 3
-	&lt;/label&gt;
+  &lt;label class="btn btn-default active"&gt;
+    &lt;input type="checkbox" autocomplete="off" checked&gt; Checkbox 1 (pre-checked)
+  &lt;/label&gt;
+  &lt;label class="btn btn-default"&gt;
+    &lt;input type="checkbox" autocomplete="off"&gt; Checkbox 2
+  &lt;/label&gt;
+  &lt;label class="btn btn-default"&gt;
+    &lt;input type="checkbox" autocomplete="off"&gt; Checkbox 3
+  &lt;/label&gt;
 &lt;/div&gt;
 </code></pre>					
 
 					<p>The <code>../assets/js/scripts.js</code> file has some console log functions bound by the change of the <code>.btn-group</code> components. When using polyfills and since the <code>change</code> event isn't fired properly on legacy browsers, you can make use of the custom <code>bs.button.change</code> event to bind into context other functions. Example:</p>
 <pre><code class="language-javascript">//let's do some custom binding action
 myCheckBoxesGroup.addEventListener('bs.button.change', function() { 
-	// do something when anything inside the btn-group changes	
+  // do something when anything inside the btn-group changes	
 });
 myRadioInput.addEventListener('bs.button.change',function() {
-	// do something only when this specific input changes
+  // do something only when this specific input changes
 });
 </code></pre>					
 				
 					<h4>Additional Notes</h4>
 					<p>Button will activate automatically for all <code>.btn-group</code> component instances if they have <code>data-toggle="buttons"</code> and the appropriate input elements inside like our examples here.</p>
 					<p>The script properly covers the "change" event for checkbox and radio buttons, but via a custom event called <code>bs.button.change</code>, allowing other functions to bind into context. The event is also bound to the <code>.btn-group</code> component, but to use it, you have to use polyfills for legacy browsers.</p>
-					<p>The script doesn't have any method to control it's toggle functions for checkbox and radio buttons as described by the documentation of the original plugin.	Button also doesn't cover <a href="//getbootstrap.com/javascript/#buttons-single-toggle" target="_blank">single toggle</a>.</p>
+					<p>The script doesn't have any method to control it's toggle functions for checkbox and radio buttons as described by the documentation of the original plugin.	Button also doesn't cover <a href="http://getbootstrap.com/javascript/#buttons-single-toggle" target="_blank">single toggle</a>.</p>
 
 				</section>
 				
@@ -707,9 +716,9 @@ myRadioInput.addEventListener('bs.button.change',function() {
 					<p><b>Collapse</b> is a great way to toggle content, and it's also used for collapsible navbar. It's not animating on modern browsers unless you use the <a href="#required_css">provided CSS</a>, and legacy browsers don't support transitions. Unlike other scripts, this is the only component that can be targeted by it's toggle links by it's <code>className</code> via the <code>data-target="className"</code> attribute, along with the traditional <code>data-target="#collapse-id"</code>. The collapsible navbar in Bootstrap for instance works mostly via <code>data-target=".bs-navbar-collapse"</code> attribute.</p>
 					<p>Collapse requires proper wrapping of contents, similar to wells, accordion and responsive navbar examples. With other words, you cannot toggle a bunch of paragraphs at once unless you wrap them into a container and give it a unique ID and a <code>collapse</code> class.</p>
 					<h4>Options</h4>
-						<ul>
-							<li><b>duration</b> - the only option required is a 300ms duration internal setting just as in the provided CSS, to emulate <code>transitionend</code> for modern browsers. If you use a different duration, you can specify that via <code>data-duration="DURATION"</code> attribute.</li>
-						</ul>						
+          <ul>
+            <li><b>duration</b> - the only option required is a 300ms duration internal setting just as in the provided CSS, to emulate <code>transitionend</code> for modern browsers. If you use a different duration, you can specify that via <code>data-duration="DURATION"</code> attribute.</li>
+          </ul>						
 						
 					<h4>Examples</h4>
 					<p>Here's a quick <b>collapse</b> demonstration, but I would also recommend you to try the navbar on this page on a smaller screen size or on a mobile device. </p>
@@ -718,9 +727,9 @@ myRadioInput.addEventListener('bs.button.change',function() {
 					  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">Button with data-target</button>
 					</p>
 					<div class="collapse" id="collapseExample" aria-expanded="false" role="presentation">
-					  <div class="well">
-						Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-					  </div>
+          <div class="well">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+          </div>
 					</div>				
 					
 					<p>Here's an <b>Accordion</b> component, basically a set of <b>Panel</b> components. When the toggle links are clicked, our Collapse object will look for the closest <code>&lt;div class="accordion-className"</code> or <code>&lt;div id="accordion-id"</code> via <code>data-parent="selector"</code>. </p>
@@ -798,19 +807,19 @@ myRadioInput.addEventListener('bs.button.change',function() {
 						  <!-- Wrapper for slides -->
 						  <div class="carousel-inner" role="listbox">
 							<div class="item active">
-							  <img src="//lorempixel.com/837/300/" alt="">
+							  <img src="http://lorempixel.com/837/300/" alt="">
 							  <div class="carousel-caption">
 								<h3>This is another carousel</h3>
 							  </div>
 							</div>
 							<div class="item">
-							  <img src="//lorempixel.com/837/300/abstract/" alt="">
+							  <img src="http://lorempixel.com/837/300/abstract/" alt="">
 							  <div class="carousel-caption">
 								<h3>This is a caption</h3>
 							  </div>
 							</div>
 							<div class="item">
-							  <img src="//lorempixel.com/837/300/sports" alt="">
+							  <img src="http://lorempixel.com/837/300/sports" alt="">
 							  <div class="carousel-caption">
 								<h3>This is another caption</h3>
 							  </div>
@@ -832,14 +841,14 @@ myRadioInput.addEventListener('bs.button.change',function() {
 <pre><code class="language-javascript">//demo myCarousel demonstrating the slid and slide events
 var mainSlider = document.getElementById('myCarousel');
 mainSlider.addEventListener('slid.bs.carousel', function(e) {
-	// get the caption of current active item before slide
-	var active = mainSlider.querySelector('.item.active .carousel-caption'); 
-	active.classList.remove('slide')
+  // get the caption of current active item before slide
+  var active = mainSlider.querySelector('.item.active .carousel-caption'); 
+  active.classList.remove('slide')
 });
 mainSlider.addEventListener('slide.bs.carousel', function(e) {
-	// get the caption of new active item after slide
-	var active = mainSlider.querySelector('.item.active .carousel-caption');
-	active.classList.add('slide')
+  // get the caption of new active item after slide
+  var active = mainSlider.querySelector('.item.active .carousel-caption');
+  active.classList.add('slide')
 });	
 </code></pre>
 					<h4>Additional Notes</h4>
@@ -864,17 +873,17 @@ mainSlider.addEventListener('slide.bs.carousel', function(e) {
 <pre><code class="language-javascript">//grab the element by it's ID
 var elToAffix = document.getElementById('myNav');
 var theAffix = new Affix(elToAffix, {
-	target: '#use',
-	offsetBottom: 200,
+  target: '#use',
+  offsetBottom: 200,
 });
 </code></pre>
 					<p>Similar to the original plugin, we can make use of a function, we can determine the offsetTop value from the height of the previous element above the initial target:</p>
 <pre><code class="language-javascript">var elToAffix = document.getElementById('myNav');
 var theAffix = new Affix(elToAffix, {
-	offsetTop: function(){
-		return document.getElementById('myCarousel').offsetHeight
-	},
-	offsetBottom: 200,
+  offsetTop: function(){
+    return document.getElementById('myCarousel').offsetHeight
+  },
+  offsetBottom: 200,
 });
 </code></pre>
 
@@ -886,10 +895,10 @@ var theAffix = new Affix(elToAffix, {
 #side-nav .nav.affix.affix-bottom { position: relative; margin: 20px 0; }
 
 /* this style applies to other devices, on screens LARGER than 768px */
-@media (min-width: 768px) {
-	/* affix example */
-	#side-nav .nav.affix { position: fixed !important;  width: 263px; top: 0; }
-	#side-nav .nav.affix.affix-bottom { top: auto;  bottom: 150px; }
+  @media (min-width: 768px) {
+  /* affix example */
+  #side-nav .nav.affix { position: fixed !important;  width: 263px; top: 0; }
+  #side-nav .nav.affix.affix-bottom { top: auto;  bottom: 150px; }
 }	
 </code></pre>					
 
@@ -907,17 +916,17 @@ var theAffix = new Affix(elToAffix, {
 					<strong>Mission</strong> | <a href="https://github.com/thednp/bootstrap.native">The Native Javascript for Bootstrap</a> project was born to help. It doesn't totally and perfectly replace all the functions the jQuery Plugins have for Bootstrap, but the essential tools. 
 					In many cases it performs much better than the original code, like an upgraded version of the original. I've literally learned to code native Javascript developing these scripts here. To sum up, this aims to help me and you transition into a better developer, doing things right from the next big project.
 				</p><p>
-					<strong>Context</strong> | Today's most popular HTML5 framework is <a target="_blank" href="//getbootstrap.com">Bootstrap</a> and like any other there's ups and downs. We all know about the PROs, but one of the CONs is the <a href="//jquery.com" target="_blank">jQuery</a> <em>dependency</em>. 
+					<strong>Context</strong> | Today's most popular HTML5 framework is <a target="_blank" href="http://getbootstrap.com">Bootstrap</a> and like any other there's ups and downs. We all know about the PROs, but one of the CONs is the <a href="http://jquery.com" target="_blank">jQuery</a> <em>dependency</em>. 
 					Why in the world would you ever drop jQuery? What can you put in it's place? The answer is this this: <em>clean Javascript code</em>. All browsers on all devices support it or they damn should be, because nothing would work, not even jQuery, Zepto, Dojo, AngularJS, whatever. 
-					The latest <a href="//www.google.com/trends/explore#q=jquery%2C%20mootools%2C%20javascript" target="_blank">trends</a> indicate that jQuery already peaked and is becoming less and less relevant.
+					The latest <a href="http://www.google.com/trends/explore#q=jquery%2C%20mootools%2C%20javascript" target="_blank">trends</a> indicate that jQuery already peaked and is becoming less and less relevant.
 				</p><p>
 					<strong>Perspective</strong> | The standards are now generally adopted and mobile platforms are "on the wave". The future brings more changes and we cannot fix-n-hack or hack-to-fix anymore via jQuery. 
 					Performance is the one and only true goal to follow, so if dropping jQuery and cleaning up the code is the way to go, we'll go for it. jQuery is still so cool and efficient but I feel it's too overpowered with it's cross-browser solutions. 
-					With the new Javascript engines and HTML5 standards, really, why not code native code, it's really <a href="//blog.garstasio.com/you-dont-need-jquery/" target="_blank">not that hard</a>.
+					With the new Javascript engines and HTML5 standards, really, why not code native code, it's really <a href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank">not that hard</a>.
 				</p>
 				<h3>Really Write Less, Do More?</h3>
 				<p>Why do I feel this sounds much too bold after only a few weeks of vanilla Javascript? With the given Javascript here and some CSS customizations you can now do alot more than jQuery with the original Bootstrap plugins. As I have shown here, I think I've completely blasted the "do more" myth.</p>
-				<p>If you forgot to check <a href="//jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">performance metrics</a>, go ahead (there are lots more out there, plus a ton of guides on how to boost performance), there is also the page load speed issue I forgot to mention. Imagine you can be drastically improve the page load by dropping jQuery.</p>
+				<p>If you forgot to check <a href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">performance metrics</a>, go ahead (there are lots more out there, plus a ton of guides on how to boost performance), there is also the page load speed issue I forgot to mention. Imagine you can be drastically improve the page load by dropping jQuery.</p>
 				<p>If we compare the size of jQuery v1.11.2 + Bootstrap v3.3.5 minified is just about <b>93Kb</b> + <b>36Kb</b> = <kbd>129Kb</kbd>. Our scripts here are (depending on your browser) 18Kb + <b>36Kb</b> = between <kbd>38Kb</kbd> and <kbd>54Kb</kbd>, where 18Kb is the <a href="https://cdn.polyfill.io/v1/docs/features/#understanding-polyfill-sizes" target="_blank">maximum size of the minified polyfill</a> for IE8, mostly under <kbd>5kb</kbd> for most modern browsers.</p>
 				<p>This being said, jQuery doesn't make any sense for many of us.</p>
 			</section>
@@ -953,15 +962,15 @@ var theAffix = new Affix(elToAffix, {
 	<footer>
 		<div class="container">
 			<p class="pull-right"><a href="#myCarousel">Back to top</a></p>
-			<p>NJB &copy; 2015 <a href="//themeforest.net/user/dnp_theme" target="_blank">dnp_theme</a>.</p>
+			<p>NJB &copy; 2015 <a href="http://themeforest.net/user/dnp_theme" target="_blank">dnp_theme</a>.</p>
 		 </div>
 	</footer>
 	
 	<!-- highlighter -->
 	<script src="./assets/js/prism.js" type="text/javascript"></script>		
 
-	<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/0.9.9/bootstrap-native.min.js"></script>  now we have CDN -->    
-     <script type="text/javascript" src="./dist/bootstrap-native.min.js"></script>
+	<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"></script>  now we have CDN -->
+	<script type="text/javascript" src="./dist/bootstrap-native.min.js"></script> <!-- local testing -->
 	
 	<script type="text/javascript" src="./assets/js/scripts.js"></script>
   </body>	
