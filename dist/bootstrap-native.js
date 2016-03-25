@@ -910,7 +910,7 @@
       
 			this.handle = function(e) { // fix some Safari bug with <button>
         var target = e.target || e.currentTarget;
-        if ( target === self.menu || target === self.menu.querySelector('span') ) { self.toggle(e); } else { self.close(200); }
+        if ( target === self.menu || target.parentNode === self.menu ) { self.toggle(e); } else { self.close(200); }
         /\#$/g.test(target.href) && e.preventDefault();
       } 
       
