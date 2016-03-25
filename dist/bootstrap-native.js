@@ -722,7 +722,7 @@
 
 		init : function() {
 			this.actions();
-			this.btn.addEventListener('click', this.toggle, false);
+      this.addEvent();
 		},
 
 		actions : function() {
@@ -772,41 +772,53 @@
 				}
 			},
 			this._open = function(c) {
-				this.addClass(c,'in');
+        self.removeEvent();
+				self.addClass(c,'in');
 				c.setAttribute('area-expanded','true');
 				self.addClass(c,'collapsing');
 				setTimeout(function() {
-					c.style.height = self.getMaxHeight(c) + 'px';										
-					c.style.overflowY = 'hidden';						
+          var h = self.getMaxHeight(c);
+					c.style.height = h + 'px';										
+					c.style.overflowY = 'hidden';
 				}, 0);	
 				setTimeout(function() {
 					c.style.height = ''; 
 					c.style.overflowY = '';
 					self.removeClass(c,'collapsing');
+          self.addEvent();
 				}, self.options.duration);
 			},
 			this._close = function(c) {
-				c.setAttribute('area-expanded','false');
-				c.style.height = this.getMaxHeight(c) + 'px';				
+        self.removeEvent();
+				c.setAttribute('area-expanded','false');				
+				c.style.height = self.getMaxHeight(c) + 'px';				
 				setTimeout(function() {
-					self.addClass(c,'collapsing');
+					c.style.height = '0px';		
 					c.style.overflowY = 'hidden';
-					c.style.height = '';					
+					self.addClass(c,'collapsing');
 				}, 0);
 				
 				setTimeout(function() {
-					c.style.overflowY = '';
-					self.removeClass(c,'in'); 
 					self.removeClass(c,'collapsing');
+					self.removeClass(c,'in'); 
+					c.style.overflowY = '';
+					c.style.height = '';					
+          self.addEvent();
 				}, self.options.duration);
 			},
 			this.getMaxHeight = function(l) { // get collapse trueHeight and border
 				var h = 0;
-				for (var k = 0; k < l.children.length; k++) {
+				for (var k = 0, ll = l.children.length; k < ll; k++) {
 					h += getOuterHeight(l.children[k]);
 				}
 				return h;
 			},
+			this.removeEvent = function() {
+        this.btn.removeEventListener('click', this.toggle, false);
+      },
+			this.addEvent = function() {
+        this.btn.addEventListener('click', this.toggle, false);
+      },
 			this.getTarget = function(e) {
 				var t = e.currentTarget || e.srcElement,
 					h = t.href && t.getAttribute('href').replace('#',''),
@@ -838,7 +850,7 @@
 				if (el.classList) { el.classList.add(c); } else { el.className += ' '+c; }
 			};
 			this.removeClass = function(el,c) {
-				if (el.classList) { el.classList.remove(c); } else { el.className = el.className.replace(c,'').replace(/^\s+|\s+$/g,''); }				
+				if (el.classList) { el.classList.remove(c); } else { el.className = el.className.replace(c,'').replace(/^\s+|\s+$/g,''); }
 			};
 		}
 	};
@@ -888,37 +900,43 @@
 	Dropdown.prototype = {
 
 		init : function() {
-			var self = this;
-			self.actions();
-			self.menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome
-			self.menu.addEventListener('click', self.toggle, false);
-			self.menu.addEventListener('blur', self.close, false);
+			this.actions();
+			this.menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome | Safari
+      document.addEventListener('click', this.handle, false);
 		},
 
 		actions : function() {
-			var self = this;
-
-			self.toggle = function(e) {
-				var target = e.currentTarget || e.srcElement;
-				if (/open/.test(target.parentNode.className)) {
-					target.parentNode.className = target.parentNode.className.replace(' open','');
+      var self = this;
+      
+			this.handle = function(e) { // fix some Safari bug with <button>
+        var target = e.target || e.currentTarget;
+        if ( target === self.menu || target === self.menu.querySelector('span') ) { self.toggle(e); } else { self.close(200); }
+        /\#$/g.test(target.href) && e.preventDefault();
+      } 
+      
+			this.toggle = function(e) {
+				if (/open/.test(this.menu.parentNode.className)) {
+          this.close(0);
+          document.removeEventListener('keydown', this.key, false);
 				} else {
-					target.parentNode.className += ' open';
+					this.menu.parentNode.className += ' open';
+					this.menu.setAttribute('aria-expanded',true);
+          document.addEventListener('keydown', this.key, false);
 				}
-				
-				e.preventDefault();
-				return false;
 			}
-
-			self.close = function(e) {
-				var target = e.currentTarget || e.srcElement;
-
+      
+      this.key = function(e) {
+        if (e.which == 27) {self.close(0);}
+      }
+      
+			this.close = function(t) {
 				setTimeout(function() { // links inside dropdown-menu don't fire without a short delay
-					target.parentNode.className = target.parentNode.className.replace(' open','');
-				}, 200);
+					self.menu.parentNode.className = self.menu.parentNode.className.replace(' open','');
+					self.menu.setAttribute('aria-expanded',false);
+				}, t);
 			}
 		}
-    }
+  }
 
 	// DROPDOWN DATA API
 	// =================
@@ -952,12 +970,12 @@
 })(function(){
 
 	//MODAL DEFINITION
-    var Modal = function(element, options) { // element is the trigger button / options.target is the modal
-        options = options || {};
-        this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 
-        this.opened = false;
-        this.modal = typeof element === 'object' ? element : document.querySelector(element);
-        this.options = {};
+  var Modal = function(element, options) { // element is the trigger button / options.target is the modal
+    options = options || {};
+    this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 
+    this.opened = false;
+    this.modal = typeof element === 'object' ? element : document.querySelector(element);
+    this.options = {};
 		this.options.backdrop = options.backdrop === 'false' ? false : true;
 		this.options.keyboard = options.keyboard === 'false' ? false : true;
 		this.options.content = options.content;
@@ -965,21 +983,21 @@
 		this.options.duration = (this.isIE && this.isIE < 10) ? 0 : this.duration;
 
 		this.scrollbarWidth		= 0;
-        this.dialog = this.modal.querySelector('.modal-dialog');
+    this.dialog = this.modal.querySelector('.modal-dialog');
 		this.timer = 0;
 
 		this.init();
-    };
+  };
 	
 	var getWindowWidth = function() {
 		var htmlRect = document.documentElement.getBoundingClientRect(), 
 			fullWindowWidth = window.innerWidth || (htmlRect.right - Math.abs(htmlRect.left));
 		return fullWindowWidth;
 	};
-    Modal.prototype = {
-		
-		init : function() {			
-				
+  
+  Modal.prototype = {
+    
+		init : function() {
 			this.actions();
 			this.trigger();	
 			if ( this.options.content && this.options.content !== undefined ) {				
@@ -1165,8 +1183,6 @@
 				this.modal.style.paddingLeft = !this.bodyIsOverflowing && this.modalIsOverflowing ? this.scrollbarWidth + 'px' : '';
 				this.modal.style.paddingRight = this.bodyIsOverflowing && !this.modalIsOverflowing ? this.scrollbarWidth + 'px' : '';
 
-				// console.log(this.bodyIsOverflowing + ' ' + this.modal.id);
-				// this.modal.offsetWidth;
 			},
 			
 			this.resetAdjustments = function () {
@@ -1272,9 +1288,10 @@
 
 		init : function() {
 			this.actions();
+      var events = ('onmouseleave' in this.link) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
 			if (this.options.trigger === 'hover') {
-				this.link.addEventListener('mouseenter', this.open, false);
-				if (!this.options.dismiss) { this.link.addEventListener('mouseleave', this.close, false); }
+				this.link.addEventListener(events[0], this.open, false);
+				if (!this.options.dismiss) { this.link.addEventListener(events[1], this.close, false); }
 			} else if (this.options.trigger === 'click') {
 				this.link.addEventListener('click', this.toggle, false);
 				if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false); }					
@@ -1285,8 +1302,9 @@
 			
 			if (this.options.dismiss) {	document.addEventListener('click', this.dismiss, false); }
 				
-			if (!(this.isIE && this.isIE < 9) && (this.options.trigger === 'focus' || this.options.trigger === 'click') ) {
-				window.addEventListener('resize', this.close, false ); } // dismiss on window resize 
+			if (!(this.isIE && this.isIE < 9) ) { // dismiss on window resize 
+				window.addEventListener('resize', this.close, false ); 
+      }
 		},
 
 		actions : function() {
@@ -1836,9 +1854,10 @@
 		init : function() {
 			this.actions();
 			this.rect = null;
-			this.link.addEventListener('mouseenter', this.open, false);
-			this.link.addEventListener('mouseleave', this.close, false);
-
+		  var events = ('onmouseleave' in this.link) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
+			this.link.addEventListener(events[0], this.open, false);
+			this.link.addEventListener(events[1], this.close, false);
+      
 			//remove title from link
 			this.link.setAttribute('data-original-title',this.title);
 			this.link.removeAttribute('title');
@@ -1982,8 +2001,8 @@
 				)
 			}
 		}
-    }
-
+  }
+  
 	// TOOLTIP DATA API
 	// =================
     var Tooltips = document.querySelectorAll('[data-toggle=tooltip]'), i = 0, tpl = Tooltips.length;

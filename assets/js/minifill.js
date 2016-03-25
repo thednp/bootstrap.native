@@ -1,8 +1,18 @@
 // Document
+// HTMLDocument is an extension of Document.  If the browser has HTMLDocument but not Document, the former will suffice as an alias for the latter.
 if (!this.Document){this.Document = this.HTMLDocument; }
 
 // Element
 if (!window.HTMLElement) { window.HTMLElement = window.Element; }
+
+// Window
+(function(global) {
+	if (global.constructor) {
+		global.Window = global.constructor;
+	} else {
+		(global.Window = global.constructor = new Function('return function Window() {}')()).prototype = this;
+	}
+}(this));
 
 // Date.now
 if(!Date.now){ Date.now = function now() { return new Date().getTime(); }; }
@@ -161,36 +171,6 @@ if (!('getComputedStyle' in window)) {
 	})();
 }
 
-// requestAnimationFrame
-if (!window.requestAnimationFrame) {
-
-	var	lastTime = Date.now();
-	window.requestAnimationFrame = function (callback) {
-		'use strict';
-		if (typeof callback !== 'function') {
-			throw new TypeError(callback + 'is not a function');
-		}
-		
-		var	currentTime = Date.now(),
-			delay = 16 + lastTime - currentTime;
-
-		if (delay < 0) { delay = 0;	}
-
-		lastTime = currentTime;
-
-		return setTimeout(function () {
-			lastTime = Date.now();
-
-			callback(performance.now());
-		}, delay);
-	};
-
-	window.cancelAnimationFrame = function (id) {
-		clearTimeout(id);
-	};
-}
-
-
 // Event
 if (!window.Event||!Window.prototype.Event) {
 	(function (){
@@ -229,7 +209,7 @@ if (!('CustomEvent' in window) || !('CustomEvent' in Window.prototype)) {
 }
 
 // addEventListener
-if (!window.addEventListener) {
+if (!window.addEventListener||!Window.prototype.addEventListener) {
 	(function (){
 		window.addEventListener = Window.prototype.addEventListener = Document.prototype.addEventListener = Element.prototype.addEventListener = function addEventListener() {
 			var	element = this,
@@ -317,7 +297,7 @@ if (!window.addEventListener) {
 }
 
 // Event dispatcher	/ trigger
-if (!window.dispatchEvent) {
+if (!window.dispatchEvent||!Window.prototype.dispatchEvent||!Document.prototype.dispatchEvent||!Element.prototype.dispatchEvent) {
 	(function(){	
 		window.dispatchEvent = Window.prototype.dispatchEvent = Document.prototype.dispatchEvent = Element.prototype.dispatchEvent = function dispatchEvent(event) {
 			if (!arguments.length) {
