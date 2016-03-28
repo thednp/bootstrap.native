@@ -774,7 +774,7 @@
 			this._open = function(c) {
         self.removeEvent();
 				self.addClass(c,'in');
-				c.setAttribute('area-expanded','true');
+				c.setAttribute('aria-expanded','true');
 				self.addClass(c,'collapsing');
 				setTimeout(function() {
           var h = self.getMaxHeight(c);
@@ -790,7 +790,7 @@
 			},
 			this._close = function(c) {
         self.removeEvent();
-				c.setAttribute('area-expanded','false');				
+				c.setAttribute('aria-expanded','false');				
 				c.style.height = self.getMaxHeight(c) + 'px';				
 				setTimeout(function() {
 					c.style.height = '0px';		
