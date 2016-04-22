@@ -742,7 +742,7 @@
 				self.btn = self.getTarget(e).btn;
 				self.collapse = self.getTarget(e).collapse;
 
-				if (!/in/.test(self.collapse.className)) {
+				if (!/\bin/.test(self.collapse.className)) {
 					self.open(e);
 				} else {
 					self.close(e);
