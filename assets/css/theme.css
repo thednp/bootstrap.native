@@ -218,6 +218,13 @@ body > .container,
 #carousel-example-generic,
 #carousel-example-generic .carousel-inner > .item > img { height: auto }
 
+/* dropdown form */
+
+.form-vertical {
+  padding: 10px 10px 5px 10px;
+  width: 250px;
+}
+
 
 /* RESPONSIVE CSS
 -------------------------------------------------- */
