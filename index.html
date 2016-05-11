@@ -375,15 +375,22 @@ btnModal.addEventListener('click', function() {
 						</li>
 						<li class="dropdown">
 						  <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">
-							Dropdown
+							Nested
 							<span class="caret"></span>
 						  </a>
 						  <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-							<li role="presentation" class="divider"></li>
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.cn" target="_blank">External link</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+								<li role="presentation" class="divider"></li>
+								<li role="presentation" class="dropdown">
+									<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">Go deeper <span class="caret"></span></a>
+									<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Crazy Action</a></li>
+										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Nested Menu</a></li>
+										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Other stuff</a></li>
+									</ul>
+								</li>
 						  </ul>
 						</li>
 					</ul>							
