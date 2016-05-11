@@ -909,19 +909,21 @@
       var self = this;
       
       this.handle = function(e) { // fix some Safari bug with <button>
-        var target = e.target || e.currentTarget, closest = self.getClosest(target,'.dropdown-menu');
-        
+        var target = e.target || e.currentTarget, 
+            children = [], c = self.menu.parentNode.getElementsByTagName('*');
+        for ( var i=0, l = c.length||0; i<l; i++) { l && children.push(c[i]); }
+
         if ( target === self.menu || target.parentNode === self.menu ) { 
           self.toggle(e); 
-        }  else if (closest && closest === self.menu.parentNode.querySelector('.dropdown-menu') ) { 
+        }  else if ( children && children.indexOf(target) > -1  ) {
           return;
-        } else { self.close(200); }
+        } else { self.close(); }
         /\#$/g.test(target.href) && e.preventDefault();
       } 
       
       this.toggle = function(e) {
         if (/open/.test(this.menu.parentNode.className)) {
-          this.close(0);
+          this.close();
           document.removeEventListener('keydown', this.key, false);
         } else {
           this.menu.parentNode.className += ' open';
@@ -934,20 +936,9 @@
         if (e.which == 27) {self.close(0);}
       }
       
-      this.close = function(t) {
-        setTimeout(function() { // links inside dropdown-menu don't fire without a short delay
-          self.menu.parentNode.className = self.menu.parentNode.className.replace(' open','');
-          self.menu.setAttribute('aria-expanded',false);
-        }, t);
-      }
-      
-      this.getClosest = function (el, s) { //el is the element and s the selector of the closest item to find
-      // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
-        var f = s.charAt(0);
-        for ( ; el && el !== document; el = el.parentNode ) {// Get closest match
-          if ( el.querySelector(s) ) { return el.querySelector(s); }
-        }
-        return false;
+      this.close = function() {
+        self.menu.parentNode.className = self.menu.parentNode.className.replace(' open','');
+        self.menu.setAttribute('aria-expanded',false);
       }
     }
   }
