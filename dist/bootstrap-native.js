@@ -933,7 +933,7 @@
       }
       
       this.key = function(e) {
-        if (e.which == 27) {self.close(0);}
+        if (e.which == 27) {self.close();}
       }
       
       this.close = function() {
