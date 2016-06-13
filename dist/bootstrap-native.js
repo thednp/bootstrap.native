@@ -460,6 +460,8 @@
       }
       this.actions();
       this._addEventListeners();
+      this.next && this.next.addEventListener( "click", function(e){e.preventDefault()}, false);
+      this.prev && this.prev.addEventListener( "click", function(e){e.preventDefault()}, false);
     },
     cycle: function(e) {
       var self = this;
@@ -614,7 +616,6 @@
 
       self.controlsHandler = function (e) {
         var target = e.currentTarget || e.srcElement;
-        e.preventDefault();
 
         if ( target === self.next ) {
           self.index++;
