@@ -729,37 +729,31 @@
     actions : function() {
       var self = this;
       var getOuterHeight = function (el) {
-        var s = el && el.currentStyle || window.getComputedStyle(el), // the getComputedStyle polyfill would do this for us, but we want to make sure it does
-          btp = s.borderTopWidth || 0,
+        var s = el && (el.currentStyle || window.getComputedStyle(el)), // the getComputedStyle polyfill would do this for us, but we want to make sure it does
+          btp = /px/.test(s.borderTopWidth) ? Math.round(s.borderTopWidth.replace('px','')) : 0,
           mtp = /px/.test(s.marginTop)  ? Math.round(s.marginTop.replace('px',''))    : 0,
           mbp = /px/.test(s.marginBottom)  ? Math.round(s.marginBottom.replace('px',''))  : 0,
           mte = /em/.test(s.marginTop)  ? Math.round(s.marginTop.replace('em','')    * parseInt(s.fontSize)) : 0,
           mbe = /em/.test(s.marginBottom)  ? Math.round(s.marginBottom.replace('em','')  * parseInt(s.fontSize)) : 0;
-
         return el.clientHeight + parseInt( btp ) + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ); //we need an accurate margin value
       };
 
       this.toggle = function(e) {
+        e.preventDefault();
         self.btn = self.getTarget(e).btn;
         self.collapse = self.getTarget(e).collapse;
 
         if (!/\bin/.test(self.collapse.className)) {
-          self.open(e);
+          self.open();
         } else {
-          self.close(e);
+          self.close();
         }
       },
-      this.close = function(e) {
-        e.preventDefault();
-        self.btn = self.getTarget(e).btn;
-        self.collapse = self.getTarget(e).collapse;
+      this.close = function() {
         self._close(self.collapse);
         self.removeClass(self.btn,'collapsed');
       },
-      this.open = function(e) {
-        e.preventDefault();
-        self.btn = self.getTarget(e).btn;
-        self.collapse = self.getTarget(e).collapse;
+      this.open = function() {
         self.accordion = self.btn.getAttribute('data-parent') && self.getClosest(self.btn, self.btn.getAttribute('data-parent'));
 
         self._open(self.collapse);
@@ -777,9 +771,9 @@
         self.addClass(c,'in');
         c.setAttribute('aria-expanded','true');
         self.addClass(c,'collapsing');
+        self.addClass(c.parentNode.getElementsByTagName('*')[0],'open');  // add class to button's parent as well
         setTimeout(function() {
-          var h = self.getMaxHeight(c);
-          c.style.height = h + 'px';                    
+          c.style.height = self.getMaxHeight(c) + 'px'
           c.style.overflowY = 'hidden';
         }, 0);  
         setTimeout(function() {
@@ -791,8 +785,9 @@
       },
       this._close = function(c) {
         self.removeEvent();
-        c.setAttribute('aria-expanded','false');        
-        c.style.height = self.getMaxHeight(c) + 'px';        
+        c.setAttribute('aria-expanded','false');
+        c.style.height = self.getMaxHeight(c) + 'px'
+        self.removeClass(c.parentNode.getElementsByTagName('*')[0],'open');
         setTimeout(function() {
           c.style.height = '0px';    
           c.style.overflowY = 'hidden';
@@ -821,18 +816,17 @@
         this.btn.addEventListener('click', this.toggle, false);
       },
       this.getTarget = function(e) {
-        var t = e.currentTarget || e.srcElement,
+        var t2 = this, t = e.currentTarget || e.srcElement,
           h = t.href && t.getAttribute('href').replace('#',''),
           d = t.getAttribute('data-target') && ( t.getAttribute('data-target') ),
           id = h || ( d && /#/.test(d)) && d.replace('#',''),
           cl = (d && d.charAt(0) === '.') && d, //the navbar collapse trigger targets a class
           c = id && document.getElementById(id) || cl && document.querySelector(cl);
-
         return {
           btn : t,
           collapse : c
         };
-      },	
+      },
 
       this.getClosest = function (el, s) { //el is the element and s the selector of the closest item to find
       // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
