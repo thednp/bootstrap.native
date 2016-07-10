@@ -816,7 +816,7 @@
         this.btn.addEventListener('click', this.toggle, false);
       },
       this.getTarget = function(e) {
-        var t2 = this, t = e.currentTarget || e.srcElement,
+        var t = e.currentTarget || e.srcElement,
           h = t.href && t.getAttribute('href').replace('#',''),
           d = t.getAttribute('data-target') && ( t.getAttribute('data-target') ),
           id = h || ( d && /#/.test(d)) && d.replace('#',''),
