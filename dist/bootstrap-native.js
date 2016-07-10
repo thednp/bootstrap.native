@@ -725,7 +725,8 @@
       this.actions();
       this.addEvent();
       this.collapse = this.getTarget();
-      this.accordion = this.btn.getAttribute('data-parent') && this.getClosest(this.btn, this.btn.getAttribute('data-parent'));
+      this.accordion = this.btn.getAttribute('data-parent') 
+        && this.getClosest(this.btn, this.btn.getAttribute('data-parent'));
     },
 
     actions : function() {
