@@ -754,8 +754,6 @@
         self.removeClass(self.btn,'collapsed');
       },
       this.open = function() {
-        // self.accordion = self.btn.getAttribute('data-parent') && self.getClosest(self.btn, self.btn.getAttribute('data-parent'));
-
         self._open(self.collapse);
         self.addClass(self.btn,'collapsed');
 
@@ -826,7 +824,7 @@
       },
 
       this.getClosest = function (el, s) { //el is the element and s the selector of the closest item to find
-      // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
+        // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
         var f = s.charAt(0);
         for ( ; el && el !== document; el = el.parentNode ) {// Get closest match
           if ( f === '.' ) {// If selector is a class
