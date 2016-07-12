@@ -904,7 +904,7 @@
             children = [], c = self.menu.parentNode.getElementsByTagName('*');
         for ( var i=0, l = c.length||0; i<l; i++) { l && children.push(c[i]); }
 
-        if ( target === self.menu || target.parentNode === self.menu ) { 
+        if ( target === self.menu || target.parentNode === self.menu || target.parentNode.parentNode === self.menu ) { 
           self.toggle(e); 
         }  else if ( children && children.indexOf(target) > -1  ) {
           return;
