@@ -752,11 +752,11 @@
       },
       this.close = function() {
         self._close(self.collapse);
-        self.removeClass(self.btn,'collapsed');
+        self.addClass(self.btn,'collapsed');
       },
       this.open = function() {
         self._open(self.collapse);
-        self.addClass(self.btn,'collapsed');
+        self.removeClass(self.btn,'collapsed');
 
         if ( self.accordion !== null ) {
           var active = self.accordion.querySelectorAll('.collapse.in'), al = active.length, i = 0;
