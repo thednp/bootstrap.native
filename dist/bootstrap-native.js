@@ -770,7 +770,6 @@
         self.addClass(c,'in');
         c.setAttribute('aria-expanded','true');
         self.addClass(c,'collapsing');
-        self.addClass(c.parentNode.getElementsByTagName('*')[0],'open');  // add class to button's parent as well
         setTimeout(function() {
           c.style.height = self.getMaxHeight(c) + 'px'
           c.style.overflowY = 'hidden';
@@ -786,7 +785,6 @@
         self.removeEvent();
         c.setAttribute('aria-expanded','false');
         c.style.height = self.getMaxHeight(c) + 'px'
-        self.removeClass(c.parentNode.getElementsByTagName('*')[0],'open');
         setTimeout(function() {
           c.style.height = '0px';    
           c.style.overflowY = 'hidden';

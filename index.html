@@ -155,8 +155,11 @@
 			<section id="use">
 				<h2>Use</h2>
 				<h3>Load from CDN</h3>
-				<p>Thanks to <a href="http://www.jsdelivr.com/">jsdelivr</a> we have a CDN link, so drop this line before your ending <code>&lt;/body></code> tag. Latest releases <a href="http://www.jsdelivr.com/#!bootstrap.native">come here</a>.</p>
-<pre><code class="language-markup">&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"&gt;&lt;/script&gt;</code></pre>
+				<p>Thanks to <a href="http://www.jsdelivr.com/">jsdelivr</a> and <a href="https://cdnjs.com">cdnjs</a> we have CDN links, so drop one of these lines before your ending <code>&lt;/body></code> tag. Latest releases <a href="http://www.jsdelivr.com/#!bootstrap.native">come here</a> on jsdelivr and <a href="https://cdnjs.com/libraries/bootstrap.native">here</a> on cdnjs.</p>
+<pre><code class="language-markup">&lt;!-- jsdelivr repo --&gt;
+&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"&gt;&lt;/script&gt;
+&lt;!-- or cdnjs repo --&gt;	
+&lt;script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/1.0.2/bootstrap-native.min.js"&gt;&lt;/script&gt;</code></pre>
 
 				<p>As most of the scripts manipulate the DOM when ready, there is no need to include a <code>document.ready</code> statement or link the script(s) in the <code>&lt;head&gt;</code>. That's your first performance tip if you are new around here.</p>
 				
@@ -184,7 +187,7 @@ $ npm install --save bootstrap.native
 </code></pre>				
 				
 				<h3 id="required_css">Additional Styling</h3>
-				<p>Since we are not using jQuery to do all the <code>.slideToggle()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>Collapse</strong> component, so copy this line in your application CSS files. Also the dismissible <strong>Popover</strong> feature require some styling for the closing button.</p>
+				<p>Since we are not using jQuery to do all the animations, we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>Collapse</strong> component, so copy this line in your application CSS files. Also the dismissible <strong>Popover</strong> feature require some styling for the closing button.</p>
 <pre><code class="language-clike">/* enables CSS3 transition for simple collapses, accordion and also navbar in responsive view */
 .collapse { transition: height .3s ease-out; /*-webkit-transition: height .3s ease-out*/ } 
 

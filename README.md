@@ -3,7 +3,7 @@ This is a set of scripts developed with native Javascript for <strong>Bootstrap 
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
 # CDN
-New releases will be available automatically on jsdelivr CDN repositories <a href="http://www.jsdelivr.com/#!bootstrap.native">here</a>.
+New releases will be available automatically on jsdelivr CDN repositories <a href="http://www.jsdelivr.com/#!bootstrap.native">here</a> or CDNjs repositories <a href="https://cdnjs.com/libraries/bootstrap.native">here</a>.
 
 # Bower and NPM
 You can install this package by using either Bower or NPM.
@@ -19,8 +19,9 @@ You can install this package by using either Bower or NPM.
 You can use the scripts either using a traditional script-tag like so:
 
 ```html
-<!-- Using a CDN -->
+<!-- Using one of the CDN repositories-->
 <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.native/0.9.6/bootstrap-native.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/1.0.2/bootstrap-native.min.js"></script>
 <!-- Using a local assets folder -->
 <script type="text/javascript" src="/assets/bootstrap.native.min.js"></script>
 <!-- Or using Bower? -->
