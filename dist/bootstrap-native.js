@@ -74,25 +74,25 @@
       return window.pageYOffset || document.documentElement.scrollTop
     },
     pinTop: function () {
-      if ( !/affix/.test(this.element.className) ) {
+      if ( !/\baffix/.test(this.element.className) ) {
         this.element.className += ' affix';
         this.affixed = true
       }
     },
     unPinTop: function () {
-      if ( /affix/.test(this.element.className) ) {
+      if ( /\baffix/.test(this.element.className) ) {
         this.element.className = this.element.className.replace(' affix','');
         this.affixed = false
       }
     },
     pinBottom: function () {
-      if ( !/'affix-bottom'/.test(this.element.className) ) {
+      if ( !/\baffix-bottom/.test(this.element.className) ) {
         this.element.className += ' affix-bottom';
         this.affixedBottom = true
       }
     },
     unPinBottom: function () {
-      if ( /'affix-bottom'/.test(this.element.className) ) { 
+      if ( /\baffix-bottom/.test(this.element.className) ) { 
         this.element.className = this.element.className.replace(' affix-bottom','');
         this.affixedBottom = false
       }
@@ -215,7 +215,7 @@
         self.btn = target.getAttribute('data-dismiss') === 'alert' && target.className === 'close' ? target : target.parentNode;
         self.alert = self.btn.parentNode;
 
-        if ( self.alert !== null && self.btn.getAttribute('data-dismiss') === 'alert' && /in/.test(self.alert.className) ) {
+        if ( self.alert !== null && self.btn.getAttribute('data-dismiss') === 'alert' && /\bin/.test(self.alert.className) ) {
           self.alert.className = self.alert.className.replace(' in','');
           setTimeout(function() {
             self.alert && self.alert.parentNode.removeChild(self.alert);
@@ -274,7 +274,7 @@
       var self = this;
       this.actions();
 
-      if ( /btn/.test(this.btn.className) ) {
+      if ( /\bbtn/.test(this.btn.className) ) {
         if ( this.option && this.option !== 'reset' ) {
 
           this.state = this.btn.getAttribute('data-'+this.option+'-text') || null;
@@ -287,7 +287,7 @@
         }
       }
 
-      if ( /btn-group/.test(this.btn.className) ) {
+      if ( /\bbtn-group/.test(this.btn.className) ) {
         this.btn.addEventListener('click', this.toggle, false);
       }
     },
@@ -309,7 +309,7 @@
       },
 
       this.reset = function() {
-        if ( /disabled/.test(self.btn.className) || self.btn.getAttribute('disabled') === 'disabled' ) {
+        if ( /\bdisabled/.test(self.btn.className) || self.btn.getAttribute('disabled') === 'disabled' ) {
           this.removeClass(this.btn,'disabled');  
           self.btn.removeAttribute('disabled');
         }
@@ -355,7 +355,7 @@
             
             for (i;i<ll;i++) {
               var l = labels[i];
-              if ( l !== label && /active/.test(l.className) )  {
+              if ( l !== label && /\bactive/.test(l.className) )  {
                 var inp = l.getElementsByTagName('INPUT')[0];
                 self.removeClass(l,'active');
                 inp.removeAttribute('checked');
@@ -479,14 +479,14 @@
     pause: function() {
       var self = this;
       var pauseHandler = function () {
-        if ( self.options.interval !==false && !/paused/.test(self.carousel.className) ) {
+        if ( self.options.interval !==false && !/\bpaused/.test(self.carousel.className) ) {
           self.carousel.className += ' paused';
           clearInterval( self.timer );
           self.timer = null;
         }
       };
       var resumeHandler = function() {
-        if ( self.options.interval !==false && /paused/.test(self.carousel.className) ) {
+        if ( self.options.interval !==false && /\bpaused/.test(self.carousel.className) ) {
           self.cycle();
           self.carousel.className = self.carousel.className.replace(' paused','');
         }
@@ -516,7 +516,7 @@
       self.timer = null;
       self._curentPage( self.indicators[next] );
 
-      if ( /slide/.test(this.carousel.className) && !(this.isIE && this.isIE < 10) ) {
+      if ( /\bslide/.test(this.carousel.className) && !(this.isIE && this.isIE < 10) ) {
         self.slides[next].className += (' '+dr);
         self.slides[next].offsetWidth;
         self.slides[next].className += (' '+direction);
@@ -532,7 +532,7 @@
           self.slides[next].className = self.slides[next].className.replace(' '+direction,'');
           self.slides[active].className = self.slides[active].className.replace(' '+direction,'');
 
-          if ( self.options.interval !== false && !/paused/.test(self.carousel.className) ){
+          if ( self.options.interval !== false && !/\bpaused/.test(self.carousel.className) ){
             clearInterval(self.timer); self.cycle();
           }
           if (slide) { self.carousel.dispatchEvent(slide); } //here we go with the slide
@@ -543,7 +543,7 @@
         self.slides[active].className = self.slides[active].className.replace(' active','');
         setTimeout(function() {
           self._addEventListeners();
-          if ( self.options.interval !== false && !/paused/.test(self.carousel.className) ){
+          if ( self.options.interval !== false && !/\bpaused/.test(self.carousel.className) ){
             clearInterval(self.timer); self.cycle();
           }
           if (slide) { self.carousel.dispatchEvent(slide); } //here we go with the slide
@@ -558,9 +558,8 @@
 
       self.indicator && self.indicator.addEventListener( "click", self.indicatorHandler, false);
 
-      if (self.options.keyboard === true) {
-        window.addEventListener('keydown', self.keyHandler, false);
-      }
+      self.options.keyboard === true && window.addEventListener('keydown', self.keyHandler, false);
+
     },
     _removeEventListeners : function () { // prevent mouse bubbles while animating
       var self = this;
@@ -570,12 +569,10 @@
 
       self.indicator && self.indicator.removeEventListener( "click", self.indicatorHandler, false);
 
-      if (self.options.keyboard === true) {
-        window.removeEventListener('keydown', self.keyHandler, false);
-      }
+      self.options.keyboard === true && window.removeEventListener('keydown', self.keyHandler, false);
     },
     _getActiveIndex : function () {
-      return this.slides.indexOf(this.carousel.querySelector('.item.active'))
+      return this.slides.indexOf(this.carousel.querySelector('.item.active'));
     },
     _curentPage: function( p ) {
       for( var i = 0; i < this.indicators.length; ++i ) {
@@ -591,7 +588,7 @@
         var target = e.target;
         var active = self._getActiveIndex(); // the current active
 
-        if ( target && !/active/.test(target.className) && target.getAttribute('data-slide-to') ) {
+        if ( target && !/\bactive/.test(target.className) && target.getAttribute('data-slide-to') ) {
           var n = parseInt( target.getAttribute('data-slide-to'), 10 );
 
           self.index = n;
@@ -624,7 +621,7 @@
           if( self.index == self.total - 1 ) {
             self.index = self.total - 1;
           } else if ( self.index == self.total ){
-            self.index = 0
+            self.index = 0;
           }
         } else if ( target === self.prev ) {
           self.index--;
@@ -721,49 +718,42 @@
   // ================
   Collapse.prototype = {
 
-    init : function() {
+     init : function() {
       this.actions();
       this.addEvent();
+      this.collapse = this.getTarget();
+      this.accordion = this.btn.getAttribute('data-parent') 
+        && this.getClosest(this.btn, this.btn.getAttribute('data-parent'));
     },
 
     actions : function() {
       var self = this;
       var getOuterHeight = function (el) {
-        var s = el && el.currentStyle || window.getComputedStyle(el), // the getComputedStyle polyfill would do this for us, but we want to make sure it does
-          btp = s.borderTopWidth || 0,
+        var s = el && (el.currentStyle || window.getComputedStyle(el)), // the getComputedStyle polyfill would do this for us, but we want to make sure it does
+          btp = /px/.test(s.borderTopWidth) ? Math.round(s.borderTopWidth.replace('px','')) : 0,
           mtp = /px/.test(s.marginTop)  ? Math.round(s.marginTop.replace('px',''))    : 0,
           mbp = /px/.test(s.marginBottom)  ? Math.round(s.marginBottom.replace('px',''))  : 0,
           mte = /em/.test(s.marginTop)  ? Math.round(s.marginTop.replace('em','')    * parseInt(s.fontSize)) : 0,
           mbe = /em/.test(s.marginBottom)  ? Math.round(s.marginBottom.replace('em','')  * parseInt(s.fontSize)) : 0;
-
         return el.clientHeight + parseInt( btp ) + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ); //we need an accurate margin value
       };
 
       this.toggle = function(e) {
-        self.btn = self.getTarget(e).btn;
-        self.collapse = self.getTarget(e).collapse;
+        e.preventDefault();
 
         if (!/\bin/.test(self.collapse.className)) {
-          self.open(e);
+          self.open();
         } else {
-          self.close(e);
+          self.close();
         }
       },
-      this.close = function(e) {
-        e.preventDefault();
-        self.btn = self.getTarget(e).btn;
-        self.collapse = self.getTarget(e).collapse;
+      this.close = function() {
         self._close(self.collapse);
-        self.removeClass(self.btn,'collapsed');
-      },
-      this.open = function(e) {
-        e.preventDefault();
-        self.btn = self.getTarget(e).btn;
-        self.collapse = self.getTarget(e).collapse;
-        self.accordion = self.btn.getAttribute('data-parent') && self.getClosest(self.btn, self.btn.getAttribute('data-parent'));
-
-        self._open(self.collapse);
         self.addClass(self.btn,'collapsed');
+      },
+      this.open = function() {
+        self._open(self.collapse);
+        self.removeClass(self.btn,'collapsed');
 
         if ( self.accordion !== null ) {
           var active = self.accordion.querySelectorAll('.collapse.in'), al = active.length, i = 0;
@@ -778,8 +768,7 @@
         c.setAttribute('aria-expanded','true');
         self.addClass(c,'collapsing');
         setTimeout(function() {
-          var h = self.getMaxHeight(c);
-          c.style.height = h + 'px';                    
+          c.style.height = self.getMaxHeight(c) + 'px'
           c.style.overflowY = 'hidden';
         }, 0);  
         setTimeout(function() {
@@ -791,8 +780,8 @@
       },
       this._close = function(c) {
         self.removeEvent();
-        c.setAttribute('aria-expanded','false');        
-        c.style.height = self.getMaxHeight(c) + 'px';        
+        c.setAttribute('aria-expanded','false');
+        c.style.height = self.getMaxHeight(c) + 'px'
         setTimeout(function() {
           c.style.height = '0px';    
           c.style.overflowY = 'hidden';
@@ -820,22 +809,18 @@
       this.addEvent = function() {
         this.btn.addEventListener('click', this.toggle, false);
       },
-      this.getTarget = function(e) {
-        var t = e.currentTarget || e.srcElement,
+      this.getTarget = function() {
+        var t = this.btn,
           h = t.href && t.getAttribute('href').replace('#',''),
           d = t.getAttribute('data-target') && ( t.getAttribute('data-target') ),
           id = h || ( d && /#/.test(d)) && d.replace('#',''),
           cl = (d && d.charAt(0) === '.') && d, //the navbar collapse trigger targets a class
           c = id && document.getElementById(id) || cl && document.querySelector(cl);
-
-        return {
-          btn : t,
-          collapse : c
-        };
-      },	
+        return c;
+      },
 
       this.getClosest = function (el, s) { //el is the element and s the selector of the closest item to find
-      // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
+        // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
         var f = s.charAt(0);
         for ( ; el && el !== document; el = el.parentNode ) {// Get closest match
           if ( f === '.' ) {// If selector is a class
@@ -914,7 +899,7 @@
             children = [], c = self.menu.parentNode.getElementsByTagName('*');
         for ( var i=0, l = c.length||0; i<l; i++) { l && children.push(c[i]); }
 
-        if ( target === self.menu || target.parentNode === self.menu ) { 
+        if ( target === self.menu || target.parentNode === self.menu || target.parentNode.parentNode === self.menu ) { 
           self.toggle(e); 
         }  else if ( children && children.indexOf(target) > -1  ) {
           return;
@@ -923,7 +908,7 @@
       } 
       
       this.toggle = function(e) {
-        if (/open/.test(this.menu.parentNode.className)) {
+        if (/\bopen/.test(this.menu.parentNode.className)) {
           this.close();
           document.removeEventListener('keydown', this.key, false);
         } else {
@@ -1115,7 +1100,7 @@
             self.close();
           }          
         }
-        if (!/in/.test(this.modal.className)) {
+        if (!/\bin/.test(this.modal.className)) {
           document.addEventListener('keydown', keyHandler, false);
         } else {
           document.removeEventListener('keydown', keyHandler, false);
@@ -1126,6 +1111,7 @@
         var triggers = document.querySelectorAll('[data-toggle="modal"]'), tgl = triggers.length, i = 0;
         for ( i;i<tgl;i++ ) {
           triggers[i].addEventListener('click', function(e) {
+            e.preventDefault();
             var b = e.target,
             s = b.getAttribute('data-target') && b.getAttribute('data-target').replace('#','')
             || b.getAttribute('href') && b.getAttribute('href').replace('#','');
@@ -1140,7 +1126,7 @@
         var overlay = this.overlay||document.querySelector('.modal-backdrop'),
           dim = { w: document.documentElement.clientWidth + 'px', h: document.documentElement.clientHeight + 'px' };
         // setTimeout(function() {
-          if ( overlay !== null && /in/.test(overlay.className) ) {
+          if ( overlay !== null && /\bin/.test(overlay.className) ) {
             overlay.style.height = dim.h; overlay.style.width = dim.w;
           }
         // }, self.options.duration/2)
@@ -1164,7 +1150,7 @@
           // }, 100)
         }      
 
-        if (!/in/.test(this.modal.className)) {
+        if (!/\bin/.test(this.modal.className)) {
           window.addEventListener('resize', this.oneResize, false);
         } else {
           window.removeEventListener('resize', this.oneResize, false);
@@ -1178,7 +1164,7 @@
             e.preventDefault(); self.close()
           }
         }          
-        if (!/in/.test(this.modal.className)) {
+        if (!/\bin/.test(this.modal.className)) {
           this.modal.addEventListener('click', dismissHandler, false);
         } else {
           this.modal.removeEventListener('click', dismissHandler, false);
@@ -1347,7 +1333,7 @@
       this.close = function(e) {
         clearTimeout(self.link.getAttribute('data-timer'));
         self.timer = setTimeout( function() {
-          if (self.popover && self.popover !== null && /in/.test(self.popover.className)) {
+          if (self.popover && self.popover !== null && /\bin/.test(self.popover.className)) {
             self.popover.className = self.popover.className.replace(' in','');
             setTimeout(function() {
               self.removePopover(); // for performance/testing reasons we can keep the popovers if we want
@@ -1610,20 +1596,20 @@
       }
     },
     activate: function () {
-      if ( this.parent && this.parent.tagName === 'LI' && !/active/.test(this.parent.className) ) {
+      if ( this.parent && this.parent.tagName === 'LI' && !/\bactive/.test(this.parent.className) ) {
         this.addClass(this.parent,'active');
         if ( this.parentParent && this.parentParent.tagName === 'LI' // activate the dropdown as well
-          && /dropdown/.test(this.parentParent.className)
-          && !/active/.test(this.parentParent.className) ) { this.addClass(this.parentParent,'active'); }
+          && /\bdropdown/.test(this.parentParent.className)
+          && !/\bactive/.test(this.parentParent.className) ) { this.addClass(this.parentParent,'active'); }
         this.active = true
       }
     },
     deactivate: function () {
-      if ( this.parent && this.parent.tagName === 'LI' && /active/.test(this.parent.className) ) {
+      if ( this.parent && this.parent.tagName === 'LI' && /\bactive/.test(this.parent.className) ) {
         this.removeClass(this.parent,'active');
         if ( this.parentParent && this.parentParent.tagName === 'LI' // deactivate the dropdown as well
-          && /dropdown/.test(this.parentParent.className)
-          && /active/.test(this.parentParent.className) ) { this.removeClass(this.parentParent,'active'); }
+          && /\bdropdown/.test(this.parentParent.className)
+          && /\bactive/.test(this.parentParent.className) ) { this.removeClass(this.parentParent,'active'); }
         this.active = false
       }
     },
@@ -1721,7 +1707,7 @@
     this.tab = typeof element === 'object' ? element : document.querySelector(element);
     this.tabs = this.tab.parentNode.parentNode;
     this.dropdown = this.tabs.querySelector('.dropdown');
-    if ( /dropdown-menu/.test(this.tabs.className) ) {
+    if ( /\bdropdown-menu/.test(this.tabs.className) ) {
       this.dropdown = this.tabs.parentNode;
       this.tabs = this.tabs.parentNode.parentNode;
     }
@@ -1755,7 +1741,7 @@
         var activeTab = self.getActiveTab();
         var activeContent = self.getActiveContent();
 
-        if ( !/active/.test(next.parentNode.className) ) {
+        if ( !/\bactive/.test(next.parentNode.className) ) {
           // toggle "active" class name
           self.removeClass(activeTab,'active');
           self.addClass(next.parentNode,'active');    
@@ -1763,9 +1749,9 @@
           // handle dropdown menu "active" class name
           if ( self.dropdown ) {
             if ( !(isDropDown.test(self.tab.parentNode.parentNode.className)) ) {
-              if (/active/.test(self.dropdown.className)) self.removeClass(self.dropdown,'active');
+              if (/\bactive/.test(self.dropdown.className)) self.removeClass(self.dropdown,'active');
             } else {
-              if (!/active/.test(self.dropdown.className)) self.addClass(self.dropdown,'active');
+              if (!/\bactive/.test(self.dropdown.className)) self.addClass(self.dropdown,'active');
             }
           }
           
@@ -1791,7 +1777,7 @@
       },
       this.getActiveTab = function() {
         var activeTabs = this.tabs.querySelectorAll('.active');
-        if ( activeTabs.length === 1 && !/dropdown/.test(activeTabs[0].className) ) {
+        if ( activeTabs.length === 1 && !/\bdropdown/.test(activeTabs[0].className) ) {
           return activeTabs[0]
         } else if ( activeTabs.length > 1 ) {
           return activeTabs[activeTabs.length-1]

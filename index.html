@@ -43,7 +43,7 @@
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	<![endif]-->
 </head>
-<body>
+<body>	
     <div class="navbar-wrapper">
       <div class="container">
 		  <div class="navbar navbar-default navbar-static-top" role="navigation">
@@ -155,8 +155,11 @@
 			<section id="use">
 				<h2>Use</h2>
 				<h3>Load from CDN</h3>
-				<p>Thanks to <a href="http://www.jsdelivr.com/">jsdelivr</a> we have a CDN link, so drop this line before your ending <code>&lt;/body></code> tag. Latest releases <a href="http://www.jsdelivr.com/#!bootstrap.native">come here</a>.</p>
-<pre><code class="language-markup">&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"&gt;&lt;/script&gt;</code></pre>
+				<p>Thanks to <a href="http://www.jsdelivr.com/">jsdelivr</a> and <a href="https://cdnjs.com">cdnjs</a> we have CDN links, so drop one of these lines before your ending <code>&lt;/body></code> tag. Latest releases <a href="http://www.jsdelivr.com/#!bootstrap.native">come here</a> on jsdelivr and <a href="https://cdnjs.com/libraries/bootstrap.native">here</a> on cdnjs.</p>
+<pre><code class="language-markup">&lt;!-- jsdelivr repo --&gt;
+&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"&gt;&lt;/script&gt;
+&lt;!-- or cdnjs repo --&gt;	
+&lt;script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/1.0.2/bootstrap-native.min.js"&gt;&lt;/script&gt;</code></pre>
 
 				<p>As most of the scripts manipulate the DOM when ready, there is no need to include a <code>document.ready</code> statement or link the script(s) in the <code>&lt;head&gt;</code>. That's your first performance tip if you are new around here.</p>
 				
@@ -184,7 +187,7 @@ $ npm install --save bootstrap.native
 </code></pre>				
 				
 				<h3 id="required_css">Additional Styling</h3>
-				<p>Since we are not using jQuery to do all the <code>.slideToggle()</code> work, and in order to animate things, now we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>Collapse</strong> component, so copy this line in your application CSS files. Also the dismissible <strong>Popover</strong> feature require some styling for the closing button.</p>
+				<p>Since we are not using jQuery to do all the animations, we only need to enable the CSS3 transitions. Luckily, we only need one line, for <strong>Collapse</strong> component, so copy this line in your application CSS files. Also the dismissible <strong>Popover</strong> feature require some styling for the closing button.</p>
 <pre><code class="language-clike">/* enables CSS3 transition for simple collapses, accordion and also navbar in responsive view */
 .collapse { transition: height .3s ease-out; /*-webkit-transition: height .3s ease-out*/ } 
 
@@ -758,7 +761,7 @@ myRadioInput.addEventListener('bs.button.change',function() {
           <div class="well">
             Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
           </div>
-					</div>				
+					</div>	
 					
 					<p>Here's an <b>Accordion</b> component, basically a set of <b>Panel</b> components. When the toggle links are clicked, our Collapse object will look for the closest <code>&lt;div class="accordion-className"</code> or <code>&lt;div id="accordion-id"</code> via <code>data-parent="selector"</code>. </p>
 					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -998,8 +1001,7 @@ var theAffix = new Affix(elToAffix, {
 	<script src="./assets/js/prism.js" type="text/javascript"></script>		
 
 	<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"></script>  now we have CDN -->
-	<!--<script type="text/javascript" src="./dist/bootstrap-native.min.js"></script>  local testing -->
-	<script type="text/javascript" src="./dist/bootstrap-native.js"></script> <!-- local testing -->
+	<script type="text/javascript" src="./dist/bootstrap-native.min.js"></script> <!-- local testing -->
 	
 	<script type="text/javascript" src="./assets/js/scripts.js"></script>
   </body>	
