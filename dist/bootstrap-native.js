@@ -1758,7 +1758,7 @@
           //1. hide current active content first
           self.removeClass(activeContent,'in');
           
-          setTimeout(function() { // console.log(self)
+          setTimeout(function() {
             //2. toggle current active content from view
             self.removeClass(activeContent,'active');
             self.addClass(nextContent,'active');
