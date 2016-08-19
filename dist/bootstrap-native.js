@@ -1403,7 +1403,7 @@
         var animation = this.options.animation === 'true' ? 'fade' : '';
         this.popover.setAttribute('class','popover '+placement+' '+animation);
 
-        var linkDim = { w: this.link.offsetWidth, h: this.link.offsetHeight }; //link real dimensions
+        var linkDim = { w: this.rect.right - this.rect.left, h: this.rect.bottom - this.rect.top }; //link real dimensions
 
         // all popover dimensions
         var pd = this.popoverDimensions(this.popover);
@@ -1921,7 +1921,7 @@
         var placement = pos || this.options.placement;
         this.tooltip.setAttribute('class','tooltip '+placement+' '+this.options.animation);
 
-        var linkDim = { w: this.link.offsetWidth, h: this.link.offsetHeight }; //link real dimensions
+        var linkDim = { w: this.rect.right - this.rect.left, h: this.rect.bottom - this.rect.top }; //link real dimensions
 
         // all tooltip dimensions
         var td = this.tooltipDimensions(this.tooltip);
