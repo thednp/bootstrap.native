@@ -317,7 +317,7 @@ btnModal.addEventListener('click', function() {
 				<section id="exampleDropdown">
 					<h3>Dropdown</h3>
 					<p><strong>Dropdown</strong> opens the dropdown-menu on click and closes it on click/blur after a 200ms timeout, to allow the click event on it's menu items, including external links. Dropdown doesn't cover the original <a href="http://getbootstrap.com/javascript/#dropdowns-methods" target="_blank">methods</a> or <a href="http://getbootstrap.com/javascript/#dropdowns-events" target="_blank">events</a>, but will properly handle all events, especially <code>blur</code>, even for later added dropdown elements.</p>
-			    <p>Above all, the script will also allow users to dismiss the dropdown by pressing the <kbd>Esc</kbd> button.</p>
+			    <p>Above all, the script will also allow users to dismiss the dropdown by pressing the <kbd>Esc</kbd> button. The script handles nesting as well.</p>
 
 					<div class="btn-group">
 					  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false" tabindex="0">Form Dropdown <span class="caret"></span></button>
@@ -364,34 +364,70 @@ btnModal.addEventListener('click', function() {
 					
 					<ul class="nav nav-pills pull-right">
 						<li class="dropdown">
-						  <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">
-                Pill
-                <span class="caret"></span>
-						  </a>
+						  <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">Pill <span class="caret"></span></a>
 						  <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
 							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
 							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+							<li role="presentation" class="dropdown">
+								<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">This is nesting <span class="caret"></span></a>
+								<ul class="dropdown-menu right" role="menu" aria-labelledby="drop2">
+									<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+									<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+									<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+									<li role="presentation" class="divider"></li>
+									<li role="presentation" class="dropdown">
+										<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">Sub-menu <span class="caret"></span></a>
+										<ul class="dropdown-menu right" role="menu" aria-labelledby="drop3">
+											<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Level 1</a></li>
+											<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Nested Menu</a></li>
+											<li role="presentation" class="dropdown">
+												<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">Other stuff <span class="caret"></span></a>
+												<ul class="dropdown-menu right" role="menu" aria-labelledby="drop4">
+													<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Level 2</a></li>
+													<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Nested Menu</a></li>
+													<li role="presentation" class="dropdown">
+														<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">Even more stuff <span class="caret"></span></a>
+														<ul class="dropdown-menu right" role="menu" aria-labelledby="drop5">
+															<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Level 3</a></li>
+															<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Nested Menu</a></li>
+														</ul>
+													</li>
+												</ul>											
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
 							<li role="presentation" class="divider"></li>
 							<li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.cn" target="_blank">External link</a></li>
 						  </ul>
 						</li>
 						<li class="dropdown">
-						  <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">
-							Nested
-							<span class="caret"></span>
-						  </a>
+						  <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">Nested <span class="caret"></span></a>
 						  <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="drop2">
 								<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
 								<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
 								<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
 								<li role="presentation" class="divider"></li>
 								<li role="presentation" class="dropdown">
-									<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">Go deeper <span class="caret"></span></a>
-									<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Crazy Action</a></li>
+									<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">Sub-menu <span class="caret"></span></a>
+									<ul class="dropdown-menu left" role="menu" aria-labelledby="drop3">
+										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Level 1</a></li>
 										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Nested Menu</a></li>
-										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Other stuff</a></li>
+										<li role="presentation" class="dropdown">
+											<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">Other stuff <span class="caret"></span></a>
+											<ul class="dropdown-menu left" role="menu" aria-labelledby="drop4">
+												<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Level 2</a></li>
+												<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Nested Menu</a></li>
+												<li role="presentation" class="dropdown">
+													<a role="menuitem" tabindex="-1" href="#" data-toggle="dropdown">Even more stuff <span class="caret"></span></a>
+													<ul class="dropdown-menu left" role="menu" aria-labelledby="drop4">
+														<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Level 3</a></li>
+														<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Nested Menu</a></li>
+													</ul>
+												</li>
+											</ul>											
+										</li>
 									</ul>
 								</li>
 						  </ul>
@@ -563,7 +599,7 @@ btnModal.addEventListener('click', function() {
 					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
 					  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right<br> Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
 						<svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg">
-							<rect fill="#fff" stroke="#ccc" stroke-width="1" width="100%" height="100%"></rect>
+							<rect fill="#fff" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
 							<text data-toggle="tooltip" data-placement="top" title="Demo Title for SVG" fill="#333" x="25" y="22" font-size="14">SVG</text>
 						</svg>
 					</p>
@@ -612,7 +648,7 @@ for (var i = 0; i < elementsTooltip.length; i++){
 						<input style="max-width: 180px; display: inline; width: auto" type="text" value="" class="form-control popover-via-template" placeholder="Focus me" data-toggle="popover">
 						<button type="button" id="popover-via-click" class="btn btn-default" data-trigger="click" data-content="You clicked the button and as a result, this message box simply.. popped.<br>Now simply click anywhere to dismiss.">Click to open</button>
 						<svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg">
-							<rect fill="#fff" stroke="#ccc" stroke-width="1" width="100%" height="100%"></rect>
+							<rect fill="#fff" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
 							<text data-toggle="popover" data-placement="top" data-title="Demo Popover Title for SVG" data-content="This is a demo popover for SVG elements." fill="#333" x="25" y="22" font-size="14">SVG</text>
 						</svg>
 					</p>
@@ -845,24 +881,24 @@ myRadioInput.addEventListener('bs.button.change',function() {
 
 						  <!-- Wrapper for slides -->
 						  <div class="carousel-inner" role="listbox">
-							<div class="item active">
-							  <img src="http://lorempixel.com/837/300/" alt="">
-							  <div class="carousel-caption">
-								<h3>This is another carousel</h3>
-							  </div>
-							</div>
-							<div class="item">
-							  <img src="http://lorempixel.com/837/300/abstract/" alt="">
-							  <div class="carousel-caption">
-								<h3>This is a caption</h3>
-							  </div>
-							</div>
-							<div class="item">
-							  <img src="http://lorempixel.com/837/300/sports" alt="">
-							  <div class="carousel-caption">
-								<h3>This is another caption</h3>
-							  </div>
-							</div>					
+								<div class="item active">
+									<img src="https://unsplash.it/837/300?image=0" alt="">
+									<div class="carousel-caption">
+									<h3>This is another carousel</h3>
+									</div>
+								</div>
+								<div class="item">
+									<img src="https://unsplash.it/837/300?image=10" alt="">
+									<div class="carousel-caption">
+									<h3>This is a caption</h3>
+									</div>
+								</div>
+								<div class="item">
+									<img src="https://unsplash.it/837/300?image=210" alt="">
+									<div class="carousel-caption">
+									<h3>This is another caption</h3>
+									</div>
+								</div>					
 						  </div>
 
 						  <!-- Controls -->
@@ -1001,7 +1037,7 @@ var theAffix = new Affix(elToAffix, {
 	<footer>
 		<div class="container">
 			<p class="pull-right"><a href="#myCarousel">Back to top</a></p>
-			<p>NJB &copy; 2015 <a href="http://themeforest.net/user/dnp_theme" target="_blank">dnp_theme</a>.</p>
+			<p>NJB &copy; 2015-2016 <a href="http://themeforest.net/user/dnp_theme" target="_blank">dnp_theme</a>.</p>
 		 </div>
 	</footer>
 	
@@ -1009,7 +1045,8 @@ var theAffix = new Affix(elToAffix, {
 	<script src="./assets/js/prism.js" type="text/javascript"></script>		
 
 	<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/1.0.2/bootstrap-native.min.js"></script>  now we have CDN -->
-	<script type="text/javascript" src="./dist/bootstrap-native.min.js"></script> <!-- local testing -->
+	<script type="text/javascript" src="./dist/bootstrap-native.js"></script> <!-- local testing -->
+
 	<script type="text/javascript" src="./assets/js/scripts.js"></script>
   </body>	
 </html>

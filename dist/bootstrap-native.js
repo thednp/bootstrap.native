@@ -49,7 +49,7 @@
     },
     processOffsetTop: function () {
       if ( this.options.target !== null ) {
-        return this.targetRect().top + this.scrollOffset();
+        return this.options.target.getBoundingClientRect().top + this.scrollOffset();
       } else if ( this.options.offsetTop !== null ) {
         return this.options.offsetTop
       }
@@ -57,18 +57,12 @@
     processOffsetBottom: function () {
       if ( this.options.offsetBottom !== null ) {
         var maxScroll = this.getMaxScroll();
-        return maxScroll - this.elementHeight() - this.options.offsetBottom
+        return maxScroll - this.element.offsetHeight - this.options.offsetBottom
       }
     },
-    offsetTop: function () {
-      return this.processOffsetTop()
-    },
-    offsetBottom: function () {
-      return this.processOffsetBottom()
-    },
     checkPosition: function () {
-      this.getPinOffsetTop = this.offsetTop
-      this.getPinOffsetBottom = this.offsetBottom
+      this.getPinOffsetTop = this.processOffsetTop
+      this.getPinOffsetBottom = this.processOffsetBottom
     },
     scrollOffset: function () {
       return window.pageYOffset || document.documentElement.scrollTop
@@ -98,19 +92,18 @@
       }
     },
     updatePin: function () {
-      if (this.affixed === false && (parseInt(this.offsetTop(),0) - parseInt(this.scrollOffset(),0) < 0)) {
+      if (this.affixed === false && (parseInt(this.processOffsetTop(),0) - parseInt(this.scrollOffset(),0) < 0)) {
         this.pinTop();
       } else if (this.affixed === true && (parseInt(this.scrollOffset(),0) <= parseInt(this.getPinOffsetTop(),0) )) {
         this.unPinTop()
       }
 
-      if (this.affixedBottom === false && (parseInt(this.offsetBottom(),0) - parseInt(this.scrollOffset(),0) < 0)) {
+      if (this.affixedBottom === false && (parseInt(this.processOffsetBottom(),0) - parseInt(this.scrollOffset(),0) < 0)) {
         this.pinBottom();
       } else if (this.affixedBottom === true && (parseInt(this.scrollOffset(),0) <= parseInt(this.getPinOffsetBottom(),0) )) {
         this.unPinBottom()
       }
     },
-
     updateAffix : function () { // Unpin and check position again
       this.unPinTop();
       this.unPinBottom();
@@ -118,20 +111,10 @@
 
       this.updatePin() // If any case update values again
     },
-
-    elementHeight : function(){
-      return this.element.offsetHeight
-    },
-
-    targetRect : function(){
-      return this.options.target.getBoundingClientRect()
-    },
-
     getMaxScroll : function(){
       return Math.max( document.body.scrollHeight, document.body.offsetHeight, 
         document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )
     },
-
     scrollEvent : function(){
       var self = this;
       window.addEventListener('scroll', function() {
@@ -148,7 +131,6 @@
           self.updateAffix()
         },dl);
       }, false);
-
     }
   };
 
@@ -157,9 +139,9 @@
   var Affixes = document.querySelectorAll('[data-spy="affix"]'), i = 0, afl = Affixes.length;
   for (i;i<afl;i++) {
     var item = Affixes[i], options = {};
-      options.offsetTop    = item.getAttribute('data-offset-top');
+      options.offsetTop     = item.getAttribute('data-offset-top');
       options.offsetBottom  = item.getAttribute('data-offset-bottom');
-      options.target      = item.getAttribute('data-target');
+      options.target        = item.getAttribute('data-target');
 
     if ( item && (options.offsetTop !== null || options.offsetBottom !== null || options.target !== null) ) { //don't do anything unless we have something valid to pin
       new Affix(item, options);
@@ -221,14 +203,13 @@
             self.alert && self.alert.parentNode.removeChild(self.alert);
           }, self.duration);
         }
-
       }
     }
-    }
+  }
 
   // ALERT DATA API
   // =================
-    var Alerts = document.querySelectorAll('[data-dismiss="alert"]'), i = 0, all = Alerts.length;
+  var Alerts = document.querySelectorAll('[data-dismiss="alert"]'), i = 0, all = Alerts.length;
   for (i;i<all;i++) {
     new Alert(Alerts[i]);
   }
@@ -271,7 +252,6 @@
   Button.prototype = {
 
     init : function() {
-      var self = this;
       this.actions();
 
       if ( /\bbtn/.test(this.btn.className) ) {
@@ -309,11 +289,11 @@
       },
 
       this.reset = function() {
-        if ( /\bdisabled/.test(self.btn.className) || self.btn.getAttribute('disabled') === 'disabled' ) {
+        if ( /\bdisabled/.test(this.btn.className) || this.btn.getAttribute('disabled') === 'disabled' ) {
           this.removeClass(this.btn,'disabled');  
-          self.btn.removeAttribute('disabled');
+          this.btn.removeAttribute('disabled');
         }
-        self.btn.innerHTML = self.btn.getAttribute('data-original-text');
+        this.btn.innerHTML = this.btn.getAttribute('data-original-text');
       },
 
       this.toggle = function(e) {
@@ -349,7 +329,7 @@
           if ( !input.checked ) { // don't trigger if already active
             self.addClass(label,'active');
             input.setAttribute('checked','checked');
-            input.checked = true;          
+            input.checked = true;
             triggerChange(self.btn);     
             triggerChange(input); //trigger the change
             
@@ -373,11 +353,11 @@
         if (el.classList) { el.classList.remove(c); } else { el.className = el.className.replace(c,'').replace(/^\s+|\s+$/g,''); el.offsetWidth; }
       }
     }
-    }
+  }
 
   // BUTTON DATA API
   // =================
-    var Buttons = document.querySelectorAll('[data-toggle=button]'), i = 0, btl = Buttons.length;
+  var Buttons = document.querySelectorAll('[data-toggle=button]'), i = 0, btl = Buttons.length;
   for (i;i<btl;i++) {
     new Button(Buttons[i]);
   }
@@ -466,15 +446,15 @@
     cycle: function(e) {
       var self = this;
 
-      self.direction = 'left';
-      self.timer = setInterval(function() {
+      this.direction = 'left';
+      this.timer = setInterval(function() {
         self.index++;
         if( self.index == self.slides.length ) {
           self.index = 0;
         }
         self._slideTo( self.index, e );
 
-      }, self.options.interval);
+      }, this.options.interval);
     },
     pause: function() {
       var self = this;
@@ -488,7 +468,7 @@
       var resumeHandler = function() {
         if ( self.options.interval !==false && /\bpaused/.test(self.carousel.className) ) {
           self.cycle();
-          self.carousel.className = self.carousel.className.replace(' paused','');
+          self.carousel.className = self.carousel.className.replace(/\bpaused/,'');
         }
       };
       self.carousel.addEventListener( "mouseenter", pauseHandler, false);
@@ -498,29 +478,29 @@
     },
     _slideTo: function( next, e ) {
       var self = this;
-      var active = self._getActiveIndex(); // the current active
+      var active = this._getActiveIndex(); // the current active
       //determine type
-      var direction = self.direction;
+      var direction = this.direction;
       var dr = direction === 'left' ? 'next' : 'prev';
-      var slid = null, slide=null;
+      var slid = null, slide = null;
       
       //register events
       if (('CustomEvent' in window) && window.dispatchEvent) {
         slid =  new CustomEvent("slid.bs.carousel");
         slide = new CustomEvent("slide.bs.carousel");
       }
-      if (slid) { self.carousel.dispatchEvent(slid); } //here we go with the slid
+      if (slid) { this.carousel.dispatchEvent(slid); } //here we go with the slid
 
-      self._removeEventListeners();
-      clearInterval(self.timer);
-      self.timer = null;
-      self._curentPage( self.indicators[next] );
+      this._removeEventListeners();
+      clearInterval(this.timer);
+      this.timer = null;
+      this._curentPage( this.indicators[next] );
 
       if ( /\bslide/.test(this.carousel.className) && !(this.isIE && this.isIE < 10) ) {
-        self.slides[next].className += (' '+dr);
-        self.slides[next].offsetWidth;
-        self.slides[next].className += (' '+direction);
-        self.slides[active].className += (' '+direction);
+        this.slides[next].className += (' '+dr);
+        this.slides[next].offsetWidth;
+        this.slides[next].className += (' '+direction);
+        this.slides[active].className += (' '+direction);
 
         setTimeout(function() { //we're gonna fake waiting for the animation to finish, cleaner and better
           self._addEventListeners();
@@ -536,40 +516,36 @@
             clearInterval(self.timer); self.cycle();
           }
           if (slide) { self.carousel.dispatchEvent(slide); } //here we go with the slide
-        }, self.options.duration + 100 );
+        }, this.options.duration + 100 );
       } else {
-        self.slides[next].className += ' active';
-        self.slides[next].offsetWidth;
-        self.slides[active].className = self.slides[active].className.replace(' active','');
+        this.slides[next].className += ' active';
+        this.slides[next].offsetWidth;
+        this.slides[active].className = this.slides[active].className.replace(' active','');
         setTimeout(function() {
           self._addEventListeners();
           if ( self.options.interval !== false && !/\bpaused/.test(self.carousel.className) ){
             clearInterval(self.timer); self.cycle();
           }
           if (slide) { self.carousel.dispatchEvent(slide); } //here we go with the slide
-        }, self.options.duration + 100 );
+        }, this.options.duration + 100 );
       }
     },
     _addEventListeners : function () {
-      var self = this;
+      this.next && this.next.addEventListener( "click", this.controlsHandler, false);
+      this.prev && this.prev.addEventListener( "click", this.controlsHandler, false);
 
-      self.next && self.next.addEventListener( "click", self.controlsHandler, false);
-      self.prev && self.prev.addEventListener( "click", self.controlsHandler, false);
+      this.indicator && this.indicator.addEventListener( "click", this.indicatorHandler, false);
 
-      self.indicator && self.indicator.addEventListener( "click", self.indicatorHandler, false);
-
-      self.options.keyboard === true && window.addEventListener('keydown', self.keyHandler, false);
+      this.options.keyboard === true && window.addEventListener('keydown', this.keyHandler, false);
 
     },
     _removeEventListeners : function () { // prevent mouse bubbles while animating
-      var self = this;
+      this.next && this.next.removeEventListener( "click", this.controlsHandler, false);
+      this.prev && this.prev.removeEventListener( "click", this.controlsHandler, false);
 
-      self.next && self.next.removeEventListener( "click", self.controlsHandler, false);
-      self.prev && self.prev.removeEventListener( "click", self.controlsHandler, false);
+      this.indicator && this.indicator.removeEventListener( "click", this.indicatorHandler, false);
 
-      self.indicator && self.indicator.removeEventListener( "click", self.indicatorHandler, false);
-
-      self.options.keyboard === true && window.removeEventListener('keydown', self.keyHandler, false);
+      this.options.keyboard === true && window.removeEventListener('keydown', this.keyHandler, false);
     },
     _getActiveIndex : function () {
       return this.slides.indexOf(this.carousel.querySelector('.item.active'));
@@ -583,7 +559,7 @@
     },
     actions: function() {
       var self = this;
-      self.indicatorHandler = function(e) {
+      this.indicatorHandler = function(e) {
         e.preventDefault();
         var target = e.target;
         var active = self._getActiveIndex(); // the current active
@@ -611,7 +587,7 @@
 
       },
 
-      self.controlsHandler = function (e) {
+      this.controlsHandler = function (e) {
         var target = e.currentTarget || e.srcElement;
 
         if ( target === self.next ) {
@@ -637,7 +613,7 @@
         self._slideTo( self.index, e ); //Do the slide
       }
 
-      self.keyHandler = function (e) {
+      this.keyHandler = function (e) {
 
         switch (e.which) {
           case 39:
@@ -718,7 +694,7 @@
   // ================
   Collapse.prototype = {
 
-     init : function() {
+    init : function() {
       this.actions();
       this.addEvent();
       this.collapse = this.getTarget();
@@ -748,25 +724,25 @@
         }
       },
       this.close = function() {
-        self._close(self.collapse);
-        self.addClass(self.btn,'collapsed');
+        this._close(this.collapse);
+        this.addClass(this.btn,'collapsed');
       },
       this.open = function() {
-        self._open(self.collapse);
-        self.removeClass(self.btn,'collapsed');
+        this._open(this.collapse);
+        this.removeClass(this.btn,'collapsed');
 
-        if ( self.accordion !== null ) {
-          var active = self.accordion.querySelectorAll('.collapse.in'), al = active.length, i = 0;
+        if ( this.accordion !== null ) {
+          var active = this.accordion.querySelectorAll('.collapse.in'), al = active.length, i = 0;
           for (i;i<al;i++) {
-            if ( active[i] !== self.collapse) self._close(active[i]);
+            if ( active[i] !== this.collapse) this._close(active[i]);
           }
         }
       },
       this._open = function(c) {
-        self.removeEvent();
-        self.addClass(c,'in');
+        this.removeEvent();
+        this.addClass(c,'in');
         c.setAttribute('aria-expanded','true');
-        self.addClass(c,'collapsing');
+        this.addClass(c,'collapsing');
         setTimeout(function() {
           c.style.height = self.getMaxHeight(c) + 'px'
           c.style.overflowY = 'hidden';
@@ -776,12 +752,12 @@
           c.style.overflowY = '';
           self.removeClass(c,'collapsing');
           self.addEvent();
-        }, self.options.duration);
+        }, this.options.duration);
       },
       this._close = function(c) {
-        self.removeEvent();
+        this.removeEvent();
         c.setAttribute('aria-expanded','false');
-        c.style.height = self.getMaxHeight(c) + 'px'
+        c.style.height = this.getMaxHeight(c) + 'px'
         setTimeout(function() {
           c.style.height = '0px';    
           c.style.overflowY = 'hidden';
@@ -794,7 +770,7 @@
           c.style.overflowY = '';
           c.style.height = '';          
           self.addEvent();
-        }, self.options.duration);
+        }, this.options.duration);
       },
       this.getMaxHeight = function(l) { // get collapse trueHeight and border
         var h = 0;
@@ -820,7 +796,7 @@
       },
 
       this.getClosest = function (el, s) { //el is the element and s the selector of the closest item to find
-        // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
+      // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
         var f = s.charAt(0);
         for ( ; el && el !== document; el = el.parentNode ) {// Get closest match
           if ( f === '.' ) {// If selector is a class
@@ -895,17 +871,17 @@
       var self = this;
       
       this.handle = function(e) { // fix some Safari bug with <button>
-        var target = e.target || e.currentTarget, 
+        var target = e.target || e.currentTarget,
             children = [], c = self.menu.parentNode.getElementsByTagName('*');
-        for ( var i=0, l = c.length||0; i<l; i++) { l && children.push(c[i]); }
+        /\#$/g.test(target.href) && e.preventDefault();
 
+        for ( var i=0, l = c.length||0; i<l; i++) { l && children.push(c[i]); }
         if ( target === self.menu || target.parentNode === self.menu || target.parentNode.parentNode === self.menu ) { 
           self.toggle(e); 
         }  else if ( children && children.indexOf(target) > -1  ) {
           return;
         } else { self.close(); }
-        /\#$/g.test(target.href) && e.preventDefault();
-      } 
+      }
       
       this.toggle = function(e) {
         if (/\bopen/.test(this.menu.parentNode.className)) {
@@ -923,7 +899,7 @@
       }
       
       this.close = function() {
-        self.menu.parentNode.className = self.menu.parentNode.className.replace(' open','');
+        self.menu.parentNode.className = self.menu.parentNode.className.replace(/\bopen/,'');
         self.menu.setAttribute('aria-expanded',false);
       }
     }
@@ -986,8 +962,7 @@
   };
   Modal.prototype = {
     
-    init : function() {      
-        
+    init : function() {
       this.actions();
       this.trigger();  
       if ( this.options.content && this.options.content !== undefined ) {        
@@ -1004,7 +979,6 @@
       this.close = function() {
         this._close();
       },
-    
       this._open = function() {
         var currentOpen = document.querySelector('.modal.in');
         if (currentOpen){
@@ -1013,7 +987,7 @@
             setTimeout( function() {
               currentOpen.setAttribute('aria-hidden', true);
               currentOpen.style.display = '';
-            }, self.options.duration/2);
+            }, this.options.duration/2);
         }
             
         if ( this.options.backdrop ) {
@@ -1041,8 +1015,8 @@
           self.addClass(document.body,'modal-open');
           self.addClass(self.modal,'in');
           self.modal.setAttribute('aria-hidden', false);
-        }, self.options.duration/2);
-        this.modal.setAttribute('data-timer',self.timer);
+        }, this.options.duration/2);
+        this.modal.setAttribute('data-timer',this.timer);
       },
     
       this._close = function() {
@@ -1053,22 +1027,22 @@
         this.removeClass(this.modal,'in');
         this.modal.setAttribute('aria-hidden', true);
                 
-        clearTimeout(self.modal.getAttribute('data-timer'));
+        clearTimeout(this.modal.getAttribute('data-timer'));
         this.timer = setTimeout( function() {
           self.removeClass(document.body,'modal-open');
           self.resize();
           self.resetAdjustments();
-          self.resetScrollbar();      
+          self.resetScrollbar();
           
           self.dismiss();
-          self.keydown();                    
+          self.keydown();
           self.modal.style.display = '';
-        }, self.options.duration/2);
-        this.modal.setAttribute('data-timer',self.timer);
+        }, this.options.duration/2);
+        this.modal.setAttribute('data-timer',this.timer);
         
         setTimeout( function() {
           if (!document.querySelector('.modal.in')) {  self.removeOverlay(); }
-        }, self.options.duration);  
+        }, this.options.duration);
       },
     
       this.content = function( content ) {
@@ -1125,11 +1099,9 @@
       this._resize = function() {
         var overlay = this.overlay||document.querySelector('.modal-backdrop'),
           dim = { w: document.documentElement.clientWidth + 'px', h: document.documentElement.clientHeight + 'px' };
-        // setTimeout(function() {
-          if ( overlay !== null && /\bin/.test(overlay.className) ) {
-            overlay.style.height = dim.h; overlay.style.width = dim.w;
-          }
-        // }, self.options.duration/2)
+        if ( overlay !== null && /\bin/.test(overlay.className) ) {
+          overlay.style.height = dim.h; overlay.style.width = dim.w;
+        }
       },
       
       this.oneResize = function() {
@@ -1143,11 +1115,8 @@
     
       this.resize = function() {
         function resizeHandler() {
-          // setTimeout(function() {
-            self._resize();
-            self.handleUpdate();
-            // console.log('offresize')
-          // }, 100)
+          self._resize();
+          self.handleUpdate();
         }      
 
         if (!/\bin/.test(this.modal.className)) {
@@ -1155,7 +1124,6 @@
         } else {
           window.removeEventListener('resize', this.oneResize, false);
         }
-          
       },
     
       this.dismiss = function() {
@@ -1276,7 +1244,6 @@
     this.options.container = document.body;
     if ( this.content || this.options.template ) this.init();
     this.timer = 0 // the link own event timer
-    this.rect = null;
   }
 
   // POPOVER METHODS
@@ -1291,7 +1258,7 @@
         if (!this.options.dismiss) { this.link.addEventListener(events[1], this.close, false); }
       } else if (this.options.trigger === 'click') {
         this.link.addEventListener('click', this.toggle, false);
-        if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false); }          
+        if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false); }
       } else if (this.options.trigger === 'focus') {
         this.link.addEventListener('focus', this.toggle, false);
         if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false);  }
@@ -1301,7 +1268,7 @@
         
       if (!(this.isIE && this.isIE < 9) ) { // dismiss on window resize 
         window.addEventListener('resize', this.close, false ); 
-      }
+      } 
     },
 
     actions : function() {
@@ -1398,53 +1365,45 @@
       },
 
       this.stylePopover = function(pos) {
-        this.rect = this.getRect();
-        var placement = pos || this.options.placement;
-        var animation = this.options.animation === 'true' ? 'fade' : '';
+        var rect = this.link.getBoundingClientRect(),
+            placement = pos || this.options.placement,
+            animation = this.options.animation === 'true' ? 'fade' : '';
+
         this.popover.setAttribute('class','popover '+placement+' '+animation);
 
-        var linkDim = { w: this.rect.right - this.rect.left, h: this.rect.bottom - this.rect.top }; //link real dimensions
-
-        // all popover dimensions
-        var pd = this.popoverDimensions(this.popover);
-        var toolDim = { w : pd.w, h: pd.h }; //popover real dimensions
-
-
-        //window vertical and horizontal scroll
-
-        var scrollYOffset = this.getScroll().y;
-        var scrollXOffset =  this.getScroll().x;
+        var ld = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
+            pd = { w : this.popover.offsetWidth, h: this.popover.offsetHeight }, //popover real dimensions
+            sYo = this.getScroll().y, sXo = this.getScroll().x; //window vertical and horizontal scroll
 
         //apply styling
         if ( /top/.test(placement) ) { //TOP
-          this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h + 'px';
-          this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px'
+          this.popover.style.top = rect.top + sYo - pd.h + 'px';
+          this.popover.style.left = rect.left + sXo - pd.w/2 + ld.w/2 + 'px'
 
         } else if ( /bottom/.test(placement) ) { //BOTTOM
-          this.popover.style.top = this.rect.top + scrollYOffset + linkDim.h + 'px';
-          this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px';
+          this.popover.style.top = rect.top + sYo + ld.h + 'px';
+          this.popover.style.left = rect.left + sXo - pd.w/2 + ld.w/2 + 'px';
 
         } else if ( /left/.test(placement) ) { //LEFT
-          this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
-          this.popover.style.left = this.rect.left + scrollXOffset - toolDim.w + 'px';
+          this.popover.style.top = rect.top + sYo - pd.h/2 + ld.h/2 + 'px';
+          this.popover.style.left = rect.left + sXo - pd.w + 'px';
 
         } else if ( /right/.test(placement) ) { //RIGHT
-          this.popover.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
-          this.popover.style.left = this.rect.left + scrollXOffset + linkDim.w + 'px';
+          this.popover.style.top = rect.top + sYo - pd.h/2 + ld.h/2 + 'px';
+          this.popover.style.left = rect.left + sXo + ld.w + 'px';
         }
       },
 
       this.updatePopover = function() {
         var placement = null;
-        if ( !self.isElementInViewport(self.popover) ) {
-          placement = self.updatePlacement();
+        if ( !this.isElementInViewport(this.popover) ) {
+          placement = this.updatePlacement();
         } else {
-          placement = self.options.placement;
+          placement = this.options.placement;
         }
 
-        self.stylePopover(placement);
-
-        self.popover.className += ' in';
+        this.stylePopover(placement);
+        this.popover.className += ' in';
       },
       this.updatePlacement = function() {
         var pos = this.options.placement;
@@ -1458,19 +1417,10 @@
           return 'left';
         }
       },
-      this.getRect = function() {
-        return this.link.getBoundingClientRect()
-      },
       this.getScroll = function() {
         return {
           y : window.pageYOffset || document.documentElement.scrollTop,
           x : window.pageXOffset || document.documentElement.scrollLeft
-        }
-      },
-      this.popoverDimensions  = function(p) {//check popover width and height
-        return {
-          w : p.offsetWidth,
-          h : p.offsetHeight
         }
       },
       this.isElementInViewport = function(t) { // check if this.popover is in viewport
@@ -1483,11 +1433,11 @@
         )
       }
     }
-    }
+  }
 
   // POPOVER DATA API
   // =================
-    var Popovers = document.querySelectorAll('[data-toggle=popover]'), i = 0, ppl = Popovers.length;
+  var Popovers = document.querySelectorAll('[data-toggle=popover]'), i = 0, ppl = Popovers.length;
   for (i;i<ppl;i++){  
     var item = Popovers[i], options = {};
     options.trigger = item.getAttribute('data-trigger'); // click / hover / focus
@@ -1579,7 +1529,6 @@
       } else {
         return this.tg.offsetTop;
       }
-
     },
     bottomLimit: function () {
       return this.topLimit() + this.tg.clientHeight
@@ -1629,17 +1578,17 @@
     },
     scrollEvent : function(){
       var self = this;
-      this.scrollTarget.addEventListener('scroll', onSpyScroll, false);
       function onSpyScroll() {
         self.refresh();
       }
+      this.scrollTarget.addEventListener('scroll', onSpyScroll, false);
     },
     resizeEvent : function(){
       var self = this;
-      window.addEventListener('resize', onSpyResize, false);
       function onSpyResize() {
         self.refresh()
       }
+      window.addEventListener('resize', onSpyResize, false);
     },
     scrollHeight : function() {
       if ( this.scrollTarget === window ) {
@@ -1703,7 +1652,7 @@
   // ===================
   var Tab = function( element,options ) {
     options = options || {};
-    this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false;     
+    this.isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false; 
     this.tab = typeof element === 'object' ? element : document.querySelector(element);
     this.tabs = this.tab.parentNode.parentNode;
     this.dropdown = this.tabs.querySelector('.dropdown');
@@ -1725,17 +1674,16 @@
 
     init : function() {
       this.actions();
-      this.tab.addEventListener('click', this.action, false);
+      this.tab.addEventListener('click', this.handle, false);
     },
 
     actions : function() {
       var self = this;
 
-      this.action = function(e) {
+      this.handle = function(e) {
         e = e || window.e; e.preventDefault();
         var next = e.target; //the tab we clicked is now the next tab
         var nextContent = document.getElementById(next.getAttribute('href').replace('#','')); //this is the actual object, the next tab content to activate
-        var isDropDown = new RegExp('(?:^|\\s)'+ 'dropdown-menu' +'(?!\\S)');
         
         // get current active tab and content
         var activeTab = self.getActiveTab();
@@ -1746,15 +1694,15 @@
           self.removeClass(activeTab,'active');
           self.addClass(next.parentNode,'active');    
   
-          // handle dropdown menu "active" class name
+          // handle dropdown menu "active" class name    
           if ( self.dropdown ) {
-            if ( !(isDropDown.test(self.tab.parentNode.parentNode.className)) ) {
+            if ( !(/\bdropdown-menu/.test(self.tab.parentNode.parentNode.className)) ) {
               if (/\bactive/.test(self.dropdown.className)) self.removeClass(self.dropdown,'active');
             } else {
               if (!/\bactive/.test(self.dropdown.className)) self.addClass(self.dropdown,'active');
             }
           }
-          
+  
           //1. hide current active content first
           self.removeClass(activeContent,'in');
           
@@ -1793,7 +1741,7 @@
 
   // TAB DATA API
   // =================
-    var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']"), tbl = Tabs.length, i=0;
+  var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']"), tbl = Tabs.length, i=0;
   for ( i;i<tbl;i++ ) {
     var tab = Tabs[i], options = {};
     options.duration = tab.getAttribute('data-duration') && tab.getAttribute('data-duration') || false;
@@ -1850,7 +1798,6 @@
 
     init : function() {
       this.actions();
-      this.rect = null;
       var events = ('onmouseleave' in this.link) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
       this.link.addEventListener(events[0], this.open, false);
       this.link.addEventListener(events[1], this.close, false);
@@ -1917,36 +1864,31 @@
       },
 
       this.styleTooltip = function(pos) {
-        this.rect = this.getRect();
-        var placement = pos || this.options.placement;
+        var rect = this.link.getBoundingClientRect(),
+            placement = pos || this.options.placement;
+            
         this.tooltip.setAttribute('class','tooltip '+placement+' '+this.options.animation);
 
-        var linkDim = { w: this.rect.right - this.rect.left, h: this.rect.bottom - this.rect.top }; //link real dimensions
-
-        // all tooltip dimensions
-        var td = this.tooltipDimensions(this.tooltip);
-        var toolDim = { w : td.w, h: td.h }; //tooltip real dimensions
-
-        //window vertical and horizontal scroll
-        var scrollYOffset = this.getScroll().y;
-        var scrollXOffset =  this.getScroll().x;
+        var ld = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
+            td = { w : this.tooltip.offsetWidth, h: this.tooltip.offsetHeight }, //tooltip real dimensions
+            sYo = this.getScroll().y, sXo = this.getScroll().x; //window vertical and horizontal scroll
 
         //apply styling
         if ( /top/.test(placement) ) { //TOP
-          this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h + 'px';
-          this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px'
+          this.tooltip.style.top = rect.top + sYo - td.h + 'px';
+          this.tooltip.style.left = rect.left + sXo - td.w/2 + ld.w/2 + 'px'
 
         } else if ( /bottom/.test(placement) ) { //BOTTOM
-          this.tooltip.style.top = this.rect.top + scrollYOffset + linkDim.h + 'px';
-          this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w/2 + linkDim.w/2 + 'px';
+          this.tooltip.style.top = rect.top + sYo + ld.h + 'px';
+          this.tooltip.style.left = rect.left + sXo - td.w/2 + ld.w/2 + 'px';
 
         } else if ( /left/.test(placement) ) { //LEFT
-          this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
-          this.tooltip.style.left = this.rect.left + scrollXOffset - toolDim.w + 'px';
+          this.tooltip.style.top = rect.top + sYo - td.h/2 + ld.h/2 + 'px';
+          this.tooltip.style.left = rect.left + sXo - td.w + 'px';
 
         } else if ( /right/.test(placement) ) { //RIGHT
-          this.tooltip.style.top = this.rect.top + scrollYOffset - toolDim.h/2 + linkDim.h/2 + 'px';
-          this.tooltip.style.left = this.rect.left + scrollXOffset + linkDim.w + 'px';
+          this.tooltip.style.top = rect.top + sYo - td.h/2 + ld.h/2 + 'px';
+          this.tooltip.style.left = rect.left + sXo + ld.w + 'px';
         }
       },
 
@@ -1973,19 +1915,10 @@
           return 'left';
         }
       },
-      this.getRect = function() {
-        return this.link.getBoundingClientRect()
-      },
       this.getScroll = function() {
         return {
           y : window.pageYOffset || document.documentElement.scrollTop,
           x : window.pageXOffset || document.documentElement.scrollLeft
-        }
-      },
-      this.tooltipDimensions  = function(t) {//check tooltip width and height
-        return {
-          w : t.offsetWidth,
-          h : t.offsetHeight
         }
       },
       this.isElementInViewport = function(t) { // check if this.tooltip is in viewport
@@ -1999,7 +1932,7 @@
       }
     }
   }
-  
+
   // TOOLTIP DATA API
   // =================
   var Tooltips = document.querySelectorAll('[data-toggle=tooltip]'), i = 0, tpl = Tooltips.length;

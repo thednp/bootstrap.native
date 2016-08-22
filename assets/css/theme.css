@@ -78,6 +78,18 @@ p .btn-group {margin-bottom: 20px}
 
 #about {padding-bottom: 20px }
 
+ /* nested dropdowns */
+ .dropdown-menu .dropdown-menu.left {
+   top: -1px;
+   left: auto; right: 100%;
+   margin: 0 3px 0 0;
+ }
+ .dropdown-menu .dropdown-menu.right {
+   top: -1px;
+   left: 100%;
+   margin: 0 0 0 3px;
+ }
+
 /* scrollspy content example */
 .scrollspy-example {
   position: relative;
