@@ -1,5 +1,8 @@
-// This is a script to minify the js files in lib/ and dist/bootstrap-native.js
-// You can run this script by running npm run min
+// Native Javascript for Bootstrap 3 | Minify
+// Minify script for the js files in lib/ and dist/bootstrap-native.js
+// Usage: npm run min
+// by https://github.com/RyanZim
+
 var fs = require('fs');
 var path = require('path');
 var uglify = require('uglify-js');
