@@ -4,7 +4,7 @@
 (function(){
 
   // UTILITIES
-  var addClass = function(el,c) { // where modern browsers fail, use classList  
+  var addClass = function(el,c) { // where modern browsers fail, use classList
       if (el.classList) { el.classList.add(c); } else { el.className += ' '+c; el.offsetWidth; }
     },
     removeClass = function(el,c) {
@@ -38,7 +38,7 @@
   //AFFIX DEFINITION
   var Affix = window.Affix = function(element,options) {
     options = options || {};
-    
+
     this.element = typeof element === 'object' ? element : document.querySelector(element);
     this.options = {};
     this.options.target = options.target ? ((typeof(options.target) === 'object') ? options.target : document.querySelector(options.target)) : null; // target is an object
@@ -88,7 +88,7 @@
       }
     }
     this.unPinBottom = function () {
-      if ( /\baffix-bottom/.test(this.element.className) ) { 
+      if ( /\baffix-bottom/.test(this.element.className) ) {
         this.element.className = this.element.className.replace(' affix-bottom','');
         this.affixedBottom = false
       }
@@ -114,7 +114,7 @@
       this.updatePin() // If any case update values again
     }
     this.getMaxScroll = function(){
-      return Math.max( document.body.scrollHeight, document.body.offsetHeight, 
+      return Math.max( document.body.scrollHeight, document.body.offsetHeight,
         document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )
     }
     this.scrollEvent = function(){
@@ -141,7 +141,7 @@
     this.checkPosition();
     this.updateAffix();
     this.scrollEvent();
-    this.resizeEvent()    
+    this.resizeEvent()
   };
 
   // AFFIX DATA API
@@ -197,7 +197,7 @@
     this.option = typeof option === 'string' ? option : null;
 
     var self = this,
-      changeEvent = (('CustomEvent' in window) && window.dispatchEvent) 
+      changeEvent = (('CustomEvent' in window) && window.dispatchEvent)
         ? new CustomEvent('bs.button.change') : null; // The custom event that will be triggered on demand
 
     // assign event to a trigger function
@@ -205,7 +205,7 @@
 
     this.setState = function() {
       if ( this.option === 'loading' ) {
-        addClass(this.btn,'disabled');          
+        addClass(this.btn,'disabled');
         this.btn.setAttribute('disabled','disabled');
       }
       this.btn.innerHTML = this.state;
@@ -213,7 +213,7 @@
 
     this.reset = function() {
       if ( /\bdisabled/.test(this.btn.className) || this.btn.getAttribute('disabled') === 'disabled' ) {
-        removeClass(this.btn,'disabled');  
+        removeClass(this.btn,'disabled');
         this.btn.removeAttribute('disabled');
       }
       this.btn.innerHTML = this.btn.getAttribute('data-original-text');
@@ -222,25 +222,25 @@
     this.toggle = function(e) {
       var parent = e.target.parentNode,
         label = e.target.tagName === 'LABEL' ? e.target : parent.tagName === 'LABEL' ? parent : null; // the .btn label
-      
+
       if ( !label ) return; //react if a label or its immediate child is clicked
-      
+
       var target = this, //e.currentTarget || e.srcElement; // the button group, the target of the handler function
         labels = target.querySelectorAll('.btn'), ll = labels.length, i = 0, // all the button group buttons
         input = label.getElementsByTagName('INPUT')[0];
-        
+
       if ( !input ) return; //return if no input found
 
       //manage the dom manipulation
-      if ( input.type === 'checkbox' ) { //checkboxes          
+      if ( input.type === 'checkbox' ) { //checkboxes
         if ( !input.checked ) {
           addClass(label,'active');
-          input.getAttribute('checked');          
+          input.getAttribute('checked');
           input.setAttribute('checked','checked');
           input.checked = true;
         } else {
           removeClass(label,'active');
-          input.getAttribute('checked');            
+          input.getAttribute('checked');
           input.removeAttribute('checked');
           input.checked = false;
         }
@@ -253,9 +253,9 @@
           addClass(label,'active');
           input.setAttribute('checked','checked');
           input.checked = true;
-          triggerChange(self.btn);     
+          triggerChange(self.btn);
           triggerChange(input); //trigger the change
-          
+
           for (i;i<ll;i++) {
             var l = labels[i];
             if ( l !== label && /\bactive/.test(l.className) )  {
@@ -263,10 +263,10 @@
               removeClass(l,'active');
               inp.removeAttribute('checked');
               inp.checked = false;
-              triggerChange(inp); // trigger the change                
-            }        
+              triggerChange(inp); // trigger the change
+            }
           }
-        }                
+        }
       }
     }
     // init
@@ -292,7 +292,7 @@
   for (i;i<btl;i++) {
     new Button(Buttons[i]);
   }
-  
+
   var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]'), j = 0, bgl = ButtonGroups.length;
   for (j;j<bgl;j++) {
     new Button(ButtonGroups[j]);
@@ -370,13 +370,13 @@
       var direction = this.direction;
       var dr = direction === 'left' ? 'next' : 'prev';
       var slid = null, slide = null;
-      
+
       //register events
       if (('CustomEvent' in window) && window.dispatchEvent) {
         slid =  new CustomEvent("slid.bs.carousel");
         slide = new CustomEvent("slide.bs.carousel");
       }
-      if (slid) { this.carousel.dispatchEvent(slid); } //here we go with the slid
+      if (slide) { this.carousel.dispatchEvent(slide); } //here we go with the slide
 
       this._removeEventListeners();
       clearInterval(this.timer);
@@ -402,7 +402,7 @@
           if ( self.options.interval !== false && !/\bpaused/.test(self.carousel.className) ){
             clearInterval(self.timer); self.cycle();
           }
-          if (slide) { self.carousel.dispatchEvent(slide); } //here we go with the slide
+          if (slid) { self.carousel.dispatchEvent(slid); } //here we go with the slid
         }, this.options.duration + 100 );
       } else {
         this.slides[next].className += ' active';
@@ -413,7 +413,7 @@
           if ( self.options.interval !== false && !/\bpaused/.test(self.carousel.className) ){
             clearInterval(self.timer); self.cycle();
           }
-          if (slide) { self.carousel.dispatchEvent(slide); } //here we go with the slide
+          if (slid) { self.carousel.dispatchEvent(slid); } //here we go with the slid
         }, this.options.duration + 100 );
       }
     }
@@ -545,7 +545,7 @@
   // ===================
   var Collapse = window.Collapse = function( element, options ) {
     options = options || {};
-    
+
     this.btn = typeof element === 'object' ? element : document.querySelector(element);
     this.accordion = null;
     this.collapse = null;
@@ -595,9 +595,9 @@
       setTimeout(function() {
         c.style.height = self.getMaxHeight(c) + 'px'
         c.style.overflowY = 'hidden';
-      }, 0);  
+      }, 0);
       setTimeout(function() {
-        c.style.height = ''; 
+        c.style.height = '';
         c.style.overflowY = '';
         removeClass(c,'collapsing');
         self.addEvent();
@@ -608,16 +608,16 @@
       c.setAttribute('aria-expanded','false');
       c.style.height = this.getMaxHeight(c) + 'px'
       setTimeout(function() {
-        c.style.height = '0px';    
+        c.style.height = '0px';
         c.style.overflowY = 'hidden';
         addClass(c,'collapsing');
       }, 0);
-      
+
       setTimeout(function() {
         removeClass(c,'collapsing');
-        removeClass(c,'in'); 
+        removeClass(c,'in');
         c.style.overflowY = '';
-        c.style.height = '';          
+        c.style.height = '';
         self.addEvent();
       }, this.options.duration);
     }
@@ -647,7 +647,7 @@
     // init
     this.addEvent();
     this.collapse = this.getTarget();
-    this.accordion = this.btn.getAttribute('data-parent') 
+    this.accordion = this.btn.getAttribute('data-parent')
       && getClosest(this.btn, this.btn.getAttribute('data-parent'));
   };
 
@@ -666,15 +666,15 @@
   var Dropdown = window.Modal = function( element) {
     this.menu = typeof element === 'object' ? element : document.querySelector(element);
     var self = this;
-    
+
     this.handle = function(e) { // fix some Safari bug with <button>
       var target = e.target || e.currentTarget,
           children = [], c = self.menu.parentNode.getElementsByTagName('*');
       /\#$/g.test(target.href) && e.preventDefault();
 
       for ( var i=0, l = c.length||0; i<l; i++) { l && children.push(c[i]); }
-      if ( target === self.menu || target.parentNode === self.menu || target.parentNode.parentNode === self.menu ) { 
-        self.toggle(e); 
+      if ( target === self.menu || target.parentNode === self.menu || target.parentNode.parentNode === self.menu ) {
+        self.toggle(e);
       }  else if ( children && children.indexOf(target) > -1  ) {
         return;
       } else { self.close(); }
@@ -707,7 +707,7 @@
     new Dropdown(Dropdowns[i]);
   }
 
-  
+
   //MODAL DEFINITION
   // ===============
   var Modal = window.Modal = function(element, options) { // element is the trigger button / options.target is the modal
@@ -723,9 +723,9 @@
     this.dialog = this.modal.querySelector('.modal-dialog');
     this.timer = 0;
 
-    var self = this, 
+    var self = this,
       getWindowWidth = function() {
-        var htmlRect = document.documentElement.getBoundingClientRect(), 
+        var htmlRect = document.documentElement.getBoundingClientRect(),
           fullWindowWidth = window.innerWidth || (htmlRect.right - Math.abs(htmlRect.left));
         return fullWindowWidth;
       },
@@ -764,25 +764,25 @@
       if ( this.options.backdrop ) {
         this.createOverlay();
       } else { this.overlay = null }
-      
+
       if ( this.overlay ) {
-        setTimeout( function() {                                
+        setTimeout( function() {
           addClass(self.overlay,'in');
-        }, 0);            
+        }, 0);
       }
-              
+
       clearTimeout(self.modal.getAttribute('data-timer'));
       this.timer = setTimeout( function() {
         self.modal.style.display = 'block';
-        
+
         checkScrollbar();
         self.adjustDialog();
         setScrollbar();
-        
+
         self.resize();
         self.dismiss();
-        self.keydown();      
-        
+        self.keydown();
+
         addClass(document.body,'modal-open');
         addClass(self.modal,'in');
         self.modal.setAttribute('aria-hidden', false);
@@ -791,25 +791,25 @@
     }
     this.close = function() {
 
-      if ( this.overlay ) {          
+      if ( this.overlay ) {
         removeClass(this.overlay,'in');
-      }      
+      }
       removeClass(this.modal,'in');
       this.modal.setAttribute('aria-hidden', true);
-              
+
       clearTimeout(this.modal.getAttribute('data-timer'));
       this.timer = setTimeout( function() {
         removeClass(document.body,'modal-open');
         self.resize();
         self.resetAdjustments();
         resetScrollbar();
-        
+
         self.dismiss();
         self.keydown();
         self.modal.style.display = '';
       }, this.options.duration/2);
       this.modal.setAttribute('data-timer',this.timer);
-      
+
       setTimeout( function() {
         if (!document.querySelector('.modal.in')) {  self.removeOverlay(); }
       }, this.options.duration);
@@ -820,7 +820,7 @@
     this.createOverlay = function() {
       var backdrop = document.createElement('div'), overlay = document.querySelector('.modal-backdrop');
       backdrop.setAttribute('class','modal-backdrop fade');
-  
+
       if ( overlay ) {
         this.overlay = overlay;
       } else {
@@ -838,13 +838,13 @@
       function keyHandler(e) {
         if (self.options.keyboard && e.which == 27) {
           self.close();
-        }          
+        }
       }
       if (!/\bin/.test(this.modal.className)) {
         document.addEventListener('keydown', keyHandler, false);
       } else {
         document.removeEventListener('keydown', keyHandler, false);
-      }  
+      }
     }
     this.trigger = function() {
       var triggers = document.querySelectorAll('[data-toggle="modal"]'), tgl = triggers.length, i = 0;
@@ -873,13 +873,13 @@
         self.handleUpdate();
         window.removeEventListener('resize', oneResize, false);
       }
-      window.addEventListener('resize', oneResize, false);      
+      window.addEventListener('resize', oneResize, false);
     }
     this.resize = function() {
       function resizeHandler() {
         self._resize();
         self.handleUpdate();
-      }      
+      }
 
       if (!/\bin/.test(this.modal.className)) {
         window.addEventListener('resize', this.oneResize, false);
@@ -892,16 +892,16 @@
         if ( e.target.parentNode.getAttribute('data-dismiss') === 'modal' || e.target.getAttribute('data-dismiss') === 'modal' || e.target === self.modal ) {
           e.preventDefault(); self.close()
         }
-      }          
+      }
       if (!/\bin/.test(this.modal.className)) {
         this.modal.addEventListener('click', dismissHandler, false);
       } else {
         this.modal.removeEventListener('click', dismissHandler, false);
-      }  
+      }
     }
     // these following methods are used to handle overflowing modals
     this.handleUpdate = function () {
-      this.adjustDialog(); 
+      this.adjustDialog();
     }
     this.adjustDialog = function () {
       this.modal.style.paddingLeft = !this.bodyIsOverflowing && this.modalIsOverflowing ? this.scrollbarWidth + 'px' : '';
@@ -912,12 +912,12 @@
       this.modal.style.paddingRight = '';
     }
     //init
-    this.trigger();  
-    if ( this.options.content && this.options.content !== undefined ) {        
+    this.trigger();
+    if ( this.options.content && this.options.content !== undefined ) {
       this.content( this.options.content );
     }
   };
-  
+
   // DATA API
   var Modals = document.querySelectorAll('.modal'), mdl = Modals.length, i = 0;
   for ( i;i<mdl;i++ ) {
@@ -943,7 +943,7 @@
     this.options.animation = options.animation && options.animation !== 'true' ? options.animation : 'true';
     this.options.placement = options.placement ? options.placement : 'top';
     this.options.delay = parseInt(options.delay) || 100;
-    this.options.dismiss = options.dismiss && options.dismiss === 'true' ? true : false;    
+    this.options.dismiss = options.dismiss && options.dismiss === 'true' ? true : false;
     this.duration = 150;
     this.options.duration = (isIE && isIE < 10) ? 0 : (options.duration || this.duration);
     this.options.container = document.body;
@@ -971,7 +971,7 @@
       self.link.setAttribute('data-timer',self.timer);
     }
     this.dismiss = function(e) {
-      if (self.popover && e.target === self.popover.querySelector('.close')) {          
+      if (self.popover && e.target === self.popover.querySelector('.close')) {
         self.close();
       }
     }
@@ -1007,7 +1007,7 @@
         if (this.title !== null) {
           var popoverTitle = document.createElement('h3');
           popoverTitle.setAttribute('class','popover-title');
-          
+
           if (this.options.dismiss) {
             popoverTitle.innerHTML = this.title + '<button type="button" class="close">×</button>';
           } else {
@@ -1108,18 +1108,18 @@
       this.link.addEventListener('focus', this.toggle, false);
       if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false);  }
     }
-    
+
     if (this.options.dismiss) {  document.addEventListener('click', this.dismiss, false); }
-      
-    if (!(isIE && isIE < 9) ) { // dismiss on window resize 
-      window.addEventListener('resize', this.close, false ); 
+
+    if (!(isIE && isIE < 9) ) { // dismiss on window resize
+      window.addEventListener('resize', this.close, false );
     }
   }
 
   // POPOVER DATA API
   // =================
   var Popovers = document.querySelectorAll('[data-toggle=popover]'), i = 0, ppl = Popovers.length;
-  for (i;i<ppl;i++){  
+  for (i;i<ppl;i++){
     var item = Popovers[i], options = {};
     options.trigger = item.getAttribute('data-trigger'); // click / hover / focus
     options.animation = item.getAttribute('data-animation'); // true / false
@@ -1134,7 +1134,7 @@
   //SCROLLSPY DEFINITION
   var ScrollSpy = window.Scrollspy = function(element,item,options) {
     options = options || {};
-    
+
     //this is the container element we spy it's elements on
     this.element = typeof element === 'object' ? element : document.querySelector(element);
 
@@ -1234,7 +1234,7 @@
     }
     this.scrollHeight = function() {
       if ( this.scrollTarget === window ) {
-        return Math.max( document.body.scrollHeight, document.body.offsetHeight, 
+        return Math.max( document.body.scrollHeight, document.body.offsetHeight,
           document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight );
       } else {
         return this.element.scrollHeight
@@ -1257,7 +1257,7 @@
   var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'), i = 0, ssl = scrollSpyes.length; // mostly is the document.body or a large container with many elements having id="not-null-id"
   for (i;i<ssl;i++) {
     var spy = scrollSpyes[i], options = {};
-    options.target = spy.getAttribute('data-target') || null;  // this must be a .nav component with id="not-null"  
+    options.target = spy.getAttribute('data-target') || null;  // this must be a .nav component with id="not-null"
     if ( options.target !== null ) {
       var menu = options.target === 'object' ?  options.target : document.querySelector(options.target),
         items = menu.querySelectorAll('a'), j = 0, il = items.length;
@@ -1293,7 +1293,7 @@
       e = e || window.e; e.preventDefault();
       var next = e.target; //the tab we clicked is now the next tab
       var nextContent = document.getElementById(next.getAttribute('href').replace('#','')); //this is the actual object, the next tab content to activate
-      
+
       // get current active tab and content
       var activeTab = self.getActiveTab();
       var activeContent = self.getActiveContent();
@@ -1301,9 +1301,9 @@
       if ( !/\bactive/.test(next.parentNode.className) ) {
         // toggle "active" class name
         removeClass(activeTab,'active');
-        addClass(next.parentNode,'active');    
+        addClass(next.parentNode,'active');
 
-        // handle dropdown menu "active" class name    
+        // handle dropdown menu "active" class name
         if ( self.dropdown ) {
           if ( !(/\bdropdown-menu/.test(self.tab.parentNode.parentNode.className)) ) {
             if (/\bactive/.test(self.dropdown.className)) removeClass(self.dropdown,'active');
@@ -1314,7 +1314,7 @@
 
         //1. hide current active content first
         removeClass(activeContent,'in');
-        
+
         setTimeout(function() {
           //2. toggle current active content from view
           removeClass(activeContent,'active');
@@ -1356,7 +1356,7 @@
   // ===================
   var Tooltip = window.Tooltip = function( element,options ) {
     options = options || {};
-    
+
     this.link = typeof element === 'object' ? element : document.querySelector(element);
     this.title = this.link.getAttribute('title') || this.link.getAttribute('data-original-title');
     this.tooltip = null;
@@ -1422,7 +1422,7 @@
     this.styleTooltip = function(pos) {
       var rect = this.link.getBoundingClientRect(),
           placement = pos || this.options.placement;
-          
+
       this.tooltip.setAttribute('class','tooltip '+placement+' '+this.options.animation);
 
       var ld = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
@@ -1486,7 +1486,7 @@
   // TOOLTIP DATA API
   // =================
   var Tooltips = document.querySelectorAll('[data-toggle=tooltip]'), i = 0, tpl = Tooltips.length;
-  for (i;i<tpl;i++){  
+  for (i;i<tpl;i++){
     var item = Tooltips[i], options = {};
     options.animation = item.getAttribute('data-animation');
     options.placement = item.getAttribute('data-placement');
