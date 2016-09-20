@@ -5,13 +5,19 @@
   "main": "all.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gulp": "gulp"
+    "min": "node build.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thednp/bootstrap.native.git"
   },
-  "keywords": [ "bootstrap.native", "bootstrap", "vanilla js", "native javascript", "vanilla javascript" ],
+  "keywords": [
+    "bootstrap.native",
+    "bootstrap",
+    "vanilla js",
+    "native javascript",
+    "vanilla javascript"
+  ],
   "author": "dnp_theme",
   "license": "MIT",
   "bugs": {
@@ -19,9 +25,6 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "devDependencies": {
-    "gulp": "^3.8.11",
-    "gulp-concat": "^2.5.2",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.2.0"
+    "uglify-js": "^2.7.3"
   }
 }
