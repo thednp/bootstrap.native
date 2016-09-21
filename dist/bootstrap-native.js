@@ -851,7 +851,7 @@
       for ( i;i<tgl;i++ ) {
         triggers[i].addEventListener('click', function(e) {
           e.preventDefault();
-          var b = e.target,
+          var b = this,
           s = b.getAttribute('data-target') && b.getAttribute('data-target').replace('#','')
           || b.getAttribute('href') && b.getAttribute('href').replace('#','');
           if ( document.getElementById( s ) === self.modal ) {
@@ -889,8 +889,8 @@
     }
     this.dismiss = function() {
       function dismissHandler(e) {
-        if ( e.target.parentNode.getAttribute('data-dismiss') === 'modal' || e.target.getAttribute('data-dismiss') === 'modal' || e.target === self.modal ) {
-          e.preventDefault(); self.close()
+        if ( this.getAttribute('data-dismiss') === 'modal' || this === self.modal ) {
+            e.preventDefault(); self.close()
         }
       }
       if (!/\bin/.test(this.modal.className)) {
