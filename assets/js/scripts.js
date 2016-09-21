@@ -106,11 +106,11 @@ genericCarousel.addEventListener('slid.bs.carousel', function(e) {
 
 //demo myCarousel demonstrating the slid and slide events
 var mainSlider = document.getElementById('myCarousel');
-mainSlider.addEventListener('slid.bs.carousel', function(e) {
+mainSlider.addEventListener('slide.bs.carousel', function(e) {
 	var active = mainSlider.querySelector('.item.active .carousel-caption');
 	if (active.classList) { active.classList.remove('slide') } else { active.className = active.className.replace(' slide','') }
 });
-mainSlider.addEventListener('slide.bs.carousel', function(e) {
+mainSlider.addEventListener('slid.bs.carousel', function(e) {
 	var active = mainSlider.querySelector('.item.active .carousel-caption');
 	if (active.classList) { active.classList.add('slide') } else { active.className += ' slide'; }
 });
