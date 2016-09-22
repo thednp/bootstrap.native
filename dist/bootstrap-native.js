@@ -311,7 +311,7 @@
 
     // bootstrap carousel default transition duration / option
     this.duration = 600;
-    this.options.duration = (isIE && isIE < 10) ? 0 : (options.duration || this.duration);
+    this.options.duration = (isIE && isIE < 10) ? 0 : (parseInt(options.duration) || this.duration);
 
     var items = this.carousel.querySelectorAll('.item'), il=items.length; //this is an object
     this.controls = this.carousel.querySelectorAll('.carousel-control');
