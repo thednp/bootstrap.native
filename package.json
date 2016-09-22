@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
   "main": "all.js",
   "scripts": {
