@@ -4,8 +4,7 @@
   "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
   "main": "all.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "min": "node build.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -25,6 +24,7 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "devDependencies": {
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^2.7.3",
+    "yargs": "^5.0.0"
   }
 }
