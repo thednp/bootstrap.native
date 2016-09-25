@@ -2,9 +2,11 @@
   "name": "bootstrap.native",
   "version": "1.0.5",
   "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
-  "main": "all.js",
+  "main": "dist/bootstrap-native.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js > dist/bootstrap-native.js && npm run build-min",
+    "build-min": "node build.js -m > dist/bootstrap-native.min.js"
   },
   "repository": {
     "type": "git",

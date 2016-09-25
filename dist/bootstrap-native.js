@@ -1,9 +1,30 @@
-// Native Javascript for Bootstrap 3
-// by dnp_theme
-
-(function(){
-
-  // UTILITIES
+// Native Javascript for Bootstrap 3 v1.0.5 | © dnp_theme | MIT-License
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD support:
+    define([], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // CommonJS-like:
+    module.exports = factory();
+  } else {
+    // Browser globals (root is window)
+    var bsn = factory();
+    root.Affix = bsn.Affix;
+    root.Alert = bsn.Alert;
+    root.Button = bsn.Button;
+    root.Carousel = bsn.Carousel;
+    root.Collapse = bsn.Collapse;
+    root.Dropdown = bsn.Dropdown;
+    root.Modal = bsn.Modal;
+    root.Popover = bsn.Popover;
+    root.ScrollSpy = bsn.ScrollSpy;
+    root.Tab = bsn.Tab;
+    root.Tooltip = bsn.Tooltip;
+  }
+}(this, function () {
+  // Native Javascript for Bootstrap 3 | Internal Utility Functions
+  // by dnp_theme
+  
   var addClass = function(el,c) { // where modern browsers fail, use classList
       if (el.classList) { el.classList.add(c); } else { el.className += ' '+c; el.offsetWidth; }
     },
@@ -32,23 +53,25 @@
         r.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
         r.right <= (window.innerWidth || document.documentElement.clientWidth)
       )
-    };
-
-
+  };
+  
+  // Native Javascript for Bootstrap 3 | Affix
+  // by dnp_theme
+  
   //AFFIX DEFINITION
-  var Affix = window.Affix = function(element,options) {
+  var Affix = function(element,options) {
     options = options || {};
-
+  
     this.element = typeof element === 'object' ? element : document.querySelector(element);
     this.options = {};
     this.options.target = options.target ? ((typeof(options.target) === 'object') ? options.target : document.querySelector(options.target)) : null; // target is an object
     this.options.offsetTop = options.offsetTop && options.offsetTop ? ( options.offsetTop === 'function' ? options.offsetTop() : parseInt(options.offsetTop,0) ) : 0; // offset option is an integer number or function to determine that number
     this.options.offsetBottom = options.offsetBottom && options.offsetBottom ? ( options.offsetBottom === 'function' ? options.offsetBottom() : parseInt(options.offsetBottom,0) ) : null;
-
+  
     if (!this.element && !(this.options.target || this.options.offsetTop || this.options.offsetBottom ) ) { return; }
-
+  
     var self = this;
-
+  
     this.processOffsetTop = function () {
       if ( this.options.target !== null ) {
         return this.options.target.getBoundingClientRect().top + this.scrollOffset();
@@ -99,7 +122,7 @@
       } else if (this.affixed === true && (parseInt(this.scrollOffset(),0) <= parseInt(this.getPinOffsetTop(),0) )) {
         this.unPinTop()
       }
-
+  
       if (this.affixedBottom === false && (parseInt(this.processOffsetBottom(),0) - parseInt(this.scrollOffset(),0) < 0)) {
         this.pinBottom();
       } else if (this.affixedBottom === true && (parseInt(this.scrollOffset(),0) <= parseInt(this.getPinOffsetBottom(),0) )) {
@@ -110,7 +133,7 @@
       this.unPinTop();
       this.unPinBottom();
       this.checkPosition()
-
+  
       this.updatePin() // If any case update values again
     }
     this.getMaxScroll = function(){
@@ -121,7 +144,7 @@
       window.addEventListener('scroll', function() {
         self.updatePin()
       }, false);
-
+  
     }
     this.resizeEvent = function(){
       var dl = (isIE && isIE < 10) ? 500 : 50;
@@ -136,43 +159,46 @@
     this.affixedBottom = false;
     this.getPinOffsetTop = 0;
     this.getPinOffsetBottom = null;
-
+  
     //actions
     this.checkPosition();
     this.updateAffix();
     this.scrollEvent();
     this.resizeEvent()
   };
-
-  // AFFIX DATA API
-  // =================
-  var Affixes = document.querySelectorAll('[data-spy="affix"]'), i = 0, afl = Affixes.length;
-  for (i;i<afl;i++) {
-    var item = Affixes[i], options = {};
-      options.offsetTop     = item.getAttribute('data-offset-top');
-      options.offsetBottom  = item.getAttribute('data-offset-bottom');
-      options.target        = item.getAttribute('data-target');
-
-    if ( item && (options.offsetTop !== null || options.offsetBottom !== null || options.target !== null) ) { //don't do anything unless we have something valid to pin
-      new Affix(item, options);
+  
+  (function () {
+    // AFFIX DATA API
+    // =================
+    var Affixes = document.querySelectorAll('[data-spy="affix"]'), i = 0, afl = Affixes.length;
+    for (i;i<afl;i++) {
+      var item = Affixes[i], options = {};
+        options.offsetTop     = item.getAttribute('data-offset-top');
+        options.offsetBottom  = item.getAttribute('data-offset-bottom');
+        options.target        = item.getAttribute('data-target');
+  
+      if ( item && (options.offsetTop !== null || options.offsetBottom !== null || options.target !== null) ) { //don't do anything unless we have something valid to pin
+        new Affix(item, options);
+      }
     }
-  }
-
-
+  })();
+  // Native Javascript for Bootstrap 3 | Alert
+  // by dnp_theme
+  
   // ALERT DEFINITION
   // ===================
-  var Alert = window.Alert = function( element ) {
+  var Alert = function( element ) {
     this.btn = typeof element === 'object' ? element : document.querySelector(element);
     this.alert = null;
     this.duration = 150; // default alert transition duration
-
+  
     var self = this;
-
+  
     this.close = function(e) {
       var target = e.target;
       self.btn = target.getAttribute('data-dismiss') === 'alert' && target.className === 'close' ? target : target.parentNode;
       self.alert = self.btn.parentNode;
-
+  
       if ( self.alert !== null && self.btn.getAttribute('data-dismiss') === 'alert' && /\bin/.test(self.alert.className) ) {
         self.alert.className = self.alert.className.replace(' in','');
         setTimeout(function() {
@@ -182,27 +208,31 @@
     }
     document.addEventListener('click', this.close, false); //delegate to all alerts, including those inserted later into the DOM
   };
-  // ALERT DATA API
-  // =================
-  var Alerts = document.querySelectorAll('[data-dismiss="alert"]'), i = 0, all = Alerts.length;
-  for (i;i<all;i++) {
-    new Alert(Alerts[i]);
-  }
-
-
+  
+  (function () {
+    // ALERT DATA API
+    // =================
+    var Alerts = document.querySelectorAll('[data-dismiss="alert"]'), i = 0, all = Alerts.length;
+    for (i;i<all;i++) {
+      new Alert(Alerts[i]);
+    }
+  })();
+  // Native Javascript for Bootstrap 3 | Button
+  // by dnp_theme
+  
   // BUTTON DEFINITION
   // ===================
-  var Button = window.Button = function( element, option ) {
+  var Button = function( element, option ) {
     this.btn = typeof element === 'object' ? element : document.querySelector(element);
     this.option = typeof option === 'string' ? option : null;
-
+  
     var self = this,
       changeEvent = (('CustomEvent' in window) && window.dispatchEvent)
         ? new CustomEvent('bs.button.change') : null; // The custom event that will be triggered on demand
-
+  
     // assign event to a trigger function
     function triggerChange(t) { if (changeEvent) { t.dispatchEvent(changeEvent); } }
-
+  
     this.setState = function() {
       if ( this.option === 'loading' ) {
         addClass(this.btn,'disabled');
@@ -210,7 +240,7 @@
       }
       this.btn.innerHTML = this.state;
     }
-
+  
     this.reset = function() {
       if ( /\bdisabled/.test(this.btn.className) || this.btn.getAttribute('disabled') === 'disabled' ) {
         removeClass(this.btn,'disabled');
@@ -218,19 +248,19 @@
       }
       this.btn.innerHTML = this.btn.getAttribute('data-original-text');
     }
-
+  
     this.toggle = function(e) {
       var parent = e.target.parentNode,
         label = e.target.tagName === 'LABEL' ? e.target : parent.tagName === 'LABEL' ? parent : null; // the .btn label
-
+  
       if ( !label ) return; //react if a label or its immediate child is clicked
-
+  
       var target = this, //e.currentTarget || e.srcElement; // the button group, the target of the handler function
         labels = target.querySelectorAll('.btn'), ll = labels.length, i = 0, // all the button group buttons
         input = label.getElementsByTagName('INPUT')[0];
-
+  
       if ( !input ) return; //return if no input found
-
+  
       //manage the dom manipulation
       if ( input.type === 'checkbox' ) { //checkboxes
         if ( !input.checked ) {
@@ -247,7 +277,7 @@
         triggerChange(input); //trigger the change for the input
         triggerChange(self.btn); //trigger the change for the btn-group
       }
-
+  
       if ( input.type === 'radio' ) { // radio buttons
         if ( !input.checked ) { // don't trigger if already active
           addClass(label,'active');
@@ -255,7 +285,7 @@
           input.checked = true;
           triggerChange(self.btn);
           triggerChange(input); //trigger the change
-
+  
           for (i;i<ll;i++) {
             var l = labels[i];
             if ( l !== label && /\bactive/.test(l.className) )  {
@@ -272,12 +302,12 @@
     // init
     if ( /\bbtn/.test(this.btn.className) ) {
       if ( this.option && this.option !== 'reset' ) {
-
+  
         this.state = this.btn.getAttribute('data-'+this.option+'-text') || null;
-
+  
         !this.btn.getAttribute('data-original-text') && this.btn.setAttribute('data-original-text',self.btn.innerHTML.replace(/^\s+|\s+$/g, ''));
         this.setState();
-
+  
       } else if ( this.option === 'reset' ) {
         this.reset();
       }
@@ -286,33 +316,37 @@
       this.btn.addEventListener('click', this.toggle, false);
     }
   };
-  // BUTTON DATA API
-  // =================
-  var Buttons = document.querySelectorAll('[data-toggle=button]'), i = 0, btl = Buttons.length;
-  for (i;i<btl;i++) {
-    new Button(Buttons[i]);
-  }
-
-  var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]'), j = 0, bgl = ButtonGroups.length;
-  for (j;j<bgl;j++) {
-    new Button(ButtonGroups[j]);
-  }
-
-
+  
+  (function () {
+    // BUTTON DATA API
+    // =================
+    var Buttons = document.querySelectorAll('[data-toggle=button]'), i = 0, btl = Buttons.length;
+    for (i;i<btl;i++) {
+      new Button(Buttons[i]);
+    }
+  
+    var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]'), j = 0, bgl = ButtonGroups.length;
+    for (j;j<bgl;j++) {
+      new Button(ButtonGroups[j]);
+    }
+  })();
+  // Native Javascript for Bootstrap 3 | Carousel
+  // by dnp_theme
+  
   // CAROUSEL DEFINITION
   // ===================
-  var Carousel = window.Carousel = function( element, options ) {
+  var Carousel = function( element, options ) {
     options = options || {};
-
+  
     this.carousel = (typeof element === 'object') ? element : document.querySelector( element );
     this.options = {}; //replace extend
     this.options.keyboard = options.keyboard === 'true' ? true : false;
     this.options.pause = options.pause ? options.pause : 'hover'; // false / hover
-
+  
     // bootstrap carousel default transition duration / option
     this.duration = 600;
     this.options.duration = (isIE && isIE < 10) ? 0 : (parseInt(options.duration) || this.duration);
-
+  
     var items = this.carousel.querySelectorAll('.item'), il=items.length; //this is an object
     this.controls = this.carousel.querySelectorAll('.carousel-control');
     this.prev = this.controls[0];
@@ -324,17 +358,17 @@
     this.timer    = null;
     this.direction  = null;
     this.index    = 0;
-
+  
     var self = this;
-
+  
     if (options.interval === 'false' ) {
       this.options.interval = false;
     } else {
       this.options.interval = parseInt(options.interval) || 5000;
     }
-
+  
     this.cycle = function(e) {
-
+  
       this.direction = 'left';
       this.timer = setInterval(function() {
         self.index++;
@@ -342,7 +376,7 @@
           self.index = 0;
         }
         self._slideTo( self.index, e );
-
+  
       }, this.options.interval);
     }
     this.pause = function() {
@@ -370,35 +404,35 @@
       var direction = this.direction;
       var dr = direction === 'left' ? 'next' : 'prev';
       var slid = null, slide = null;
-
+  
       //register events
       if (('CustomEvent' in window) && window.dispatchEvent) {
         slid =  new CustomEvent("slid.bs.carousel");
         slide = new CustomEvent("slide.bs.carousel");
       }
       if (slide) { this.carousel.dispatchEvent(slide); } //here we go with the slide
-
+  
       this._removeEventListeners();
       clearInterval(this.timer);
       this.timer = null;
       this._curentPage( this.indicators[next] );
-
+  
       if ( /\bslide/.test(this.carousel.className) && !(isIE && isIE < 10) ) {
         this.slides[next].className += (' '+dr);
         this.slides[next].offsetWidth;
         this.slides[next].className += (' '+direction);
         this.slides[active].className += (' '+direction);
-
+  
         setTimeout(function() { //we're gonna fake waiting for the animation to finish, cleaner and better
           self._addEventListeners();
-
+  
           self.slides[next].className += ' active';
           self.slides[active].className = self.slides[active].className.replace(' active','');
-
+  
           self.slides[next].className = self.slides[next].className.replace(' '+dr,'');
           self.slides[next].className = self.slides[next].className.replace(' '+direction,'');
           self.slides[active].className = self.slides[active].className.replace(' '+direction,'');
-
+  
           if ( self.options.interval !== false && !/\bpaused/.test(self.carousel.className) ){
             clearInterval(self.timer); self.cycle();
           }
@@ -420,17 +454,17 @@
     this._addEventListeners = function () {
       this.next && this.next.addEventListener( "click", this.controlsHandler, false);
       this.prev && this.prev.addEventListener( "click", this.controlsHandler, false);
-
+  
       this.indicator && this.indicator.addEventListener( "click", this.indicatorHandler, false);
-
+  
       this.options.keyboard === true && window.addEventListener('keydown', this.keyHandler, false);
     }
     this._removeEventListeners = function () { // prevent mouse bubbles while animating
       this.next && this.next.removeEventListener( "click", this.controlsHandler, false);
       this.prev && this.prev.removeEventListener( "click", this.controlsHandler, false);
-
+  
       this.indicator && this.indicator.removeEventListener( "click", this.indicatorHandler, false);
-
+  
       this.options.keyboard === true && window.removeEventListener('keydown', this.keyHandler, false);
     }
     this._getActiveIndex = function () {
@@ -447,18 +481,18 @@
       e.preventDefault();
       var target = e.target;
       var active = self._getActiveIndex(); // the current active
-
+  
       if ( target && !/\bactive/.test(target.className) && target.getAttribute('data-slide-to') ) {
         var n = parseInt( target.getAttribute('data-slide-to'), 10 );
-
+  
         self.index = n;
-
+  
         if( self.index == 0 ) {
           self.index = 0;
         } else if ( self.index == self.total - 1 ) {
           self.index = self.total - 1;
         }
-
+  
           //determine direction first
         if  ( (active < self.index ) || (active === self.total - 1 && self.index === 0 ) ) {
           self.direction = 'left'; // next
@@ -466,16 +500,16 @@
           self.direction = 'right'; // prev
         }
       } else { return false; }
-
+  
       self._slideTo( self.index, e ); //Do the slide
     }
     this.controlsHandler = function (e) {
       var target = e.currentTarget || e.srcElement;
-
+  
       if ( target === self.next ) {
         self.index++;
         self.direction = 'left'; //set direction first
-
+  
         if( self.index == self.total - 1 ) {
           self.index = self.total - 1;
         } else if ( self.index == self.total ){
@@ -484,14 +518,14 @@
       } else if ( target === self.prev ) {
         self.index--;
         self.direction = 'right'; //set direction first
-
+  
         if( self.index == 0 ) {
           self.index = 0;
         } else if ( self.index < 0 ){
           self.index = self.total - 1
         }
       }
-
+  
       self._slideTo( self.index, e ); //Do the slide
     }
     this.keyHandler = function (e) {
@@ -514,12 +548,12 @@
       }
       self._slideTo( self.index, e ); //Do the slide
     }
-
+  
     // init
     if ( this.options.interval !== false ){
       this.cycle();
     }
-
+  
     if ( this.options && this.options.pause === 'hover' && this.options.interval !== false ) {
       this.pause();
     }
@@ -527,25 +561,28 @@
     this.next && this.next.addEventListener( "click", function(e){e.preventDefault()}, false);
     this.prev && this.prev.addEventListener( "click", function(e){e.preventDefault()}, false);
   };
-
-  // CAROUSEL DATA API
-  // =================
-  var Carousels = document.querySelectorAll('[data-ride="carousel"]'), i = 0, crl = Carousels.length;
-  for (i;i<crl;i++) {
-    var c = Carousels[i], options = {};
-    options.interval = c.getAttribute('data-interval') && c.getAttribute('data-interval');
-    options.pause = c.getAttribute('data-pause') && c.getAttribute('data-pause') || 'hover';
-    options.keyboard = c.getAttribute('data-keyboard') && c.getAttribute('data-keyboard') || false;
-    options.duration = c.getAttribute('data-duration') && c.getAttribute('data-duration') || false;
-    new Carousel(c, options)
-  }
-
-
+  
+  (function () {
+    // CAROUSEL DATA API
+    // =================
+    var Carousels = document.querySelectorAll('[data-ride="carousel"]'), i = 0, crl = Carousels.length;
+    for (i;i<crl;i++) {
+      var c = Carousels[i], options = {};
+      options.interval = c.getAttribute('data-interval') && c.getAttribute('data-interval');
+      options.pause = c.getAttribute('data-pause') && c.getAttribute('data-pause') || 'hover';
+      options.keyboard = c.getAttribute('data-keyboard') && c.getAttribute('data-keyboard') || false;
+      options.duration = c.getAttribute('data-duration') && c.getAttribute('data-duration') || false;
+      new Carousel(c, options)
+    }
+  })();
+  // Native Javascript for Bootstrap 3 | Collapse
+  // by dnp_theme
+  
   // COLLAPSE DEFINITION
   // ===================
-  var Collapse = window.Collapse = function( element, options ) {
+  var Collapse = function( element, options ) {
     options = options || {};
-
+  
     this.btn = typeof element === 'object' ? element : document.querySelector(element);
     this.accordion = null;
     this.collapse = null;
@@ -562,10 +599,10 @@
         mbe = /em/.test(s.marginBottom)  ? Math.round(s.marginBottom.replace('em','')  * parseInt(s.fontSize)) : 0;
       return el.clientHeight + parseInt( btp ) + parseInt( mtp ) + parseInt( mbp ) + parseInt( mte ) + parseInt( mbe ); //we need an accurate margin value
     };
-
+  
     this.toggle = function(e) {
       e.preventDefault();
-
+  
       if (!/\bin/.test(self.collapse.className)) {
         self.open();
       } else {
@@ -579,7 +616,7 @@
     this.open = function() {
       this._open(this.collapse);
       removeClass(this.btn,'collapsed');
-
+  
       if ( this.accordion !== null ) {
         var active = this.accordion.querySelectorAll('.collapse.in'), al = active.length, i = 0;
         for (i;i<al;i++) {
@@ -612,7 +649,7 @@
         c.style.overflowY = 'hidden';
         addClass(c,'collapsing');
       }, 0);
-
+  
       setTimeout(function() {
         removeClass(c,'collapsing');
         removeClass(c,'in');
@@ -643,35 +680,38 @@
         c = id && document.getElementById(id) || cl && document.querySelector(cl);
       return c;
     }
-
+  
     // init
     this.addEvent();
     this.collapse = this.getTarget();
     this.accordion = this.btn.getAttribute('data-parent')
       && getClosest(this.btn, this.btn.getAttribute('data-parent'));
   };
-
-  // COLLAPSE DATA API
-  // =================
-  var Collapses = document.querySelectorAll('[data-toggle="collapse"]'), i = 0, cll = Collapses.length;
-  for (i;i<cll;i++) {
-    var item = Collapses[i], options = {};
-    options.duration = item.getAttribute('data-duration');
-    new Collapse(item,options);
-  }
-
-
+  
+  (function () {
+    // COLLAPSE DATA API
+    // =================
+    var Collapses = document.querySelectorAll('[data-toggle="collapse"]'), i = 0, cll = Collapses.length;
+    for (i;i<cll;i++) {
+      var item = Collapses[i], options = {};
+      options.duration = item.getAttribute('data-duration');
+      new Collapse(item,options);
+    }
+  })();
+  // Native Javascript for Bootstrap 3 | Dropdown
+  // by dnp_theme
+  
   // DROPDOWN DEFINITION
   // ===================
-  var Dropdown = window.Dropdown = function( element) {
+  var Dropdown = function( element) {
     this.menu = typeof element === 'object' ? element : document.querySelector(element);
     var self = this;
-
+  
     this.handle = function(e) { // fix some Safari bug with <button>
       var target = e.target || e.currentTarget,
           children = [], c = self.menu.parentNode.getElementsByTagName('*');
       /\#$/g.test(target.href) && e.preventDefault();
-
+  
       for ( var i=0, l = c.length||0; i<l; i++) { l && children.push(c[i]); }
       if ( target === self.menu || target.parentNode === self.menu || target.parentNode.parentNode === self.menu ) {
         self.toggle(e);
@@ -698,19 +738,22 @@
     }
     this.menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome | Safari
     document.addEventListener('click', this.handle, false);
-  }
-
-  // DROPDOWN DATA API
-  // =================
-  var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]'), i = 0, ddl = Dropdowns.length;
-  for (i;i<ddl;i++) {
-    new Dropdown(Dropdowns[i]);
-  }
-
-
+  };
+  
+  (function () {
+    // DROPDOWN DATA API
+    // =================
+    var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]'), i = 0, ddl = Dropdowns.length;
+    for (i;i<ddl;i++) {
+      new Dropdown(Dropdowns[i]);
+    }
+  })();
+  // Native Javascript for Bootstrap 3 | Modal
+  // by dnp_theme
+  
   //MODAL DEFINITION
   // ===============
-  var Modal = window.Modal = function(element, options) { // element is the trigger button / options.target is the modal
+  var Modal = function(element, options) { // element is the is the modal
     options = options || {};
     this.modal = typeof element === 'object' ? element : document.querySelector(element);
     this.options = {};
@@ -722,7 +765,7 @@
     this.scrollbarWidth = 0;
     this.dialog = this.modal.querySelector('.modal-dialog');
     this.timer = 0;
-
+  
     var self = this,
       getWindowWidth = function() {
         var htmlRect = document.documentElement.getBoundingClientRect(),
@@ -749,7 +792,7 @@
         self.modalIsOverflowing = self.modal.scrollHeight > document.documentElement.clientHeight;
         self.scrollbarWidth = measureScrollbar();
       };
-
+  
     this.open = function() {
       var currentOpen = document.querySelector('.modal.in');
       if (currentOpen){
@@ -760,29 +803,29 @@
           currentOpen.style.display = '';
         }, this.options.duration/2);
       }
-
+  
       if ( this.options.backdrop ) {
         this.createOverlay();
       } else { this.overlay = null }
-
+  
       if ( this.overlay ) {
         setTimeout( function() {
           addClass(self.overlay,'in');
         }, 0);
       }
-
+  
       clearTimeout(self.modal.getAttribute('data-timer'));
       this.timer = setTimeout( function() {
         self.modal.style.display = 'block';
-
+  
         checkScrollbar();
         self.adjustDialog();
         setScrollbar();
-
+  
         self.resize();
         self.dismiss();
         self.keydown();
-
+  
         addClass(document.body,'modal-open');
         addClass(self.modal,'in');
         self.modal.setAttribute('aria-hidden', false);
@@ -790,26 +833,26 @@
       this.modal.setAttribute('data-timer',this.timer);
     }
     this.close = function() {
-
+  
       if ( this.overlay ) {
         removeClass(this.overlay,'in');
       }
       removeClass(this.modal,'in');
       this.modal.setAttribute('aria-hidden', true);
-
+  
       clearTimeout(this.modal.getAttribute('data-timer'));
       this.timer = setTimeout( function() {
         removeClass(document.body,'modal-open');
         self.resize();
         self.resetAdjustments();
         resetScrollbar();
-
+  
         self.dismiss();
         self.keydown();
         self.modal.style.display = '';
       }, this.options.duration/2);
       this.modal.setAttribute('data-timer',this.timer);
-
+  
       setTimeout( function() {
         if (!document.querySelector('.modal.in')) {  self.removeOverlay(); }
       }, this.options.duration);
@@ -820,7 +863,7 @@
     this.createOverlay = function() {
       var backdrop = document.createElement('div'), overlay = document.querySelector('.modal-backdrop');
       backdrop.setAttribute('class','modal-backdrop fade');
-
+  
       if ( overlay ) {
         this.overlay = overlay;
       } else {
@@ -851,7 +894,7 @@
       for ( i;i<tgl;i++ ) {
         triggers[i].addEventListener('click', function(e) {
           e.preventDefault();
-          var b = this,
+          var b = this, // var b = e.target,
           s = b.getAttribute('data-target') && b.getAttribute('data-target').replace('#','')
           || b.getAttribute('href') && b.getAttribute('href').replace('#','');
           if ( document.getElementById( s ) === self.modal ) {
@@ -880,7 +923,7 @@
         self._resize();
         self.handleUpdate();
       }
-
+  
       if (!/\bin/.test(this.modal.className)) {
         window.addEventListener('resize', this.oneResize, false);
       } else {
@@ -889,8 +932,9 @@
     }
     this.dismiss = function() {
       function dismissHandler(e) {
+        // if ( e.target.parentNode.getAttribute('data-dismiss') === 'modal' || e.target.getAttribute('data-dismiss') === 'modal' || e.target === self.modal ) {
         if ( this.getAttribute('data-dismiss') === 'modal' || this === self.modal ) {
-            e.preventDefault(); self.close()
+          e.preventDefault(); self.close()
         }
       }
       if (!/\bin/.test(this.modal.className)) {
@@ -917,21 +961,24 @@
       this.content( this.options.content );
     }
   };
-
-  // DATA API
-  var Modals = document.querySelectorAll('.modal'), mdl = Modals.length, i = 0;
-  for ( i;i<mdl;i++ ) {
-    var modal = Modals[i], options = {};
-    options.keyboard = modal.getAttribute('data-keyboard');
-    options.backdrop = modal.getAttribute('data-backdrop');
-    options.duration = modal.getAttribute('data-duration');
-    new Modal(modal,options)
-  }
-
-
+  
+  (function () {
+    // DATA API
+    var Modals = document.querySelectorAll('.modal'), mdl = Modals.length, i = 0;
+    for ( i;i<mdl;i++ ) {
+      var modal = Modals[i], options = {};
+      options.keyboard = modal.getAttribute('data-keyboard');
+      options.backdrop = modal.getAttribute('data-backdrop');
+      options.duration = modal.getAttribute('data-duration');
+      new Modal(modal,options)
+    }
+  })();
+  // Native Javascript for Bootstrap 3 | Popover
+  // by dnp_theme
+  
   // POPOVER DEFINITION
   // ===================
-  var Popover = window.Popover = function( element,options ) {
+  var Popover = function( element,options ) {
     options = options || {};
     this.link = typeof element === 'object' ? element : document.querySelector(element);
     this.title = this.link.getAttribute('data-title') || null;
@@ -949,9 +996,9 @@
     this.options.container = document.body;
     if ( !this.content && !this.options.template ) return;
     this.timer = 0 // the link own event timer
-
+  
     var self = this, events = ('onmouseleave' in this.link) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
-
+  
     this.toggle = function(e) {
       if (self.popover === null) {
         self.open()
@@ -984,7 +1031,7 @@
             self.removePopover(); // for performance/testing reasons we can keep the popovers if we want
           }, self.options.duration);
         }
-
+  
       }, self.options.delay + self.options.duration);
       self.link.setAttribute('data-timer',self.timer);
     }
@@ -996,18 +1043,18 @@
     }
     this.createPopover = function() {
       this.popover = document.createElement('div');
-
+  
       if ( this.content !== null && this.options.template === null ) { //create the popover from data attributes
-
+  
         this.popover.setAttribute('role','tooltip');
-
+  
         var popoverArrow = document.createElement('div');
         popoverArrow.setAttribute('class','arrow');
-
+  
         if (this.title !== null) {
           var popoverTitle = document.createElement('h3');
           popoverTitle.setAttribute('class','popover-title');
-
+  
           if (this.options.dismiss) {
             popoverTitle.innerHTML = this.title + '<button type="button" class="close">×</button>';
           } else {
@@ -1015,26 +1062,26 @@
           }
           this.popover.appendChild(popoverTitle);
         }
-
+  
         var popoverContent = document.createElement('div');
         popoverContent.setAttribute('class','popover-content');
-
+  
         this.popover.appendChild(popoverArrow);
         this.popover.appendChild(popoverContent);
-
+  
         //set popover content
         if (this.options.dismiss && this.title === null) {
           popoverContent.innerHTML = this.content + '<button type="button" class="close">×</button>';
         } else {
           popoverContent.innerHTML = this.content;
         }
-
+  
       } else {  // or create the popover from template
         var template = document.createElement('div');
         template.innerHTML = this.options.template;
         this.popover.innerHTML = template.firstChild.innerHTML;
       }
-
+  
       //append to the container
       this.options.container.appendChild(this.popover);
       this.popover.style.display = 'block';
@@ -1043,26 +1090,26 @@
       var rect = this.link.getBoundingClientRect(),
           placement = pos || this.options.placement,
           animation = this.options.animation === 'true' ? 'fade' : '';
-
+  
       this.popover.setAttribute('class','popover '+placement+' '+animation);
-
+  
       var ld = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
           pd = { w : this.popover.offsetWidth, h: this.popover.offsetHeight }, //popover real dimensions
           sYo = this.getScroll().y, sXo = this.getScroll().x; //window vertical and horizontal scroll
-
+  
       //apply styling
       if ( /top/.test(placement) ) { //TOP
         this.popover.style.top = rect.top + sYo - pd.h + 'px';
         this.popover.style.left = rect.left + sXo - pd.w/2 + ld.w/2 + 'px'
-
+  
       } else if ( /bottom/.test(placement) ) { //BOTTOM
         this.popover.style.top = rect.top + sYo + ld.h + 'px';
         this.popover.style.left = rect.left + sXo - pd.w/2 + ld.w/2 + 'px';
-
+  
       } else if ( /left/.test(placement) ) { //LEFT
         this.popover.style.top = rect.top + sYo - pd.h/2 + ld.h/2 + 'px';
         this.popover.style.left = rect.left + sXo - pd.w + 'px';
-
+  
       } else if ( /right/.test(placement) ) { //RIGHT
         this.popover.style.top = rect.top + sYo - pd.h/2 + ld.h/2 + 'px';
         this.popover.style.left = rect.left + sXo + ld.w + 'px';
@@ -1075,7 +1122,7 @@
       } else {
         placement = this.options.placement;
       }
-
+  
       this.stylePopover(placement);
       this.popover.className += ' in';
     }
@@ -1108,65 +1155,68 @@
       this.link.addEventListener('focus', this.toggle, false);
       if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false);  }
     }
-
+  
     if (this.options.dismiss) {  document.addEventListener('click', this.dismiss, false); }
-
+  
     if (!(isIE && isIE < 9) ) { // dismiss on window resize
       window.addEventListener('resize', this.close, false );
     }
-  }
-
-  // POPOVER DATA API
-  // =================
-  var Popovers = document.querySelectorAll('[data-toggle=popover]'), i = 0, ppl = Popovers.length;
-  for (i;i<ppl;i++){
-    var item = Popovers[i], options = {};
-    options.trigger = item.getAttribute('data-trigger'); // click / hover / focus
-    options.animation = item.getAttribute('data-animation'); // true / false
-    options.duration = item.getAttribute('data-duration');
-    options.placement = item.getAttribute('data-placement');
-    options.dismiss = item.getAttribute('data-dismiss');
-    options.delay = item.getAttribute('data-delay');
-    new Popover(item,options);
-  }
-
-
+  };
+  
+  (function () {
+    // POPOVER DATA API
+    // =================
+    var Popovers = document.querySelectorAll('[data-toggle=popover]'), i = 0, ppl = Popovers.length;
+    for (i;i<ppl;i++){
+      var item = Popovers[i], options = {};
+      options.trigger = item.getAttribute('data-trigger'); // click / hover / focus
+      options.animation = item.getAttribute('data-animation'); // true / false
+      options.duration = item.getAttribute('data-duration');
+      options.placement = item.getAttribute('data-placement');
+      options.dismiss = item.getAttribute('data-dismiss');
+      options.delay = item.getAttribute('data-delay');
+      new Popover(item,options);
+    }
+  })();
+  // Native Javascript for Bootstrap 3 | ScrollSpy
+  // by dnp_theme
+  
   //SCROLLSPY DEFINITION
-  var ScrollSpy = window.Scrollspy = function(element,item,options) {
+  var ScrollSpy = function(element,item,options) {
     options = options || {};
-
+  
     //this is the container element we spy it's elements on
     this.element = typeof element === 'object' ? element : document.querySelector(element);
-
+  
     this.options = {};
     // this is the UL menu component our scrollSpy object will target, configure and required by the container element
     this.options.target = options.target ? (typeof options.target === 'object' ? options.target : document.querySelector(options.target)) : null;
-
+  
     //we need to determine the index of each menu item
     this.items = this.options.target && this.options.target.getElementsByTagName('A');
-
+  
     this.item = item;
     // the parent LI element
     this.parent = this.item.parentNode;
-
+  
     // the upper level LI ^ UL ^ LI, this is required for dropdown menus
     this.parentParent = this.parent.parentNode.parentNode;
-
+  
     this.tg = this.item.href && document.getElementById(this.item.getAttribute('href').replace('#',''));
     this.active = false;
     this.topEdge = 0;
     this.bottomEdge = 0;
     var self = this;
-
+  
     //determine which is the real scrollTarget
     if ( this.element.offsetHeight < this.element.scrollHeight ) { // or this.scrollHeight()
       this.scrollTarget = this.element;
     } else {
       this.scrollTarget = window;
     }
-
+  
     if ( !this.options.target ) { return; }
-
+  
     this.topLimit = function () { // the target offset
       if ( this.scrollTarget === window ) {
         return this.tg.getBoundingClientRect().top + this.scrollOffset() - 5
@@ -1217,7 +1267,7 @@
     this.refresh = function () { // check edges again
       this.deactivate();
       this.checkEdges();
-
+  
       this.toggle() // If any case update values again
     }
     this.scrollEvent = function(){
@@ -1240,7 +1290,7 @@
         return this.element.scrollHeight
       }
     }
-
+  
     // init
     if ( this.item.getAttribute('href') && this.item.getAttribute('href').indexOf('#') > -1 ) {
       //actions
@@ -1250,29 +1300,31 @@
       if (!(isIE && isIE < 9)) { this.resizeEvent(); }
     }
   };
-
-
-  //SCROLLSPY API
-  //=============
-  var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'), i = 0, ssl = scrollSpyes.length; // mostly is the document.body or a large container with many elements having id="not-null-id"
-  for (i;i<ssl;i++) {
-    var spy = scrollSpyes[i], options = {};
-    options.target = spy.getAttribute('data-target') || null;  // this must be a .nav component with id="not-null"
-    if ( options.target !== null ) {
-      var menu = options.target === 'object' ?  options.target : document.querySelector(options.target),
-        items = menu.querySelectorAll('a'), j = 0, il = items.length;
-      for (j;j<il;j++) {
-        var item = items[j];
-        if ( item.href && item.getAttribute('href') !== '#' )
-        new ScrollSpy(spy, item, options);
+  
+  (function () {
+    //SCROLLSPY DATA API
+    //=============
+    var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'), i = 0, ssl = scrollSpyes.length; // mostly is the document.body or a large container with many elements having id="not-null-id"
+    for (i;i<ssl;i++) {
+      var spy = scrollSpyes[i], options = {};
+      options.target = spy.getAttribute('data-target') || null;  // this must be a .nav component with id="not-null"
+      if ( options.target !== null ) {
+        var menu = options.target === 'object' ?  options.target : document.querySelector(options.target),
+          items = menu.querySelectorAll('a'), j = 0, il = items.length;
+        for (j;j<il;j++) {
+          var item = items[j];
+          if ( item.href && item.getAttribute('href') !== '#' )
+          new ScrollSpy(spy, item, options);
+        }
       }
     }
-  }
-
-
+  })();
+  // Native Javascript for Bootstrap 3 | Tab
+  // by dnp_theme
+  
   // TAB DEFINITION
   // ===================
-  var Tab = window.Tab = function( element,options ) {
+  var Tab = function( element,options ) {
     options = options || {};
     this.tab = typeof element === 'object' ? element : document.querySelector(element);
     this.tabs = this.tab.parentNode.parentNode;
@@ -1282,27 +1334,27 @@
       this.tabs = this.tabs.parentNode.parentNode;
     }
     this.options = options;
-
+  
     // default tab transition duration
     this.duration = 150;
     this.options.duration = (isIE && isIE < 10)  ? 0 : (options.duration || this.duration);
-
+  
     var self = this;
-
+  
     this.handle = function(e) {
       e = e || window.e; e.preventDefault();
       var next = e.target; //the tab we clicked is now the next tab
       var nextContent = document.getElementById(next.getAttribute('href').replace('#','')); //this is the actual object, the next tab content to activate
-
+  
       // get current active tab and content
       var activeTab = self.getActiveTab();
       var activeContent = self.getActiveContent();
-
+  
       if ( !/\bactive/.test(next.parentNode.className) ) {
         // toggle "active" class name
         removeClass(activeTab,'active');
         addClass(next.parentNode,'active');
-
+  
         // handle dropdown menu "active" class name
         if ( self.dropdown ) {
           if ( !(/\bdropdown-menu/.test(self.tab.parentNode.parentNode.className)) ) {
@@ -1311,10 +1363,10 @@
             if (!/\bactive/.test(self.dropdown.className)) addClass(self.dropdown,'active');
           }
         }
-
+  
         //1. hide current active content first
         removeClass(activeContent,'in');
-
+  
         setTimeout(function() {
           //2. toggle current active content from view
           removeClass(activeContent,'active');
@@ -1338,25 +1390,29 @@
       var a = this.getActiveTab().getElementsByTagName('A')[0].getAttribute('href').replace('#','');
       return a && document.getElementById(a)
     }
-
+  
     // init
     this.tab.addEventListener('click', this.handle, false);
-  }
-
-  // TAB DATA API
-  // =================
-  var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']"), tbl = Tabs.length, i=0;
-  for ( i;i<tbl;i++ ) {
-    var tab = Tabs[i], options = {};
-    options.duration = tab.getAttribute('data-duration') && tab.getAttribute('data-duration') || false;
-    new Tab(tab,options);
-  }
-
+  };
+  
+  (function () {
+    // TAB DATA API
+    // =================
+    var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']"), tbl = Tabs.length, i=0;
+    for ( i;i<tbl;i++ ) {
+      var tab = Tabs[i], options = {};
+      options.duration = tab.getAttribute('data-duration') && tab.getAttribute('data-duration') || false;
+      new Tab(tab,options);
+    }
+  })();
+  // Native Javascript for Bootstrap 3 | Tooltip
+  // by dnp_theme
+  
   // TOOLTIP DEFINITION
   // ===================
-  var Tooltip = window.Tooltip = function( element,options ) {
+  var Tooltip = function( element,options ) {
     options = options || {};
-
+  
     this.link = typeof element === 'object' ? element : document.querySelector(element);
     this.title = this.link.getAttribute('title') || this.link.getAttribute('data-original-title');
     this.tooltip = null;
@@ -1369,9 +1425,9 @@
     this.options.container = options.container || document.body;
     if ( !this.title ) return;
     this.timer = 0 // the link own event timer
-
+  
     var self = this, events = ('onmouseleave' in this.link) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
-
+  
     this.open = function(e) {
       clearTimeout(self.link.getAttribute('data-timer'));
       self.timer = setTimeout( function() {
@@ -1404,44 +1460,44 @@
     this.createToolTip = function() {
       this.tooltip = document.createElement('div');
       this.tooltip.setAttribute('role','tooltip');
-
+  
       var tooltipArrow = document.createElement('div');
       tooltipArrow.setAttribute('class','tooltip-arrow');
       var tooltipInner = document.createElement('div');
       tooltipInner.setAttribute('class','tooltip-inner');
-
+  
       this.tooltip.appendChild(tooltipArrow);
       this.tooltip.appendChild(tooltipInner);
-
+  
       //set tooltip content
       tooltipInner.innerHTML = this.title;
-
+  
       //append to the container
       this.options.container.appendChild(this.tooltip);
     }
     this.styleTooltip = function(pos) {
       var rect = this.link.getBoundingClientRect(),
           placement = pos || this.options.placement;
-
+  
       this.tooltip.setAttribute('class','tooltip '+placement+' '+this.options.animation);
-
+  
       var ld = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
           td = { w : this.tooltip.offsetWidth, h: this.tooltip.offsetHeight }, //tooltip real dimensions
           sYo = this.getScroll().y, sXo = this.getScroll().x; //window vertical and horizontal scroll
-
+  
       //apply styling
       if ( /top/.test(placement) ) { //TOP
         this.tooltip.style.top = rect.top + sYo - td.h + 'px';
         this.tooltip.style.left = rect.left + sXo - td.w/2 + ld.w/2 + 'px'
-
+  
       } else if ( /bottom/.test(placement) ) { //BOTTOM
         this.tooltip.style.top = rect.top + sYo + ld.h + 'px';
         this.tooltip.style.left = rect.left + sXo - td.w/2 + ld.w/2 + 'px';
-
+  
       } else if ( /left/.test(placement) ) { //LEFT
         this.tooltip.style.top = rect.top + sYo - td.h/2 + ld.h/2 + 'px';
         this.tooltip.style.left = rect.left + sXo - td.w + 'px';
-
+  
       } else if ( /right/.test(placement) ) { //RIGHT
         this.tooltip.style.top = rect.top + sYo - td.h/2 + ld.h/2 + 'px';
         this.tooltip.style.left = rect.left + sXo + ld.w + 'px';
@@ -1481,17 +1537,33 @@
     //remove title from link
     this.link.setAttribute('data-original-title',this.title);
     this.link.removeAttribute('title');
-  }
-
-  // TOOLTIP DATA API
-  // =================
-  var Tooltips = document.querySelectorAll('[data-toggle=tooltip]'), i = 0, tpl = Tooltips.length;
-  for (i;i<tpl;i++){
-    var item = Tooltips[i], options = {};
-    options.animation = item.getAttribute('data-animation');
-    options.placement = item.getAttribute('data-placement');
-    options.duration = item.getAttribute('data-duration');
-    options.delay = item.getAttribute('data-delay');
-    new Tooltip(item,options);
-  }
-})();
+  };
+  
+  (function () {
+    // TOOLTIP DATA API
+    // =================
+    var Tooltips = document.querySelectorAll('[data-toggle=tooltip]'), i = 0, tpl = Tooltips.length;
+    for (i;i<tpl;i++){
+      var item = Tooltips[i], options = {};
+      options.animation = item.getAttribute('data-animation');
+      options.placement = item.getAttribute('data-placement');
+      options.duration = item.getAttribute('data-duration');
+      options.delay = item.getAttribute('data-delay');
+      new Tooltip(item,options);
+    }
+  })();
+  
+  return {
+    Affix: Affix,
+    Alert: Alert,
+    Button: Button,
+    Carousel: Carousel,
+    Collapse: Collapse,
+    Dropdown: Dropdown,
+    Modal: Modal,
+    Popover: Popover,
+    ScrollSpy: ScrollSpy,
+    Tab: Tab,
+    Tooltip: Tooltip
+  };
+}));
