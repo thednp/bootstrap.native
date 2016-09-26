@@ -663,7 +663,7 @@
 
   // DROPDOWN DEFINITION
   // ===================
-  var Dropdown = window.Modal = function( element) {
+  var Dropdown = window.Dropdown = function( element) {
     this.menu = typeof element === 'object' ? element : document.querySelector(element);
     var self = this;
 
