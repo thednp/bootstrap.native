@@ -64,10 +64,28 @@ So when using `bootstrap.native` inside of a NodeJS app, make sure you create a 
 The scripts are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills IE8-IE9 will thank you.
 
 # Custom Builds
-The future versions will provide ways to create custom builds better than the previous [gulp file](https://github.com/thednp/bootstrap.native/blob/1.0.3/Gulpfile.js).
+You can make a custom build of bootstrap-native, including only the modules you need, by using the `build.js` script.
+
+## Usage:
+```
+$ node build.js --help
+node build.js [--minify] [--ignore=<modules>...|--only=<modules>...]
+
+Options:
+  --minify, -m  Minify output                         [boolean] [default: false]
+  --ignore, -i  Omit the given module(s) from the bundle                 [array]
+  --only        Only include the given module(s) in the bundle           [array]
+  --help        Show help                                              [boolean]
+
+Running without --ignore or --only will compile all the modules.
+Writes to stdout
+```
+
+\*nix users can run `./build.js` as well as `node build.js`.
 
 # Contributors
 - [Ingwie Phoenix](https://github.com/IngwiePhoenix): RequireJS/CommonJS compatibility and usability with common package managers. _Was glad to help!_
+- [Ryan Zimmerman](https://github.com/RyanZim): Custom build script.
 - Full contributors list [here](https://github.com/thednp/bootstrap.native/graphs/contributors). Thanks so much!
 
 # License

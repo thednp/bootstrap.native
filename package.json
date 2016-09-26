@@ -2,10 +2,12 @@
   "name": "bootstrap.native",
   "version": "1.0.5",
   "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
-  "main": "all.js",
+  "main": "dist/bootstrap-native.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "min": "node build.js"
+    "build": "node build.js > dist/bootstrap-native.js && npm run build-min",
+    "build-min": "node build.js -m > dist/bootstrap-native.min.js",
+    "watch": "onchange \"lib/*\" -i -- npm run build"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,8 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "devDependencies": {
-    "uglify-js": "^2.7.3"
+    "onchange": "^3.0.2",
+    "uglify-js": "^2.7.3",
+    "yargs": "^5.0.0"
   }
 }
