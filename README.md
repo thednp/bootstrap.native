@@ -3,7 +3,7 @@ This is a set of scripts developed with native Javascript for <strong>Bootstrap 
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
 # CDN
-New releases will be available automatically on jsdelivr CDN repositories <a href="http://www.jsdelivr.com/#!bootstrap.native">here</a> or CDNjs repositories <a href="https://cdnjs.com/libraries/bootstrap.native">here</a>.
+New releases will be available automatically on <a href="http://www.jsdelivr.com/#!bootstrap.native">jsdelivr</a> CDN repositories and <a href="https://cdnjs.com/libraries/bootstrap.native">CDNjs</a> repositories.
 
 # Bower and NPM
 You can install this package by using either Bower or NPM.
@@ -55,6 +55,8 @@ var $btn = document.createElement("button");
 var myButton = new Button(... $btn and options ...); // Create a button and do a test.
 ```
 
+**Note** that you may not be able to use files directly from `/lib` folder because they are missing the [utilities](https://github.com/thednp/bootstrap.native/blob/master/lib/utils.js). These files are sources for the builds locateed in the `/dist` folder.
+
 ## Note About the Factory Methods
 As mentioned above, the object properties of the exported object, when using `require()`, are actual classes when `document` and `window` are given - in which case we are sure to be facing an actual browser - and if absent, will be factory methods.
 
@@ -85,7 +87,7 @@ Writes to stdout
 
 # Contributors
 - [Ingwie Phoenix](https://github.com/IngwiePhoenix): RequireJS/CommonJS compatibility and usability with common package managers. _Was glad to help!_
-- [Ryan Zimmerman](https://github.com/RyanZim): Custom build script.
+- [Ryan Zimmerman](https://github.com/RyanZim): **Amazing** custom build script.
 - Full contributors list [here](https://github.com/thednp/bootstrap.native/graphs/contributors). Thanks so much!
 
 # License
