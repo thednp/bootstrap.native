@@ -28,7 +28,7 @@ You can use the scripts either using a traditional script-tag like so:
 <script type="text/javascript" src="/bower_components/bootstrap.native/dist/bootstrap-native.min.js"></script>
 ```
 
-But it's also possible to use any module loader that supports the `RequireJS` or `CommonJS` syntax. An example is `RequireJS` itself:
+**Note** that you may not be able to use files directly from `/lib` folder because they are missing the [utilities](https://github.com/thednp/bootstrap.native/blob/master/lib/utils.js). These files are sources for the builds locateed in the `/dist` folder. It's also possible to use any module loader that supports the `RequireJS` or `CommonJS` syntax. An example is `RequireJS` itself:
 
 ```html
 <script type="text/javascript">
@@ -55,7 +55,6 @@ var $btn = document.createElement("button");
 var myButton = new Button(... $btn and options ...); // Create a button and do a test.
 ```
 
-**Note** that you may not be able to use files directly from `/lib` folder because they are missing the [utilities](https://github.com/thednp/bootstrap.native/blob/master/lib/utils.js). These files are sources for the builds locateed in the `/dist` folder.
 
 ## Note About the Factory Methods
 As mentioned above, the object properties of the exported object, when using `require()`, are actual classes when `document` and `window` are given - in which case we are sure to be facing an actual browser - and if absent, will be factory methods.
