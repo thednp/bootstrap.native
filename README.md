@@ -8,9 +8,9 @@ New releases will be available automatically on jsdelivr CDN repositories <a hre
 # Bower and NPM
 You can install this package by using either Bower or NPM.
 
-    $ npm install --save bootstrap.native
-    # Or
-    $ bower install --save bootstrap.native
+$ npm install --save bootstrap.native
+# Or
+$ bower install --save bootstrap.native
 
 ## Subsystem compatibility
 `bootstrap.native` is compatible with the CommonJS/RequireJS spec (exporting itself to `module.exports`). It thus can fall back to adding its exports to the `window` object.
@@ -20,10 +20,10 @@ You can use the scripts either using a traditional script-tag like so:
 
 ```html
 <!-- Using one of the CDN repositories-->
-<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.native/0.9.6/bootstrap-native.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/1.0.2/bootstrap-native.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.native/1.0.5/bootstrap-native.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/1.0.5/bootstrap-native.min.js"></script>
 <!-- Using a local assets folder -->
-<script type="text/javascript" src="/assets/bootstrap.native.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.native.min.js"></script>
 <!-- Or using Bower? -->
 <script type="text/javascript" src="/bower_components/bootstrap.native/dist/bootstrap-native.min.js"></script>
 ```
@@ -49,7 +49,7 @@ global.window = browser.createWindow();
 global.document = browser.createDocument();
 
 // Now it's safe to use bootstrap.native and expecting the properties to be the actual component classes.
-var Button = btn.Button(); // Create the button class and return it.
+var Button = bsn.Button(); // Create the button class and return it.
 
 var $btn = document.createElement("button");
 var myButton = new Button(... $btn and options ...); // Create a button and do a test.
