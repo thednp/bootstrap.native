@@ -12,11 +12,11 @@ $ npm install --save bootstrap.native
 # Or
 $ bower install --save bootstrap.native
 
-## Subsystem compatibility
-`bootstrap.native` is compatible with the CommonJS/RequireJS spec (exporting itself to `module.exports`). It thus can fall back to adding its exports to the `window` object.
-
 # Usage
-You can use the scripts either using a traditional script-tag like so:
+
+`bootstrap.native` is UMD (Universal Module Definition) compatible. It will work correctly in CommonJS and AMD environments, but falls back to exporting to `window` in a normal `<script>` tag environment.
+
+Traditional script-tag example:
 
 ```html
 <!-- Using one of the CDN repositories-->
@@ -24,38 +24,21 @@ You can use the scripts either using a traditional script-tag like so:
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/1.0.5/bootstrap-native.min.js"></script>
 <!-- Using a local assets folder -->
 <script type="text/javascript" src="/assets/js/bootstrap.native.min.js"></script>
-<!-- Or using Bower? -->
+<!-- Using Bower -->
 <script type="text/javascript" src="/bower_components/bootstrap.native/dist/bootstrap-native.min.js"></script>
 ```
 
-**Note** that you may not be able to use files directly from `/lib` folder because they are missing the [utilities](https://github.com/thednp/bootstrap.native/blob/master/lib/utils.js). These files are sources for the builds located in the `/dist` folder. 
+**Warning:** Do not use files directly from `/lib` folder! These files are just sources for the builds located in the `/dist` folder.
 
-It's also possible to use any module loader that supports the `RequireJS` or `CommonJS` syntax. An example is `RequireJS` itself:
+You can also use `bootstrap.native` in a CommonJS environment:
 
-```html
-<script type="text/javascript">
-    var bsn = require("bootstrap.native");
-    // Create a button:
-    var btn = new bsn.Button(...);
-</script>
-```
-
-If you are working in a virtual browser environment, the properties of the returned exports are all functions, that expect both, a global `window` and a global `document` variable to exist before calling. An example case is during tests, where you may use NodeJS to run front-end tests. These usually will create a virtual Window and Document object. Once these exist, `bootstrap.native` will function properly.
-
-An example of this would look like this:
-
-```javascript
+```js
 var bsn = require("bootstrap.native");
-var browser = require("mock-browser");
-global.window = browser.createWindow();
-global.document = browser.createDocument();
-
-// Now it's safe to use bootstrap.native and expecting the properties to be the actual component classes.
-var Button = bsn.Button(); // Create the button class and return it.
-
-var $btn = document.createElement("button");
-var myButton = new Button(... $btn and options ...); // Create a button and do a test.
+// Create a button:
+var btn = new bsn.Button(...);
 ```
+
+**Note:** If you are working in a virtual browser environment (i.e. running front-end tests in NodeJS), bootstrap-native requires both `window` and `document` to be in scope. You will need to use a mock browser.
 
 
 ## Note About the Factory Methods
@@ -64,7 +47,7 @@ As mentioned above, the object properties of the exported object, when using `re
 So when using `bootstrap.native` inside of a NodeJS app, make sure you create a proper Browser-like environment first to avoid unexpected behaviour.
 
 # Browser Support
-The scripts are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills IE8-IE9 will thank you.
+The scripts are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills, IE8-IE9 will thank you.
 
 # Custom Builds
 You can make a custom build of bootstrap-native, including only the modules you need, by using the `build.js` script.
