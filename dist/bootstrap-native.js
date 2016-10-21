@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v1.0.5 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v1.0.51 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -932,8 +932,8 @@
     }
     this.dismiss = function() {
       function dismissHandler(e) {
-        // if ( e.target.parentNode.getAttribute('data-dismiss') === 'modal' || e.target.getAttribute('data-dismiss') === 'modal' || e.target === self.modal ) {
-        if ( this.getAttribute('data-dismiss') === 'modal' || this === self.modal ) {
+        if ( e.target.parentNode.getAttribute('data-dismiss') === 'modal' || e.target.getAttribute('data-dismiss') === 'modal' || e.target === self.modal ) {
+        // if ( this.parentNode.getAttribute('data-dismiss') === 'modal' || this.getAttribute('data-dismiss') === 'modal' || this === self.modal ) {
           e.preventDefault(); self.close()
         }
       }

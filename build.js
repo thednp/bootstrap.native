@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Native Javascript for Bootstrap 3 | Build Script
 // Build script to bundle the js files in lib/
+// Usage: npm run build
 // Run node build.js --help for usage instructions
 // by https://github.com/RyanZim
 
