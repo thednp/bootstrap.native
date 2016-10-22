@@ -116,7 +116,7 @@ function wrap(main) {
   var returns = [];
   // Populate arrays:
   modules.forEach(function (name) {
-    rootAttachments.push(`root.${name} = bsn.${name};`);
+    rootAttachments.push(`window.${name} = bsn.${name};`);
     returns.push(`${name}: ${name}`);
   });
   // Custom UMD Template:
