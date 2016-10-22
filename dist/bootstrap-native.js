@@ -9,17 +9,17 @@
   } else {
     // Browser globals (root is window)
     var bsn = factory();
-    root.Affix = bsn.Affix;
-    root.Alert = bsn.Alert;
-    root.Button = bsn.Button;
-    root.Carousel = bsn.Carousel;
-    root.Collapse = bsn.Collapse;
-    root.Dropdown = bsn.Dropdown;
-    root.Modal = bsn.Modal;
-    root.Popover = bsn.Popover;
-    root.ScrollSpy = bsn.ScrollSpy;
-    root.Tab = bsn.Tab;
-    root.Tooltip = bsn.Tooltip;
+    window.Affix = bsn.Affix;
+    window.Alert = bsn.Alert;
+    window.Button = bsn.Button;
+    window.Carousel = bsn.Carousel;
+    window.Collapse = bsn.Collapse;
+    window.Dropdown = bsn.Dropdown;
+    window.Modal = bsn.Modal;
+    window.Popover = bsn.Popover;
+    window.ScrollSpy = bsn.ScrollSpy;
+    window.Tab = bsn.Tab;
+    window.Tooltip = bsn.Tooltip;
   }
 }(this, function () {
   // Native Javascript for Bootstrap 3 | Internal Utility Functions
