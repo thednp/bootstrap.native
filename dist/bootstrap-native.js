@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v1.0.51 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v1.1.0 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -45,6 +45,7 @@
       }
       return false;
     },
+    // tooltip / popover stuff
     isElementInViewport = function(t) { // check if this.tooltip is in viewport
       var r = t.getBoundingClientRect();
       return (
@@ -53,7 +54,15 @@
         r.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
         r.right <= (window.innerWidth || document.documentElement.clientWidth)
       )
-  };
+    },
+    getScroll = function() { // also Affix and scrollSpy uses it
+      return {
+        y : window.pageYOffset || document.documentElement.scrollTop,
+        x : window.pageXOffset || document.documentElement.scrollLeft
+      }
+    },
+    mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
+    tipPositions = /\b(top|bottom|left|top)+/;
   
   // Native Javascript for Bootstrap 3 | Affix
   // by dnp_theme
@@ -74,24 +83,21 @@
   
     this.processOffsetTop = function () {
       if ( this.options.target !== null ) {
-        return this.options.target.getBoundingClientRect().top + this.scrollOffset();
+        return this.options.target.getBoundingClientRect().top + getScroll().y;
       } else if ( this.options.offsetTop !== null ) {
         return this.options.offsetTop
       }
-    }
+    };
     this.processOffsetBottom = function () {
       if ( this.options.offsetBottom !== null ) {
         var maxScroll = this.getMaxScroll();
-        return maxScroll - this.element.offsetHeight - this.options.offsetBottom
+        return maxScroll - this.element.offsetHeight - this.options.offsetBottom;
       }
-    }
+    };
     this.checkPosition = function () {
-      this.getPinOffsetTop = this.processOffsetTop
-      this.getPinOffsetBottom = this.processOffsetBottom
-    }
-    this.scrollOffset = function () {
-      return window.pageYOffset || document.documentElement.scrollTop
-    }
+      this.getPinOffsetTop = this.processOffsetTop;
+      this.getPinOffsetBottom = this.processOffsetBottom;
+    };
     this.pinTop = function () {
       if ( !/\baffix/.test(this.element.className) ) {
         this.element.className += ' affix';
@@ -117,15 +123,15 @@
       }
     }
     this.updatePin = function () {
-      if (this.affixed === false && (parseInt(this.processOffsetTop(),0) - parseInt(this.scrollOffset(),0) < 0)) {
+      if (this.affixed === false && (parseInt(this.processOffsetTop(),0) - parseInt(getScroll().y,0) < 0)) {
         this.pinTop();
-      } else if (this.affixed === true && (parseInt(this.scrollOffset(),0) <= parseInt(this.getPinOffsetTop(),0) )) {
+      } else if (this.affixed === true && (parseInt(getScroll().y,0) <= parseInt(this.getPinOffsetTop(),0) )) {
         this.unPinTop()
       }
   
-      if (this.affixedBottom === false && (parseInt(this.processOffsetBottom(),0) - parseInt(this.scrollOffset(),0) < 0)) {
+      if (this.affixedBottom === false && (parseInt(this.processOffsetBottom(),0) - parseInt(getScroll().y,0) < 0)) {
         this.pinBottom();
-      } else if (this.affixedBottom === true && (parseInt(this.scrollOffset(),0) <= parseInt(this.getPinOffsetBottom(),0) )) {
+      } else if (this.affixedBottom === true && (parseInt(getScroll().y,0) <= parseInt(this.getPinOffsetBottom(),0) )) {
         this.unPinBottom()
       }
     }
@@ -167,21 +173,21 @@
     this.resizeEvent()
   };
   
-  (function () {
+  // (function () {
     // AFFIX DATA API
     // =================
-    var Affixes = document.querySelectorAll('[data-spy="affix"]'), i = 0, afl = Affixes.length;
-    for (i;i<afl;i++) {
-      var item = Affixes[i], options = {};
-        options.offsetTop     = item.getAttribute('data-offset-top');
-        options.offsetBottom  = item.getAttribute('data-offset-bottom');
-        options.target        = item.getAttribute('data-target');
+    var Affixes = document.querySelectorAll('[data-spy="affix"]');
+    for (var a=0, afl = Affixes.length; a<afl; a++) {
+      var affix = Affixes[a], options = {};
+        options.offsetTop     = affix.getAttribute('data-offset-top');
+        options.offsetBottom  = affix.getAttribute('data-offset-bottom');
+        options.target        = affix.getAttribute('data-target');
   
-      if ( item && (options.offsetTop !== null || options.offsetBottom !== null || options.target !== null) ) { //don't do anything unless we have something valid to pin
-        new Affix(item, options);
+      if ( affix && (options.offsetTop !== null || options.offsetBottom !== null || options.target !== null) ) { //don't do anything unless we have something valid to pin
+        new Affix(affix, options);
       }
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Alert
   // by dnp_theme
   
@@ -209,14 +215,14 @@
     document.addEventListener('click', this.close, false); //delegate to all alerts, including those inserted later into the DOM
   };
   
-  (function () {
+  // (function () {
     // ALERT DATA API
     // =================
-    var Alerts = document.querySelectorAll('[data-dismiss="alert"]'), i = 0, all = Alerts.length;
-    for (i;i<all;i++) {
-      new Alert(Alerts[i]);
+    var Alerts = document.querySelectorAll('[data-dismiss="alert"]');
+    for (var e=0, all = Alerts.length; e<all; e++) {
+      new Alert(Alerts[e]);
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Button
   // by dnp_theme
   
@@ -317,19 +323,19 @@
     }
   };
   
-  (function () {
+  // (function () {
     // BUTTON DATA API
     // =================
-    var Buttons = document.querySelectorAll('[data-toggle=button]'), i = 0, btl = Buttons.length;
-    for (i;i<btl;i++) {
-      new Button(Buttons[i]);
+    var Buttons = document.querySelectorAll('[data-toggle=button]');
+    for (var b=0, btl = Buttons.length; b<btl; b++) {
+      new Button(Buttons[b]);
     }
   
-    var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]'), j = 0, bgl = ButtonGroups.length;
-    for (j;j<bgl;j++) {
-      new Button(ButtonGroups[j]);
+    var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]');
+    for (var g=0, bgl = ButtonGroups.length; g<bgl; g++) {
+      new Button(ButtonGroups[g]);
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Carousel
   // by dnp_theme
   
@@ -355,11 +361,10 @@
     this.indicator = this.carousel.querySelector( ".carousel-indicators" ); // object
     this.indicators = this.carousel.querySelectorAll( ".carousel-indicators li" ); // object
     this.total    = this.slides.length;
-    this.timer    = null;
     this.direction  = null;
     this.index    = 0;
   
-    var self = this;
+    var self = this, timer = 0;
   
     if (options.interval === 'false' ) {
       this.options.interval = false;
@@ -368,9 +373,8 @@
     }
   
     this.cycle = function(e) {
-  
       this.direction = 'left';
-      this.timer = setInterval(function() {
+      timer = setInterval(function() {
         self.index++;
         if( self.index == self.slides.length ) {
           self.index = 0;
@@ -378,26 +382,26 @@
         self._slideTo( self.index, e );
   
       }, this.options.interval);
-    }
+    };
     this.pause = function() {
       var pauseHandler = function () {
         if ( self.options.interval !==false && !/\bpaused/.test(self.carousel.className) ) {
           self.carousel.className += ' paused';
-          clearInterval( self.timer );
-          self.timer = null;
+          clearInterval( timer );
+          timer = null;
         }
       };
       var resumeHandler = function() {
         if ( self.options.interval !==false && /\bpaused/.test(self.carousel.className) ) {
           self.cycle();
-          self.carousel.className = self.carousel.className.replace(/\bpaused/,'');
+          removeClass(self.carousel,'paused');
         }
       };
       self.carousel.addEventListener( "mouseenter", pauseHandler, false);
       self.carousel.addEventListener( "mouseleave", resumeHandler, false);
       self.carousel.addEventListener( "touchstart", pauseHandler, false);
       self.carousel.addEventListener( "touchend", resumeHandler, false);
-    }
+    };
     this._slideTo = function( next, e ) {
       var active = this._getActiveIndex(); // the current active
       //determine type
@@ -413,44 +417,44 @@
       if (slide) { this.carousel.dispatchEvent(slide); } //here we go with the slide
   
       this._removeEventListeners();
-      clearInterval(this.timer);
-      this.timer = null;
+      clearInterval(timer);
+      timer = null;
       this._curentPage( this.indicators[next] );
   
       if ( /\bslide/.test(this.carousel.className) && !(isIE && isIE < 10) ) {
-        this.slides[next].className += (' '+dr);
+        addClass(this.slides[next],dr);
         this.slides[next].offsetWidth;
-        this.slides[next].className += (' '+direction);
-        this.slides[active].className += (' '+direction);
+        addClass(this.slides[next],direction);
+        addClass(this.slides[active],direction);
   
         setTimeout(function() { //we're gonna fake waiting for the animation to finish, cleaner and better
           self._addEventListeners();
   
-          self.slides[next].className += ' active';
-          self.slides[active].className = self.slides[active].className.replace(' active','');
+          addClass(self.slides[next],'active');
+          removeClass(self.slides[active],'active');
   
-          self.slides[next].className = self.slides[next].className.replace(' '+dr,'');
-          self.slides[next].className = self.slides[next].className.replace(' '+direction,'');
-          self.slides[active].className = self.slides[active].className.replace(' '+direction,'');
+          removeClass(self.slides[next],dr);
+          removeClass(self.slides[next],direction);
+          removeClass(self.slides[active],direction);
   
           if ( self.options.interval !== false && !/\bpaused/.test(self.carousel.className) ){
-            clearInterval(self.timer); self.cycle();
+            clearInterval(timer); self.cycle();
           }
           if (slid) { self.carousel.dispatchEvent(slid); } //here we go with the slid
         }, this.options.duration + 100 );
       } else {
-        this.slides[next].className += ' active';
+        addClass(this.slides[next],'active');
         this.slides[next].offsetWidth;
-        this.slides[active].className = this.slides[active].className.replace(' active','');
+        removeClass(this.slides[active],'active');
         setTimeout(function() {
           self._addEventListeners();
           if ( self.options.interval !== false && !/\bpaused/.test(self.carousel.className) ){
-            clearInterval(self.timer); self.cycle();
+            clearInterval(timer); self.cycle();
           }
           if (slid) { self.carousel.dispatchEvent(slid); } //here we go with the slid
         }, this.options.duration + 100 );
       }
-    }
+    };
     this._addEventListeners = function () {
       this.next && this.next.addEventListener( "click", this.controlsHandler, false);
       this.prev && this.prev.addEventListener( "click", this.controlsHandler, false);
@@ -458,7 +462,7 @@
       this.indicator && this.indicator.addEventListener( "click", this.indicatorHandler, false);
   
       this.options.keyboard === true && window.addEventListener('keydown', this.keyHandler, false);
-    }
+    };
     this._removeEventListeners = function () { // prevent mouse bubbles while animating
       this.next && this.next.removeEventListener( "click", this.controlsHandler, false);
       this.prev && this.prev.removeEventListener( "click", this.controlsHandler, false);
@@ -466,17 +470,16 @@
       this.indicator && this.indicator.removeEventListener( "click", this.indicatorHandler, false);
   
       this.options.keyboard === true && window.removeEventListener('keydown', this.keyHandler, false);
-    }
+    };
     this._getActiveIndex = function () {
       return this.slides.indexOf(this.carousel.querySelector('.item.active'));
-    }
+    };
     this._curentPage = function( p ) {
       for( var i = 0; i < this.indicators.length; ++i ) {
-        var a = this.indicators[i];
-        a.className = "";
+        removeClass(this.indicators[i],'active');
       }
-      if (p) p.className = "active";
-    }
+      if (p) addClass(p,"active");
+    };
     this.indicatorHandler = function(e) {
       e.preventDefault();
       var target = e.target;
@@ -502,7 +505,7 @@
       } else { return false; }
   
       self._slideTo( self.index, e ); //Do the slide
-    }
+    };
     this.controlsHandler = function (e) {
       var target = e.currentTarget || e.srcElement;
   
@@ -527,7 +530,7 @@
       }
   
       self._slideTo( self.index, e ); //Do the slide
-    }
+    };
     this.keyHandler = function (e) {
       switch (e.which) {
         case 39:
@@ -547,7 +550,7 @@
         default: return;
       }
       self._slideTo( self.index, e ); //Do the slide
-    }
+    };
   
     // init
     if ( this.options.interval !== false ){
@@ -562,19 +565,19 @@
     this.prev && this.prev.addEventListener( "click", function(e){e.preventDefault()}, false);
   };
   
-  (function () {
+  // (function () {
     // CAROUSEL DATA API
     // =================
-    var Carousels = document.querySelectorAll('[data-ride="carousel"]'), i = 0, crl = Carousels.length;
-    for (i;i<crl;i++) {
-      var c = Carousels[i], options = {};
-      options.interval = c.getAttribute('data-interval') && c.getAttribute('data-interval');
-      options.pause = c.getAttribute('data-pause') && c.getAttribute('data-pause') || 'hover';
-      options.keyboard = c.getAttribute('data-keyboard') && c.getAttribute('data-keyboard') || false;
-      options.duration = c.getAttribute('data-duration') && c.getAttribute('data-duration') || false;
-      new Carousel(c, options)
+    var Carousels = document.querySelectorAll('[data-ride="carousel"]');
+    for (var c=0, crl = Carousels.length; c<crl; c++) {
+      var carousel = Carousels[c], options = {};
+      options.interval = carousel.getAttribute('data-interval') && carousel.getAttribute('data-interval');
+      options.pause = carousel.getAttribute('data-pause') && carousel.getAttribute('data-pause') || 'hover';
+      options.keyboard = carousel.getAttribute('data-keyboard') && carousel.getAttribute('data-keyboard') || false;
+      options.duration = carousel.getAttribute('data-duration') && carousel.getAttribute('data-duration') || false;
+      new Carousel(carousel, options)
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Collapse
   // by dnp_theme
   
@@ -608,11 +611,11 @@
       } else {
         self.close();
       }
-    },
+    };
     this.close = function() {
       this._close(this.collapse);
       addClass(this.btn,'collapsed');
-    },
+    };
     this.open = function() {
       this._open(this.collapse);
       removeClass(this.btn,'collapsed');
@@ -623,7 +626,7 @@
           if ( active[i] !== this.collapse) this._close(active[i]);
         }
       }
-    }
+    };
     this._open = function(c) {
       this.removeEvent();
       addClass(c,'in');
@@ -639,7 +642,7 @@
         removeClass(c,'collapsing');
         self.addEvent();
       }, this.options.duration);
-    }
+    };
     this._close = function(c) {
       this.removeEvent();
       c.setAttribute('aria-expanded','false');
@@ -657,20 +660,20 @@
         c.style.height = '';
         self.addEvent();
       }, this.options.duration);
-    }
+    };
     this.getMaxHeight = function(l) { // get collapse trueHeight and border
       var h = 0;
       for (var k = 0, ll = l.children.length; k < ll; k++) {
         h += getOuterHeight(l.children[k]);
       }
       return h;
-    }
+    };
     this.removeEvent = function() {
       this.btn.removeEventListener('click', this.toggle, false);
-    }
+    };
     this.addEvent = function() {
       this.btn.addEventListener('click', this.toggle, false);
-    }
+    };
     this.getTarget = function() {
       var t = this.btn,
         h = t.href && t.getAttribute('href').replace('#',''),
@@ -679,7 +682,7 @@
         cl = (d && d.charAt(0) === '.') && d, //the navbar collapse trigger targets a class
         c = id && document.getElementById(id) || cl && document.querySelector(cl);
       return c;
-    }
+    };
   
     // init
     this.addEvent();
@@ -688,16 +691,16 @@
       && getClosest(this.btn, this.btn.getAttribute('data-parent'));
   };
   
-  (function () {
+  // (function () {
     // COLLAPSE DATA API
     // =================
-    var Collapses = document.querySelectorAll('[data-toggle="collapse"]'), i = 0, cll = Collapses.length;
-    for (i;i<cll;i++) {
-      var item = Collapses[i], options = {};
-      options.duration = item.getAttribute('data-duration');
-      new Collapse(item,options);
+    var Collapses = document.querySelectorAll('[data-toggle="collapse"]');
+    for (var o=0, cll = Collapses.length; o<cll; o++) {
+      var collapse = Collapses[o], options = {};
+      options.duration = collapse.getAttribute('data-duration');
+      new Collapse(collapse,options);
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Dropdown
   // by dnp_theme
   
@@ -718,7 +721,7 @@
       }  else if ( children && children.indexOf(target) > -1  ) {
         return;
       } else { self.close(); }
-    }
+    };
     this.toggle = function(e) {
       if (/\bopen/.test(this.menu.parentNode.className)) {
         this.close();
@@ -728,26 +731,26 @@
         this.menu.setAttribute('aria-expanded',true);
         document.addEventListener('keydown', this.key, false);
       }
-    }
+    };
     this.key = function(e) {
       if (e.which == 27) {self.close();}
-    }
+    };
     this.close = function() {
       self.menu.parentNode.className = self.menu.parentNode.className.replace(/\bopen/,'');
       self.menu.setAttribute('aria-expanded',false);
-    }
+    };
     this.menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome | Safari
     document.addEventListener('click', this.handle, false);
   };
   
-  (function () {
+  // (function () {
     // DROPDOWN DATA API
     // =================
-    var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]'), i = 0, ddl = Dropdowns.length;
-    for (i;i<ddl;i++) {
-      new Dropdown(Dropdowns[i]);
+    var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]');
+    for (var d=0, ddl = Dropdowns.length; d<ddl; d++) {
+      new Dropdown(Dropdowns[d]);
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Modal
   // by dnp_theme
   
@@ -764,9 +767,8 @@
     this.options.duration = (isIE && isIE < 10) ? 0 : this.duration;
     this.scrollbarWidth = 0;
     this.dialog = this.modal.querySelector('.modal-dialog');
-    this.timer = 0;
   
-    var self = this,
+    var self = this, timer = 0,
       getWindowWidth = function() {
         var htmlRect = document.documentElement.getBoundingClientRect(),
           fullWindowWidth = window.innerWidth || (htmlRect.right - Math.abs(htmlRect.left));
@@ -814,8 +816,8 @@
         }, 0);
       }
   
-      clearTimeout(self.modal.getAttribute('data-timer'));
-      this.timer = setTimeout( function() {
+      clearTimeout(timer);
+      timer = setTimeout( function() {
         self.modal.style.display = 'block';
   
         checkScrollbar();
@@ -830,7 +832,6 @@
         addClass(self.modal,'in');
         self.modal.setAttribute('aria-hidden', false);
       }, this.options.duration/2);
-      this.modal.setAttribute('data-timer',this.timer);
     }
     this.close = function() {
   
@@ -840,8 +841,8 @@
       removeClass(this.modal,'in');
       this.modal.setAttribute('aria-hidden', true);
   
-      clearTimeout(this.modal.getAttribute('data-timer'));
-      this.timer = setTimeout( function() {
+      clearTimeout(timer);
+      timer = setTimeout( function() {
         removeClass(document.body,'modal-open');
         self.resize();
         self.resetAdjustments();
@@ -851,7 +852,6 @@
         self.keydown();
         self.modal.style.display = '';
       }, this.options.duration/2);
-      this.modal.setAttribute('data-timer',this.timer);
   
       setTimeout( function() {
         if (!document.querySelector('.modal.in')) {  self.removeOverlay(); }
@@ -933,7 +933,6 @@
     this.dismiss = function() {
       function dismissHandler(e) {
         if ( e.target.parentNode.getAttribute('data-dismiss') === 'modal' || e.target.getAttribute('data-dismiss') === 'modal' || e.target === self.modal ) {
-        // if ( this.parentNode.getAttribute('data-dismiss') === 'modal' || this.getAttribute('data-dismiss') === 'modal' || this === self.modal ) {
           e.preventDefault(); self.close()
         }
       }
@@ -962,17 +961,17 @@
     }
   };
   
-  (function () {
+  // (function () {
     // DATA API
-    var Modals = document.querySelectorAll('.modal'), mdl = Modals.length, i = 0;
-    for ( i;i<mdl;i++ ) {
-      var modal = Modals[i], options = {};
+    var Modals = document.querySelectorAll('.modal');
+    for ( var m = 0, mdl = Modals.length; m<mdl; m++ ) {
+      var modal = Modals[m], options = {};
       options.keyboard = modal.getAttribute('data-keyboard');
       options.backdrop = modal.getAttribute('data-backdrop');
       options.duration = modal.getAttribute('data-duration');
       new Modal(modal,options)
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Popover
   // by dnp_theme
   
@@ -987,7 +986,7 @@
     this.options = {};
     this.options.template = options.template ? options.template : null;
     this.options.trigger = options.trigger ? options.trigger : 'hover';
-    this.options.animation = options.animation && options.animation !== 'true' ? options.animation : 'true';
+    this.options.animation = options.animation && options.animation !== 'fade' ? options.animation : 'fade';
     this.options.placement = options.placement ? options.placement : 'top';
     this.options.delay = parseInt(options.delay) || 100;
     this.options.dismiss = options.dismiss && options.dismiss === 'true' ? true : false;
@@ -995,9 +994,8 @@
     this.options.duration = (isIE && isIE < 10) ? 0 : (options.duration || this.duration);
     this.options.container = document.body;
     if ( !this.content && !this.options.template ) return;
-    this.timer = 0 // the link own event timer
   
-    var self = this, events = ('onmouseleave' in this.link) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
+    var self = this, timer = 0, placement = this.options.placement;
   
     this.toggle = function(e) {
       if (self.popover === null) {
@@ -1005,42 +1003,41 @@
       } else {
         self.close()
       }
-    }
-    this.open = function(e) {
-      clearTimeout(self.link.getAttribute('data-timer'));
-      self.timer = setTimeout( function() {
-        if (self.popover === null) {
-          self.createPopover();
-          self.stylePopover();
-          self.updatePopover()
-        }
-      }, self.options.duration );
-      self.link.setAttribute('data-timer',self.timer);
-    }
+    };
     this.dismiss = function(e) {
       if (self.popover && e.target === self.popover.querySelector('.close')) {
         self.close();
       }
-    }
+    };
+    this.open = function(e) {
+      clearTimeout(timer);
+      timer = setTimeout( function() {
+        if (self.popover === null) {
+          placement = self.options.placement; // we reset placement in all cases
+          self.createPopover();
+          self.updatePopover();
+          self.showPopover();
+        }
+      }, 20 );
+    };
     this.close = function(e) {
-      clearTimeout(self.link.getAttribute('data-timer'));
-      self.timer = setTimeout( function() {
+      clearTimeout(timer);
+      timer = setTimeout( function() {
         if (self.popover && self.popover !== null && /\bin/.test(self.popover.className)) {
-          self.popover.className = self.popover.className.replace(' in','');
+          removeClass(self.popover,'in');
           setTimeout(function() {
-            self.removePopover(); // for performance/testing reasons we can keep the popovers if we want
+            self.removePopover();
           }, self.options.duration);
         }
   
       }, self.options.delay + self.options.duration);
-      self.link.setAttribute('data-timer',self.timer);
-    }
+    };
     //remove the popover
     this.removePopover = function() {
       this.popover && this.options.container.removeChild(this.popover);
       this.popover = null;
-      this.timer = null
-    }
+      timer = null
+    };
     this.createPopover = function() {
       this.popover = document.createElement('div');
   
@@ -1085,69 +1082,55 @@
       //append to the container
       this.options.container.appendChild(this.popover);
       this.popover.style.display = 'block';
-    }
-    this.stylePopover = function(pos) {
-      var rect = this.link.getBoundingClientRect(),
-          placement = pos || this.options.placement,
-          animation = this.options.animation === 'true' ? 'fade' : '';
-  
-      this.popover.setAttribute('class','popover '+placement+' '+animation);
-  
-      var ld = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
-          pd = { w : this.popover.offsetWidth, h: this.popover.offsetHeight }, //popover real dimensions
-          sYo = this.getScroll().y, sXo = this.getScroll().x; //window vertical and horizontal scroll
+      this.popover.setAttribute('class', 'popover ' + placement + ' ' + this.options.animation);
+    };
+    this.showPopover = function () {
+      !/\bin/.test(this.popover.className) && ( addClass(this.popover,'in') );
+    };
+    this.stylePopover = function() {
+      var rect = this.link.getBoundingClientRect(), scroll = getScroll(), // link rect | window vertical and horizontal scroll
+          linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
+          popoverDimensions = { w : this.popover.offsetWidth, h: this.popover.offsetHeight }; //popover real dimensions
   
       //apply styling
       if ( /top/.test(placement) ) { //TOP
-        this.popover.style.top = rect.top + sYo - pd.h + 'px';
-        this.popover.style.left = rect.left + sXo - pd.w/2 + ld.w/2 + 'px'
+        this.popover.style.top = rect.top + scroll.y - popoverDimensions.h + 'px';
+        this.popover.style.left = rect.left + scroll.x - popoverDimensions.w/2 + linkDimensions.w/2 + 'px'
   
       } else if ( /bottom/.test(placement) ) { //BOTTOM
-        this.popover.style.top = rect.top + sYo + ld.h + 'px';
-        this.popover.style.left = rect.left + sXo - pd.w/2 + ld.w/2 + 'px';
+        this.popover.style.top = rect.top + scroll.y + linkDimensions.h + 'px';
+        this.popover.style.left = rect.left + scroll.x - popoverDimensions.w/2 + linkDimensions.w/2 + 'px';
   
       } else if ( /left/.test(placement) ) { //LEFT
-        this.popover.style.top = rect.top + sYo - pd.h/2 + ld.h/2 + 'px';
-        this.popover.style.left = rect.left + sXo - pd.w + 'px';
+        this.popover.style.top = rect.top + scroll.y - popoverDimensions.h/2 + linkDimensions.h/2 + 'px';
+        this.popover.style.left = rect.left + scroll.x - popoverDimensions.w + 'px';
   
       } else if ( /right/.test(placement) ) { //RIGHT
-        this.popover.style.top = rect.top + sYo - pd.h/2 + ld.h/2 + 'px';
-        this.popover.style.left = rect.left + sXo + ld.w + 'px';
+        this.popover.style.top = rect.top + scroll.y - popoverDimensions.h/2 + linkDimensions.h/2 + 'px';
+        this.popover.style.left = rect.left + scroll.x + linkDimensions.w + 'px';
       }
-    }
+      this.popover.className.indexOf(placement) === -1 && (this.popover.className = this.popover.className.replace(tipPositions,placement));
+    };
     this.updatePopover = function() {
-      var placement = null;
-      if ( !isElementInViewport(this.popover) ) {
-        placement = this.updatePlacement();
-      } else {
-        placement = this.options.placement;
-      }
-  
-      this.stylePopover(placement);
-      this.popover.className += ' in';
-    }
+      this.stylePopover();
+      if (!isElementInViewport(this.popover) ) { placement = this.updatePlacement(); this.stylePopover(); }
+    };
     this.updatePlacement = function() {
-      var pos = this.options.placement;
-      if ( /top/.test(pos) ) { //TOP
+      if ( /top/.test(placement) ) { //TOP
         return 'bottom';
-      } else if ( /bottom/.test(pos) ) { //BOTTOM
+      } else if ( /bottom/.test(placement) ) { //BOTTOM
         return 'top';
-      } else if ( /left/.test(pos) ) { //LEFT
+      } else if ( /left/.test(placement) ) { //LEFT
         return 'right';
-      } else if ( /right/.test(pos) ) { //RIGHT
+      } else if ( /right/.test(placement) ) { //RIGHT
         return 'left';
       }
-    }
-    this.getScroll = function() {
-      return {
-        y : window.pageYOffset || document.documentElement.scrollTop,
-        x : window.pageXOffset || document.documentElement.scrollLeft
-      }
-    }
+    };
+  
     // init
     if (this.options.trigger === 'hover') {
-      this.link.addEventListener(events[0], this.open, false);
-      if (!this.options.dismiss) { this.link.addEventListener(events[1], this.close, false); }
+      this.link.addEventListener(mouseHover[0], this.open, false);
+      if (!this.options.dismiss) { this.link.addEventListener(mouseHover[1], this.close, false); }
     } else if (this.options.trigger === 'click') {
       this.link.addEventListener('click', this.toggle, false);
       if (!this.options.dismiss) { this.link.addEventListener('blur', this.close, false); }
@@ -1163,21 +1146,21 @@
     }
   };
   
-  (function () {
+  // (function () {
     // POPOVER DATA API
     // =================
-    var Popovers = document.querySelectorAll('[data-toggle=popover]'), i = 0, ppl = Popovers.length;
-    for (i;i<ppl;i++){
-      var item = Popovers[i], options = {};
-      options.trigger = item.getAttribute('data-trigger'); // click / hover / focus
-      options.animation = item.getAttribute('data-animation'); // true / false
-      options.duration = item.getAttribute('data-duration');
-      options.placement = item.getAttribute('data-placement');
-      options.dismiss = item.getAttribute('data-dismiss');
-      options.delay = item.getAttribute('data-delay');
-      new Popover(item,options);
+    var Popovers = document.querySelectorAll('[data-toggle=popover]');
+    for (var p=0, ppl = Popovers.length; p<ppl; p++){
+      var popover = Popovers[p], options = {};
+      options.trigger = popover.getAttribute('data-trigger'); // click / hover / focus
+      options.animation = popover.getAttribute('data-animation'); // true / false
+      options.duration = popover.getAttribute('data-duration');
+      options.placement = popover.getAttribute('data-placement');
+      options.dismiss = popover.getAttribute('data-dismiss');
+      options.delay = popover.getAttribute('data-delay');
+      new Popover(popover,options);
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | ScrollSpy
   // by dnp_theme
   
@@ -1233,9 +1216,9 @@
     }
     this.scrollOffset = function () {
       if ( this.scrollTarget === window ) {
-        return window.pageYOffset || document.documentElement.scrollTop
+        return getScroll().y;
       } else {
-        return this.element.scrollTop
+        return this.element.scrollTop;
       }
     }
     this.activate = function () {
@@ -1301,24 +1284,24 @@
     }
   };
   
-  (function () {
+  // (function () {
     //SCROLLSPY DATA API
     //=============
-    var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'), i = 0, ssl = scrollSpyes.length; // mostly is the document.body or a large container with many elements having id="not-null-id"
-    for (i;i<ssl;i++) {
-      var spy = scrollSpyes[i], options = {};
+    var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'); // mostly is the document.body or a large container with many elements having id="not-null-id"
+    for (var s=0, ssl = scrollSpyes.length; s<ssl; s++) {
+      var spy = scrollSpyes[s], options = {};
       options.target = spy.getAttribute('data-target') || null;  // this must be a .nav component with id="not-null"
       if ( options.target !== null ) {
         var menu = options.target === 'object' ?  options.target : document.querySelector(options.target),
-          items = menu.querySelectorAll('a'), j = 0, il = items.length;
-        for (j;j<il;j++) {
-          var item = items[j];
-          if ( item.href && item.getAttribute('href') !== '#' )
-          new ScrollSpy(spy, item, options);
+          spyTriggers = menu.querySelectorAll('a');
+        for (var tr=0, stl = spyTriggers.length; tr<stl; tr++) {
+          var spyTrigger = spyTriggers[tr];
+          if ( spyTrigger.href && spyTrigger.getAttribute('href') !== '#' )
+          new ScrollSpy(spy, spyTrigger, options);
         }
       }
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Tab
   // by dnp_theme
   
@@ -1395,16 +1378,16 @@
     this.tab.addEventListener('click', this.handle, false);
   };
   
-  (function () {
+  // (function () {
     // TAB DATA API
     // =================
-    var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']"), tbl = Tabs.length, i=0;
-    for ( i;i<tbl;i++ ) {
-      var tab = Tabs[i], options = {};
+    var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']");
+    for ( var tb = 0, tbl = Tabs.length; tb<tbl; tb++ ) {
+      var tab = Tabs[tb], options = {};
       options.duration = tab.getAttribute('data-duration') && tab.getAttribute('data-duration') || false;
       new Tab(tab,options);
     }
-  })();
+  // })();
   // Native Javascript for Bootstrap 3 | Tooltip
   // by dnp_theme
   
@@ -1424,38 +1407,36 @@
     this.options.duration = isIE && isIE < 10 ? 0 : (options.duration || this.duration);
     this.options.container = options.container || document.body;
     if ( !this.title ) return;
-    this.timer = 0 // the link own event timer
   
-    var self = this, events = ('onmouseleave' in this.link) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
+    var self = this, timer = 0, placement = this.options.placement;
   
     this.open = function(e) {
-      clearTimeout(self.link.getAttribute('data-timer'));
-      self.timer = setTimeout( function() {
+      clearTimeout(timer);
+      timer = setTimeout( function() {
+        placement = self.options.placement; // we reset placement in all cases
         if (self.tooltip === null) {
           self.createToolTip();
-          self.styleTooltip();
-          self.updateTooltip()
+          self.updateTooltip();
+          self.showTooltip();
         }
-      }, self.options.duration );
-      self.link.setAttribute('data-timer',self.timer);
-    }
+      }, 20 );
+    };
     this.close = function(e) {
-      clearTimeout(self.link.getAttribute('data-timer'));
-      self.timer = setTimeout( function() {
+      clearTimeout(timer);
+      timer = setTimeout( function() {
         if (self.tooltip && self.tooltip !== null) {
-          self.tooltip.className = self.tooltip.className.replace(' in','');
+          removeClass(self.tooltip,'in');
           setTimeout(function() {
-            self.removeToolTip(); // for performance/testing reasons we can keep the tooltips if we want
+            self.removeToolTip();
           }, self.options.duration);
         }
       }, self.options.delay + self.options.duration);
-      self.link.setAttribute('data-timer',self.timer);
-    }
+    };
     //remove the tooltip
     this.removeToolTip = function() {
       this.tooltip && this.options.container.removeChild(this.tooltip);
       this.tooltip = null;
-    }
+    };
     //create the tooltip structure
     this.createToolTip = function() {
       this.tooltip = document.createElement('div');
@@ -1474,84 +1455,72 @@
   
       //append to the container
       this.options.container.appendChild(this.tooltip);
-    }
-    this.styleTooltip = function(pos) {
-      var rect = this.link.getBoundingClientRect(),
-          placement = pos || this.options.placement;
-  
-      this.tooltip.setAttribute('class','tooltip '+placement+' '+this.options.animation);
-  
-      var ld = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
-          td = { w : this.tooltip.offsetWidth, h: this.tooltip.offsetHeight }, //tooltip real dimensions
-          sYo = this.getScroll().y, sXo = this.getScroll().x; //window vertical and horizontal scroll
+      this.tooltip.setAttribute('class', 'tooltip ' + placement + ' ' + this.options.animation);
+    };
+    this.styleTooltip = function() {
+      var rect = this.link.getBoundingClientRect(), scroll = getScroll(), // link rect | window vertical and horizontal scroll
+          linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top }, //link real dimensions
+          tooltipDimensions = { w : this.tooltip.offsetWidth, h: this.tooltip.offsetHeight }; //tooltip real dimensions
   
       //apply styling
       if ( /top/.test(placement) ) { //TOP
-        this.tooltip.style.top = rect.top + sYo - td.h + 'px';
-        this.tooltip.style.left = rect.left + sXo - td.w/2 + ld.w/2 + 'px'
+        this.tooltip.style.top = rect.top + scroll.y - tooltipDimensions.h + 'px';
+        this.tooltip.style.left = rect.left + scroll.x - tooltipDimensions.w/2 + linkDimensions.w/2 + 'px'
   
       } else if ( /bottom/.test(placement) ) { //BOTTOM
-        this.tooltip.style.top = rect.top + sYo + ld.h + 'px';
-        this.tooltip.style.left = rect.left + sXo - td.w/2 + ld.w/2 + 'px';
+        this.tooltip.style.top = rect.top + scroll.y + linkDimensions.h + 'px';
+        this.tooltip.style.left = rect.left + scroll.x - tooltipDimensions.w/2 + linkDimensions.w/2 + 'px';
   
       } else if ( /left/.test(placement) ) { //LEFT
-        this.tooltip.style.top = rect.top + sYo - td.h/2 + ld.h/2 + 'px';
-        this.tooltip.style.left = rect.left + sXo - td.w + 'px';
+        this.tooltip.style.top = rect.top + scroll.y - tooltipDimensions.h/2 + linkDimensions.h/2 + 'px';
+        this.tooltip.style.left = rect.left + scroll.x - tooltipDimensions.w + 'px';
   
       } else if ( /right/.test(placement) ) { //RIGHT
-        this.tooltip.style.top = rect.top + sYo - td.h/2 + ld.h/2 + 'px';
-        this.tooltip.style.left = rect.left + sXo + ld.w + 'px';
+        this.tooltip.style.top = rect.top + scroll.y - tooltipDimensions.h/2 + linkDimensions.h/2 + 'px';
+        this.tooltip.style.left = rect.left + scroll.x + linkDimensions.w + 'px';
       }
-    }
-    this.updateTooltip = function() {
-      var placement = null;
-      if ( !isElementInViewport(this.tooltip) ) {
-        placement = this.updatePlacement();
-      } else {
-        placement = this.options.placement;
-      }
-      this.styleTooltip(placement);
-      this.tooltip.className += ' in';
-    }
+      this.tooltip.className.indexOf(placement) === -1 && (this.tooltip.className = this.tooltip.className.replace(tipPositions,placement));
+    };
+    this.updateTooltip = function () {
+      this.styleTooltip();
+      if (!isElementInViewport(this.tooltip) ) { placement = this.updatePlacement(); this.styleTooltip(); }
+    };
+    this.showTooltip = function () {
+      !/\bin/.test(this.tooltip.className) && ( addClass(this.tooltip,'in') );
+    };
     this.updatePlacement = function() {
-      var pos = this.options.placement;
-      if ( /top/.test(pos) ) { //TOP
+      if ( /top/.test(placement) ) { //TOP
         return 'bottom';
-      } else if ( /bottom/.test(pos) ) { //BOTTOM
+      } else if ( /bottom/.test(placement) ) { //BOTTOM
         return 'top';
-      } else if ( /left/.test(pos) ) { //LEFT
+      } else if ( /left/.test(placement) ) { //LEFT
         return 'right';
-      } else if ( /right/.test(pos) ) { //RIGHT
+      } else if ( /right/.test(placement) ) { //RIGHT
         return 'left';
       }
-    }
-    this.getScroll = function() {
-      return {
-        y : window.pageYOffset || document.documentElement.scrollTop,
-        x : window.pageXOffset || document.documentElement.scrollLeft
-      }
-    }
+    };
+  
     // init
-    this.link.addEventListener(events[0], this.open, false);
-    this.link.addEventListener(events[1], this.close, false);
+    this.link.addEventListener(mouseHover[0], this.open, false);
+    this.link.addEventListener(mouseHover[1], this.close, false);
     //remove title from link
     this.link.setAttribute('data-original-title',this.title);
     this.link.removeAttribute('title');
   };
   
-  (function () {
+  // (function () {
     // TOOLTIP DATA API
     // =================
-    var Tooltips = document.querySelectorAll('[data-toggle=tooltip]'), i = 0, tpl = Tooltips.length;
-    for (i;i<tpl;i++){
-      var item = Tooltips[i], options = {};
-      options.animation = item.getAttribute('data-animation');
-      options.placement = item.getAttribute('data-placement');
-      options.duration = item.getAttribute('data-duration');
-      options.delay = item.getAttribute('data-delay');
-      new Tooltip(item,options);
+    var Tooltips = document.querySelectorAll('[data-toggle=tooltip]');
+    for (var t=0, tpl = Tooltips.length; t<tpl; t++){
+      var tooltip = Tooltips[t], options = {};
+      options.animation = tooltip.getAttribute('data-animation');
+      options.placement = tooltip.getAttribute('data-placement');
+      options.duration = tooltip.getAttribute('data-duration');
+      options.delay = tooltip.getAttribute('data-delay');
+      new Tooltip(tooltip,options);
     }
-  })();
+  // })();
   
   return {
     Affix: Affix,
