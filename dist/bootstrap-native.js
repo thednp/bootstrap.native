@@ -172,21 +172,19 @@
     this.resizeEvent()
   };
   
-  // (function () {
-    // AFFIX DATA API
-    // =================
-    var Affixes = document.querySelectorAll('[data-spy="affix"]');
-    for (var a=0, afl = Affixes.length; a<afl; a++) {
-      var affix = Affixes[a], options = {};
-        options.offsetTop     = affix.getAttribute('data-offset-top');
-        options.offsetBottom  = affix.getAttribute('data-offset-bottom');
-        options.target        = affix.getAttribute('data-target');
+  // AFFIX DATA API
+  // =================
+  var Affixes = document.querySelectorAll('[data-spy="affix"]');
+  for (var a=0, afl = Affixes.length; a<afl; a++) {
+    var affix = Affixes[a], options = {};
+      options.offsetTop     = affix.getAttribute('data-offset-top');
+      options.offsetBottom  = affix.getAttribute('data-offset-bottom');
+      options.target        = affix.getAttribute('data-target');
   
-      if ( affix && (options.offsetTop !== null || options.offsetBottom !== null || options.target !== null) ) { //don't do anything unless we have something valid to pin
-        new Affix(affix, options);
-      }
+    if ( affix && (options.offsetTop !== null || options.offsetBottom !== null || options.target !== null) ) { //don't do anything unless we have something valid to pin
+      new Affix(affix, options);
     }
-  // })();
+  }
   // Native Javascript for Bootstrap 3 | Alert
   // by dnp_theme
   
@@ -214,14 +212,12 @@
     document.addEventListener('click', this.close, false); //delegate to all alerts, including those inserted later into the DOM
   };
   
-  // (function () {
-    // ALERT DATA API
-    // =================
-    var Alerts = document.querySelectorAll('[data-dismiss="alert"]');
-    for (var e=0, all = Alerts.length; e<all; e++) {
-      new Alert(Alerts[e]);
-    }
-  // })();
+  // ALERT DATA API
+  // =================
+  var Alerts = document.querySelectorAll('[data-dismiss="alert"]');
+  for (var e=0, all = Alerts.length; e<all; e++) {
+    new Alert(Alerts[e]);
+  }
   // Native Javascript for Bootstrap 3 | Button
   // by dnp_theme
   
@@ -304,7 +300,7 @@
         }
       }
     };
-    
+  
     // init
     if ( /\bbtn/.test(this.btn.className) ) {
       if ( this.option && this.option !== 'reset' ) {
@@ -323,19 +319,17 @@
     }
   };
   
-  // (function () {
-    // BUTTON DATA API
-    // =================
-    var Buttons = document.querySelectorAll('[data-toggle=button]');
-    for (var b=0, btl = Buttons.length; b<btl; b++) {
-      new Button(Buttons[b]);
-    }
+  // BUTTON DATA API
+  // =================
+  var Buttons = document.querySelectorAll('[data-toggle=button]');
+  for (var b=0, btl = Buttons.length; b<btl; b++) {
+    new Button(Buttons[b]);
+  }
   
-    var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]');
-    for (var g=0, bgl = ButtonGroups.length; g<bgl; g++) {
-      new Button(ButtonGroups[g]);
-    }
-  // })();
+  var ButtonGroups = document.querySelectorAll('[data-toggle=buttons]');
+  for (var g=0, bgl = ButtonGroups.length; g<bgl; g++) {
+    new Button(ButtonGroups[g]);
+  }
   // Native Javascript for Bootstrap 3 | Carousel
   // by dnp_theme
   
@@ -565,19 +559,17 @@
     this.prev && this.prev.addEventListener( "click", function(e){e.preventDefault()}, false);
   };
   
-  // (function () {
-    // CAROUSEL DATA API
-    // =================
-    var Carousels = document.querySelectorAll('[data-ride="carousel"]');
-    for (var c=0, crl = Carousels.length; c<crl; c++) {
-      var carousel = Carousels[c], options = {};
-      options.interval = carousel.getAttribute('data-interval') && carousel.getAttribute('data-interval');
-      options.pause = carousel.getAttribute('data-pause') && carousel.getAttribute('data-pause') || 'hover';
-      options.keyboard = carousel.getAttribute('data-keyboard') && carousel.getAttribute('data-keyboard') || false;
-      options.duration = carousel.getAttribute('data-duration') && carousel.getAttribute('data-duration') || false;
-      new Carousel(carousel, options)
-    }
-  // })();
+  // CAROUSEL DATA API
+  // =================
+  var Carousels = document.querySelectorAll('[data-ride="carousel"]');
+  for (var c=0, crl = Carousels.length; c<crl; c++) {
+    var carousel = Carousels[c], options = {};
+    options.interval = carousel.getAttribute('data-interval') && carousel.getAttribute('data-interval');
+    options.pause = carousel.getAttribute('data-pause') && carousel.getAttribute('data-pause') || 'hover';
+    options.keyboard = carousel.getAttribute('data-keyboard') && carousel.getAttribute('data-keyboard') || false;
+    options.duration = carousel.getAttribute('data-duration') && carousel.getAttribute('data-duration') || false;
+    new Carousel(carousel, options)
+  }
   // Native Javascript for Bootstrap 3 | Collapse
   // by dnp_theme
   
@@ -691,16 +683,14 @@
       && getClosest(this.btn, this.btn.getAttribute('data-parent'));
   };
   
-  // (function () {
-    // COLLAPSE DATA API
-    // =================
-    var Collapses = document.querySelectorAll('[data-toggle="collapse"]');
-    for (var o=0, cll = Collapses.length; o<cll; o++) {
-      var collapse = Collapses[o], options = {};
-      options.duration = collapse.getAttribute('data-duration');
-      new Collapse(collapse,options);
-    }
-  // })();
+  // COLLAPSE DATA API
+  // =================
+  var Collapses = document.querySelectorAll('[data-toggle="collapse"]');
+  for (var o=0, cll = Collapses.length; o<cll; o++) {
+    var collapse = Collapses[o], options = {};
+    options.duration = collapse.getAttribute('data-duration');
+    new Collapse(collapse,options);
+  }
   // Native Javascript for Bootstrap 3 | Dropdown
   // by dnp_theme
   
@@ -743,14 +733,12 @@
     document.addEventListener('click', this.handle, false);
   };
   
-  // (function () {
-    // DROPDOWN DATA API
-    // =================
-    var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]');
-    for (var d=0, ddl = Dropdowns.length; d<ddl; d++) {
-      new Dropdown(Dropdowns[d]);
-    }
-  // })();
+  // DROPDOWN DATA API
+  // =================
+  var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]');
+  for (var d=0, ddl = Dropdowns.length; d<ddl; d++) {
+    new Dropdown(Dropdowns[d]);
+  }
   // Native Javascript for Bootstrap 3 | Modal
   // by dnp_theme
   
@@ -961,17 +949,15 @@
     }
   };
   
-  // (function () {
-    // DATA API
-    var Modals = document.querySelectorAll('.modal');
-    for ( var m = 0, mdl = Modals.length; m<mdl; m++ ) {
-      var modal = Modals[m], options = {};
-      options.keyboard = modal.getAttribute('data-keyboard');
-      options.backdrop = modal.getAttribute('data-backdrop');
-      options.duration = modal.getAttribute('data-duration');
-      new Modal(modal,options)
-    }
-  // })();
+  // DATA API
+  var Modals = document.querySelectorAll('.modal');
+  for ( var m = 0, mdl = Modals.length; m<mdl; m++ ) {
+    var modal = Modals[m], options = {};
+    options.keyboard = modal.getAttribute('data-keyboard');
+    options.backdrop = modal.getAttribute('data-backdrop');
+    options.duration = modal.getAttribute('data-duration');
+    new Modal(modal,options)
+  }
   // Native Javascript for Bootstrap 3 | Popover
   // by dnp_theme
   
@@ -1146,21 +1132,19 @@
     }
   };
   
-  // (function () {
-    // POPOVER DATA API
-    // =================
-    var Popovers = document.querySelectorAll('[data-toggle=popover]');
-    for (var p=0, ppl = Popovers.length; p<ppl; p++){
-      var popover = Popovers[p], options = {};
-      options.trigger = popover.getAttribute('data-trigger'); // click / hover / focus
-      options.animation = popover.getAttribute('data-animation'); // true / false
-      options.duration = popover.getAttribute('data-duration');
-      options.placement = popover.getAttribute('data-placement');
-      options.dismiss = popover.getAttribute('data-dismiss');
-      options.delay = popover.getAttribute('data-delay');
-      new Popover(popover,options);
-    }
-  // })();
+  // POPOVER DATA API
+  // =================
+  var Popovers = document.querySelectorAll('[data-toggle=popover]');
+  for (var p=0, ppl = Popovers.length; p<ppl; p++){
+    var popover = Popovers[p], options = {};
+    options.trigger = popover.getAttribute('data-trigger'); // click / hover / focus
+    options.animation = popover.getAttribute('data-animation'); // true / false
+    options.duration = popover.getAttribute('data-duration');
+    options.placement = popover.getAttribute('data-placement');
+    options.dismiss = popover.getAttribute('data-dismiss');
+    options.delay = popover.getAttribute('data-delay');
+    new Popover(popover,options);
+  }
   // Native Javascript for Bootstrap 3 | ScrollSpy
   // by dnp_theme
   
@@ -1284,24 +1268,22 @@
     }
   };
   
-  // (function () {
-    //SCROLLSPY DATA API
-    //=============
-    var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'); // mostly is the document.body or a large container with many elements having id="not-null-id"
-    for (var s=0, ssl = scrollSpyes.length; s<ssl; s++) {
-      var spy = scrollSpyes[s], options = {};
-      options.target = spy.getAttribute('data-target') || null;  // this must be a .nav component with id="not-null"
-      if ( options.target !== null ) {
-        var menu = options.target === 'object' ?  options.target : document.querySelector(options.target),
-          spyTriggers = menu.querySelectorAll('a');
-        for (var tr=0, stl = spyTriggers.length; tr<stl; tr++) {
-          var spyTrigger = spyTriggers[tr];
-          if ( spyTrigger.href && spyTrigger.getAttribute('href') !== '#' )
-          new ScrollSpy(spy, spyTrigger, options);
-        }
+  //SCROLLSPY DATA API
+  //=============
+  var scrollSpyes = document.querySelectorAll('[data-spy="scroll"]'); // mostly is the document.body or a large container with many elements having id="not-null-id"
+  for (var s=0, ssl = scrollSpyes.length; s<ssl; s++) {
+    var spy = scrollSpyes[s], options = {};
+    options.target = spy.getAttribute('data-target') || null;  // this must be a .nav component with id="not-null"
+    if ( options.target !== null ) {
+      var menu = options.target === 'object' ?  options.target : document.querySelector(options.target),
+        spyTriggers = menu.querySelectorAll('a');
+      for (var tr=0, stl = spyTriggers.length; tr<stl; tr++) {
+        var spyTrigger = spyTriggers[tr];
+        if ( spyTrigger.href && spyTrigger.getAttribute('href') !== '#' )
+        new ScrollSpy(spy, spyTrigger, options);
       }
     }
-  // })();
+  }
   // Native Javascript for Bootstrap 3 | Tab
   // by dnp_theme
   
@@ -1378,16 +1360,14 @@
     this.tab.addEventListener('click', this.handle, false);
   };
   
-  // (function () {
-    // TAB DATA API
-    // =================
-    var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']");
-    for ( var tb = 0, tbl = Tabs.length; tb<tbl; tb++ ) {
-      var tab = Tabs[tb], options = {};
-      options.duration = tab.getAttribute('data-duration') && tab.getAttribute('data-duration') || false;
-      new Tab(tab,options);
-    }
-  // })();
+  // TAB DATA API
+  // =================
+  var Tabs = document.querySelectorAll("[data-toggle='tab'], [data-toggle='pill']");
+  for ( var tb = 0, tbl = Tabs.length; tb<tbl; tb++ ) {
+    var tab = Tabs[tb], options = {};
+    options.duration = tab.getAttribute('data-duration') && tab.getAttribute('data-duration') || false;
+    new Tab(tab,options);
+  }
   // Native Javascript for Bootstrap 3 | Tooltip
   // by dnp_theme
   
@@ -1508,19 +1488,17 @@
     this.link.removeAttribute('title');
   };
   
-  // (function () {
-    // TOOLTIP DATA API
-    // =================
-    var Tooltips = document.querySelectorAll('[data-toggle=tooltip]');
-    for (var t=0, tpl = Tooltips.length; t<tpl; t++){
-      var tooltip = Tooltips[t], options = {};
-      options.animation = tooltip.getAttribute('data-animation');
-      options.placement = tooltip.getAttribute('data-placement');
-      options.duration = tooltip.getAttribute('data-duration');
-      options.delay = tooltip.getAttribute('data-delay');
-      new Tooltip(tooltip,options);
-    }
-  // })();
+  // TOOLTIP DATA API
+  // =================
+  var Tooltips = document.querySelectorAll('[data-toggle=tooltip]');
+  for (var t=0, tpl = Tooltips.length; t<tpl; t++){
+    var tooltip = Tooltips[t], options = {};
+    options.animation = tooltip.getAttribute('data-animation');
+    options.placement = tooltip.getAttribute('data-placement');
+    options.duration = tooltip.getAttribute('data-duration');
+    options.delay = tooltip.getAttribute('data-delay');
+    new Tooltip(tooltip,options);
+  }
   
   return {
     Affix: Affix,
