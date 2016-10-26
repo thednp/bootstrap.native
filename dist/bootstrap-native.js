@@ -103,25 +103,25 @@
         this.element.className += ' affix';
         this.affixed = true
       }
-    }
+    };
     this.unPinTop = function () {
       if ( /\baffix/.test(this.element.className) ) {
         this.element.className = this.element.className.replace(' affix','');
         this.affixed = false
       }
-    }
+    };
     this.pinBottom = function () {
       if ( !/\baffix-bottom/.test(this.element.className) ) {
         this.element.className += ' affix-bottom';
         this.affixedBottom = true
       }
-    }
+    };
     this.unPinBottom = function () {
       if ( /\baffix-bottom/.test(this.element.className) ) {
         this.element.className = this.element.className.replace(' affix-bottom','');
         this.affixedBottom = false
       }
-    }
+    };
     this.updatePin = function () {
       if (this.affixed === false && (parseInt(this.processOffsetTop(),0) - parseInt(getScroll().y,0) < 0)) {
         this.pinTop();
@@ -134,24 +134,23 @@
       } else if (this.affixedBottom === true && (parseInt(getScroll().y,0) <= parseInt(this.getPinOffsetBottom(),0) )) {
         this.unPinBottom()
       }
-    }
+    };
     this.updateAffix = function () { // Unpin and check position again
       this.unPinTop();
       this.unPinBottom();
       this.checkPosition()
   
       this.updatePin() // If any case update values again
-    }
+    };
     this.getMaxScroll = function(){
       return Math.max( document.body.scrollHeight, document.body.offsetHeight,
         document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )
-    }
+    };
     this.scrollEvent = function(){
       window.addEventListener('scroll', function() {
         self.updatePin()
       }, false);
-  
-    }
+    };
     this.resizeEvent = function(){
       var dl = (isIE && isIE < 10) ? 500 : 50;
       window.addEventListener('resize', function () {
@@ -159,7 +158,7 @@
           self.updateAffix()
         },dl);
       }, false);
-    }
+    };
     // init
     this.affixed = false;
     this.affixedBottom = false;
@@ -211,7 +210,7 @@
           self.alert && self.alert.parentNode.removeChild(self.alert);
         }, self.duration);
       }
-    }
+    };
     document.addEventListener('click', this.close, false); //delegate to all alerts, including those inserted later into the DOM
   };
   
@@ -245,7 +244,7 @@
         this.btn.setAttribute('disabled','disabled');
       }
       this.btn.innerHTML = this.state;
-    }
+    };
   
     this.reset = function() {
       if ( /\bdisabled/.test(this.btn.className) || this.btn.getAttribute('disabled') === 'disabled' ) {
@@ -253,7 +252,7 @@
         this.btn.removeAttribute('disabled');
       }
       this.btn.innerHTML = this.btn.getAttribute('data-original-text');
-    }
+    };
   
     this.toggle = function(e) {
       var parent = e.target.parentNode,
@@ -304,7 +303,8 @@
           }
         }
       }
-    }
+    };
+    
     // init
     if ( /\bbtn/.test(this.btn.className) ) {
       if ( this.option && this.option !== 'reset' ) {
@@ -832,7 +832,7 @@
         addClass(self.modal,'in');
         self.modal.setAttribute('aria-hidden', false);
       }, this.options.duration/2);
-    }
+    };
     this.close = function() {
   
       if ( this.overlay ) {
@@ -856,10 +856,10 @@
       setTimeout( function() {
         if (!document.querySelector('.modal.in')) {  self.removeOverlay(); }
       }, this.options.duration);
-    }
+    };
     this.content = function( content ) {
       return this.modal.querySelector('.modal-content').innerHTML = content;
-    }
+    };
     this.createOverlay = function() {
       var backdrop = document.createElement('div'), overlay = document.querySelector('.modal-backdrop');
       backdrop.setAttribute('class','modal-backdrop fade');
@@ -870,13 +870,13 @@
         this.overlay = backdrop;
         document.body.appendChild(backdrop);
       }
-    }
+    };
     this.removeOverlay = function() {
       var overlay = document.querySelector('.modal-backdrop');
       if ( overlay !== null && overlay !== undefined ) {
         document.body.removeChild(overlay)
       }
-    }
+    };
     this.keydown = function() {
       function keyHandler(e) {
         if (self.options.keyboard && e.which == 27) {
@@ -888,7 +888,7 @@
       } else {
         document.removeEventListener('keydown', keyHandler, false);
       }
-    }
+    };
     this.trigger = function() {
       var triggers = document.querySelectorAll('[data-toggle="modal"]'), tgl = triggers.length, i = 0;
       for ( i;i<tgl;i++ ) {
@@ -902,14 +902,14 @@
           }
         })
       }
-    }
+    };
     this._resize = function() {
       var overlay = this.overlay||document.querySelector('.modal-backdrop'),
         dim = { w: document.documentElement.clientWidth + 'px', h: document.documentElement.clientHeight + 'px' };
       if ( overlay !== null && /\bin/.test(overlay.className) ) {
         overlay.style.height = dim.h; overlay.style.width = dim.w;
       }
-    }
+    };
     this.oneResize = function() {
       function oneResize() {
         self._resize();
@@ -917,7 +917,7 @@
         window.removeEventListener('resize', oneResize, false);
       }
       window.addEventListener('resize', oneResize, false);
-    }
+    };
     this.resize = function() {
       function resizeHandler() {
         self._resize();
@@ -929,7 +929,7 @@
       } else {
         window.removeEventListener('resize', this.oneResize, false);
       }
-    }
+    };
     this.dismiss = function() {
       function dismissHandler(e) {
         if ( e.target.parentNode.getAttribute('data-dismiss') === 'modal' || e.target.getAttribute('data-dismiss') === 'modal' || e.target === self.modal ) {
@@ -941,19 +941,19 @@
       } else {
         this.modal.removeEventListener('click', dismissHandler, false);
       }
-    }
+    };
     // these following methods are used to handle overflowing modals
     this.handleUpdate = function () {
       this.adjustDialog();
-    }
+    };
     this.adjustDialog = function () {
       this.modal.style.paddingLeft = !this.bodyIsOverflowing && this.modalIsOverflowing ? this.scrollbarWidth + 'px' : '';
       this.modal.style.paddingRight = this.bodyIsOverflowing && !this.modalIsOverflowing ? this.scrollbarWidth + 'px' : '';
-    }
+    };
     this.resetAdjustments = function () {
       this.modal.style.paddingLeft = '';
       this.modal.style.paddingRight = '';
-    }
+    };
     //init
     this.trigger();
     if ( this.options.content && this.options.content !== undefined ) {
@@ -1360,7 +1360,7 @@
           addClass(nextContent,'in');
         }, self.options.duration*2);
       }
-    }
+    };
     this.getActiveTab = function() {
       var activeTabs = this.tabs.querySelectorAll('.active');
       if ( activeTabs.length === 1 && !/\bdropdown/.test(activeTabs[0].className) ) {
@@ -1368,11 +1368,11 @@
       } else if ( activeTabs.length > 1 ) {
         return activeTabs[activeTabs.length-1]
       }
-    }
+    };
     this.getActiveContent = function() {
-      var a = this.getActiveTab().getElementsByTagName('A')[0].getAttribute('href').replace('#','');
-      return a && document.getElementById(a)
-    }
+      var active = this.getActiveTab().getElementsByTagName('A')[0].getAttribute('href').replace('#','');
+      return active && document.getElementById(active)
+    };
   
     // init
     this.tab.addEventListener('click', this.handle, false);
