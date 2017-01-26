@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v1.2.0 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v1.3.0 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -988,7 +988,7 @@
   
       // strings
       component = 'modal',
-      static = 'static',
+      staticString = 'static',
       paddingLeft = 'paddingLeft',
       paddingRight = 'paddingRight'
       modalBackdropString = 'modal-backdrop';
@@ -997,7 +997,7 @@
     options = options || {};
   
     this[keyboard] = options[keyboard] === false || modal[getAttribute](dataKeyboard) === 'false' ? false : true;
-    this[backdrop] = options[backdrop] === static || modal[getAttribute](databackdrop) === static ? static : true;
+    this[backdrop] = options[backdrop] === staticString || modal[getAttribute](databackdrop) === staticString ? staticString : true;
     this[backdrop] = options[backdrop] === false || modal[getAttribute](databackdrop) === 'false' ? false : this[backdrop];
     this[duration] = (isIE && isIE < 10) ? 50 : (options[duration] || parseInt(modal[getAttribute](dataDuration)) || 300); // the default modal fade duration option
     this[content]  = options[content]; // JavaScript only
@@ -1098,7 +1098,7 @@
         var clickTarget = e[target];
         if ( !e.defaultPrevented && open && (clickTarget[parentNode][getAttribute](dataDismiss) === component 
             || clickTarget[getAttribute](dataDismiss) === component
-            || (clickTarget === modal && self[backdrop] !== static) ) ) {
+            || (clickTarget === modal && self[backdrop] !== staticString) ) ) {
           self.hide(); relatedTarget = null;
           e.preventDefault();
           setTimeout(function(){ e.defaultPrevented = false; }, 50);
