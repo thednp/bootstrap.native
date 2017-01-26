@@ -16,4 +16,4 @@ Certain changes or custom scripts/developments may not be suitable for everybody
 **Requirements**
 * changes must take into account browser compatibility: `bootstrap.native` for Bootstrap 3 series must be IE8+, while `bootstrap.native` for Bootstrap 4 must be IE10+
 * changes that break backward compatibility are to be decided by the community first before getting accepted
-* changes must take into account the namespace of variables in `utils.js` and all files in the `/lib` folder. For instance you cannot use `Affix`, `a` or `afl` as variables for your scripts as they are already defined, all this to avoid clashes with various `node.js` apps we may build.
+* changes must take into account the namespace of variables in `utils.js`

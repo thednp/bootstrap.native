@@ -1,5 +1,5 @@
 # Native Javascript for Bootstrap
-This is a set of scripts developed with native Javascript for <strong>Bootstrap 3</strong> series, and featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. A huge advantage is the size, this library is only ***24Kb*** minified and ***6.5Kb*** gZipped.
+This is a set of scripts developed with native Javascript for <strong>Bootstrap 3</strong> series, and featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. A huge advantage is the size, this library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
 
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
@@ -38,7 +38,7 @@ You can also use `bootstrap.native` in a CommonJS environment:
 ```js
 var bsn = require("bootstrap.native");
 // Create a button:
-var btn = new bsn.Button(...);
+var btn = new bsn.Button(element,'loading');
 ```
 
 **Note:** If you are working in a virtual browser environment (i.e. running front-end tests in NodeJS), bootstrap-native requires both `window` and `document` to be in scope. You will need to use a mock browser.
