@@ -1,11 +1,6 @@
 /* REQUIRED STYLING */
-
-/* enables animation for the collapse, has no effect on legacy browsers */
-.collapse { transition: height .3s ease-out; /*-webkit-transition: height .3s ease-out*/ }
-
 /* styles the close button for the dismissible popovers */
 .popover .close { position: absolute; top: 7px; right: 10px; }
-
 /* REQUIRED STYLING */
 
 
@@ -16,6 +11,8 @@
 body {
   color: #5a5a5a;
 }
+
+#main-container {padding-top: 20px;}
 
 footer { padding: 20px 0 10px; background: #e6f0f8 }
 
@@ -33,41 +30,49 @@ h3:not(.popover-title) {
   letter-spacing: -1px;
 }
 
- /* required for scrollspy to work perfect */
-section { clear: both; width: 100%; position: relative; float: left }
-.scrollspy-example { padding: 0 15px; border: 1px solid #ddd; margin-bottom: 20px; -webkit-border-radius: 4px 0 0 4px; border-radius: 4px 0 0 4px; }
-
 hr.clearfix {clear: both; width: 100%; float: left}
+
 
 /* CONTENT STYLING
 -------------------------------------------------- */
 
+ /* required for scrollspy to work perfect */
+section { position: relative; display: inline-block; width: 100%; }
+
+.scrollspy-example {
+  position: relative; height: 150px; overflow: auto; margin-bottom: 20px;
+  padding: 0 15px; border: 1px solid #ddd; border-radius: 4px 0 0 4px;
+}
+ /* required for scrollspy to work perfect */
+
 /* some content customization | because why not */
-#exampleTab .nav-tabs, #exampleTab .nav-pills, #exampleTab .navbar-nav, #exampleTab .nav-stacked { margin-bottom: 15px }
+#componentTab .nav-tabs, #componentTab .nav-pills, #componentTab .navbar-nav, #componentTab .nav-stacked { margin-bottom: 15px }
 
-#exampleTab .nav-stacked,
-#exampleTab .nav.panel { float: left; margin: 0 15px 20px 0 }
-#exampleTab .nav-list { float: left; margin: 0 15px 20px 0; border-right: 1px solid #ddd }
+#componentTab .nav-stacked li a {padding: 5px 10px}
+#componentTab .nav-stacked,
+#componentTab .nav.panel { float: left; margin: 0 15px 20px 0 }
+#componentTab .nav-list { float: left; margin: 0 15px 20px 0; border-right: 1px solid #ddd }
 
-#exampleTab .nav.panel > li.active > a,
-#exampleTab .nav-list > li.active > a { background: #286090; color: #fff }
+#componentTab .nav.panel > li.active > a,
+#componentTab .nav-list > li.active > a { background: #286090; color: #fff }
 
-#exampleTab .nav.panel > li:first-child > a { border-radius: 3px 3px 0 0; }
-#exampleTab .nav.panel > li:last-child > a { border-radius: 0 0 3px 3px; }
+#componentTab .nav.panel > li:first-child > a { border-radius: 3px 3px 0 0; }
+#componentTab .nav.panel > li:last-child > a { border-radius: 0 0 3px 3px; }
 
-#exampleTab .navbar-nav { background: #eee; width: 100%; border-radius: 3px; }
-#exampleTab .navbar-nav > li:first-child > a { border-radius: 3px 0 0 3px; }
-#exampleTab .navbar-nav > li.active > a { background: #286090; color: #fff }
+#componentTab .navbar-nav { background: #eee; width: 100%; border-radius: 3px; }
+#componentTab .navbar-nav > li:first-child > a { border-radius: 3px 0 0 3px; }
+#componentTab .navbar-nav > li.active > a { background: #286090; color: #fff }
 
-#exampleTab .nav.nav-stacked .dropdown-menu,
-#exampleTab .nav.panel .dropdown-menu,
-#exampleTab .nav-list .dropdown-menu { margin: 0; top: 0; left: 103%; }
+#componentTab .nav.nav-stacked .dropdown-menu,
+#componentTab .nav.panel .dropdown-menu,
+#componentTab .nav-list .dropdown-menu { margin: 0; top: 0; left: 103%; }
 
-#exampleTab .nav.panel + .tab-content,
-#exampleTab .nav.nav-list + .tab-content { display: table-cell }
+#componentTab .nav.panel + .tab-content,
+#componentTab .nav.nav-list + .tab-content { display: table-cell }
 
-#exampleTab .btn-group { position: absolute; top:0; left: 85px }
-#exampleTab .btn-group > .btn { margin: 0}
+/*#componentTab .btn-group { position: absolute; top:8px; left: 85px }*/
+#componentTab .btn-group > .btn { margin: 0}
+#componentTab .btn-group { margin: 0 0 20px }
 
 /* buttons */
 p .btn, p .form-control {vertical-align: top}
@@ -78,23 +83,16 @@ p .btn-group {margin-bottom: 20px}
 
 #about {padding-bottom: 20px }
 
- /* nested dropdowns */
- .dropdown-menu .dropdown-menu.left {
-   top: -1px;
-   left: auto; right: 100%;
-   margin: 0 3px 0 0;
- }
- .dropdown-menu .dropdown-menu.right {
-   top: -1px;
-   left: 100%;
-   margin: 0 0 0 3px;
- }
-
-/* scrollspy content example */
-.scrollspy-example {
-  position: relative;
-  height: 150px;
-  overflow: auto;
+/* nested dropdowns */
+.dropdown-menu .dropdown-menu.left {
+  top: -1px;
+  left: auto; right: 100%;
+  margin: 0 3px 0 0;
+}
+.dropdown-menu .dropdown-menu.right {
+  top: -1px;
+  left: 100%;
+  margin: 0 0 0 3px;
 }
 
 /* when on mobile, disable affix position */
@@ -105,11 +103,6 @@ p .btn-group {margin-bottom: 20px}
 #side-nav > .nav li.active > a,
 #side-nav > .nav li.active:hover > a { background-color: #e6f0f8 }
 #side-nav > .nav li:hover > a { background-color: #f5f9fc }
-
-/* scrollspy example */
-body > .container,
-.scrollspy-example {position: relative}
-.scrollspy-example > * { float: left; width: 100%; clear: both }
 
 
 /* CUSTOMIZE THE NAVBAR
@@ -155,7 +148,6 @@ body > .container,
 /* Carousel base class */
 #myCarousel.carousel {
   height: 500px;
-  margin-bottom: 40px;
 }
 /* Since positioning the image, we need to help out the caption */
 .carousel-caption {
@@ -173,6 +165,7 @@ body > .container,
   transition-timing-function: cubic-bezier(0,.24,0,1);
   opacity: 0;
 }
+
 /* when going forward, captions slide left */
 #myCarousel .next .carousel-caption {
   -webkit-transform: translate3d(50%, 0, 0);
@@ -209,7 +202,7 @@ body > .container,
 .carousel .item.prev,
 .carousel .item.next {display: block}
 
-#myCarousel .carousel-inner > .item > img {
+#myCarousel .carousel-inner > .item > .item-bg {
   position: absolute;
   top: 0;
   left: 0;
@@ -237,6 +230,27 @@ body > .container,
   width: 250px;
 }
 
+/* side navigation */
+#side-nav  { margin-top: 40px; clear: none }
+
+/*#side-nav > .nav > li > ul { margin-top: 2px; height:0; opacity: 0; padding-left: 15px; transition: all 0.3s ease-out; }*/
+#side-nav > .nav li > ul { height:0; opacity: 0; padding-left: 15px; transition: height 0.3s ease-out, opacity 0.3s ease; }
+#side-nav > .nav li { overflow: hidden }
+#side-nav > .nav li.active > ul { opacity: 1; margin-top: 2px; }
+#side-nav > .nav li.active.list2 > ul { height: 66px; height: calc(32px*2 + 2px); }
+#side-nav > .nav li.active.list3 > ul { height: 100px; height: calc(32px*3 + 2px*2); }
+#side-nav > .nav li.active.list4 > ul { height: 134px; height: calc(32px*4 + 2px*3); }
+#side-nav > .nav li.active.list5 > ul { height: 168px; height: calc(32px*5 + 2px*4); }
+#side-nav > .nav li.active.list6 > ul { height: 202px; height: calc(32px*6 + 2px*5); }
+#side-nav > .nav li.active.list7 > ul { height: 236px; height: calc(32px*7 + 2px*6); }
+#side-nav > .nav li.active.list8 > ul { height: 270px; height: calc(32px*8 + 2px*7); }
+#side-nav > .nav li.active.list9 > ul { height: 304px; height: calc(32px*9 + 2px*8); }
+
+#side-nav > .nav li.active.list11 > ul { height: 338px; height: calc(32px*11 + 2px*10); }
+#side-nav > .nav li.active.list11.additional > ul { height: 506px; height: calc(32px*11 + 2px*10 + 32px*5 + 2px*4); }
+
+#side-nav > .nav li > a { z-index: 1; padding: 6px 10px; }
+#side-nav > .nav li > ul { z-index: 0 }	
 
 /* RESPONSIVE CSS
 -------------------------------------------------- */
@@ -250,17 +264,10 @@ body > .container,
 @media (min-width: 768px) {
 
 	/* affix example */
-	#side-nav .nav.affix { position: fixed !important;  width: 263px; top: 0; }
-	#side-nav .nav.affix.affix-bottom { top: auto;  bottom: 150px; }
-	
-	/* side navigation */
-	#side-nav  { margin-top: 20px; clear: none }
-	#side-nav > .nav > li > ul { margin-top: 2px; height:0; opacity: 0; padding-left: 15px; transition: all 0.3s ease-out; }
-	#side-nav > .nav > li.active > ul { height:460px; opacity: 1 }
-
-	#side-nav > .nav > li { overflow: hidden }
-	#side-nav > .nav li > a { z-index: 1 }
-	#side-nav > .nav li > ul { z-index: 0 }	
+	#side-nav .nav.affix,
+	#side-nav .nav.affix-bottom { position: fixed !important;  width: 263px; }
+	#side-nav .nav.affix { top: 0; }
+	#side-nav .nav.affix-bottom { top: auto; bottom: 100px }
 
   /* Navbar positioning foo */
   .navbar-wrapper {
@@ -294,16 +301,8 @@ body > .container,
 
 
 /* IE8 without modernizr */
-.ie8 #side-nav .nav.affix { position: fixed !important;  width: 263px; top: 0; }
-.ie8 #side-nav .nav.affix.affix-bottom { top: auto;  bottom: 150px; } 
-
-.ie8 #side-nav  { margin-top: 20px; clear: none }
-.ie8 #side-nav > .nav > li > ul { margin-top: 2px; height:0; opacity: 0; padding-left: 15px; transition: all 0.3s ease-out; }
-.ie8 #side-nav > .nav > li.active > ul { height:460px; opacity: 1 }
-
-.ie8 #side-nav > .nav > li { overflow: hidden }
-.ie8 #side-nav > .nav li > a { z-index: 1 }
-.ie8 #side-nav > .nav li > ul { z-index: 0 }	
+.ie8 #side-nav .nav.affix { position: fixed !important;  width: 215px; top: 0; }
+.ie8 #side-nav .nav.affix.affix-bottom { top: auto;  bottom: 100px; } 
 
 .ie8 .navbar-wrapper {  margin-top: 40px; }
 .ie8 .navbar-wrapper .container { padding-right: 15px; padding-left: 15px; }

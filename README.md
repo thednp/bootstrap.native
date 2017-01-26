@@ -1,16 +1,19 @@
 # Native Javascript for Bootstrap
-This is a set of scripts developed with native Javascript for <strong>Bootstrap 3</strong> series, and featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility.
+This is a set of scripts developed with native Javascript for <strong>Bootstrap 3</strong> series, and featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. A huge advantage is the size, this library is only ***24Kb*** minified and ***6.5Kb*** gZipped.
+
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
 # CDN
-New releases will be available automatically on <a href="http://www.jsdelivr.com/#!bootstrap.native">jsdelivr</a> CDN repositories and <a href="https://cdnjs.com/libraries/bootstrap.native">CDNjs</a> repositories.
+New releases will be available automatically on <a href="http://www.jsdelivr.com/#!bootstrap.native">jsdelivr</a> CDN repositories and <a href="https://cdnjs.com/libraries/bootstrap.native">CDNjs</a> repositories. You may also find more <a href="https://www.google.ro/search?q=bootstrap+js+without+jquery" target="_blank">CDN repositories on Google</a> as well.
 
 # Bower and NPM
 You can install this package by using either Bower or NPM.
 
+```
 $ npm install --save bootstrap.native
 # Or
 $ bower install --save bootstrap.native
+```
 
 # Usage
 
