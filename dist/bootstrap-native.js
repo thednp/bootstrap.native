@@ -111,7 +111,6 @@
     hasAttribute         = 'hasAttribute',
     getElementsByTagName = 'getElementsByTagName',
     getBoundingClientRect= 'getBoundingClientRect',
-    dispatchEvent        = 'dispatchEvent',
   
     collapsing = 'collapsing',
     parentNode = 'parentNode',
