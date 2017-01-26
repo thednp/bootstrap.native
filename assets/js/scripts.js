@@ -239,7 +239,7 @@ btn.addEventListener('click', function() {
 
 			// reidentify the new alert and reinit alert
 			success = document.getElementById('successButton');
-			// new Alert(success.querySelector('[data-dismiss="alert"]')); // initialize if not already
+			new Alert(success.querySelector('[data-dismiss="alert"]')); // initialize if not already
 		}
 
 		success.style.display = 'block';
