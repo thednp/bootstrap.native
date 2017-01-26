@@ -111,6 +111,7 @@
     hasAttribute         = 'hasAttribute',
     getElementsByTagName = 'getElementsByTagName',
     getBoundingClientRect= 'getBoundingClientRect',
+    dispatchEvent        = 'dispatchEvent',
   
     collapsing = 'collapsing',
     parentNode = 'parentNode',
@@ -170,11 +171,9 @@
       element.removeEventListener(event, handler, false);
     },
     bootstrapCustomEvent = function (eventName, componentName, related) {
-      if (('CustomEvent' in global) && Element.prototype.dispatchEvent) {
-        var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
-        OriginalCustomEvent.relatedTarget = related;
-        this.dispatchEvent(OriginalCustomEvent);
-      }
+      var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
+      OriginalCustomEvent.relatedTarget = related;
+      this.dispatchEvent(OriginalCustomEvent);
     },
   
     // reference a live collection of the DOM
@@ -427,7 +426,7 @@
         setTimeout(function() {
           if (alert) {
             bootstrapCustomEvent.call(alert, closedEvent, component);
-            off(document, clickEvent, clickHandler); // detach it's listener
+            off(element, clickEvent, clickHandler); // detach it's listener
             alert[parentNode].removeChild(alert);
           } 
         }, duration);
@@ -855,7 +854,7 @@
         var href = element.href && element[getAttribute]('href'),
           parent = element[getAttribute](dataTarget),
           id = href || ( parent && /#/.test(parent) ) && parent;
-        return id && document.getElementById(id.replace('#',''));
+        return id && queryElement(id);
       };
     
     // public methods

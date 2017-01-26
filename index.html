@@ -1415,7 +1415,7 @@ var myTabs = document.getElementById('myTabs');
 var myTabsCollection = myTabs.getElementsByTagName('A');
 
 // initialize the component for all items in the collection
-for (var i = 0; i < myTabsCollection.length; i++) {
+for (var i = 0; i &lt; myTabsCollection.length; i++) {
   new Tab(myTabsCollection[i], // our target
   { // our options
     duration: 300,
@@ -1533,7 +1533,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                   </tr>
                   <tr>
                     <td><code>duration</code></td>
-                    <td><em>number</em</td>
+                    <td><em>number</em></td>
                     <td><em>150</em></td>
                     <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds. When using a CSS3 animation duration other than the default value, set the option via JavaScript 
                       or the <code>data-duration="DURATION"</code> attribute.</td>
@@ -1627,7 +1627,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
 var elementsTooltip = document.querySelectorAll('[title]');
 
 // attach a tooltip for each
-for (var i = 0; i < elementsTooltip.length; i++){
+for (var i = 0; i &lt; elementsTooltip.length; i++){
   new Tooltip(elementsTooltip[i], {
     placement: 'top', //string
     animation: 'slideNfade', // CSS class
@@ -1753,7 +1753,7 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
                     <td><em>string</em></td>
                     <td><em>fade</em></td>
                     <td>Option to customize the component animation. If you are using a different animation other than <code>fade</code>, you can specify that via the <code>data-animation="ANIMATION"</code> 
-                      attribute. This will add an additional CSS class to the tooltip to enable a custom transition.</td>
+                      attribute. This will add an additional CSS class to the popover to enable a custom transition.</td>
                   </tr>
                   <tr>
                     <td><code>placement</code></td>
@@ -1764,7 +1764,7 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
                   </tr>
                   <tr>
                     <td><code>duration</code></td>
-                    <td><em>number</em</td>
+                    <td><em>number</em></td>
                     <td><em>150</em></td>
                     <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds. When using a CSS3 animation duration other than the default value, set the option via 
                       JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
@@ -1857,7 +1857,7 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
 var elementsPopover = document.querySelectorAll('[data-content]'); // also a certain class would go fine
 
 // attach a popover for each
-for (var i = 0; i < elementsPopover.length; i++){
+for (var i = 0; i &lt; elementsPopover.length; i++){
   new Popover(elementsPopover[i], {
     placement: 'top', //string
     animation: 'slideNfade', // CSS class
@@ -2466,7 +2466,7 @@ var myAccordion = document.getElementById('myAccordion');
 var myAccordionTriggers = myAccordion.querySelectorAll('[data-toggle="collapse"]');
 
 // initialize the component for each collapse trigger
-for (var i = 0; i < myAccordionTriggers.length; i++){
+for (var i = 0; i &lt; myAccordionTriggers.length; i++){
   new Collapse(myAccordionTriggers[i], {
     parent: myAccordion, // this is the above defined object
     duration: 350 // integer
@@ -2570,7 +2570,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                   <tr>
                     <td><code>keyboard</code></td>
                     <td><em>boolean</em></td>
-                    <td><em>true</code></td>
+                    <td><em>true</em></td>
                     <td>Option that allows yout to navigate the carousel with left and right arrows.</td>
                   </tr>
                   <tr>
