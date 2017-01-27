@@ -1,10 +1,10 @@
 # Native Javascript for Bootstrap
-This is a set of scripts developed with native Javascript for <strong>Bootstrap 3</strong> series, and featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. A huge advantage is the size, this library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
+This is a library developed with native Javascript for <strong>Bootstrap 3</strong> series, and featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. A huge advantage is the size, this library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
 
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
 # CDN
-New releases will be available automatically on <a href="http://www.jsdelivr.com/#!bootstrap.native">jsdelivr</a> CDN repositories and <a href="https://cdnjs.com/libraries/bootstrap.native">CDNjs</a> repositories. You may also find more <a href="https://www.google.ro/search?q=bootstrap+js+without+jquery" target="_blank">CDN repositories on Google</a> as well.
+New releases will be available automatically on <a href="http://www.jsdelivr.com/#!bootstrap.native">jsdelivr</a> CDN repositories and CDN repositories on <a href="https://cdnjs.com/libraries/bootstrap.native">CDNjs</a> repositories. You may also find more <a href="https://www.google.com/search?q=bootstrap+native+cdn" target="_blank">Google</a> as well.
 
 # Bower and NPM
 You can install this package by using either Bower or NPM.
@@ -50,7 +50,7 @@ As mentioned above, the object properties of the exported object, when using `re
 So when using `bootstrap.native` inside of a NodeJS app, make sure you create a proper Browser-like environment first to avoid unexpected behaviour.
 
 # Browser Support
-The scripts are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills, IE8-IE9 will thank you.
+The components are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills, IE8-IE9 will thank you.
 
 # Custom Builds
 You can make a custom build of bootstrap-native, including only the modules you need, by using the `build.js` script.
@@ -78,4 +78,4 @@ Writes to stdout
 - Full contributors list [here](https://github.com/thednp/bootstrap.native/graphs/contributors). Thanks so much!
 
 # License
-The scripts are released under the [MIT license](https://github.com/thednp/bootstrap.native/blob/master/LICENSE).
+The library is released under the [MIT license](https://github.com/thednp/bootstrap.native/blob/master/LICENSE).

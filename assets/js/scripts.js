@@ -53,7 +53,7 @@ btnModalNotTrigger.addEventListener('click', function(e) {
 
 // NEW added events to Modal
 modalFrame.addEventListener('show.bs.modal', function(e) {
-	var related = null; console.log(e)
+	var related = null;
 	related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
 	console.log( 'The "show.bs.modal" event fired for #' + e.target.id + related ); 
 }, false);
