@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.0 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.1 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -65,6 +65,7 @@
     dataDismissible   = 'data-dismissible',
     dataTrigger       = 'data-trigger',
     dataAnimation     = 'data-animation',
+    dataContainer     = 'data-container',
     dataPlacement     = 'data-placement',
     dataDelay         = 'data-delay',
     dataOffsetTop     = 'data-offset-top',
@@ -78,6 +79,7 @@
   
     // box model
     offsetTop    = 'offsetTop',      offsetBottom   = 'offsetBottom',
+    offsetLeft   = 'offsetLeft',
     scrollTop    = 'scrollTop',      scrollLeft     = 'scrollLeft',
     clientWidth  = 'clientWidth',    clientHeight   = 'clientHeight',
     offsetWidth  = 'offsetWidth',    offsetHeight   = 'offsetHeight',
@@ -237,8 +239,9 @@
         x : global.pageXOffset || doc[scrollLeft]
       }
     },
-    styleTip = function(link,element,position) { // both popovers and tooltips
-      var rect = link[getBoundingClientRect](), scroll = getScroll(),
+      styleTip = function(link,element,position,container) { // both popovers and tooltips
+        var rect = link[getBoundingClientRect](), 
+            scroll = container === body ? getScroll() : { x: container[offsetLeft] + container[scrollLeft], y: container[offsetTop] + container[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
           elementDimensions = { w : element[offsetWidth], h: element[offsetHeight] };
   
@@ -1211,6 +1214,7 @@
         placementData = element[getAttribute](dataPlacement),
         dismissibleData = element[getAttribute](dataDismissible),
         delayData = element[getAttribute](dataDelay),
+        containerData = element[getAttribute](dataContainer),
   
         // internal strings
         component = 'popover',
@@ -1235,7 +1239,7 @@
     this[delay] = parseInt(options[delay] || delayData) || 100;
     this[dismissible] = options[dismissible] || dismissibleData === 'true' ? true : false;
     this[duration] = (isIE && isIE < 10) ? 0 : parseInt(options[duration] || durationData) || 150;
-    this[container] = queryElement(options[container]) || body; // JavaScript only
+    this[container] = queryElement(options[container]) || queryElement(containerData) || body;
     
     // bind, content
     var self = this, 
@@ -1299,10 +1303,10 @@
         !hasClass(popover,'in') && ( addClass(popover,'in') );
       },
       updatePopover = function() {
-        styleTip(element,popover,placementSetting);
+        styleTip(element,popover,placementSetting,self[container]);
         if (!isElementInViewport(popover) ) { 
           placementSetting = updatePlacement(placementSetting); 
-          styleTip(element,popover,placementSetting); 
+          styleTip(element,popover,placementSetting,self[container]); 
         }
       };
   
@@ -1586,6 +1590,7 @@
         placementData = element[getAttribute](dataPlacement);
         durationData = element[getAttribute](dataDuration);
         delayData = element[getAttribute](dataDelay),
+        containerData = element[getAttribute](dataContainer),
         
         // strings
         component = 'tooltip',
@@ -1600,7 +1605,7 @@
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 100;
     this[duration] = (isIE && isIE < 10) ? 0 : parseInt(options[duration] || durationData) || 150;
-    this[container] = queryElement(options[container]) || body; // JavaScript only
+    this[container] = queryElement(options[container]) || queryElement(containerData) || body;
   
     // bind, event targets, title and constants
     var self = this, timer = 0, placementSetting = this[placement], tooltip = null,
@@ -1629,10 +1634,10 @@
         tooltip[setAttribute](classString, component + ' ' + placementSetting + ' ' + self[animation]);
       },
       updateTooltip = function () {
-        styleTip(element,tooltip,placementSetting);
+        styleTip(element,tooltip,placementSetting,self[container]);
         if (!isElementInViewport(tooltip) ) { 
           placementSetting = updatePlacement(placementSetting); 
-          styleTip(element,tooltip,placementSetting); 
+          styleTip(element,tooltip,placementSetting,self[container]); 
         }
       },
       showTooltip = function () {

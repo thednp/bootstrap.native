@@ -393,6 +393,7 @@ var btn = new bsn.Button(...);
               <h5 id="modalDataAPI">Via DATA API</h5>
               <p>You can initialize <b>Modal</b> without writing any code as long as you have a modal and a trigger with <code>data-target</code> or a link with <code>href</code> referencing that modal. The component 
                 will initialize for all elements with <code>data-toggle="modal"</code> found in the DOM.</p>
+
 <pre><code class="language-markup">&lt;!-- provide a trigger button --&gt;
 &lt;button id="myModalTrigger" type="button" data-toggle="modal" data-target="#myModal"&gt;Launch modal&lt;/button&gt;
 
@@ -549,9 +550,9 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                       <h4>Text in a modal</h4> 
                       <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
                       <h4>Popover in a modal</h4>
-                      <p>This <a href="#" style="margin:-5px 0 0 0" role="button" data-toggle="popover" class="btn btn-default popover-test" data-content="And here's some amazing content. It's very engaging. right?" data-title="A Title">button</a> should trigger a popover on click.</p>
+                      <p>This <a href="#" style="margin:-5px 0 0 0" role="button" data-toggle="popover" data-container="#myModal" class="btn btn-default popover-test" data-content="And here's some amazing content. It's very engaging. right?" data-title="A Title">button</a> should trigger a popover on click.</p>
                       <h4>Tooltips in a modal</h4>
-                      <p><a href="#" class="tooltip-test" data-toggle="tooltip" title="Tooltip">This link</a> and <a href="#" data-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>
+                      <p><a href="#" class="tooltip-test" data-toggle="tooltip" data-container="#myModal" title="Tooltip">This link</a> and <a href="#" data-container="#myModal" data-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>
                       <h4>Open modal from modal</h4>
                       <p>Click <a data-toggle="modal" href="#anotherModal">here</a> to open another modal.</p>
                       <hr>
@@ -1547,8 +1548,8 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                   <tr>
                     <td><code>container</code></td>
                     <td><em>selector</em><br>or <em>object</em></td>
-                    <td><code>&lt;body&gt;</code></td>
-                    <td>The container where your tooltips get appended to. This option is only for JavaScript initialization and is not fully implemented as the original.</td>
+                    <td><code>&lt;document.body&gt;</code></td>
+                    <td>The container where your popovers get appended to. You can set the option via the <code>data-container="#elementID"</code> attribute or via JavaScript.</td>
                   </tr>
                 </tbody>
               </table>
@@ -1778,8 +1779,8 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
                   <tr>
                     <td><code>container</code></td>
                     <td><em>selector</em><br>or <em>object</em></td>
-                    <td><code>&lt;body&gt;</code></td>
-                    <td>The container where your popovers get appended to. This option is only for JavaScript initialization and is not fully implemented as the original.</td>
+                    <td><code>&lt;document.body&gt;</code></td>
+                    <td>The container where your popovers get appended to. You can set the option via the <code>data-container="#elementID"</code> attribute or via JavaScript.</td>
                   </tr>
                 </tbody>
               </table>
