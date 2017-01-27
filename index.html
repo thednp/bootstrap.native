@@ -288,43 +288,45 @@ var btn = new bsn.Button(...);
               <h4>Options</h4>
               <p>Bootstrap 4 will remove the <code>remote</code> option and we already replaced it with a better option. We also skipped the <code>show</code> option because via JavaScript we quickly and easily access 
                 the component's public methods right after initialiation, we'll have a look in a minute.</p>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                    <td><code>backdrop</code></td>
-                    <td><em>boolean</em> or the <em>string</em> <code>'static'</code></td>
-                    <td>true</td>
-                    <td>Includes a modal-backdrop element. Alternatively, specify <code>'static'</code> for a backdrop which doesn't close the modal on click.</td>
-                  </tr>
-                  <tr>
-                    <td><code>keyboard</code></td>
-                    <td><em>boolean</em></td>
-                    <td>true</td>
-                    <td>Option to dismiss the current modal via <kbd>Esc</kbd> key.</td>
-                  </tr>
-                  <tr>
-                    <td><code>duration</code></td>
-                    <td><em>number</em></td>
-                    <td>300</td>
-                    <td>If you are customizing the animation duration for <b>Modal</b>, you need to provide a <b>duration</b> value via JavaScript or <code>data-duration="DURATION"</code> attribute, an option to 
-                      make sure everything is in sync.</td>
-                  </tr>
-                  <tr>
-                    <td><code>content</code></td>
-                    <td><em>markup</em></td>
-                    <td></td>
-                    <td>The <b>Modal</b> component comes with a template system instead of a load <b>remote</b> content function (Bootstrap 4 drops it). This option can be used with JavaScript only.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td><code>backdrop</code></td>
+                      <td><em>boolean</em> or the <em>string</em> <code>'static'</code></td>
+                      <td>true</td>
+                      <td>Includes a modal-backdrop element. Alternatively, specify <code>'static'</code> for a backdrop which doesn't close the modal on click.</td>
+                    </tr>
+                    <tr>
+                      <td><code>keyboard</code></td>
+                      <td><em>boolean</em></td>
+                      <td>true</td>
+                      <td>Option to dismiss the current modal via <kbd>Esc</kbd> key.</td>
+                    </tr>
+                    <tr>
+                      <td><code>duration</code></td>
+                      <td><em>number</em></td>
+                      <td>300</td>
+                      <td>If you are customizing the animation duration for <b>Modal</b>, you need to provide a <b>duration</b> value via JavaScript or <code>data-duration="DURATION"</code> attribute, an option to 
+                        make sure everything is in sync.</td>
+                    </tr>
+                    <tr>
+                      <td><code>content</code></td>
+                      <td><em>markup</em></td>
+                      <td></td>
+                      <td>The <b>Modal</b> component comes with a template system instead of a load <b>remote</b> content function (Bootstrap 4 drops it). This option can be used with JavaScript only.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <p>The default options' values are same as their jQuery plugin equivalents so you can expect same behavior.</p>
             </section>
             <section id="modalMethods">
@@ -358,14 +360,15 @@ var btn = new bsn.Button(...);
             </section>  
             <section id="modalEvents">
               <h4>Events</h4>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
                     <tr>
                       <th>Event Type</th>
                       <th>Description</th>
                     </tr>
-                </thead>
-                <tbody>
+                  </thead>
+                  <tbody>
                     <tr>
                       <td><code>show.bs.modal</code></td>
                       <td>This event fires immediately when the <code>.show()</code> instance method is called. If caused by a click and the clicked element is a modal triggering element, that element is available 
@@ -383,8 +386,9 @@ var btn = new bsn.Button(...);
                       <td><code>hidden.bs.modal</code></td>
                       <td>This event is fired when the modal has finished being hidden from the user (set by our duration option).</td>
                     </tr>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
               <p>The <code>loaded.bs.modal</code> original event is not needed, also because we replaced the <code>remote</code> option with another one. If modal is opened via JavaScript methods, or by clicking 
                 on another element that is not a modal triggering element, the <code>relatedTarget</code> is <em>null</em>.</p>
             </section>
@@ -758,24 +762,26 @@ changeModal2.addEventListener('click', function(){
             <p>The component also allows you to close the dropdown by pressing the <kbd>Esc</kbd> key and grants access to methods and original events.</p>
             <section id="dropdownOptions">
               <h4>Options</h4>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td><code>persist</code></td>
-                      <td><em>boolean</em></td>
-                      <td>false</td>
-                      <td>Option to keep the dropdown-menu open when <code>click</code> event targets a child element, useful for forms or interactive content.</td>
-                    </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>type</th>
+                        <th>default</th>
+                        <th>description</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td><code>persist</code></td>
+                        <td><em>boolean</em></td>
+                        <td>false</td>
+                        <td>Option to keep the dropdown-menu open when <code>click</code> event targets a child element, useful for forms or interactive content.</td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="dropdownMethods">
@@ -791,14 +797,15 @@ changeModal2.addEventListener('click', function(){
             <section id="dropdownEvents">
               <h4>Events</h4>
               <p>Just like the original jQuery plugin, the <b>Dropdown</b> component covers this part as well:</p>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
                     <tr>
                       <th>Event Type</th>
                       <th>Description</th>
                     </tr>
-                </thead>
-                <tbody>
+                  </thead>
+                  <tbody>
                     <tr>
                       <td><code>show.bs.dropdown</code></td>
                       <td>This event fires immediately when the show instance method is called.</td>
@@ -815,8 +822,9 @@ changeModal2.addEventListener('click', function(){
                       <td><code>hidden.bs.dropdown</code></td>
                       <td>This event is fired when the dropdown has finished being hidden from the user.</td>
                     </tr>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
               <p>The target of all component events is the parent <code>&lt;div class="dropdown"&gt;</code>, while the <code>event.relatedTarget</code> is the triggering element with the specific 
                 <code>data-toggle="dropdown"</code> attribute. If you dismiss the dropdown via JavaScript, the <kbd>Esc</kbd> key or by clicking outside the triggering button, the <code>event.relatedTarget</code> 
                 is <em>null</em>.</p>
@@ -1054,26 +1062,28 @@ makeMeDropdown.addEventListener('click', function(e){
             <section id="scrollspyOptions">
               <h4>Options</h4>
               <p>Unlike the original jQuery plugin, this component requires no option for <code>offset</code>, the default value works just fine.</p>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>target</code></td>
-                    <td><em>string</em><br>or a<br>reference</td>
-                    <td>element <code>'#ID'</code><br>
-                      or other reference
-                    </td>
-                    <td>The only option for <b>ScrollSpy</b>, is the target of the container with <code>data-spy="scroll"</code> attribute.<br>EG: <code>data-target="#myMenuID"</code></td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>target</code></td>
+                      <td><em>string</em><br>or a<br>reference</td>
+                      <td>element <code>'#ID'</code><br>
+                        or other reference
+                      </td>
+                      <td>The only option for <b>ScrollSpy</b>, is the target of the container with <code>data-spy="scroll"</code> attribute.<br>EG: <code>data-target="#myMenuID"</code></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <p>We will talk later about why we don't need an <code>offset</code> option.</p>
             </section>
 
@@ -1089,20 +1099,22 @@ makeMeDropdown.addEventListener('click', function(e){
 
             <section id="scrollspyEvents">
               <h4>Events</h4>
-              <table class="table table-bordered table-striped bs-events-table"> 
-                <thead> 
-                  <tr> 
-                    <th>Event Type</th> 
-                    <th>Description</th> 
-                  </tr> 
-                </thead> 
-                <tbody> 
-                  <tr> 
-                    <td><code>activate.bs.scrollspy</code></td> 
-                    <td>This event fires whenever a new item was activated by the component.</td> 
-                  </tr> 
-                </tbody> 
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table"> 
+                  <thead> 
+                    <tr> 
+                      <th>Event Type</th> 
+                      <th>Description</th> 
+                    </tr> 
+                  </thead> 
+                  <tbody> 
+                    <tr> 
+                      <td><code>activate.bs.scrollspy</code></td> 
+                      <td>This event fires whenever a new item was activated by the component.</td> 
+                    </tr> 
+                  </tbody> 
+                </table>
+              </div>
               <p>The event target is the element we initialized the component via JavaScript or the <code>data-spy="scroll"</code> attribute. The newly activated menu item's link is the <code>event.relatedTarget</code> 
                 for the event.</p>
             </section>
@@ -1292,31 +1304,33 @@ myScrollSpyInit.refresh();
 
             <section id="tabOptions">
               <h4>Options</h4>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>duration</code></td>
-                    <td><em>number</em></td>
-                    <td>150</td>
-                    <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds.<br>When using a CSS3 animation duration other than the default value, set the option via JavaScript or 
-                      the <code>data-duration="DURATION"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>height</code></td>
-                    <td><em>boolean</em></td>
-                    <td><em>false</em></td>
-                    <td>Option to enable animation of the height of the <code>.tab-content</code> tabs container. Can be set via JavaScript or the <code>data-height="true"</code> attribute.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>duration</code></td>
+                      <td><em>number</em></td>
+                      <td>150</td>
+                      <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds.<br>When using a CSS3 animation duration other than the default value, set the option via JavaScript or 
+                        the <code>data-duration="DURATION"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>height</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>false</em></td>
+                      <td>Option to enable animation of the height of the <code>.tab-content</code> tabs container. Can be set via JavaScript or the <code>data-height="true"</code> attribute.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <p>When you set the second option to <code>true</code>, the <code>duration</code> option is much more important as it will prevent any kind of animation inconsistency. This functionality assumes you are using 
                 the styling of the <b>Collapse</b> component, which means that the <code>duration</code> must be set according to the <code>transition-duration</code> style rule of the <b>Collapse</b> component.</p>
               <p>Both the above options have no effect on legacy browsers with no support for CSS3 transitions.</p>
@@ -1336,35 +1350,37 @@ myScrollSpyInit.refresh();
             <section id="tabEvents">
               <h4>Events</h4>
               <p>The component events will fire in the exact order shown in table below:</p>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
-                  <tr>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>hide.bs.tab</code></td>
-                    <td>This event fires when a new tab is to be shown (and thus the previous active tab is to be hidden). The <code>event.target</code> is the current active tab, while <code>event.relatedTarget</code> 
-                      is the new soon-to-be-active tab.</td>
-                  </tr>
-                  <tr>
-                    <td><code>show.bs.tab</code></td>
-                    <td>This event fires on tab show, but before the new tab has been shown. The <code>event.target</code> is the tab next to become active and <code>event.relatedTarget</code> is the current 
-                      active tab (if available).</td>
-                  </tr>
-                  <tr>
-                    <td><code>hidden.bs.tab</code></td>
-                    <td>This event fires after a new tab is shown (and thus the previous active tab is hidden). The <code>event.target</code> is the tab that just became inactive and <code>event.relatedTarget</code> 
-                      is the new active tab.</td>
-                  </tr>
-                  <tr>
-                    <td><code>shown.bs.tab</code></td>
-                    <td>This event fires on tab show after a tab has been shown. The <code>event.target</code> is the new active tab and <code>event.relatedTarget</code> is the previous active tab (if available).</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>hide.bs.tab</code></td>
+                      <td>This event fires when a new tab is to be shown (and thus the previous active tab is to be hidden). The <code>event.target</code> is the current active tab, while <code>event.relatedTarget</code> 
+                        is the new soon-to-be-active tab.</td>
+                    </tr>
+                    <tr>
+                      <td><code>show.bs.tab</code></td>
+                      <td>This event fires on tab show, but before the new tab has been shown. The <code>event.target</code> is the tab next to become active and <code>event.relatedTarget</code> is the current 
+                        active tab (if available).</td>
+                    </tr>
+                    <tr>
+                      <td><code>hidden.bs.tab</code></td>
+                      <td>This event fires after a new tab is shown (and thus the previous active tab is hidden). The <code>event.target</code> is the tab that just became inactive and <code>event.relatedTarget</code> 
+                        is the new active tab.</td>
+                    </tr>
+                    <tr>
+                      <td><code>shown.bs.tab</code></td>
+                      <td>This event fires on tab show after a tab has been shown. The <code>event.target</code> is the new active tab and <code>event.relatedTarget</code> is the previous active tab (if available).</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="tabUsage">
@@ -1508,51 +1524,53 @@ myLastTab.addEventListener('show.bs.tab', function(event){
               <h4>Options</h4>
               <p>The component covers most important options, excluding some of the options featured in the original jQuery plugin such as a template system needed <code>template</code> option, a <code>selector</code> 
                 option for auto-initialization, or a <code>trigger</code> option. The component works different but has it's own advantages.</p>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>animation</code></td>
-                    <td><em>string</em></td>
-                    <td><em>fade</em></td>
-                    <td>Option to customize the component animation. If you are using a different animation other than <code>fade</code>, you can specify that via the <code>data-animation="ANIMATION"</code> attribute. 
-                      This will add an additional CSS class to the tooltip to enable a custom transition.</td>
-                  </tr>
-                  <tr>
-                    <td><code>placement</code></td>
-                    <td><em>string</em></td>
-                    <td><em>top</em></td>
-                    <td>Option to set a specific placement to <code>top</code>, <code>bottom</code>, <code>left</code> or <code>right</code>, relative to it's target. Can be set via both JavaScript and the 
-                      <code>data-placement="POSITION"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>duration</code></td>
-                    <td><em>number</em></td>
-                    <td><em>150</em></td>
-                    <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds. When using a CSS3 animation duration other than the default value, set the option via JavaScript 
-                      or the <code>data-duration="DURATION"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>delay</code></td>
-                    <td><em>number</em></td>
-                    <td><em>100</em></td>
-                    <td>A short delay before hiding the tooltip. Can be set via JavaScript or the <code>data-delay="DELAY"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>container</code></td>
-                    <td><em>selector</em><br>or <em>object</em></td>
-                    <td><code>&lt;document.body&gt;</code></td>
-                    <td>The container where your popovers get appended to. You can set the option via the <code>data-container="#elementID"</code> attribute or via JavaScript.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">  
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>animation</code></td>
+                      <td><em>string</em></td>
+                      <td><em>fade</em></td>
+                      <td>Option to customize the component animation. If you are using a different animation other than <code>fade</code>, you can specify that via the <code>data-animation="ANIMATION"</code> attribute. 
+                        This will add an additional CSS class to the tooltip to enable a custom transition.</td>
+                    </tr>
+                    <tr>
+                      <td><code>placement</code></td>
+                      <td><em>string</em></td>
+                      <td><em>top</em></td>
+                      <td>Option to set a specific placement to <code>top</code>, <code>bottom</code>, <code>left</code> or <code>right</code>, relative to it's target. Can be set via both JavaScript and the 
+                        <code>data-placement="POSITION"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>duration</code></td>
+                      <td><em>number</em></td>
+                      <td><em>150</em></td>
+                      <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds. When using a CSS3 animation duration other than the default value, set the option via JavaScript 
+                        or the <code>data-duration="DURATION"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>delay</code></td>
+                      <td><em>number</em></td>
+                      <td><em>100</em></td>
+                      <td>A short delay before hiding the tooltip. Can be set via JavaScript or the <code>data-delay="DELAY"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>container</code></td>
+                      <td><em>selector</em><br>or <em>object</em></td>
+                      <td><code>&lt;body&gt;</code></td>
+                      <td>The container where your tooltips get appended to. You can set the option via JavaScript or the <code>data-container="#elementID"</code> attribute.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="tooltipMethods">
@@ -1580,32 +1598,34 @@ myLastTab.addEventListener('show.bs.tab', function(event){
               <h4>Events</h4>
               <p>The component's original events are same as with the original jQuery Plugin, except <code>inserted.bs.tooltip</code>, the way the component works makes that this event is not needed, as it would fire 
                 on every instance of the <code>.show()</code> method.</p>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
-                  <tr>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>show.bs.tooltip</code></td>
-                    <td>This event fires immediately when the <code>show</code> instance method is called.</td>
-                  </tr>
-                  <tr>
-                    <td><code>shown.bs.tooltip</code></td>
-                    <td>This event is fired when the tooltip has been made visible to the user (set by the <code>duration</code> option).</td>
-                  </tr>
-                  <tr>
-                    <td><code>hide.bs.tooltip</code></td>
-                    <td>This event is fired immediately when the <code>hide</code> instance method has been called.</td>
-                  </tr>
-                  <tr>
-                    <td><code>hidden.bs.tooltip</code></td>
-                    <td>This event is fired when the tooltip has finished being hidden from the user (set by the <code>duration</code> option).</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>show.bs.tooltip</code></td>
+                      <td>This event fires immediately when the <code>show</code> instance method is called.</td>
+                    </tr>
+                    <tr>
+                      <td><code>shown.bs.tooltip</code></td>
+                      <td>This event is fired when the tooltip has been made visible to the user (set by the <code>duration</code> option).</td>
+                    </tr>
+                    <tr>
+                      <td><code>hide.bs.tooltip</code></td>
+                      <td>This event is fired immediately when the <code>hide</code> instance method has been called.</td>
+                    </tr>
+                    <tr>
+                      <td><code>hidden.bs.tooltip</code></td>
+                      <td>This event is fired when the tooltip has finished being hidden from the user (set by the <code>duration</code> option).</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="tooltipUsage">
@@ -1707,83 +1727,85 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
             <section id="popoverOptions">
               <h4>Options</h4>
               <p>The component covers all needed options, including those for a template system:</p>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>template</code></td>
-                    <td><em>markup</em></td>
-                    <td></td>
-                    <td>Option to use a custom HTML template via JavaScript only for your popovers. See examples below for info.</td>
-                  </tr>
-                  <tr>
-                    <td><code>content</code></td>
-                    <td><em>markup</em></td>
-                    <td></td>
-                    <td>Option to set the <b>content</b> of the popover via JavaScript or the <code>data-content="CONTENT"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>title</code></td>
-                    <td><em>markup</em></td>
-                    <td></td>
-                    <td>Option to set the <b>title</b> of the popover via JavaScript or the <code>data-title="TITLE"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>dismissible</code></td>
-                    <td><em>boolean</em></td>
-                    <td><em>false</em></td>
-                    <td>Option to option to make the popover dismissible. When true, it will also add an <kbd>X</kbd> button at the top-right of the popover. You can enable this option via 
-                      <code>data-dismissible="true"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>trigger</code></td>
-                    <td><em>string</em></td>
-                    <td><em>hover</em></td>
-                    <td>Option to change the component's action trigger event: <em>hover</em>, <em>focus</em> and <em>click</em>. In some cases you may want to open a popover on focus 
-                      for form elements or click for other buttons, you can specify that via JavaScript or the <code>data-trigger="EVENT"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>animation</code></td>
-                    <td><em>string</em></td>
-                    <td><em>fade</em></td>
-                    <td>Option to customize the component animation. If you are using a different animation other than <code>fade</code>, you can specify that via the <code>data-animation="ANIMATION"</code> 
-                      attribute. This will add an additional CSS class to the popover to enable a custom transition.</td>
-                  </tr>
-                  <tr>
-                    <td><code>placement</code></td>
-                    <td><em>string</em></td>
-                    <td><em>top</em></td>
-                    <td>Option to set a specific placement to <code>top</code>, <code>bottom</code>, <code>left</code> or <code>right</code>, relative to it's target. Can be set via both JavaScript and the 
-                      <code>data-placement="POSITION"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>duration</code></td>
-                    <td><em>number</em></td>
-                    <td><em>150</em></td>
-                    <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds. When using a CSS3 animation duration other than the default value, set the option via 
-                      JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>delay</code></td>
-                    <td><em>number</em></td>
-                    <td><em>100</em></td>
-                    <td>A short delay before hiding the popover.<br> Can be set via JavaScript or the <code>data-delay="DELAY"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>container</code></td>
-                    <td><em>selector</em><br>or <em>object</em></td>
-                    <td><code>&lt;document.body&gt;</code></td>
-                    <td>The container where your popovers get appended to. You can set the option via the <code>data-container="#elementID"</code> attribute or via JavaScript.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>template</code></td>
+                      <td><em>markup</em></td>
+                      <td></td>
+                      <td>Option to use a custom HTML template via JavaScript only for your popovers. See examples below for info.</td>
+                    </tr>
+                    <tr>
+                      <td><code>content</code></td>
+                      <td><em>markup</em></td>
+                      <td></td>
+                      <td>Option to set the <b>content</b> of the popover via JavaScript or the <code>data-content="CONTENT"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>title</code></td>
+                      <td><em>markup</em></td>
+                      <td></td>
+                      <td>Option to set the <b>title</b> of the popover via JavaScript or the <code>data-title="TITLE"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>dismissible</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>false</em></td>
+                      <td>Option to option to make the popover dismissible. When true, it will also add an <kbd>X</kbd> button at the top-right of the popover. You can enable this option via 
+                        <code>data-dismissible="true"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>trigger</code></td>
+                      <td><em>string</em></td>
+                      <td><em>hover</em></td>
+                      <td>Option to change the component's action trigger event: <em>hover</em>, <em>focus</em> and <em>click</em>. In some cases you may want to open a popover on focus 
+                        for form elements or click for other buttons, you can specify that via JavaScript or the <code>data-trigger="EVENT"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>animation</code></td>
+                      <td><em>string</em></td>
+                      <td><em>fade</em></td>
+                      <td>Option to customize the component animation. If you are using a different animation other than <code>fade</code>, you can specify that via the <code>data-animation="ANIMATION"</code> 
+                        attribute. This will add an additional CSS class to the popover to enable a custom transition.</td>
+                    </tr>
+                    <tr>
+                      <td><code>placement</code></td>
+                      <td><em>string</em></td>
+                      <td><em>top</em></td>
+                      <td>Option to set a specific placement to <code>top</code>, <code>bottom</code>, <code>left</code> or <code>right</code>, relative to it's target. Can be set via both JavaScript and the 
+                        <code>data-placement="POSITION"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>duration</code></td>
+                      <td><em>number</em></td>
+                      <td><em>150</em></td>
+                      <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds. When using a CSS3 animation duration other than the default value, set the option via 
+                        JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>delay</code></td>
+                      <td><em>number</em></td>
+                      <td><em>100</em></td>
+                      <td>A short delay before hiding the popover.<br> Can be set via JavaScript or the <code>data-delay="DELAY"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>container</code></td>
+                      <td><em>selector</em><br>or <em>object</em></td>
+                      <td><code>&lt;body&gt;</code></td>
+                      <td>The container where your popovers get appended to. You can set the option via JavaScript or the <code>data-container="#elementID"</code> attribute.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             <p>If a proper template is not specified via JavaScript or the content option is not set in any way, the <b>Popover</b> will not be initialized.</p>
             </section>
 
@@ -1810,32 +1832,34 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
             <section id="popoverEvents">
               <h4>Events</h4>
               <p>The component's original events are same as with the original jQuery Plugin, except <code>inserted.bs.popover</code>, just as explained for the <b>Tooltip</b> component.</p>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
-                  <tr>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>show.bs.popover</code></td>
-                    <td>This event fires immediately when the <code>show</code> instance method is called.</td>
-                  </tr>
-                  <tr>
-                    <td><code>shown.bs.popover</code></td>
-                    <td>This event is fired when the popover has been made visible to the user (set by the <code>duration</code> option).</td>
-                  </tr>
-                  <tr>
-                    <td><code>hide.bs.popover</code></td>
-                    <td>This event is fired immediately when the <code>hide</code> instance method has been called.</td>
-                  </tr>
-                  <tr>
-                    <td><code>hidden.bs.popover</code></td>
-                    <td>This event is fired when the popover has finished being hidden from the user (set by the <code>duration</code> option).</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>show.bs.popover</code></td>
+                      <td>This event fires immediately when the <code>show</code> instance method is called.</td>
+                    </tr>
+                    <tr>
+                      <td><code>shown.bs.popover</code></td>
+                      <td>This event is fired when the popover has been made visible to the user (set by the <code>duration</code> option).</td>
+                    </tr>
+                    <tr>
+                      <td><code>hide.bs.popover</code></td>
+                      <td>This event is fired immediately when the <code>hide</code> instance method has been called.</td>
+                    </tr>
+                    <tr>
+                      <td><code>hidden.bs.popover</code></td>
+                      <td>This event is fired when the popover has finished being hidden from the user (set by the <code>duration</code> option).</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="popoverUsage">
@@ -1971,24 +1995,26 @@ var popover2 = new Popover('.popover-via-template', { // where .popover-via-temp
             <section id="alertEvents">
               <h4>Events</h4>
               <p>The component's original events are same as with the original jQuery Plugin.</p>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
-                  <tr>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>close.bs.alert</code></td>
-                    <td>This event is fired immediately when the <code>close</code> instance method has been called.</td>
-                  </tr>
-                  <tr>
-                    <td><code>closed.bs.alert</code></td>
-                    <td>This event is fired when the alert has finished being hidden from the user.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>close.bs.alert</code></td>
+                      <td>This event is fired immediately when the <code>close</code> instance method has been called.</td>
+                    </tr>
+                    <tr>
+                      <td><code>closed.bs.alert</code></td>
+                      <td>This event is fired when the alert has finished being hidden from the user.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="alertUsage">
@@ -2069,24 +2095,26 @@ myAlertInit.close();
             <p><b>Button</b> doesn't cover <a href="http://getbootstrap.com/javascript/#buttons-single-toggle" target="_blank">single toggle</a> feature. The supported toggle feature could very much fill the same purpose.</p>
             <section id="buttonOptions">
               <h4>Options</h4>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>option</code></td>
-                    <td><em>string</em></td>
-                    <td></td>
-                    <td>The only option is for the component's stateful switch. Can be used <b>only</b> in a combination of the <code>data-OPTION-text="Button text"</code> attribute and a JavaScript call.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>option</code></td>
+                      <td><em>string</em></td>
+                      <td></td>
+                      <td>The only option is for the component's stateful switch. Can be used <b>only</b> in a combination of the <code>data-OPTION-text="Button text"</code> attribute and a JavaScript call.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="buttonMethods">
@@ -2097,20 +2125,22 @@ myAlertInit.close();
             <section id="buttonEvents">
               <h4>Events</h4>
               <p>Unlike the original jQuery Plugin, the <b>Button</b> component comes with an original event, consistent in all supported browsers.</p>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
-                  <tr>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>change.bs.button</code></td>
-                    <td>The event is fired for a <code>.btn-group</code> and each child <code>.btn</code> that changed it's <code>checked</code> state.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>change.bs.button</code></td>
+                      <td>The event is fired for a <code>.btn-group</code> and each child <code>.btn</code> that changed it's <code>checked</code> state.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="buttonUsage">
@@ -2271,31 +2301,33 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
             <section id="collapseOptions">
               <h4>Options</h4>
               <p>The options below allow you to connect a collapse to a parent accordion and a handy option to sync with the animation duration.</p>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>parent</code></td>
-                    <td><em>selector</em><br>or<br>reference</td>
-                    <td></td>
-                    <td>Option to reference a parent to be used as an accordion. When a parent is set and found, it will enable the functionality described in the <code>show()</code> method below. Can be set 
-                      via JavaScript or the <code>data-parent="SELECTOR"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>duration</code></td>
-                    <td><em>number</em></td>
-                    <td><em>300</em></td>
-                    <td>Option the component's animation duration in miliseconds required to emulate <code>transitionend</code>. Can be set via JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>parent</code></td>
+                      <td><em>selector</em><br>or<br>reference</td>
+                      <td></td>
+                      <td>Option to reference a parent to be used as an accordion. When a parent is set and found, it will enable the functionality described in the <code>show()</code> method below. Can be set 
+                        via JavaScript or the <code>data-parent="SELECTOR"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>duration</code></td>
+                      <td><em>number</em></td>
+                      <td><em>300</em></td>
+                      <td>Option the component's animation duration in miliseconds required to emulate <code>transitionend</code>. Can be set via JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="collapseMethods">
@@ -2320,32 +2352,34 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
             <section id="collapseEvents">
               <h4>Events</h4>
               <p>All the component's events are attached to the collapsible element and not its targeting button / element, with other words, the <code>event.target</code> is the element with the <code>class="collapse"</code> attribute.</p>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
-                  <tr>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>show.bs.collapse</code></td>
-                    <td>This event fires immediately when the <code>show</code> instance method is called.</td>
-                  </tr>
-                  <tr>
-                    <td><code>shown.bs.collapse</code></td>
-                    <td>This event is fired when a collapse element has been made visible to the user (set by the <code>duration</code> option).</td>
-                  </tr>
-                  <tr>
-                    <td><code>hide.bs.collapse</code></td>
-                    <td> This event is fired immediately when the <code>hide</code> method has been called. </td>
-                  </tr>
-                  <tr>
-                    <td><code>hidden.bs.collapse</code></td>
-                    <td>This event is fired when a collapse element has been hidden from the user (set by the <code>duration</code> option).</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>show.bs.collapse</code></td>
+                      <td>This event fires immediately when the <code>show</code> instance method is called.</td>
+                    </tr>
+                    <tr>
+                      <td><code>shown.bs.collapse</code></td>
+                      <td>This event is fired when a collapse element has been made visible to the user (set by the <code>duration</code> option).</td>
+                    </tr>
+                    <tr>
+                      <td><code>hide.bs.collapse</code></td>
+                      <td> This event is fired immediately when the <code>hide</code> method has been called. </td>
+                    </tr>
+                    <tr>
+                      <td><code>hidden.bs.collapse</code></td>
+                      <td>This event is fired when a collapse element has been hidden from the user (set by the <code>duration</code> option).</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="collapseUsage">
@@ -2558,42 +2592,44 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
             <section id="carouselOptions">
               <h4>Options</h4>
               <p>The options below allow you to connect a collapse to a parent accordion and a handy option to sync with the animation duration.</p>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>keyboard</code></td>
-                    <td><em>boolean</em></td>
-                    <td><em>true</em></td>
-                    <td>Option that allows yout to navigate the carousel with left and right arrows.</td>
-                  </tr>
-                  <tr>
-                    <td><code>pause</code></td>
-                    <td><em>boolean</em><br>or<br> the text <em>'hover'</em></td>
-                    <td><em>'hover'</em></td>
-                    <td>Option that makes possible to pause the carousel transition on mouse hover and touchdown. If you want to disable pause on hover, do that via JavaScript or the <code>data-pause="false"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>interval</code></td>
-                    <td><em>number</em></td>
-                    <td><em>5000</em></td>
-                    <td>Option the component's delay between transitions in miliseconds. Can be set via JavaScript or the <code>data-interval="INTERVAL"</code> attribute. If you want to disable the automatic transition, you can set this option to <em>false</em>.</td>
-                  </tr>
-                  <tr>
-                    <td><code>duration</code></td>
-                    <td><em>number</em></td>
-                    <td><em>600</em></td>
-                    <td>Option the component's animation duration in miliseconds required to emulate <code>transitionend</code>. Can be set via JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>keyboard</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>true</em></td>
+                      <td>Option that allows yout to navigate the carousel with left and right arrows.</td>
+                    </tr>
+                    <tr>
+                      <td><code>pause</code></td>
+                      <td><em>boolean</em><br>or<br> the text <em>'hover'</em></td>
+                      <td><em>'hover'</em></td>
+                      <td>Option that makes possible to pause the carousel transition on mouse hover and touchdown. If you want to disable pause on hover, do that via JavaScript or the <code>data-pause="false"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>interval</code></td>
+                      <td><em>number</em></td>
+                      <td><em>5000</em></td>
+                      <td>Option the component's delay between transitions in miliseconds. Can be set via JavaScript or the <code>data-interval="INTERVAL"</code> attribute. If you want to disable the automatic transition, you can set this option to <em>false</em>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>duration</code></td>
+                      <td><em>number</em></td>
+                      <td><em>600</em></td>
+                      <td>Option the component's animation duration in miliseconds required to emulate <code>transitionend</code>. Can be set via JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section id="carouselMethods">
@@ -2617,24 +2653,26 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
             <section id="carouselEvents">
               <h4>Events</h4>
               <p>All the component's events are attached to the <code>&lt;div class="carousel"&gt;</code> element, and the <code>event.relatedTarget</code> is the newly activated carousel item. The events provide no mention of the animation direction, because most polyfills do not allow us to set new custom properties to the event objects, we store the transition direction in the initialization object. See the <a href="#usageCarousel">Usage</a> section.</p>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
-                  <tr>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>slide.bs.carousel</code></td>
-                    <td>This event fires immediately when the <code>slideTo()</code> instance method is called.</td>
-                  </tr>
-                  <tr>
-                    <td><code>slid.bs.carousel</code></td>
-                    <td>This event is fired when transition has finished (set by the <code>duration</code> option).</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>slide.bs.carousel</code></td>
+                      <td>This event fires immediately when the <code>slideTo()</code> instance method is called.</td>
+                    </tr>
+                    <tr>
+                      <td><code>slid.bs.carousel</code></td>
+                      <td>This event is fired when transition has finished (set by the <code>duration</code> option).</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>            
 
             <section id="carouselUsage">
@@ -2834,36 +2872,38 @@ mainSlider.addEventListener('slid.bs.carousel', function(e) {
             
             <section id="affixOptions">
               <h4>Options</h4>
-              <table class="table table-bordered table-striped js-options-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>type</th>
-                    <th>default</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>target</code></td>
-                    <td><em>selector</em><br>or<br>reference</td>
-                    <td></td>
-                    <td>Option to pin an element to top once the scroll reaches it's target offsetTop. You can set the target via <code>data-target=".target-className"</code> or <code>data-target="#target-ID"</code> attribute.</td>
-                  </tr>
-                  <tr>
-                    <td><code>offsetTop</code></td>
-                    <td><em>number</em><br>or<br><em>function</em></td>
-                    <td></td>
-                    <td>Option to pin an element to top when scroll reaches a specific value. This can be set via the <code>data-offset-top="OFFSET"</code> attribute, or via JavaScript you can assign a number or a function to the <code>offsetTop</code> option.</td>
-                  </tr>
-                  <tr>
-                    <td><code>offsetBottom</code></td>
-                    <td><em>number</em><br>or<br><em>function</em></td>
-                    <td></td>
-                    <td>Option to pin an element to bottom at a certain offset relative to the window maximum scroll. This can be set via the <code>data-offset-bottom="OFFSET"</code> attribute, or via JavaScript you can assign a number or a function to the <code>offsetBottom</code> option.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped js-options-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>type</th>
+                      <th>default</th>
+                      <th>description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>target</code></td>
+                      <td><em>selector</em><br>or<br>reference</td>
+                      <td></td>
+                      <td>Option to pin an element to top once the scroll reaches it's target offsetTop. You can set the target via <code>data-target=".target-className"</code> or <code>data-target="#target-ID"</code> attribute.</td>
+                    </tr>
+                    <tr>
+                      <td><code>offsetTop</code></td>
+                      <td><em>number</em><br>or<br><em>function</em></td>
+                      <td></td>
+                      <td>Option to pin an element to top when scroll reaches a specific value. This can be set via the <code>data-offset-top="OFFSET"</code> attribute, or via JavaScript you can assign a number or a function to the <code>offsetTop</code> option.</td>
+                    </tr>
+                    <tr>
+                      <td><code>offsetBottom</code></td>
+                      <td><em>number</em><br>or<br><em>function</em></td>
+                      <td></td>
+                      <td>Option to pin an element to bottom at a certain offset relative to the window maximum scroll. This can be set via the <code>data-offset-bottom="OFFSET"</code> attribute, or via JavaScript you can assign a number or a function to the <code>offsetBottom</code> option.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <p>Using static values for <code>offsetTop</code> and / or <code>offsetBottom</code> would work best on non-responsive websites, or when the elements don't change their height when window resize occurs.</p>
             </section>
             
@@ -2879,40 +2919,42 @@ mainSlider.addEventListener('slid.bs.carousel', function(e) {
             
             <section id="affixEvents">
               <h4>Events</h4>
-              <table class="table table-bordered table-striped bs-events-table">
-                <thead>
-                  <tr>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>affix.bs.affix</code></td>
-                    <td>This event fires immediately before the element has been affixed.</td>
-                  </tr>
-                  <tr>
-                    <td><code>affixed.bs.affix</code></td>
-                    <td>This event is fired after the element has been affixed.</td>
-                  </tr>
-                  <tr>
-                    <td><code>affix-top.bs.affix</code></td>
-                    <td>This event fires immediately before the element has been affixed-top.</td>
-                  </tr>
-                  <tr>
-                    <td><code>affixed-top.bs.affix</code></td>
-                    <td>This event is fired after the element has been affixed-top.</td>
-                  </tr>
-                  <tr>
-                    <td><code>affix-bottom.bs.affix</code></td>
-                    <td>This event fires immediately before the element has been affixed-bottom.</td>
-                  </tr>
-                  <tr>
-                    <td><code>affixed-bottom.bs.affix</code></td>
-                    <td>This event is fired after the element has been affixed-bottom.</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped bs-events-table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>affix.bs.affix</code></td>
+                      <td>This event fires immediately before the element has been affixed.</td>
+                    </tr>
+                    <tr>
+                      <td><code>affixed.bs.affix</code></td>
+                      <td>This event is fired after the element has been affixed.</td>
+                    </tr>
+                    <tr>
+                      <td><code>affix-top.bs.affix</code></td>
+                      <td>This event fires immediately before the element has been affixed-top.</td>
+                    </tr>
+                    <tr>
+                      <td><code>affixed-top.bs.affix</code></td>
+                      <td>This event is fired after the element has been affixed-top.</td>
+                    </tr>
+                    <tr>
+                      <td><code>affix-bottom.bs.affix</code></td>
+                      <td>This event fires immediately before the element has been affixed-bottom.</td>
+                    </tr>
+                    <tr>
+                      <td><code>affixed-bottom.bs.affix</code></td>
+                      <td>This event is fired after the element has been affixed-bottom.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
             
             <section id="affixUsage">
