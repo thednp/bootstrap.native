@@ -113,7 +113,10 @@
     hasAttribute         = 'hasAttribute',
     getElementsByTagName = 'getElementsByTagName',
     getBoundingClientRect= 'getBoundingClientRect',
+    querySelectorAll     = 'querySelectorAll',
+    getElementsByCLASSNAME = 'getElementsByClassName',
   
+    indexOf    = 'indexOf',
     collapsing = 'collapsing',
     parentNode = 'parentNode',
     length     = 'length',
@@ -141,9 +144,13 @@
     },
   
     // selection methods
-    getElementsByClassName = function(element,classNAME) {
-      var selectionMethod = isIE === 8 ? 'querySelectorAll' : 'getElementsByClassName'; // getElementsByClassName IE8+
-      return element[selectionMethod]( isIE === 8 ? '.' + classNAME.replace(/\s(?=[a-z])/g,'.') : classNAME );
+    nodeListToArray = function(nodeList){
+      var childItems = []; for (var i = 0, nll = nodeList[length]; i<nll; i++) { childItems.push( nodeList[i] ) }
+      return childItems;
+    },
+    getElementsByClassName = function(element,classNAME) { // getElementsByClassName IE8+
+      var selectionMethod = isIE === 8 ? querySelectorAll : getElementsByCLASSNAME;      
+      return nodeListToArray(element[selectionMethod]( isIE === 8 ? '.' + classNAME.replace(/\s(?=[a-z])/g,'.') : classNAME ));
     },
     queryElement = function (selector, parent) { // selector utility since 1.2.0
       var lookUp = parent ? parent : document;
@@ -190,7 +197,7 @@
       var lookUp = collection && collection[length] ? collection : AllDOMElements;
       for (var i=0; i < lookUp[length]; i++) {
         var attrValue = lookUp[i][getAttribute](dataAttribute), expectedAttrValue = component.replace(/spy/i,'').toLowerCase();
-        if ( attrValue && component === stringButton && ( attrValue.indexOf(expectedAttrValue) > -1 ) // data-toggle="buttons"
+        if ( attrValue && component === stringButton && ( attrValue[indexOf](expectedAttrValue) > -1 ) // data-toggle="buttons"
             || attrValue === expectedAttrValue ) { // all other components
           new constructor(lookUp[i]);
         }
@@ -262,7 +269,7 @@
         element.style[top] = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2 + 'px';
         element.style[left] = rect[left] + scroll.x + linkDimensions.w + 'px';
       }
-      element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipPositions,position));
+      element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     },
     updatePlacement = function(position) {
       return position === top ? bottom : // top
@@ -604,7 +611,7 @@
     // bind, event targets
     var self = this, index = element.index = 0, timer = element.timer = 0, 
       isSliding = false, // isSliding prevents click event handlers when animation is running
-      slides = [].slice.call(getElementsByClassName(element,'item')), total = slides[length],
+      slides = getElementsByClassName(element,'item'), total = slides[length],
       slideDirection = this[direction] = left,
       controls = getElementsByClassName(element,component+'-control'),
       leftArrow = controls[0], rightArrow = controls[1],
@@ -756,7 +763,7 @@
       }
     };
     this.getActiveIndex = function () {
-      return slides.indexOf(getElementsByClassName(element,'item active')[0]) || 0;
+      return slides[indexOf](getElementsByClassName(element,'item active')[0]) || 0;
     };
   
     // init
@@ -916,7 +923,7 @@
       component = 'dropdown', open = 'open',
       relatedTarget = null,
       menu = queryElement('.dropdown-menu', parent),
-      children = [], childrenObject = menu[getElementsByTagName]('*'),
+      children = nodeListToArray( menu[getElementsByTagName]('*')),
   
       // handlers
       keyHandler = function(e) {
@@ -931,7 +938,7 @@
           relatedTarget = element;
           self.toggle();
         } else if ( isOpen ) {
-          if ( (eventTarget === menu || children && children.indexOf(eventTarget) > -1) && ( self.persist || hasData ) ) {
+          if ( (eventTarget === menu || children && children[indexOf](eventTarget) > -1) && ( self.persist || hasData ) ) {
             return;
           } else { relatedTarget = null; hide(); }
         }
@@ -954,8 +961,6 @@
         off(document, keydownEvent, keyHandler);
         isOpen = false;
       };
-  
-    for ( var i=0, l = childrenObject[length]||0; i<l; i++) { l && children.push(childrenObject[i]); } // populate children
   
     // public methods
     this.toggle = function() {
@@ -1406,7 +1411,7 @@
     var updateItem = function(index) {
         var parent = items[index][parentNode], // item's parent LI element
           targetElement = targetContainers[index], // the menu item targets this element
-          parentTargetOffsetTop = !isWindow && targetContainers.indexOf(targetElement[parentNode]) > -1 ? targetElement[parentNode][offsetTop] : 0,
+          parentTargetOffsetTop = !isWindow && targetContainers[indexOf](targetElement[parentNode]) > -1 ? targetElement[parentNode][offsetTop] : 0,
           targetRect = isWindow && targetElement[getBoundingClientRect](),
   
           isActive = hasClass(parent,active) || false,
