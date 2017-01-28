@@ -117,10 +117,11 @@
     getElementsByCLASSNAME = 'getElementsByClassName',
   
     indexOf    = 'indexOf',
-    collapsing = 'collapsing',
     parentNode = 'parentNode',
     length     = 'length',
+    
     active     = 'active',
+    collapsing = 'collapsing',
     disabled   = 'disabled',
     loading    = 'loading',
     left       = 'left',
