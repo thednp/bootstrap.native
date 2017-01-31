@@ -427,11 +427,8 @@ var btn = new bsn.Button(...);
               <p>The DATA API is suited for static content dialogs.</p>
               
               <h5>Via JavaScript</h5>
-              <p>When you write your code, first make sure a modal template is present in the DOM and one or more triggering buttons that reference that modal. Via JavaScript initialization the 
-                  <code>data-toggle="modal"</code> is not required, so you can grab a triggering element and initiate <b>Modal</b>, then immediately get access to methods. The JavaScript way is the <b>only</b> 
-                  way to deal with dynamically added modals.</p> 
-              <p>The original plugin will initialize for the modal element, but we initialize for the triggering element, and this has it's own advantages and we'll disect that in a second. Let's create a very 
-                basic modal template for the record.</p>
+              <p>When you write your code, first make sure a modal template is present in the DOM. Generally you can initialize <b>Modal</b> for any instance of <code>&lt;div class="modal"&gt;</code> and immediately get access to methods. Alternativelly you can initialize on a triggering element, similar to how the DATA API works, in this case the <code>data-toggle="modal"</code> is not required, but you need to specify a modal reference via a specific attribute, like so <code>&lt;button data-target="#modalId"&gt;</code> or <code>&lt;a href="#modalId"&gt;</code>.</p> 
+              <p>The JavaScript way is the <b>only</b> way to deal with dynamically added modals. Let's create a very basic modal template for the record.</p>
 
 <pre><code class="language-markup">&lt;!-- blank modal template --&gt;
 &lt;div id="modalID" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"&gt;
@@ -442,14 +439,15 @@ var btn = new bsn.Button(...);
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-              <p>Now let's initialize a triggering button element that targets the above modal via <code>data-target="#myModal"</code> or <code>href="#myModal"</code>.</p>
 
-<pre><code class="language-javascript">// get a certain button trigger
-var myModalTriggerButton = document.getElementById('myModalTrigger');
+              <p>If you are looking for the functionality that grants you full control over your modal without the need of a triggering element, you can initialize that modal and get access to public methods right away:</p>
 
-// initiate Modal with all options
+<pre><code class="language-javascript">// get the modal by ID
+var myModal = document.getElementById('modalID');
+
+// initialize on a &lt;div class="modal"&gt; with all options
 // Note: options object is optional
-var myModalInstance = new Modal(myModalTriggerButton, 
+var myModalInstance = new Modal(myModal, 
 { // options object
   content: '&lt;div class="modal-body"&gt;Some content to be set on init&lt;/div&gt;', // sets modal content
   backdrop: 'static', // we don't want to dismiss Modal when Modal or backdrop is the click event target
@@ -458,11 +456,35 @@ var myModalInstance = new Modal(myModalTriggerButton,
 });
 
 // OR initialize and show the modal right away
-var myModalInstance = new Modal(myModalTriggerButton, options).show();
+var myModalInstance = new Modal(myModal, options);
+myModalInstance.show();
 // now you know why we don't need a show option
 </code></pre>
 
-              <p>Now we have an initialization reference in <code>myModalInstance</code>, we can start applying the public methods.</p>
+              <p>In other cases you can designate one or multiple triggering elements to open your modal, they will be the target of the constructor initialization and allow you to use same modal as a template to handle contents pushed by the triggering elements.</p>
+
+<pre><code class="language-markup">&lt;!-- &lt;button&gt; referencing the modal --&gt;
+&lt;button type="button" id="buttonID" class="btn btn-primary" data-target="#modalID"&gt;My Button&lt;/button&gt;
+
+&lt;!-- &lt;a&gt; referencing the modal --&gt;
+&lt;a id="anchorID" class="btn btn-primary" href="#modalID"&gt;My Link&lt;/a&gt;
+</code></pre>
+
+              <p>Now let's initialize one of them right away:</p>
+
+<pre><code class="language-javascript">// get a certain button trigger
+var myButton = document.getElementById('buttonID');
+
+// initiate Modal on a triggering element
+var myModalInstance = new Modal(myButton, 
+{ // options object
+  content: '&lt;div class="modal-body"&gt;Some content to be set on init&lt;/div&gt;', // sets modal content
+  keyboard: false, // we don't want to dismiss Modal on pressing Esc key
+  duration: 700, // let's assume we changed the animation duration for Modal
+});
+</code></pre>
+
+              <p>Now we have an initialization reference in <code>myModalInstance</code>, regardless of which element is the target or our constructor, we can start applying the public methods.</p>
 
 <pre><code class="language-javascript">// show the modal at any time
 myModalInstance.show();
@@ -484,10 +506,10 @@ myModalInstance.update();
 
 <pre><code class="language-javascript">// GET THE EVENT TARGET, THE MODAL
 // when we are certain which modal ID to work with
-var myModal = document.getElementById('myModal');
+var myModal = document.getElementById('modalID');
 
-// also button trigger related (especially when modals are triggered by multiple instances) 
-// the triggering element is a link
+// also button trigger related (especially when modals are targeted by multiple triggering elements) 
+// a triggering element is a link
 var myModal = document.getElementById(myModalTriggerButton.getAttribute('href').replace('#','')); 
 // OR triggering element is not a link
 var myModal = document.getElementById(myModalTriggerButton.getAttribute('data-target').replace('#','')); 
@@ -520,21 +542,20 @@ myModal.addEventListener('hidden.bs.modal', function(event){
 }, false);
 </code></pre>
 
-              <p>Additionally the component will store in the modal and it's triggering elements some references, for the internal execution, hopefully would help you as well:</p>
+              <p>Additionally the component will store in the modal and it's triggering elements some references, for the internal execution, hopefully would help you as well. For instance, when a modal is referenced by one or more triggering elements, it will know which one was clicked last time to execute the <code>.show()</code> instance method.</p>
 
-<pre><code class="language-javascript">// modal knows which element was clicked to execute the .show() method
-var lastModalTrigger = myModal.modalTrigger; 
-// for modals with multiple triggering elements, the value changes every time the triggering element was clicked
+<pre><code class="language-javascript">// for modals with multiple triggering elements, the value changes every time the triggering element was clicked
+var lastModalTrigger = myModal.modalTrigger;
 </code></pre>
 
               <p>Also each triggering element holds the initialization of the <b>Modal</b> component:</p>
 
-<pre><code class="language-javascript">// assuming we a modal was initialized via DATA API
+<pre><code class="language-javascript">// when a modal was initialized via DATA API
+// OR a triggering element is the target of the Modal constructor
 var myModalInstance === document.getElementById('myModalTrigger').Modal; 
 </code></pre>
               
-              <p>These references are used internally to hide currently visible modals when showing another one, and this is the reason why we initialize on the triggering element and not the modal, 
-                as a modal cannot hold multiple initialization instances for each triggering element.</p>
+              <p>These references are used internally to hide currently visible modals when showing another one. When the component is used via JavaScript only without a triggering element, you need to manually hide (via <code>.hide()</code> instance method) any visible modal before showing another modal (via the <code>.show()</code> instance method).</p>
             </section>
 
             <section id="modalExamples">
@@ -599,11 +620,15 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
               </div>
 
               <h5>Via JavaScript</h5>
-              <p>The following examples are focused on everything the <b>Modal</b> component offers for JavaScript initialization and usage. Given a modal template and some triggering elements that target the modal, 
-                let's initialize them one by one:</p>
+              <p>The following examples are focused on everything the <b>Modal</b> component offers for JavaScript initialization and usage. Given a modal template and some buttons to open the modal on click, 
+                let's initialize it first:</p>
 
-<pre><code class="language-javascript">// we grab the trigger button by ID
-var btnModal = document.getElementById('modalTriggerJS');
+<pre><code class="language-javascript">// we grab a modal by ID
+var myModal = document.getElementById('myModal');
+
+// we grab some button by ID, we will use it later
+var btnModal = document.getElementById('openModalViaJS');
+// this button IS NOT a triggering element, as it has no reference to the above modal
 
 // set a custom content
 var firstModalContent = '&lt;div class="modal-header"&gt;'
@@ -620,23 +645,28 @@ var firstModalContent = '&lt;div class="modal-header"&gt;'
   +'&lt;/div&gt;';
 
 // initialize Modal for this triggering element
-var modalInitJS = new Modal(btnModal, {
+var modalInitJS = new Modal(myModal, {
   content: firstModalContent,
   backdrop: 'static'
 });
 
 // OR initialize with no options provided
 // the options obect is optional
-var modalInitJS = new Modal(btnModal);
+var modalInitJS = new Modal(myModal);
+
+// when we click btnModal, open the modal
+btnModal.addEventListener('click', function(e){
+  modalInitJS.show();
+}, false)
 </code></pre>
 
               <p>Here is what the above code does:</p>
-              <p><button id="modalTriggerJS" type="button" class="btn btn-default btn-lg" data-target="#myModalJS">Open Modal</button></p>
+              <p><button id="openModalViaJS" type="button" class="btn btn-default btn-lg">Open Modal</button></p>
 
               <p>Next we will initialize another triggering button, and attach a handler to it to change content of the modal when clicked.</p>
 
 <pre><code class="language-javascript">// the reiggering element
-var btnModal2 = document.getElementById('modalTriggerJS2');
+var btnModal2 = document.getElementById('openModalViaJS2');
 
 // set some custom content or get if from external sources
 var externalModalContent = {
@@ -670,7 +700,7 @@ btnModal2.addEventListener('click', function() {
 
               <p>By changing the <code>innerHTML</code> of the <code>modal-header</code>, <code>modal-body</code> or <code>modal-footer</code> with variables, you can achieve exactly the same as the 
                 <a href="http://getbootstrap.com/javascript/#modals-related-target" target="_blank">other examples</a> from the demo of the original plugin. So we use same modal, but with different content:</p>
-              <p><a id="modalTriggerJS2" class="btn btn-default btn-lg" href="#myModalJS">Open Modal</a></p>
+              <p><a id="openModalViaJS2" class="btn btn-default btn-lg">Open Modal</a></p>
 
               <p>Now if you go back to the previous triggering button and click it, you will notice that the modal is still like it was set by the second triggering button. Let's reset the modal content:</p>
 

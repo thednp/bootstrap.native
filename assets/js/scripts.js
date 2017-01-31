@@ -1,6 +1,6 @@
 // Modal initialized with JavaScript
-var modalFrame = document.getElementById('myModalJS'); // we need a blank modal to fill up and target our object function
-var btnModal = document.getElementById('modalTriggerJS');
+var myModalJS = document.getElementById('myModalJS'); // we need a blank modal to fill up and target our object function
+var btnModal = document.getElementById('openModalViaJS');
 var firstModalContent = '<div class="modal-header">'
 		+'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>'
 		+'<h4 class="modal-title" id="myModalJSLabel">Modal title</h4>'
@@ -13,24 +13,27 @@ var firstModalContent = '<div class="modal-header">'
 		+'<button type="button" class="btn btn-primary">Save changes</button>'
 		+'</div>';
 
-// init first trigger
-var modalInitJS = new Modal(btnModal, {
+// init the modal
+var modalInitJS = new Modal(myModalJS, {
 	content: firstModalContent,
 	backdrop: 'static'
 });
 
-// grab second trigger
-var btnModal2 = document.getElementById('modalTriggerJS2');
+btnModal.addEventListener('click',function(e){
+	modalInitJS.show();
+},false);
+
+// another button
+var btnModal2 = document.getElementById('openModalViaJS2');
 var externalModalContent = {
 	title: 'Some title coming from space, a custom variable',
 	content: 'This example also uses the specific modal events like <code>show.bs.modal</code>, so please open your console and check the logs. This is also a variable here, efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. Dramatically maintain clicks-and-mortar solutions without functional solutions.',
 };
 
-// init second trigger
-var modalInitJS2 = new Modal(btnModal2, {backdrop: 'static'});
+// set new content for the modal and show it
 btnModal2.addEventListener('click', function() {
 	//template content for modal example 2
-	modalInitJS2.setContent('<div class="modal-header">'
+	modalInitJS.setContent('<div class="modal-header">'
 		+'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>'
 		+'<h4 class="modal-title" id="myModalJSLabel">'+externalModalContent.title+'</h4>'
 		+'</div>'
@@ -41,9 +44,10 @@ btnModal2.addEventListener('click', function() {
 		+'<button type="button" class="btn btn-danger">Delete</button>'
 		+'<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>'
 		+'</div>');
+	modalInitJS.show();
 }, false);
 
-// a reset content
+// another button to be used to reset modal content
 var btnModalNotTrigger = document.getElementById('modalNotTriggerJS');
 btnModalNotTrigger.addEventListener('click', function(e) {
 	e.preventDefault();
@@ -52,18 +56,16 @@ btnModalNotTrigger.addEventListener('click', function(e) {
 }, false);
 
 // NEW added events to Modal
-modalFrame.addEventListener('show.bs.modal', function(e) {
-	var related = null;
-	related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
+myModalJS.addEventListener('show.bs.modal', function(e) {
+	var related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
 	console.log( 'The "show.bs.modal" event fired for #' + e.target.id + related ); 
 }, false);
-modalFrame.addEventListener('shown.bs.modal', function(e) {
-	var related = null;
-	related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
+myModalJS.addEventListener('shown.bs.modal', function(e) {
+	var related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
 	console.log( 'The "shown.bs.modal" event fired for #' + e.target.id + related ); 
 }, false);
-modalFrame.addEventListener('hide.bs.modal', function(e) { console.log( 'The "hide.bs.modal" event fired for #' + e.target.id ); }, false);
-modalFrame.addEventListener('hidden.bs.modal', function(e) { console.log( 'The "hidden.bs.modal" event fired for #' + e.target.id ); }, false);
+myModalJS.addEventListener('hide.bs.modal', function(e) { console.log( 'The "hide.bs.modal" event fired for #' + e.target.id ); }, false);
+myModalJS.addEventListener('hidden.bs.modal', function(e) { console.log( 'The "hidden.bs.modal" event fired for #' + e.target.id ); }, false);
 
 // updating modal while visible
 var modalUpdate = document.getElementById('modalUpdate'), // the trigger
