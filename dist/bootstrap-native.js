@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.1 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.2 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -27,7 +27,7 @@
   ----------------------------------------------------------------*/
   
   // globals
-  var global = typeof global !== 'undefined' ? global : this||window,
+  var globalObject = typeof global !== 'undefined' ? global : this||window,
     doc = document.documentElement, body = document.body,
     
     // IE browser detect
@@ -153,10 +153,9 @@
       var selectionMethod = isIE === 8 ? querySelectorAll : getElementsByCLASSNAME;      
       return nodeListToArray(element[selectionMethod]( isIE === 8 ? '.' + classNAME.replace(/\s(?=[a-z])/g,'.') : classNAME ));
     },
-    queryElement = function (selector, parent) { // selector utility since 1.2.0
+    queryElement = function (selector, parent) {
       var lookUp = parent ? parent : document;
-      return typeof selector === 'object' ? selector : 
-        (/^#/.test(selector) ? document.getElementById(selector.replace('#', '')) : lookUp.querySelector(selector));
+      return typeof selector === 'object' ? selector : lookUp.querySelector(selector);
     },
     getClosest = function (element, selector) { //element is the element and selector is for the closest parent element to find
     // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
@@ -189,11 +188,7 @@
     AllDOMElements = document[getElementsByTagName]('*'),
   
     /* Init DATA API
-    *  -------------
-    *  component : Dropdown
-    *  constructor : Dropdown() constructor
-    *  dataAttribute : data-toggle 
-    */
+    --------------*/
     initializeDataAPI = function( component, constructor, dataAttribute, collection ){
       var lookUp = collection && collection[length] ? collection : AllDOMElements;
       for (var i=0; i < lookUp[length]; i++) {
@@ -204,22 +199,11 @@
         }
       }
     },
-    /* BULK initialization
-    *  -------------------
-    * you can uncomment the below to trigger a global re-initialization 
-    * at any time you can either go for your own HTMLCollection / Array object
-    * or use with no argument to use the above AllDOMElements collection */
-    // components = [stringAffix, stringAlert, stringButton, stringCarousel, stringCollapse, stringDropdown, stringModal, stringPopover, stringScrollSpy, stringTab, stringToolTip],
-    // componentsSelectors = [dataSpy, dataDismiss, dataToggle, dataRide, dataToggle, dataToggle, dataToggle, dataToggle, dataSpy, dataToggle, dataToggle],
-    // bulkInitializeDataAPI = function(collection){
-    //   for (var i=0; i<components[length]; i++){
-    //     initializeDataAPI( components[i], global[components[i]], componentsSelectors[i], collection );
-    //   }
-    // },
   
     // tab / collapse stuff
     getOuterHeight = function (child) {
-      var style = child && (child.currentStyle || global.getComputedStyle(child)), // the getComputedStyle polyfill would do this for us, but we want to make sure it does
+      // the getComputedStyle polyfill would do this for us, but we want to make sure it does
+      var style = child && (child.currentStyle || globalObject.getComputedStyle(child)), 
         btp = /px/.test(style.borderTopWidth) ? Math.round(style.borderTopWidth.replace('px','')) : 0,
         btb = /px/.test(style.borderBottomWidth) ? Math.round(style.borderBottomWidth.replace('px','')) : 0,
         mtp = /px/.test(style.marginTop)  ? Math.round(style.marginTop.replace('px',''))    : 0,
@@ -238,13 +222,13 @@
     isElementInViewport = function(element) { // check if this.tooltip is in viewport
       var rect = element[getBoundingClientRect]();
       return ( rect[top] >= 0 && rect[left] >= 0 &&
-        rect[bottom] <= (global[innerHeight] || doc[clientHeight]) &&
-        rect[right] <= (global[innerWidth] || doc[clientWidth]) )
+        rect[bottom] <= (globalObject[innerHeight] || doc[clientHeight]) &&
+        rect[right] <= (globalObject[innerWidth] || doc[clientWidth]) )
     },
     getScroll = function() { // also Affix and ScrollSpy uses it
       return {
-        y : global.pageYOffset || doc[scrollTop],
-        x : global.pageXOffset || doc[scrollLeft]
+        y : globalObject.pageYOffset || doc[scrollTop],
+        x : globalObject.pageXOffset || doc[scrollLeft]
       }
     },
     styleTip = function(link,element,position,container) { // both popovers and tooltips
@@ -390,11 +374,11 @@
     };
   
     // init
-    if ( !(stringAffix in element ) ) {
-      on( global, scrollEvent, this[update] );
-      on( global, resizeEvent, function() { setTimeout(function(){ self[update](); }, resizeDelay); });
-      element[stringAffix] = this;
+    if ( !(stringAffix in element ) ) { // prevent adding event handlers twice
+      on( globalObject, scrollEvent, this[update] );
+      on( globalObject, resizeEvent, function() { setTimeout(function(){ self[update](); }, resizeDelay); });
     }
+    element[stringAffix] = this;
   
     this[update]();
   };
@@ -444,10 +428,10 @@
     };
   
     // init
-    if ( !(stringAlert in element ) ) {
+    if ( !(stringAlert in element ) ) { // prevent adding event handlers twice
       on(element, clickEvent, clickHandler);
-      element[stringAlert] = this;
     }
+    element[stringAlert] = this;
   };
   
   // ALERT DATA API
@@ -555,17 +539,17 @@
       };
   
     // init
-    if ( hasClass(element,'btn') ) { // when Button text is used we don't register the initialization in the BootstrapNative object
+    if ( hasClass(element,'btn') ) { // when Button text is used we execute it as an instance method
       if ( option !== null ) {
         if ( option !== reset ) { setState(); } 
         else { resetState(); }
       }
     }
-    if ( hasClass(element,'btn-group') ) { // register in the BootstrapNative object
-      if ( !( stringButton in element ) ) {
+    if ( hasClass(element,'btn-group') ) {
+      if ( !( stringButton in element ) ) { // prevent adding event handlers twice
         on( element, clickEvent, toggle );
-        element[stringButton] = this;
       }
+      element[stringButton] = this;
     }
   };
   
@@ -768,7 +752,7 @@
     };
   
     // init
-    if ( !(stringCarousel in element ) ) {
+    if ( !(stringCarousel in element ) ) { // prevent adding event handlers twice
   
       if ( this[pause] && this[interval] ) {
         on( element, mouseHover[0], pauseHandler );
@@ -777,20 +761,20 @@
         on( element, 'touchend', resumeHandler );
       }
     
-      rightArrow && rightArrow.addEventListener( clickEvent, controlsHandler, false);
-      leftArrow && leftArrow.addEventListener( clickEvent, controlsHandler, false);
+      rightArrow && on( rightArrow, clickEvent, controlsHandler );
+      leftArrow && on( leftArrow, clickEvent, controlsHandler );
     
-      indicator && indicator.addEventListener( clickEvent, indicatorHandler, false);
-      this[keyboard] === true && global.addEventListener( keydownEvent, keyHandler, false);
+      indicator && on( indicator, clickEvent, indicatorHandler, false);
+      this[keyboard] === true && on( globalObject, keydownEvent, keyHandler, false);
   
-      if (this.getActiveIndex()<0) {
-        slides[length] && addClass(slides[0],active);
-        indicators[length] && setActivePage(0);
-      }
-  
-      if ( this[interval] ){ this.cycle(); }
-      element[stringCarousel] = this;
     }
+    if (this.getActiveIndex()<0) {
+      slides[length] && addClass(slides[0],active);
+      indicators[length] && setActivePage(0);
+    }
+  
+    if ( this[interval] ){ this.cycle(); }
+    element[stringCarousel] = this;
   };
   
   // CAROUSEL DATA API
@@ -804,6 +788,8 @@
   // COLLAPSE DEFINITION
   // ===================
   var Collapse = function( element, options ) {
+  
+    // initialization element
     element = queryElement(element);
   
     // set options
@@ -891,13 +877,12 @@
     };
   
     // init
-    if ( !(stringCollapse in element ) ) {
-      collapse = getTarget();
-      accordion = queryElement(options.parent) || accordionData && getClosest(element, accordionData);
+    if ( !(stringCollapse in element ) ) { // prevent adding event handlers twice
       on(element, clickEvent, this.toggle);
-  
-      element[stringCollapse] = this;
     }
+    collapse = getTarget();
+    accordion = queryElement(options.parent) || accordionData && getClosest(element, accordionData);
+    element[stringCollapse] = this;
   };
   
   // COLLAPSE DATA API
@@ -970,11 +955,11 @@
     };
   
     // init
-    if ( !(stringDropdown in element) ) { // initialize, make sure it's not already initialized
+    if ( !(stringDropdown in element) ) { // prevent adding event handlers twice
       menu[setAttribute]('tabindex', '0'); // Fix onblur on Chrome | Safari
-      element[stringDropdown] = this;
       on(document, clickEvent, clickHandler);
     }
+    element[stringDropdown] = this;
   };
   
   // DROPDOWN DATA API
@@ -987,13 +972,15 @@
     
   // MODAL DEFINITION
   // ===============
-  var Modal = function(element, options) { // element is the is the modal
+  var Modal = function(element, options) { // element can be the modal/triggering button
   
-    // the triggering button element
+    // the modal (JavaScript init) / triggering button element (DATA API)
     element = queryElement(element);
   
-    // modal
-    var modal = queryElement( element[getAttribute](dataTarget)||element[getAttribute]('href') ),
+    // determine modal, triggering element 
+    var btnCheck = element[getAttribute](dataTarget)||element[getAttribute]('href'),
+      checkModal = queryElement( btnCheck ),
+      modal = hasClass(element,'modal') ? element : checkModal,
   
       // strings
       component = 'modal',
@@ -1001,6 +988,10 @@
       paddingLeft = 'paddingLeft',
       paddingRight = 'paddingRight'
       modalBackdropString = 'modal-backdrop';
+  
+    if ( hasClass(element,'modal') ) { element = null; } // modal is now independent of it's triggering element
+  
+    if ( !modal ) { return; } // invalidate
   
     // set options
     options = options || {};
@@ -1012,16 +1003,16 @@
     this[content]  = options[content]; // JavaScript only
   
     // bind, constants, event targets and other vars
-    var self = this, open = false, relatedTarget = null,
+    var self = this, open = this.open = false, relatedTarget = null,
       bodyIsOverflowing, modalIsOverflowing, scrollbarWidth, overlay,
   
       // private methods
       getWindowWidth = function() {
         var htmlRect = doc[getBoundingClientRect]();
-        return global[innerWidth] || (htmlRect[right] - Math.abs(htmlRect[left]));
+        return globalObject[innerWidth] || (htmlRect[right] - Math.abs(htmlRect[left]));
       },
       setScrollbar = function () {
-        var bodyStyle = body.currentStyle || global.getComputedStyle(body), bodyPad = parseInt((bodyStyle[paddingRight]), 10);
+        var bodyStyle = body.currentStyle || globalObject.getComputedStyle(body), bodyPad = parseInt((bodyStyle[paddingRight]), 10);
         if (bodyIsOverflowing) { body.style[paddingRight] = (bodyPad + scrollbarWidth) + 'px'; }
       },
       resetScrollbar = function () {
@@ -1065,7 +1056,7 @@
         }
       },
       keydownHandlerToggle = function() {
-        if (!hasClass(modal,'in')) { // element, event, handler
+        if (!hasClass(modal,'in')) {
           on(document, keydownEvent, keyHandler);
         } else {
           off(document, keydownEvent, keyHandler);
@@ -1073,9 +1064,9 @@
       },
       resizeHandlerToggle = function() {
         if (!hasClass(modal,'in')) {
-          on(global, resizeEvent, this.update);
+          on(globalObject, resizeEvent, self.update);
         } else {
-          off(global, resizeEvent, this.update);
+          off(globalObject, resizeEvent, self.update);
         }
       },
       dismissHandlerToggle = function() {
@@ -1148,7 +1139,7 @@
         modal[setAttribute](ariaHidden, false);
       }, this[duration]/2);
       setTimeout( function() {
-        open = true;
+        open = self.open = true;
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
       }, this[duration]);
     };
@@ -1176,7 +1167,7 @@
   
       setTimeout( function() {
         if (!getElementsByClassName(document,component+' in')[0]) { removeOverlay(); }
-        open = false;
+        open = self.open = false;
         bootstrapCustomEvent.call(modal, hiddenEvent, component);
       }, this[duration]);
     };
@@ -1192,11 +1183,13 @@
     };
   
     // init
-    if ( !(stringModal in element) ) {
-      if ( !!this[content] ) { this.setContent( this[content] ); }
+    // prevent adding event handlers over and over
+    // modal is independent of a triggering element 
+    if ( !!element && !(stringModal in element) ) {
       on(element, clickEvent, clickHandler);
-      element[stringModal] = this;
     }
+    if ( !!this[content] ) { this.setContent( this[content] ); }
+    !!element && (element[stringModal] = this);
   };
   
   // DATA API
@@ -1351,7 +1344,7 @@
     };
   
     // init
-    if ( !(stringPopover in element) ) {
+    if ( !(stringPopover in element) ) { // prevent adding event handlers twice
       if (self[trigger] === hoverEvent) {
         on( element, mouseHover[0], self.show );
         if (!self[dismissible]) { on( element, mouseHover[1], self.hide ); }
@@ -1363,10 +1356,10 @@
       if (self[dismissible]) { on( document, clickEvent, dismissibleHandler ); }
     
       // dismiss on window resize
-      if ( !(isIE && isIE < 9) ) { on( global, resizeEvent, self.hide ); }
+      if ( !(isIE && isIE < 9) ) { on( globalObject, resizeEvent, self.hide ); }
   
-      element[stringPopover] = self;
     }
+    element[stringPopover] = self;
   };
   
   // POPOVER DATA API
@@ -1395,8 +1388,8 @@
     var spyTarget = options[target] && queryElement(options[target]) || targetData,
         links = spyTarget && spyTarget[getElementsByTagName]('A'), 
         items = [], targetContainers = [], scrollOffset,
-        scrollTarget = element[offsetHeight] < element[scrollHeight] ? element : global, // determine which is the real scrollTarget
-        isWindow = scrollTarget === global;  
+        scrollTarget = element[offsetHeight] < element[scrollHeight] ? element : globalObject, // determine which is the real scrollTarget
+        isWindow = scrollTarget === globalObject;  
   
     // populate items and targets
     for (var i=0, il=links[length]; i<il; i++) {
@@ -1449,14 +1442,14 @@
     }
   
     // init
-    if ( !(stringScrollSpy in element) ) {
-      this.refresh();
+    if ( !(stringScrollSpy in element) ) { // prevent adding event handlers twice
       on( scrollTarget, scrollEvent, this.refresh );
       if ( !(isIE && isIE < 9)) { 
-        on( global, resizeEvent, this.refresh ); 
+        on( globalObject, resizeEvent, this.refresh ); 
       }
-      element[stringScrollSpy] = this;
     }
+    this.refresh();
+    element[stringScrollSpy] = this;
   };
   
   // SCROLLSPY DATA API
@@ -1478,8 +1471,8 @@
     var durationData = element[getAttribute](dataDuration),
         heightData = element[getAttribute](dataHeight),
       
-      // strings
-      component = 'tab', height = 'height', isAnimating = 'isAnimating';
+        // strings
+        component = 'tab', height = 'height', isAnimating = 'isAnimating';
   
     // set default animation state
     element[isAnimating] = false;
@@ -1494,7 +1487,6 @@
       tabs = getClosest(element,'.nav'),
       tabsContentContainer,
       dropdown = queryElement('.dropdown',tabs);
-      
   
     // private methods
     var getActiveTab = function() {
@@ -1569,11 +1561,11 @@
     };
   
     // init
-    if ( !(stringTab in element) ) {
-      if (this[height]) { tabsContentContainer = getActiveContent()[parentNode]; }
+    if ( !(stringTab in element) ) { // prevent adding event handlers twice
       on(element, clickEvent, clickHandler);
-      element[stringTab] = this;
     }
+    if (this[height]) { tabsContentContainer = getActiveContent()[parentNode]; }
+    element[stringTab] = this;
   };
   
   // TAB DATA API
@@ -1685,13 +1677,13 @@
     };
   
     // init
-    if ( !(stringTooltip in element) ) {
+    if ( !(stringTooltip in element) ) { // prevent adding event handlers twice
       element[setAttribute](dataOriginalTitle,titleString);
       element.removeAttribute(title);
       on(element, mouseHover[0], this.show);
       on(element, mouseHover[1], this.hide);
-      element[stringTooltip] = this;
     }
+    element[stringTooltip] = this;
   };
   
   // TOOLTIP DATA API
