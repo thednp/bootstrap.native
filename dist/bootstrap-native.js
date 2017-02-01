@@ -974,7 +974,7 @@
   // ===============
   var Modal = function(element, options) { // element can be the modal/triggering button
   
-    // the modal (JavaScript init) / triggering button element (DATA API)
+    // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
     element = queryElement(element);
   
     // determine modal, triggering element 
