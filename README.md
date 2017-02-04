@@ -53,7 +53,7 @@ So when using `bootstrap.native` inside of a NodeJS app, make sure you create a 
 The components are developed with clean code mainly for modern browsers that nativelly support HTML5. When using polyfills, IE8-IE9 will thank you.
 
 # Custom Builds
-You can make a custom build of bootstrap-native, including only the modules you need, by using the `build.js` script.
+You can make a custom build of bootstrap-native, including only the modules you need, by using the `build.js` and `build-v4.js` scripts.
 
 ## Usage:
 ```

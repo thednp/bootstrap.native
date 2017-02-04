@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Native Javascript for Bootstrap 3 | Build Script
-// Build script to bundle the js files in lib/
+// Build script to bundle the js files in lib/V3
 // Usage: npm run build
 // Run node build.js --help for usage instructions
 // by https://github.com/RyanZim
@@ -42,7 +42,7 @@ if (argv.only && argv.ignore) {
 }
 
 // Get a list of all modules:
-var allModules = fs.readdirSync('lib/').filter(item => /-native\.js$/.test(item));
+var allModules = fs.readdirSync('lib/V3/').filter(item => /-native\.js$/.test(item));
 
 // Get a list of modules to include:
 var modules = [];
@@ -71,7 +71,7 @@ if (modules.length === 0) {
 }
 
 // Use console.warn to avoid writing to stdout
-console.warn(`Building ${version} ..`);
+console.warn(`Building Native JavaScript for Bootstrap 3 ${version} ..`);
 if (argv.minify) {
   console.warn('Minified Build');
 } else {
@@ -85,7 +85,7 @@ console.warn(`Included modules:
 var promises = [];
 modules.forEach(function (name, i) {
   promises[i] = new Promise(function (resolve, reject) {
-    fs.readFile(`lib/${name.toLowerCase()}-native.js`, 'utf8', function (err, contents) {
+    fs.readFile(`lib/V3/${name.toLowerCase()}-native.js`, 'utf8', function (err, contents) {
       if (err) reject(err);
       resolve(contents);
     });
@@ -108,7 +108,7 @@ Promise.all(promises)
 .catch(error);
 
 function wrap(main) {
-  var utils = fs.readFileSync('lib/utils.js', 'utf8').split('\n').join('\n  '); // Indentation
+  var utils = fs.readFileSync('lib/V3/utils.js', 'utf8').split('\n').join('\n  '); // Indentation
   main = main.split('\n').join('\n  '); // Indentation
   // Initialize arrays:
   // Arrays will be used in the template literal below
