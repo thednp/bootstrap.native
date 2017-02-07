@@ -111,7 +111,6 @@
     hasAttribute         = 'hasAttribute',
     getElementsByTagName = 'getElementsByTagName',
     getBoundingClientRect= 'getBoundingClientRect',
-    querySelectorAll     = 'querySelectorAll',
     getElementsByCLASSNAME = 'getElementsByClassName',
   
     indexOf    = 'indexOf',
@@ -119,6 +118,7 @@
     length     = 'length',
     
     active     = 'active',
+    showClass  = 'show',
     collapsing = 'collapsing',
     disabled   = 'disabled',
     loading    = 'loading',
@@ -143,13 +143,8 @@
     },
   
     // selection methods
-    nodeListToArray = function(nodeList){
-      var childItems = []; for (var i = 0, nll = nodeList[length]; i<nll; i++) { childItems.push( nodeList[i] ) }
-      return childItems;
-    },
-    getElementsByClassName = function(element,classNAME) { // getElementsByClassName IE8+
-      var selectionMethod = isIE === 8 ? querySelectorAll : getElementsByCLASSNAME;      
-      return nodeListToArray(element[selectionMethod]( isIE === 8 ? '.' + classNAME.replace(/\s(?=[a-z])/g,'.') : classNAME ));
+    getElementsByClassName = function(element,classNAME) { // returns Array
+      return [].slice.call(element[getElementsByCLASSNAME]( classNAME ));
     },
     queryElement = function (selector, parent) {
       var lookUp = parent ? parent : document;
@@ -185,8 +180,7 @@
     // reference a live collection of the DOM
     AllDOMElements = document[getElementsByTagName]('*'),
   
-    /* Init DATA API
-    --------------*/
+    // Init DATA API
     initializeDataAPI = function( component, constructor, dataAttribute, collection ){
       var lookUp = collection && collection[length] ? collection : AllDOMElements;
       for (var i=0; i < lookUp[length]; i++) {
@@ -289,9 +283,9 @@
     
     // public method
     this.close = function() {
-      if ( alert && element && hasClass(alert,'show') ) {
+      if ( alert && element && hasClass(alert,showClass) ) {
         bootstrapCustomEvent.call(alert, closeEvent, component);
-        removeClass(alert,'show');
+        removeClass(alert,showClass);
         setTimeout(function() {
           if (alert) {
             bootstrapCustomEvent.call(alert, closedEvent, component);
@@ -668,7 +662,7 @@
         setTimeout(function() {
           removeClass(collapseElement,collapsing);
           addClass(collapseElement,component);
-          addClass(collapseElement,'show');
+          addClass(collapseElement,showClass);
           collapseElement.style[height] = '';
           isAnimating = false;
           collapseElement[setAttribute](ariaExpanded,'true');
@@ -686,7 +680,7 @@
         }, 10);
         setTimeout(function() {
           removeClass(collapseElement,collapsing);
-          removeClass(collapseElement,'show');
+          removeClass(collapseElement,showClass);
           addClass(collapseElement,component);
           collapseElement.style[height] = '';
           isAnimating = false;
@@ -705,7 +699,7 @@
     this.toggle = function(e) {
       e.preventDefault();
       if (isAnimating) return;
-      if (!hasClass(collapse,'show')) { self.show(); } 
+      if (!hasClass(collapse,showClass)) { self.show(); } 
       else { self.hide(); }
     };
     this.hide = function() {
@@ -717,7 +711,7 @@
       removeClass(element,collapsed);
   
       if ( accordion !== null ) {
-        var activeCollapses = getElementsByClassName(accordion,component+' show');
+        var activeCollapses = getElementsByClassName(accordion,component+' '+showClass);
         for (var i=0, al=activeCollapses[length]; i<al; i++) {
           if ( activeCollapses[i] !== collapse) closeAction(activeCollapses[i]);
         }
@@ -754,10 +748,10 @@
     // constants, event targets, strings
     var self = this, isOpen = false,
       parent = element[parentNode],
-      component = 'dropdown', open = 'show',
+      component = 'dropdown',
       relatedTarget = null,
       menu = queryElement('.dropdown-menu', parent),
-      children = nodeListToArray( menu[getElementsByTagName]('*')),
+      children = [].slice.call( menu[getElementsByTagName]('*')),
   
       // handlers
       keyHandler = function(e) {
@@ -781,7 +775,7 @@
       // private methods
       show = function() {
         bootstrapCustomEvent.call(parent, showEvent, component, relatedTarget);
-        addClass(parent,open);
+        addClass(parent,showClass);
         menu[setAttribute](ariaExpanded,true);
         bootstrapCustomEvent.call(parent, shownEvent, component, relatedTarget);
         on(document, keydownEvent, keyHandler);
@@ -789,7 +783,7 @@
       },
       hide = function() {
         bootstrapCustomEvent.call(parent, hideEvent, component, relatedTarget);
-        removeClass(parent,open);
+        removeClass(parent,showClass);
         menu[setAttribute](ariaExpanded,false);
         bootstrapCustomEvent.call(parent, hiddenEvent, component, relatedTarget);
         off(document, keydownEvent, keyHandler);
@@ -798,7 +792,7 @@
   
     // public methods
     this.toggle = function() {
-      if (hasClass(parent,open) && isOpen) { hide(); } 
+      if (hasClass(parent,showClass) && isOpen) { hide(); } 
       else { show(); }
     };
   
@@ -904,21 +898,21 @@
         }
       },
       keydownHandlerToggle = function() {
-        if (!hasClass(modal,'show')) {
+        if (!hasClass(modal,showClass)) {
           on(document, keydownEvent, keyHandler);
         } else {
           off(document, keydownEvent, keyHandler);
         }
       },
       resizeHandlerToggle = function() {
-        if (!hasClass(modal,'show')) {
+        if (!hasClass(modal,showClass)) {
           on(globalObject, resizeEvent, self.update);
         } else {
           off(globalObject, resizeEvent, self.update);
         }
       },
       dismissHandlerToggle = function() {
-        if (!hasClass(modal,'show')) {
+        if (!hasClass(modal,showClass)) {
           on(modal, clickEvent, dismissHandler);
         } else {
           off(modal, clickEvent, dismissHandler);
@@ -928,7 +922,7 @@
       clickHandler = function(e) {
         var clickTarget = e[target]; 
         clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
-        if ( !e.defaultPrevented && !open && clickTarget === element && !hasClass(modal,'show') ) {
+        if ( !e.defaultPrevented && !open && clickTarget === element && !hasClass(modal,showClass) ) {
           modal.modalTrigger = element;
           relatedTarget = element;
           self.show();
@@ -955,7 +949,7 @@
   
     // public methods
     this.toggle = function() {
-      if (open && hasClass(modal,'show')) {this.hide();} else {this.show();}
+      if (open && hasClass(modal,showClass)) {this.hide();} else {this.show();}
     };
     this.show = function() {
       bootstrapCustomEvent.call(modal, showEvent, component, relatedTarget);
@@ -967,8 +961,8 @@
         createOverlay();
       }
   
-      if ( overlay && !hasClass(overlay,'show')) {
-        setTimeout( function() { addClass(overlay,'show'); }, 0);
+      if ( overlay && !hasClass(overlay,showClass)) {
+        setTimeout( function() { addClass(overlay,showClass); }, 0);
       }
   
       setTimeout( function() {
@@ -983,7 +977,7 @@
         keydownHandlerToggle();
   
         addClass(body,component+'-open');
-        addClass(modal,'show');
+        addClass(modal,showClass);
         modal[setAttribute](ariaHidden, false);
       }, this[duration]/2);
       setTimeout( function() {
@@ -996,9 +990,9 @@
       overlay = queryElement('.'+modalBackdropString);
   
       if ( overlay !== null ) {
-        removeClass(overlay,'show');
+        removeClass(overlay,showClass);
       }
-      removeClass(modal,'show');
+      removeClass(modal,showClass);
       modal[setAttribute](ariaHidden, true);
   
       setTimeout( function() {
@@ -1146,7 +1140,7 @@
         popover[setAttribute](classString, component+ ' ' + component+'-'+placementSetting + ' ' + self[animation]);
       },
       showPopover = function () {
-        !hasClass(popover,'show') && ( addClass(popover,'show') );
+        !hasClass(popover,showClass) && ( addClass(popover,showClass) );
       },
       updatePopover = function() {
         styleTip(element,popover,placementSetting,self[container]);
@@ -1179,9 +1173,9 @@
     this.hide = function() {
       clearTimeout(timer);
       timer = setTimeout( function() {
-        if (popover && popover !== null && hasClass(popover,'show')) {
+        if (popover && popover !== null && hasClass(popover,showClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
-          removeClass(popover,'show');
+          removeClass(popover,showClass);
           setTimeout(function() {
             removePopover();
             bootstrapCustomEvent.call(element, hiddenEvent, component);
@@ -1390,7 +1384,7 @@
         bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
   
         setTimeout(function() {
-          removeClass(activeContent,'show');
+          removeClass(activeContent,showClass);
         }, 10);
   
         setTimeout(function() {
@@ -1398,7 +1392,7 @@
           removeClass(activeContent,active);
           addClass(nextContent,active);
           setTimeout(function() {
-            addClass(nextContent,'show');
+            addClass(nextContent,showClass);
           }, 10);
   
           bootstrapCustomEvent.call(next, showEvent, component, activeTab);
@@ -1496,7 +1490,7 @@
         }
       },
       showTooltip = function () {
-        !hasClass(tooltip,'show') && ( addClass(tooltip,'show') );
+        !hasClass(tooltip,showClass) && ( addClass(tooltip,showClass) );
       };
   
     // public methods
@@ -1518,9 +1512,9 @@
     this.hide = function() {
       clearTimeout(timer);
       timer = setTimeout( function() {
-        if (tooltip && tooltip !== null && hasClass(tooltip,'show')) {
+        if (tooltip && tooltip !== null && hasClass(tooltip,showClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
-          removeClass(tooltip,'show');
+          removeClass(tooltip,showClass);
           setTimeout(function() {
             removeToolTip();
             bootstrapCustomEvent.call(element, hiddenEvent, component);

@@ -121,6 +121,7 @@
     length     = 'length',
     
     active     = 'active',
+    inClass    = 'in',
     collapsing = 'collapsing',
     disabled   = 'disabled',
     loading    = 'loading',
@@ -415,9 +416,9 @@
     
     // public method
     this.close = function() {
-      if ( alert && element && hasClass(alert,'in') ) {
+      if ( alert && element && hasClass(alert,inClass) ) {
         bootstrapCustomEvent.call(alert, closeEvent, component);
-        removeClass(alert,'in');
+        removeClass(alert,inClass);
         setTimeout(function() {
           if (alert) {
             bootstrapCustomEvent.call(alert, closedEvent, component);
@@ -821,7 +822,7 @@
         setTimeout(function() {
           removeClass(collapseElement,collapsing);
           addClass(collapseElement,component);
-          addClass(collapseElement,'in');
+          addClass(collapseElement,inClass);
           collapseElement.style[height] = '';
           isAnimating = false;
           collapseElement[setAttribute](ariaExpanded,'true');
@@ -839,7 +840,7 @@
         }, 10);
         setTimeout(function() {
           removeClass(collapseElement,collapsing);
-          removeClass(collapseElement,'in');
+          removeClass(collapseElement,inClass);
           addClass(collapseElement,component);
           collapseElement.style[height] = '';
           isAnimating = false;
@@ -858,7 +859,7 @@
     this.toggle = function(e) {
       e.preventDefault();
       if (isAnimating) return;
-      if (!hasClass(collapse,'in')) { self.show(); } 
+      if (!hasClass(collapse,inClass)) { self.show(); } 
       else { self.hide(); }
     };
     this.hide = function() {
@@ -870,7 +871,7 @@
       removeClass(element,collapsed);
   
       if ( accordion !== null ) {
-        var activeCollapses = getElementsByClassName(accordion,component+' in');
+        var activeCollapses = getElementsByClassName(accordion,component+' '+inClass);
         for (var i=0, al=activeCollapses[length]; i<al; i++) {
           if ( activeCollapses[i] !== collapse) closeAction(activeCollapses[i]);
         }
@@ -1057,21 +1058,21 @@
         }
       },
       keydownHandlerToggle = function() {
-        if (!hasClass(modal,'in')) {
+        if (!hasClass(modal,inClass)) {
           on(document, keydownEvent, keyHandler);
         } else {
           off(document, keydownEvent, keyHandler);
         }
       },
       resizeHandlerToggle = function() {
-        if (!hasClass(modal,'in')) {
+        if (!hasClass(modal,inClass)) {
           on(globalObject, resizeEvent, self.update);
         } else {
           off(globalObject, resizeEvent, self.update);
         }
       },
       dismissHandlerToggle = function() {
-        if (!hasClass(modal,'in')) {
+        if (!hasClass(modal,inClass)) {
           on(modal, clickEvent, dismissHandler);
         } else {
           off(modal, clickEvent, dismissHandler);
@@ -1081,7 +1082,7 @@
       clickHandler = function(e) {
         var clickTarget = e[target]; 
         clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
-        if ( !e.defaultPrevented && !open && clickTarget === element && !hasClass(modal,'in') ) {
+        if ( !e.defaultPrevented && !open && clickTarget === element && !hasClass(modal,inClass) ) {
           modal.modalTrigger = element;
           relatedTarget = element;
           self.show();
@@ -1108,7 +1109,7 @@
   
     // public methods
     this.toggle = function() {
-      if (open && hasClass(modal,'in')) {this.hide();} else {this.show();}
+      if (open && hasClass(modal,inClass)) {this.hide();} else {this.show();}
     };
     this.show = function() {
       bootstrapCustomEvent.call(modal, showEvent, component, relatedTarget);
@@ -1120,8 +1121,8 @@
         createOverlay();
       }
   
-      if ( overlay && !hasClass(overlay,'in')) {
-        setTimeout( function() { addClass(overlay,'in'); }, 0);
+      if ( overlay && !hasClass(overlay,inClass)) {
+        setTimeout( function() { addClass(overlay,inClass); }, 0);
       }
   
       setTimeout( function() {
@@ -1136,7 +1137,7 @@
         keydownHandlerToggle();
   
         addClass(body,component+'-open');
-        addClass(modal,'in');
+        addClass(modal,inClass);
         modal[setAttribute](ariaHidden, false);
       }, this[duration]/2);
       setTimeout( function() {
@@ -1149,9 +1150,9 @@
       overlay = queryElement('.'+modalBackdropString);
   
       if ( overlay !== null ) {
-        removeClass(overlay,'in');
+        removeClass(overlay,inClass);
       }
-      removeClass(modal,'in');
+      removeClass(modal,inClass);
       modal[setAttribute](ariaHidden, true);
   
       setTimeout( function() {
@@ -1300,7 +1301,7 @@
         popover[setAttribute](classString, component+ ' ' + placementSetting + ' ' + self[animation]);
       },
       showPopover = function () {
-        !hasClass(popover,'in') && ( addClass(popover,'in') );
+        !hasClass(popover,inClass) && ( addClass(popover,inClass) );
       },
       updatePopover = function() {
         styleTip(element,popover,placementSetting,self[container]);
@@ -1333,9 +1334,9 @@
     this.hide = function() {
       clearTimeout(timer);
       timer = setTimeout( function() {
-        if (popover && popover !== null && hasClass(popover,'in')) {
+        if (popover && popover !== null && hasClass(popover,inClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
-          removeClass(popover,'in');
+          removeClass(popover,inClass);
           setTimeout(function() {
             removePopover();
             bootstrapCustomEvent.call(element, hiddenEvent, component);
@@ -1539,7 +1540,7 @@
         bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
   
         setTimeout(function() {
-          removeClass(activeContent,'in');
+          removeClass(activeContent,inClass);
         }, 10);
   
         setTimeout(function() {
@@ -1547,7 +1548,7 @@
           removeClass(activeContent,active);
           addClass(nextContent,active);
           setTimeout(function() {
-            addClass(nextContent,'in');
+            addClass(nextContent,inClass);
           }, 10);
   
           bootstrapCustomEvent.call(next, showEvent, component, activeTab);
@@ -1647,7 +1648,7 @@
         }
       },
       showTooltip = function () {
-        !hasClass(tooltip,'in') && ( addClass(tooltip,'in') );
+        !hasClass(tooltip,inClass) && ( addClass(tooltip,inClass) );
       };
   
     // public methods
@@ -1669,9 +1670,9 @@
     this.hide = function() {
       clearTimeout(timer);
       timer = setTimeout( function() {
-        if (tooltip && tooltip !== null && hasClass(tooltip,'in')) {
+        if (tooltip && tooltip !== null && hasClass(tooltip,inClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
-          removeClass(tooltip,'in');
+          removeClass(tooltip,inClass);
           setTimeout(function() {
             removeToolTip();
             bootstrapCustomEvent.call(element, hiddenEvent, component);
