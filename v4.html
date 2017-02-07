@@ -31,6 +31,9 @@
           width: 100%;
       }
     </style>
+
+    <!-- IE10+ still require polyfill -->
+		<script src="./dist/polyfill.js"></script>
   </head>
   <body>
 
@@ -545,7 +548,7 @@ sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="https://v4-alpha.getbootstrap.com/assets/js/vendor/holder.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
     <script type="text/javascript" src="./dist-v4/bootstrap-native.js"></script>
   </body>
 </html>
