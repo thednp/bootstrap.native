@@ -1,3 +1,10 @@
+var myModal = document.getElementById('myModal'); // we need a blank modal to fill up and target our object function
+myModal.addEventListener('show.bs.modal', function(e) {
+	console.log('show.bs.modal triggered for #'+e.target.id);
+	console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
+}, false);
+
+
 // Modal initialized with JavaScript
 var myModalJS = document.getElementById('myModalJS'); // we need a blank modal to fill up and target our object function
 var btnModal = document.getElementById('openModalViaJS');

@@ -131,14 +131,19 @@
     mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|top)+/,
   
-    // class manipulation, since 1.2.0 requires polyfill.js
+    // set new focus element since 2.0.3
+    setFocus = function(element){
+      element.focus ? element.focus() : element.setActive();
+    },
+  
+    // class manipulation, since 2.0.0 requires polyfill.js
     addClass = function(element,classNAME) {
       element.classList.add(classNAME);
     },
     removeClass = function(element,classNAME) {
       element.classList.remove(classNAME);
     },
-    hasClass = function(element,classNAME){ // since 1.2.0
+    hasClass = function(element,classNAME){ // since 2.0.0
       return element.classList.contains(classNAME);
     },
   
@@ -922,12 +927,11 @@
       clickHandler = function(e) {
         var clickTarget = e[target]; 
         clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
-        if ( !e.defaultPrevented && !open && clickTarget === element && !hasClass(modal,showClass) ) {
+        if ( !open && clickTarget === element && !hasClass(modal,showClass) ) {
           modal.modalTrigger = element;
           relatedTarget = element;
           self.show();
           e.preventDefault();
-          setTimeout(function(){ e.defaultPrevented = false; }, 50);
         }
       },
       keyHandler = function(e) {
@@ -938,12 +942,11 @@
       },
       dismissHandler = function(e) {
         var clickTarget = e[target];
-        if ( !e.defaultPrevented && open && (clickTarget[parentNode][getAttribute](dataDismiss) === component 
+        if ( open && (clickTarget[parentNode][getAttribute](dataDismiss) === component 
             || clickTarget[getAttribute](dataDismiss) === component
             || (clickTarget === modal && self[backdrop] !== staticString) ) ) {
           self.hide(); relatedTarget = null;
           e.preventDefault();
-          setTimeout(function(){ e.defaultPrevented = false; }, 50);
         }
       };
   
@@ -982,6 +985,7 @@
       }, this[duration]/2);
       setTimeout( function() {
         open = self.open = true;
+        setFocus(modal);
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
       }, this[duration]);
     };
@@ -1008,8 +1012,9 @@
       }, this[duration]/2);
   
       setTimeout( function() {
-        if (!getElementsByClassName(document,component+' in')[0]) { removeOverlay(); }
+        if (!getElementsByClassName(document,component+' '+showClass)[0]) { removeOverlay(); }
         open = self.open = false;
+        element && (setFocus(element));
         bootstrapCustomEvent.call(modal, hiddenEvent, component);
       }, this[duration]);
     };
