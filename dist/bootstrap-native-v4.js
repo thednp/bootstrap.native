@@ -208,7 +208,7 @@
       return child[clientHeight] + parseInt( btp ) + parseInt( btb ) + parseInt( mtp ) + parseInt( mbp );
     },
     getMaxHeight = function(parent) { // get collapse trueHeight and border
-      var parentHeight = 0, style, margin;
+      var parentHeight = 0;
       for (var k = 0, ll = parent.children[length]; k < ll; k++) {
         parentHeight += getOuterHeight(parent.children[k]);
       }
@@ -833,7 +833,7 @@
       component = 'modal',
       staticString = 'static',
       paddingLeft = 'paddingLeft',
-      paddingRight = 'paddingRight'
+      paddingRight = 'paddingRight',
       modalBackdropString = 'modal-backdrop';
   
     if ( hasClass(element,'modal') ) { element = null; } // modal is now independent of it's triggering element
