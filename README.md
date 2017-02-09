@@ -1,5 +1,5 @@
 # Native Javascript for Bootstrap
-This is a library developed with native Javascript for <strong>Bootstrap 3</strong> series, and featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. A huge advantage is the size, this library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
+This is a library developed with native Javascript for both <strong>Bootstrap 3</strong> and <strong>Bootstrap 4</strong> series, featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. A huge advantage is the size, this library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
 
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
@@ -23,8 +23,8 @@ Traditional script-tag example:
 
 ```html
 <!-- Using one of the CDN repositories-->
-<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.native/1.0.5/bootstrap-native.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/1.0.5/bootstrap-native.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.native/2.0.3/bootstrap-native.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.3/bootstrap-native.min.js"></script>
 <!-- Using a local assets folder -->
 <script type="text/javascript" src="/assets/js/bootstrap.native.min.js"></script>
 <!-- Using Bower -->
