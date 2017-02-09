@@ -992,7 +992,7 @@
       component = 'modal',
       staticString = 'static',
       paddingLeft = 'paddingLeft',
-      paddingRight = 'paddingRight'
+      paddingRight = 'paddingRight',
       modalBackdropString = 'modal-backdrop';
   
     if ( hasClass(element,'modal') ) { element = null; } // modal is now independent of it's triggering element
