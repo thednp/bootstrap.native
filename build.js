@@ -10,6 +10,7 @@ var uglify = require('uglify-js');
 var pack = require('./package.json');
 var version = 'v' + pack.version;
 var license = pack.license + '-License';
+var libPath = __dirname + '/lib';
 // Parse arguments:
 var argv = require('yargs')
 .usage('node build.js [--minify] [--ignore=<modules>...|--only=<modules>...]')
@@ -42,7 +43,7 @@ if (argv.only && argv.ignore) {
 }
 
 // Get a list of all modules:
-var allModules = fs.readdirSync('lib/V3/').filter(item => /-native\.js$/.test(item));
+var allModules = fs.readdirSync(`${libPath}/V3/`).filter(item => /-native\.js$/.test(item));
 
 // Get a list of modules to include:
 var modules = [];
@@ -85,7 +86,7 @@ console.warn(`Included modules:
 var promises = [];
 modules.forEach(function (name, i) {
   promises[i] = new Promise(function (resolve, reject) {
-    fs.readFile(`lib/V3/${name.toLowerCase()}-native.js`, 'utf8', function (err, contents) {
+    fs.readFile(`${libPath}/V3/${name.toLowerCase()}-native.js`, 'utf8', function (err, contents) {
       if (err) reject(err);
       resolve(contents);
     });
@@ -108,7 +109,7 @@ Promise.all(promises)
 .catch(error);
 
 function wrap(main) {
-  var utils = fs.readFileSync('lib/V3/utils.js', 'utf8').split('\n').join('\n  '); // Indentation
+  var utils = fs.readFileSync(`${libPath}/V3/utils.js`, 'utf8').split('\n').join('\n  '); // Indentation
   main = main.split('\n').join('\n  '); // Indentation
   // Initialize arrays:
   // Arrays will be used in the template literal below
