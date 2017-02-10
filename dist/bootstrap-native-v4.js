@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.3 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.4 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -643,7 +643,7 @@
     options = options || {};
     options.duration = parseInt(options.duration || element[getAttribute](dataDuration));
   
-    this[duration] = (isIE && isIE < 10) ? 0 : (options.duration || 300); // default collapse transition duration
+    this[duration] = (isIE && isIE < 10) ? 0 : (options.duration || 350); // default collapse transition duration
   
     // event targets and constants
     var accordion = null, collapse = null, self = this, 
@@ -658,16 +658,13 @@
       openAction = function(collapseElement) {
         bootstrapCustomEvent.call(collapseElement, showEvent, component);
         isAnimating = true;
-        removeClass(collapseElement,component);
         addClass(collapseElement,collapsing);
-        collapseElement.style[height] = '0px';
+        addClass(collapseElement,showClass);
         setTimeout(function() {
           collapseElement.style[height] = getMaxHeight(collapseElement) + 'px';
         }, 10);
         setTimeout(function() {
           removeClass(collapseElement,collapsing);
-          addClass(collapseElement,component);
-          addClass(collapseElement,showClass);
           collapseElement.style[height] = '';
           isAnimating = false;
           collapseElement[setAttribute](ariaExpanded,'true');
@@ -677,7 +674,6 @@
       closeAction = function(collapseElement) {
         bootstrapCustomEvent.call(collapseElement, hideEvent, component);
         isAnimating = true;
-        removeClass(collapseElement,component);
         collapseElement.style[height] = getMaxHeight(collapseElement) + 'px';
         setTimeout(function() {
           addClass(collapseElement,collapsing);
@@ -686,7 +682,6 @@
         setTimeout(function() {
           removeClass(collapseElement,collapsing);
           removeClass(collapseElement,showClass);
-          addClass(collapseElement,component);
           collapseElement.style[height] = '';
           isAnimating = false;
           collapseElement[setAttribute](ariaExpanded,'false');
