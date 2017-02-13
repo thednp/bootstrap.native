@@ -28,9 +28,6 @@
   // globals
   var globalObject = typeof global !== 'undefined' ? global : this||window,
     doc = document.documentElement, body = document.body,
-    
-    // IE browser detect
-    isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false,
   
     // function toggle attributes
     dataToggle    = 'data-toggle',
@@ -274,7 +271,7 @@
   
     // bind, target alert, duration and stuff
     var self = this, component = 'alert',
-      alert = getClosest(element,'.'+component), duration = (isIE && isIE < 10) ? 0 : 300, // default alert transition duration
+      alert = getClosest(element,'.'+component), duration = 150, // default alert transition duration
       // handler
       clickHandler = function(e){
         var eventTarget = e[target];
@@ -432,7 +429,7 @@
   
     this[keyboard] = options[keyboard] === true || keyboardData;
     this[pause] = (options[pause] === hoverEvent || pauseData) ? hoverEvent : false; // false / hover
-    this[duration] = (isIE && isIE < 10) ? 0 : options[duration] || durationData;
+    this[duration] = options[duration] || durationData;
   
     if ( !( options[interval] || intervalData ) ) { // determine slide interval
       this[interval] = false;
@@ -559,7 +556,7 @@
       clearInterval(timer);
       setActivePage( next );
   
-      if ( hasClass(element,'slide') && !(isIE && isIE < 10) ) {
+      if ( hasClass(element,'slide') ) {
         addClass(slides[next],carouselItem +'-'+ orientation);
         slides[next][offsetWidth];  
         addClass(slides[next],carouselItem +'-'+ slideDirection);
@@ -643,7 +640,7 @@
     options = options || {};
     options.duration = parseInt(options.duration || element[getAttribute](dataDuration));
   
-    this[duration] = (isIE && isIE < 10) ? 0 : (options.duration || 350); // default collapse transition duration
+    this[duration] = options.duration || 350; // default collapse transition duration
   
     // event targets and constants
     var accordion = null, collapse = null, self = this, 
@@ -840,7 +837,7 @@
     this[keyboard] = options[keyboard] === false || modal[getAttribute](dataKeyboard) === 'false' ? false : true;
     this[backdrop] = options[backdrop] === staticString || modal[getAttribute](databackdrop) === staticString ? staticString : true;
     this[backdrop] = options[backdrop] === false || modal[getAttribute](databackdrop) === 'false' ? false : this[backdrop];
-    this[duration] = (isIE && isIE < 10) ? 50 : (options[duration] || parseInt(modal[getAttribute](dataDuration)) || 300); // the default modal fade duration option
+    this[duration] = options[duration] || parseInt(modal[getAttribute](dataDuration)) || 300; // the default modal fade duration option
     this[content]  = options[content]; // JavaScript only
   
     // bind, constants, event targets and other vars
@@ -1078,7 +1075,7 @@
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 100;
     this[dismissible] = options[dismissible] || dismissibleData === 'true' ? true : false;
-    this[duration] = (isIE && isIE < 10) ? 0 : parseInt(options[duration] || durationData) || 150;
+    this[duration] = parseInt(options[duration] || durationData) || 150;
     this[container] = queryElement(options[container]) || queryElement(containerData) || body;
     
     // bind, content
@@ -1196,7 +1193,7 @@
       if (self[dismissible]) { on( document, clickEvent, dismissibleHandler ); }
     
       // dismiss on window resize
-      if ( !(isIE && isIE < 9) ) { on( globalObject, resizeEvent, self.hide ); }
+      on( globalObject, resizeEvent, self.hide );
   
     }
     element[stringPopover] = self;
@@ -1293,9 +1290,7 @@
     // init
     if ( !(stringScrollSpy in element) ) { // prevent adding event handlers twice
       on( scrollTarget, scrollEvent, this.refresh );
-      if ( !(isIE && isIE < 9)) { 
-        on( globalObject, resizeEvent, this.refresh ); 
-      }
+      on( globalObject, resizeEvent, this.refresh ); 
     }
     this.refresh();
     element[stringScrollSpy] = this;
@@ -1328,8 +1323,8 @@
   
     // set options
     options = options || {};
-    this[duration] = (isIE && isIE < 10)  ? 0 : parseInt(options[duration] || durationData) || 150; // default tab transition duration
-    this[height] = (isIE && isIE < 10)  ? false : (options[height] || heightData === 'true') || false; // filter legacy browsers
+    this[duration] = parseInt(options[duration] || durationData) || 150; // default tab transition duration
+    this[height] = options[height] || heightData === 'true' || false;
   
     // bind, event targets
     var self = this, next,
@@ -1454,7 +1449,7 @@
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 100;
-    this[duration] = (isIE && isIE < 10) ? 0 : parseInt(options[duration] || durationData) || 150;
+    this[duration] = parseInt(options[duration] || durationData) || 150;
     this[container] = queryElement(options[container]) || queryElement(containerData) || body;
   
     // bind, event targets, title and constants
