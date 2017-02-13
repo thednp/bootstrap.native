@@ -5,7 +5,7 @@
   "authors": [
     "dnp_theme"
   ],
-  "description": "Native Javascript for Bootstrap 3, the sweetest Javascript library without jQuery.",
+  "description": "Native Javascript for Bootstrap, the sweetest Javascript library without jQuery.",
   "main": "dist/bootstrap-native.js",
   "moduleType": [
     "globals",
