@@ -188,7 +188,7 @@ p .btn-group {margin-bottom: 20px}
   -webkit-transform: translate3d( 0%, 0, 0);
   transform: translate3d(0%, 0, 0);
   opacity:1;
-  visibility: visible;  
+  /*visibility: visible;  */
 }
 
 /* Declare heights because of positioning of img element */
