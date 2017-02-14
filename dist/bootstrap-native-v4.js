@@ -50,7 +50,6 @@
     // options DATA API
     databackdrop      = 'data-backdrop',
     dataKeyboard      = 'data-keyboard',
-    dataDuration      = 'data-duration',
     dataTarget        = 'data-target',
     dataInterval      = 'data-interval',
     dataHeight        = 'data-height',
@@ -68,7 +67,7 @@
   
     // option keys
     backdrop = 'backdrop', keyboard = 'keyboard', delay = 'delay',
-    duration = 'duration', content = 'content', target = 'target', 
+    content = 'content', target = 'target', 
     interval = 'interval', pause = 'pause', animation = 'animation',
     placement = 'placement', container = 'container', 
   
@@ -103,16 +102,20 @@
     changeEvent   = 'change',
   
     // other
-    getAttribute         = 'getAttribute',
-    setAttribute         = 'setAttribute',
-    hasAttribute         = 'hasAttribute',
-    getElementsByTagName = 'getElementsByTagName',
-    getBoundingClientRect= 'getBoundingClientRect',
-    getElementsByCLASSNAME = 'getElementsByClassName',
+    getAttribute            = 'getAttribute',
+    setAttribute            = 'setAttribute',
+    hasAttribute            = 'hasAttribute',
+    getElementsByTagName    = 'getElementsByTagName',
+    getBoundingClientRect   = 'getBoundingClientRect',
+    getElementsByCLASSNAME  = 'getElementsByClassName',
   
-    indexOf    = 'indexOf',
-    parentNode = 'parentNode',
-    length     = 'length',
+    indexOf      = 'indexOf',
+    parentNode   = 'parentNode',
+    length       = 'length',
+    toLowerCase  = 'toLowerCase',
+    Transition   = 'Transition',
+    Webkit       = 'Webkit',
+    style        = 'style',
     
     active     = 'active',
     showClass  = 'show',
@@ -127,6 +130,10 @@
     // tooltip / popover
     mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|top)+/,
+  
+    // transitionEnd since 2.0.4
+    supportTransitions = Webkit+Transition in doc[style] || Transition[toLowerCase]() in doc[style],
+    transitionEndEvent = Webkit+Transition in doc[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
   
     // set new focus element since 2.0.3
     setFocus = function(element){
@@ -173,6 +180,16 @@
     off = function(element, event, handler) {
       element.removeEventListener(event, handler, false);
     },
+    one = function (element, event, handler) { // one since 2.0.4
+      on(element, event, function handlerWrapper(){
+        handler();
+        off(element, event, handlerWrapper);
+      });
+    },
+    emulateTransitionEnd = function(element,handler){ // emulateTransitionEnd since 2.0.4
+      if (supportTransitions) { one(element,transitionEndEvent, handler); }
+      else { handler(); }
+    },
     bootstrapCustomEvent = function (eventName, componentName, related) {
       var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
       OriginalCustomEvent.relatedTarget = related;
@@ -196,12 +213,11 @@
   
     // tab / collapse stuff
     getOuterHeight = function (child) {
-      // the getComputedStyle polyfill would do this for us, but we want to make sure it does
-      var style = child && (child.currentStyle || globalObject.getComputedStyle(child)), 
-        btp = /px/.test(style.borderTopWidth) ? Math.round(style.borderTopWidth.replace('px','')) : 0,
-        btb = /px/.test(style.borderBottomWidth) ? Math.round(style.borderBottomWidth.replace('px','')) : 0,
-        mtp = /px/.test(style.marginTop)  ? Math.round(style.marginTop.replace('px',''))    : 0,
-        mbp = /px/.test(style.marginBottom)  ? Math.round(style.marginBottom.replace('px',''))  : 0;
+      var childStyle = child && globalObject.getComputedStyle(child), 
+        btp = /px/.test(childStyle.borderTopWidth) ? Math.round(childStyle.borderTopWidth.replace('px','')) : 0,
+        btb = /px/.test(childStyle.borderBottomWidth) ? Math.round(childStyle.borderBottomWidth.replace('px','')) : 0,
+        mtp = /px/.test(childStyle.marginTop) ? Math.round(childStyle.marginTop.replace('px','')) : 0,
+        mbp = /px/.test(childStyle.marginBottom) ? Math.round(childStyle.marginBottom.replace('px','')) : 0;
       return child[clientHeight] + parseInt( btp ) + parseInt( btb ) + parseInt( mtp ) + parseInt( mbp );
     },
     getMaxHeight = function(parent) { // get collapse trueHeight and border
@@ -233,20 +249,20 @@
   
       // apply styling to tooltip or popover
       if ( position === top ) { // TOP
-        element.style[top] = rect[top] + scroll.y - elementDimensions.h + 'px';
-        element.style[left] = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + 'px'
+        element[style][top] = rect[top] + scroll.y - elementDimensions.h + 'px';
+        element[style][left] = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + 'px'
   
       } else if ( position === bottom ) { // BOTTOM
-        element.style[top] = rect[top] + scroll.y + linkDimensions.h + 'px';
-        element.style[left] = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + 'px';
+        element[style][top] = rect[top] + scroll.y + linkDimensions.h + 'px';
+        element[style][left] = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + 'px';
   
       } else if ( position === left ) { // LEFT
-        element.style[top] = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2 + 'px';
-        element.style[left] = rect[left] + scroll.x - elementDimensions.w + 'px';
+        element[style][top] = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2 + 'px';
+        element[style][left] = rect[left] + scroll.x - elementDimensions.w + 'px';
   
       } else if ( position === right ) { // RIGHT
-        element.style[top] = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2 + 'px';
-        element.style[left] = rect[left] + scroll.x + linkDimensions.w + 'px';
+        element[style][top] = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2 + 'px';
+        element[style][left] = rect[left] + scroll.x + linkDimensions.w + 'px';
       }
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     },
@@ -271,8 +287,8 @@
   
     // bind, target alert, duration and stuff
     var self = this, component = 'alert',
-      alert = getClosest(element,'.'+component), duration = 150, // default alert transition duration
-      // handler
+      alert = getClosest(element,'.'+component),
+      // handlers
       clickHandler = function(e){
         var eventTarget = e[target];
         eventTarget = eventTarget[hasAttribute](dataDismiss) ? eventTarget : eventTarget[parentNode];
@@ -281,6 +297,11 @@
           element = queryElement('['+dataDismiss+'="'+component+'"]',alert);
           (element === eventTarget || element === eventTarget[parentNode]) && alert && self.close();
         }
+      },
+      transitionEndHandler = function(){
+        bootstrapCustomEvent.call(alert, closedEvent, component);
+        off(element, clickEvent, clickHandler); // detach it's listener
+        alert[parentNode].removeChild(alert);
       };
     
     // public method
@@ -288,13 +309,9 @@
       if ( alert && element && hasClass(alert,showClass) ) {
         bootstrapCustomEvent.call(alert, closeEvent, component);
         removeClass(alert,showClass);
-        setTimeout(function() {
-          if (alert) {
-            bootstrapCustomEvent.call(alert, closedEvent, component);
-            off(element, clickEvent, clickHandler); // detach it's listener
-            alert[parentNode].removeChild(alert);
-          } 
-        }, duration);
+        if (alert) {
+          emulateTransitionEnd(alert,transitionEndHandler);
+        } 
       }
     };
   
@@ -418,7 +435,6 @@
     var intervalData = element[getAttribute](dataInterval) === 'false' ? false : parseInt(element[getAttribute](dataInterval)) || 5000, // bootstrap carousel default interval
         pauseData = element[getAttribute](dataPause) === hoverEvent || false,
         keyboardData = element[getAttribute](dataKeyboard) === 'true' || false,
-        durationData = parseInt(element[getAttribute](dataDuration)) || 600, // bootstrap carousel default transition duration
       
         // strings
         component = 'carousel',
@@ -429,7 +445,6 @@
   
     this[keyboard] = options[keyboard] === true || keyboardData;
     this[pause] = (options[pause] === hoverEvent || pauseData) ? hoverEvent : false; // false / hover
-    this[duration] = options[duration] || durationData;
   
     if ( !( options[interval] || intervalData ) ) { // determine slide interval
       this[interval] = false;
@@ -439,7 +454,7 @@
   
     // bind, event targets
     var self = this, index = element.index = 0, timer = element.timer = 0, 
-      isSliding = false, // isSliding prevents click event handlers when animation is running
+      isSliding = this.isSliding = false, // isSliding prevents click event handlers when animation is running
       slides = getElementsByClassName(element,carouselItem), total = slides[length],
       slideDirection = this[direction] = left,
       leftArrow = getElementsByClassName(element,component+'-control-prev')[0], 
@@ -548,22 +563,22 @@
     };
     this.slideTo = function( next ) {
       var activeItem = this.getActiveIndex(), // the current active
-          orientation = slideDirection === left ? 'next' : 'prev'; //determine type
+        orientation = slideDirection === left ? 'next' : 'prev'; //determine type
   
       bootstrapCustomEvent.call(element, slideEvent, component, slides[next]); // here we go with the slide
   
-      isSliding = true;
+      isSliding = this.isSliding = true;
       clearInterval(timer);
       setActivePage( next );
   
-      if ( hasClass(element,'slide') ) {
+      if ( supportTransitions && hasClass(element,'slide') ) {
         addClass(slides[next],carouselItem +'-'+ orientation);
         slides[next][offsetWidth];  
         addClass(slides[next],carouselItem +'-'+ slideDirection);
         addClass(slides[activeItem],carouselItem +'-'+ slideDirection);
   
-        setTimeout(function() { //we're gonna fake waiting for the animation to finish, cleaner and better
-          isSliding = false;
+        one(slides[next], transitionEndEvent, function(){
+          isSliding = self.isSliding = false;
   
           addClass(slides[next],active);
           removeClass(slides[activeItem],active);
@@ -576,8 +591,8 @@
             self.cycle();
           }
           bootstrapCustomEvent.call(element, slidEvent, component, slides[next]); // here we go with the slid event
+        });
   
-        }, this[duration] + 100 );
       } else {
         addClass(slides[next],active);
         slides[next][offsetWidth];
@@ -588,7 +603,7 @@
             self.cycle();
           }
           bootstrapCustomEvent.call(element, slidEvent, component, slides[next]); // here we go with the slid event
-        }, this[duration] + 100 );
+        }, 100 );
       }
     };
     this.getActiveIndex = function () {
@@ -610,7 +625,6 @@
     
       indicator && on( indicator, clickEvent, indicatorHandler, false);
       this[keyboard] === true && on( globalObject, keydownEvent, keyHandler, false);
-  
     }
     if (this.getActiveIndex()<0) {
       slides[length] && addClass(slides[0],active);
@@ -638,9 +652,7 @@
   
     // set options
     options = options || {};
-    options.duration = parseInt(options.duration || element[getAttribute](dataDuration));
   
-    this[duration] = options.duration || 350; // default collapse transition duration
   
     // event targets and constants
     var accordion = null, collapse = null, self = this, 
@@ -658,32 +670,34 @@
         addClass(collapseElement,collapsing);
         addClass(collapseElement,showClass);
         setTimeout(function() {
-          collapseElement.style[height] = getMaxHeight(collapseElement) + 'px';
-        }, 10);
-        setTimeout(function() {
+          collapseElement[style][height] = getMaxHeight(collapseElement) + 'px';
+        }, 0);
+        
+        emulateTransitionEnd(collapseElement, function(){
           removeClass(collapseElement,collapsing);
-          collapseElement.style[height] = '';
+          collapseElement[style][height] = '';
           isAnimating = false;
           collapseElement[setAttribute](ariaExpanded,'true');
           bootstrapCustomEvent.call(collapseElement, shownEvent, component);
-        }, self[duration]);
+        });
       },
       closeAction = function(collapseElement) {
         bootstrapCustomEvent.call(collapseElement, hideEvent, component);
         isAnimating = true;
-        collapseElement.style[height] = getMaxHeight(collapseElement) + 'px';
+        collapseElement[style][height] = getMaxHeight(collapseElement) + 'px';
         setTimeout(function() {
           addClass(collapseElement,collapsing);
-          collapseElement.style[height] = '0px';
-        }, 10);
-        setTimeout(function() {
+          collapseElement[style][height] = '0px';
+        }, 0);
+  
+        emulateTransitionEnd(collapseElement, function(){
           removeClass(collapseElement,collapsing);
           removeClass(collapseElement,showClass);
-          collapseElement.style[height] = '';
+          collapseElement[style][height] = '';
           isAnimating = false;
           collapseElement[setAttribute](ariaExpanded,'false');
           bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
-        }, self[duration]);
+        });
       },
       getTarget = function() {
         var href = element.href && element[getAttribute]('href'),
@@ -766,7 +780,7 @@
             return;
           } else { relatedTarget = null; hide(); }
         }
-        (/\#$/.test(eventTarget.href) || /\#$/.test(eventTarget[parentNode].href)) && e.preventDefault(); // should be here to prevent jumps
+        (/\#$/.test(eventTarget.href) || eventTarget[parentNode] && /\#$/.test(eventTarget[parentNode].href)) && e.preventDefault(); // should be here to prevent jumps
       },
       // private methods
       show = function() {
@@ -837,7 +851,6 @@
     this[keyboard] = options[keyboard] === false || modal[getAttribute](dataKeyboard) === 'false' ? false : true;
     this[backdrop] = options[backdrop] === staticString || modal[getAttribute](databackdrop) === staticString ? staticString : true;
     this[backdrop] = options[backdrop] === false || modal[getAttribute](databackdrop) === 'false' ? false : this[backdrop];
-    this[duration] = options[duration] || parseInt(modal[getAttribute](dataDuration)) || 300; // the default modal fade duration option
     this[content]  = options[content]; // JavaScript only
   
     // bind, constants, event targets and other vars
@@ -851,10 +864,10 @@
       },
       setScrollbar = function () {
         var bodyStyle = body.currentStyle || globalObject.getComputedStyle(body), bodyPad = parseInt((bodyStyle[paddingRight]), 10);
-        if (bodyIsOverflowing) { body.style[paddingRight] = (bodyPad + scrollbarWidth) + 'px'; }
+        if (bodyIsOverflowing) { body[style][paddingRight] = (bodyPad + scrollbarWidth) + 'px'; }
       },
       resetScrollbar = function () {
-        body.style[paddingRight] = '';
+        body[style][paddingRight] = '';
       },
       measureScrollbar = function () { // thx walsh
         var scrollDiv = document.createElement('div'), scrollBarWidth;
@@ -870,12 +883,12 @@
         scrollbarWidth = measureScrollbar();
       },
       adjustDialog = function () {
-        modal.style[paddingLeft] = !bodyIsOverflowing && modalIsOverflowing ? scrollbarWidth + 'px' : '';
-        modal.style[paddingRight] = bodyIsOverflowing && !modalIsOverflowing ? scrollbarWidth + 'px' : '';
+        modal[style][paddingLeft] = !bodyIsOverflowing && modalIsOverflowing ? scrollbarWidth + 'px' : '';
+        modal[style][paddingRight] = bodyIsOverflowing && !modalIsOverflowing ? scrollbarWidth + 'px' : '';
       },
       resetAdjustments = function () {
-        modal.style[paddingLeft] = '';
-        modal.style[paddingRight] = '';
+        modal[style][paddingLeft] = '';
+        modal[style][paddingRight] = '';
       },
       createOverlay = function() {
         var newOverlay = document.createElement('div');
@@ -948,8 +961,9 @@
     this.show = function() {
       bootstrapCustomEvent.call(modal, showEvent, component, relatedTarget);
   
-      var currentOpen = getElementsByClassName(document,component+' in')[0];
-      currentOpen && currentOpen !== modal && currentOpen.modalTrigger[stringModal].hide(); // we elegantly hide any opened modal
+      // we elegantly hide any opened modal
+      var currentOpen = getElementsByClassName(document,component+' '+showClass)[0];
+      currentOpen && currentOpen !== modal && currentOpen.modalTrigger[stringModal].hide(); 
   
       if ( this[backdrop] ) {
         createOverlay();
@@ -960,7 +974,7 @@
       }
   
       setTimeout( function() {
-        modal.style.display = 'block';
+        modal[style].display = 'block';
   
         checkScrollbar();
         setScrollbar();
@@ -973,12 +987,13 @@
         addClass(body,component+'-open');
         addClass(modal,showClass);
         modal[setAttribute](ariaHidden, false);
-      }, this[duration]/2);
-      setTimeout( function() {
+      }, 0);
+  
+      emulateTransitionEnd(modal,function(){
         open = self.open = true;
         setFocus(modal);
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
-      }, this[duration]);
+      });
     };
     this.hide = function() {
       bootstrapCustomEvent.call(modal, hideEvent, component);
@@ -990,24 +1005,21 @@
       removeClass(modal,showClass);
       modal[setAttribute](ariaHidden, true);
   
-      setTimeout( function() {
+      emulateTransitionEnd(modal, function(){
         removeClass(body,component+'-open');
-  
         resizeHandlerToggle();
         dismissHandlerToggle();
         keydownHandlerToggle();
   
         resetAdjustments();
         resetScrollbar();
-        modal.style.display = '';
-      }, this[duration]/2);
+        modal[style].display = '';
   
-      setTimeout( function() {
         if (!getElementsByClassName(document,component+' '+showClass)[0]) { removeOverlay(); }
         open = self.open = false;
         element && (setFocus(element));
         bootstrapCustomEvent.call(modal, hiddenEvent, component);
-      }, this[duration]);
+      });
     };
     this.setContent = function( content ) {
       queryElement('.'+component+'-content',modal).innerHTML = content;
@@ -1047,7 +1059,6 @@
     // DATA API
     var triggerData = element[getAttribute](dataTrigger), // click / hover / focus
         animationData = element[getAttribute](dataAnimation), // true / false
-        durationData = element[getAttribute](dataDuration),
         placementData = element[getAttribute](dataPlacement),
         dismissibleData = element[getAttribute](dataDismissible),
         delayData = element[getAttribute](dataDelay),
@@ -1073,9 +1084,8 @@
     this[trigger] = options[trigger] ? options[trigger] : triggerData || hoverEvent;
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
-    this[delay] = parseInt(options[delay] || delayData) || 100;
+    this[delay] = parseInt(options[delay] || delayData) || 200;
     this[dismissible] = options[dismissible] || dismissibleData === 'true' ? true : false;
-    this[duration] = parseInt(options[duration] || durationData) || 150;
     this[container] = queryElement(options[container]) || queryElement(containerData) || body;
     
     // bind, content
@@ -1132,7 +1142,7 @@
   
         //append to the container
         self[container].appendChild(popover);
-        popover.style.display = 'block';
+        popover[style].display = 'block';
         popover[setAttribute](classString, component+ ' ' + component+'-'+placementSetting + ' ' + self[animation]);
       },
       showPopover = function () {
@@ -1160,9 +1170,9 @@
           updatePopover();
           showPopover();
           bootstrapCustomEvent.call(element, showEvent, component);
-          setTimeout(function() {
+          emulateTransitionEnd(popover, function(){
             bootstrapCustomEvent.call(element, shownEvent, component);
-          }, self[duration]);
+          });
         }
       }, 20 );
     };
@@ -1172,10 +1182,10 @@
         if (popover && popover !== null && hasClass(popover,showClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
           removeClass(popover,showClass);
-          setTimeout(function() {
+          emulateTransitionEnd(popover, function() {
             removePopover();
             bootstrapCustomEvent.call(element, hiddenEvent, component);
-          }, self[duration]);
+          });
         }
       }, self[delay] );
     };
@@ -1312,8 +1322,7 @@
     element = queryElement(element);
   
     // DATA API
-    var durationData = element[getAttribute](dataDuration),
-        heightData = element[getAttribute](dataHeight),
+    var heightData = element[getAttribute](dataHeight),
       
         // strings
         component = 'tab', height = 'height', isAnimating = 'isAnimating';
@@ -1323,7 +1332,6 @@
   
     // set options
     options = options || {};
-    this[duration] = parseInt(options[duration] || durationData) || 150; // default tab transition duration
     this[height] = options[height] || heightData === 'true' || false;
   
     // bind, event targets
@@ -1373,37 +1381,40 @@
           }
         }
         
-        if (tabsContentContainer) tabsContentContainer.style[height] = getMaxHeight(activeContent) + 'px'; // height animation
+        if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(activeContent) + 'px'; // height animation
   
         bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
   
         setTimeout(function() {
           removeClass(activeContent,showClass);
-        }, 10);
+        }, 0);
   
-        setTimeout(function() {
+        emulateTransitionEnd(activeContent, function() {
           if (tabsContentContainer) addClass(tabsContentContainer,collapsing);
           removeClass(activeContent,active);
           addClass(nextContent,active);
           setTimeout(function() {
             addClass(nextContent,showClass);
-          }, 10);
+            if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(nextContent) + 'px'; // height animation
+          }, 0);
   
           bootstrapCustomEvent.call(next, showEvent, component, activeTab);
           bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
   
-          if(tabsContentContainer) tabsContentContainer.style[height] = getMaxHeight(nextContent) + 'px'; // height animation
-        }, self[duration]*.7);
+        });
   
-        setTimeout(function() {
+        emulateTransitionEnd(nextContent, function() {
           bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
-  
           if (tabsContentContainer) { // height animation
-            removeClass(tabsContentContainer,collapsing);
-            tabsContentContainer.style[height] =  ''; 
-          }
-          activeTab[isAnimating] = next[isAnimating] = false;
-        }, self[duration]*1.5);
+            setTimeout(function(){
+              emulateTransitionEnd(tabsContentContainer, function(){
+                tabsContentContainer[style][height] =  '';
+                removeClass(tabsContentContainer,collapsing);
+                activeTab[isAnimating] = next[isAnimating] = false;
+              })
+            },0);
+          } else { activeTab[isAnimating] = next[isAnimating] = false; }
+        });
       }
     };
   
@@ -1433,7 +1444,6 @@
     // DATA API
     var animationData = element[getAttribute](dataAnimation);
         placementData = element[getAttribute](dataPlacement);
-        durationData = element[getAttribute](dataDuration);
         delayData = element[getAttribute](dataDelay),
         containerData = element[getAttribute](dataContainer),
         
@@ -1448,8 +1458,7 @@
     options = options || {};
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
-    this[delay] = parseInt(options[delay] || delayData) || 100;
-    this[duration] = parseInt(options[duration] || durationData) || 150;
+    this[delay] = parseInt(options[delay] || delayData) || 200;
     this[container] = queryElement(options[container]) || queryElement(containerData) || body;
   
     // bind, event targets, title and constants
@@ -1497,9 +1506,9 @@
           updateTooltip();
           showTooltip();
           bootstrapCustomEvent.call(element, showEvent, component);
-          setTimeout(function() {
+          emulateTransitionEnd(tooltip, function() {
             bootstrapCustomEvent.call(element, shownEvent, component);
-          }, self[duration]);
+          });
         }
       }, 20 );
     };
@@ -1509,10 +1518,10 @@
         if (tooltip && tooltip !== null && hasClass(tooltip,showClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
           removeClass(tooltip,showClass);
-          setTimeout(function() {
+          emulateTransitionEnd(tooltip, function() {
             removeToolTip();
             bootstrapCustomEvent.call(element, hiddenEvent, component);
-          }, self[duration]);
+          });
         }
       }, self[delay]);
     };

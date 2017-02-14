@@ -258,9 +258,7 @@ var btn = new bsn.Button(...);
               state/text switching function that needs to be triggered manually, like the <a title="Go to Example" data-toggle="tooltip" href="#componentButton">example shown here</a>.</p>
             <p>The library uses a set of utilities required by the components, like a selector utility, CSS class checking and manipulation or event handling. This is why you cannot use the files in the 
               <code>/lib</code> folder right away.</p>
-            <p><b>Some features have been dropped</b> since I personally never found any use of them and/or Bootstrap developers decided to push them away. For instance we don't make use of any functions 
-              to detect <code>transitionend</code>, for performance and other reasons, we all know a fade is 150ms or <b>Carousel</b> default transition duration is 600ms, so most components have a simple 
-              option for that. The duration option in most components might be useful for more advanced <a href="https://github.com/thednp/kute.js">JavaScript driven animations</a>.</p>
+            <p><b>Some features have been dropped</b> since I personally never found any use of them and/or Bootstrap developers decided to push them away. For instance <b>Tooltip</b> and <b>Popover</b> don't expose a <code>destroy()</code> public method or a <code>show</code> option for <b>Modal</b> due to the flexibility nature of native JavaScript, but we'll have a look at that later.</p>
             <p><b>Some features are even better</b>, like having a <code>paused</code> class for <b>Carousel</b> when in paused state, or an option to keep a <b>Dropdown</b> open as if you would have a form 
               inside, or <b>Tooltip</b> and <b>Popover</b> automatic (re)positioning without any required option and more. Additionally, all elements that the components use to initialize will store the initialization 
               object, giving you full access even for instances when the DATA API was used. EG: <code>myModalTrigger.Modal</code>.</p>
@@ -308,13 +306,6 @@ var btn = new bsn.Button(...);
                       <td><em>boolean</em></td>
                       <td>true</td>
                       <td>Option to dismiss the current modal via <kbd>Esc</kbd> key.</td>
-                    </tr>
-                    <tr>
-                      <td><code>duration</code></td>
-                      <td><em>number</em></td>
-                      <td>300</td>
-                      <td>If you are customizing the animation duration for <b>Modal</b>, you need to provide a <b>duration</b> value via JavaScript or <code>data-duration="DURATION"</code> attribute, an option to 
-                        make sure everything is in sync.</td>
                     </tr>
                     <tr>
                       <td><code>content</code></td>
@@ -374,7 +365,7 @@ var btn = new bsn.Button(...);
                     </tr>
                     <tr>
                       <td><code>shown.bs.modal</code></td>
-                      <td>This event is fired when the modal has been made visible to the user (set by our duration option). The <code>event.relatedTarget</code> is same as for the above.</td>
+                      <td>This event is fired when the modal has been made visible to the user. The <code>event.relatedTarget</code> is same as for the above.</td>
                     </tr>
                     <tr>
                       <td><code>hide.bs.modal</code></td>
@@ -382,7 +373,7 @@ var btn = new bsn.Button(...);
                     </tr>
                     <tr>
                       <td><code>hidden.bs.modal</code></td>
-                      <td>This event is fired when the modal has finished being hidden from the user (set by our duration option).</td>
+                      <td>This event is fired when the modal has finished being hidden from the user.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -449,8 +440,7 @@ var myModalInstance = new Modal(myModal,
 { // options object
   content: '&lt;div class="modal-body"&gt;Some content to be set on init&lt;/div&gt;', // sets modal content
   backdrop: 'static', // we don't want to dismiss Modal when Modal or backdrop is the click event target
-  keyboard: false, // we don't want to dismiss Modal on pressing Esc key
-  duration: 700, // let's assume we changed the animation duration for Modal
+  keyboard: false // we don't want to dismiss Modal on pressing Esc key
 });
 
 // OR initialize and show the modal right away
@@ -477,8 +467,7 @@ var myButton = document.getElementById('buttonID');
 var myModalInstance = new Modal(myButton, 
 { // options object
   content: '&lt;div class="modal-body"&gt;Some content to be set on init&lt;/div&gt;', // sets modal content
-  keyboard: false, // we don't want to dismiss Modal on pressing Esc key
-  duration: 700, // let's assume we changed the animation duration for Modal
+  keyboard: false // we don't want to dismiss Modal on pressing Esc key
 });
 </code></pre>
 
@@ -1365,13 +1354,6 @@ myScrollSpyInit.refresh();
                   </thead>
                   <tbody>
                     <tr>
-                      <td><code>duration</code></td>
-                      <td><em>number</em></td>
-                      <td>150</td>
-                      <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds.<br>When using a CSS3 animation duration other than the default value, set the option via JavaScript or 
-                        the <code>data-duration="DURATION"</code> attribute.</td>
-                    </tr>
-                    <tr>
                       <td><code>height</code></td>
                       <td><em>boolean</em></td>
                       <td><em>false</em></td>
@@ -1380,8 +1362,7 @@ myScrollSpyInit.refresh();
                   </tbody>
                 </table>
               </div>
-              <p>When you set the second option to <code>true</code>, the <code>duration</code> option is much more important as it will prevent any kind of animation inconsistency. This functionality assumes you are using 
-                the styling of the <b>Collapse</b> component, which means that the <code>duration</code> must be set according to the <code>transition-duration</code> style rule of the <b>Collapse</b> component.</p>
+              <p>When you set the option to <code>true</code>, this enables a custom functionality that assumes you are using the styling of the <b>Collapse</b> component, and the <a href="https://github.com/twbs/bootstrap/blob/v3-dev/less/component-animations.less" target="_blank">component animations</a> styling.</p>
               <p>Both the above options have no effect on legacy browsers with no support for CSS3 transitions.</p>
             </section>
 
@@ -1444,16 +1425,16 @@ myScrollSpyInit.refresh();
   &lt;!-- Nav tabs --&gt;
   &lt;ul id="myTabs" class="nav nav-tabs" role="tablist"&gt;
     &lt;li role="presentation" class="active"&gt;
-      &lt;a href="#home" data-toggle="tab" data-height="true" data-duration="300" aria-controls="home" role="tab"&gt;Home&lt;/a&gt;
+      &lt;a href="#home" data-toggle="tab" data-height="true" aria-controls="home" role="tab"&gt;Home&lt;/a&gt;
     &lt;/li&gt;
     &lt;li role="presentation"&gt;
-      &lt;a href="#profile" data-toggle="tab" data-height="true" data-duration="300" aria-controls="profile" role="tab"&gt;Profile&lt;/a&gt;
+      &lt;a href="#profile" data-toggle="tab" data-height="true" aria-controls="profile" role="tab"&gt;Profile&lt;/a&gt;
     &lt;/li&gt;
     &lt;li role="presentation"&gt;
-      &lt;a href="#messages" data-toggle="tab" data-height="true" data-duration="300" aria-controls="messages" role="tab"&gt;Messages&lt;/a&gt;
+      &lt;a href="#messages" data-toggle="tab" data-height="true" aria-controls="messages" role="tab"&gt;Messages&lt;/a&gt;
     &lt;/li&gt;
     &lt;li role="presentation"&gt;
-      &lt;a href="#settings" data-toggle="tab" data-height="true" data-duration="300" aria-controls="settings" role="tab"&gt;Settings&lt;/a&gt;
+      &lt;a href="#settings" data-toggle="tab" data-height="true" aria-controls="settings" role="tab"&gt;Settings&lt;/a&gt;
     &lt;/li&gt;
   &lt;/ul&gt;
 
@@ -1484,7 +1465,6 @@ var myTabsCollection = myTabs.getElementsByTagName('A');
 for (var i = 0; i &lt; myTabsCollection.length; i++) {
   new Tab(myTabsCollection[i], // our target
   { // our options
-    duration: 300,
     height: true
   });
 }
@@ -1517,13 +1497,13 @@ myLastTab.addEventListener('show.bs.tab', function(event){
 
               <div class="clearfix">
                 <ul id="myTab" class="nav nav-tabs" role="tablist">
-                  <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-height="true" data-toggle="tab" data-duration="300" aria-controls="home" aria-expanded="true">Home</a></li>
-                  <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-height="true" data-duration="300" data-toggle="tab" aria-controls="profile">Profile</a></li>
+                  <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="home" aria-expanded="true">Home</a></li>
+                  <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-height="true" data-toggle="tab" aria-controls="profile">Profile</a></li>
                   <li role="presentation" class="dropdown">
                     <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" data-persist="true" aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
-                      <li><a href="#dropdown1" tabindex="-1" role="tab" id="dropdown1-tab" data-toggle="tab" data-height="true" data-duration="300" aria-controls="dropdown1" aria-expanded="false">Some tab</a></li>
-                      <li><a id="tabEventsExample" href="#dropdown2" tabindex="-1" role="tab" id="dropdown2-tab" data-height="true" data-duration="300" aria-controls="dropdown2" aria-expanded="false">Events</a></li>
+                      <li><a href="#dropdown1" tabindex="-1" role="tab" id="dropdown1-tab" data-toggle="tab" data-height="true" aria-controls="dropdown1" aria-expanded="false">Some tab</a></li>
+                      <li><a id="tabEventsExample" href="#dropdown2" tabindex="-1" role="tab" id="dropdown2-tab" data-height="true" aria-controls="dropdown2" aria-expanded="false">Events</a></li>
                     </ul>
                   </li>
                 </ul>
@@ -1599,16 +1579,9 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                         <code>data-placement="POSITION"</code> attribute.</td>
                     </tr>
                     <tr>
-                      <td><code>duration</code></td>
-                      <td><em>number</em></td>
-                      <td><em>150</em></td>
-                      <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds. When using a CSS3 animation duration other than the default value, set the option via JavaScript 
-                        or the <code>data-duration="DURATION"</code> attribute.</td>
-                    </tr>
-                    <tr>
                       <td><code>delay</code></td>
                       <td><em>number</em></td>
-                      <td><em>100</em></td>
+                      <td><em>200</em></td>
                       <td>A short delay before hiding the tooltip. Can be set via JavaScript or the <code>data-delay="DELAY"</code> attribute.</td>
                     </tr>
                     <tr>
@@ -1662,7 +1635,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                     </tr>
                     <tr>
                       <td><code>shown.bs.tooltip</code></td>
-                      <td>This event is fired when the tooltip has been made visible to the user (set by the <code>duration</code> option).</td>
+                      <td>This event is fired when the tooltip has been made visible to the user.</td>
                     </tr>
                     <tr>
                       <td><code>hide.bs.tooltip</code></td>
@@ -1670,7 +1643,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                     </tr>
                     <tr>
                       <td><code>hidden.bs.tooltip</code></td>
-                      <td>This event is fired when the tooltip has finished being hidden from the user (set by the <code>duration</code> option).</td>
+                      <td>This event is fired when the tooltip has finished being hidden from the user.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1682,7 +1655,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
               <h5>Via DATA API</h5>
               <p>As mentioned before the component will initialize any element found to have the <code>data-toggle="tooltip"</code> attribute and a <code>title</code> attribute.</p>
 <pre><code class="language-markup">&lt;!-- any regular link with data-toggle="tooltip" --&gt;
-&lt;a href="https://google.com" title="Google" data-toggle="tooltip" data-duration="300"&gt;Google&lt;/a&gt;
+&lt;a href="https://google.com" title="Google" data-toggle="tooltip"&gt;Google&lt;/a&gt;
 
 &lt;!-- any SVG shape with data-toggle="tooltip" --&gt;
 &lt;svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg"&gt;
@@ -1701,7 +1674,6 @@ for (var i = 0; i &lt; elementsTooltip.length; i++){
   new Tooltip(elementsTooltip[i], {
     placement: 'top', //string
     animation: 'slideNfade', // CSS class
-    duration: 200, // integer
     delay: 150, // integer
   })
 }
@@ -1834,16 +1806,9 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
                         <code>data-placement="POSITION"</code> attribute.</td>
                     </tr>
                     <tr>
-                      <td><code>duration</code></td>
-                      <td><em>number</em></td>
-                      <td><em>150</em></td>
-                      <td>An internal timing setting to emulate <code>transitionend</code> measured in miliseconds. When using a CSS3 animation duration other than the default value, set the option via 
-                        JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
-                    </tr>
-                    <tr>
                       <td><code>delay</code></td>
                       <td><em>number</em></td>
-                      <td><em>100</em></td>
+                      <td><em>200</em></td>
                       <td>A short delay before hiding the popover.<br> Can be set via JavaScript or the <code>data-delay="DELAY"</code> attribute.</td>
                     </tr>
                     <tr>
@@ -1896,7 +1861,7 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
                     </tr>
                     <tr>
                       <td><code>shown.bs.popover</code></td>
-                      <td>This event is fired when the popover has been made visible to the user (set by the <code>duration</code> option).</td>
+                      <td>This event is fired when the popover has been made visible to the user.</td>
                     </tr>
                     <tr>
                       <td><code>hide.bs.popover</code></td>
@@ -1904,7 +1869,7 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
                     </tr>
                     <tr>
                       <td><code>hidden.bs.popover</code></td>
-                      <td>This event is fired when the popover has finished being hidden from the user (set by the <code>duration</code> option).</td>
+                      <td>This event is fired when the popover has finished being hidden from the user.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1935,7 +1900,6 @@ for (var i = 0; i &lt; elementsPopover.length; i++){
   new Popover(elementsPopover[i], {
     placement: 'top', //string
     animation: 'slideNfade', // CSS class
-    duration: 300, // integer
     delay: 100, // integer
     dismissible: true, // boolean
   })
@@ -2027,7 +1991,7 @@ var popover2 = new Popover('.popover-via-template', { // where .popover-via-temp
 
             <section id="alertOptions">
               <h4>Options</h4>
-              <p>This component has no options, it uses a 150ms internal <code>duration</code> to emulate <code>transitionend</code>.</p>
+              <p>This component has no options.</p>
             </section>
 
             <section id="alertMethods">
@@ -2349,7 +2313,7 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
           
             <section id="collapseOptions">
               <h4>Options</h4>
-              <p>The options below allow you to connect a collapse to a parent accordion and a handy option to sync with the animation duration.</p>
+              <p>The option below allow you to connect a collapse to a parent accordion.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped js-options-table">
                   <thead>
@@ -2367,12 +2331,6 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
                       <td></td>
                       <td>Option to reference a parent to be used as an accordion. When a parent is set and found, it will enable the functionality described in the <code>show()</code> method below. Can be set 
                         via JavaScript or the <code>data-parent="SELECTOR"</code> attribute.</td>
-                    </tr>
-                    <tr>
-                      <td><code>duration</code></td>
-                      <td><em>number</em></td>
-                      <td><em>300</em></td>
-                      <td>Option the component's animation duration in miliseconds required to emulate <code>transitionend</code>. Can be set via JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2416,7 +2374,7 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
                     </tr>
                     <tr>
                       <td><code>shown.bs.collapse</code></td>
-                      <td>This event is fired when a collapse element has been made visible to the user (set by the <code>duration</code> option).</td>
+                      <td>This event is fired when a collapse element has been made visible to the user.</td>
                     </tr>
                     <tr>
                       <td><code>hide.bs.collapse</code></td>
@@ -2424,7 +2382,7 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
                     </tr>
                     <tr>
                       <td><code>hidden.bs.collapse</code></td>
-                      <td>This event is fired when a collapse element has been hidden from the user (set by the <code>duration</code> option).</td>
+                      <td>This event is fired when a collapse element has been hidden from the user.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2512,9 +2470,7 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
 var collapseLink = document.getElementById('collapseLink');
 
 // initialize the component for this collapse trigger
-var myCollapseInit = new Collapse(collapseLink, {
-  duration: 350 // integer
-})
+var myCollapseInit = new Collapse(collapseLink)
 </code></pre>
 
               <p>This now enables you to work with the public methods.</p>
@@ -2552,8 +2508,7 @@ var myAccordionTriggers = myAccordion.querySelectorAll('[data-toggle="collapse"]
 // initialize the component for each collapse trigger
 for (var i = 0; i &lt; myAccordionTriggers.length; i++){
   new Collapse(myAccordionTriggers[i], {
-    parent: myAccordion, // this is the above defined object
-    duration: 350 // integer
+    parent: myAccordion // this is the above defined object
   });
 }
 </code></pre>
@@ -2574,8 +2529,8 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
               <p>Here's a quick demo with a single collapsible element, using the <code>.well</code> as the container, exactly as described in the <a href="#collapseUsage">Usage</a> section. The demo also features the original events. </p>
               <p>
                 <span class="btn-group">
-                  <a class="btn btn-primary" data-toggle="collapse" data-duration="300" href="#collapseExample" aria-expanded="true" aria-controls="collapseExample">HREF</a>
-                  <button class="btn btn-primary" type="button" data-toggle="collapse"  data-duration="300" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">data-target</button>
+                  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="true" aria-controls="collapseExample">HREF</a>
+                  <button class="btn btn-primary" type="button" data-toggle="collapse"  data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">data-target</button>
                 </span>
               </p>
               <div class="collapse" id="collapseExample" aria-expanded="false" role="presentation">
@@ -2640,7 +2595,6 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
 
             <section id="carouselOptions">
               <h4>Options</h4>
-              <p>The options below allow you to connect a collapse to a parent accordion and a handy option to sync with the animation duration.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped js-options-table">
                   <thead>
@@ -2669,12 +2623,6 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                       <td><em>number</em></td>
                       <td><em>5000</em></td>
                       <td>Option the component's delay between transitions in miliseconds. Can be set via JavaScript or the <code>data-interval="INTERVAL"</code> attribute. If you want to disable the automatic transition, you can set this option to <em>false</em>.</td>
-                    </tr>
-                    <tr>
-                      <td><code>duration</code></td>
-                      <td><em>number</em></td>
-                      <td><em>600</em></td>
-                      <td>Option the component's animation duration in miliseconds required to emulate <code>transitionend</code>. Can be set via JavaScript or the <code>data-duration="DURATION"</code> attribute.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2717,7 +2665,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                     </tr>
                     <tr>
                       <td><code>slid.bs.carousel</code></td>
-                      <td>This event is fired when transition has finished (set by the <code>duration</code> option).</td>
+                      <td>This event is fired when transition has finished.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2788,7 +2736,6 @@ var myCarousel = document.getElementById('myCarousel');
 
 // initialize with some options
 var myCarouselInit = new Carousel(myCarousel, { // these options values will override the ones set via DATA API 
-  duration: 700,
   interval: false,
   pause: false,
   keyboard: false
