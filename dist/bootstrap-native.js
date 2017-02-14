@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.4 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.5 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -193,8 +193,8 @@
       element.removeEventListener(event, handler, false);
     },
     one = function (element, event, handler) { // one since 2.0.4
-      on(element, event, function handlerWrapper(){
-        handler();
+      on(element, event, function handlerWrapper(e){
+        handler(e);
         off(element, event, handlerWrapper);
       });
     },
@@ -737,27 +737,32 @@
       setActivePage( next );
   
       if ( supportTransitions && hasClass(element,'slide') ) {
+  
         addClass(slides[next],orientation);
-        slides[next][offsetWidth];  
+        slides[next][offsetWidth];
         addClass(slides[next],slideDirection);
         addClass(slides[activeItem],slideDirection);
   
-        one(slides[next], transitionEndEvent, function() { //we're gonna fake waiting for the animation to finish, cleaner and better
-          isSliding = self.isSliding = false;
+        one(slides[activeItem], transitionEndEvent, function(e) {
+          var timeout = e[target] !== slides[activeItem] ? e.elapsedTime*1000 : 0;
+          setTimeout(function(){
+            isSliding = self.isSliding = false;
   
-          addClass(slides[next],active);
-          removeClass(slides[activeItem],active);
+            addClass(slides[next],active);
+            removeClass(slides[activeItem],active);
   
-          removeClass(slides[next],orientation);
-          removeClass(slides[next],slideDirection);
-          removeClass(slides[activeItem],slideDirection);
+            removeClass(slides[next],orientation);
+            removeClass(slides[next],slideDirection);
+            removeClass(slides[activeItem],slideDirection);
   
-          if ( self[interval] && !hasClass(element,paused) ) {
-            self.cycle();
-          }
-          bootstrapCustomEvent.call(element, slidEvent, component, slides[next]); // here we go with the slid event
+            bootstrapCustomEvent.call(element, slidEvent, component, slides[next]);
+  
+            if ( self[interval] && !hasClass(element,paused) ) {
+              self.cycle();
+            }
+          },timeout);
         });
-        
+  
       } else {
         addClass(slides[next],active);
         slides[next][offsetWidth];
