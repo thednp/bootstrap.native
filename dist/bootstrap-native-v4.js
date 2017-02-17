@@ -135,7 +135,6 @@
     supportTransitions = Webkit+Transition in doc[style] || Transition[toLowerCase]() in doc[style],
     transitionEndEvent = Webkit+Transition in doc[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
   
-  
     // set new focus element since 2.0.3
     setFocus = function(element){
       element.focus ? element.focus() : element.setActive();
@@ -214,7 +213,7 @@
     },  
   
     // tab / collapse stuff
-    targetsReg   = /^\#(.)+$/,
+    targetsReg = /^\#(.)+$/,
     getOuterHeight = function (child) {
       var childStyle = child && globalObject.getComputedStyle(child), 
         btp = /px/.test(childStyle.borderTopWidth) ? Math.round(childStyle.borderTopWidth.replace('px','')) : 0,

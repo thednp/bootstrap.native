@@ -114,7 +114,6 @@
     getBoundingClientRect= 'getBoundingClientRect',
     querySelectorAll     = 'querySelectorAll',
     getElementsByCLASSNAME = 'getElementsByClassName',
-    requestAnimationFRAME = 'requestAnimationFrame',
   
     indexOf      = 'indexOf',
     parentNode   = 'parentNode',
@@ -140,10 +139,7 @@
   
     // transitionEnd since 2.0.4
     supportTransitions = Webkit+Transition in doc[style] || Transition[toLowerCase]() in doc[style],
-    transitionEndEvent = Webkit+Transition in doc[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
-    raf = document.documentMode && globalObject[requestAnimationFRAME] ? globalObject[requestAnimationFRAME] : setTimeout,
-    setTime = function(fn) { raf(fn) },
-    
+    transitionEndEvent = Webkit+Transition in doc[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',  
   
     // set new focus element since 2.0.3
     setFocus = function(element){
