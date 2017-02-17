@@ -228,7 +228,7 @@
     },  
   
     // tab / collapse stuff
-    targetsReg   = /^\#(.)+$/,
+    targetsReg = /^\#(.)+$/,
     getOuterHeight = function (child) {
       var childStyle = child && (child.currentStyle || globalObject.getComputedStyle(child)), 
         btp = /px/.test(childStyle.borderTopWidth) ? Math.round(childStyle.borderTopWidth.replace('px','')) : 0,

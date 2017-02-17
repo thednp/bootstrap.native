@@ -2526,15 +2526,17 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
               <h4>Examples</h4>
               <h5>Single collapsible element</h5>
               <p>Here's a quick demo with a single collapsible element, using the <code>.well</code> as the container, exactly as described in the <a href="#collapseUsage">Usage</a> section. The demo also features the original events. </p>
-              <p>
-                <span class="btn-group">
-                  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="true" aria-controls="collapseExample">HREF</a>
-                  <button class="btn btn-primary" type="button" data-toggle="collapse"  data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">data-target</button>
-                </span>
-              </p>
-              <div class="collapse" id="collapseExample" aria-expanded="false" role="presentation">
-                <div class="well" style="display: inline-block">
-                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+              <div id="collapseExampleWrapper" class="panel panel-default">
+                <p>
+                  <span class="btn-group">
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="true" aria-controls="collapseExample">HREF</a>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse"  data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">data-target</button>
+                  </span>
+                </p>
+                <div class="collapse" id="collapseExample" aria-expanded="false" role="presentation">
+                  <div class="well">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                  </div>
                 </div>
               </div>
 
