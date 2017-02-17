@@ -135,6 +135,7 @@
     supportTransitions = Webkit+Transition in doc[style] || Transition[toLowerCase]() in doc[style],
     transitionEndEvent = Webkit+Transition in doc[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
   
+  
     // set new focus element since 2.0.3
     setFocus = function(element){
       element.focus ? element.focus() : element.setActive();
@@ -677,16 +678,17 @@
         addClass(collapseElement,showClass);
         setTimeout(function() {
           collapseElement[style][height] = getMaxHeight(collapseElement) + 'px';
-        }, 10);
-        emulateTransitionEnd(collapseElement, function(){
-          isAnimating = false;
-          collapseElement[setAttribute](ariaExpanded,'true');
-          removeClass(collapseElement,collapsing);
-          collapseElement[style][height] = '';
-          setTimeout(function() {
-            bootstrapCustomEvent.call(collapseElement, shownEvent, component);
-          }, 0);
-        });
+  
+          (function(){
+            emulateTransitionEnd(collapseElement, function(){
+              isAnimating = false;
+              collapseElement[setAttribute](ariaExpanded,'true');
+              removeClass(collapseElement,collapsing);
+              collapseElement[style][height] = '';
+              bootstrapCustomEvent.call(collapseElement, shownEvent, component);
+            });
+          }());
+        }, 20);
       },
       closeAction = function(collapseElement) {
         bootstrapCustomEvent.call(collapseElement, hideEvent, component);
@@ -694,21 +696,19 @@
         collapseElement[style][height] = getMaxHeight(collapseElement) + 'px';
         setTimeout(function() {
           addClass(collapseElement,collapsing);
-        }, 0);
-        setTimeout(function() {
           collapseElement[style][height] = '0px';
-        }, 10);
   
-        emulateTransitionEnd(collapseElement, function(){
-          isAnimating = false;
-          collapseElement[setAttribute](ariaExpanded,'false');
-          removeClass(collapseElement,collapsing);
-          removeClass(collapseElement,showClass);
-          collapseElement[style][height] = '';
-          setTimeout(function() {
-            bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
-          }, 0);
-        });
+          (function() {
+            emulateTransitionEnd(collapseElement, function(){
+              isAnimating = false;
+              collapseElement[setAttribute](ariaExpanded,'false');
+              removeClass(collapseElement,collapsing);
+              removeClass(collapseElement,showClass);
+              collapseElement[style][height] = '';
+              bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
+            });
+          }());
+        },20);
       },
       getTarget = function() {
         var href = element.href && element[getAttribute]('href'),
@@ -1336,7 +1336,7 @@
     var heightData = element[getAttribute](dataHeight),
       
         // strings
-        component = 'tab', height = 'height', isAnimating = 'isAnimating', requestAnimationFRAME = 'requestAnimationFrame';
+        component = 'tab', height = 'height', isAnimating = 'isAnimating';
   
     // set default animation state
     element[isAnimating] = false;
@@ -1349,14 +1349,10 @@
     var self = this, next,
       tabs = getClosest(element,'.nav'),
       tabsContentContainer,
-      dropdown = queryElement('.dropdown',tabs);
-  
-    dropdown = dropdown && dropdown[getElementsByTagName]("A")[0];
+      dropdown = queryElement('.dropdown-toggle',tabs);
   
     // private methods
-    var raf = document.documentMode && globalObject[requestAnimationFRAME] ? globalObject[requestAnimationFRAME] : setTimeout,
-      setTime = function(fn) { raf(fn) },
-      getActiveTab = function() {
+    var getActiveTab = function() {
         var activeTabs = getElementsByClassName(tabs,active), activeTab;
         if ( activeTabs[length] === 1 && !hasClass(activeTabs[0][parentNode],'dropdown') ) {
           activeTab = activeTabs[0];
@@ -1396,46 +1392,47 @@
         
         if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(activeContent) + 'px'; // height animation
   
-        setTime(function() {
+        (function() {
           removeClass(activeContent,showClass);
           bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
-        });
-  
-        setTime(function(){
-          emulateTransitionEnd(activeContent, function() {
-            removeClass(activeContent,active);
-            addClass(nextContent,active);
-            setTime(function() {
-              addClass(nextContent,showClass);
-              nextContent[offsetHeight];
-              if (tabsContentContainer) addClass(tabsContentContainer,collapsing);
-              setTime(function() {
-                bootstrapCustomEvent.call(next, showEvent, component, activeTab);
-                setTime(function() { 
-                  if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(nextContent) + 'px'; // height animation
-                  bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
-                });
-              });
+          (function(){
+            emulateTransitionEnd(activeContent, function() {
+              removeClass(activeContent,active);
+              addClass(nextContent,active);
+              setTimeout(function() {
+                addClass(nextContent,showClass);
+                nextContent[offsetHeight];
+                if (tabsContentContainer) addClass(tabsContentContainer,collapsing);
+                (function() {
+                  bootstrapCustomEvent.call(next, showEvent, component, activeTab);
+                  (function() {
+                    if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(nextContent) + 'px'; // height animation
+                    bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
+                  }());
+                }());
+              },20);
             });
-          });
-        });
+          }());
+        }());
   
-        setTime(function(){
+        (function(){
           emulateTransitionEnd(nextContent, function() {
             bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
             if (tabsContentContainer) { // height animation
-              setTime(function(){
+              (function(){
                 emulateTransitionEnd(tabsContentContainer, function(){
-                  tabsContentContainer[style][height] = '';
-                  removeClass(tabsContentContainer,collapsing);
-                  activeTab[isAnimating] = next[isAnimating] = false;
-                })
-              });
+                  setTimeout(function(){
+                    tabsContentContainer[style][height] = '';
+                    removeClass(tabsContentContainer,collapsing);
+                    activeTab[isAnimating] = next[isAnimating] = false;
+                  },200);
+                });
+              }());
             } else {
               activeTab[isAnimating] = next[isAnimating] = false;
             }
           });
-        });
+        }());
       }
     };
   
