@@ -78,7 +78,9 @@ section { position: relative; display: inline-block; width: 100%; }
 p .btn, p .form-control {vertical-align: top}
 p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 
-p .btn-group {margin-bottom: 20px}
+/*p .btn-group {margin-bottom: 20px}*/
+#collapseExampleWrapper { padding: 20px 20px 10px }
+#collapseExample .well {margin-bottom: 10px}
 .btn-group .btn {margin-bottom: 0}
 
 #about {padding-bottom: 20px }
