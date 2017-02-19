@@ -241,7 +241,7 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 	/* affix example */
 	#side-nav .nav.affix,
 	#side-nav .nav.affix-bottom { position: fixed !important;  width: 263px; }
-	#side-nav .nav.affix { top: 0; }
+	#side-nav .nav.affix { top: 50px; }
 	#side-nav .nav.affix-bottom { top: auto; bottom: 100px }
 
   /* Navbar positioning foo */
