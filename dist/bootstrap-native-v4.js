@@ -163,7 +163,7 @@
     // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
       var firstChar = selector.charAt(0);
       for ( ; element && element !== document; element = element[parentNode] ) {// Get closest match
-        if ( firstChar === '.') {// If selector is a class
+        if ( firstChar === '.' ) {// If selector is a class
           if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selector.replace('.','')) ) { return element; }
         } else if ( firstChar === '#' ) { // If selector is an ID
           if ( element.id === selector.substr(1) ) { return element; }
@@ -1118,7 +1118,9 @@
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 200;
     this[dismissible] = options[dismissible] || dismissibleData === 'true' ? true : false;
-    this[container] = queryElement(options[container]) || queryElement(containerData) || modal ? modal : body;
+    this[container] = queryElement(options[container]) ? queryElement(options[container]) 
+                    : queryElement(containerData) ? queryElement(containerData) 
+                    : modal ? modal : body;
     
     // bind, content
     var self = this, 
@@ -1501,7 +1503,9 @@
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 200;
-    this[container] = queryElement(options[container]) || queryElement(containerData) || modal ? modal : body;
+    this[container] = queryElement(options[container]) ? queryElement(options[container]) 
+                    : queryElement(containerData) ? queryElement(containerData) 
+                    : modal ? modal : body;
   
     // bind, event targets, title and constants
     var self = this, timer = 0, placementSetting = this[placement], tooltip = null,

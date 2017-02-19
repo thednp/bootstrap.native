@@ -25,10 +25,6 @@ h3:not(.popover-title) {
   font-weight: bold;
   letter-spacing: -2px;
 }
-.navbar-brand {
-  font-weight: bold;
-  letter-spacing: -1px;
-}
 
 hr.clearfix {clear: both; width: 100%; float: left}
 
@@ -110,38 +106,13 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
 
-/* Special class on .container surrounding .navbar, used for positioning it into place. */
-.navbar-wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 20;
-}
-
-.navbar-default .navbar-brand { color: #286090 }
+.navbar-inverse .navbar-brand { color: #fff }
 
 .navbar-nav .open .dropdown-menu { left: auto; right:0 }
 
-.navbar-default .navbar-nav>li>a:focus, 
-.navbar-default .navbar-nav>li>a:hover,
-.navbar-inverse .navbar-nav>.active>a, 
-.navbar-inverse .navbar-nav>.active>a:focus, 
-.navbar-inverse .navbar-nav>.active>a:hover { background-color: #286090; color: #fff }
+.navbar-collapse.collapsing {overflow-y: hidden}
 
-
-/* Flip around the padding for proper display in narrow viewports */
-.navbar-wrapper .container {
-  padding-right: 0;
-  padding-left: 0;
-}
-.navbar-wrapper .navbar {
-  padding-right: 15px;
-  padding-left: 15px;
-}
-
-.navbar-default {border:0; background:#fff}
-.navbar-nav { float: none}
+.navbar-nav { float: none }
 
 
 /* CUSTOMIZE THE CAROUSEL
@@ -252,7 +223,9 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 #side-nav > .nav li.active.list11.additional > ul { height: 506px; height: calc(32px*11 + 2px*10 + 32px*5 + 2px*4); }
 
 #side-nav > .nav li > a { z-index: 1; padding: 6px 10px; }
-#side-nav > .nav li > ul { z-index: 0 }	
+#side-nav > .nav li > ul { z-index: 0 }
+
+.tooltip b, .tooltip strong {color: #fff}
 
 /* RESPONSIVE CSS
 -------------------------------------------------- */
@@ -272,22 +245,6 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 	#side-nav .nav.affix-bottom { top: auto; bottom: 100px }
 
   /* Navbar positioning foo */
-  .navbar-wrapper {
-    margin-top: 40px;
-  }
-  .navbar-wrapper .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-  .navbar-wrapper .navbar {
-    padding-right: 0;
-    padding-left: 0;
-  }
-
-  /* The navbar becomes detached from the top, so we round the corners */
-  .navbar-wrapper .navbar {
-    border-radius: 4px;
-  }
   .navbar .navbar-nav {margin-right: 15px; float: right}
 
   
