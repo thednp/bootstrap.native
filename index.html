@@ -561,9 +561,9 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                       <h4>Text in a modal</h4> 
                       <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
                       <h4>Popover in a modal</h4>
-                      <p>This <a href="#" style="margin:-5px 0 0 0" role="button" data-toggle="popover" data-container="#myModal" class="btn btn-default popover-test" data-content="And here's some amazing content. It's very engaging. right?" data-title="A Title">button</a> should trigger a popover on click.</p>
+                      <p>This <a href="#" style="margin:-5px 0 0 0" role="button" data-toggle="popover" class="btn btn-default popover-test" data-content="And here's some amazing content. It's very engaging. right?" data-title="A Title">button</a> should trigger a popover on click.</p>
                       <h4>Tooltips in a modal</h4>
-                      <p><a href="#" class="tooltip-test" data-toggle="tooltip" data-container="#myModal" title="Tooltip">This link</a> and <a href="#" data-container="#myModal" data-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>
+                      <p><a href="#" class="tooltip-test" data-toggle="tooltip" title="Tooltip">This link</a> and <a href="#" data-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>
                       <h4>Open modal from modal</h4>
                       <p>Click <a data-toggle="modal" href="#anotherModal">here</a> to open another modal.</p>
                       <hr>
@@ -1591,6 +1591,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                     </tr>
                   </tbody>
                 </table>
+                <p>If a tooltip is a child element of a modal, the <code>container</code> option is set to target that modal automatically starting with version 2.0.6.</p>
               </div>
             </section>
 
@@ -1818,6 +1819,8 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
                     </tr>
                   </tbody>
                 </table>
+                <p>If a popover is a child element of a modal, the <code>container</code> option is set to target that modal automatically starting with version 2.0.6.</p>
+
               </div>
             <p>If a proper template is not specified via JavaScript or the content option is not set in any way, the <b>Popover</b> will not be initialized.</p>
             </section>
