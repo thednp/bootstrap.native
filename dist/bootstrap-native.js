@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.5 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.6 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -29,9 +29,6 @@
   // globals
   var globalObject = typeof global !== 'undefined' ? global : this||window,
     doc = document.documentElement, body = document.body,
-  
-    // IE browser detect
-    isIE = (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null) ? parseFloat( RegExp.$1 ) : false,  
   
     // function toggle attributes
     dataToggle    = 'data-toggle',
@@ -133,6 +130,9 @@
     top        = 'top',
     bottom     = 'bottom',
   
+    // IE8 browser detect
+    isIE8 = !('opacity' in body[style]),
+  
     // tooltip / popover
     mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|top)+/,
@@ -163,8 +163,8 @@
       return childItems;
     },
     getElementsByClassName = function(element,classNAME) { // getElementsByClassName IE8+
-      var selectionMethod = isIE === 8 ? querySelectorAll : getElementsByCLASSNAME;      
-      return nodeListToArray(element[selectionMethod]( isIE === 8 ? '.' + classNAME.replace(/\s(?=[a-z])/g,'.') : classNAME ));
+      var selectionMethod = isIE8 ? querySelectorAll : getElementsByCLASSNAME;      
+      return nodeListToArray(element[selectionMethod]( isIE8 ? '.' + classNAME.replace(/\s(?=[a-z])/g,'.') : classNAME ));
     },
     queryElement = function (selector, parent) {
       var lookUp = parent ? parent : document;
@@ -174,10 +174,9 @@
     // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
       var firstChar = selector.charAt(0);
       for ( ; element && element !== document; element = element[parentNode] ) {// Get closest match
-        if ( firstChar === '.' || firstChar !== '#') {// If selector is a class
-          if ( queryElement(selector,element[parentNode]) !== null ) { return element; }
-        }
-        if ( firstChar === '#' ) { // If selector is an ID
+        if ( firstChar === '.') {// If selector is a class
+          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selector.replace('.','')) ) { return element; }
+        } else if ( firstChar === '#' ) { // If selector is an ID
           if ( element.id === selector.substr(1) ) { return element; }
         }
       }
@@ -198,9 +197,8 @@
       });
     },
     emulateTransitionEnd = function(element,handler){ // emulateTransitionEnd since 2.0.4
-      if (supportTransitions) {
-        one(element, transitionEndEvent, function(e){ handler(e); });       
-      } else { handler(); }
+      if (supportTransitions) { one(element, transitionEndEvent, function(e){ handler(e); }); } 
+      else { handler(); }
     },
     bootstrapCustomEvent = function (eventName, componentName, related) {
       var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
@@ -254,9 +252,9 @@
         x : globalObject.pageXOffset || doc[scrollLeft]
       }
     },
-    styleTip = function(link,element,position,container) { // both popovers and tooltips
+    styleTip = function(link,element,position,parent) { // both popovers and tooltips
       var rect = link[getBoundingClientRect](), 
-          scroll = container === body ? getScroll() : { x: container[offsetLeft] + container[scrollLeft], y: container[offsetTop] + container[scrollTop] },
+          scroll = parent === body ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
           elementDimensions = { w : element[offsetWidth], h: element[offsetHeight] };
   
@@ -320,7 +318,7 @@
     var self = this,
   
       // constants
-      resizeDelay = (isIE && isIE < 10) ? 500 : 50, // for legacy browsers we try to limit the interval for updating the Affix
+      resizeDelay = !supportTransitions ? 500 : 50, // for legacy browsers we try to limit the interval for updating the Affix
       pinOffsetTop, pinOffsetBottom, maxScroll, scrollY, pinnedTop, pinnedBottom,
       affixedToTop = false, affixedToBottom = false,
       
@@ -446,11 +444,7 @@
       if ( alert && element && hasClass(alert,inClass) ) {
         bootstrapCustomEvent.call(alert, closeEvent, component);
         removeClass(alert,inClass);
-        setTimeout(function() {
-          if (alert) {
-            emulateTransitionEnd(alert,transitionEndHandler);
-          } 
-        }, 0);
+        (function(){ alert && emulateTransitionEnd(alert,transitionEndHandler);}())
       }
     };
   
@@ -1033,17 +1027,34 @@
     var self = this, open = this.open = false, relatedTarget = null,
       bodyIsOverflowing, modalIsOverflowing, scrollbarWidth, overlay,
   
+      // also find fixed-top / fixed-bottom items
+      fixedItems = getElementsByClassName(doc,'navbar-fixed-top').concat(getElementsByClassName(doc,'navbar-fixed-bottom')),
+  
       // private methods
       getWindowWidth = function() {
         var htmlRect = doc[getBoundingClientRect]();
         return globalObject[innerWidth] || (htmlRect[right] - Math.abs(htmlRect[left]));
       },
       setScrollbar = function () {
-        var bodyStyle = body.currentStyle || globalObject.getComputedStyle(body), bodyPad = parseInt((bodyStyle[paddingRight]), 10);
-        if (bodyIsOverflowing) { body[style][paddingRight] = (bodyPad + scrollbarWidth) + 'px'; }
+        var bodyStyle = body.currentStyle || globalObject.getComputedStyle(body), 
+            bodyPad = parseInt((bodyStyle[paddingRight]), 10), itemPad;
+        if (bodyIsOverflowing) { 
+          body[style][paddingRight] = (bodyPad + scrollbarWidth) + 'px';
+          if (fixedItems[length]){
+            for (var i = 0; i < fixedItems[length]; i++) {
+              itemPad = globalObject.getComputedStyle(fixedItems[i])[paddingRight];
+              fixedItems[i][style][paddingRight] = ( parseInt(itemPad) + scrollbarWidth) + 'px';
+            }
+          }
+        }
       },
       resetScrollbar = function () {
         body[style][paddingRight] = '';
+        if (fixedItems[length]){
+          for (var i = 0; i < fixedItems[length]; i++) {
+            fixedItems[i][style][paddingRight] = '';
+          }
+        }
       },
       measureScrollbar = function () { // thx walsh
         var scrollDiv = document.createElement('div'), scrollBarWidth;
@@ -1146,7 +1157,7 @@
       }
   
       if ( overlay && !hasClass(overlay,inClass)) {
-        setTimeout( function() { addClass(overlay,inClass); }, 0);
+        setTimeout( function() { addClass(overlay,inClass); },0);
       }
   
       setTimeout( function() {
@@ -1163,39 +1174,44 @@
         addClass(body,component+'-open');
         addClass(modal,inClass);
         modal[setAttribute](ariaHidden, false);
-      }, 0);
   
-      emulateTransitionEnd(modal, function() {
-        open = self.open = true;
-        setFocus(modal);
-        bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
-      });
+        emulateTransitionEnd(modal, function() {
+          open = self.open = true;
+          setFocus(modal);
+          bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
+        });
+      }, supportTransitions ? 150 : 0);
     };
     this.hide = function() {
       bootstrapCustomEvent.call(modal, hideEvent, component);
       overlay = queryElement('.'+modalBackdropString);
   
-      if ( overlay !== null ) {
-        removeClass(overlay,inClass);
-      }
       removeClass(modal,inClass);
       modal[setAttribute](ariaHidden, true);
   
-      emulateTransitionEnd(modal, function() {
-        removeClass(body,component+'-open');
-        resizeHandlerToggle();
-        dismissHandlerToggle();
-        keydownHandlerToggle();
+      !!overlay && removeClass(overlay,inClass);
   
-        resetAdjustments();
-        resetScrollbar();
-        modal[style].display = '';
+      setTimeout(function(){
+        emulateTransitionEnd(modal, function() {
+          resizeHandlerToggle();
+          dismissHandlerToggle();
+          keydownHandlerToggle();
   
-        if (!getElementsByClassName(document,component+' '+inClass)[0]) { removeOverlay(); }
-        open = self.open = false;
-        element && (setFocus(element));
-        bootstrapCustomEvent.call(modal, hiddenEvent, component);
-      });
+          modal[style].display = '';
+  
+          open = self.open = false;
+          element && (setFocus(element));
+          bootstrapCustomEvent.call(modal, hiddenEvent, component);
+          setTimeout(function(){
+            if (!getElementsByClassName(document,component+' '+inClass)[0]) {
+              resetAdjustments();
+              resetScrollbar();
+              removeClass(body,component+'-open');
+              removeOverlay(); 
+            }
+          }, 100);
+        });
+      }, supportTransitions ? 150 : 0);
     };
     this.setContent = function( content ) {
       queryElement('.'+component+'-content',modal).innerHTML = content;
@@ -1252,7 +1268,10 @@
         dataTitle = 'data-title',
         dataContent = 'data-content',
         dismissible = 'dismissible',
-        closeBtn = '<button type="button" class="close">×</button>';
+        closeBtn = '<button type="button" class="close">×</button>',
+        
+        // maybe the element is inside a modal
+        modal = getClosest(element,'.modal');
   
     // set options
     options = options || {};
@@ -1262,7 +1281,7 @@
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 200;
     this[dismissible] = options[dismissible] || dismissibleData === 'true' ? true : false;
-    this[container] = queryElement(options[container]) || queryElement(containerData) || body;
+    this[container] = queryElement(options[container]) || queryElement(containerData) || modal ? modal : body;
     
     // bind, content
     var self = this, 
@@ -1380,7 +1399,7 @@
       if (self[dismissible]) { on( document, clickEvent, dismissibleHandler ); }
     
       // dismiss on window resize
-      if ( !(isIE && isIE < 9) ) { on( globalObject, resizeEvent, self.hide ); }
+      !isIE8 && on( globalObject, resizeEvent, self.hide );
   
     }
     element[stringPopover] = self;
@@ -1475,9 +1494,7 @@
     // init
     if ( !(stringScrollSpy in element) ) { // prevent adding event handlers twice
       on( scrollTarget, scrollEvent, this.refresh );
-      if ( !(isIE && isIE < 9)) { 
-        on( globalObject, resizeEvent, this.refresh ); 
-      }
+      !isIE8 && on( globalObject, resizeEvent, this.refresh ); 
     }
     this.refresh();
     element[stringScrollSpy] = this;
@@ -1636,14 +1653,17 @@
         classString = 'class',
         title = 'title',
         fade = 'fade',
-        div = 'div';
+        div = 'div',
+  
+        // maybe the element is inside a modal
+        modal = getClosest(element,'.modal');
   
     // set options
     options = options || {};
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 200;
-    this[container] = queryElement(options[container]) || queryElement(containerData) || body;
+    this[container] = queryElement(options[container]) || queryElement(containerData) || modal ? modal : body;
   
     // bind, event targets, title and constants
     var self = this, timer = 0, placementSetting = this[placement], tooltip = null,
