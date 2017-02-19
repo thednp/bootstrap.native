@@ -29,6 +29,13 @@
       #myCarousel .carousel-item {
           height: 500px;
           width: 100%;
+          -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
+          transition-timing-function: cubic-bezier(.45,.18,0,1);
+      }
+      @media (max-width: 575px) {
+        #myCarousel .container {
+          width: 100%;
+        }
       }
     </style>
 
@@ -41,7 +48,7 @@
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="https://github.com/thednp/bootstrap.native/">Native JavaScript for Bootstrap</a>
+      <a data-toggle="tooltip" data-placement="bottom" class="navbar-brand" title="<b>Native JavaScript for Bootstrap</b><br>The sweetest Vanilla JavaScript library for everyone" class="navbar-brand" href="https://github.com/thednp/bootstrap.native/">Native JavaScript for Bootstrap</a>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-0 ml-auto">
 
@@ -88,7 +95,7 @@
         <div class="carousel-item">
           <div class="item-bg" style="background-color: #E91E63;"></div>
           <div class="container">
-            <div class="carousel-caption d-none d-md-block">
+            <div class="carousel-caption">
               <h1>New to native JavaScript?</h1>
               <p>Have no worry, the internet is full of scripts and tutorials, <a style="color:#eee; text-decoration: underline" href="http://vanilla-js.com/" target="_blank">native JavaScript</a> is the coolest programing language ever! Far more powerful and requires almost <b>zero</b> maintenance on very long periods of time.</p>
               <p><a class="btn btn-lg btn-primary" href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank" role="button">Get started</a></p>
@@ -125,15 +132,15 @@
 
       <h3>CDN</h3>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdn.jsdelivr.net/bootstrap.native/2.0.5/bootstrap-native-v4.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdn.jsdelivr.net/bootstrap.native/2.0.6/bootstrap-native-v4.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
 </code></pre></div>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.5/bootstrap-native-v4.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.6/bootstrap-native-v4.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
 </code></pre></div>
 
       <p>Unfortunately IE10+ browsers still require <code>Event</code>, <code>CustomEvent</code> and <code>dispatchEvent</code> polyfills:</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.5/polyfill.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.6/polyfill.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
 </code></pre></div>
 
       <h3>npm/Bower</h3>
@@ -166,7 +173,7 @@ $ bower install --save bootstrap.native
       <div class="bd-example" data-example-id="">
         <div class="btn-group" data-toggle="buttons">
           <label class="btn btn-primary active">
-            <input type="checkbox" checked="" autocomplete="off"> Checkbox 1 (pre-checked)
+            <input type="checkbox" checked="" autocomplete="off"> Checkbox 1
           </label>
           <label class="btn btn-primary">
             <input type="checkbox" autocomplete="off"> Checkbox 2
@@ -191,7 +198,7 @@ $ bower install --save bootstrap.native
       <div class="bd-example" data-example-id="">
         <div class="btn-group" data-toggle="buttons">
           <label class="btn btn-primary active">
-            <input type="radio" name="options" id="option1" autocomplete="off" checked=""> Radio 1 (preselected)
+            <input type="radio" name="options" id="option1" autocomplete="off" checked=""> Radio 1
           </label>
           <label class="btn btn-primary">
             <input type="radio" name="options" id="option2" autocomplete="off"> Radio 2
