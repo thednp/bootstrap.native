@@ -96,7 +96,7 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 /* when on mobile, disable affix position */
 #side-nav {clear: both}
 #side-nav .nav.affix,
-#side-nav .nav.affix.affix-bottom { position: relative; margin: 20px 0; }
+#side-nav .nav.affix.affix-bottom { position: relative; margin: 20px 0; backface-visibility: hidden; }
 
 #side-nav > .nav li.active > a,
 #side-nav > .nav li.active:hover > a { background-color: #e6f0f8 }

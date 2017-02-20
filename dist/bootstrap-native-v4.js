@@ -128,6 +128,8 @@
     bottom     = 'bottom',
   
     // tooltip / popover
+    fixedTop = '.fixed-top',
+    fixedBottom = '.fixed-bottom',
     mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|top)+/,
   
@@ -202,7 +204,7 @@
     initializeDataAPI = function( component, constructor, dataAttribute, collection ){
       var lookUp = collection && collection[length] ? collection : AllDOMElements;
       for (var i=0; i < lookUp[length]; i++) {
-        var attrValue = lookUp[i][getAttribute](dataAttribute), expectedAttrValue = component.replace(/spy/i,'').toLowerCase();
+        var attrValue = lookUp[i][getAttribute](dataAttribute), expectedAttrValue = component.replace(/spy/i,'')[toLowerCase]();
         if ( attrValue && component === stringButton && ( attrValue[indexOf](expectedAttrValue) > -1 ) // data-toggle="buttons"
             || attrValue === expectedAttrValue ) { // all other components
           new constructor(lookUp[i]);
@@ -452,7 +454,7 @@
   
     // bind, event targets
     var self = this, index = element.index = 0, timer = element.timer = 0, 
-      isSliding = this.isSliding = false, // isSliding prevents click event handlers when animation is running
+      isSliding = false, // isSliding prevents click event handlers when animation is running
       slides = getElementsByClassName(element,carouselItem), total = slides[length],
       slideDirection = this[direction] = left,
       leftArrow = getElementsByClassName(element,component+'-control-prev')[0], 
@@ -565,20 +567,27 @@
   
       bootstrapCustomEvent.call(element, slideEvent, component, slides[next]); // here we go with the slide
   
-      isSliding = this.isSliding = true;
+      isSliding = true;
       clearInterval(timer);
       setActivePage( next );
   
-      if ( supportTransitions && hasClass(element,'slide') ) {
+      if ( supportTransitions && hasClass(element,'slide') 
+        && ( // we now check if the media queries do actually filter out BS4 transitions
+          globalObject.getComputedStyle(slides[next])[Transition[toLowerCase]()] 
+            || globalObject.getComputedStyle(slides[next])[Webkit[toLowerCase]() + Transition]
+            || globalObject.getComputedStyle(slides[next])[Webkit + Transition + 'Duration'] // old Safari stuff
+        )
+      ) {
+  
         addClass(slides[next],carouselItem +'-'+ orientation);
-        slides[next][offsetWidth];  
+        slides[next][offsetWidth];
         addClass(slides[next],carouselItem +'-'+ slideDirection);
         addClass(slides[activeItem],carouselItem +'-'+ slideDirection);
   
         one(slides[activeItem], transitionEndEvent, function(e) {
           var timeout = e[target] !== slides[activeItem] ? e.elapsedTime*1000 : 0;
           setTimeout(function(){
-            isSliding = self.isSliding = false;
+            isSliding = false;
   
             addClass(slides[next],active);
             removeClass(slides[activeItem],active);
@@ -593,7 +602,7 @@
               self.cycle();
             }
           },timeout);
-      });
+        });
   
       } else {
         addClass(slides[next],active);
@@ -1108,7 +1117,11 @@
         closeBtn = '<button type="button" class="close">×</button>',
         
         // maybe the element is inside a modal
-        modal = getClosest(element,'.modal');
+        modal = getClosest(element,'.modal'),
+        
+        // maybe the element is inside a fixed navbar
+        navbarFixedTop = getClosest(element,fixedTop),
+        navbarFixedBottom = getClosest(element,fixedBottom);
   
     // set options
     options = options || {};
@@ -1120,6 +1133,8 @@
     this[dismissible] = options[dismissible] || dismissibleData === 'true' ? true : false;
     this[container] = queryElement(options[container]) ? queryElement(options[container]) 
                     : queryElement(containerData) ? queryElement(containerData) 
+                    : navbarFixedTop ? navbarFixedTop
+                    : navbarFixedBottom ? navbarFixedBottom
                     : modal ? modal : body;
     
     // bind, content
@@ -1372,7 +1387,9 @@
     var self = this, next,
       tabs = getClosest(element,'.nav'),
       tabsContentContainer,
-      dropdown = queryElement('.dropdown-toggle',tabs);
+      dropdown = tabs && queryElement('.dropdown-toggle',tabs);
+  
+    if (!tabs) return; // invalidate 
   
     // private methods
     var getActiveTab = function() {
@@ -1496,7 +1513,11 @@
         div = 'div',
   
         // maybe the element is inside a modal
-        modal = getClosest(element,'.modal');
+        modal = getClosest(element,'.modal'),
+        
+        // maybe the element is inside a fixed navbar
+        navbarFixedTop = getClosest(element,fixedTop),
+        navbarFixedBottom = getClosest(element,fixedBottom);
   
     // set options
     options = options || {};
@@ -1505,6 +1526,8 @@
     this[delay] = parseInt(options[delay] || delayData) || 200;
     this[container] = queryElement(options[container]) ? queryElement(options[container]) 
                     : queryElement(containerData) ? queryElement(containerData) 
+                    : navbarFixedTop ? navbarFixedTop
+                    : navbarFixedBottom ? navbarFixedBottom
                     : modal ? modal : body;
   
     // bind, event targets, title and constants

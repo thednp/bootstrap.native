@@ -29,9 +29,12 @@
       #myCarousel .carousel-item {
           height: 500px;
           width: 100%;
-          -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
-          transition-timing-function: cubic-bezier(.45,.18,0,1);
       }
+      .carousel-item {
+        -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
+        transition-timing-function: cubic-bezier(.45,.18,0,1);
+      }
+
       @media (max-width: 575px) {
         #myCarousel .container {
           width: 100%;
@@ -126,7 +129,8 @@
     <div class="container">
 
       <h1>Using V4</h1>
-      <p>The Native JavaScript for Bootstrap version 4 is identical with the version 3 in terms of usage, options, methods and original events, except that version 4 does not support the <b>Affix</b> component, so please refer to <a href="index.html">V3 for documentation</a>.</p>
+      <p>The Native JavaScript for Bootstrap version 4 is identical with the version 3 in terms of usage, options, methods and original events, except that version 4 does not include the <b>Affix</b> component, and some <b>Button</b> related functionality. Please refer to <a href="index.html">V3 for documentation</a> for a general guidance on how to use the library.</p>
+      <p>Note that the CSS for <b>Carousel</b> is still under development / incomplete, thus the component doesn't work with IE10+ browsers due to the fact that the <code>transition</code> style rules are applied via <code>@media</code> queries that aren't supported by the respective IE browsers.</p>
 
       <h2>Quick Usage Guide </h2>
 
@@ -619,7 +623,6 @@ sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</
           </p>
         </div>
       </div>
-    </div>
 
       <!-- FOOTER -->
       <footer>
@@ -637,5 +640,56 @@ sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
     <script type="text/javascript" src="./dist/bootstrap-native-v4.js"></script>
+    <script type="text/javascript">
+      // transparent navbar
+      var navbar = document.querySelector('.fixed-top'), scrollTimer = null,
+            mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
+      navbar.style.backfaceVisibility = 'hidden';
+      navbar.style.transition = 'opacity 0.5s linear 0s';
+      navbar.style.WebkitTransition = 'opacity 0.5s linear 0s';
+
+      function setNavbarOpacity(){
+        clearTimeout(scrollTimer);
+        scrollTimer = !navbar.classList.contains('HOVER') ? setTimeout(function(){
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          if ( scrollTop < 120 ){
+            navbar.style.opacity = 1
+          } else {
+            navbar.style.opacity = 0.7
+          }
+        },50) : function() {return false;}
+      }
+
+      function setNavbarOpacityOnEnter(){
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function(){
+          if (!navbar.classList.contains('HOVER')) {
+            navbar.classList.add('HOVER');
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if ( scrollTop > 120 ){
+              navbar.style.opacity = 1
+            }
+          }
+        },0)
+      }
+
+      function setNavbarOpacityOnLeave(){
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function(){
+          if (navbar.classList.contains('HOVER')) {
+            navbar.classList.remove('HOVER');
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if ( scrollTop > 120 ){
+              navbar.style.opacity = 0.7
+            }
+          }
+        },0)
+      }
+
+      document.addEventListener('DOMContentLoaded', setNavbarOpacity, false);
+      window.addEventListener('scroll', setNavbarOpacity, false);
+      navbar.addEventListener(mouseHover[0],setNavbarOpacityOnEnter,false);
+      navbar.addEventListener(mouseHover[1],setNavbarOpacityOnLeave,false);
+    </script>
   </body>
 </html>
