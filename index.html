@@ -272,12 +272,11 @@ var btn = new bsn.Button(...);
           <h2>Components</h2>
           <section id="componentModal">
             <h3>Modal</h3>
-            <p>The <b>Modal</b> component works exactly as the original in most regards, with minor exceptions on options, events and public methods. It provides both an initialization option and a public method to 
-              write directly into your modal content.</p>
-            <p>In addition, a unique new ability that grants you access to the initialization even if your modal is setup via DATA API.</p>
+            <p>The <b>Modal</b> component works exactly as the original in most regards, with minor exceptions on options, events and public methods. It provides both an initialization option and a public method to write directly into your modal content.</p>
+            <p>In addition to addapting the spacing (padding) of the <code>&lt;body&gt;</code> elements like <code>&lt;nav class="navbar-fixed-top"&gt;</code> are also addapted in the same manner to get the smoothest possible transition. Like all components of the library, the component has the ability to provide access to the initialization even if your modal is setup via DATA API.</p>
             <section id="modalOptions">
               <h4>Options</h4>
-              <p>Bootstrap 4 will remove the <code>remote</code> option and we already replaced it with a better option. We also skipped the <code>show</code> option because via JavaScript we quickly and easily access 
+              <p>The <code>remote</code> option have removed in Bootstrap 4 and we already replaced it with a better option. We also skipped the <code>show</code> option because via JavaScript we quickly and easily access 
                 the component's public methods right after initialiation, we'll have a look in a minute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped js-options-table">
@@ -1587,7 +1586,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                     </tr>
                   </tbody>
                 </table>
-                <p>If a tooltip is a child element of a modal, the <code>container</code> option is set to target that modal automatically starting with version 2.0.6.</p>
+                <p>If a tooltip is a child element of a modal, a <code>&lt;nav class="navbar-fixed-top"&gt;</code> or a <code>&lt;nav class="navbar-fixed-bottom"&gt;</code>, the <code>container</code> option is set automatically to target that specific parent starting with version 2.0.6.</p>
               </div>
             </section>
 
@@ -1815,8 +1814,7 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
                     </tr>
                   </tbody>
                 </table>
-                <p>If a popover is a child element of a modal, the <code>container</code> option is set to target that modal automatically starting with version 2.0.6.</p>
-
+                <p>If a popover is a child element of a modal, a <code>&lt;nav class="navbar-fixed-top"&gt;</code> or a <code>&lt;nav class="navbar-fixed-bottom"&gt;</code> element, the <code>container</code> option is set automatically to target that specific parent starting with version 2.0.6.</p>
               </div>
             <p>If a proper template is not specified via JavaScript or the content option is not set in any way, the <b>Popover</b> will not be initialized.</p>
             </section>
