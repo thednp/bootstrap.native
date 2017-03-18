@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.6 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.7 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -134,8 +134,8 @@
     isIE8 = !('opacity' in body[style]),
   
     // tooltip / popover
-    fixedTop = '.navbar-fixed-top',
-    fixedBottom = '.navbar-fixed-bottom',  
+    fixedTop = 'navbar-fixed-top',
+    fixedBottom = 'navbar-fixed-bottom',  
     mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|top)+/,
   
@@ -1030,7 +1030,7 @@
       bodyIsOverflowing, modalIsOverflowing, scrollbarWidth, overlay,
   
       // also find fixed-top / fixed-bottom items
-      fixedItems = getElementsByClassName(doc,'navbar-fixed-top').concat(getElementsByClassName(doc,'navbar-fixed-bottom')),
+      fixedItems = getElementsByClassName(doc,fixedTop).concat(getElementsByClassName(doc,fixedBottom)),
   
       // private methods
       getWindowWidth = function() {
@@ -1276,8 +1276,8 @@
         modal = getClosest(element,'.modal'),
         
         // maybe the element is inside a fixed navbar
-        navbarFixedTop = getClosest(element,fixedTop),
-        navbarFixedBottom = getClosest(element,fixedBottom);
+        navbarFixedTop = getClosest(element,'.'+fixedTop),
+        navbarFixedBottom = getClosest(element,'.'+fixedBottom);
   
     // set options
     options = options || {};
@@ -1655,8 +1655,8 @@
     element = queryElement(element);
   
     // DATA API
-    var animationData = element[getAttribute](dataAnimation);
-        placementData = element[getAttribute](dataPlacement);
+    var animationData = element[getAttribute](dataAnimation),
+        placementData = element[getAttribute](dataPlacement),
         delayData = element[getAttribute](dataDelay),
         containerData = element[getAttribute](dataContainer),
         
@@ -1671,8 +1671,8 @@
         modal = getClosest(element,'.modal'),
         
         // maybe the element is inside a fixed navbar
-        navbarFixedTop = getClosest(element,fixedTop),
-        navbarFixedBottom = getClosest(element,fixedBottom);
+        navbarFixedTop = getClosest(element,'.'+fixedTop),
+        navbarFixedBottom = getClosest(element,'.'+fixedBottom);
   
     // set options
     options = options || {};

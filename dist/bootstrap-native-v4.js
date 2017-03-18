@@ -128,8 +128,8 @@
     bottom     = 'bottom',
   
     // tooltip / popover
-    fixedTop = '.fixed-top',
-    fixedBottom = '.fixed-bottom',
+    fixedTop = 'fixed-top',
+    fixedBottom = 'fixed-bottom',
     mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|top)+/,
   
@@ -873,7 +873,7 @@
       bodyIsOverflowing, modalIsOverflowing, scrollbarWidth, overlay,
   
       // also find fixed-top / fixed-bottom items
-      fixedItems = getElementsByClassName(doc,'fixed-top').concat(getElementsByClassName(doc,'fixed-bottom')),
+      fixedItems = getElementsByClassName(doc,fixedTop).concat(getElementsByClassName(doc,fixedBottom)),
   
   
       // private methods
@@ -1120,8 +1120,8 @@
         modal = getClosest(element,'.modal'),
         
         // maybe the element is inside a fixed navbar
-        navbarFixedTop = getClosest(element,fixedTop),
-        navbarFixedBottom = getClosest(element,fixedBottom);
+        navbarFixedTop = getClosest(element,'.'+fixedTop),
+        navbarFixedBottom = getClosest(element,'.'+fixedBottom);
   
     // set options
     options = options || {};
@@ -1516,8 +1516,8 @@
         modal = getClosest(element,'.modal'),
         
         // maybe the element is inside a fixed navbar
-        navbarFixedTop = getClosest(element,fixedTop),
-        navbarFixedBottom = getClosest(element,fixedBottom);
+        navbarFixedTop = getClosest(element,'.'+fixedTop),
+        navbarFixedBottom = getClosest(element,'.'+fixedBottom);
   
     // set options
     options = options || {};
