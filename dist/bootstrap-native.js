@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.7 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.8 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -823,7 +823,7 @@
   
   
     // event targets and constants
-    var accordion = null, collapse = null, self = this, 
+    var accordion = null, collapse = null, self = this,
       isAnimating = false, // when true it will prevent click handlers
       accordionData = element[getAttribute]('data-parent'),
   
@@ -894,9 +894,16 @@
       removeClass(element,collapsed);
   
       if ( accordion !== null ) {
-        var activeCollapses = getElementsByClassName(accordion,component+' '+inClass);
+        var activeCollapses = getElementsByClassName(accordion,component+' '+inClass),
+            allToggles = accordion[querySelectorAll]('['+dataToggle+'="'+component+'"]'),
+            correspondingCollapse;
         for (var i=0, al=activeCollapses[length]; i<al; i++) {
-          if ( activeCollapses[i] !== collapse) closeAction(activeCollapses[i]);
+          if ( activeCollapses[i] !== collapse ) { closeAction(activeCollapses[i]); }
+        }
+        for (var u=0, atl=allToggles[length]; u<atl; u++) {
+          correspondingCollapse = allToggles[u][getAttribute][dataTarget] || allToggles[u].href;
+          if ( correspondingCollapse.split('#')[1] !== collapse.id ) { addClass(allToggles[u],collapsed); } 
+          else { removeClass(allToggles[u],collapsed); }
         }
       }
     };
