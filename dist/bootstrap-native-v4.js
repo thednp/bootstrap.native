@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.6 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.8 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -737,9 +737,16 @@
       removeClass(element,collapsed);
   
       if ( accordion !== null ) {
-        var activeCollapses = getElementsByClassName(accordion,component+' '+showClass);
+        var activeCollapses = getElementsByClassName(accordion,component+' '+showClass),
+            allToggles = accordion.querySelectorAll('['+dataToggle+'="'+component+'"]'),
+            correspondingCollapse;
         for (var i=0, al=activeCollapses[length]; i<al; i++) {
-          if ( activeCollapses[i] !== collapse) closeAction(activeCollapses[i]);
+          if ( activeCollapses[i] !== collapse ) { closeAction(activeCollapses[i]); }
+        }
+        for (var u=0, atl=allToggles[length]; u<atl; u++) {
+          correspondingCollapse = allToggles[u][getAttribute][dataTarget] || allToggles[u].href;
+          if ( correspondingCollapse.split('#')[1] !== collapse.id ) { addClass(allToggles[u],collapsed); } 
+          else { removeClass(allToggles[u],collapsed); }
         }
       }
     };
@@ -1500,8 +1507,8 @@
     element = queryElement(element);
   
     // DATA API
-    var animationData = element[getAttribute](dataAnimation);
-        placementData = element[getAttribute](dataPlacement);
+    var animationData = element[getAttribute](dataAnimation),
+        placementData = element[getAttribute](dataPlacement),
         delayData = element[getAttribute](dataDelay),
         containerData = element[getAttribute](dataContainer),
         
