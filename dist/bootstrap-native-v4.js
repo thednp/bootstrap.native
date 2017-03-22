@@ -460,7 +460,7 @@
       leftArrow = getElementsByClassName(element,component+'-control-prev')[0], 
       rightArrow = getElementsByClassName(element,component+'-control-next')[0],
       indicator = queryElement( '.'+component+'-indicators', element ),
-      indicators = indicator[getElementsByTagName]( "LI" );
+      indicators = indicator && indicator[getElementsByTagName]( "LI" ) || [];
   
     // handlers
     var pauseHandler = function () {
