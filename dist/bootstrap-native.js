@@ -622,7 +622,7 @@
       controls = getElementsByClassName(element,component+'-control'),
       leftArrow = controls[0], rightArrow = controls[1],
       indicator = queryElement( '.'+component+'-indicators', element ),
-      indicators = indicator[getElementsByTagName]( "LI" );
+      indicators = indicator && indicator[getElementsByTagName]( "LI" ) || [];
   
     // handlers
     var pauseHandler = function () {
