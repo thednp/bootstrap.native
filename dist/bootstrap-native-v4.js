@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.8 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.9 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -460,7 +460,7 @@
       leftArrow = getElementsByClassName(element,component+'-control-prev')[0], 
       rightArrow = getElementsByClassName(element,component+'-control-next')[0],
       indicator = queryElement( '.'+component+'-indicators', element ),
-      indicators = indicator[getElementsByTagName]( "LI" );
+      indicators = indicator && indicator[getElementsByTagName]( "LI" ) || [];
   
     // handlers
     var pauseHandler = function () {
