@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.9 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.10 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -290,6 +290,7 @@
     // bind, target alert, duration and stuff
     var self = this, component = 'alert',
       alert = getClosest(element,'.'+component),
+      triggerHandler = function(){ hasClass(alert,'fade') ? emulateTransitionEnd(alert,transitionEndHandler) : transitionEndHandler(); },
       // handlers
       clickHandler = function(e){
         var eventTarget = e[target];
@@ -311,7 +312,7 @@
       if ( alert && element && hasClass(alert,showClass) ) {
         bootstrapCustomEvent.call(alert, closeEvent, component);
         removeClass(alert,showClass);
-        (function(){ alert && emulateTransitionEnd(alert,transitionEndHandler);}())
+        alert && triggerHandler();
       }
     };
   
@@ -744,7 +745,7 @@
           if ( activeCollapses[i] !== collapse ) { closeAction(activeCollapses[i]); }
         }
         for (var u=0, atl=allToggles[length]; u<atl; u++) {
-          correspondingCollapse = allToggles[u][getAttribute][dataTarget] || allToggles[u].href;
+          correspondingCollapse = allToggles[u][getAttribute](dataTarget) || allToggles[u].href;
           if ( correspondingCollapse.split('#')[1] !== collapse.id ) { addClass(allToggles[u],collapsed); } 
           else { removeClass(allToggles[u],collapsed); }
         }
@@ -882,7 +883,6 @@
       // also find fixed-top / fixed-bottom items
       fixedItems = getElementsByClassName(doc,fixedTop).concat(getElementsByClassName(doc,fixedBottom)),
   
-  
       // private methods
       getWindowWidth = function() {
         var htmlRect = doc[getBoundingClientRect]();
@@ -967,6 +967,31 @@
           off(modal, clickEvent, dismissHandler);
         }
       },
+      // triggers
+      triggerShow = function() {
+        open = self.open = true;
+        setFocus(modal);
+        bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
+      },
+      triggerHide = function() {
+        resizeHandlerToggle();
+        dismissHandlerToggle();
+        keydownHandlerToggle();
+  
+        modal[style].display = '';
+  
+        open = self.open = false;
+        element && (setFocus(element));
+        bootstrapCustomEvent.call(modal, hiddenEvent, component);
+        setTimeout(function(){
+          if (!getElementsByClassName(document,component+' '+showClass)[0]) {
+            resetAdjustments();
+            resetScrollbar();
+            removeClass(body,component+'-open');
+            removeOverlay(); 
+          }
+        }, 100);
+      }, 
       // handlers
       clickHandler = function(e) {
         var clickTarget = e[target]; 
@@ -1028,11 +1053,7 @@
         addClass(modal,showClass);
         modal[setAttribute](ariaHidden, false);
   
-        emulateTransitionEnd(modal, function(){
-          open = self.open = true;
-          setFocus(modal);
-          bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
-        });
+        hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
       }, supportTransitions ? 150 : 0);
     };
     this.hide = function() {
@@ -1045,25 +1066,7 @@
       !!overlay && removeClass(overlay,showClass);
   
       setTimeout(function(){
-      emulateTransitionEnd(modal, function(){
-        resizeHandlerToggle();
-        dismissHandlerToggle();
-        keydownHandlerToggle();
-  
-        modal[style].display = '';
-  
-        open = self.open = false;
-        element && (setFocus(element));
-        bootstrapCustomEvent.call(modal, hiddenEvent, component);
-        setTimeout(function(){
-          if (!getElementsByClassName(document,component+' '+showClass)[0]) {
-            resetAdjustments();
-            resetScrollbar();
-            removeClass(body,component+'-open');
-            removeOverlay(); 
-          }
-        }, 100);
-      });
+        hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
       }, supportTransitions ? 150 : 0);
     };
     this.setContent = function( content ) {
@@ -1210,6 +1213,15 @@
           placementSetting = updatePlacement(placementSetting); 
           styleTip(element,popover,placementSetting,self[container]); 
         }
+      },
+      
+      // triggers
+      showTrigger = function() {
+        bootstrapCustomEvent.call(element, shownEvent, component);
+      },
+      hideTrigger = function() {
+        removePopover();
+        bootstrapCustomEvent.call(element, hiddenEvent, component);
       };
   
     // public methods / handlers
@@ -1226,9 +1238,7 @@
           updatePopover();
           showPopover();
           bootstrapCustomEvent.call(element, showEvent, component);
-          emulateTransitionEnd(popover, function(){
-            bootstrapCustomEvent.call(element, shownEvent, component);
-          });
+          !!self[animation] ? emulateTransitionEnd(popover, showTrigger) : showTrigger();
         }
       }, 20 );
     };
@@ -1238,10 +1248,7 @@
         if (popover && popover !== null && hasClass(popover,showClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
           removeClass(popover,showClass);
-          emulateTransitionEnd(popover, function() {
-            removePopover();
-            bootstrapCustomEvent.call(element, hiddenEvent, component);
-          });
+          !!self[animation] ? emulateTransitionEnd(popover, hideTrigger) : hideTrigger();
         }
       }, self[delay] );
     };
@@ -1394,7 +1401,42 @@
     var self = this, next,
       tabs = getClosest(element,'.nav'),
       tabsContentContainer,
-      dropdown = tabs && queryElement('.dropdown-toggle',tabs);
+      dropdown = tabs && queryElement('.dropdown-toggle',tabs),
+      activeTab, activeContent, nextContent,
+      // triggers
+      triggerEnd = function(){
+        setTimeout(function(){
+          tabsContentContainer[style][height] = '';
+          removeClass(tabsContentContainer,collapsing);
+          activeTab[isAnimating] = next[isAnimating] = false;
+        },200);
+      },    
+      triggerShow = function() {
+        bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
+        if (tabsContentContainer) { // height animation
+          (function(){
+            supportTransitions && next[isAnimating] ? emulateTransitionEnd(tabsContentContainer, triggerEnd) : triggerEnd();
+          }());
+        } else {
+          activeTab[isAnimating] = next[isAnimating] = false;
+        }
+      },
+      triggerHide = function() {
+        removeClass(activeContent,active);
+        addClass(nextContent,active);
+        setTimeout(function() {
+          addClass(nextContent,showClass);
+          nextContent[offsetHeight];
+          if (tabsContentContainer) addClass(tabsContentContainer,collapsing);
+          (function() {
+            bootstrapCustomEvent.call(next, showEvent, component, activeTab);
+            (function() {
+              if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(nextContent) + 'px'; // height animation
+              bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
+            }());
+          }());
+        },20);
+      };
   
     if (!tabs) return; // invalidate 
   
@@ -1421,8 +1463,9 @@
   
     // public method
     this.show = function() { // the tab we clicked is now the next tab
-      var nextContent = queryElement(next[getAttribute]('href')), //this is the actual object, the next tab content to activate
-        activeTab = getActiveTab(), activeContent = getActiveContent();
+      nextContent = queryElement(next[getAttribute]('href')); //this is the actual object, the next tab content to activate
+      activeTab = getActiveTab(); 
+      activeContent = getActiveContent();
       
       if ( (!activeTab[isAnimating] || !next[isAnimating]) && !hasClass(next,active) ) {
         activeTab[isAnimating] = next[isAnimating] = true;
@@ -1443,42 +1486,12 @@
           removeClass(activeContent,showClass);
           bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
           (function(){
-            emulateTransitionEnd(activeContent, function() {
-              removeClass(activeContent,active);
-              addClass(nextContent,active);
-              setTimeout(function() {
-                addClass(nextContent,showClass);
-                nextContent[offsetHeight];
-                if (tabsContentContainer) addClass(tabsContentContainer,collapsing);
-                (function() {
-                  bootstrapCustomEvent.call(next, showEvent, component, activeTab);
-                  (function() {
-                    if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(nextContent) + 'px'; // height animation
-                    bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
-                  }());
-                }());
-              },20);
-            });
+            hasClass(activeContent, 'fade') ? emulateTransitionEnd(activeContent, triggerHide) : triggerHide();
           }());
         }());
   
         (function(){
-          emulateTransitionEnd(nextContent, function() {
-            bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
-            if (tabsContentContainer) { // height animation
-              (function(){
-                emulateTransitionEnd(tabsContentContainer, function(){
-                  setTimeout(function(){
-                    tabsContentContainer[style][height] = '';
-                    removeClass(tabsContentContainer,collapsing);
-                    activeTab[isAnimating] = next[isAnimating] = false;
-                  },200);
-                });
-              }());
-            } else {
-              activeTab[isAnimating] = next[isAnimating] = false;
-            }
-          });
+          hasClass(nextContent, 'fade') ? emulateTransitionEnd(nextContent, triggerShow) : triggerShow();
         }());
       }
     };
@@ -1570,6 +1583,14 @@
       },
       showTooltip = function () {
         !hasClass(tooltip,showClass) && ( addClass(tooltip,showClass) );
+      },
+      // triggers
+      showTrigger = function() {
+        bootstrapCustomEvent.call(element, shownEvent, component);
+      },
+      hideTrigger = function() {
+        removeToolTip();
+        bootstrapCustomEvent.call(element, hiddenEvent, component);
       };
   
     // public methods
@@ -1582,9 +1603,7 @@
           updateTooltip();
           showTooltip();
           bootstrapCustomEvent.call(element, showEvent, component);
-          emulateTransitionEnd(tooltip, function() {
-            bootstrapCustomEvent.call(element, shownEvent, component);
-          });
+          !!self[animation] ? emulateTransitionEnd(tooltip, showTrigger) : showTrigger();
         }
       }, 20 );
     };
@@ -1594,10 +1613,7 @@
         if (tooltip && tooltip !== null && hasClass(tooltip,showClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
           removeClass(tooltip,showClass);
-          emulateTransitionEnd(tooltip, function() {
-            removeToolTip();
-            bootstrapCustomEvent.call(element, hiddenEvent, component);
-          });
+          !!self[animation] ? emulateTransitionEnd(tooltip, hideTrigger) : hideTrigger();
         }
       }, self[delay]);
     };
