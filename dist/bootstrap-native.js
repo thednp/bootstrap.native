@@ -1559,19 +1559,16 @@
       tabsContentContainer,
       dropdown = tabs && queryElement('.dropdown',tabs),
       activeTab, activeContent, nextContent,
-      // triggers
-      triggerEnd = function(){
-        setTimeout(function(){
-          tabsContentContainer[style][height] = '';
-          removeClass(tabsContentContainer,collapsing);
-          activeTab[isAnimating] = next[isAnimating] = false;
-        },200);
-      },
+      // trigger
       triggerShow = function() {
         bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
         if (tabsContentContainer) { // height animation
           (function(){
-            supportTransitions && next[isAnimating] ? emulateTransitionEnd(tabsContentContainer, triggerEnd) : triggerEnd();
+            setTimeout(function(){
+              tabsContentContainer[style][height] = '';
+              removeClass(tabsContentContainer,collapsing);
+              activeTab[isAnimating] = next[isAnimating] = false;
+            },200);
           }());
         } else { 
           activeTab[isAnimating] = next[isAnimating] = false; 
