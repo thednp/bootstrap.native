@@ -153,8 +153,10 @@
 $ bower install --save bootstrap.native
 </code></pre></div>
 
-      <p>In order to be able to use V4, after you have installed the package you need to edit the <code>bower.json</code> and/or <code>package.json</code> to use the V4 as main file: </p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript">"main": "dist/bootstrap-native-v4.js",</code></pre></div>
+      <p>In order to be able to use V4, after you have installed the package you can do the following: </p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript">var bsn = require('bootstrap.native/dist/bootstrap-native-v4');
+var btn = new bsn.Button(element, 'text');
+</code></pre></div>
 
       <h1>Examples</h1>
       <h2>Alert</h2>
