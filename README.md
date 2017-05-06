@@ -53,6 +53,12 @@ var bsn = require("bootstrap.native");
 var btn = new bsn.Button(element,'loading');
 ```
 
+Additionally, to use V4, you can do the following:
+```
+var bsn = require('bootstrap.native/dist/bootstrap-native-v4');
+var btn = new bsn.Button(element,'loading');
+```
+
 **Note:** If you are working in a virtual browser environment (i.e. running front-end tests in NodeJS), `bootstrap.native` requires both `window` and `document` to be in scope. You will need to use a mock browser.
 
 
