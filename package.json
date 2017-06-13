@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "Native Javascript for Bootstrap, the sweetest Javascript library without jQuery.",
   "main": "dist/bootstrap-native.js",
   "scripts": {

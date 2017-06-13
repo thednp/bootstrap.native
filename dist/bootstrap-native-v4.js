@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.11 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.12 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -785,7 +785,7 @@
       component = 'dropdown',
       relatedTarget = null,
       menu = queryElement('.dropdown-menu', parent),
-      children = [].slice.call( menu[getElementsByTagName]('*')),
+      children =  menu[getElementsByTagName]('*'),
   
       // handlers
       keyHandler = function(e) {
@@ -799,7 +799,7 @@
           relatedTarget = element;
           self.toggle();
         } else if ( isOpen ) {
-          if ( (eventTarget === menu || children && children[indexOf](eventTarget) > -1) && ( self.persist || hasData ) ) {
+          if ( (eventTarget === menu || children && [].slice.call(children)[indexOf](eventTarget) > -1) && ( self.persist || hasData ) ) {
             return;
           } else { relatedTarget = null; hide(); }
         }
