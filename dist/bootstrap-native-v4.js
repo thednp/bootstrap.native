@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.10 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.11 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -792,8 +792,8 @@
         if (isOpen && (e.which == 27 || e.keyCode == 27)) { relatedTarget = null; hide(); } // e.keyCode for IE8
       },
       clickHandler = function(e) {
-        var eventTarget = e[target], hasData;
-        hasData = ( eventTarget.nodeType !== 1 && (eventTarget[getAttribute](dataToggle) || eventTarget[parentNode][getAttribute](dataToggle)) );
+        var eventTarget = e[target],
+          hasData = eventTarget && (eventTarget[getAttribute](dataToggle) || eventTarget[parentNode] && eventTarget[parentNode][getAttribute](dataToggle));
         if ( eventTarget === element || eventTarget === parent || eventTarget[parentNode] === element ) {
           e.preventDefault(); // comment this line to stop preventing navigation when click target is a link 
           relatedTarget = element;
