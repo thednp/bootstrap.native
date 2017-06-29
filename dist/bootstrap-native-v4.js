@@ -793,7 +793,8 @@
       },
       clickHandler = function(e) {
         var eventTarget = e[target],
-          hasData = eventTarget && (eventTarget[getAttribute](dataToggle) || eventTarget[parentNode] && eventTarget[parentNode][getAttribute](dataToggle));
+          hasData = eventTarget && (eventTarget[getAttribute](dataToggle) || eventTarget[parentNode] && getAttribute in eventTarget[parentNode] && eventTarget[parentNode][getAttribute](dataToggle));
+  
         if ( eventTarget === element || eventTarget === parent || eventTarget[parentNode] === element ) {
           e.preventDefault(); // comment this line to stop preventing navigation when click target is a link 
           relatedTarget = element;
