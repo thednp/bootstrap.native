@@ -684,15 +684,13 @@
         setTimeout(function() {
           collapseElement[style][height] = getMaxHeight(collapseElement) + 'px';
   
-          (function(){
-            emulateTransitionEnd(collapseElement, function(){
-              isAnimating = false;
-              collapseElement[setAttribute](ariaExpanded,'true');
-              removeClass(collapseElement,collapsing);
-              collapseElement[style][height] = '';
-              bootstrapCustomEvent.call(collapseElement, shownEvent, component);
-            });
-          }());
+          emulateTransitionEnd(collapseElement, function(){
+            isAnimating = false;
+            collapseElement[setAttribute](ariaExpanded,'true');
+            removeClass(collapseElement,collapsing);
+            collapseElement[style][height] = '';
+            bootstrapCustomEvent.call(collapseElement, shownEvent, component);
+          });
         }, 20);
       },
       closeAction = function(collapseElement) {
@@ -703,16 +701,14 @@
           addClass(collapseElement,collapsing);
           collapseElement[style][height] = '0px';
   
-          (function() {
-            emulateTransitionEnd(collapseElement, function(){
-              isAnimating = false;
-              collapseElement[setAttribute](ariaExpanded,'false');
-              removeClass(collapseElement,collapsing);
-              removeClass(collapseElement,showClass);
-              collapseElement[style][height] = '';
-              bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
-            });
-          }());
+          emulateTransitionEnd(collapseElement, function(){
+            isAnimating = false;
+            collapseElement[setAttribute](ariaExpanded,'false');
+            removeClass(collapseElement,collapsing);
+            removeClass(collapseElement,showClass);
+            collapseElement[style][height] = '';
+            bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
+          });
         },20);
       },
       getTarget = function() {
@@ -1408,13 +1404,11 @@
       triggerShow = function() {
         bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
         if (tabsContentContainer) { // height animation
-          (function(){
-            setTimeout(function(){
-              tabsContentContainer[style][height] = '';
-              removeClass(tabsContentContainer,collapsing);
-              activeTab[isAnimating] = next[isAnimating] = false;
-            },200);
-          }());
+          setTimeout(function(){
+            tabsContentContainer[style][height] = '';
+            removeClass(tabsContentContainer,collapsing);
+            activeTab[isAnimating] = next[isAnimating] = false;
+          },200);
         } else {
           activeTab[isAnimating] = next[isAnimating] = false;
         }
@@ -1426,13 +1420,10 @@
           addClass(nextContent,showClass);
           nextContent[offsetHeight];
           if (tabsContentContainer) addClass(tabsContentContainer,collapsing);
-          (function() {
-            bootstrapCustomEvent.call(next, showEvent, component, activeTab);
-            (function() {
-              if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(nextContent) + 'px'; // height animation
-              bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
-            }());
-          }());
+          bootstrapCustomEvent.call(next, showEvent, component, activeTab);
+  
+          if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(nextContent) + 'px'; // height animation
+          bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
         },20);
       };
   
@@ -1480,17 +1471,11 @@
         
         if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(activeContent) + 'px'; // height animation
   
-        (function() {
-          removeClass(activeContent,showClass);
-          bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
-          (function(){
-            hasClass(activeContent, 'fade') ? emulateTransitionEnd(activeContent, triggerHide) : triggerHide();
-          }());
-        }());
+        removeClass(activeContent,showClass);
+        bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
   
-        (function(){
-          hasClass(nextContent, 'fade') ? emulateTransitionEnd(nextContent, triggerShow) : triggerShow();
-        }());
+        hasClass(activeContent, 'fade') ? emulateTransitionEnd(activeContent, triggerHide) : triggerHide();
+        hasClass(nextContent, 'fade') ? emulateTransitionEnd(nextContent, triggerShow) : triggerShow();
       }
     };
   
