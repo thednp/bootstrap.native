@@ -864,11 +864,11 @@ changeModal2.addEventListener('click', function(){
 <pre><code class="language-javascript">// get some element that has the data-toggle="dropdown"
 var myDropdown = document.getElementById('myDropdown');
 
-// initialize component with it's option
+// initialize component with it's 'persist' option
 var myDropdownInit = new Dropdown( myDropdown, true );
 
 // OR initialize component with no option
-// the options object is optional
+// the option is optional
 var myDropdownInit = new Dropdown( myDropdown );
 </code></pre>
               <p>All right, now we have an initialization reference, we can get to work with the component's method:</p>
@@ -966,7 +966,7 @@ makeMeDropdown.addEventListener('click', function(e){
     var formDropdown = document.getElementById('formDropdown');
 
     // initiate with option
-    var DropdownInit = new Dropdown(formDropdown, {persist: true});
+    var DropdownInit = new Dropdown(formDropdown, true);
 
     // also attach Dropdown original events
     formDropdown.parentNode.addEventListener('show.bs.dropdown', function(e){ 
