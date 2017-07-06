@@ -1615,7 +1615,8 @@
       };
   
     // public method
-    this.show = function() { // the tab we clicked is now the next tab
+    this.show = function() {
+      next = element; // the tab we clicked is now the next tab
       nextContent = queryElement(next[getAttribute]('href')); //this is the actual object, the next tab content to activate
       activeTab = getActiveTab(); 
       activeContent = getActiveContent();
