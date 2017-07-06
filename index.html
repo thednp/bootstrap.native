@@ -788,7 +788,7 @@ changeModal2.addEventListener('click', function(){
                         <td><code>persist</code></td>
                         <td><em>boolean</em></td>
                         <td>false</td>
-                        <td>Option to keep the dropdown-menu open when <code>click</code> event targets a child element, useful for forms or interactive content.</td>
+                        <td>Option to keep the dropdown-menu open when <code>click</code> event targets a child element, useful for forms or interactive content. Use <code>data-persist="true"</code> attribute to enable this functionality via DATA-API.</td>
                       </tr>
                   </tbody>
                 </table>
@@ -865,7 +865,7 @@ changeModal2.addEventListener('click', function(){
 var myDropdown = document.getElementById('myDropdown');
 
 // initialize component with it's option
-var myDropdownInit = new Dropdown( myDropdown, { persist: true } );
+var myDropdownInit = new Dropdown( myDropdown, true );
 
 // OR initialize component with no option
 // the options object is optional
