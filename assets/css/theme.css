@@ -10,6 +10,7 @@
 
 body {
   color: #5a5a5a;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 
 #main-container {padding-top: 20px;}
@@ -40,7 +41,7 @@ hr.clearfix {clear: both; width: 100%; float: left}
 -------------------------------------------------- */
 
  /* required for scrollspy to work perfect */
-section { position: relative; display: inline-block; width: 100%; }
+ section { position: relative; display: inline-block; width: 100%; } 
 
 .scrollspy-example {
   position: relative; height: 150px; overflow: auto; margin-bottom: 20px;
@@ -123,7 +124,7 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 .navbar-fixed-top { padding: .5rem 0; border:0 }
 
 .navbar-brand svg { display: inline-block; vertical-align:top; margin: -8px 5px 0 } 
-.navbar-brand span { display: inline-block; vertical-align:middle } 
+.navbar-brand span { display: inline-block; vertical-align: top } 
 
 
 /* CUSTOMIZE THE CAROUSEL
