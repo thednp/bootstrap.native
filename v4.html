@@ -13,11 +13,12 @@
     <title>Native JavaScript for Bootstrap 4</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 
     <!-- Custom styles for this template -->
     <link href="./assets/css/docs.min.css" rel="stylesheet">
     <style>
+      .fixed-top { background: #563d7c }
       #myCarousel { margin-bottom: 4rem }
       #myCarousel .carousel-inner > .carousel-item > .item-bg {
           position: absolute;
@@ -45,6 +46,11 @@
           width: 100%;
         }
       }
+
+      .bg-bootstrap { background-color: #563d7c }
+      .bg-pink { background-color: #E91E63 }
+      .bg-indigo { background-color: #9c27b0 }
+      
     </style>
 
     <!-- IE10+ still require polyfill -->
@@ -52,14 +58,18 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-bootstrap">
+      <a data-toggle="tooltip" data-placement="bottom" class="navbar-brand mr-0 mr-md-2" title="<b>Native JavaScript for Bootstrap</b><br>The sweetest Vanilla JavaScript library for everyone" class="navbar-brand" href="https://github.com/thednp/bootstrap.native/">
+        <svg class="d-inline-block align-top" width="36" height="36" viewBox="0 0 612 612" xmlns="http://www.w3.org/2000/svg" focusable="false"><title>Bootstrap</title>
+          <path fill="currentColor" d="M510 8a94.3 94.3 0 0 1 94 94v408a94.3 94.3 0 0 1-94 94H102a94.3 94.3 0 0 1-94-94V102a94.3 94.3 0 0 1 94-94h408m0-8H102C45.9 0 0 45.9 0 102v408c0 56.1 45.9 102 102 102h408c56.1 0 102-45.9 102-102V102C612 45.9 566.1 0 510 0z"></path><path fill="currentColor" d="M196.77 471.5V154.43h124.15c54.27 0 91 31.64 91 79.1 0 33-24.17 63.72-54.71 69.21v1.76c43.07 5.49 70.75 35.82 70.75 78 0 55.81-40 89-107.45 89zm39.55-180.4h63.28c46.8 0 72.29-18.68 72.29-53 0-31.42-21.53-48.78-60-48.78h-75.57zm78.22 145.46c47.68 0 72.73-19.34 72.73-56s-25.93-55.37-76.46-55.37h-74.49v111.4z"></path>
+        </svg>
+        <span class="d-inline-block align-middle">Native JavaScript for Bootstrap</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a data-toggle="tooltip" data-placement="bottom" class="navbar-brand" title="<b>Native JavaScript for Bootstrap</b><br>The sweetest Vanilla JavaScript library for everyone" class="navbar-brand" href="https://github.com/thednp/bootstrap.native/">Native JavaScript for Bootstrap</a>
       <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav mr-0 ml-auto">
-
+        <ul class="navbar-nav ml-auto mr-0">
           <li class="nav-item"><a class="nav-link" href="index.html">V3</a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Github</a>
@@ -91,17 +101,17 @@
       </ol>
       <div class="carousel-inner" role="listbox">
         <div class="carousel-item active">
-          <div class="item-bg" style="background-color: #5677fc;"></div>
+          <div class="item-bg bg-primary"></div>
           <div class="container">
             <div class="carousel-caption text-left">
               <h1>A better way to Bootstrap</h1>
               <p>The jQuery plugins for Bootstrap 4 redeveloped with native JavaScript, providing same basic functionality, but lighter in size and delivering higher performance for your application.</p>
-              <p><a class="btn btn-lg btn-primary" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
+              <p><a class="btn btn-lg btn-light" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
             </div>
           </div>
         </div>
         <div class="carousel-item">
-          <div class="item-bg" style="background-color: #E91E63;"></div>
+          <div class="item-bg bg-pink"></div>
           <div class="container">
             <div class="carousel-caption">
               <h1>New to native JavaScript?</h1>
@@ -111,7 +121,7 @@
           </div>
         </div>
         <div class="carousel-item">
-          <div class="item-bg" style="background-color: #9c27b0;"></div>
+          <div class="item-bg bg-indigo"></div>
           <div class="container">
             <div class="carousel-caption text-right">
               <h1>What's the fuzz?</h1>
@@ -134,22 +144,23 @@
     <div class="container">
 
       <h1>Using V4</h1>
-      <p>The Native JavaScript for Bootstrap version 4 is identical with the version 3 in terms of usage, options, methods and original events, except that version 4 does not include the <b>Affix</b> component, and some <b>Button</b> related functionality. Please refer to <a href="index.html">V3 for documentation</a> for a general guidance on how to use the library.</p>
-      <p>Note that the CSS for <b>Carousel</b> is still under development / incomplete, thus the component doesn't work with IE10+ browsers due to the fact that the <code>transition</code> style rules are applied via <code>@media</code> queries that aren't supported by the respective IE browsers.</p>
+      <p>The Native JavaScript for Bootstrap version 4 is identical with the version 3 in terms of usage, options, methods and original events, except that version 4 does not include the <b>Affix</b> component, and some <b>Button</b> related functionality.</p>
+      <p>Please note that this library does not require the <a href="https://popper.js.org/">Popper</a> library for <b>Popover</b> and <b>Tooltip</b> components like the original script does and the additional features from Popper are not yet implemented into our library yet.</p>
+      <p>Please refer to <a href="index.html">V3 for documentation</a> for a general guidance on how to use the library.</p>
 
       <h2>Quick Usage Guide </h2>
 
       <h3>CDN</h3>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdn.jsdelivr.net/bootstrap.native/2.0.12/bootstrap-native-v4.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdn.jsdelivr.net/bootstrap.native/2.0.13/bootstrap-native-v4.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
 </code></pre></div>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.12/bootstrap-native-v4.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.13/bootstrap-native-v4.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
 </code></pre></div>
 
       <p>Unfortunately IE10+ browsers still require <code>Event</code>, <code>CustomEvent</code> and <code>dispatchEvent</code> polyfills:</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.12/polyfill.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.13/polyfill.min.js"</span><span class="nt">&gt;</span><span class="nt">&lt;/script&gt;</span>
 </code></pre></div>
 
       <h3>npm/Bower</h3>
@@ -160,7 +171,7 @@ $ bower install --save bootstrap.native
 
       <p>In order to be able to use V4, after you have installed the package you can do the following: </p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript">var bsn = require('bootstrap.native/dist/bootstrap-native-v4');
-var btn = new bsn.Button(element, 'text');
+var myCarousel = new bsn.Carousel(element,options);
 </code></pre></div>
 
       <h1>Examples</h1>
@@ -299,7 +310,7 @@ var btn = new bsn.Button(element, 'text');
           </button>
         </p>
         <div class="collapse" id="collapseExample">
-          <div class="card card-block">
+          <div class="card card-body">
             Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
           </div>
         </div>
@@ -313,7 +324,7 @@ var btn = new bsn.Button(element, 'text');
   <span class="nt">&lt;/button&gt;</span>
 <span class="nt">&lt;/p&gt;</span>
 <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"collapse"</span> <span class="na">id=</span><span class="s">"collapseExample"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"card card-block"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"card card-body"</span><span class="nt">&gt;</span>
     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
   <span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;/div&gt;</span></code></pre></div>
@@ -331,7 +342,7 @@ var btn = new bsn.Button(element, 'text');
             </div>
 
             <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne">
-              <div class="card-block">
+              <div class="card-body">
                 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
               </div>
             </div>
@@ -345,7 +356,7 @@ var btn = new bsn.Button(element, 'text');
               </h5>
             </div>
             <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
-              <div class="card-block">
+              <div class="card-body">
                 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
               </div>
             </div>
@@ -359,7 +370,7 @@ var btn = new bsn.Button(element, 'text');
               </h5>
             </div>
             <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
-              <div class="card-block">
+              <div class="card-body">
                 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
               </div>
             </div>
@@ -378,7 +389,7 @@ var btn = new bsn.Button(element, 'text');
     <span class="nt">&lt;/div&gt;</span>
 
     <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"collapseOne"</span> <span class="na">class=</span><span class="s">"collapse show"</span> <span class="na">role=</span><span class="s">"tabpanel"</span> <span class="na">aria-labelledby=</span><span class="s">"headingOne"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"card-block"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"card-body"</span><span class="nt">&gt;</span>
         Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
       <span class="nt">&lt;/div&gt;</span>
     <span class="nt">&lt;/div&gt;</span>
@@ -392,7 +403,7 @@ var btn = new bsn.Button(element, 'text');
       <span class="nt">&lt;/h5&gt;</span>
     <span class="nt">&lt;/div&gt;</span>
     <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"collapseTwo"</span> <span class="na">class=</span><span class="s">"collapse"</span> <span class="na">role=</span><span class="s">"tabpanel"</span> <span class="na">aria-labelledby=</span><span class="s">"headingTwo"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"card-block"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"card-body"</span><span class="nt">&gt;</span>
         Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
       <span class="nt">&lt;/div&gt;</span>
     <span class="nt">&lt;/div&gt;</span>
@@ -406,7 +417,7 @@ var btn = new bsn.Button(element, 'text');
       <span class="nt">&lt;/h5&gt;</span>
     <span class="nt">&lt;/div&gt;</span>
     <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"collapseThree"</span> <span class="na">class=</span><span class="s">"collapse"</span> <span class="na">role=</span><span class="s">"tabpanel"</span> <span class="na">aria-labelledby=</span><span class="s">"headingThree"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"card-block"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"card-body"</span><span class="nt">&gt;</span>
         Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
       <span class="nt">&lt;/div&gt;</span>
     <span class="nt">&lt;/div&gt;</span>
@@ -534,16 +545,16 @@ var btn = new bsn.Button(element, 'text');
       <h2>Popover</h2>
       <div class="bd-example popover-demo">
         <div class="bd-example-popovers">
-          <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="top" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+          <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="top" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
             Popover on top
           </button>
-          <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+          <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
             Popover on right
           </button>
-          <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+          <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="bottom" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
             Popover on bottom
           </button>
-          <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="left" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+          <button type="button" class="btn btn-secondary" data-toggle="popover" data-placement="left" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
             Popover on left
           </button>
         </div>
@@ -623,7 +634,7 @@ sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</
 
       <h2>ScrollSpy</h2>
       <div class="bd-example" style="margin-bottom: 1rem">
-        <nav id="navbar-example2" class="navbar navbar-light bg-faded">
+        <nav id="navbar-example2" class="navbar navbar-light bg-light">
           <a class="navbar-brand" href="#">Navbar</a>
           <ul class="nav nav-pills">
             <li class="nav-item"><a class="nav-link" href="#fat">@fat</a></li>
