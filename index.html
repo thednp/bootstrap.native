@@ -39,7 +39,7 @@
   <!-- Just use it for all browsers on production websites.  -->
 
   <!-- Native JavaScript for Bootstrap 3 Polyfill -->
-  <!-- <script src="https://cdn.jsdelivr.net/bootstrap.native/2.0.12/polyfill.min.js"></script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/bootstrap.native/2.0.13/polyfill.min.js"></script> -->
   <script src="./dist/polyfill.js"></script>
   <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -47,7 +47,7 @@
 </head>
 <body>
     <div class="navbar-wrapper">
-      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-inverse navbar-fixed-top bg-bootstrap" role="navigation">
 
         <div class="navbar-header">
           <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar">
@@ -56,7 +56,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a href="https://github.com/thednp/bootstrap.native/" data-toggle="tooltip" data-placement="bottom" class="navbar-brand" title="<b>Native JavaScript for Bootstrap</b><br>The sweetest Vanilla JavaScript library for everyone">Native JavaScript for Bootstrap</a>
+          <a href="https://github.com/thednp/bootstrap.native/" data-toggle="tooltip" data-placement="bottom" class="navbar-brand" title="<b>Native JavaScript for Bootstrap</b><br>The sweetest Vanilla JavaScript library for everyone">
+            <svg class="d-inline-block align-top" width="36" height="36" viewBox="0 0 612 612" xmlns="http://www.w3.org/2000/svg" focusable="false"><title>Bootstrap</title>
+              <path fill="currentColor" d="M510 8a94.3 94.3 0 0 1 94 94v408a94.3 94.3 0 0 1-94 94H102a94.3 94.3 0 0 1-94-94V102a94.3 94.3 0 0 1 94-94h408m0-8H102C45.9 0 0 45.9 0 102v408c0 56.1 45.9 102 102 102h408c56.1 0 102-45.9 102-102V102C612 45.9 566.1 0 510 0z"></path><path fill="currentColor" d="M196.77 471.5V154.43h124.15c54.27 0 91 31.64 91 79.1 0 33-24.17 63.72-54.71 69.21v1.76c43.07 5.49 70.75 35.82 70.75 78 0 55.81-40 89-107.45 89zm39.55-180.4h63.28c46.8 0 72.29-18.68 72.29-53 0-31.42-21.53-48.78-60-48.78h-75.57zm78.22 145.46c47.68 0 72.73-19.34 72.73-56s-25.93-55.37-76.46-55.37h-74.49v111.4z"></path>
+            </svg>
+            <span class="d-inline-block align-middle">Native JavaScript for Bootstrap</span>
+          </a>
         </div>
         <nav id="bs-navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -93,7 +98,7 @@
       </ol>
       <div class="carousel-inner">
         <div class="item active">
-          <div class="item-bg" style="background-color: #5677fc;"></div>
+          <div class="item-bg bg-primary"></div>
           <div class="container">
             <div class="carousel-caption slide">
               <h2>A better way to Bootstrap</h2>
@@ -103,7 +108,7 @@
           </div>
         </div>
         <div class="item">
-          <div class="item-bg" style="background-color: #E91E63;"></div>
+          <div class="item-bg bg-pink"></div>
           <div class="container">
             <div class="carousel-caption">
               <h2>New to native JavaScript?</h2>
@@ -115,7 +120,7 @@
           </div>
         </div>
         <div class="item">
-          <div class="item-bg" style="background-color: #673ab7;"></div>
+          <div class="item-bg bg-indigo"></div>
           <div class="container">
             <div class="carousel-caption">
               <h2>HTML5 inside</h2>
@@ -126,7 +131,7 @@
           </div>
         </div>
         <div class="item">
-          <div class="item-bg" style="background-color: #9c27b0;"></div>
+          <div class="item-bg bg-purple"></div>
           <div class="container">
             <div class="carousel-caption">
               <h2>What's the fuzz?</h2>
@@ -136,7 +141,7 @@
           </div>
         </div>
         <div class="item">
-          <div class="item-bg" style="background-color: #e51c23;"></div>
+          <div class="item-bg bg-red"></div>
           <div class="container">
             <div class="carousel-caption">
               <h2>This was a <b>Carousel</b> example</h2>
@@ -191,9 +196,9 @@ var btn = new bsn.Button(...);
               and <a href="https://cdnjs.com/libraries/bootstrap.native">here</a> on cdnjs. Other <a href="https://www.google.com/search?q=bootstrap+native+cdn" target="_blank">CDN links</a> are also available.</p>
 
 <pre><code class="language-markup">&lt;!-- jsdelivr repo --&gt;
-&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/2.0.12/bootstrap-native.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/2.0.13/bootstrap-native.min.js"&gt;&lt;/script&gt;
 &lt;!-- or cdnjs repo --&gt;
-&lt;script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.12/bootstrap-native.min.js"&gt;&lt;/script&gt;</code></pre>
+&lt;script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.13/bootstrap-native.min.js"&gt;&lt;/script&gt;</code></pre>
 
             <p>As most of the scripts manipulate the DOM when ready, there is no need to include a <code>document.ready</code> like statement or link the script(s) in the <code>&lt;head&gt;</code>. We don't do that 
               with native JavaScript unless required by a special ocasion.</p>
@@ -229,7 +234,7 @@ var btn = new bsn.Button(...);
             <p>The Native JavaScript for Bootstrap comes with a dedicated <kbd>4Kb</kbd> polyfill we made called <em><a href="./assets/js/polyfill.js" target="_blank">polyfill.js</a></em> for IE8-IE11. Since most 
               of the legacy browsers don't cover support for the standardized <code>Event</code> the <em>polyfill.js</em> can be combined with HTML5 shims like so:</p>
 
-<pre><code class="language-markup">&lt;script src="https://cdn.jsdelivr.net/bootstrap.native/2.0.12/polyfill.min.js"> &lt;/script>
+<pre><code class="language-markup">&lt;script src="https://cdn.jsdelivr.net/bootstrap.native/2.0.13/polyfill.min.js"> &lt;/script>
 &lt;!--[if lt IE 9]>
   &lt;script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js">&lt;/script>
 &lt;![endif]-->
@@ -3242,7 +3247,7 @@ theAffixInit.update();
   <!-- highlighter -->
   <script src="./assets/js/prism.js" type="text/javascript"></script>
 
-  <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/2.0.12/bootstrap-native.min.js"></script>  now we have CDN -->
+  <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.native/2.0.13/bootstrap-native.min.js"></script>  now we have CDN -->
   <!--<script type="text/javascript" src="./dist/bootstrap-native.min.js"></script>-->
   <script type="text/javascript" src="./dist/bootstrap-native.js"></script>
   <script type="text/javascript" src="./assets/js/scripts.js"></script>

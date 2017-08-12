@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.12 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.13 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -244,27 +244,33 @@
       }
     },
     styleTip = function(link,element,position,parent) { // both popovers and tooltips
-      var rect = link[getBoundingClientRect](), 
+      var rect = link[getBoundingClientRect](),
+          arrow = queryElement('.arrow',element),
+          arrowWidth = arrow[offsetWidth], isPopover = hasClass(element,'popover'),
           scroll = parent === body ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
           elementDimensions = { w : element[offsetWidth], h: element[offsetHeight] };
   
       // apply styling to tooltip or popover
       if ( position === top ) { // TOP
-        element[style][top] = rect[top] + scroll.y - elementDimensions.h + 'px';
+        element[style][top] = rect[top] + scroll.y - elementDimensions.h - ( isPopover ? arrowWidth : 0 ) + 'px'; // isPopover is trying to fix bug with V4beta CSS
         element[style][left] = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + 'px'
+        arrow[style][left] = elementDimensions.w/2 - arrowWidth/2 + 'px';
   
       } else if ( position === bottom ) { // BOTTOM
         element[style][top] = rect[top] + scroll.y + linkDimensions.h + 'px';
         element[style][left] = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + 'px';
+        arrow[style][left] = elementDimensions.w/2 - arrowWidth/2 + 'px';
   
       } else if ( position === left ) { // LEFT
         element[style][top] = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2 + 'px';
-        element[style][left] = rect[left] + scroll.x - elementDimensions.w + 'px';
+        element[style][left] = rect[left] + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 ) + 'px'; // isPopover is trying to fix bug with V4beta CSS
+        arrow[style][top] = elementDimensions.h/2 - arrowWidth/2 + 'px';
   
       } else if ( position === right ) { // RIGHT
         element[style][top] = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2 + 'px';
         element[style][left] = rect[left] + scroll.x + linkDimensions.w + 'px';
+        arrow[style][top] = elementDimensions.h/2 - arrowWidth/2 + 'px';
       }
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     },
@@ -572,13 +578,7 @@
       clearInterval(timer);
       setActivePage( next );
   
-      if ( supportTransitions && hasClass(element,'slide') 
-        && ( // we now check if the media queries do actually filter out BS4 transitions
-          globalObject.getComputedStyle(slides[next])[Transition[toLowerCase]()] 
-            || globalObject.getComputedStyle(slides[next])[Webkit[toLowerCase]() + Transition]
-            || globalObject.getComputedStyle(slides[next])[Webkit + Transition + 'Duration'] // old Safari stuff
-        )
-      ) {
+      if ( supportTransitions && hasClass(element,'slide') ) {
   
         addClass(slides[next],carouselItem +'-'+ orientation);
         slides[next][offsetWidth];
@@ -587,6 +587,7 @@
   
         one(slides[activeItem], transitionEndEvent, function(e) {
           var timeout = e[target] !== slides[activeItem] ? e.elapsedTime*1000 : 0;
+          
           setTimeout(function(){
             isSliding = false;
   
@@ -602,7 +603,7 @@
             if ( !document.hidden && self[interval] && !hasClass(element,paused) ) {
               self.cycle();
             }
-          },timeout);
+          },timeout+100);
         });
   
       } else {
@@ -805,6 +806,7 @@
       // private methods
       show = function() {
         bootstrapCustomEvent.call(parent, showEvent, component, relatedTarget);
+        addClass(menu,showClass);
         addClass(parent,showClass);
         menu[setAttribute](ariaExpanded,true);
         bootstrapCustomEvent.call(parent, shownEvent, component, relatedTarget);
@@ -813,6 +815,7 @@
       },
       hide = function() {
         bootstrapCustomEvent.call(parent, hideEvent, component, relatedTarget);
+        removeClass(menu,showClass);
         removeClass(parent,showClass);
         menu[setAttribute](ariaExpanded,false);
         bootstrapCustomEvent.call(parent, hiddenEvent, component, relatedTarget);
@@ -1172,13 +1175,18 @@
   
         popover = document.createElement(div);
   
+        // popover arrow
+        var popoverArrow = document.createElement(div);
+        popoverArrow[setAttribute](classString,'arrow');
+        popover.appendChild(popoverArrow);
+  
         if ( contentString !== null && self[template] === null ) { //create the popover from data attributes
   
           popover[setAttribute]('role','tooltip');
   
           if (titleString !== null) {
             var popoverTitle = document.createElement('h3');
-            popoverTitle[setAttribute](classString,component+'-title');
+            popoverTitle[setAttribute](classString,component+'-header');
   
             popoverTitle.innerHTML = self[dismissible] ? titleString + closeBtn : titleString;
             popover.appendChild(popoverTitle);
@@ -1186,7 +1194,7 @@
   
           //set popover content
           var popoverContent = document.createElement(div);
-          popoverContent[setAttribute](classString,component+'-content');
+          popoverContent[setAttribute](classString,component+'-body');
           popoverContent.innerHTML = self[dismissible] && titleString === null ? contentString + closeBtn : contentString;
           popover.appendChild(popoverContent);
   
@@ -1199,7 +1207,7 @@
         //append to the container
         self[container].appendChild(popover);
         popover[style].display = 'block';
-        popover[setAttribute](classString, component+ ' ' + component+'-'+placementSetting + ' ' + self[animation]);
+        popover[setAttribute](classString, component+ ' bs-' + component+'-'+placementSetting + ' ' + self[animation]);
       },
       showPopover = function () {
         !hasClass(popover,showClass) && ( addClass(popover,showClass) );
@@ -1560,6 +1568,11 @@
         titleString = element[getAttribute](title) || element[getAttribute](dataOriginalTitle); // read the title again
         tooltip = document.createElement(div);
         tooltip[setAttribute]('role',component);
+  
+        // tooltip arrow
+        var tooltipArrow = document.createElement(div);
+        tooltipArrow[setAttribute](classString,'arrow');
+        tooltip.appendChild(tooltipArrow);
     
         var tooltipInner = document.createElement(div);
         tooltipInner[setAttribute](classString,component+'-inner');
@@ -1567,7 +1580,7 @@
         tooltipInner.innerHTML = titleString;
   
         self[container].appendChild(tooltip);
-        tooltip[setAttribute](classString, component + ' ' + component+'-'+placementSetting + ' ' + self[animation]);
+        tooltip[setAttribute](classString, component + ' bs-' + component+'-'+placementSetting + ' ' + self[animation]);
       },
       updateTooltip = function () {
         styleTip(element,tooltip,placementSetting,self[container]);

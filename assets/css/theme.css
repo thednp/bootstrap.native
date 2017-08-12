@@ -28,6 +28,13 @@ h3:not(.popover-title) {
 
 hr.clearfix {clear: both; width: 100%; float: left}
 
+/* colors */
+.bg-bootstrap { background-color: #563d7c }
+.bg-pink { background-color: #E91E63 }
+.bg-indigo { background-color: #673ab7 }
+.bg-purple { background-color: #9c27b0 }
+.bg-red { background-color: #e51c23 }
+
 
 /* CONTENT STYLING
 -------------------------------------------------- */
@@ -113,6 +120,10 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 .navbar-collapse.collapsing {overflow-y: hidden}
 
 .navbar-nav { float: none }
+.navbar-fixed-top { padding: .5rem 0; border:0 }
+
+.navbar-brand svg { display: inline-block; vertical-align:top; margin: -8px 5px 0 } 
+.navbar-brand span { display: inline-block; vertical-align:middle } 
 
 
 /* CUSTOMIZE THE CAROUSEL

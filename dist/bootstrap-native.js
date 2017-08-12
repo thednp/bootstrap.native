@@ -740,7 +740,7 @@
         slides[next][offsetWidth];
         addClass(slides[next],slideDirection);
         addClass(slides[activeItem],slideDirection);
-  
+
         one(slides[activeItem], transitionEndEvent, function(e) {
           var timeout = e[target] !== slides[activeItem] ? e.elapsedTime*1000 : 0;
           setTimeout(function(){
@@ -758,7 +758,7 @@
             if ( self[interval] && !hasClass(element,paused) ) {
               self.cycle();
             }
-          },timeout);
+          },timeout+100);
         });
   
       } else {
