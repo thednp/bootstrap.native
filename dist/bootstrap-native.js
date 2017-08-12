@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.12 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.13 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -740,7 +740,7 @@
         slides[next][offsetWidth];
         addClass(slides[next],slideDirection);
         addClass(slides[activeItem],slideDirection);
-
+  
         one(slides[activeItem], transitionEndEvent, function(e) {
           var timeout = e[target] !== slides[activeItem] ? e.elapsedTime*1000 : 0;
           setTimeout(function(){
