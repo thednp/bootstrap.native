@@ -124,7 +124,13 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 .navbar-fixed-top { padding: .5rem 0; border:0 }
 
 .navbar-brand svg { display: inline-block; vertical-align:top; margin: -8px 5px 0 } 
-.navbar-brand span { display: inline-block; vertical-align: top } 
+.navbar-brand span { display: inline-block; vertical-align: top }
+
+.navbar-inverse .navbar-nav>.open>a, 
+.navbar-inverse .navbar-nav>.open>a:focus, 
+.navbar-inverse .navbar-nav>.open>a:hover {
+    background-color: transparent;
+}
 
 
 /* CUSTOMIZE THE CAROUSEL
