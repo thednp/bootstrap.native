@@ -32,6 +32,7 @@
   #myCarousel .container {
     width: 100%;
   }
+  .hidden-xs {display: none !important}
 }
 
 .bg-bootstrap { background-color: #563d7c }

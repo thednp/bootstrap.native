@@ -132,6 +132,17 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
     background-color: transparent;
 }
 
+.navbar-inverse .navbar-toggle {
+    border-color: #eee;
+}
+.navbar-inverse .navbar-toggle:hover,
+.navbar-inverse .navbar-toggle:focus {
+    border-color: #fff;
+}
+
+.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {
+    background-color: #673ab7;
+}
 
 /* CUSTOMIZE THE CAROUSEL
 -------------------------------------------------- */
