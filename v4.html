@@ -16,42 +16,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 
     <!-- Custom styles for this template -->
+    <link href="./assets/css/theme4.css" rel="stylesheet">
     <link href="./assets/css/docs.min.css" rel="stylesheet">
-    <style>
-      .fixed-top { background: #563d7c }
-      #myCarousel { margin-bottom: 4rem }
-      #myCarousel .carousel-inner > .carousel-item > .item-bg {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 500px;
-      }
-      #myCarousel .carousel-item {
-          height: 500px;
-          width: 100%;
-      }
-      .carousel-item {
-        -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
-        transition-timing-function: cubic-bezier(.45,.18,0,1);
-      }
-      .dropdown-menu .dropdown-menu {
-          top: -1px;
-          left: 100%;
-          margin: 0 0 0 3px;
-      }
-
-      @media (max-width: 575px) {
-        #myCarousel .container {
-          width: 100%;
-        }
-      }
-
-      .bg-bootstrap { background-color: #563d7c }
-      .bg-pink { background-color: #E91E63 }
-      .bg-indigo { background-color: #9c27b0 }
-      
-    </style>
 
     <!-- IE10+ still require polyfill -->
 		<script src="./dist/polyfill.js"></script>
@@ -93,7 +59,7 @@
       </div>
     </nav>
 
-    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="7000">
       <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-target="#myCarousel" data-slide-to="1"></li>
@@ -101,12 +67,12 @@
       </ol>
       <div class="carousel-inner" role="listbox">
         <div class="carousel-item active">
-          <div class="item-bg bg-primary"></div>
+          <div class="item-bg bg-indigo"></div>
           <div class="container">
             <div class="carousel-caption text-left">
               <h1>A better way to Bootstrap</h1>
               <p>The jQuery plugins for Bootstrap 4 redeveloped with native JavaScript, providing same basic functionality, but lighter in size and delivering higher performance for your application.</p>
-              <p><a class="btn btn-lg btn-light" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
+              <p><a class="btn btn-lg btn-primary" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
             </div>
           </div>
         </div>
@@ -121,12 +87,12 @@
           </div>
         </div>
         <div class="carousel-item">
-          <div class="item-bg bg-indigo"></div>
+          <div class="item-bg bg-primary"></div>
           <div class="container">
             <div class="carousel-caption text-right">
               <h1>What's the fuzz?</h1>
 							<p>If you use mainly Bootstrap plugins in your projects, you may drop jQuery right away.<br>Why load jQuery if you don't really need it? It's too old school!</p>
-              <p><a class="btn btn-lg btn-primary" href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">See Now</a></p>
+              <p><a class="btn btn-lg btn-light" href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">See Now</a></p>
             </div>
           </div>
         </div>
@@ -682,56 +648,6 @@ sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
     <script type="text/javascript" src="./dist/bootstrap-native-v4.js"></script>
-    <script type="text/javascript">
-      // transparent navbar
-      var navbar = document.querySelector('.fixed-top'), scrollTimer = null,
-            mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
-      navbar.style.backfaceVisibility = 'hidden';
-      navbar.style.transition = 'opacity 0.5s linear 0s';
-      navbar.style.WebkitTransition = 'opacity 0.5s linear 0s';
-
-      function setNavbarOpacity(){
-        clearTimeout(scrollTimer);
-        scrollTimer = !navbar.classList.contains('HOVER') ? setTimeout(function(){
-          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          if ( scrollTop < 120 ){
-            navbar.style.opacity = 1
-          } else {
-            navbar.style.opacity = 0.7
-          }
-        },50) : function() {return false;}
-      }
-
-      function setNavbarOpacityOnEnter(){
-        clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(function(){
-          if (!navbar.classList.contains('HOVER')) {
-            navbar.classList.add('HOVER');
-            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if ( scrollTop > 120 ){
-              navbar.style.opacity = 1
-            }
-          }
-        },0)
-      }
-
-      function setNavbarOpacityOnLeave(){
-        clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(function(){
-          if (navbar.classList.contains('HOVER')) {
-            navbar.classList.remove('HOVER');
-            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if ( scrollTop > 120 ){
-              navbar.style.opacity = 0.7
-            }
-          }
-        },0)
-      }
-
-      document.addEventListener('DOMContentLoaded', setNavbarOpacity, false);
-      window.addEventListener('scroll', setNavbarOpacity, false);
-      navbar.addEventListener(mouseHover[0],setNavbarOpacityOnEnter,false);
-      navbar.addEventListener(mouseHover[1],setNavbarOpacityOnLeave,false);
-    </script>
+    <script type="text/javascript" src="./assets/js/scripts4.js"></script>
   </body>
 </html>
