@@ -122,8 +122,8 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
 
 .navbar-nav { float: none }
 .navbar-fixed-top { padding: .5rem 0; border:0 }
-
-.navbar-brand svg { display: inline-block; vertical-align:top; margin: -8px 5px 0 } 
+.navbar-brand { font-size: 20px }
+.navbar-brand svg { display: inline-block; vertical-align:top; margin: -8px 0 0 0 } 
 .navbar-brand span { display: inline-block; vertical-align: top }
 
 .navbar-inverse .navbar-nav>.open>a, 
