@@ -35,6 +35,18 @@
   .hidden-xs {display: none !important}
 }
 
+h2 {
+  letter-spacing: -3px;
+  font-size: 56px;
+  font-weight: bold;
+}
+
+h3:not(.popover-title) {
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: -2px;
+}
+
 .bg-bootstrap { background-color: #563d7c }
 .bg-pink { background-color: #E91E63 }
 .bg-indigo { background-color: #9c27b0 }
