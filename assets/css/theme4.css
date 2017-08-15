@@ -41,7 +41,7 @@ h2 {
   font-weight: bold;
 }
 
-h3:not(.popover-title) {
+h3:not(.popover-header) {
   font-size: 32px;
   font-weight: bold;
   letter-spacing: -2px;
