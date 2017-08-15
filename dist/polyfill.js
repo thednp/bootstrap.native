@@ -49,8 +49,10 @@
   // Element.prototype.classList by thednp
   if( !(classList in ELEMENT[prototype]) ) {
     var ClassLIST = function(elem){
-      var classArr = elem[className].replace(/^\s+|\s+$/g,'').split(/\s+/) || [];
-
+      // var classArr = elem.getAttribute('class').replace(/^\s+|\s+$/g,'').split(/\s+/) || [];
+      var currentClass = elem[className].baseVal || elem[className], 
+          classArr = currentClass.replace(/^\s+|\s+$/g,'').split(/\s+/) || [];
+          
           // methods
           hasClass = this[contains] = function(classNAME){
             return classArr[indexOf](classNAME) > -1;
