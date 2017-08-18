@@ -10,9 +10,10 @@
 
     // classList related
     className = 'className', add = 'add', classList = 'classList', remove = 'remove', contains = 'contains',
+    CLASS = 'class', setATTRIBUTE = 'setAttribute', getATTRIBUTE = 'getAttribute',
     
     // object | array related
-    prototype = 'prototype', indexOf = 'indexOf', length = 'length',
+    prototype = 'prototype', indexOf = 'indexOf', length = 'length', split = 'split',
 
     // event related
     EVENT = 'Event', CustomEvent = 'CustomEvent', IE8EVENTS = '_events', 
@@ -30,7 +31,7 @@
         throw new TypeError(this + ' is not an object');
       }
     
-      var  arraylike = this instanceof String ? this.split('') : this,
+      var  arraylike = this instanceof String ? this[split]('') : this,
         lengthValue = Math.max(Math.min(arraylike[length], 9007199254740991), 0) || 0,
         index = Number(arguments[1]) || 0;
     
@@ -49,9 +50,7 @@
   // Element.prototype.classList by thednp
   if( !(classList in ELEMENT[prototype]) ) {
     var ClassLIST = function(elem){
-      // var classArr = elem.getAttribute('class').replace(/^\s+|\s+$/g,'').split(/\s+/) || [];
-      var currentClass = elem[className].baseVal || elem[className], 
-          classArr = currentClass.replace(/^\s+|\s+$/g,'').split(/\s+/) || [];
+      var classArr = (elem[getATTRIBUTE](CLASS)||'').replace(/^\s+|\s+$/g,'')[split](/\s+/) || [];
           
           // methods
           hasClass = this[contains] = function(classNAME){
@@ -60,20 +59,19 @@
           addClass = this[add] = function(classNAME){
             if (!hasClass(classNAME)) {
               classArr.push(classNAME);
-              elem[className] = classArr.join(' ');
+              elem[setATTRIBUTE](CLASS, classArr.join(' '));
             }
           },
           removeClass = this[remove] = function(classNAME){
             if (hasClass(classNAME)) {
               classArr.splice(classArr[indexOf](classNAME),1);
-              elem[className] = classArr.join(' '); 
+              elem[setATTRIBUTE](CLASS, classArr.join(' '));
             }
           },
           toggleClass = this.toggle = function(classNAME){
             if ( hasClass(classNAME) ) { removeClass(classNAME); } 
             else { addClass(classNAME); } 
           };
-
     }
     Object.defineProperty(ELEMENT[prototype], classList, { get: function () { return new ClassLIST(this); } });
   }
