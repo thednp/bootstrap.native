@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.13 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.14 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
