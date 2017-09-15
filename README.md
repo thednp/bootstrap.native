@@ -23,8 +23,8 @@ $ bower install --save bootstrap.native
 
 ```html
 <!-- Using one of the CDN repositories-->
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/bootstrap.native@2.0.14/dist/bootstrap-native.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.13/bootstrap-native.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/bootstrap.native@2.0.15/dist/bootstrap-native.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.15/bootstrap-native.min.js"></script>
 <!-- Using a local assets folder -->
 <script type="text/javascript" src="/assets/js/bootstrap-native.min.js"></script>
 <!-- Using Bower -->
@@ -35,8 +35,8 @@ $ bower install --save bootstrap.native
 
 ```html
 <!-- Using one of the CDN repositories-->
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/bootstrap.native@2.0.14/dist/bootstrap-native-v4.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.13/bootstrap-native-v4.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/bootstrap.native@2.0.15/dist/bootstrap-native-v4.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.15/bootstrap-native-v4.min.js"></script>
 <!-- Using a local assets folder -->
 <script type="text/javascript" src="/assets/js/bootstrap-native-v4.min.js"></script>
 <!-- Using Bower -->
@@ -72,8 +72,8 @@ The components are developed with clean code mainly for modern browsers that nat
 
 ```html
 <!-- Using one of the CDN repositories-->
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/bootstrap.native@2.0.14/dist/polyfill.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.13/polyfill.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/bootstrap.native@2.0.15/dist/polyfill.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.15/polyfill.min.js"></script>
 <!-- Using a local assets folder -->
 <script type="text/javascript" src="/assets/js/polyfill.min.js"></script>
 <!-- Using Bower -->
