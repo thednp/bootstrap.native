@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.14 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.15 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -214,21 +214,6 @@
   
     // tab / collapse stuff
     targetsReg = /^\#(.)+$/,
-    getOuterHeight = function (child) {
-      var childStyle = child && globalObject.getComputedStyle(child), 
-        btp = /px/.test(childStyle.borderTopWidth) ? Math.round(childStyle.borderTopWidth.replace('px','')) : 0,
-        btb = /px/.test(childStyle.borderBottomWidth) ? Math.round(childStyle.borderBottomWidth.replace('px','')) : 0,
-        mtp = /px/.test(childStyle.marginTop) ? Math.round(childStyle.marginTop.replace('px','')) : 0,
-        mbp = /px/.test(childStyle.marginBottom) ? Math.round(childStyle.marginBottom.replace('px','')) : 0;
-      return child[clientHeight] + parseInt( btp ) + parseInt( btb ) + parseInt( mtp ) + parseInt( mbp );
-    },
-    getMaxHeight = function(parent) { // get collapse trueHeight and border
-      var parentHeight = 0;
-      for (var k = 0, ll = parent.children[length]; k < ll; k++) {
-        parentHeight += getOuterHeight(parent.children[k]);
-      }
-      return parentHeight;
-    },
   
     // tooltip / popover stuff
     isElementInViewport = function(element) { // check if this.tooltip is in viewport
@@ -681,14 +666,16 @@
         bootstrapCustomEvent.call(collapseElement, showEvent, component);
         isAnimating = true;
         addClass(collapseElement,collapsing);
-        addClass(collapseElement,showClass);
+        removeClass(collapseElement,component);
         setTimeout(function() {
-          collapseElement[style][height] = getMaxHeight(collapseElement) + 'px';
-  
+          collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
+          
           emulateTransitionEnd(collapseElement, function(){
             isAnimating = false;
             collapseElement[setAttribute](ariaExpanded,'true');
             removeClass(collapseElement,collapsing);
+            addClass(collapseElement, component);
+            addClass(collapseElement, showClass);
             collapseElement[style][height] = '';
             bootstrapCustomEvent.call(collapseElement, shownEvent, component);
           });
@@ -697,16 +684,18 @@
       closeAction = function(collapseElement) {
         bootstrapCustomEvent.call(collapseElement, hideEvent, component);
         isAnimating = true;
-        collapseElement[style][height] = getMaxHeight(collapseElement) + 'px';
+        collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
         setTimeout(function() {
           addClass(collapseElement,collapsing);
+          removeClass(collapseElement, component);
+          removeClass(collapseElement, showClass);          
           collapseElement[style][height] = '0px';
   
           emulateTransitionEnd(collapseElement, function(){
             isAnimating = false;
             collapseElement[setAttribute](ariaExpanded,'false');
             removeClass(collapseElement,collapsing);
-            removeClass(collapseElement,showClass);
+            addClass(collapseElement,component);
             collapseElement[style][height] = '';
             bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
           });
@@ -1433,7 +1422,7 @@
           (function() {
             bootstrapCustomEvent.call(next, showEvent, component, activeTab);
             (function() {
-              if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(nextContent) + 'px'; // height animation
+              if (tabsContentContainer) tabsContentContainer[style][height] = nextContent[scrollHeight] + 'px'; // height animation
               bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
             }());
           }());
@@ -1483,8 +1472,8 @@
           }
         }
         
-        if (tabsContentContainer) tabsContentContainer[style][height] = getMaxHeight(activeContent) + 'px'; // height animation
-  
+        if (tabsContentContainer) tabsContentContainer[style][height] = activeContent[scrollHeight] + 'px'; // height animation
+        
         (function() {
           removeClass(activeContent,showClass);
           bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
