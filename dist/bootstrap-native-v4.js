@@ -667,39 +667,36 @@
         isAnimating = true;
         addClass(collapseElement,collapsing);
         removeClass(collapseElement,component);
-        setTimeout(function() {
-          collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
-          
-          emulateTransitionEnd(collapseElement, function(){
-            isAnimating = false;
-            collapseElement[setAttribute](ariaExpanded,'true');
-            removeClass(collapseElement,collapsing);
-            addClass(collapseElement, component);
-            addClass(collapseElement, showClass);
-            collapseElement[style][height] = '';
-            bootstrapCustomEvent.call(collapseElement, shownEvent, component);
-          });
-        }, 20);
+        collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
+        
+        emulateTransitionEnd(collapseElement, function() {
+          isAnimating = false;
+          collapseElement[setAttribute](ariaExpanded,'true');
+          removeClass(collapseElement,collapsing);
+          addClass(collapseElement, component);
+          addClass(collapseElement,showClass);
+          collapseElement[style][height] = '';
+          bootstrapCustomEvent.call(collapseElement, shownEvent, component);
+        });
       },
       closeAction = function(collapseElement) {
         bootstrapCustomEvent.call(collapseElement, hideEvent, component);
         isAnimating = true;
-        collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
-        setTimeout(function() {
-          addClass(collapseElement,collapsing);
-          removeClass(collapseElement, component);
-          removeClass(collapseElement, showClass);          
-          collapseElement[style][height] = '0px';
-  
-          emulateTransitionEnd(collapseElement, function(){
-            isAnimating = false;
-            collapseElement[setAttribute](ariaExpanded,'false');
-            removeClass(collapseElement,collapsing);
-            addClass(collapseElement,component);
-            collapseElement[style][height] = '';
-            bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
-          });
-        },20);
+        collapseElement[style][height] = collapseElement[scrollHeight] + 'px'; // set height first
+        removeClass(collapseElement,component);
+        addClass(collapseElement,collapsing);
+        collapseElement[offsetWidth]; // force reflow to enable transition
+        collapseElement[style][height] = '0px';
+        
+        emulateTransitionEnd(collapseElement, function() {
+          isAnimating = false;
+          collapseElement[setAttribute](ariaExpanded,'false');
+          removeClass(collapseElement,collapsing);
+          addClass(collapseElement,component);
+          removeClass(collapseElement,showClass);
+          collapseElement[style][height] = '';
+          bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
+        });
       },
       getTarget = function() {
         var href = element.href && element[getAttribute]('href'),
@@ -720,22 +717,20 @@
       addClass(element,collapsed);
     };
     this.show = function() {
-      openAction(collapse);
-      removeClass(element,collapsed);
-  
-      if ( accordion !== null ) {
-        var activeCollapses = getElementsByClassName(accordion,component+' '+showClass),
-            allToggles = accordion.querySelectorAll('['+dataToggle+'="'+component+'"]'),
-            correspondingCollapse;
-        for (var i=0, al=activeCollapses[length]; i<al; i++) {
-          if ( activeCollapses[i] !== collapse ) { closeAction(activeCollapses[i]); }
-        }
-        for (var u=0, atl=allToggles[length]; u<atl; u++) {
-          correspondingCollapse = allToggles[u][getAttribute](dataTarget) || allToggles[u].href;
-          if ( correspondingCollapse.split('#')[1] !== collapse.id ) { addClass(allToggles[u],collapsed); } 
-          else { removeClass(allToggles[u],collapsed); }
+      if ( accordion ) {
+        var activeCollapse = queryElement('.'+component+'.'+showClass,accordion),
+            toggle = activeCollapse && (queryElement('['+dataToggle+'="'+component+'"]['+dataTarget+'="#'+activeCollapse.id+'"]',accordion)
+                   || queryElement('['+dataToggle+'="'+component+'"][href="#'+activeCollapse.id+'"]',accordion) ),
+            correspondingCollapse = toggle && (toggle[getAttribute](dataTarget) || toggle.href);
+        if ( activeCollapse && toggle && activeCollapse !== collapse ) {
+          closeAction(activeCollapse); 
+          if ( correspondingCollapse.split('#')[1] !== collapse.id ) { addClass(toggle,collapsed); } 
+          else { removeClass(toggle,collapsed); }
         }
       }
+  
+      openAction(collapse);
+      removeClass(element,collapsed); 
     };
   
     // init
@@ -1394,42 +1389,60 @@
     // bind, event targets
     var self = this, next,
       tabs = getClosest(element,'.nav'),
-      tabsContentContainer,
+      tabsContentContainer = false,
       dropdown = tabs && queryElement('.dropdown-toggle',tabs),
-      activeTab, activeContent, nextContent,
+      activeTab, activeContent, nextContent, containerHeight,
+      wrongScrollHeight = 'msTransform' in body[style], // apparently IE10+ still don't measure scrollHeight properly
+  
       // trigger
+      triggerEnd = function(){
+        tabsContentContainer[style][height] = '';
+        wrongScrollHeight && (activeContent[style].float = '');
+        wrongScrollHeight && (nextContent[style].float = '');
+        removeClass(tabsContentContainer,collapsing);
+        activeTab[isAnimating] = next[isAnimating] = false;
+      },
       triggerShow = function() {
-        bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
         if (tabsContentContainer) { // height animation
-          (function(){
+          if ( nextContent[scrollHeight] !== containerHeight ) {
+            wrongScrollHeight && (nextContent[style].float = 'left');
+            tabsContentContainer[style][height] = nextContent[scrollHeight] + 'px'; // height animation
+            containerHeight = tabsContentContainer[scrollHeight]; // update new containerHeight value          
+            
             setTimeout(function(){
-              tabsContentContainer[style][height] = '';
-              removeClass(tabsContentContainer,collapsing);
-              activeTab[isAnimating] = next[isAnimating] = false;
-            },200);
-          }());
+              emulateTransitionEnd(tabsContentContainer, triggerEnd);
+            },1);
+          } else { triggerEnd(); }
         } else {
-          activeTab[isAnimating] = next[isAnimating] = false;
+          activeTab[isAnimating] = next[isAnimating] = false; 
         }
+        bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
       },
       triggerHide = function() {
-        removeClass(activeContent,active);
+        wrongScrollHeight && (activeContent[style].float = 'left');
+        containerHeight = activeContent[scrollHeight];
+        
         addClass(nextContent,active);
-        setTimeout(function() {
-          addClass(nextContent,showClass);
-          nextContent[offsetHeight];
-          if (tabsContentContainer) addClass(tabsContentContainer,collapsing);
-          (function() {
-            bootstrapCustomEvent.call(next, showEvent, component, activeTab);
-            (function() {
-              if (tabsContentContainer) tabsContentContainer[style][height] = nextContent[scrollHeight] + 'px'; // height animation
-              bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
-            }());
-          }());
-        },20);
+        bootstrapCustomEvent.call(next, showEvent, component, activeTab);
+  
+        removeClass(activeContent,active);
+        bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
+        
+        if (tabsContentContainer) {
+          addClass(tabsContentContainer,collapsing);
+          
+          tabsContentContainer[style][height] = containerHeight + 'px'; // height animation
+          tabsContentContainer[offsetWidth];          
+        }
+        if ( hasClass(nextContent, 'fade') ) {
+          setTimeout(function(){
+            addClass(nextContent,showClass);
+            emulateTransitionEnd(nextContent,triggerShow);
+          },1);
+        } else { triggerShow(); }        
       };
   
-    if (!tabs) return; // invalidate 
+      if (!tabs) return; // invalidate 
   
     // private methods
     var getActiveTab = function() {
@@ -1472,19 +1485,13 @@
           }
         }
         
-        if (tabsContentContainer) tabsContentContainer[style][height] = activeContent[scrollHeight] + 'px'; // height animation
-        
-        (function() {
-          removeClass(activeContent,showClass);
-          bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
-          (function(){
-            hasClass(activeContent, 'fade') ? emulateTransitionEnd(activeContent, triggerHide) : triggerHide();
-          }());
-        }());
+        bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
   
-        (function(){
-          hasClass(nextContent, 'fade') ? emulateTransitionEnd(nextContent, triggerShow) : triggerShow();
-        }());
+        if (hasClass(activeContent, 'fade')) {
+          removeClass(activeContent,showClass);
+          activeContent[offsetWidth];
+          emulateTransitionEnd(activeContent, triggerHide);
+        } else { triggerHide(); }
       }
     };
   
