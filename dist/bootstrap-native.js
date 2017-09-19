@@ -1539,24 +1539,27 @@
       tabsContentContainer = false,
       dropdown = tabs && queryElement('.dropdown',tabs),
       activeTab, activeContent, nextContent, containerHeight,
-      wrongScrollHeight = 'msTransform' in body[style], // apparently IE10+ still don't measure scrollHeight properly    
   
       // trigger
       triggerEnd = function(){
         tabsContentContainer[style][height] = '';
-        wrongScrollHeight && (activeContent[style].float = '');
-        wrongScrollHeight && (nextContent[style].float = '');
+        activeContent[style].float = '';
+        nextContent[style].float = '';
         removeClass(tabsContentContainer,collapsing);
         activeTab[isAnimating] = next[isAnimating] = false;
       },
       triggerShow = function() {
         if (tabsContentContainer) { // height animation
+          console.log( Math.max(nextContent[scrollHeight],nextContent[offsetHeight],nextContent[clientHeight]) + ' ' 
+            + Math.max( tabsContentContainer[offsetHeight], tabsContentContainer[scrollHeight], tabsContentContainer[clientHeight] ) )
           if ( nextContent[scrollHeight] !== containerHeight ) {
-            wrongScrollHeight && (nextContent[style].float = 'left');
+            nextContent[style].float = 'left';
+        
             tabsContentContainer[style][height] = nextContent[scrollHeight] + 'px'; // height animation
             containerHeight = tabsContentContainer[scrollHeight]; // update new containerHeight value          
             
             setTimeout(function(){
+              tabsContentContainer[offsetWidth];
               emulateTransitionEnd(tabsContentContainer, triggerEnd);
             },1);
           } else { triggerEnd(); }
@@ -1566,9 +1569,9 @@
         bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
       },
       triggerHide = function() {
-        wrongScrollHeight && (activeContent[style].float = 'left');
+        activeContent[style].float = 'left';
         containerHeight = activeContent[scrollHeight];
-        
+
         addClass(nextContent,active);
         bootstrapCustomEvent.call(next, showEvent, component, activeTab);
   
@@ -1577,15 +1580,13 @@
         
         if (tabsContentContainer) {
           addClass(tabsContentContainer,collapsing);
-          
           tabsContentContainer[style][height] = containerHeight + 'px'; // height animation
-          tabsContentContainer[offsetWidth];          
+          tabsContentContainer[offsetWidth];
         }
         if ( hasClass(nextContent, 'fade') ) {
-          setTimeout(function(){
-            addClass(nextContent,inClass);
-            emulateTransitionEnd(nextContent,triggerShow);
-          },1);
+          addClass(nextContent,inClass);
+          nextContent[offsetWidth];
+          emulateTransitionEnd(nextContent,triggerShow);
         } else { triggerShow(); }        
       };
   
