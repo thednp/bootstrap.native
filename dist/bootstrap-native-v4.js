@@ -1377,8 +1377,8 @@
     var heightData = element[getAttribute](dataHeight),
       
         // strings
-        component = 'tab', height = 'height', isAnimating = 'isAnimating';
-  
+        component = 'tab', height = 'height', float = 'float', isAnimating = 'isAnimating';
+        
     // set default animation state
     element[isAnimating] = false;
   
@@ -1391,35 +1391,35 @@
       tabs = getClosest(element,'.nav'),
       tabsContentContainer = false,
       dropdown = tabs && queryElement('.dropdown-toggle',tabs),
-      activeTab, activeContent, nextContent, containerHeight,
-      wrongScrollHeight = 'msTransform' in body[style], // apparently IE10+ still don't measure scrollHeight properly
-  
+      activeTab, activeContent, nextContent, containerHeight, equalContents,
+      
       // trigger
       triggerEnd = function(){
         tabsContentContainer[style][height] = '';
-        wrongScrollHeight && (activeContent[style].float = '');
-        wrongScrollHeight && (nextContent[style].float = '');
+        activeContent[style][float] = '';
+        nextContent[style][float] = '';
         removeClass(tabsContentContainer,collapsing);
         activeTab[isAnimating] = next[isAnimating] = false;
       },
       triggerShow = function() {
         if (tabsContentContainer) { // height animation
-          if ( nextContent[scrollHeight] !== containerHeight ) {
-            wrongScrollHeight && (nextContent[style].float = 'left');
-            tabsContentContainer[style][height] = nextContent[scrollHeight] + 'px'; // height animation
-            containerHeight = tabsContentContainer[scrollHeight]; // update new containerHeight value          
-            
+          if ( equalContents ) {
+            triggerEnd();
+          } else {            
             setTimeout(function(){
+              tabsContentContainer[style][height] = nextContent[scrollHeight] + 'px'; // height animation
+              tabsContentContainer[offsetWidth];
               emulateTransitionEnd(tabsContentContainer, triggerEnd);
             },1);
-          } else { triggerEnd(); }
+          }
         } else {
           activeTab[isAnimating] = next[isAnimating] = false; 
         }
         bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
       },
       triggerHide = function() {
-        wrongScrollHeight && (activeContent[style].float = 'left');
+        activeContent[style][float] = 'left';
+        nextContent[style][float] = 'left';        
         containerHeight = activeContent[scrollHeight];
         
         addClass(nextContent,active);
@@ -1429,16 +1429,14 @@
         bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
         
         if (tabsContentContainer) {
+          equalContents = nextContent[scrollHeight] === containerHeight;
           addClass(tabsContentContainer,collapsing);
-          
           tabsContentContainer[style][height] = containerHeight + 'px'; // height animation
-          tabsContentContainer[offsetWidth];          
+          tabsContentContainer[offsetHeight];          
         }
         if ( hasClass(nextContent, 'fade') ) {
-          setTimeout(function(){
-            addClass(nextContent,showClass);
-            emulateTransitionEnd(nextContent,triggerShow);
-          },1);
+          addClass(nextContent,showClass);
+          emulateTransitionEnd(nextContent,triggerShow);
         } else { triggerShow(); }        
       };
   
@@ -1489,7 +1487,6 @@
   
         if (hasClass(activeContent, 'fade')) {
           removeClass(activeContent,showClass);
-          activeContent[offsetWidth];
           emulateTransitionEnd(activeContent, triggerHide);
         } else { triggerHide(); }
       }
