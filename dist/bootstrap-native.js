@@ -1525,7 +1525,7 @@
       
         // strings
         component = 'tab', height = 'height', float = 'float', isAnimating = 'isAnimating';
-        
+  
     // set default animation state
     element[isAnimating] = false;
   
@@ -1538,13 +1538,11 @@
       tabs = getClosest(element,'.nav'),
       tabsContentContainer = false,
       dropdown = tabs && queryElement('.dropdown',tabs),
-      activeTab, activeContent, nextContent, containerHeight, equalContents,
-      
+      activeTab, activeContent, nextContent, containerHeight, equalContents, nextHeight,
+  
       // trigger
       triggerEnd = function(){
         tabsContentContainer[style][height] = '';
-        activeContent[style][float] = '';
-        nextContent[style][float] = '';
         removeClass(tabsContentContainer,collapsing);
         activeTab[isAnimating] = next[isAnimating] = false;
       },
@@ -1554,7 +1552,7 @@
             triggerEnd();
           } else {            
             setTimeout(function(){
-              tabsContentContainer[style][height] = nextContent[scrollHeight] + 'px'; // height animation
+              tabsContentContainer[style][height] = nextHeight + 'px'; // height animation
               tabsContentContainer[offsetWidth];
               emulateTransitionEnd(tabsContentContainer, triggerEnd);
             },1);
@@ -1565,21 +1563,26 @@
         bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
       },
       triggerHide = function() {
-        activeContent[style][float] = 'left';
-        nextContent[style][float] = 'left';        
-        containerHeight = activeContent[scrollHeight];
+        if (tabsContentContainer) {
+          activeContent[style][float] = 'left';
+          nextContent[style][float] = 'left';        
+          containerHeight = activeContent[scrollHeight];
+        }
         
         addClass(nextContent,active);
         bootstrapCustomEvent.call(next, showEvent, component, activeTab);
         
         removeClass(activeContent,active);
         bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
-  
+        
         if (tabsContentContainer) {
-          equalContents = nextContent[scrollHeight] === containerHeight;
+          nextHeight = nextContent[scrollHeight];
+          equalContents = nextHeight === containerHeight;
           addClass(tabsContentContainer,collapsing);
           tabsContentContainer[style][height] = containerHeight + 'px'; // height animation
           tabsContentContainer[offsetHeight];
+          activeContent[style][float] = '';
+          nextContent[style][float] = '';
         }
         if ( hasClass(nextContent, 'fade') ) {
           addClass(nextContent,inClass);
