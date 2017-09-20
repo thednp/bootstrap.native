@@ -231,7 +231,7 @@ var btn = new bsn.Button(...);
             <p>The components are tested to work nearly perfect in all major browsers, and legacy browsers starting with <kbd>IE8</kbd> (compatibility view OFF). Legacy browsers don't support 
               <a href="http://caniuse.com/#search=css3" target="_blank">CSS3 transitions</a> and there is nothing we can/should do about that. In order to make legacy browsers comply with today's HTML5 standards, 
               make sure you include a polyfill that covers most essential JavaScript API.</p>
-            <p>The Native JavaScript for Bootstrap comes with a dedicated <kbd>4Kb</kbd> polyfill we made called <em><a href="./assets/js/polyfill.js" target="_blank">polyfill.js</a></em> for IE8-IE11. Since most 
+            <p>The Native JavaScript for Bootstrap comes with a dedicated <kbd>4Kb</kbd> polyfill we made called <em><a href="./dist/polyfill.js" target="_blank">polyfill.js</a></em> for IE8-IE11. Since most 
               of the legacy browsers don't cover support for the standardized <code>Event</code> the <em>polyfill.js</em> can be combined with HTML5 shims like so:</p>
 
 <pre><code class="language-markup">&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap.native@2.0.15/dist/polyfill.min.js"> &lt;/script>
@@ -1362,7 +1362,7 @@ myScrollSpyInit.refresh();
                 </table>
               </div>
               <p>When you set the option to <code>true</code>, this enables a custom functionality that assumes you are using the styling of the <b>Collapse</b> component, and the <a href="https://github.com/twbs/bootstrap/blob/v3-dev/less/component-animations.less" target="_blank">component animations</a> styling.</p>
-              <p>Both the above options have no effect on legacy browsers with no support for CSS3 transitions.</p>
+              <p><b>Please note</b> that in certain layouts you may beed to use the <code>clearfix</code> class for your <code>&lt;div class="tab-content"&gt;</code> element to avoid inconsistent transitions. The option has no effect on legacy browsers.</p>
             </section>
 
             <section id="tabMethods">
@@ -1494,37 +1494,36 @@ myLastTab.addEventListener('show.bs.tab', function(event){
               <h4>Example</h4>
               <p>OK now we're ready to put this component to the test. We'll use all Bootstrap <code>.nav</code> components in the pool.</p>
 
-              <div class="clearfix">
-                <ul id="myTab" class="nav nav-tabs" role="tablist">
-                  <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="home" aria-expanded="true">Home</a></li>
-                  <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-height="true" data-toggle="tab" aria-controls="profile">Profile</a></li>
-                  <li role="presentation" class="dropdown">
-                    <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" data-persist="true" aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
-                      <li><a href="#dropdown1" tabindex="-1" role="tab" id="dropdown1-tab" data-toggle="tab" data-height="true" aria-controls="dropdown1" aria-expanded="false">Some tab</a></li>
-                      <li><a id="tabEventsExample" href="#dropdown2" tabindex="-1" role="tab" data-height="true" aria-controls="dropdown2" aria-expanded="false">Events</a></li>
-                    </ul>
-                  </li>
-                </ul>
-                <div id="myTabContent" class="tab-content">
-                  <div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab">
-                  <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica.</p> 
-                  <p>Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-                  </div>
-                  <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
-                  <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR.</p> 
-                  <p>Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
-                  </div>
-                  <div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledby="dropdown1-tab">
-                  <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.</p>
-                  <p>Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
-                  </div>
-                  <div role="tabpanel" class="tab-pane fade" id="dropdown2" aria-labelledby="tabEventsExample">
-                  <p><b>This tab has all events attached.</b> Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater.</p> 
-                  <p>Wolf viral, mustache readymade thundercats keffiyeh craft beer marfa ethical. Wolf salvia freegan, sartorial keffiyeh echo park vegan.</p>
-                  </div>
+              <ul id="myTab" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="home" aria-expanded="true">Home</a></li>
+                <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-height="true" data-toggle="tab" aria-controls="profile">Profile</a></li>
+                <li role="presentation" class="dropdown">
+                  <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" data-persist="true" aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
+                    <li><a href="#dropdown1" tabindex="-1" role="tab" id="dropdown1-tab" data-toggle="tab" data-height="true" aria-controls="dropdown1" aria-expanded="false">Some tab</a></li>
+                    <li><a id="tabEventsExample" href="#dropdown2" tabindex="-1" role="tab" data-height="true" aria-controls="dropdown2" aria-expanded="false">Events</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <div id="myTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab">
+                <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica.</p> 
+                <p>Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
+                <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR.</p> 
+                <p>Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledby="dropdown1-tab">
+                <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.</p>
+                <p>Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="dropdown2" aria-labelledby="tabEventsExample">
+                <p><b>This tab has all events attached.</b> Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater.</p> 
+                <p>Wolf viral, mustache readymade thundercats keffiyeh craft beer marfa ethical. Wolf salvia freegan, sartorial keffiyeh echo park vegan.</p>
                 </div>
               </div>
+
               <div id="tabSwitcher" class="btn-group">
                 <button type="button" class="btn btn-success btn-xs">Toggle View</button>
                 <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
