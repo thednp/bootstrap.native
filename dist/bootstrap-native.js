@@ -25,6 +25,7 @@
   
   /* Native Javascript for Bootstrap 3 | Internal Utility Functions
   ----------------------------------------------------------------*/
+  "use strict";
   
   // globals
   var globalObject = typeof global !== 'undefined' ? global : this||window,
@@ -1526,9 +1527,6 @@
         // strings
         component = 'tab', height = 'height', float = 'float', isAnimating = 'isAnimating';
   
-    // set default animation state
-    element[isAnimating] = false;
-  
     // set options
     options = options || {};
     this[height] = supportTransitions ? (options[height] || heightData === 'true') : false; // filter legacy browsers
@@ -1544,7 +1542,7 @@
       triggerEnd = function(){
         tabsContentContainer[style][height] = '';
         removeClass(tabsContentContainer,collapsing);
-        activeTab[isAnimating] = next[isAnimating] = false;
+        tabs[isAnimating] = false;
       },
       triggerShow = function() {
         if (tabsContentContainer) { // height animation
@@ -1558,7 +1556,7 @@
             },1);
           }
         } else {
-          activeTab[isAnimating] = next[isAnimating] = false; 
+          tabs[isAnimating] = false; 
         }
         bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
       },
@@ -1592,6 +1590,9 @@
   
     if (!tabs) return; // invalidate 
   
+    // set default animation state
+    tabs[isAnimating] = false;
+      
     // private methods
     var getActiveTab = function() {
         var activeTabs = getElementsByClassName(tabs,active), activeTab;
@@ -1610,7 +1611,7 @@
         e.preventDefault();
         next = e[target][getAttribute](dataToggle) === component || targetsReg.test(e[target][getAttribute]('href')) 
              ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
-        self.show();
+        !tabs[isAnimating] && !hasClass(next[parentNode],active) && self.show();
       };
   
     // public method
@@ -1620,26 +1621,24 @@
       activeTab = getActiveTab(); 
       activeContent = getActiveContent();
   
-      if ( (!activeTab[isAnimating] || !next[isAnimating]) && !hasClass(next[parentNode],active) ) {
-        activeTab[isAnimating] = next[isAnimating] = true;
-        removeClass(activeTab[parentNode],active);
-        addClass(next[parentNode],active);
+      tabs[isAnimating] = true;
+      removeClass(activeTab[parentNode],active);
+      addClass(next[parentNode],active);
   
-        if ( dropdown ) {
-          if ( !hasClass(element[parentNode][parentNode],'dropdown-menu') ) {
-            if (hasClass(dropdown,active)) removeClass(dropdown,active);
-          } else {
-            if (!hasClass(dropdown,active)) addClass(dropdown,active);
-          }
+      if ( dropdown ) {
+        if ( !hasClass(element[parentNode][parentNode],'dropdown-menu') ) {
+          if (hasClass(dropdown,active)) removeClass(dropdown,active);
+        } else {
+          if (!hasClass(dropdown,active)) addClass(dropdown,active);
         }
-        
-        bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
-        
-        if (hasClass(activeContent, 'fade')) {
-          removeClass(activeContent,inClass);
-          emulateTransitionEnd(activeContent, triggerHide);
-        } else { triggerHide(); }
       }
+      
+      bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
+      
+      if (hasClass(activeContent, 'fade')) {
+        removeClass(activeContent,inClass);
+        emulateTransitionEnd(activeContent, triggerHide);
+      } else { triggerHide(); }
     };
   
     // init
