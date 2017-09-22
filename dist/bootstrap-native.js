@@ -209,20 +209,12 @@
       this.dispatchEvent(OriginalCustomEvent);
     },
   
-    // reference a live collection of the DOM
-    AllDOMElements = document[getElementsByTagName]('*'),
-  
     // Init DATA API
-    initializeDataAPI = function( component, constructor, dataAttribute, collection ){
-      var lookUp = collection && collection[length] ? collection : AllDOMElements;
-      for (var i=0; i < lookUp[length]; i++) {
-        var attrValue = lookUp[i][getAttribute](dataAttribute), expectedAttrValue = component.replace(/spy/i,'')[toLowerCase]();
-        if ( attrValue && component === stringButton && ( attrValue[indexOf](expectedAttrValue) > -1 ) // data-toggle="buttons"
-            || attrValue === expectedAttrValue ) { // all other components
-          new constructor(lookUp[i]);
-        }
+    initializeDataAPI = function( component, constructor, collection ){
+      for (var i=0; i < collection[length]; i++) {
+        new constructor(collection[i]);
       }
-    },  
+    },
   
     // tab / collapse stuff
     targetsReg = /^\#(.)+$/,
@@ -395,7 +387,7 @@
   
   // AFFIX DATA API
   // =================
-  initializeDataAPI( stringAffix, Affix, dataSpy );
+  initializeDataAPI( stringAffix, Affix, doc[querySelectorAll]('['+dataSpy+'="affix"]') );
   
   
   /* Native Javascript for Bootstrap 3 | Alert
@@ -446,7 +438,7 @@
   
   // ALERT DATA API
   // ==============
-  initializeDataAPI ( stringAlert, Alert, dataDismiss );
+  initializeDataAPI ( stringAlert, Alert, doc[querySelectorAll]('['+dataDismiss+'="alert"]') );
   
   
   /* Native Javascript for Bootstrap 3 | Button
@@ -565,7 +557,7 @@
   
   // BUTTON DATA API
   // =================
-  initializeDataAPI( stringButton, Button, dataToggle );
+  initializeDataAPI( stringButton, Button, doc[querySelectorAll]('['+dataToggle+'="buttons"]') );
   
   
   /* Native Javascript for Bootstrap 3 | Carousel
@@ -792,7 +784,7 @@
   
   // CAROUSEL DATA API
   // =================
-  initializeDataAPI( stringCarousel, Carousel, dataRide );
+  initializeDataAPI( stringCarousel, Carousel, doc[querySelectorAll]('['+dataRide+'="carousel"]') );
   
   
   /* Native Javascript for Bootstrap 3 | Collapse
@@ -901,7 +893,7 @@
   
   // COLLAPSE DATA API
   // =================
-  initializeDataAPI(stringCollapse, Collapse, dataToggle);
+  initializeDataAPI(stringCollapse, Collapse, doc[querySelectorAll]('['+dataToggle+'="collapse"]'));
   
   
   /* Native Javascript for Bootstrap 3 | Dropdown
@@ -977,7 +969,7 @@
   
   // DROPDOWN DATA API
   // =================
-  initializeDataAPI( stringDropdown, Dropdown, dataToggle );
+  initializeDataAPI( stringDropdown, Dropdown, doc[querySelectorAll]('['+dataToggle+'="dropdown"]') );
   
   
   /* Native Javascript for Bootstrap 3 | Modal
@@ -1229,7 +1221,7 @@
   };
   
   // DATA API
-  initializeDataAPI(stringModal, Modal, dataToggle);
+  initializeDataAPI(stringModal, Modal, doc[querySelectorAll]('['+dataToggle+'="modal"]'));
   
   
   /* Native Javascript for Bootstrap 3 | Popover
@@ -1413,7 +1405,7 @@
   
   // POPOVER DATA API
   // ================
-  initializeDataAPI(stringPopover, Popover, dataToggle);
+  initializeDataAPI(stringPopover, Popover, doc[querySelectorAll]('['+dataToggle+'="popover"]'));
   
   
   /* Native Javascript for Bootstrap 3 | ScrollSpy
@@ -1508,7 +1500,7 @@
   
   // SCROLLSPY DATA API
   // ==================
-  initializeDataAPI(stringScrollSpy, ScrollSpy, dataSpy);
+  initializeDataAPI(stringScrollSpy, ScrollSpy, doc[querySelectorAll]('['+dataSpy+'="scroll"]'));
   
   
   /* Native Javascript for Bootstrap 3 | Tab
@@ -1651,7 +1643,7 @@
   
   // TAB DATA API
   // ============
-  initializeDataAPI(stringTab, Tab, dataToggle);
+  initializeDataAPI(stringTab, Tab, doc[querySelectorAll]('['+dataToggle+'="tab"]'));
   
   
   /* Native Javascript for Bootstrap 3 | Tooltip
@@ -1781,7 +1773,7 @@
   
   // TOOLTIP DATA API
   // =================
-  initializeDataAPI(stringTooltip, Tooltip, dataToggle);
+  initializeDataAPI(stringTooltip, Tooltip, doc[querySelectorAll]('['+dataToggle+'="tooltip"]'));
   
   
   return {
