@@ -678,6 +678,7 @@
         isAnimating = true;
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px'; // set height first
         removeClass(collapseElement,component);
+        removeClass(collapseElement,showClass);
         addClass(collapseElement,collapsing);
         collapseElement[offsetWidth]; // force reflow to enable transition
         collapseElement[style][height] = '0px';
@@ -687,7 +688,6 @@
           collapseElement[setAttribute](ariaExpanded,'false');
           removeClass(collapseElement,collapsing);
           addClass(collapseElement,component);
-          removeClass(collapseElement,showClass);
           collapseElement[style][height] = '';
           bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
         });

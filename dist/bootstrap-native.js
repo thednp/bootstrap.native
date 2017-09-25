@@ -816,7 +816,6 @@
         isAnimating = true;
         addClass(collapseElement,collapsing);
         removeClass(collapseElement,component);
-        collapseElement[offsetWidth]; // force reflow to enable transition
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
         
         emulateTransitionEnd(collapseElement, function() {
