@@ -8,6 +8,7 @@ Please take a minute to check the `bootstrap.native` Wiki pages:
 * [Acknowledgements](https://github.com/thednp/bootstrap.native/wiki/Acknowledgements) - A quick note on some of the similarities and differences with the original jQuery plugins. Nothing to worry about, but still good to know all the tricks on how to maximize your workflow.
 * [How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) - An in depth guide on how to use it with stuff like `npm`, `RequireJS` or `CDN` links.
 * [Browser support](https://github.com/thednp/bootstrap.native/wiki/Browser-support) - A word on how to enable the library for legacy browsers.
+* [FAQs](https://github.com/thednp/bootstrap.native/wiki/FAQs) - A short list of frequent asked questions regarding the use of the library.
 * [About](https://github.com/thednp/bootstrap.native/wiki/About) - Learn about the `bootstrap.native` project inception, goals and motivations.
 
 # Contributors
