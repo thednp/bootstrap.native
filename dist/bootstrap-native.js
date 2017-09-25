@@ -816,6 +816,7 @@
         isAnimating = true;
         addClass(collapseElement,collapsing);
         removeClass(collapseElement,component);
+        collapseElement[offsetWidth]; // force reflow to enable transition
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
         
         emulateTransitionEnd(collapseElement, function() {
@@ -823,7 +824,7 @@
           collapseElement[setAttribute](ariaExpanded,'true');
           removeClass(collapseElement,collapsing);
           addClass(collapseElement, component);
-          addClass(collapseElement,inClass);
+          addClass(collapseElement, inClass);
           collapseElement[style][height] = '';
           bootstrapCustomEvent.call(collapseElement, shownEvent, component);
         });
@@ -833,7 +834,8 @@
         isAnimating = true;
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px'; // set height first
         removeClass(collapseElement,component);
-        addClass(collapseElement,collapsing);
+        removeClass(collapseElement, inClass);
+        addClass(collapseElement, collapsing);
         collapseElement[offsetWidth]; // force reflow to enable transition
         collapseElement[style][height] = '0px';
         
@@ -842,7 +844,6 @@
           collapseElement[setAttribute](ariaExpanded,'false');
           removeClass(collapseElement,collapsing);
           addClass(collapseElement,component);
-          removeClass(collapseElement,inClass);
           collapseElement[style][height] = '';
           bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
         });
