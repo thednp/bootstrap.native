@@ -160,10 +160,10 @@
 
   <div id="main-container" class="container">
     <div class="row">
-      <div id="container-content-column" class="col-sm-9" data-spy="scroll" data-target="#side-nav">
+      <div id="container-content-column" class="col-sm-9" data-spy="scroll" data-target="#side-nav" data-offset="80">
         <section id="use">
           <h2>Read First</h2>
-          <p>Welcome to the demo page! Before you do anything, please make sure to check the <a href="https://github.com/thednp/bootstrap.native/wiki">Wiki pages</a>, as they give you great quick start with using the library and also provide a good set of valuable guides on how to get the best out of it.</p>
+          <p>Welcome to the demo page! Before you do anything, please make sure to check the <a href="https://github.com/thednp/bootstrap.native/wiki">Wiki pages</a>, as they give you a quick start with using the library and also provide a good set of valuable guides on how to get the best out of it.</p>
           
           <div class="list-group">
             <a class="list-group-item" href="https://github.com/thednp/bootstrap.native/wiki/Acknowledgements">
@@ -1012,12 +1012,17 @@ makeMeDropdown.addEventListener('click', function(e){
                       <td>element <code>'#ID'</code><br>
                         or other reference
                       </td>
-                      <td>The only option for <b>ScrollSpy</b>, is the target of the container with <code>data-spy="scroll"</code> attribute.<br>EG: <code>data-target="#myMenuID"</code></td>
+                      <td>The option to target the container with <code>data-spy="scroll"</code> attribute.<br>EG: <code>data-target="#myMenuID"</code></td>
+                    </tr>
+                    <tr>
+                      <td><code>offset</code></td>
+                      <td><em>number</em></td>
+                      <td>10</td>
+                      <td>Option to set a number of pixels as offset from top when calculating position of scroll. Can be set via <code>data-offset="NUMBER"</code> attribute or simply <code>offset</code> via JavaScript invokation.</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <p>We will talk later about why we don't need an <code>offset</code> option.</p>
             </section>
 
             <section id="scrollspyMethods">
@@ -1137,7 +1142,7 @@ makeMeDropdown.addEventListener('click', function(e){
 &lt;/nav&gt;
 </code></pre>
 
-              <p>We mentioned that we don't need the <code>offset</code> option and the reason is that we can set some additional styling to force <b>ScrollSpy</b> containers to have the exact height as the sum of all child elements and / or child containers.</p>
+              <p>Some additional styling can be used to force <b>ScrollSpy</b> containers to have the exact height as the sum of all child elements and / or child containers.</p>
 
 <pre><code class="language-css">/* element child containers */
 section { 
@@ -1159,10 +1164,14 @@ var myScrollSpyTarget = document.getElementById('myScrollSpyTarget');
 
 // initialize the ScrollSpy for this element
 var myScrollSpyInit = new ScrollSpy(myScrollSpyElement, {
-  // set option
-  target = myScrollSpyTarget;
+  // set options
+  target : myScrollSpyTarget,
   // alternativelly, provide a valid selector string
   // EG: ".my-unique-class-name" or "#my-unique-ID"
+
+  // in some cases the offset option would help calculate 
+  // the correct boundaries of target containers
+  offset: 15 
 })
 </code></pre>
 

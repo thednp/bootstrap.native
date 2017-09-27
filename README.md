@@ -1,5 +1,5 @@
-# Native Javascript for Bootstrap
-This is a library developed with native Javascript for both <strong>Bootstrap 3</strong> and <strong>Bootstrap 4</strong> series, featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. A huge advantage is the size, this library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
+# Native JavaScript for Bootstrap
+This is a library developed with native JavaScript for both <strong>Bootstrap 3</strong> and <strong>Bootstrap 4</strong> series, featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. The library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
 
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 

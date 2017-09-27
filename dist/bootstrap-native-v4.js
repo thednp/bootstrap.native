@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.15 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.16 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -1271,7 +1271,8 @@
     element = queryElement(element); 
   
     // DATA API
-    var targetData = queryElement(element[getAttribute](dataTarget));
+    var targetData = queryElement(element[getAttribute](dataTarget)),
+        offsetData = element[getAttribute]('data-offset');
   
     // set options
     options = options || {};
@@ -1279,7 +1280,8 @@
   
     // event targets, constants
     var spyTarget = options[target] && queryElement(options[target]) || targetData,
-        links = spyTarget && spyTarget[getElementsByTagName]('A'), 
+        links = spyTarget && spyTarget[getElementsByTagName]('A'),
+        offset = parseInt(offsetData || options['offset']) || 10,      
         items = [], targetItems = [], scrollOffset,
         scrollTarget = element[offsetHeight] < element[scrollHeight] ? element : globalObject, // determine which is the real scrollTarget
         isWindow = scrollTarget === globalObject;  
@@ -1305,8 +1307,8 @@
   
           isActive = hasClass(item,active) || false,
   
-          topEdge = isWindow ? targetRect[top] + scrollOffset : targetItem[offsetTop] - (targetItems[index-1] ? 0 : 10),
-          bottomEdge = isWindow ? targetRect[bottom] + scrollOffset : targetItems[index+1] ? targetItems[index+1][offsetTop] : element[scrollHeight],
+          topEdge = (isWindow ? targetRect[top] + scrollOffset : targetItem[offsetTop]) - offset,
+          bottomEdge = isWindow ? targetRect[bottom] + scrollOffset - offset : targetItems[index+1] ? targetItems[index+1][offsetTop] - offset : element[scrollHeight],
   
           inside = scrollOffset >= topEdge && bottomEdge > scrollOffset;
   
