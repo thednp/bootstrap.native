@@ -278,13 +278,9 @@
       triggerHandler = function(){ hasClass(alert,'fade') ? emulateTransitionEnd(alert,transitionEndHandler) : transitionEndHandler(); },
       // handlers
       clickHandler = function(e){
-        var eventTarget = e[target];
-        eventTarget = eventTarget[hasAttribute](dataDismiss) ? eventTarget : eventTarget[parentNode];
-        if (eventTarget && eventTarget[hasAttribute](dataDismiss)) { // we double check the data attribute, it's important
-          alert = getClosest(eventTarget,'.'+component);
-          element = queryElement('['+dataDismiss+'="'+component+'"]',alert);
-          (element === eventTarget || element === eventTarget[parentNode]) && alert && self.close();
-        }
+        alert = getClosest(e[target],'.'+component);
+        element = queryElement('['+dataDismiss+'="'+component+'"]',alert);
+        element && alert && (element === e[target] || element.contains(e[target])) && self.close();
       },
       transitionEndHandler = function(){
         bootstrapCustomEvent.call(alert, closedEvent, component);
@@ -335,9 +331,8 @@
   
       // private methods
       toggle = function(e) {
-        var parent = e[target][parentNode],
-          label = e[target].tagName === LABEL ? e[target] : parent.tagName === LABEL ? parent : null; // the .btn label
-  
+        var label = e[target].tagName === LABEL ? e[target] : e[target][parentNode].tagName === LABEL ? e[target][parentNode] : null; // the .btn label
+        
         if ( !label ) return; //react if a label or its immediate child is clicked
   
         var eventTarget = this, // the button group, the target of the handler function
