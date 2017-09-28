@@ -915,7 +915,6 @@
       component = 'dropdown', open = 'open',
       relatedTarget = null,
       menu = queryElement('.dropdown-menu', parent),
-      children = menu[getElementsByTagName]('*'),
   
       // handlers
       keyHandler = function(e) {
@@ -929,7 +928,7 @@
           relatedTarget = element;
           self.toggle();
         } else if ( isOpen ) {
-          if ( eventTarget === menu || children && nodeListToArray(children)[indexOf](eventTarget) > -1 && (self.persist || hasData) ) {
+          if ( eventTarget === menu || menu.contains(eventTarget) && (self.persist || hasData) ) {
             return;
           } else { relatedTarget = null; hide(); }
         }
