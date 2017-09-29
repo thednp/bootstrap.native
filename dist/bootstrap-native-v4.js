@@ -465,13 +465,6 @@
   
         if ( eventTarget && !hasClass(eventTarget,active) && eventTarget[getAttribute](dataSlideTo) ) {
           index = parseInt( eventTarget[getAttribute](dataSlideTo), 10 );
-  
-          //determine direction first
-          if  ( (activeIndicator < index ) || (activeIndicator === 0 && index === total -1 ) ) {
-            slideDirection = self[direction] = left; // next
-          } else if  ( (activeIndicator > index) || (activeIndicator === total - 1 && index === 0 ) ) {
-            slideDirection = self[direction] = right; // prev
-          }
         } else { return false; }
   
         self.slideTo( index ); //Do the slide
@@ -484,22 +477,8 @@
   
         if ( eventTarget === rightArrow ) {
           index++;
-          slideDirection = self[direction] = left; //set direction first
-  
-          if( index === total - 1 ) {
-            index = total - 1;
-          } else if ( index === total ){
-            index = 0;
-          }
         } else if ( eventTarget === leftArrow ) {
           index--;
-          slideDirection = self[direction] = right; //set direction first
-  
-          if( index === 0 ) {
-            index = 0;
-          } else if ( index < 0 ){
-            index = total - 1
-          }
         }
   
         self.slideTo( index ); //Do the slide
@@ -509,15 +488,9 @@
         switch (e.which) {
           case 39:
             index++;
-            slideDirection = self[direction] = left;
-            if( index == total - 1 ) { index = total - 1; } else
-            if ( index == total ){ index = 0 }
             break;
           case 37:
             index--;
-            slideDirection = self[direction] = right;
-            if ( index == 0 ) { index = 0; } else
-            if ( index < 0 ) { index = total - 1 }
             break;
           default: return;
         }
@@ -534,18 +507,31 @@
   
     // public methods
     this.cycle = function() {
-      slideDirection = this[direction] = left; // make sure to always come back to default slideDirection
       timer = setInterval(function() {
         index++;
   
-        index = index === total ? 0 : index;
         self.slideTo( index );
       }, this[interval]);
     };
     this.slideTo = function( next ) {
       var activeItem = this.getActiveIndex(), // the current active
-        orientation = slideDirection === left ? 'next' : 'prev'; //determine type
+          orientation;
+      
+      // determine slideDirection first
+      if  ( (activeItem < next ) || (activeItem === 0 && next === total -1 ) ) {
+        slideDirection = self[direction] = left; // next
+      } else if  ( (activeItem > next) || (activeItem === total - 1 && next === 0 ) ) {
+        slideDirection = self[direction] = right; // prev
+      }
   
+      // find the right next index 
+      if ( next < 0 ) { next = total - 1; } 
+      else if ( next === total ){ next = 0; }
+  
+      // update index
+      index = next;
+  
+      orientation = slideDirection === left ? 'next' : 'prev'; //determine type
       bootstrapCustomEvent.call(element, slideEvent, component, slides[next]); // here we go with the slide
   
       isSliding = true;
