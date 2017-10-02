@@ -233,6 +233,11 @@
             <span class="sr-only">Next</span>
           </a>
         </div>
+        <div class="btn-group mt-4 mb-0">
+          <button class="btn btn-light" disabled>Jump</button>
+          <button class="btn btn-light" onclick="(function(){ var crsl = document.getElementById('carouselExampleIndicators').Carousel, idx = crsl.getActiveIndex(); crsl.slideTo(idx-1) }())">PREV</button>
+          <button class="btn btn-light" onclick="(function(){ var crsl = document.getElementById('carouselExampleIndicators').Carousel, idx = crsl.getActiveIndex(); crsl.slideTo(idx+1) }())">NEXT</button>
+        </div>
       </div>
       <div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"carouselExampleIndicators"</span> <span class="na">class=</span><span class="s">"carousel slide"</span> <span class="na">data-ride=</span><span class="s">"carousel"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;ol</span> <span class="na">class=</span><span class="s">"carousel-indicators"</span><span class="nt">&gt;</span>

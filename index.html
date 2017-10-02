@@ -2788,6 +2788,11 @@ mainSlider.addEventListener('slid.bs.carousel', function(e) {
                   </a>
                 </div>
               </div>
+              <div class="btn-group">
+                <a class="btn btn-default disabled" href="#">Jump</a>
+                <a class="btn btn-default" href="#" onclick="(function(){ var crsl = document.getElementById('carousel-example-generic').Carousel, idx = crsl.getActiveIndex(); crsl.slideTo(idx-1) }())">PREV</a>
+                <a class="btn btn-default" href="#" onclick="(function(){ var crsl = document.getElementById('carousel-example-generic').Carousel, idx = crsl.getActiveIndex(); crsl.slideTo(idx+1) }())">NEXT</a>
+              </div>
             </section>
 
           </section>
