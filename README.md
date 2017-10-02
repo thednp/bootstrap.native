@@ -1,7 +1,10 @@
 # Native JavaScript for Bootstrap
 This is a library developed with native JavaScript for both <strong>Bootstrap 3</strong> and <strong>Bootstrap 4</strong> series, featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. The library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
 
-[![](https://data.jsdelivr.com/v1/package/npm/bootstrap.native/badge)](https://www.jsdelivr.com/package/npm/bootstrap.native)
+[![NPM Version][npm-image]][npm-url]
+[![CDNJS][cdnjs-image]][cdnjs-url]
+[![jsDelivr][jsdelivr-image]][jsdelivr-url]
+[![NPM Downloads][downloads-image]][downloads-url]
 
 See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
