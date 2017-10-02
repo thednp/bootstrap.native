@@ -1,12 +1,12 @@
 # Native JavaScript for Bootstrap
-This is a library developed with native JavaScript for both <strong>Bootstrap 3</strong> and <strong>Bootstrap 4</strong> series, featuring superior performance compared to the original jQuery Plugins. Thanks to [Ingwie Phoenix](https://github.com/IngwiePhoenix) for contributing with npm/RequireJS/CommonJS compatibility. The library is only ***20Kb*** minified and ***6.5Kb*** gZipped.
+This is a library developed with native JavaScript for both **Bootstrap 3**> and **Bootstrap 4** series, featuring superior performance compared to the original jQuery Plugins.
 
-[![NPM Version][npm-image]][npm-url]
-[![CDNJS][cdnjs-image]][cdnjs-url]
-[![jsDelivr][jsdelivr-image]][jsdelivr-url]
-[![NPM Downloads][downloads-image]][downloads-url]
+[![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg?style=flat-square)](https://cdnjs.com/libraries/bootstrap.native)
+[![NPM Downloads](https://img.shields.io/npm/dm/bootstrap.native.svg?style=flat-square)](http://npm-stat.com/charts.html?package=bootstrap.native)
+[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/bootstrap.native/badge)](https://www.jsdelivr.com/package/npm/bootstrap.native)
+[![CDNJS](https://img.shields.io/cdnjs/v/bootstrap.native.svg?style=flat-square)](https://cdnjs.com/libraries/bootstrap.native)
 
-See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
+ The library is under ***20Kb*** minified and ***6.5Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
 # Wiki
 Please take a minute to check the `bootstrap.native` Wiki pages:
