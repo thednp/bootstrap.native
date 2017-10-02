@@ -1,7 +1,7 @@
 # Native JavaScript for Bootstrap
 This is a library developed with native JavaScript for both **Bootstrap 3**> and **Bootstrap 4** series, featuring superior performance compared to the original jQuery Plugins.
 
-[![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg?style=flat-square)](https://cdnjs.com/libraries/bootstrap.native)
+[![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg?style=flat-square)](https://www.npmjs.com/package/bootstrap.native)
 [![NPM Downloads](https://img.shields.io/npm/dm/bootstrap.native.svg?style=flat-square)](http://npm-stat.com/charts.html?package=bootstrap.native)
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/bootstrap.native/badge)](https://www.jsdelivr.com/package/npm/bootstrap.native)
 [![CDNJS](https://img.shields.io/cdnjs/v/bootstrap.native.svg?style=flat-square)](https://cdnjs.com/libraries/bootstrap.native)
