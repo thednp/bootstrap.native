@@ -668,6 +668,7 @@
       }, this[interval]);
     };
     this.slideTo = function( next ) {
+      if (isSliding) return; // when controled via methods, make sure to check again    
       var activeItem = this.getActiveIndex(), // the current active
           orientation;
       
