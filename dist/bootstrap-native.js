@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.16 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.17 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -1673,7 +1673,7 @@
     var self = this, timer = 0, placementSetting = this[placement], tooltip = null,
       titleString = element[getAttribute](title) || element[getAttribute](dataOriginalTitle);
   
-    if ( !titleString ) return; // invalidate
+    if ( !titleString || titleString == "" ) return; // invalidate
   
     // private methods
     var removeToolTip = function() {
@@ -1682,6 +1682,8 @@
       },
       createToolTip = function() {
         titleString = element[getAttribute](title) || element[getAttribute](dataOriginalTitle); // read the title again
+        if ( !titleString || titleString == "" ) return false; // invalidate
+        
         tooltip = document.createElement(div);
         tooltip[setAttribute]('role',component);
   
@@ -1720,7 +1722,7 @@
       timer = setTimeout( function() {
         if (tooltip === null) {
           placementSetting = self[placement]; // we reset placement in all cases
-          createToolTip();
+          if(createToolTip() == false) return;
           updateTooltip();
           showTooltip();
           bootstrapCustomEvent.call(element, showEvent, component);
