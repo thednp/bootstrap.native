@@ -55,6 +55,7 @@
     dataInterval      = 'data-interval',
     dataHeight        = 'data-height',
     dataPause         = 'data-pause',
+    dataTitle         = 'data-title',
     dataOriginalTitle = 'data-original-title',
     dataOriginalText  = 'data-original-text',
     dataDismissible   = 'data-dismissible',
@@ -1088,9 +1089,7 @@
         classString = 'class',
         div = 'div',
         fade = 'fade',
-        title = 'title',
         content = 'content',
-        dataTitle = 'data-title',
         dataContent = 'data-content',
         dismissible = 'dismissible',
         closeBtn = '<button type="button" class="close">×</button>',
@@ -1536,7 +1535,7 @@
   
     // bind, event targets, title and constants
     var self = this, timer = 0, placementSetting = this[placement], tooltip = null,
-      titleString = element[getAttribute](title) || element[getAttribute](dataOriginalTitle);
+      titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle);
   
     if ( !titleString || titleString == "" ) return; // invalidate
   
@@ -1546,7 +1545,7 @@
         tooltip = null; timer = null;
       },
       createToolTip = function() {
-        titleString = element[getAttribute](title) || element[getAttribute](dataOriginalTitle); // read the title again
+        titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle); // read the title again
         if ( !titleString || titleString == "" ) return false; // invalidate
         tooltip = document.createElement(div);
         tooltip[setAttribute]('role',component);
