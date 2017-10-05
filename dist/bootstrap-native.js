@@ -140,6 +140,9 @@
     mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|top)+/,
   
+    // modal
+    modalOverlayRefCount = 0,
+  
     // transitionEnd since 2.0.4
     supportTransitions = Webkit+Transition in doc[style] || Transition[toLowerCase]() in doc[style],
     transitionEndEvent = Webkit+Transition in doc[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',  
@@ -954,7 +957,7 @@
   
   /* Native Javascript for Bootstrap 3 | Modal
   -------------------------------------------*/
-    
+  
   // MODAL DEFINITION
   // ===============
   var Modal = function(element, options) { // element can be the modal/triggering button
@@ -962,7 +965,7 @@
     // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
     element = queryElement(element);
   
-    // determine modal, triggering element 
+    // determine modal, triggering element
     var btnCheck = element[getAttribute](dataTarget)||element[getAttribute]('href'),
       checkModal = queryElement( btnCheck ),
       modal = hasClass(element,'modal') ? element : checkModal,
@@ -999,9 +1002,9 @@
         return globalObject[innerWidth] || (htmlRect[right] - Math.abs(htmlRect[left]));
       },
       setScrollbar = function () {
-        var bodyStyle = body.currentStyle || globalObject.getComputedStyle(body), 
+        var bodyStyle = body.currentStyle || globalObject.getComputedStyle(body),
             bodyPad = parseInt((bodyStyle[paddingRight]), 10), itemPad;
-        if (bodyIsOverflowing) { 
+        if (bodyIsOverflowing) {
           body[style][paddingRight] = (bodyPad + scrollbarWidth) + 'px';
           if (fixedItems[length]){
             for (var i = 0; i < fixedItems[length]; i++) {
@@ -1041,6 +1044,10 @@
         modal[style][paddingRight] = '';
       },
       createOverlay = function() {
+        modalOverlayRefCount += 1;
+  
+        if ( modalOverlayRefCount > 1 ) { return; }
+  
         var newOverlay = document.createElement('div');
         overlay = queryElement('.'+modalBackdropString);
   
@@ -1051,7 +1058,11 @@
         }
       },
       removeOverlay = function() {
-        overlay = queryElement('.'+modalBackdropString); 
+        modalOverlayRefCount -= 1;
+  
+        if (modalOverlayRefCount > 0) { return; }
+  
+        overlay = queryElement('.'+modalBackdropString);
         if ( overlay && overlay !== null && typeof overlay === 'object' ) {
           body.removeChild(overlay); overlay = null;
         }
@@ -1098,13 +1109,13 @@
             resetAdjustments();
             resetScrollbar();
             removeClass(body,component+'-open');
-            removeOverlay(); 
+            removeOverlay();
           }
         }, 100);
-      },    
+      },
       // handlers
       clickHandler = function(e) {
-        var clickTarget = e[target]; 
+        var clickTarget = e[target];
         clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
         if ( !open && clickTarget === element && !hasClass(modal,inClass) ) {
           modal.modalTrigger = element;
@@ -1121,7 +1132,7 @@
       },
       dismissHandler = function(e) {
         var clickTarget = e[target];
-        if ( open && (clickTarget[parentNode][getAttribute](dataDismiss) === component 
+        if ( open && (clickTarget[parentNode][getAttribute](dataDismiss) === component
             || clickTarget[getAttribute](dataDismiss) === component
             || (clickTarget === modal && self[backdrop] !== staticString) ) ) {
           self.hide(); relatedTarget = null;
@@ -1138,7 +1149,7 @@
   
       // we elegantly hide any opened modal
       var currentOpen = getElementsByClassName(document,component+' in')[0];
-      currentOpen && currentOpen !== modal && currentOpen.modalTrigger[stringModal].hide(); 
+      currentOpen && currentOpen !== modal && currentOpen.modalTrigger[stringModal].hide();
   
       if ( this[backdrop] ) {
         createOverlay();
@@ -1173,8 +1184,6 @@
       removeClass(modal,inClass);
       modal[setAttribute](ariaHidden, true);
   
-      !!overlay && removeClass(overlay,inClass);
-  
       setTimeout(function(){
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
       }, supportTransitions ? 150 : 0);
@@ -1192,7 +1201,7 @@
   
     // init
     // prevent adding event handlers over and over
-    // modal is independent of a triggering element 
+    // modal is independent of a triggering element
     if ( !!element && !(stringModal in element) ) {
       on(element, clickEvent, clickHandler);
     }
@@ -1202,7 +1211,6 @@
   
   // DATA API
   initializeDataAPI(stringModal, Modal, doc[querySelectorAll]('['+dataToggle+'="modal"]'));
-  
   
   /* Native Javascript for Bootstrap 3 | Popover
   ----------------------------------------------*/
