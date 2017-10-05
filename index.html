@@ -1578,13 +1578,13 @@ myLastTab.addEventListener('show.bs.tab', function(event){
             <section id="tooltipUsage">
               <h4>Usage</h4>
               <h5>Via DATA API</h5>
-              <p>As mentioned before the component will initialize any element found to have the <code>data-toggle="tooltip"</code> attribute and a <code>title</code> attribute.</p>
+              <p>As mentioned before the component will initialize any element found to have the <code>data-toggle="tooltip"</code> attribute and a <code>title</code> attribute or a <code>data-title</code> attribute for SVG elements.</p>
 <pre><code class="language-markup">&lt;!-- any regular link with data-toggle="tooltip" --&gt;
 &lt;a href="https://google.com" title="Google" data-toggle="tooltip"&gt;Google&lt;/a&gt;
 
 &lt;!-- any SVG shape with data-toggle="tooltip" --&gt;
 &lt;svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg"&gt;
-  &lt;rect data-toggle="tooltip" data-placement="top" data-delay="150" title="Demo Title for SVG" rx="5">&lt;/rect&gt;
+  &lt;rect data-toggle="tooltip" data-placement="top" data-delay="150" data-title="Demo Title for SVG" rx="5">&lt;/rect&gt;
 &lt;/svg&gt;
 </code></pre>
               <h5>Via JavaScript</h5>
