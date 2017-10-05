@@ -288,8 +288,8 @@ mainSlider.addEventListener('slid.bs.carousel', function(e) {
 // var exampleCarouselInit = new Carousel(exampleCarousel);
 
 /* side-nav autoresize on window scroll and resize */
+var sideNav = document.getElementById('side-nav');
 if ( document.documentElement && !/ie/.test(document.documentElement.className) ) {
-	var sideNav = document.getElementById('side-nav');
 	function resetNav() {
 		document.getElementById('nav-scrollspy').style.width = '';
 	}
@@ -302,6 +302,19 @@ if ( document.documentElement && !/ie/.test(document.documentElement.className) 
 	adjustNav();
 	window.addEventListener('resize', adjustNav, false)// adjust on resize
 }
+
+// KUTE.js scrollTo
+var sideLinks = sideNav.getElementsByTagName("A"),
+		scrollTo = function(e){
+			var target = document.getElementById(e.target.getAttribute('href').replace('#',''));
+			e.preventDefault();
+			document.documentElement.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset||document.documentElement.scrollTop) - (i===0?0:60);
+		};
+
+for (var i=0, sll=sideLinks.length; i<sll; i++) {
+	sideLinks[i].addEventListener('click', scrollTo, false);
+}
+
 // scrollSpy stuff
 var mainContainerSpy = document.querySelector('[data-target="#side-nav"]');
 mainContainerSpy.addEventListener('activate.bs.scrollspy', function(e){
@@ -417,3 +430,4 @@ document.addEventListener('DOMContentLoaded', setNavbarOpacity, false);
 window.addEventListener('scroll', setNavbarOpacity, false);
 navbar.addEventListener(mouseHover[0],setNavbarOpacityOnEnter,false);
 navbar.addEventListener(mouseHover[1],setNavbarOpacityOnLeave,false);
+
