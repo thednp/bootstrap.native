@@ -893,9 +893,9 @@
         modal[style][paddingRight] = '';
       },
       createOverlay = function() {
-        modalOverlayRefCount += 1;
-  
         if ( modalOverlayRefCount > 1 ) { return; }
+        
+        modalOverlayRefCount += 1;
   
         var newOverlay = document.createElement('div');
         overlay = queryElement('.'+modalBackdropString);
@@ -907,9 +907,9 @@
         }
       },
       removeOverlay = function() {
+        if (modalOverlayRefCount === 0) { return; }
+        
         modalOverlayRefCount -= 1;
-  
-        if (modalOverlayRefCount > 0) { return; }
   
         overlay = queryElement('.'+modalBackdropString);
         if ( overlay && overlay !== null && typeof overlay === 'object' ) {
@@ -958,9 +958,11 @@
             resetAdjustments();
             resetScrollbar();
             removeClass(body,component+'-open');
-            removeOverlay();
+            if (self[backdrop]){
+              hasClass(overlay,'fade') ? (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay)) : removeOverlay();
+            }
           }
-        }, 100);
+        }, 50);
       },
       // handlers
       clickHandler = function(e) {
