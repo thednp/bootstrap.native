@@ -137,8 +137,8 @@
     tipPositions = /\b(top|bottom|left|top)+/,
   
     // modal
-    modalOverlayRefCount = 0,
-  
+    modalOverlay = 0,
+    
     // transitionEnd since 2.0.4
     supportTransitions = Webkit+Transition in doc[style] || Transition[toLowerCase]() in doc[style],
     transitionEndEvent = Webkit+Transition in doc[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
@@ -840,7 +840,7 @@
     this[content]  = options[content]; // JavaScript only
   
     // bind, constants, event targets and other vars
-    var self = this, open = this.open = false, relatedTarget = null,
+    var self = this, relatedTarget = null,
       bodyIsOverflowing, modalIsOverflowing, scrollbarWidth, overlay,
   
       // also find fixed-top / fixed-bottom items
@@ -894,10 +894,8 @@
         modal[style][paddingRight] = '';
       },
       createOverlay = function() {
-        if ( modalOverlayRefCount > 1 ) { return; }
+        modalOverlay = 1;        
         
-        modalOverlayRefCount += 1;
-  
         var newOverlay = document.createElement('div');
         overlay = queryElement('.'+modalBackdropString);
   
@@ -908,14 +906,12 @@
         }
       },
       removeOverlay = function() {
-        if (modalOverlayRefCount === 0) { return; }
-        
-        modalOverlayRefCount -= 1;
-  
         overlay = queryElement('.'+modalBackdropString);
         if ( overlay && overlay !== null && typeof overlay === 'object' ) {
+          modalOverlay = 0;        
           body.removeChild(overlay); overlay = null;
         }
+        bootstrapCustomEvent.call(modal, hiddenEvent, component);      
       },
       keydownHandlerToggle = function() {
         if (!hasClass(modal,showClass)) {
@@ -940,7 +936,6 @@
       },
       // triggers
       triggerShow = function() {
-        open = self.open = true;
         setFocus(modal);
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
       },
@@ -950,18 +945,15 @@
         keydownHandlerToggle();
   
         modal[style].display = '';
-  
-        open = self.open = false;
         element && (setFocus(element));
-        bootstrapCustomEvent.call(modal, hiddenEvent, component);
+  
         setTimeout(function(){
           if (!getElementsByClassName(document,component+' '+showClass)[0]) {
             resetAdjustments();
             resetScrollbar();
             removeClass(body,component+'-open');
-            if (self[backdrop]){
-              hasClass(overlay,'fade') ? (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay)) : removeOverlay();
-            }
+            overlay && hasClass(overlay,'fade') ? (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay)) 
+            : removeOverlay();
           }
         }, 50);
       },
@@ -969,7 +961,7 @@
       clickHandler = function(e) {
         var clickTarget = e[target];
         clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
-        if ( !open && clickTarget === element && !hasClass(modal,showClass) ) {
+        if ( clickTarget === element && !hasClass(modal,showClass) ) {
           modal.modalTrigger = element;
           relatedTarget = element;
           self.show();
@@ -978,13 +970,13 @@
       },
       keyHandler = function(e) {
         var key = e.which || e.keyCode; // keyCode for IE8
-        if (self[keyboard] && key == 27 && open) {
+        if (self[keyboard] && key == 27 && hasClass(modal,showClass)) {
           self.hide();
         }
       },
       dismissHandler = function(e) {
         var clickTarget = e[target];
-        if ( open && (clickTarget[parentNode][getAttribute](dataDismiss) === component
+        if ( hasClass(modal,showClass) && (clickTarget[parentNode][getAttribute](dataDismiss) === component
             || clickTarget[getAttribute](dataDismiss) === component
             || (clickTarget === modal && self[backdrop] !== staticString) ) ) {
           self.hide(); relatedTarget = null;
@@ -994,7 +986,7 @@
   
     // public methods
     this.toggle = function() {
-      if (open && hasClass(modal,showClass)) {this.hide();} else {this.show();}
+      if ( hasClass(modal,showClass) ) {this.hide();} else {this.show();}
     };
     this.show = function() {
       bootstrapCustomEvent.call(modal, showEvent, component, relatedTarget);
@@ -1004,11 +996,12 @@
       currentOpen && currentOpen !== modal && currentOpen.modalTrigger[stringModal].hide();
   
       if ( this[backdrop] ) {
-        createOverlay();
+        !modalOverlay && createOverlay();
       }
   
-      if ( overlay && !hasClass(overlay,showClass)) {
-        setTimeout( function() { addClass(overlay, showClass); },0);
+      if ( overlay && modalOverlay && !hasClass(overlay,showClass)) {
+        overlay[offsetWidth]; // force reflow to enable trasition
+        addClass(overlay, showClass);
       }
   
       setTimeout( function() {
