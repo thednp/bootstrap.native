@@ -545,8 +545,8 @@
         if ( option !== reset ) { setState(); } 
         else { resetState(); }
       }
-    }
-    if ( hasClass(element,'btn-group') ) {
+    } else { // if ( hasClass(element,'btn-group') ) // we allow the script to work outside btn-group component
+      
       if ( !( stringButton in element ) ) { // prevent adding event handlers twice
         on( element, clickEvent, toggle );
       }
@@ -554,7 +554,7 @@
       // activate items on load
       var labelsToACtivate = getElementsByClassName(element, 'btn'), lbll = labelsToACtivate[length];
       for (var i=0; i<lbll; i++) {
-        !hasClass(labelsToACtivate[l],active) && queryElement('input',labelsToACtivate[l])[getAttribute](checked)
+        !hasClass(labelsToACtivate[i],active) && queryElement('input',labelsToACtivate[i])[getAttribute](checked)
                                               && addClass(labelsToACtivate[i],active);
       }
       element[stringButton] = this;
