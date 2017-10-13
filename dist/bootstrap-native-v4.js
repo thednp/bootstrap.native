@@ -389,18 +389,17 @@
       };
   
     // init
-    if ( hasClass(element,'btn-group') ) {
-      if ( !( stringButton in element ) ) { // prevent adding event handlers twice
-        on( element, clickEvent, toggle );
-      }
-      // activate items on load
-      var labelsToACtivate = getElementsByClassName(element, 'btn'), lbll = labelsToACtivate[length];
-      for (var i=0; i<lbll; i++) {
-        !hasClass(labelsToACtivate[i],active) && queryElement('input:checked',labelsToACtivate[i]) 
-                                              && addClass(labelsToACtivate[i],active);
-      }
-      element[stringButton] = this;
+    if ( !( stringButton in element ) ) { // prevent adding event handlers twice
+      on( element, clickEvent, toggle );
     }
+  
+    // activate items on load
+    var labelsToACtivate = getElementsByClassName(element, 'btn'), lbll = labelsToACtivate[length];
+    for (var i=0; i<lbll; i++) {
+      !hasClass(labelsToACtivate[i],active) && queryElement('input:checked',labelsToACtivate[i]) 
+                                            && addClass(labelsToACtivate[i],active);
+    }
+    element[stringButton] = this;
   };
   
   // BUTTON DATA API
