@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.17 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.18 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -392,6 +392,12 @@
     if ( hasClass(element,'btn-group') ) {
       if ( !( stringButton in element ) ) { // prevent adding event handlers twice
         on( element, clickEvent, toggle );
+      }
+      // activate items on load
+      var labelsToACtivate = getElementsByClassName(element, 'btn'), lbll = labelsToACtivate[length];
+      for (var i=0; i<lbll; i++) {
+        !hasClass(labelsToACtivate[i],active) && queryElement('input:checked',labelsToACtivate[i]) 
+                                              && addClass(labelsToACtivate[i],active);
       }
       element[stringButton] = this;
     }
