@@ -470,8 +470,8 @@
           if ( option === loading ) {
             addClass(element,disabled);
             element[setAttribute](disabled,disabled);
+            element[setAttribute](dataOriginalText, element.innerHTML.replace(/^\s+|\s+$/g, '')); // trim the text
           }
-          element[setAttribute](dataOriginalText, element.innerHTML.replace(/^\s+|\s+$/g, '')); // trim the text
           element.innerHTML = element[getAttribute]('data-'+option+'-text');
         }
       },
