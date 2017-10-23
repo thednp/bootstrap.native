@@ -28,7 +28,7 @@
   
   // globals
   var globalObject = typeof global !== 'undefined' ? global : this||window,
-    doc = document.documentElement, body = document.body,
+    HTML = document.documentElement, DOC = document, body = 'body', // allow the library to be used in <head>
   
     // function toggle attributes
     dataToggle    = 'data-toggle',
@@ -140,8 +140,8 @@
     modalOverlay = 0,
     
     // transitionEnd since 2.0.4
-    supportTransitions = Webkit+Transition in doc[style] || Transition[toLowerCase]() in doc[style],
-    transitionEndEvent = Webkit+Transition in doc[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
+    supportTransitions = Webkit+Transition in HTML[style] || Transition[toLowerCase]() in HTML[style],
+    transitionEndEvent = Webkit+Transition in HTML[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
   
     // set new focus element since 2.0.3
     setFocus = function(element){
@@ -217,20 +217,20 @@
     isElementInViewport = function(element) { // check if this.tooltip is in viewport
       var rect = element[getBoundingClientRect]();
       return ( rect[top] >= 0 && rect[left] >= 0 &&
-        rect[bottom] <= (globalObject[innerHeight] || doc[clientHeight]) &&
-        rect[right] <= (globalObject[innerWidth] || doc[clientWidth]) )
+        rect[bottom] <= (globalObject[innerHeight] || HTML[clientHeight]) &&
+        rect[right] <= (globalObject[innerWidth] || HTML[clientWidth]) )
     },
     getScroll = function() { // also Affix and ScrollSpy uses it
       return {
-        y : globalObject.pageYOffset || doc[scrollTop],
-        x : globalObject.pageXOffset || doc[scrollLeft]
+        y : globalObject.pageYOffset || HTML[scrollTop],
+        x : globalObject.pageXOffset || HTML[scrollLeft]
       }
     },
     styleTip = function(link,element,position,parent) { // both popovers and tooltips
       var rect = link[getBoundingClientRect](),
           arrow = queryElement('.arrow',element),
           arrowWidth = arrow[offsetWidth], isPopover = hasClass(element,'popover'),
-          scroll = parent === body ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
+          scroll = parent === DOC[body] ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
           elementDimensions = { w : element[offsetWidth], h: element[offsetHeight] };
   
@@ -309,7 +309,7 @@
   
   // ALERT DATA API
   // ==============
-  initializeDataAPI ( stringAlert, Alert, doc[querySelectorAll]('['+dataDismiss+'="alert"]') );
+  initializeDataAPI ( stringAlert, Alert, DOC[querySelectorAll]('['+dataDismiss+'="alert"]') );
   
   
   /* Native Javascript for Bootstrap 4 | Button
@@ -404,7 +404,7 @@
   
   // BUTTON DATA API
   // =================
-  initializeDataAPI( stringButton, Button, doc[querySelectorAll]('['+dataToggle+'="buttons"]') );
+  initializeDataAPI( stringButton, Button, DOC[querySelectorAll]('['+dataToggle+'="buttons"]') );
   
   
   /* Native Javascript for Bootstrap 4 | Carousel
@@ -620,7 +620,7 @@
   
   // CAROUSEL DATA API
   // =================
-  initializeDataAPI( stringCarousel, Carousel, doc[querySelectorAll]('['+dataRide+'="carousel"]') );
+  initializeDataAPI( stringCarousel, Carousel, HTML[querySelectorAll]('['+dataRide+'="carousel"]') );
   
   
   /* Native Javascript for Bootstrap 4 | Collapse
@@ -729,7 +729,7 @@
   
   // COLLAPSE DATA API
   // =================
-  initializeDataAPI(stringCollapse, Collapse, doc[querySelectorAll]('['+dataToggle+'="collapse"]'));
+  initializeDataAPI(stringCollapse, Collapse, DOC[querySelectorAll]('['+dataToggle+'="collapse"]'));
   
   
   /* Native Javascript for Bootstrap 4 | Dropdown
@@ -807,7 +807,7 @@
   
   // DROPDOWN DATA API
   // =================
-  initializeDataAPI( stringDropdown, Dropdown, doc[querySelectorAll]('['+dataToggle+'="dropdown"]') );
+  initializeDataAPI( stringDropdown, Dropdown, HTML[querySelectorAll]('['+dataToggle+'="dropdown"]') );
   
   
   /* Native Javascript for Bootstrap 4 | Modal
@@ -849,18 +849,18 @@
       bodyIsOverflowing, modalIsOverflowing, scrollbarWidth, overlay,
   
       // also find fixed-top / fixed-bottom items
-      fixedItems = getElementsByClassName(doc,fixedTop).concat(getElementsByClassName(doc,fixedBottom)),
+      fixedItems = getElementsByClassName(HTML,fixedTop).concat(getElementsByClassName(HTML,fixedBottom)),
   
       // private methods
       getWindowWidth = function() {
-        var htmlRect = doc[getBoundingClientRect]();
+        var htmlRect = HTML[getBoundingClientRect]();
         return globalObject[innerWidth] || (htmlRect[right] - Math.abs(htmlRect[left]));
       },
       setScrollbar = function () {
-        var bodyStyle = globalObject.getComputedStyle(body),
+        var bodyStyle = globalObject.getComputedStyle(DOC[body]),
             bodyPad = parseInt((bodyStyle[paddingRight]), 10), itemPad;
         if (bodyIsOverflowing) {
-          body[style][paddingRight] = (bodyPad + scrollbarWidth) + 'px';
+          DOC[body][style][paddingRight] = (bodyPad + scrollbarWidth) + 'px';
           if (fixedItems[length]){
             for (var i = 0; i < fixedItems[length]; i++) {
               itemPad = globalObject.getComputedStyle(fixedItems[i])[paddingRight];
@@ -870,7 +870,7 @@
         }
       },
       resetScrollbar = function () {
-        body[style][paddingRight] = '';
+        DOC[body][style][paddingRight] = '';
         if (fixedItems[length]){
           for (var i = 0; i < fixedItems[length]; i++) {
             fixedItems[i][style][paddingRight] = '';
@@ -880,14 +880,14 @@
       measureScrollbar = function () { // thx walsh
         var scrollDiv = document.createElement('div'), scrollBarWidth;
         scrollDiv.className = component+'-scrollbar-measure'; // this is here to stay
-        body.appendChild(scrollDiv);
+        DOC[body].appendChild(scrollDiv);
         scrollBarWidth = scrollDiv[offsetWidth] - scrollDiv[clientWidth];
-        body.removeChild(scrollDiv);
+        DOC[body].removeChild(scrollDiv);
         return scrollBarWidth;
       },
       checkScrollbar = function () {
-        bodyIsOverflowing = body[clientWidth] < getWindowWidth();
-        modalIsOverflowing = modal[scrollHeight] > doc[clientHeight];
+        bodyIsOverflowing = DOC[body][clientWidth] < getWindowWidth();
+        modalIsOverflowing = modal[scrollHeight] > HTML[clientHeight];
         scrollbarWidth = measureScrollbar();
       },
       adjustDialog = function () {
@@ -907,33 +907,33 @@
         if ( overlay === null ) {
           newOverlay[setAttribute]('class',modalBackdropString+' fade');
           overlay = newOverlay;
-          body.appendChild(overlay);
+          DOC[body].appendChild(overlay);
         }
       },
       removeOverlay = function() {
         overlay = queryElement('.'+modalBackdropString);
         if ( overlay && overlay !== null && typeof overlay === 'object' ) {
           modalOverlay = 0;        
-          body.removeChild(overlay); overlay = null;
+          DOC[body].removeChild(overlay); overlay = null;
         }
         bootstrapCustomEvent.call(modal, hiddenEvent, component);      
       },
       keydownHandlerToggle = function() {
-        if (!hasClass(modal,showClass)) {
+        if (hasClass(modal,showClass)) {
           on(document, keydownEvent, keyHandler);
         } else {
           off(document, keydownEvent, keyHandler);
         }
       },
       resizeHandlerToggle = function() {
-        if (!hasClass(modal,showClass)) {
+        if (hasClass(modal,showClass)) {
           on(globalObject, resizeEvent, self.update);
         } else {
           off(globalObject, resizeEvent, self.update);
         }
       },
       dismissHandlerToggle = function() {
-        if (!hasClass(modal,showClass)) {
+        if (hasClass(modal,showClass)) {
           on(modal, clickEvent, dismissHandler);
         } else {
           off(modal, clickEvent, dismissHandler);
@@ -945,20 +945,20 @@
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
       },
       triggerHide = function() {
-        resizeHandlerToggle();
-        dismissHandlerToggle();
-        keydownHandlerToggle();
-  
         modal[style].display = '';
         element && (setFocus(element));
-  
+        
         setTimeout(function(){
           if (!getElementsByClassName(document,component+' '+showClass)[0]) {
             resetAdjustments();
             resetScrollbar();
-            removeClass(body,component+'-open');
+            removeClass(DOC[body],component+'-open');
             overlay && hasClass(overlay,'fade') ? (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay)) 
             : removeOverlay();
+  
+            resizeHandlerToggle();
+            dismissHandlerToggle();
+            keydownHandlerToggle();
           }
         }, 50);
       },
@@ -1016,13 +1016,13 @@
         setScrollbar();
         adjustDialog();
   
+        addClass(DOC[body],component+'-open');
+        addClass(modal,showClass);
+        modal[setAttribute](ariaHidden, false);
+        
         resizeHandlerToggle();
         dismissHandlerToggle();
         keydownHandlerToggle();
-  
-        addClass(body,component+'-open');
-        addClass(modal,showClass);
-        modal[setAttribute](ariaHidden, false);
   
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
       }, supportTransitions ? 150 : 0);
@@ -1060,7 +1060,7 @@
   };
   
   // DATA API
-  initializeDataAPI(stringModal, Modal, doc[querySelectorAll]('['+dataToggle+'="modal"]'));
+  initializeDataAPI(stringModal, Modal, DOC[querySelectorAll]('['+dataToggle+'="modal"]'));
   
   /* Native Javascript for Bootstrap 4 | Popover
   ----------------------------------------------*/
@@ -1111,7 +1111,7 @@
                     : queryElement(containerData) ? queryElement(containerData) 
                     : navbarFixedTop ? navbarFixedTop
                     : navbarFixedBottom ? navbarFixedBottom
-                    : modal ? modal : body;
+                    : modal ? modal : DOC[body];
     
     // bind, content
     var self = this, 
@@ -1245,7 +1245,7 @@
   
   // POPOVER DATA API
   // ================
-  initializeDataAPI(stringPopover, Popover, doc[querySelectorAll]('['+dataToggle+'="popover"]'));
+  initializeDataAPI(stringPopover, Popover, DOC[querySelectorAll]('['+dataToggle+'="popover"]'));
   
   
   /* Native Javascript for Bootstrap 4 | ScrollSpy
@@ -1344,7 +1344,7 @@
   
   // SCROLLSPY DATA API
   // ==================
-  initializeDataAPI(stringScrollSpy, ScrollSpy, doc[querySelectorAll]('['+dataSpy+'="scroll"]'));
+  initializeDataAPI(stringScrollSpy, ScrollSpy, DOC[querySelectorAll]('['+dataSpy+'="scroll"]'));
   
   
   /* Native Javascript for Bootstrap 4 | Tab
@@ -1487,7 +1487,7 @@
   
   // TAB DATA API
   // ============
-  initializeDataAPI(stringTab, Tab, doc[querySelectorAll]('['+dataToggle+'="tab"]'));
+  initializeDataAPI(stringTab, Tab, DOC[querySelectorAll]('['+dataToggle+'="tab"]'));
   
   
   /* Native Javascript for Bootstrap 4 | Tooltip
@@ -1529,7 +1529,7 @@
                     : queryElement(containerData) ? queryElement(containerData) 
                     : navbarFixedTop ? navbarFixedTop
                     : navbarFixedBottom ? navbarFixedBottom
-                    : modal ? modal : body;
+                    : modal ? modal : DOC[body];
   
     // bind, event targets, title and constants
     var self = this, timer = 0, placementSetting = this[placement], tooltip = null,
@@ -1621,7 +1621,7 @@
   
   // TOOLTIP DATA API
   // =================
-  initializeDataAPI(stringTooltip, Tooltip, doc[querySelectorAll]('['+dataToggle+'="tooltip"]'));
+  initializeDataAPI(stringTooltip, Tooltip, DOC[querySelectorAll]('['+dataToggle+'="tooltip"]'));
   
   
   return {
