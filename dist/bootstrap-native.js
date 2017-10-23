@@ -1196,7 +1196,7 @@
       queryElement('.'+component+'-content',modal).innerHTML = content;
     };
     this.update = function() {
-      if (open) {
+      if (hasClass(modal,inClass)) {
         checkScrollbar();
         setScrollbar();
         adjustDialog();

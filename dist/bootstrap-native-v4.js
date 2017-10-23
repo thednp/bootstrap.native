@@ -620,7 +620,7 @@
   
   // CAROUSEL DATA API
   // =================
-  initializeDataAPI( stringCarousel, Carousel, HTML[querySelectorAll]('['+dataRide+'="carousel"]') );
+  initializeDataAPI( stringCarousel, Carousel, DOC[querySelectorAll]('['+dataRide+'="carousel"]') );
   
   
   /* Native Javascript for Bootstrap 4 | Collapse
@@ -1042,7 +1042,7 @@
       queryElement('.'+component+'-content',modal).innerHTML = content;
     };
     this.update = function() {
-      if (open) {
+      if (hasClass(modal,showClass)) {
         checkScrollbar();
         setScrollbar();
         adjustDialog();
