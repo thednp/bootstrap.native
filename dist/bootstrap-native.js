@@ -110,6 +110,7 @@
     setAttribute         = 'setAttribute',
     hasAttribute         = 'hasAttribute',
     getElementsByTagName = 'getElementsByTagName',
+    preventDefault       = 'preventDefault',
     getBoundingClientRect= 'getBoundingClientRect',
     querySelectorAll     = 'querySelectorAll',
     getElementsByCLASSNAME = 'getElementsByClassName',
@@ -302,7 +303,6 @@
     var self = this,
   
       // constants
-      resizeDelay = !supportTransitions ? 500 : 50, // for legacy browsers we try to limit the interval for updating the Affix
       pinOffsetTop, pinOffsetBottom, maxScroll, scrollY, pinnedTop, pinnedBottom,
       affixedToTop = false, affixedToBottom = false,
       
@@ -381,8 +381,8 @@
   
     // init
     if ( !(stringAffix in element ) ) { // prevent adding event handlers twice
-      on( globalObject, scrollEvent, this[update] );
-      on( globalObject, resizeEvent, function() { setTimeout(function(){ self[update](); }, resizeDelay); });
+      on( globalObject, scrollEvent, self[update] );
+      !isIE8 && on( globalObject, resizeEvent, self[update] );
     }
     element[stringAffix] = this;
   
@@ -903,59 +903,82 @@
     this.persist = option === true || element[getAttribute]('data-persist') === 'true' || false;
   
     // constants, event targets, strings
-    var self = this, isOpen = false,
+    var self = this,
       parent = element[parentNode],
       component = 'dropdown', open = 'open',
       relatedTarget = null,
       menu = queryElement('.dropdown-menu', parent),
   
+      // preventDefault on empty anchor links
+      preventEmptyAnchor = function(anchor){
+        (/\#$/.test(anchor.href) || anchor[parentNode] && /\#$/.test(anchor[parentNode].href)) && this[preventDefault](); // should be here to prevent jumps        
+      },
+  
+      // toggle dismissible events
+      toggleDismiss = function(){
+        var type = element[open] ? on : off;
+        type(DOC, keydownEvent, keyHandler);
+        type(DOC, clickEvent, dismissHandler); 
+      },
+  
       // handlers
+      dismissHandler = function(e) {
+        var eventTarget = e[target],
+          hasData = eventTarget && (eventTarget[getAttribute](dataToggle) 
+                                || eventTarget[parentNode] && getAttribute in eventTarget[parentNode] 
+                                && eventTarget[parentNode][getAttribute](dataToggle));
+        
+        if ( (eventTarget === menu || menu.contains(eventTarget)) && (self.persist || hasData) ) { return; }
+        else {
+          relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
+          hide();
+        }
+        preventEmptyAnchor.call(e,eventTarget);
+      },
       keyHandler = function(e) {
-        if (isOpen && (e.which == 27 || e.keyCode == 27)) { relatedTarget = null; hide(); } // e.keyCode for IE8
+        if (element[open] && (e.which === 27 || e.keyCode === 27)) { relatedTarget = null; hide(); } // e.keyCode for IE8
       },
       clickHandler = function(e) {
-        var eventTarget = e[target],
-          hasData = eventTarget && (eventTarget[getAttribute](dataToggle) || eventTarget[parentNode] && getAttribute in eventTarget[parentNode] && eventTarget[parentNode][getAttribute](dataToggle));
-        if ( eventTarget === element || eventTarget === parent || eventTarget[parentNode] === element ) {
-          e.preventDefault(); // comment this line to stop preventing navigation when click target is a link 
-          relatedTarget = element;
-          self.toggle();
-        } else if ( isOpen ) {
-          if ( eventTarget === menu || menu.contains(eventTarget) && (self.persist || hasData) ) {
-            return;
-          } else { relatedTarget = null; hide(); }
-        }
-        (/\#$/.test(eventTarget.href) || eventTarget[parentNode] && /\#$/.test(eventTarget[parentNode].href)) && e.preventDefault(); // should be here to prevent jumps
+        relatedTarget = element;
+        show();
+        preventEmptyAnchor.call(e,e[target]);
       },
+  
       // private methods
       show = function() {
         bootstrapCustomEvent.call(parent, showEvent, component, relatedTarget);
         addClass(parent,open);
         menu[setAttribute](ariaExpanded,true);
         bootstrapCustomEvent.call(parent, shownEvent, component, relatedTarget);
-        on(document, keydownEvent, keyHandler);
-        isOpen = true;
+        element[open] = true;
+        off(element, clickEvent, clickHandler);
+        setTimeout(function(){ toggleDismiss(); },1);
       },
       hide = function() {
         bootstrapCustomEvent.call(parent, hideEvent, component, relatedTarget);
         removeClass(parent,open);
         menu[setAttribute](ariaExpanded,false);
         bootstrapCustomEvent.call(parent, hiddenEvent, component, relatedTarget);
-        off(document, keydownEvent, keyHandler);
-        isOpen = false;
+        element[open] = false;
+        toggleDismiss();
+        setTimeout(function(){ on(element, clickEvent, clickHandler); },1);
       };
+  
+      // set initial state to closed
+      element[open] = false;
   
     // public methods
     this.toggle = function() {
-      if (hasClass(parent,open) && isOpen) { hide(); } 
+      if (hasClass(parent,open) && element[open]) { hide(); } 
       else { show(); }
     };
   
     // init
     if ( !(stringDropdown in element) ) { // prevent adding event handlers twice
       menu[setAttribute]('tabindex', '0'); // Fix onblur on Chrome | Safari
-      on(document, clickEvent, clickHandler);
+      on(element, clickEvent, clickHandler);
     }
+  
     element[stringDropdown] = this;
   };
   
@@ -1336,11 +1359,22 @@
         }
       },
       
+      // event toggle
+      dismissHandlerToggle = function(type){
+        if (/^(click|focus)$/.test(self[trigger])) {
+          !self[dismissible] && type( element, 'blur', self.hide );
+        }
+        self[dismissible] && type( document, clickEvent, dismissibleHandler );     
+        !isIE8 && type( globalObject, resizeEvent, self.hide );
+      },
+  
       // triggers
       showTrigger = function() {
+        dismissHandlerToggle(on);
         bootstrapCustomEvent.call(element, shownEvent, component);
       },
       hideTrigger = function() {
+        dismissHandlerToggle(off);
         removePopover();
         bootstrapCustomEvent.call(element, hiddenEvent, component);
       };
@@ -1381,14 +1415,7 @@
         if (!self[dismissible]) { on( element, mouseHover[1], self.hide ); }
       } else if (/^(click|focus)$/.test(self[trigger])) {
         on( element, self[trigger], self.toggle );
-        if (!self[dismissible]) { on( element, 'blur', self.hide ); }
-      }
-      
-      if (self[dismissible]) { on( document, clickEvent, dismissibleHandler ); }
-    
-      // dismiss on window resize
-      !isIE8 && on( globalObject, resizeEvent, self.hide );
-  
+      }    
     }
     element[stringPopover] = self;
   };
@@ -1436,7 +1463,7 @@
   
     // private methods
     var updateItem = function(index) {
-        var parent = items[index][parentNode], // item's parent LI element
+      var parent = items[index][parentNode], // item's parent LI element
           targetItem = targetItems[index], // the menu item targets this element
           dropdown = getClosest(parent,'.dropdown'),
           targetRect = isWindow && targetItem[getBoundingClientRect](),
@@ -1720,8 +1747,10 @@
       // triggers
       showTrigger = function() {
         bootstrapCustomEvent.call(element, shownEvent, component);
+        !isIE8 && on( globalObject, resizeEvent, self.hide );      
       },
       hideTrigger = function() {
+        !isIE8 && off( globalObject, resizeEvent, self.hide );      
         removeToolTip();
         bootstrapCustomEvent.call(element, hiddenEvent, component);
       };
