@@ -502,7 +502,7 @@
         }
       },
       indicatorHandler = function(e) {
-        e.preventDefault();
+        e[preventDefault]();
         if (isSliding) return;
   
         var eventTarget = e[target], activeIndicator = self.getActiveIndex(); // event target | the current active item
@@ -514,7 +514,7 @@
         self.slideTo( index ); //Do the slide
       },
       controlsHandler = function (e) {
-        e.preventDefault();
+        e[preventDefault]();
         if (isSliding) return;
   
         var eventTarget = e.currentTarget || e.srcElement;
@@ -728,7 +728,7 @@
     
     // public methods
     this.toggle = function(e) {
-      e.preventDefault();
+      e[preventDefault]();
       if (isAnimating) return;
       if (!hasClass(collapse,showClass)) { self.show(); } 
       else { self.hide(); }
@@ -1028,7 +1028,7 @@
           modal.modalTrigger = element;
           relatedTarget = element;
           self.show();
-          e.preventDefault();
+          e[preventDefault]();
         }
       },
       keyHandler = function(e) {
@@ -1042,7 +1042,7 @@
             || clickTarget[getAttribute](dataDismiss) === component
             || (clickTarget === modal && self[backdrop] !== staticString) ) ) {
           self.hide(); relatedTarget = null;
-          e.preventDefault();
+          e[preventDefault]();
         }
       };
   
@@ -1503,7 +1503,7 @@
       },
       // handler 
       clickHandler = function(e) {
-        e.preventDefault();
+        e[preventDefault]();
         next = e[target][getAttribute](dataToggle) === component || targetsReg.test(e[target][getAttribute]('href')) 
              ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
         !tabs[isAnimating] && !hasClass(next,active) && self.show();
