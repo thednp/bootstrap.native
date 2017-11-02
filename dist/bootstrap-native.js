@@ -231,21 +231,24 @@
         x : globalObject.pageXOffset || HTML[scrollLeft]
       }
     },
-    styleTip = function(link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
-      var rect = link[getBoundingClientRect](), 
+    styleTip = function(link,element,position,parent) { // both popovers and tooltips (target,tooltip/popover,placement,elementToAppendTo)
+      var elementDimensions = { w : element[offsetWidth], h: element[offsetHeight] },
+          windowWidth = (HTML[clientWidth] || DOC[body][clientWidth]),
+          windowHeight = (HTML[clientHeight] || DOC[body][clientHeight]),
+          rect = link[getBoundingClientRect](), 
           scroll = parent === DOC[body] ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
-          elementDimensions = { w : element[offsetWidth], h: element[offsetHeight] },
           arrow = queryElement('[class*="arrow"]',element),
           topPosition, leftPosition, arrowTop, arrowLeft,
+  
           halfTopExceed = rect[top] + linkDimensions.h/2 - elementDimensions.h/2 < 0,
           halfLeftExceed = rect[left] + linkDimensions.w/2 - elementDimensions.w/2 < 0,
-          halfRightExceed = rect[left] + elementDimensions.w/2 + linkDimensions.w/2 >= (globalObject[innerWidth] || HTML[clientWidth]),
-          halfBottomExceed = rect[top] + elementDimensions.h/2 + linkDimensions.h/2 >= (globalObject[innerHeight] || HTML[clientHeight]),
+          halfRightExceed = rect[left] + elementDimensions.w/2 + linkDimensions.w/2 >= windowWidth,
+          halfBottomExceed = rect[top] + elementDimensions.h/2 + linkDimensions.h/2 >= windowHeight,
           topExceed = rect[top] - elementDimensions.h < 0,
           leftExceed = rect[left] - elementDimensions.w < 0,
-          bottomExceed = rect[top] + elementDimensions.h + linkDimensions.h >= (globalObject[innerHeight] || HTML[clientHeight]),
-          rightExceed = rect[left] + elementDimensions.w + linkDimensions.w >= (globalObject[innerWidth] || HTML[clientWidth]);
+          bottomExceed = rect[top] + elementDimensions.h + linkDimensions.h >= windowHeight,
+          rightExceed = rect[left] + elementDimensions.w + linkDimensions.w >= windowWidth;
   
       // recompute position
       position = (position === left || position === right) && leftExceed && rightExceed ? top : position; // first, when both left and right limits are exceeded, we fall back to top|bottom
@@ -274,19 +277,19 @@
         }
       } else if ( position === top || position === bottom ) { // primary|vertical positions
         if ( position === top) { // TOP
-          topPosition =  rect[top] + scroll.y - elementDimensions.h; // some strange bug with all browsers
+          topPosition =  rect[top] + scroll.y - elementDimensions.h;
         } else if ( position === bottom ) { // BOTTOM
           topPosition = rect[top] + scroll.y + linkDimensions.h;
         }
         // adjust left | right and also the arrow
         if (halfLeftExceed) {
-          leftPosition = rect[left] + scroll.x;
-          arrowLeft = linkDimensions.w/2;
+          leftPosition = 0;
+          arrowLeft = rect[left] + linkDimensions.w/2;
         } else if (halfRightExceed) {
-          leftPosition = rect[left] + scroll.x - elementDimensions.w + linkDimensions.w;
-          arrowLeft = elementDimensions.w - linkDimensions.w/2;
+          leftPosition = windowWidth - elementDimensions.w*1.01;
+          arrowLeft = elementDimensions.w - ( windowWidth - rect[left] ) + linkDimensions.w/2;
         } else {
-          leftPosition = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2; // some strange bug with all browsers
+          leftPosition = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
         }
       }
   
@@ -299,6 +302,7 @@
   
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
+  
   
   /* Native Javascript for Bootstrap 3 | Affix
   -------------------------------------------*/
@@ -1584,8 +1588,8 @@
         if (tabsContentContainer) { // height animation
           if ( equalContents ) {
             triggerEnd();
-          } else {            
-            setTimeout(function(){
+          } else {
+            setTimeout(function(){ // enables height animation
               tabsContentContainer[style][height] = nextHeight + 'px'; // height animation
               tabsContentContainer[offsetWidth];
               emulateTransitionEnd(tabsContentContainer, triggerEnd);
@@ -1598,8 +1602,8 @@
       },
       triggerHide = function() {
         if (tabsContentContainer) {
-          activeContent[style][float] = 'left';
-          nextContent[style][float] = 'left';        
+          activeContent[style][float] = left;
+          nextContent[style][float] = left;        
           containerHeight = activeContent[scrollHeight];
         }
         
@@ -1618,9 +1622,12 @@
           activeContent[style][float] = '';
           nextContent[style][float] = '';
         }
+  
         if ( hasClass(nextContent, 'fade') ) {
-          addClass(nextContent,inClass);
-          emulateTransitionEnd(nextContent,triggerShow);
+          setTimeout(function(){ // makes sure to go forward
+            addClass(nextContent,inClass);
+            emulateTransitionEnd(nextContent,triggerShow);
+          },20);
         } else { triggerShow(); }        
       };
   
