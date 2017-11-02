@@ -9,7 +9,7 @@ This is a library developed with native JavaScript for both **Bootstrap 3** and 
  The library is under ***20Kb*** minified and ***6.5Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
 # Wiki
-Please take a minute to check the `bootstrap.native` Wiki pages:
+Please take a minute to check the `bootstrap.native` Wiki pages, they're updated with every new commit:
 * [Acknowledgements](https://github.com/thednp/bootstrap.native/wiki/Acknowledgements) - A quick note on some of the similarities and differences with the original jQuery plugins. Nothing to worry about, but still good to know all the tricks on how to maximize your workflow.
 * [How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) - An in depth guide on how to use it with stuff like `npm`, `RequireJS` or `CDN` links.
 * [Browser support](https://github.com/thednp/bootstrap.native/wiki/Browser-support) - A word on how to enable the library for legacy browsers.
