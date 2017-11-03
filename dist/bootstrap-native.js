@@ -697,6 +697,11 @@
         self.slideTo( index ); //Do the slide
       },
       // private methods
+      isElementInScrollRange = function () {
+        var rect = element[getBoundingClientRect](),
+          viewportHeight = globalObject[innerHeight] || HTML[clientHeight]
+        return rect[top] <= viewportHeight && rect[bottom] >= 0; // bottom && top
+      },  
       setActivePage = function( pageIndex ) { //indicators
         for ( var i = 0, icl = indicators[length]; i < icl; i++ ) {
           removeClass(indicators[i],active);
@@ -708,8 +713,7 @@
     // public methods
     this.cycle = function() {
       timer = setInterval(function() {
-        index++;
-        self.slideTo( index );
+        isElementInScrollRange() && (index++, self.slideTo( index ) );
       }, this[interval]);
     };
     this.slideTo = function( next ) {
