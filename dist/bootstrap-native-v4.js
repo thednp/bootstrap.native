@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.19 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.20 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -90,6 +90,7 @@
     clickEvent    = 'click',
     hoverEvent    = 'hover',
     keydownEvent  = 'keydown',
+    keyupEvent    = 'keyup', 
     resizeEvent   = 'resize',
     scrollEvent   = 'scroll',
     // originalEvents
@@ -471,7 +472,7 @@
     this[keyboard] = options[keyboard] === true || keyboardData;
     this[pause] = (options[pause] === hoverEvent || pauseData) ? hoverEvent : false; // false / hover
   
-    if ( !( options[interval] || intervalData ) ) { // determine slide interval
+    if ( !options[interval] || !intervalData ) { // determine slide interval
       this[interval] = false;
     } else {
       this[interval] = parseInt(options[interval]) || intervalData; // default slide interval
@@ -675,7 +676,6 @@
     // set options
     options = options || {};
   
-  
     // event targets and constants
     var accordion = null, collapse = null, self = this, 
       isAnimating = false, // when true it will prevent click handlers
@@ -785,31 +785,38 @@
     this.persist = option === true || element[getAttribute]('data-persist') === 'true' || false;
   
     // constants, event targets, strings
-    var self = this,
+    var self = this, tabindex = 'tabindex', children = 'children',
       parent = element[parentNode],
       component = 'dropdown', open = 'open',
       relatedTarget = null,
       menu = queryElement('.dropdown-menu', parent),
+      menuItems = (function(){
+        var set = menu[children], newSet = []; console.log(set)
+        for ( var i=0; i<set[length]; i++ ){
+  
+          set[i].tagName === 'A' && newSet.push(set[i]);
+          set[i][children][length] && (set[i][children][0].tagName === 'A' && newSet.push(set[i][children][0]));
+        }
+        return newSet;
+      })(),
   
       // preventDefault on empty anchor links
       preventEmptyAnchor = function(anchor){
-        (/\#$/.test(anchor.href) || anchor[parentNode] && /\#$/.test(anchor[parentNode].href)) && this[preventDefault](); // should be here to prevent jumps        
+        (/\#$/.test(anchor.href) || anchor[parentNode] && /\#$/.test(anchor[parentNode].href))
+                                 && this[preventDefault]();      
       },
   
       // toggle dismissible events
       toggleDismiss = function(){
         var type = element[open] ? on : off;
-        type(DOC, keydownEvent, keyHandler);
         type(DOC, clickEvent, dismissHandler); 
+        type(DOC, keydownEvent, preventScroll);
+        type(DOC, keyupEvent, keyHandler);
       },
   
       // handlers
       dismissHandler = function(e) {
-        var eventTarget = e[target],
-          hasData = eventTarget && (eventTarget[getAttribute](dataToggle) 
-                                || eventTarget[parentNode] && getAttribute in eventTarget[parentNode] 
-                                && eventTarget[parentNode][getAttribute](dataToggle));
-        
+        var eventTarget = e[target], hasData = eventTarget && stringDropdown in eventTarget;
         if ( (eventTarget === menu || menu.contains(eventTarget)) && (self.persist || hasData) ) { return; }
         else {
           relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
@@ -817,13 +824,28 @@
         }
         preventEmptyAnchor.call(e,eventTarget);
       },
-      keyHandler = function(e) {
-        if ( element[open] && e.which === 27 ) { relatedTarget = null; hide(); }
-      },
       clickHandler = function(e) {
         relatedTarget = element;
         show();
         preventEmptyAnchor.call(e,e[target]);
+      },
+      preventScroll = function(e){
+        var key = e.which || e.keyCode;
+        if( key === 38 || key === 40 ) { e[preventDefault](); }
+      },
+      keyHandler = function(e){
+        var eventTarget = e[target], key = e.which || e.keyCode, activeItem = DOC.activeElement,
+        idx = menuItems[indexOf](activeItem);
+  
+        if ( activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu || activeItem === menu) { // navigate up | down
+          idx = key === 38 ? (idx>1?idx-1:0) : key === 40 ? (idx<menuItems[length]-1?idx+1:idx) : idx;
+          setFocus(menuItems[idx]);
+        }
+  
+        if ( (activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu && element[open]) && key === 27 ) { // dismiss on ESC
+          self.toggle();
+          relatedTarget = null;
+        }
       },
   
       // private methods
@@ -835,6 +857,9 @@
         bootstrapCustomEvent.call(parent, shownEvent, component, relatedTarget);
         element[open] = true;
         off(element, clickEvent, clickHandler);
+        // focus the first menu item | menu
+        menu[getElementsByTagName]('A')[length] ? setFocus( menu[getElementsByTagName]('A')[0] ) 
+                                                : setFocus(menu);
         setTimeout(function(){ toggleDismiss(); },1);
       },
       hide = function() {
@@ -845,6 +870,7 @@
         bootstrapCustomEvent.call(parent, hiddenEvent, component, relatedTarget);
         element[open] = false;
         toggleDismiss();
+        setFocus(element);
         setTimeout(function(){ on(element, clickEvent, clickHandler); },1);
       };
   
@@ -859,7 +885,7 @@
   
     // init
     if ( !(stringDropdown in element) ) { // prevent adding event handlers twice
-      menu[setAttribute]('tabindex', '0'); // Fix onblur on Chrome | Safari
+      !tabindex in menu && menu[setAttribute]('tabindex', '0'); // Fix onblur on Chrome | Safari
       on(element, clickEvent, clickHandler);
     }
   
