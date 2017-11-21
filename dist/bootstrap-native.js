@@ -269,7 +269,7 @@
       if ( position === left || position === right ) { // secondary|side positions
         if ( position === left ) { // LEFT
           leftPosition = rect[left] + scroll.x - elementDimensions.w;
-        } else if ( position === right ) { // RIGHT
+        } else { // RIGHT
           leftPosition = rect[left] + scroll.x + linkDimensions.w;
         }
   
@@ -286,7 +286,7 @@
       } else if ( position === top || position === bottom ) { // primary|vertical positions
         if ( position === top) { // TOP
           topPosition =  rect[top] + scroll.y - elementDimensions.h;
-        } else if ( position === bottom ) { // BOTTOM
+        } else { // BOTTOM
           topPosition = rect[top] + scroll.y + linkDimensions.h;
         }
         // adjust left | right and also the arrow
@@ -994,7 +994,7 @@
         if( key === 38 || key === 40 ) { e[preventDefault](); }
       },
       keyHandler = function(e){
-        var eventTarget = e[target], key = e.which || e.keyCode, 
+        var key = e.which || e.keyCode,
             activeItem = DOC.activeElement,
             idx = menuItems[indexOf](activeItem[parentNode]);
         
@@ -1546,7 +1546,6 @@
         if ( !isActive && inside ) {
           if ( parent.tagName === 'LI' && !hasClass(parent,active) ) {
             addClass(parent,active);
-            isActive = true;
             if (dropdown && !hasClass(dropdown,active) ) {
               addClass(dropdown,active);
             }
@@ -1555,7 +1554,6 @@
         } else if ( !inside ) {
           if ( parent.tagName === 'LI' && hasClass(parent,active) ) {
             removeClass(parent,active);
-            isActive = false;
             if (dropdown && hasClass(dropdown,active) && !getElementsByClassName(parent[parentNode],active).length ) {
               removeClass(dropdown,active);
             }
