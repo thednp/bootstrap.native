@@ -791,7 +791,7 @@
       relatedTarget = null,
       menu = queryElement('.dropdown-menu', parent),
       menuItems = (function(){
-        var set = menu[children], newSet = []; console.log(set)
+        var set = menu[children], newSet = [];
         for ( var i=0; i<set[length]; i++ ){
   
           set[i].tagName === 'A' && newSet.push(set[i]);
@@ -834,15 +834,19 @@
         if( key === 38 || key === 40 ) { e[preventDefault](); }
       },
       keyHandler = function(e){
-        var eventTarget = e[target], key = e.which || e.keyCode, activeItem = DOC.activeElement,
-        idx = menuItems[indexOf](activeItem);
+        var eventTarget = e[target], key = e.which || e.keyCode,
+          activeItem = DOC.activeElement,
+          idx = menuItems[indexOf](activeItem);
   
-        if ( activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu || activeItem === menu) { // navigate up | down
+        if ( activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu ) { // navigate up | down
           idx = key === 38 ? (idx>1?idx-1:0) : key === 40 ? (idx<menuItems[length]-1?idx+1:idx) : idx;
           setFocus(menuItems[idx]);
         }
-  
-        if ( (activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu && element[open]) && key === 27 ) { // dismiss on ESC
+        if ( (menuItems[length] && activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu // menu has items
+              || !menuItems[length] && (menu.contains(activeItem) || activeItem ===element )  // menu might be a form
+              || !menu.contains(activeItem) ) // or the focused element is not in the menu at all
+              && element[open] && key === 27  // menu must be open
+        ) {
           self.toggle();
           relatedTarget = null;
         }

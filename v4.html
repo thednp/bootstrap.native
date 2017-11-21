@@ -13,7 +13,7 @@
     <title>Native JavaScript for Bootstrap 4</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
 
     <!-- Custom styles for this template -->
     <link href="./assets/css/theme4.css" rel="stylesheet">
@@ -397,7 +397,7 @@
       <div class="bd-example" data-example-id="">
 
         <div class="row">
-          <div class="" style="margin-right: 5px">
+          <div style="margin-right: 5px">
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Dropdown button
@@ -410,7 +410,7 @@
             </div>
           </div>
 
-          <div>
+          <div style="margin-right: 5px">
             <div class="dropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Nested Dropdown
@@ -429,6 +429,30 @@
               </div>
             </div>
           </div>
+
+          <div>
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" data-persist="true" aria-haspopup="true" aria-expanded="false">
+                Form Dropdown
+              </button>
+              <form class="pl-3 pr-3 dropdown-menu" aria-expanded="false" style="min-width: 280px; right: 0;left: auto;">
+                <div class="form-group">
+                  <label for="inputEmail3" class="control-label">Email</label>
+                    <div class=""><input type="email" class="form-control" id="inputEmail3" placeholder="Email"></div>
+                </div>
+                <div class="form-group">
+                  <label for="inputPassword3" class="control-label">Password</label>
+                  <div class=""><input type="password" class="form-control" id="inputPassword3" placeholder="Password"></div>
+                </div>
+                <div class="form-group">
+                  <div class=""><div class="checkbox"><label><input type="checkbox"> Remember me</label></div></div>
+                </div>
+                <div class="form-group">
+                  <div class=""><button type="submit" class="btn btn-default">Sign in</button></div>
+                </div>
+              </form>              
+            </div>
+          </div>          
 
         </div>
       </div>
