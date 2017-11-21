@@ -696,8 +696,9 @@ changeModal2.addEventListener('click', function(){
             <p>Starting with version 2.0.20 the component supports some more robust accessibility features:</p>
             <ul>
               <li><kbd>Up</kbd> and <kbd>Down</kbd> arrow keys will users to select menu items, and also when pressed, the component will prevent default scroll behavior;</li>
-              <li><kbd>Esc</kbd> key will close the dropdown, a feature previously supported, but reworked it's <code>keyHandler</code> to support the above new features, now it will close the last open nested dropdown element;</li>
-              <li><kbd>Enter</kbd> key will work as if click event triggered, the new event handler expectes the default browser behavior, let's hope it stays that way.</li>
+              <li><kbd>Esc</kbd> key will now close the dropdown, a feature previously supported, but reworked it's <code>keyHandler</code> to support the above new features, so it will close the last open nested dropdown element;</li>
+              <li><kbd>Enter</kbd> key will work as if click event triggered, the new event handler expectes the default browser behavior, let's hope it stays that way;</li>
+              <li>opening/closing the dropdown now it will focus the triggering button (on close) or the first focusable element from inside the dropdown menu (on open).</li>
             </ul>
             <section id="dropdownOptions">
               <h4>Options</h4>
