@@ -28,7 +28,7 @@
   
   // globals
   var globalObject = typeof global !== 'undefined' ? global : this||window,
-    HTML = document.documentElement, DOC = document, body = 'body', // allow the library to be used in <head>
+    DOC = document, HTML = DOC.documentElement, body = 'body', // allow the library to be used in <head>
   
     // function toggle attributes
     dataToggle    = 'data-toggle',
@@ -105,14 +105,17 @@
     changeEvent   = 'change',
   
     // other
-    getAttribute            = 'getAttribute',
-    setAttribute            = 'setAttribute',
-    hasAttribute            = 'hasAttribute',
-    getElementsByTagName    = 'getElementsByTagName',
-    preventDefault          = 'preventDefault',
-    getBoundingClientRect   = 'getBoundingClientRect',
-    querySelectorAll        = 'querySelectorAll',
-    getElementsByCLASSNAME  = 'getElementsByClassName',
+    getAttribute           = 'getAttribute',
+    setAttribute           = 'setAttribute',
+    hasAttribute           = 'hasAttribute',
+    createElement          = 'createElement',
+    appendChild            = 'appendChild',
+    innerHTML              = 'innerHTML',  
+    getElementsByTagName   = 'getElementsByTagName',
+    preventDefault         = 'preventDefault',
+    getBoundingClientRect  = 'getBoundingClientRect',
+    querySelectorAll       = 'querySelectorAll',
+    getElementsByCLASSNAME = 'getElementsByClassName',
   
     indexOf      = 'indexOf',
     parentNode   = 'parentNode',
@@ -133,7 +136,7 @@
     bottom     = 'bottom',
   
     // tooltip / popover
-    mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
+    mouseHover = ('onmouseleave' in DOC) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|right)+/,
     
     // modal
@@ -166,17 +169,17 @@
       return [].slice.call(element[getElementsByCLASSNAME]( classNAME ));
     },
     queryElement = function (selector, parent) {
-      var lookUp = parent ? parent : document;
+      var lookUp = parent ? parent : DOC;
       return typeof selector === 'object' ? selector : lookUp.querySelector(selector);
     },
     getClosest = function (element, selector) { //element is the element and selector is for the closest parent element to find
-    // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
-      var firstChar = selector.charAt(0);
-      for ( ; element && element !== document; element = element[parentNode] ) {// Get closest match
+      // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
+      var firstChar = selector.charAt(0), selectorSubstring = selector.substr(1);
+      for ( ; element && element !== DOC; element = element[parentNode] ) {// Get closest match
         if ( firstChar === '.' ) {// If selector is a class
-          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selector.replace('.','')) ) { return element; }
+          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selectorSubstring) ) { return element; }
         } else if ( firstChar === '#' ) { // If selector is an ID
-          if ( element.id === selector.substr(1) ) { return element; }
+          if ( element.id === selectorSubstring ) { return element; }
         }
       }
       return false;
@@ -506,7 +509,7 @@
         e[preventDefault]();
         if (isSliding) return;
   
-        var eventTarget = e[target], activeIndicator = self.getActiveIndex(); // event target | the current active item
+        var eventTarget = e[target]; // event target | the current active item
   
         if ( eventTarget && !hasClass(eventTarget,active) && eventTarget[getAttribute](dataSlideTo) ) {
           index = parseInt( eventTarget[getAttribute](dataSlideTo), 10 );
@@ -610,7 +613,7 @@
   
             bootstrapCustomEvent.call(element, slidEvent, component, slides[next]);
   
-            if ( !document.hidden && self[interval] && !hasClass(element,paused) ) {
+            if ( !DOC.hidden && self[interval] && !hasClass(element,paused) ) {
               self.cycle();
             }
           },timeout+100);
@@ -646,8 +649,8 @@
       rightArrow && on( rightArrow, clickEvent, controlsHandler );
       leftArrow && on( leftArrow, clickEvent, controlsHandler );
     
-      indicator && on( indicator, clickEvent, indicatorHandler, false);
-      this[keyboard] === true && on( globalObject, keydownEvent, keyHandler, false);
+      indicator && on( indicator, clickEvent, indicatorHandler );
+      this[keyboard] === true && on( globalObject, keydownEvent, keyHandler );
     }
     if (this.getActiveIndex()<0) {
       slides[length] && addClass(slides[0],active);
@@ -843,7 +846,7 @@
           setFocus(menuItems[idx]);
         }
         if ( (menuItems[length] && activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu // menu has items
-              || !menuItems[length] && (menu.contains(activeItem) || activeItem ===element )  // menu might be a form
+              || !menuItems[length] && (menu.contains(activeItem) || activeItem === element )  // menu might be a form
               || !menu.contains(activeItem) ) // or the focused element is not in the menu at all
               && element[open] && key === 27  // menu must be open
         ) {
@@ -861,10 +864,10 @@
         bootstrapCustomEvent.call(parent, shownEvent, component, relatedTarget);
         element[open] = true;
         off(element, clickEvent, clickHandler);
-        // focus the first menu item | menu
-        menu[getElementsByTagName]('A')[length] ? setFocus( menu[getElementsByTagName]('A')[0] ) 
-                                                : setFocus( menu[getElementsByTagName]('INPUT')[0] );
-        setTimeout(function(){ toggleDismiss(); },1);
+        setTimeout(function(){
+          setFocus( menu[getElementsByTagName]('A')[0] || menu[getElementsByTagName]('INPUT')[0] ); // focus the first menu item | focusable input
+          toggleDismiss();
+        },1);
       },
       hide = function() {
         bootstrapCustomEvent.call(parent, hideEvent, component, relatedTarget);
@@ -969,9 +972,9 @@
         }
       },
       measureScrollbar = function () { // thx walsh
-        var scrollDiv = document.createElement('div'), scrollBarWidth;
+        var scrollDiv = DOC[createElement]('div'), scrollBarWidth;
         scrollDiv.className = component+'-scrollbar-measure'; // this is here to stay
-        DOC[body].appendChild(scrollDiv);
+        DOC[body][appendChild](scrollDiv);
         scrollBarWidth = scrollDiv[offsetWidth] - scrollDiv[clientWidth];
         DOC[body].removeChild(scrollDiv);
         return scrollBarWidth;
@@ -992,13 +995,13 @@
       createOverlay = function() {
         modalOverlay = 1;        
         
-        var newOverlay = document.createElement('div');
+        var newOverlay = DOC[createElement]('div');
         overlay = queryElement('.'+modalBackdropString);
   
         if ( overlay === null ) {
           newOverlay[setAttribute]('class',modalBackdropString+' fade');
           overlay = newOverlay;
-          DOC[body].appendChild(overlay);
+          DOC[body][appendChild](overlay);
         }
       },
       removeOverlay = function() {
@@ -1011,9 +1014,9 @@
       },
       keydownHandlerToggle = function() {
         if (hasClass(modal,showClass)) {
-          on(document, keydownEvent, keyHandler);
+          on(DOC, keydownEvent, keyHandler);
         } else {
-          off(document, keydownEvent, keyHandler);
+          off(DOC, keydownEvent, keyHandler);
         }
       },
       resizeHandlerToggle = function() {
@@ -1040,7 +1043,7 @@
         element && (setFocus(element));
         
         setTimeout(function(){
-          if (!getElementsByClassName(document,component+' '+showClass)[0]) {
+          if (!getElementsByClassName(DOC,component+' '+showClass)[0]) {
             resetAdjustments();
             resetScrollbar();
             removeClass(DOC[body],component+'-open');
@@ -1087,7 +1090,7 @@
       bootstrapCustomEvent.call(modal, showEvent, component, relatedTarget);
   
       // we elegantly hide any opened modal
-      var currentOpen = getElementsByClassName(document,component+' '+showClass)[0];
+      var currentOpen = getElementsByClassName(DOC,component+' '+showClass)[0];
       currentOpen && currentOpen !== modal && currentOpen.modalTrigger[stringModal].hide();
   
       if ( this[backdrop] ) {
@@ -1129,7 +1132,7 @@
       }, supportTransitions ? 150 : 0);
     };
     this.setContent = function( content ) {
-      queryElement('.'+component+'-content',modal).innerHTML = content;
+      queryElement('.'+component+'-content',modal)[innerHTML] = content;
     };
     this.update = function() {
       if (hasClass(modal,showClass)) {
@@ -1229,39 +1232,39 @@
         titleString = element[getAttribute](dataTitle); // check content again
         contentString = element[getAttribute](dataContent);
   
-        popover = document.createElement(div);
+        popover = DOC[createElement](div);
   
         // popover arrow
-        var popoverArrow = document.createElement(div);
+        var popoverArrow = DOC[createElement](div);
         popoverArrow[setAttribute](classString,'arrow');
-        popover.appendChild(popoverArrow);
+        popover[appendChild](popoverArrow);
   
         if ( contentString !== null && self[template] === null ) { //create the popover from data attributes
   
           popover[setAttribute]('role','tooltip');
   
           if (titleString !== null) {
-            var popoverTitle = document.createElement('h3');
+            var popoverTitle = DOC[createElement]('h3');
             popoverTitle[setAttribute](classString,component+'-header');
   
-            popoverTitle.innerHTML = self[dismissible] ? titleString + closeBtn : titleString;
-            popover.appendChild(popoverTitle);
+            popoverTitle[innerHTML] = self[dismissible] ? titleString + closeBtn : titleString;
+            popover[appendChild](popoverTitle);
           }
   
           //set popover content
-          var popoverContent = document.createElement(div);
+          var popoverContent = DOC[createElement](div);
           popoverContent[setAttribute](classString,component+'-body');
-          popoverContent.innerHTML = self[dismissible] && titleString === null ? contentString + closeBtn : contentString;
-          popover.appendChild(popoverContent);
+          popoverContent[innerHTML] = self[dismissible] && titleString === null ? contentString + closeBtn : contentString;
+          popover[appendChild](popoverContent);
   
         } else {  // or create the popover from template
-          var popoverTemplate = document.createElement(div);
-          popoverTemplate.innerHTML = self[template];
-          popover.innerHTML = popoverTemplate.firstChild.innerHTML;
+          var popoverTemplate = DOC[createElement](div);
+          popoverTemplate[innerHTML] = self[template];
+          popover[innerHTML] = popoverTemplate.firstChild[innerHTML];
         }
   
         //append to the container
-        self[container].appendChild(popover);
+        self[container][appendChild](popover);
         popover[style].display = 'block';
         popover[setAttribute](classString, component+ ' bs-' + component+'-'+placementSetting + ' ' + self[animation]);
       },
@@ -1277,7 +1280,7 @@
         if (/^(click|focus)$/.test(self[trigger])) {
           !self[dismissible] && type( element, 'blur', self.hide );
         }
-        self[dismissible] && type( document, clickEvent, dismissibleHandler );     
+        self[dismissible] && type( DOC, clickEvent, dismissibleHandler );     
         type( globalObject, resizeEvent, self.hide );
       },
   
@@ -1637,20 +1640,20 @@
       createToolTip = function() {
         titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle); // read the title again
         if ( !titleString || titleString == "" ) return false; // invalidate
-        tooltip = document.createElement(div);
+        tooltip = DOC[createElement](div);
         tooltip[setAttribute]('role',component);
   
         // tooltip arrow
-        var tooltipArrow = document.createElement(div);
+        var tooltipArrow = DOC[createElement](div);
         tooltipArrow[setAttribute](classString,'arrow');
-        tooltip.appendChild(tooltipArrow);
+        tooltip[appendChild](tooltipArrow);
     
-        var tooltipInner = document.createElement(div);
+        var tooltipInner = DOC[createElement](div);
         tooltipInner[setAttribute](classString,component+'-inner');
-        tooltip.appendChild(tooltipInner);
-        tooltipInner.innerHTML = titleString;
+        tooltip[appendChild](tooltipInner);
+        tooltipInner[innerHTML] = titleString;
   
-        self[container].appendChild(tooltip);
+        self[container][appendChild](tooltip);
         tooltip[setAttribute](classString, component + ' bs-' + component+'-'+placementSetting + ' ' + self[animation]);
       },
       updateTooltip = function () {
