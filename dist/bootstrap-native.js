@@ -184,8 +184,9 @@
       var firstChar = selector.charAt(0);
       // If selector is a class
       if ( firstChar === '.' ) {
+        var selectorClassName = selector.replace('.','');
         for ( ; element && element !== DOC; element = element[parentNode] ) {// Get closest match
-          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selector.replace('.','')) ) { return element; }
+          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selectorClassName) ) { return element; }
         }
         // If selector is an ID
       } else if ( firstChar === '#' ) {
