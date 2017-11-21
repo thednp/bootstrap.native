@@ -863,7 +863,7 @@
         off(element, clickEvent, clickHandler);
         // focus the first menu item | menu
         menu[getElementsByTagName]('A')[length] ? setFocus( menu[getElementsByTagName]('A')[0] ) 
-                                                : setFocus(menu);
+                                                : setFocus( menu[getElementsByTagName]('INPUT')[0] );
         setTimeout(function(){ toggleDismiss(); },1);
       },
       hide = function() {
