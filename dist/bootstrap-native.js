@@ -185,15 +185,16 @@
       // If selector is a class
       if ( firstChar === '.' ) {
         for ( ; element && element !== DOC; element = element[parentNode] ) {// Get closest match
-          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selector.replace('.','')) ) { return element; }         
+          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selector.replace('.','')) ) { return element; }
         }
         // If selector is an ID
       } else if ( firstChar === '#' ) {
-        for ( ; element && element !== DOC; element = element[parentNode] ) {// Get closest match          
-            if ( element.id === selector.substr(1) ) { return element; }
+        var selectorId = selector.substr(1);
+        for ( ; element && element !== DOC; element = element[parentNode] ) {// Get closest match
+            if ( element.id === selectorId ) { return element; }
         }
       }
-      
+
       return false;
     },
   
@@ -1430,7 +1431,7 @@
         if (/^(click|focus)$/.test(self[trigger])) {
           !self[dismissible] && type( element, 'blur', self.hide );
         }
-        self[dismissible] && type( DOC, clickEvent, dismissibleHandler );     
+        self[dismissible] && type( DOC, clickEvent, dismissibleHandler );
         !isIE8 && type( globalObject, resizeEvent, self.hide );
       },
   
