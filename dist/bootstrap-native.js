@@ -138,7 +138,7 @@
     isIE8 = !('opacity' in HTML[style]),
   
     // tooltip / popover
-    mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
+    mouseHover = ('onmouseleave' in DOC) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|right)+/,
     
     // modal
@@ -176,19 +176,24 @@
       return nodeListToArray(element[selectionMethod]( isIE8 ? '.' + classNAME.replace(/\s(?=[a-z])/g,'.') : classNAME ));
     },
     queryElement = function (selector, parent) {
-      var lookUp = parent ? parent : document;
+      var lookUp = parent ? parent : DOC;
       return typeof selector === 'object' ? selector : lookUp.querySelector(selector);
     },
     getClosest = function (element, selector) { //element is the element and selector is for the closest parent element to find
     // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
       var firstChar = selector.charAt(0);
-      for ( ; element && element !== document; element = element[parentNode] ) {// Get closest match
-        if ( firstChar === '.' ) {// If selector is a class
-          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selector.replace('.','')) ) { return element; }
-        } else if ( firstChar === '#' ) { // If selector is an ID
-          if ( element.id === selector.substr(1) ) { return element; }
+      // If selector is a class
+      if ( firstChar === '.' ) {
+        for ( ; element && element !== DOC; element = element[parentNode] ) {// Get closest match
+          if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selector.replace('.','')) ) { return element; }         
+        }
+        // If selector is an ID
+      } else if ( firstChar === '#' ) {
+        for ( ; element && element !== DOC; element = element[parentNode] ) {// Get closest match          
+            if ( element.id === selector.substr(1) ) { return element; }
         }
       }
+      
       return false;
     },
   
@@ -662,7 +667,7 @@
         e[preventDefault]();
         if (isSliding) return;
   
-        var eventTarget = e[target], activeIndicator = self.getActiveIndex(); // event target | the current active item
+        var eventTarget = e[target]; // event target
   
         if ( eventTarget && !hasClass(eventTarget,active) && eventTarget[getAttribute](dataSlideTo) ) {
           index = parseInt( eventTarget[getAttribute](dataSlideTo), 10 );
@@ -1120,7 +1125,7 @@
         }
       },
       measureScrollbar = function () { // thx walsh
-        var scrollDiv = document.createElement('div'), scrollBarWidth;
+        var scrollDiv = DOC.createElement('div'), scrollBarWidth;
         scrollDiv.className = component+'-scrollbar-measure'; // this is here to stay
         DOC[body].appendChild(scrollDiv);
         scrollBarWidth = scrollDiv[offsetWidth] - scrollDiv[clientWidth];
@@ -1143,7 +1148,7 @@
       createOverlay = function() {
         modalOverlay = 1;
         
-        var newOverlay = document.createElement('div');
+        var newOverlay = DOC.createElement('div');
         overlay = queryElement('.'+modalBackdropString);
   
         if ( overlay === null ) {
@@ -1162,9 +1167,9 @@
       },
       keydownHandlerToggle = function() {
         if (hasClass(modal,inClass)) {
-          on(document, keydownEvent, keyHandler);
+          on(DOC, keydownEvent, keyHandler);
         } else {
-          off(document, keydownEvent, keyHandler);
+          off(DOC, keydownEvent, keyHandler);
         }
       },
       resizeHandlerToggle = function() {
@@ -1191,7 +1196,7 @@
         element && (setFocus(element));
         
         setTimeout(function(){
-          if (!getElementsByClassName(document,component+' '+inClass)[0]) {
+          if (!getElementsByClassName(DOC,component+' '+inClass)[0]) {
             resetAdjustments();
             resetScrollbar();
             removeClass(DOC[body],component+'-open');
@@ -1239,7 +1244,7 @@
       bootstrapCustomEvent.call(modal, showEvent, component, relatedTarget);
   
       // we elegantly hide any opened modal
-      var currentOpen = getElementsByClassName(document,component+' in')[0];
+      var currentOpen = getElementsByClassName(DOC,component+' in')[0];
       currentOpen && currentOpen !== modal && currentOpen.modalTrigger[stringModal].hide();
   
       if ( this[backdrop] ) {
@@ -1381,21 +1386,21 @@
         titleString = element[getAttribute](dataTitle); // check content again
         contentString = element[getAttribute](dataContent);
   
-        popover = document.createElement(div);
+        popover = DOC.createElement(div);
   
         if ( contentString !== null && self[template] === null ) { //create the popover from data attributes
   
           popover[setAttribute]('role','tooltip');
   
           if (titleString !== null) {
-            var popoverTitle = document.createElement('h3');
+            var popoverTitle = DOC.createElement('h3');
             popoverTitle[setAttribute](classString,component+'-title');
   
             popoverTitle.innerHTML = self[dismissible] ? titleString + closeBtn : titleString;
             popover.appendChild(popoverTitle);
           }
   
-          var popoverArrow = document.createElement(div), popoverContent = document.createElement(div);
+          var popoverArrow = DOC.createElement(div), popoverContent = DOC.createElement(div);
           popoverArrow[setAttribute](classString,'arrow'); popoverContent[setAttribute](classString,component+'-content');
           popover.appendChild(popoverArrow); popover.appendChild(popoverContent);
   
@@ -1403,7 +1408,7 @@
           popoverContent.innerHTML = self[dismissible] && titleString === null ? contentString + closeBtn : contentString;
   
         } else {  // or create the popover from template
-          var popoverTemplate = document.createElement(div);
+          var popoverTemplate = DOC.createElement(div);
           popoverTemplate.innerHTML = self[template];
           popover.innerHTML = popoverTemplate.firstChild.innerHTML;
         }
@@ -1425,7 +1430,7 @@
         if (/^(click|focus)$/.test(self[trigger])) {
           !self[dismissible] && type( element, 'blur', self.hide );
         }
-        self[dismissible] && type( document, clickEvent, dismissibleHandler );     
+        self[dismissible] && type( DOC, clickEvent, dismissibleHandler );     
         !isIE8 && type( globalObject, resizeEvent, self.hide );
       },
   
@@ -1785,10 +1790,10 @@
         titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle); // read the title again
         if ( !titleString || titleString == "" ) return false; // invalidate
         
-        tooltip = document.createElement(div);
+        tooltip = DOC.createElement(div);
         tooltip[setAttribute]('role',component);
   
-        var tooltipArrow = document.createElement(div), tooltipInner = document.createElement(div);
+        var tooltipArrow = DOC.createElement(div), tooltipInner = DOC.createElement(div);
         tooltipArrow[setAttribute](classString, component+'-arrow'); tooltipInner[setAttribute](classString,component+'-inner');
   
         tooltip.appendChild(tooltipArrow); tooltip.appendChild(tooltipInner);
