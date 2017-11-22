@@ -256,7 +256,7 @@
       if ( position === left || position === right ) { // secondary|side positions
         if ( position === left ) { // LEFT
           leftPosition = rect[left] + scroll.x - elementDimensions.w;
-        } else if ( position === right ) { // RIGHT
+        } else { // RIGHT
           leftPosition = rect[left] + scroll.x + linkDimensions.w;
         }
   
@@ -274,7 +274,7 @@
       } else if ( position === top || position === bottom ) { // primary|vertical positions
         if ( position === top) { // TOP
           topPosition =  rect[top] + scroll.y - elementDimensions.h;
-        } else if ( position === bottom ) { // BOTTOM
+        } else { // BOTTOM
           topPosition = rect[top] + scroll.y + linkDimensions.h;
         }
         // adjust left | right and also the arrow
@@ -796,9 +796,8 @@
       menuItems = (function(){
         var set = menu[children], newSet = [];
         for ( var i=0; i<set[length]; i++ ){
-  
-          set[i].tagName === 'A' && newSet.push(set[i]);
           set[i][children][length] && (set[i][children][0].tagName === 'A' && newSet.push(set[i][children][0]));
+          set[i].tagName === 'A' && newSet.push(set[i]);
         }
         return newSet;
       })(),
@@ -837,17 +836,22 @@
         if( key === 38 || key === 40 ) { e[preventDefault](); }
       },
       keyHandler = function(e){
-        var eventTarget = e[target], key = e.which || e.keyCode,
+        var key = e.which || e.keyCode,
           activeItem = DOC.activeElement,
-          idx = menuItems[indexOf](activeItem);
+          idx = menuItems[indexOf](activeItem),
+          isSameElement = activeItem === element,
+          isInsideMenu = menu.contains(activeItem),
+          isMenuItem = activeItem[parentNode] === menu || activeItem[parentNode][parentNode] === menu;          
   
-        if ( activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu ) { // navigate up | down
-          idx = key === 38 ? (idx>1?idx-1:0) : key === 40 ? (idx<menuItems[length]-1?idx+1:idx) : idx;
-          setFocus(menuItems[idx]);
+        if ( isMenuItem || isSameElement ) { // navigate up | down
+          idx = isSameElement ? 0 
+                              : key === 38 ? (idx>1?idx-1:0)
+                              : key === 40 ? (idx<menuItems[length]-1?idx+1:idx) : idx;
+          menuItems[idx] && setFocus(menuItems[idx]);
         }
-        if ( (menuItems[length] && activeItem[parentNode][parentNode] === menu || activeItem[parentNode] === menu // menu has items
-              || !menuItems[length] && (menu.contains(activeItem) || activeItem === element )  // menu might be a form
-              || !menu.contains(activeItem) ) // or the focused element is not in the menu at all
+        if ( (menuItems[length] && isMenuItem // menu has items
+              || !menuItems[length] && (isInsideMenu || isSameElement)  // menu might be a form
+              || !isInsideMenu ) // or the focused element is not in the menu at all
               && element[open] && key === 27  // menu must be open
         ) {
           self.toggle();
@@ -865,7 +869,7 @@
         element[open] = true;
         off(element, clickEvent, clickHandler);
         setTimeout(function(){
-          setFocus( menu[getElementsByTagName]('A')[0] || menu[getElementsByTagName]('INPUT')[0] ); // focus the first menu item | focusable input
+          setFocus( menu[getElementsByTagName]('INPUT')[0] || element ); // focus the first input item | element
           toggleDismiss();
         },1);
       },
@@ -1395,7 +1399,6 @@
         if ( !isActive && inside ) {
           if ( !hasClass(item,active) ) {
             addClass(item,active);
-            isActive = true;
             if (dropdownLink && !hasClass(dropdownLink,active) ) {
               addClass(dropdownLink,active);
             }
@@ -1404,7 +1407,6 @@
         } else if ( !inside ) {
           if ( hasClass(item,active) ) {
             removeClass(item,active);
-            isActive = false;
             if (dropdownLink && hasClass(dropdownLink,active) && !getElementsByClassName(item[parentNode],active).length  ) {
               removeClass(dropdownLink,active);
             }
