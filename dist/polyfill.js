@@ -13,7 +13,7 @@
     CLASS = 'class', setATTRIBUTE = 'setAttribute', getATTRIBUTE = 'getAttribute',
     
     // object | array related
-    prototype = 'prototype', indexOf = 'indexOf', length = 'length', split = 'split',
+    prototype = 'prototype', indexOf = 'indexOf', length = 'length', split = 'split', trim = 'trim',
 
     // event related
     EVENT = 'Event', CustomEvent = 'CustomEvent', IE8EVENTS = '_events', 
@@ -44,6 +44,12 @@
       }
     
       return -1;
+    };
+  }
+
+  if (!String[prototype][trim]) {
+    String[prototype][trim] = function () {
+      return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
     };
   }
 
