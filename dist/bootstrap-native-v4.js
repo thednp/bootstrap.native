@@ -30,6 +30,10 @@
   var globalObject = typeof global !== 'undefined' ? global : this||window,
     DOC = document, HTML = DOC.documentElement, body = 'body', // allow the library to be used in <head>
   
+    // Native Javascript for Bootstrap Global Object
+    BSN = globalObject.BSN = {},
+    supports = BSN.supports = [],
+  
     // function toggle attributes
     dataToggle    = 'data-toggle',
     dataDismiss   = 'data-dismiss',
@@ -124,6 +128,7 @@
     Transition   = 'Transition',
     Webkit       = 'Webkit',
     style        = 'style',
+    push         = 'push',
   
     active     = 'active',
     showClass  = 'show',
@@ -175,10 +180,12 @@
     getClosest = function (element, selector) { //element is the element and selector is for the closest parent element to find
       // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
       var firstChar = selector.charAt(0), selectorSubstring = selector.substr(1);
-      for ( ; element && element !== DOC; element = element[parentNode] ) {// Get closest match
-        if ( firstChar === '.' ) {// If selector is a class
+      if ( firstChar === '.' ) {// If selector is a class
+        for ( ; element && element !== DOC; element = element[parentNode] ) { // Get closest match
           if ( queryElement(selector,element[parentNode]) !== null && hasClass(element,selectorSubstring) ) { return element; }
-        } else if ( firstChar === '#' ) { // If selector is an ID
+        }
+      } else if ( firstChar === '#' ) { // If selector is an ID
+        for ( ; element && element !== DOC; element = element[parentNode] ) { // Get closest match
           if ( element.id === selectorSubstring ) { return element; }
         }
       }
@@ -207,16 +214,6 @@
       OriginalCustomEvent.relatedTarget = related;
       this.dispatchEvent(OriginalCustomEvent);
     },
-  
-    // Init DATA API
-    initializeDataAPI = function( component, constructor, collection ){
-      for (var i=0; i < collection[length]; i++) {
-        new constructor(collection[i]);
-      }
-    },
-  
-    // tab / collapse stuff
-    targetsReg = /^\#(.)+$/,
   
     // tooltip / popover stuff
     getScroll = function() { // also Affix and ScrollSpy uses it
@@ -263,13 +260,13 @@
         // adjust top and arrow
         if (halfTopExceed) {
           topPosition = rect[top] + scroll.y;
-          arrowTop = linkDimensions.h/2 - arrowWidth/2;
+          arrowTop = linkDimensions.h/2;
         } else if (halfBottomExceed) {
           topPosition = rect[top] + scroll.y - elementDimensions.h + linkDimensions.h;
-          arrowTop = elementDimensions.h - linkDimensions.h/2 - arrowWidth/2;
+          arrowTop = elementDimensions.h - linkDimensions.h/2;
         } else {
           topPosition = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2;
-          arrowTop = elementDimensions.h/2 - arrowWidth/2;
+          arrowTop = elementDimensions.h/2;
         }
       } else if ( position === top || position === bottom ) { // primary|vertical positions
         if ( position === top) { // TOP
@@ -280,13 +277,13 @@
         // adjust left | right and also the arrow
         if (halfLeftExceed) {
           leftPosition = 0;
-          arrowLeft = rect[left] + linkDimensions.w/2 - arrowWidth/2;
+          arrowLeft = rect[left] + linkDimensions.w/2;
         } else if (halfRightExceed) {
           leftPosition = windowWidth - elementDimensions.w*1.01;
-          arrowLeft = elementDimensions.w - ( windowWidth - rect[left] ) + linkDimensions.w/2 - arrowWidth/2;
+          arrowLeft = elementDimensions.w - ( windowWidth - rect[left] ) + linkDimensions.w/2;
         } else {
           leftPosition = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
-          arrowLeft = elementDimensions.w/2 - arrowWidth/2;
+          arrowLeft = elementDimensions.w/2;
         }
       }
   
@@ -304,6 +301,7 @@
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
+  BSN.version = '2.0.20';
   
   /* Native Javascript for Bootstrap 4 | Alert
   -------------------------------------------*/
@@ -344,12 +342,12 @@
     if ( !(stringAlert in element ) ) { // prevent adding event handlers twice
       on(element, clickEvent, clickHandler);
     }
-    element[stringAlert] = this;
+    element[stringAlert] = self;
   };
   
   // ALERT DATA API
   // ==============
-  initializeDataAPI ( stringAlert, Alert, DOC[querySelectorAll]('['+dataDismiss+'="alert"]') );
+  supports[push]([stringAlert, Alert, '['+dataDismiss+'="alert"]']);
   
   
   /* Native Javascript for Bootstrap 4 | Button
@@ -444,7 +442,7 @@
   
   // BUTTON DATA API
   // =================
-  initializeDataAPI( stringButton, Button, DOC[querySelectorAll]('['+dataToggle+'="buttons"]') );
+  supports[push]( [ stringButton, Button, '['+dataToggle+'="buttons"]' ] );
   
   
   /* Native Javascript for Bootstrap 4 | Carousel
@@ -639,7 +637,7 @@
     // init
     if ( !(stringCarousel in element ) ) { // prevent adding event handlers twice
   
-      if ( this[pause] && this[interval] ) {
+      if ( self[pause] && self[interval] ) {
         on( element, mouseHover[0], pauseHandler );
         on( element, mouseHover[1], resumeHandler );
         on( element, 'touchstart', pauseHandler );
@@ -650,20 +648,20 @@
       leftArrow && on( leftArrow, clickEvent, controlsHandler );
     
       indicator && on( indicator, clickEvent, indicatorHandler );
-      this[keyboard] === true && on( globalObject, keydownEvent, keyHandler );
+      self[keyboard] === true && on( globalObject, keydownEvent, keyHandler );
     }
-    if (this.getActiveIndex()<0) {
+    if (self.getActiveIndex()<0) {
       slides[length] && addClass(slides[0],active);
       indicators[length] && setActivePage(0);
     }
   
-    if ( this[interval] ){ this.cycle(); }
-    element[stringCarousel] = this;
+    if ( self[interval] ){ self.cycle(); }
+    element[stringCarousel] = self;
   };
   
   // CAROUSEL DATA API
   // =================
-  initializeDataAPI( stringCarousel, Carousel, DOC[querySelectorAll]('['+dataRide+'="carousel"]') );
+  supports[push]( [ stringCarousel, Carousel, '['+dataRide+'="carousel"]' ] );
   
   
   /* Native Javascript for Bootstrap 4 | Collapse
@@ -728,7 +726,7 @@
       getTarget = function() {
         var href = element.href && element[getAttribute]('href'),
           parent = element[getAttribute](dataTarget),
-          id = href || ( parent && targetsReg.test(parent) ) && parent;
+          id = href || ( parent && parent.charAt(0) === '#' ) && parent;
         return id && queryElement(id);
       };
     
@@ -762,16 +760,16 @@
   
     // init
     if ( !(stringCollapse in element ) ) { // prevent adding event handlers twice
-      on(element, clickEvent, this.toggle);
+      on(element, clickEvent, self.toggle);
     }
     collapse = getTarget();
     accordion = queryElement(options.parent) || accordionData && getClosest(element, accordionData);
-    element[stringCollapse] = this;
+    element[stringCollapse] = self;
   };
   
   // COLLAPSE DATA API
   // =================
-  initializeDataAPI(stringCollapse, Collapse, DOC[querySelectorAll]('['+dataToggle+'="collapse"]'));
+  supports[push]( [ stringCollapse, Collapse, '['+dataToggle+'="collapse"]' ] );
   
   
   /* Native Javascript for Bootstrap 4 | Dropdown
@@ -796,16 +794,16 @@
       menuItems = (function(){
         var set = menu[children], newSet = [];
         for ( var i=0; i<set[length]; i++ ){
-          set[i][children][length] && (set[i][children][0].tagName === 'A' && newSet.push(set[i][children][0]));
-          set[i].tagName === 'A' && newSet.push(set[i]);
+          set[i][children][length] && (set[i][children][0].tagName === 'A' && newSet[push](set[i][children][0]));
+          set[i].tagName === 'A' && newSet[push](set[i]);
         }
         return newSet;
       })(),
   
       // preventDefault on empty anchor links
       preventEmptyAnchor = function(anchor){
-        (/\#$/.test(anchor.href) || anchor[parentNode] && /\#$/.test(anchor[parentNode].href))
-                                 && this[preventDefault]();      
+        (anchor.href && anchor.href.slice(-1) === '#' || anchor[parentNode] && anchor[parentNode].href 
+          && anchor[parentNode].href.slice(-1) === '#') && this[preventDefault]();    
       },
   
       // toggle dismissible events
@@ -900,12 +898,12 @@
       on(element, clickEvent, clickHandler);
     }
   
-    element[stringDropdown] = this;
+    element[stringDropdown] = self;
   };
   
   // DROPDOWN DATA API
   // =================
-  initializeDataAPI( stringDropdown, Dropdown, DOC[querySelectorAll]('['+dataToggle+'="dropdown"]') );
+  supports[push]( [stringDropdown, Dropdown, '['+dataToggle+'="dropdown"]'] );
   
   
   /* Native Javascript for Bootstrap 4 | Modal
@@ -1152,12 +1150,12 @@
     if ( !!element && !(stringModal in element) ) {
       on(element, clickEvent, clickHandler);
     }
-    if ( !!this[content] ) { this.setContent( this[content] ); }
-    !!element && (element[stringModal] = this);
+    if ( !!self[content] ) { self.setContent( self[content] ); }
+    !!element && (element[stringModal] = self);
   };
   
   // DATA API
-  initializeDataAPI(stringModal, Modal, DOC[querySelectorAll]('['+dataToggle+'="modal"]'));
+  supports[push]( [ stringModal, Modal, '['+dataToggle+'="modal"]' ] );
   
   /* Native Javascript for Bootstrap 4 | Popover
   ----------------------------------------------*/
@@ -1168,6 +1166,9 @@
   
     // initialization element
     element = queryElement(element);
+  
+    // set options
+    options = options || {};
   
     // DATA API
     var triggerData = element[getAttribute](dataTrigger), // click / hover / focus
@@ -1188,6 +1189,10 @@
         dataContent = 'data-content',
         dismissible = 'dismissible',
         closeBtn = '<button type="button" class="close">×</button>',
+  
+        // check container
+        containerElement = queryElement(options[container]),
+        containerDataElement = queryElement(containerData),       
         
         // maybe the element is inside a modal
         modal = getClosest(element,'.modal'),
@@ -1196,16 +1201,15 @@
         navbarFixedTop = getClosest(element,'.'+fixedTop),
         navbarFixedBottom = getClosest(element,'.'+fixedBottom);
   
-    // set options
-    options = options || {};
+    // set instance options
     this[template] = options[template] ? options[template] : null; // JavaScript only
     this[trigger] = options[trigger] ? options[trigger] : triggerData || hoverEvent;
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 200;
     this[dismissible] = options[dismissible] || dismissibleData === 'true' ? true : false;
-    this[container] = queryElement(options[container]) ? queryElement(options[container]) 
-                    : queryElement(containerData) ? queryElement(containerData) 
+    this[container] = containerElement ? containerElement 
+                    : containerDataElement ? containerDataElement 
                     : navbarFixedTop ? navbarFixedTop
                     : navbarFixedBottom ? navbarFixedBottom
                     : modal ? modal : DOC[body];
@@ -1281,7 +1285,7 @@
   
       // event toggle
       dismissHandlerToggle = function(type){
-        if (/^(click|focus)$/.test(self[trigger])) {
+        if (clickEvent == self[trigger] || 'focus' == self[trigger]) {
           !self[dismissible] && type( element, 'blur', self.hide );
         }
         self[dismissible] && type( DOC, clickEvent, dismissibleHandler );     
@@ -1333,7 +1337,7 @@
       if (self[trigger] === hoverEvent) {
         on( element, mouseHover[0], self.show );
         if (!self[dismissible]) { on( element, mouseHover[1], self.hide ); }
-      } else if (/^(click|focus)$/.test(self[trigger])) {
+      } else if (clickEvent == self[trigger] || 'focus' == self[trigger]) {
         on( element, self[trigger], self.toggle );
       }
     }
@@ -1342,7 +1346,7 @@
   
   // POPOVER DATA API
   // ================
-  initializeDataAPI(stringPopover, Popover, DOC[querySelectorAll]('['+dataToggle+'="popover"]'));
+  supports[push]( [ stringPopover, Popover, '['+dataToggle+'="popover"]' ] );
   
   
   /* Native Javascript for Bootstrap 4 | ScrollSpy
@@ -1364,7 +1368,7 @@
     if ( !options[target] && !targetData ) { return; } // invalidate
   
     // event targets, constants
-    var spyTarget = options[target] && queryElement(options[target]) || targetData,
+    var self = this, spyTarget = options[target] && queryElement(options[target]) || targetData,
         links = spyTarget && spyTarget[getElementsByTagName]('A'),
         offset = parseInt(offsetData || options['offset']) || 10,      
         items = [], targetItems = [], scrollOffset,
@@ -1374,10 +1378,10 @@
     // populate items and targets
     for (var i=0, il=links[length]; i<il; i++) {
       var href = links[i][getAttribute]('href'), 
-          targetItem = href && targetsReg.test(href) && queryElement(href);
+          targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
       if ( !!targetItem ) {
-        items.push(links[i]);
-        targetItems.push(targetItem);
+        items[push](links[i]);
+        targetItems[push](targetItem);
       }
     }
   
@@ -1429,16 +1433,16 @@
   
     // init
     if ( !(stringScrollSpy in element) ) { // prevent adding event handlers twice
-      on( scrollTarget, scrollEvent, this.refresh );
-      on( globalObject, resizeEvent, this.refresh ); 
+      on( scrollTarget, scrollEvent, self.refresh );
+      on( globalObject, resizeEvent, self.refresh ); 
     }
-    this.refresh();
-    element[stringScrollSpy] = this;
+    self.refresh();
+    element[stringScrollSpy] = self;
   };
   
   // SCROLLSPY DATA API
   // ==================
-  initializeDataAPI(stringScrollSpy, ScrollSpy, DOC[querySelectorAll]('['+dataSpy+'="scroll"]'));
+  supports[push]( [ stringScrollSpy, ScrollSpy, '['+dataSpy+'="scroll"]' ] );
   
   
   /* Native Javascript for Bootstrap 4 | Tab
@@ -1541,10 +1545,11 @@
       },
       // handler 
       clickHandler = function(e) {
+        var href = e[target][getAttribute]('href');
         e[preventDefault]();
-        next = e[target][getAttribute](dataToggle) === component || targetsReg.test(e[target][getAttribute]('href')) 
+        next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
              ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
-        !tabs[isAnimating] && !hasClass(next,active) && self.show();
+        !tabs[isAnimating] && !hasClass(next[parentNode],active) && self.show();
       };
   
     // public method
@@ -1578,13 +1583,13 @@
     if ( !(stringTab in element) ) { // prevent adding event handlers twice
       on(element, clickEvent, clickHandler);
     }
-    if (this[height]) { tabsContentContainer = getActiveContent()[parentNode]; }
-    element[stringTab] = this;
+    if (self[height]) { tabsContentContainer = getActiveContent()[parentNode]; }
+    element[stringTab] = self;
   };
   
   // TAB DATA API
   // ============
-  initializeDataAPI(stringTab, Tab, DOC[querySelectorAll]('['+dataToggle+'="tab"]'));
+  supports[push]( [ stringTab, Tab, '['+dataToggle+'="tab"]' ] );
   
   
   /* Native Javascript for Bootstrap 4 | Tooltip
@@ -1596,6 +1601,9 @@
   
     // initialization element
     element = queryElement(element);
+  
+    // set options
+    options = options || {};
   
     // DATA API
     var animationData = element[getAttribute](dataAnimation),
@@ -1610,6 +1618,10 @@
         fade = 'fade',
         div = 'div',
   
+        // check container
+        containerElement = queryElement(options[container]),
+        containerDataElement = queryElement(containerData),      
+  
         // maybe the element is inside a modal
         modal = getClosest(element,'.modal'),
         
@@ -1617,13 +1629,12 @@
         navbarFixedTop = getClosest(element,'.'+fixedTop),
         navbarFixedBottom = getClosest(element,'.'+fixedBottom);
   
-    // set options
-    options = options || {};
+    // set instance options
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 200;
-    this[container] = queryElement(options[container]) ? queryElement(options[container]) 
-                    : queryElement(containerData) ? queryElement(containerData) 
+    this[container] = containerElement ? containerElement 
+                    : containerDataElement ? containerDataElement
                     : navbarFixedTop ? navbarFixedTop
                     : navbarFixedBottom ? navbarFixedBottom
                     : modal ? modal : DOC[body];
@@ -1692,7 +1703,7 @@
     this.hide = function() {
       clearTimeout(timer);
       timer = setTimeout( function() {
-        if (tooltip && tooltip !== null && hasClass(tooltip,showClass)) {
+        if (tooltip && hasClass(tooltip,showClass)) {
           bootstrapCustomEvent.call(element, hideEvent, component);
           removeClass(tooltip,showClass);
           !!self[animation] ? emulateTransitionEnd(tooltip, hideTrigger) : hideTrigger();
@@ -1708,16 +1719,34 @@
     if ( !(stringTooltip in element) ) { // prevent adding event handlers twice
       element[setAttribute](dataOriginalTitle,titleString);
       element.removeAttribute(title);
-      on(element, mouseHover[0], this.show);
-      on(element, mouseHover[1], this.hide);
+      on(element, mouseHover[0], self.show);
+      on(element, mouseHover[1], self.hide);
     }
-    element[stringTooltip] = this;
+    element[stringTooltip] = self;
   };
   
   // TOOLTIP DATA API
   // =================
-  initializeDataAPI(stringTooltip, Tooltip, DOC[querySelectorAll]('['+dataToggle+'="tooltip"]'));
+  supports[push]( [ stringTooltip, Tooltip, '['+dataToggle+'="tooltip"]' ] );
   
+  
+  
+  /* Native Javascript for Bootstrap 4 | Initialize Data API
+  --------------------------------------------------------*/
+  var initializeDataAPI = function( constructor, collection ){
+    for (var i=0; i < collection[length]; i++) {
+      new constructor(collection[i]);
+    }
+  },
+  initCallback = BSN.initCallback = function(lookUp){
+    lookUp = lookUp || DOC;
+    for (var i=0,l=supports[length]; i<l; i++) {
+      initializeDataAPI( supports[i][1], lookUp[querySelectorAll] (supports[i][2]) );
+    }
+  };
+  
+  // bulk initialize all components
+  DOC[body] ? initCallback() : on( DOC, 'DOMContentLoaded', function(){ initCallback(); } );
   
   return {
     Alert: Alert,

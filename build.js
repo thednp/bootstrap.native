@@ -109,8 +109,9 @@ Promise.all(promises)
 .catch(error);
 
 function wrap(main) {
-  var utils = fs.readFileSync(`${libPath}/V3/utils.js`, 'utf8').split('\n').join('\n  '); // Indentation
-  main = main.split('\n').join('\n  '); // Indentation
+  var utils = fs.readFileSync(`${libPath}/V3/utils.js`, 'utf8').split('\n').join('\n  ');
+  var init = fs.readFileSync(`${libPath}/V3/utils-init.js`, 'utf8').split('\n').join('\n  ');
+  main = main.split('\n').join('\n  ');
   // Initialize arrays:
   // Arrays will be used in the template literal below
   var rootAttachments = [];
@@ -135,7 +136,9 @@ function wrap(main) {
   }
 }(this, function () {
   ${utils}
+  BSN.version = '${pack.version}';
   ${main}
+  ${init}
   return {
     ${returns.join(',\n    ')/* add indentation and comma */}
   };
