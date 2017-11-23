@@ -13,7 +13,7 @@
     CLASS = 'class', setATTRIBUTE = 'setAttribute', getATTRIBUTE = 'getAttribute',
     
     // object | array related
-    prototype = 'prototype', indexOf = 'indexOf', length = 'length', split = 'split',
+    prototype = 'prototype', indexOf = 'indexOf', length = 'length', split = 'split', trim = 'trim',
 
     // event related
     EVENT = 'Event', CustomEvent = 'CustomEvent', IE8EVENTS = '_events', 
@@ -31,7 +31,7 @@
         throw new TypeError(this + ' is not an object');
       }
     
-      var  arraylike = this instanceof String ? this[split]('') : this,
+      var arraylike = this instanceof String ? this[split]('') : this,
         lengthValue = Math.max(Math.min(arraylike[length], 9007199254740991), 0) || 0,
         index = Number(arguments[1]) || 0;
     
@@ -44,6 +44,12 @@
       }
     
       return -1;
+    };
+  }
+
+  if (!String[prototype][trim]) {
+    String[prototype][trim] = function () {
+      return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
     };
   }
 
