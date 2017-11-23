@@ -1006,7 +1006,7 @@
           || !menuItems[length] && (isInsideMenu || isSameElement)  // menu might be a form
           || !isInsideMenu ) // or the focused element is not in the menu at all
           && element[open] && key === 27 // menu must be open
-        ) {     
+        ) {
           self.toggle();
           relatedTarget = null;
         }
@@ -1881,13 +1881,13 @@
   /* Native Javascript for Bootstrap 3 | Initialize Data API
   --------------------------------------------------------*/
   var initializeDataAPI = function( constructor, collection ){
-      for (var i=0; i < collection[length]; i++) {
+      for (var i=0, l=collection[length]; i<l; i++) {
         new constructor(collection[i]);
       }
     },
     initCallback = BSN.initCallback = function(lookUp){
       lookUp = lookUp || DOC;
-      for (var i=0,l=supports[length]; i<l; i++) {
+      for (var i=0, l=supports[length]; i<l; i++) {
         initializeDataAPI( supports[i][1], lookUp[querySelectorAll] (supports[i][2]) );
       }
     };
