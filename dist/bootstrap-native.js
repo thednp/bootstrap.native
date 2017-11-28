@@ -131,6 +131,7 @@
     Webkit       = 'Webkit',
     style        = 'style',
     push         = 'push',
+    tabindex     = 'tabindex',
     
     active     = 'active',
     inClass    = 'in',
@@ -521,13 +522,21 @@
           element[innerHTML] = element[getAttribute](dataOriginalText);
         }
       },
+      keyHandler = function(e){ 
+        var key = e.which || e.keyCode;
+        key === 32 && e[target] === DOC.activeElement && toggle(e);
+      },
+      preventScroll = function(e){ 
+        var key = e.which || e.keyCode;
+        key === 32 && e[preventDefault]();
+      },    
       toggle = function(e) {
         var label = e[target].tagName === LABEL ? e[target] : e[target][parentNode].tagName === LABEL ? e[target][parentNode] : null; // the .btn label
         
         if ( !label ) return; //react if a label or its immediate child is clicked
   
-        var eventTarget = this, // the button group, the target of the handler function
-          labels = getElementsByClassName(eventTarget,'btn'), // all the button group buttons
+        var eventTarget = e[target], // the button itself, the target of the handler function
+          labels = getElementsByClassName(eventTarget[parentNode],'btn'), // all the button group buttons
           input = label[getElementsByTagName](INPUT)[0];
   
         if ( !input ) return; //return if no input found
@@ -586,6 +595,8 @@
       
       if ( !( stringButton in element ) ) { // prevent adding event handlers twice
         on( element, clickEvent, toggle );
+        queryElement('['+tabindex+']',element) && on( element, keyupEvent, keyHandler ), 
+                                                  on( element, keydownEvent, preventScroll );
       }
   
       // activate items on load
@@ -942,7 +953,7 @@
     this.persist = option === true || element[getAttribute]('data-persist') === 'true' || false;
   
     // constants, event targets, strings
-    var self = this, tabindex = 'tabindex', children = 'children',
+    var self = this, children = 'children',
       parent = element[parentNode],
       component = 'dropdown', open = 'open',
       relatedTarget = null,
