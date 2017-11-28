@@ -2146,18 +2146,19 @@ xhr.send();
 
 <pre><code class="language-markup"> &lt;!-- the btn-group component --&gt;
 &lt;div id="myCheckboxesButtonGroup" class="btn-group" data-toggle="buttons"&gt;
-  &lt;label class="btn btn-default active"&gt;
-    &lt;input type="checkbox" autocomplete="off" checked&gt; Checkbox 1 (pre-checked) &lt;!-- OR type="radio" --&gt;
+  &lt;label tabindex="0" class="btn btn-default active"&gt;
+    &lt;input tabindex="-1" type="checkbox" autocomplete="off" checked&gt; Checkbox 1 (pre-checked) &lt;!-- OR type="radio" --&gt;
   &lt;/label&gt;
-  &lt;label class="btn btn-default"&gt;
-    &lt;input type="checkbox" autocomplete="off"&gt; Checkbox 2 &lt;!-- OR type="radio" --&gt;
+  &lt;label tabindex="0" class="btn btn-default"&gt;
+    &lt;input tabindex="-1" type="checkbox" autocomplete="off"&gt; Checkbox 2 &lt;!-- OR type="radio" --&gt;
   &lt;/label&gt;
-  &lt;label class="btn btn-default"&gt;
-    &lt;input type="checkbox" autocomplete="off"&gt; Checkbox 3 &lt;!-- OR type="radio" --&gt;
+  &lt;label tabindex="0" class="btn btn-default"&gt;
+    &lt;input tabindex="-1" type="checkbox" autocomplete="off"&gt; Checkbox 3 &lt;!-- OR type="radio" --&gt;
   &lt;/label&gt;
 &lt;/div&gt;
 </code></pre>
               
+              <p>Notice the <code>tabindex</code> attribute, if present in the markup, the versions starting with 2.0.20 and above, will allow users to toggle checkbox / radio inputs via keyboard <kbd>Space</kbd> key, a must have feature for real world form application. <a href="#buttonExamples">Examples</a> will showcase this feature.</p>
               <p>If the above markup is present in the DOM when the library is loaded, it will initialize via DATA API, if inserted later into the DOM, here's how to initialize it:</p>
 
 <pre><code class="language-javascript">// find the element to apply Button to
@@ -2208,34 +2209,34 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
               <p>First we'll toggle some checkboxes. </p>
               <p>
                 <span id="checkboxButtons" class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-default active">
+                  <label tabindex="0" class="btn btn-default active">
                     <span class="glyphicon glyphicon-plus-sign"></span>
-                    <input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
+                    <input tabindex="-1" type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
                   </label>
-                  <label class="btn btn-default">
+                  <label tabindex="0" class="btn btn-default">
                     <span class="glyphicon glyphicon-plus-sign"></span>
-                    <input type="checkbox" autocomplete="off"> Checkbox 2
+                    <input tabindex="-1" type="checkbox" autocomplete="off"> Checkbox 2
                   </label>
-                  <label class="btn btn-default">
+                  <label tabindex="0" class="btn btn-default">
                     <span class="glyphicon glyphicon-plus-sign"></span>
-                    <input type="checkbox" autocomplete="off"> Checkbox 3
+                    <input tabindex="-1" type="checkbox" autocomplete="off"> Checkbox 3
                   </label>
                 </span>
               </p>
               <p>Finally we toggle radio buttons.</p>
               <p>
                 <span id="radioButtons" class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-default">
+                  <label tabindex="0" class="btn btn-default">
                     <span class="glyphicon glyphicon-ok-sign"></span>
-                    <input type="radio" name="options" id="option1" autocomplete="off"> Radio 1
+                    <input tabindex="-1" type="radio" name="options" id="option1" autocomplete="off"> Radio 1
                   </label>
-                  <label class="btn btn-default active">
+                  <label tabindex="0" class="btn btn-default active">
                     <span class="glyphicon glyphicon-ok-sign"></span>
-                    <input type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
+                    <input tabindex="-1" type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
                   </label>
-                  <label class="btn btn-default">
+                  <label tabindex="0" class="btn btn-default">
                     <span class="glyphicon glyphicon-ok-sign"></span>
-                    <input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
+                    <input tabindex="-1" type="radio" name="options" id="option3" autocomplete="off"> Radio 3
                   </label>
                 </span>
               </p>
@@ -2243,17 +2244,17 @@ myCheckboxesButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('chang
               <p>In addition, the component will also work outside the <code>&lt;div class="btn-group"&gt;</code>.</p>
               <p>
                 <span data-toggle="buttons">
-                  <label class="btn btn-default">
+                  <label tabindex="0" class="btn btn-default">
                     <span class="glyphicon glyphicon-ok-sign"></span>
-                    <input type="radio" name="options" id="option1" autocomplete="off"> Radio 1
+                    <input tabindex="-1" type="radio" name="options" id="option1" autocomplete="off"> Radio 1
                   </label>
-                  <label class="btn btn-default active">
+                  <label tabindex="0" class="btn btn-default active">
                     <span class="glyphicon glyphicon-ok-sign"></span>
-                    <input type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
+                    <input tabindex="-1" type="radio" name="options" id="option2" autocomplete="off" checked> Radio 2 (preselected)
                   </label>
-                  <label class="btn btn-default">
+                  <label tabindex="0" class="btn btn-default">
                     <span class="glyphicon glyphicon-ok-sign"></span>
-                    <input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
+                    <input tabindex="-1" type="radio" name="options" id="option3" autocomplete="off"> Radio 3
                   </label>
                 </span>
               </p>
