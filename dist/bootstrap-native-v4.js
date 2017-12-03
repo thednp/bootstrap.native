@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.20 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.21 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -129,6 +129,8 @@
     Webkit       = 'Webkit',
     style        = 'style',
     push         = 'push',
+    tabindex     = 'tabindex',
+    contains     = 'contains',
   
     active     = 'active',
     showClass  = 'show',
@@ -166,7 +168,7 @@
       element.classList.remove(classNAME);
     },
     hasClass = function(element,classNAME){ // since 2.0.0
-      return element.classList.contains(classNAME);
+      return element.classList[contains](classNAME);
     },
   
     // selection methods
@@ -301,7 +303,7 @@
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
-  BSN.version = '2.0.20';
+  BSN.version = '2.0.21';
   
   /* Native Javascript for Bootstrap 4 | Alert
   -------------------------------------------*/
@@ -321,7 +323,7 @@
       clickHandler = function(e){
         alert = getClosest(e[target],'.'+component);
         element = queryElement('['+dataDismiss+'="'+component+'"]',alert);
-        element && alert && (element === e[target] || element.contains(e[target])) && self.close();
+        element && alert && (element === e[target] || element[contains](e[target])) && self.close();
       },
       transitionEndHandler = function(){
         bootstrapCustomEvent.call(alert, closedEvent, component);
@@ -437,8 +439,8 @@
     // init
     if ( !( stringButton in element ) ) { // prevent adding event handlers twice
       on( element, clickEvent, toggle );
-      on( element, keyupEvent, keyHandler );
-      on( element, keydownEvent, preventScroll );    
+      queryElement('['+tabindex+']',element) && on( element, keyupEvent, keyHandler ), 
+                                                on( element, keydownEvent, preventScroll );    
     }
   
     // activate items on load
@@ -469,7 +471,9 @@
     options = options || {};
   
     // DATA API
-    var intervalData = element[getAttribute](dataInterval) === 'false' ? false : parseInt(element[getAttribute](dataInterval)) || 5000, // bootstrap carousel default interval
+    var intervalAttribute = element[getAttribute](dataInterval),
+        intervalOption = options[interval],
+        intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute) || 5000,  // bootstrap carousel default interval
         pauseData = element[getAttribute](dataPause) === hoverEvent || false,
         keyboardData = element[getAttribute](dataKeyboard) === 'true' || false,
       
@@ -483,11 +487,9 @@
     this[keyboard] = options[keyboard] === true || keyboardData;
     this[pause] = (options[pause] === hoverEvent || pauseData) ? hoverEvent : false; // false / hover
   
-    if ( !options[interval] || !intervalData ) { // determine slide interval
-      this[interval] = false;
-    } else {
-      this[interval] = parseInt(options[interval]) || intervalData; // default slide interval
-    }
+    this[interval] = typeof intervalOption === 'number' ? intervalOption
+                   : intervalData === 0 ? 0
+                   : intervalData;
   
     // bind, event targets
     var self = this, index = element.index = 0, timer = element.timer = 0, 
@@ -796,7 +798,7 @@
     this.persist = option === true || element[getAttribute]('data-persist') === 'true' || false;
   
     // constants, event targets, strings
-    var self = this, tabindex = 'tabindex', children = 'children',
+    var self = this, children = 'children',
       parent = element[parentNode],
       component = 'dropdown', open = 'open',
       relatedTarget = null,
@@ -826,10 +828,10 @@
   
       // handlers
       dismissHandler = function(e) {
-        var eventTarget = e[target], hasData = eventTarget && stringDropdown in eventTarget;
-        if ( (eventTarget === menu || menu.contains(eventTarget)) && (self.persist || hasData) ) { return; }
+        var eventTarget = e[target], hasData = eventTarget && (stringDropdown in eventTarget || stringDropdown in eventTarget[parentNode]);
+        if ( (eventTarget === menu || menu[contains](eventTarget)) && (self.persist || hasData) ) { return; }
         else {
-          relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
+          relatedTarget = eventTarget === element || element[contains](eventTarget) ? element : null;
           hide();
         }
         preventEmptyAnchor.call(e,eventTarget);
@@ -848,7 +850,7 @@
           activeItem = DOC.activeElement,
           idx = menuItems[indexOf](activeItem),
           isSameElement = activeItem === element,
-          isInsideMenu = menu.contains(activeItem),
+          isInsideMenu = menu[contains](activeItem),
           isMenuItem = activeItem[parentNode] === menu || activeItem[parentNode][parentNode] === menu;          
   
         if ( isMenuItem || isSameElement ) { // navigate up | down
@@ -904,7 +906,7 @@
   
     // init
     if ( !(stringDropdown in element) ) { // prevent adding event handlers twice
-      !tabindex in menu && menu[setAttribute]('tabindex', '0'); // Fix onblur on Chrome | Safari
+      !tabindex in menu && menu[setAttribute](tabindex, '0'); // Fix onblur on Chrome | Safari
       on(element, clickEvent, clickHandler);
     }
   
