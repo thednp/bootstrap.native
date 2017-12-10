@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.21 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.22 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -303,7 +303,7 @@
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
-  BSN.version = '2.0.21';
+  BSN.version = '2.0.22';
   
   /* Native Javascript for Bootstrap 4 | Alert
   -------------------------------------------*/
@@ -699,7 +699,7 @@
       collapsed = 'collapsed',
   
       // private methods
-      openAction = function(collapseElement) {
+      openAction = function(collapseElement,toggle) {
         bootstrapCustomEvent.call(collapseElement, showEvent, component);
         isAnimating = true;
         addClass(collapseElement,collapsing);
@@ -709,6 +709,7 @@
         emulateTransitionEnd(collapseElement, function() {
           isAnimating = false;
           collapseElement[setAttribute](ariaExpanded,'true');
+          toggle[setAttribute](ariaExpanded,'true');
           removeClass(collapseElement,collapsing);
           addClass(collapseElement, component);
           addClass(collapseElement,showClass);
@@ -716,7 +717,7 @@
           bootstrapCustomEvent.call(collapseElement, shownEvent, component);
         });
       },
-      closeAction = function(collapseElement) {
+      closeAction = function(collapseElement,toggle) {
         bootstrapCustomEvent.call(collapseElement, hideEvent, component);
         isAnimating = true;
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px'; // set height first
@@ -729,6 +730,7 @@
         emulateTransitionEnd(collapseElement, function() {
           isAnimating = false;
           collapseElement[setAttribute](ariaExpanded,'false');
+          toggle[setAttribute](ariaExpanded,'false');
           removeClass(collapseElement,collapsing);
           addClass(collapseElement,component);
           collapseElement[style][height] = '';
@@ -750,7 +752,7 @@
       else { self.hide(); }
     };
     this.hide = function() {
-      closeAction(collapse);
+      closeAction(collapse,element);
       addClass(element,collapsed);
     };
     this.show = function() {
@@ -760,14 +762,14 @@
                    || queryElement('['+dataToggle+'="'+component+'"][href="#'+activeCollapse.id+'"]',accordion) ),
             correspondingCollapse = toggle && (toggle[getAttribute](dataTarget) || toggle.href);
         if ( activeCollapse && toggle && activeCollapse !== collapse ) {
-          closeAction(activeCollapse); 
+          closeAction(activeCollapse,toggle); 
           if ( correspondingCollapse.split('#')[1] !== collapse.id ) { addClass(toggle,collapsed); } 
           else { removeClass(toggle,collapsed); }
         }
       }
   
-      openAction(collapse);
-      removeClass(element,collapsed); 
+      openAction(collapse,element);
+      removeClass(element,collapsed);
     };
   
     // init
