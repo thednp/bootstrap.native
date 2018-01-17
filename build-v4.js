@@ -27,10 +27,11 @@ var argv = require('yargs')
     describe: 'Only include the given module(s) in the bundle'
   }
 })
-.coerce(['ignore', 'only'], getModuleNames)
 .help()
 .epilog(`Running without --ignore or --only will compile all the modules.
 Writes to stdout`)
 .argv;
+
+argv.cli = true;
 
 buildV4(argv);

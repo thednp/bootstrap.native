@@ -34,4 +34,6 @@ var argv = require('yargs')
 Writes to stdout`)
 .argv;
 
+argv.cli = true;
+
 build(argv);

@@ -4,13 +4,16 @@ var pack = require('./package.json');
 var version = 'v' + pack.version;
 var license = pack.license + '-License';
 var libPath = __dirname + '/lib';
-var { getModuleNames, error, ucfirst } = require('./lib/helpers');
+var { getModuleNames, error } = require('./lib/helpers');
 
 module.exports = (options) => {
   // Arguments Sanity Check:
   if (options.only && options.ignore) {
     error('Error: You cannot specify both --only and --ignore.');
   }
+
+  if (options.only) options.only = getModuleNames(options.only);
+  if (options.ignore) options.ignore = getModuleNames(options.ignore);
 
   // Get a list of all modules:
   var allModules = fs.readdirSync(`${libPath}/V4`).filter(item => /-native\.js$/.test(item));
@@ -63,7 +66,7 @@ module.exports = (options) => {
     });
   });
   // When all modules are loaded, make bundle:
-  Promise.all(promises)
+  var result = Promise.all(promises)
   .then(function (modules) {
     var header = '// Native Javascript for Bootstrap 4 ' + version + ' | © dnp_theme | ' + license + '\n';
     var bundle = wrap(modules.join(''));
@@ -74,7 +77,10 @@ module.exports = (options) => {
     process.stdout.on('error', function (err) {
       throw err; // Will be caught below
     });
-    process.stdout.write(output, 'utf8');
+    if (options.cli) {
+      process.stdout.write(output, 'utf8');
+    }
+    return output;
   })
   .catch(error);
 
@@ -93,26 +99,28 @@ module.exports = (options) => {
     });
     // Custom UMD Template:
     return `(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-      // AMD support:
-      define([], factory);
-    } else if (typeof module === 'object' && module.exports) {
-      // CommonJS-like:
-      module.exports = factory();
-    } else {
-      // Browser globals (root is window)
-      var bsn = factory();
-      ${rootAttachments.join('\n    ')/* add indentation */}
-    }
-  }(this, function () {
-    ${utils}
-    BSN.version = '${pack.version}';
-    ${main}
-    ${init}
-    return {
-      ${returns.join(',\n    ')/* add indentation and comma */}
-    };
-  }));`;
-    // End of Template
+  if (typeof define === 'function' && define.amd) {
+    // AMD support:
+    define([], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // CommonJS-like:
+    module.exports = factory();
+  } else {
+    // Browser globals (root is window)
+    var bsn = factory();
+    ${rootAttachments.join('\n    ')/* add indentation */}
   }
+}(this, function () {
+  ${utils}
+  BSN.version = '${pack.version}';
+  ${main}
+  ${init}
+  return {
+    ${returns.join(',\n    ')/* add indentation and comma */}
+  };
+}));`;
+// End of Template
+  }
+
+  return result;
 }

@@ -4,13 +4,16 @@ var pack = require('./package.json');
 var version = 'v' + pack.version;
 var license = pack.license + '-License';
 var libPath = __dirname + '/lib';
-var { getModuleNames, error, ucfirst } = require('./lib/helpers');
+var { getModuleNames, error } = require('./lib/helpers');
 
 module.exports = (options) => {
   // Arguments Sanity Check:
   if (options.only && options.ignore) {
     error('Error: You cannot specify both --only and --ignore.');
   }
+
+  if (options.only) options.only = getModuleNames(options.only);
+  if (options.ignore) options.ignore = getModuleNames(options.ignore);
 
   // Get a list of all modules:
   var allModules = fs.readdirSync(`${libPath}/V3/`).filter(item => /-native\.js$/.test(item));
@@ -63,7 +66,7 @@ module.exports = (options) => {
     });
   });
   // When all modules are loaded, make bundle:
-  Promise.all(promises)
+  var result = Promise.all(promises)
   .then(function (modules) {
     var header = '// Native Javascript for Bootstrap 3 ' + version + ' | © dnp_theme | ' + license + '\n';
     var bundle = wrap(modules.join(''));
@@ -74,7 +77,10 @@ module.exports = (options) => {
     process.stdout.on('error', function (err) {
       throw err; // Will be caught below
     });
-    process.stdout.write(output, 'utf8');
+    if (options.cli) {
+      process.stdout.write(output, 'utf8');
+    }
+    return output;
   })
   .catch(error);
 
@@ -115,4 +121,6 @@ module.exports = (options) => {
   }));`;
     // End of Template
   }
+
+  return result;
 }
