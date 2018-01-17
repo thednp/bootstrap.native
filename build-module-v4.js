@@ -99,27 +99,27 @@ module.exports = (options) => {
     });
     // Custom UMD Template:
     return `(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD support:
-    define([], factory);
-  } else if (typeof module === 'object' && module.exports) {
-    // CommonJS-like:
-    module.exports = factory();
-  } else {
-    // Browser globals (root is window)
-    var bsn = factory();
-    ${rootAttachments.join('\n    ')/* add indentation */}
-  }
-}(this, function () {
-  ${utils}
-  BSN.version = '${pack.version}';
-  ${main}
-  ${init}
-  return {
-    ${returns.join(',\n    ')/* add indentation and comma */}
-  };
-}));`;
-// End of Template
+    if (typeof define === 'function' && define.amd) {
+      // AMD support:
+      define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+      // CommonJS-like:
+      module.exports = factory();
+    } else {
+      // Browser globals (root is window)
+      var bsn = factory();
+      ${rootAttachments.join('\n    ')/* add indentation */}
+    }
+  }(this, function () {
+    ${utils}
+    BSN.version = '${pack.version}';
+    ${main}
+    ${init}
+    return {
+      ${returns.join(',\n    ')/* add indentation and comma */}
+    };
+  }));`;
+    // End of Template
   }
 
   return result;
