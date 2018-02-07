@@ -1,15 +1,15 @@
 // Native Javascript for Bootstrap 4 v2.0.22 | © dnp_theme | MIT-License
 (function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD support:
-    define([], factory);
-  } else if (typeof module === 'object' && module.exports) {
-    // CommonJS-like:
-    module.exports = factory();
-  } else {
-    // Browser globals (root is window)
-    var bsn = factory();
-    root.Alert = bsn.Alert;
+    if (typeof define === 'function' && define.amd) {
+      // AMD support:
+      define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+      // CommonJS-like:
+      module.exports = factory();
+    } else {
+      // Browser globals (root is window)
+      var bsn = factory();
+      root.Alert = bsn.Alert;
     root.Button = bsn.Button;
     root.Carousel = bsn.Carousel;
     root.Collapse = bsn.Collapse;
@@ -19,9 +19,9 @@
     root.ScrollSpy = bsn.ScrollSpy;
     root.Tab = bsn.Tab;
     root.Tooltip = bsn.Tooltip;
-  }
-}(this, function () {
-  
+    }
+  }(this, function () {
+    
   /* Native Javascript for Bootstrap 4 | Internal Utility Functions
   ----------------------------------------------------------------*/
   "use strict";
@@ -303,8 +303,8 @@
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
-  BSN.version = '2.0.22';
-  
+    BSN.version = '2.0.22';
+    
   /* Native Javascript for Bootstrap 4 | Alert
   -------------------------------------------*/
   
@@ -1563,7 +1563,7 @@
         e[preventDefault]();
         next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
              ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
-        !tabs[isAnimating] && !hasClass(next[parentNode],active) && self.show();
+        !tabs[isAnimating] && !hasClass(next,active) && self.show();
       };
   
     // public method
@@ -1744,7 +1744,7 @@
   supports[push]( [ stringTooltip, Tooltip, '['+dataToggle+'="tooltip"]' ] );
   
   
-  
+    
   /* Native Javascript for Bootstrap 4 | Initialize Data API
   --------------------------------------------------------*/
   var initializeDataAPI = function( constructor, collection ){
@@ -1762,8 +1762,8 @@
   // bulk initialize all components
   DOC[body] ? initCallback() : on( DOC, 'DOMContentLoaded', function(){ initCallback(); } );
   
-  return {
-    Alert: Alert,
+    return {
+      Alert: Alert,
     Button: Button,
     Carousel: Carousel,
     Collapse: Collapse,
@@ -1773,5 +1773,5 @@
     ScrollSpy: ScrollSpy,
     Tab: Tab,
     Tooltip: Tooltip
-  };
-}));
+    };
+  }));
