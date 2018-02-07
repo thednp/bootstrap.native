@@ -1,15 +1,15 @@
 // Native Javascript for Bootstrap 3 v2.0.22 | © dnp_theme | MIT-License
 (function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD support:
-    define([], factory);
-  } else if (typeof module === 'object' && module.exports) {
-    // CommonJS-like:
-    module.exports = factory();
-  } else {
-    // Browser globals (root is window)
-    var bsn = factory();
-    root.Affix = bsn.Affix;
+    if (typeof define === 'function' && define.amd) {
+      // AMD support:
+      define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+      // CommonJS-like:
+      module.exports = factory();
+    } else {
+      // Browser globals (root is window)
+      var bsn = factory();
+      root.Affix = bsn.Affix;
     root.Alert = bsn.Alert;
     root.Button = bsn.Button;
     root.Carousel = bsn.Carousel;
@@ -20,9 +20,9 @@
     root.ScrollSpy = bsn.ScrollSpy;
     root.Tab = bsn.Tab;
     root.Tooltip = bsn.Tooltip;
-  }
-}(this, function () {
-  
+    }
+  }(this, function () {
+    
   /* Native Javascript for Bootstrap 3 | Internal Utility Functions
   ----------------------------------------------------------------*/
   "use strict";
@@ -306,8 +306,8 @@
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
-  BSN.version = '2.0.22';
-  
+    BSN.version = '2.0.22';
+    
   /* Native Javascript for Bootstrap 3 | Affix
   -------------------------------------------*/
   
@@ -1891,7 +1891,7 @@
   supports[push]( [ stringTooltip, Tooltip, '['+dataToggle+'="tooltip"]' ] );
   
   
-  
+    
   /* Native Javascript for Bootstrap 3 | Initialize Data API
   --------------------------------------------------------*/
   var initializeDataAPI = function( constructor, collection ){
@@ -1909,8 +1909,8 @@
   // bulk initialize all components
   DOC[body] ? initCallback() : on( DOC, 'DOMContentLoaded', function(){ initCallback(); } );
   
-  return {
-    Affix: Affix,
+    return {
+      Affix: Affix,
     Alert: Alert,
     Button: Button,
     Carousel: Carousel,
@@ -1921,5 +1921,5 @@
     ScrollSpy: ScrollSpy,
     Tab: Tab,
     Tooltip: Tooltip
-  };
-}));
+    };
+  }));
