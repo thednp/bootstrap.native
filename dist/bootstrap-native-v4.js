@@ -231,9 +231,11 @@
           rect = link[getBoundingClientRect](),
           scroll = parent === DOC[body] ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
+          isPopover = hasClass(element,'popover'),
+          topPosition, leftPosition, 
+          
           arrow = queryElement('.arrow',element),
-          arrowWidth = arrow[offsetWidth], isPopover = hasClass(element,'popover'),
-          topPosition, leftPosition, arrowTop, arrowLeft,
+          arrowTop, arrowLeft, arrowWidth, arrowHeight,
   
           halfTopExceed = rect[top] + linkDimensions.h/2 - elementDimensions.h/2 < 0,
           halfLeftExceed = rect[left] + linkDimensions.w/2 - elementDimensions.w/2 < 0,
@@ -251,10 +253,16 @@
       position = position === left && leftExceed ? right : position;
       position = position === right && rightExceed ? left : position;
       
+      // update tooltip/popover class
+      element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
+  
+      // we check the computed width & height and update here
+      arrowWidth = arrow[offsetWidth]; arrowHeight = arrow[offsetHeight];
+  
       // apply styling to tooltip or popover
       if ( position === left || position === right ) { // secondary|side positions
         if ( position === left ) { // LEFT
-          leftPosition = rect[left] + scroll.x - elementDimensions.w;
+          leftPosition = rect[left] + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 );
         } else { // RIGHT
           leftPosition = rect[left] + scroll.x + linkDimensions.w;
         }
@@ -262,45 +270,39 @@
         // adjust top and arrow
         if (halfTopExceed) {
           topPosition = rect[top] + scroll.y;
-          arrowTop = linkDimensions.h/2;
+          arrowTop = linkDimensions.h/2 - arrowWidth;
         } else if (halfBottomExceed) {
           topPosition = rect[top] + scroll.y - elementDimensions.h + linkDimensions.h;
-          arrowTop = elementDimensions.h - linkDimensions.h/2;
+          arrowTop = elementDimensions.h - linkDimensions.h/2 - arrowWidth;
         } else {
           topPosition = rect[top] + scroll.y - elementDimensions.h/2 + linkDimensions.h/2;
-          arrowTop = elementDimensions.h/2;
+          arrowTop = elementDimensions.h/2 - (isPopover ? arrowHeight*0.9 : arrowHeight/2);
         }
       } else if ( position === top || position === bottom ) { // primary|vertical positions
         if ( position === top) { // TOP
-          topPosition =  rect[top] + scroll.y - elementDimensions.h;
+          topPosition =  rect[top] + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 );
         } else { // BOTTOM
           topPosition = rect[top] + scroll.y + linkDimensions.h;
         }
         // adjust left | right and also the arrow
         if (halfLeftExceed) {
           leftPosition = 0;
-          arrowLeft = rect[left] + linkDimensions.w/2;
+          arrowLeft = rect[left] + linkDimensions.w/2 - arrowWidth;
         } else if (halfRightExceed) {
           leftPosition = windowWidth - elementDimensions.w*1.01;
-          arrowLeft = elementDimensions.w - ( windowWidth - rect[left] ) + linkDimensions.w/2;
+          arrowLeft = elementDimensions.w - ( windowWidth - rect[left] ) + linkDimensions.w/2 - arrowWidth/2;
         } else {
           leftPosition = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
-          arrowLeft = elementDimensions.w/2;
+          arrowLeft = elementDimensions.w/2 - arrowWidth/2;
         }
       }
   
-      // fixing some CSS bug with Bootstrap 4 alpha
-      topPosition = position === top && isPopover ? topPosition - arrowWidth : topPosition;
-      leftPosition = position === left && isPopover ? leftPosition - arrowWidth : leftPosition;
-  
-      // apply style to tooltip/popover and it's arrow
+      // apply style to tooltip/popover and its arrow
       element[style][top] = topPosition + 'px';
       element[style][left] = leftPosition + 'px';
   
       arrowTop && (arrow[style][top] = arrowTop + 'px');
       arrowLeft && (arrow[style][left] = arrowLeft + 'px');
-  
-      element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
   BSN.version = '2.0.22';
@@ -1058,7 +1060,7 @@
         modal[style].display = '';
         element && (setFocus(element));
         
-        setTimeout(function(){
+        (function(){
           if (!getElementsByClassName(DOC,component+' '+showClass)[0]) {
             resetAdjustments();
             resetScrollbar();
@@ -1070,7 +1072,7 @@
             dismissHandlerToggle();
             keydownHandlerToggle();
           }
-        }, 50);
+        }());
       },
       // handlers
       clickHandler = function(e) {
@@ -1143,9 +1145,9 @@
       removeClass(modal,showClass);
       modal[setAttribute](ariaHidden, true);
   
-      setTimeout(function(){
+      (function(){
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
-      }, supportTransitions ? 150 : 0);
+      }());
     };
     this.setContent = function( content ) {
       queryElement('.'+component+'-content',modal)[innerHTML] = content;
@@ -1563,7 +1565,7 @@
         e[preventDefault]();
         next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
              ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
-        !tabs[isAnimating] && !hasClass(next[parentNode],active) && self.show();
+        !tabs[isAnimating] && !hasClass(next,active) && self.show();
       };
   
     // public method

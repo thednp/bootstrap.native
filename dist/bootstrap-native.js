@@ -1211,7 +1211,7 @@
         modal[style].display = '';
         element && (setFocus(element));
         
-        setTimeout(function(){
+        (function(){
           if (!getElementsByClassName(DOC,component+' '+inClass)[0]) {
             resetAdjustments();
             resetScrollbar();
@@ -1223,7 +1223,7 @@
             dismissHandlerToggle();
             keydownHandlerToggle();
           }
-        }, 50);
+        }());
       },
       // handlers
       clickHandler = function(e) {
@@ -1272,7 +1272,7 @@
         addClass(overlay,inClass);
       }
   
-      setTimeout( function() {
+      (function() {
         modal[style].display = 'block';
   
         checkScrollbar();
@@ -1288,7 +1288,7 @@
         keydownHandlerToggle();
   
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
-      }, supportTransitions ? 150 : 0);
+      }());
     };
     this.hide = function() {
       bootstrapCustomEvent.call(modal, hideEvent, component);
