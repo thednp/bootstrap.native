@@ -126,6 +126,7 @@
     length       = 'length',
     toLowerCase  = 'toLowerCase',
     Transition   = 'Transition',
+    Duration     = 'Duration',
     Webkit       = 'Webkit',
     style        = 'style',
     push         = 'push',
@@ -154,6 +155,7 @@
     // transitionEnd since 2.0.4
     supportTransitions = Webkit+Transition in HTML[style] || Transition[toLowerCase]() in HTML[style],
     transitionEndEvent = Webkit+Transition in HTML[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
+    transitionDuration = Webkit+Duration in HTML[style] ? Webkit[toLowerCase]()+Transition+Duration : Transition[toLowerCase]()+Duration,
   
     // set new focus element since 2.0.3
     setFocus = function(element){
@@ -208,31 +210,15 @@
       });
     },
     getTransitionDurationFromElement = function(element) {
-      if (!element) {
-        return 0;
-      }
-      var transitionDuration = getComputedStyle(element).transitionDuration;
-      var floatTransitionDuration = parseFloat(transitionDuration);
-  
-      if (!floatTransitionDuration) {
-        return 0;
-      }
-      transitionDuration = transitionDuration.split(',')[0];
-  
-      return parseFloat(transitionDuration) * 1000;
+      var duration = getComputedStyle(element)[transitionDuration];
+      duration = parseFloat(duration);
+      duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
+      return duration + 20; // we take a short offset to make sure we fire on the next frame
     },
     emulateTransitionEnd = function(element,handler){ // emulateTransitionEnd since 2.0.4
-      var called = false;
-      if (supportTransitions) {
-        one(element, transitionEndEvent, function(e){
-          handler(e);
-        });
-      }
-      setTimeout(function() {
-        if (!supportTransitions || !called) {
-          handler();
-        }
-      }, getTransitionDurationFromElement(element));
+      var duration = getTransitionDurationFromElement(element);
+      supportTransitions  ? one(element, transitionEndEvent, function(e){ handler(e); })
+                          : setTimeout(function() { handler(); }, duration);
     },
     bootstrapCustomEvent = function (eventName, componentName, related) {
       var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
