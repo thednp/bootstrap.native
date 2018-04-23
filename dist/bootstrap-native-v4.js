@@ -213,12 +213,12 @@
       var duration = getComputedStyle(element)[transitionDuration];
       duration = parseFloat(duration);
       duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
-      return duration + 20; // we take a short offset to make sure we fire on the next frame
+      return duration + 50; // we take a short offset to make sure we fire on the next frame after animation
     },
     emulateTransitionEnd = function(element,handler){ // emulateTransitionEnd since 2.0.4
-      var duration = getTransitionDurationFromElement(element);
-      supportTransitions  ? one(element, transitionEndEvent, function(e){ handler(e); })
-                          : setTimeout(function() { handler(); }, duration);
+      var called = 0, duration = getTransitionDurationFromElement(element);
+      supportTransitions && one(element, transitionEndEvent, function(e){ handler(e); called = 1; });
+      setTimeout(function() { !called && handler(); }, duration);
     },
     bootstrapCustomEvent = function (eventName, componentName, related) {
       var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
@@ -619,10 +619,10 @@
         addClass(slides[next],carouselItem +'-'+ slideDirection);
         addClass(slides[activeItem],carouselItem +'-'+ slideDirection);
   
-        one(slides[activeItem], transitionEndEvent, function(e) {
-          var timeout = e[target] !== slides[activeItem] ? e.elapsedTime*1000 : 0;
+        one(slides[next], transitionEndEvent, function(e) {
+          var timeout = e[target] !== slides[next] ? e.elapsedTime*1000+100 : 20;
           
-          setTimeout(function(){
+          isSliding && setTimeout(function(){
             isSliding = false;
   
             addClass(slides[next],active);
@@ -637,7 +637,7 @@
             if ( !DOC.hidden && self[interval] && !hasClass(element,paused) ) {
               self.cycle();
             }
-          },timeout+100);
+          }, timeout);
         });
   
       } else {
@@ -702,23 +702,24 @@
   
     // event targets and constants
     var accordion = null, collapse = null, self = this, 
-      isAnimating = false, // when true it will prevent click handlers
       accordionData = element[getAttribute]('data-parent'),
+      activeCollapse, activeElement,
   
       // component strings
       component = 'collapse',
       collapsed = 'collapsed',
+      isAnimating = 'isAnimating',
   
       // private methods
       openAction = function(collapseElement,toggle) {
         bootstrapCustomEvent.call(collapseElement, showEvent, component);
-        isAnimating = true;
+        collapseElement[isAnimating] = true;
         addClass(collapseElement,collapsing);
         removeClass(collapseElement,component);
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
         
         emulateTransitionEnd(collapseElement, function() {
-          isAnimating = false;
+          collapseElement[isAnimating] = false;
           collapseElement[setAttribute](ariaExpanded,'true');
           toggle[setAttribute](ariaExpanded,'true');
           removeClass(collapseElement,collapsing);
@@ -730,7 +731,7 @@
       },
       closeAction = function(collapseElement,toggle) {
         bootstrapCustomEvent.call(collapseElement, hideEvent, component);
-        isAnimating = true;
+        collapseElement[isAnimating] = true;
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px'; // set height first
         removeClass(collapseElement,component);
         removeClass(collapseElement,showClass);
@@ -739,7 +740,7 @@
         collapseElement[style][height] = '0px';
         
         emulateTransitionEnd(collapseElement, function() {
-          isAnimating = false;
+          collapseElement[isAnimating] = false;
           collapseElement[setAttribute](ariaExpanded,'false');
           toggle[setAttribute](ariaExpanded,'false');
           removeClass(collapseElement,collapsing);
@@ -758,29 +759,29 @@
     // public methods
     this.toggle = function(e) {
       e[preventDefault]();
-      if (isAnimating) return;
       if (!hasClass(collapse,showClass)) { self.show(); } 
       else { self.hide(); }
     };
     this.hide = function() {
+      if ( collapse[isAnimating] ) return;    
       closeAction(collapse,element);
       addClass(element,collapsed);
     };
     this.show = function() {
       if ( accordion ) {
-        var activeCollapse = queryElement('.'+component+'.'+showClass,accordion),
-            toggle = activeCollapse && (queryElement('['+dataToggle+'="'+component+'"]['+dataTarget+'="#'+activeCollapse.id+'"]',accordion)
-                   || queryElement('['+dataToggle+'="'+component+'"][href="#'+activeCollapse.id+'"]',accordion) ),
-            correspondingCollapse = toggle && (toggle[getAttribute](dataTarget) || toggle.href);
-        if ( activeCollapse && toggle && activeCollapse !== collapse ) {
-          closeAction(activeCollapse,toggle); 
-          if ( correspondingCollapse.split('#')[1] !== collapse.id ) { addClass(toggle,collapsed); } 
-          else { removeClass(toggle,collapsed); }
-        }
+        activeCollapse = queryElement('.'+component+'.'+showClass,accordion);
+        activeElement = activeCollapse && (queryElement('['+dataToggle+'="'+component+'"]['+dataTarget+'="#'+activeCollapse.id+'"]',accordion)
+                      || queryElement('['+dataToggle+'="'+component+'"][href="#'+activeCollapse.id+'"]',accordion) );
       }
   
-      openAction(collapse,element);
-      removeClass(element,collapsed);
+      if ( !collapse[isAnimating] || activeCollapse && !activeCollapse[isAnimating] ) {
+        if ( activeElement && activeCollapse !== collapse ) {
+          closeAction(activeCollapse,activeElement); 
+          addClass(activeElement,collapsed);
+        }
+        openAction(collapse,element);
+        removeClass(element,collapsed);
+      }
     };
   
     // init
@@ -788,6 +789,7 @@
       on(element, clickEvent, self.toggle);
     }
     collapse = getTarget();
+    collapse[isAnimating] = false;  // when true it will prevent click handlers  
     accordion = queryElement(options.parent) || accordionData && getClosest(element, accordionData);
     element[stringCollapse] = self;
   };
@@ -1154,9 +1156,9 @@
       removeClass(modal,showClass);
       modal[setAttribute](ariaHidden, true);
   
-      (function(){
+      setTimeout(function(){
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
-      }());
+      }, supportTransitions ? 150 : 0);
     };
     this.setContent = function( content ) {
       queryElement('.'+component+'-content',modal)[innerHTML] = content;
@@ -1258,7 +1260,7 @@
   
       // private methods
       removePopover = function() {
-        self[container].removeChild(popover);
+        popover && self[container].removeChild(popover);
         timer = null; popover = null; 
       },
       createPopover = function() {
@@ -1512,7 +1514,7 @@
               tabsContentContainer[style][height] = nextHeight + 'px'; // height animation
               tabsContentContainer[offsetWidth];
               emulateTransitionEnd(tabsContentContainer, triggerEnd);
-            },1);
+            },150);
           }
         } else {
           tabs[isAnimating] = false; 
@@ -1672,7 +1674,7 @@
   
     // private methods
     var removeToolTip = function() {
-        self[container].removeChild(tooltip);
+        tooltip && self[container].removeChild(tooltip);
         tooltip = null; timer = null;
       },
       createToolTip = function() {
