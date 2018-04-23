@@ -94,7 +94,7 @@
     clickEvent    = 'click',
     hoverEvent    = 'hover',
     keydownEvent  = 'keydown',
-    keyupEvent    = 'keyup', 
+    keyupEvent    = 'keyup',
     resizeEvent   = 'resize',
     scrollEvent   = 'scroll',
     // originalEvents
@@ -114,7 +114,7 @@
     hasAttribute           = 'hasAttribute',
     createElement          = 'createElement',
     appendChild            = 'appendChild',
-    innerHTML              = 'innerHTML',  
+    innerHTML              = 'innerHTML',
     getElementsByTagName   = 'getElementsByTagName',
     preventDefault         = 'preventDefault',
     getBoundingClientRect  = 'getBoundingClientRect',
@@ -126,6 +126,7 @@
     length       = 'length',
     toLowerCase  = 'toLowerCase',
     Transition   = 'Transition',
+    Duration     = 'Duration',
     Webkit       = 'Webkit',
     style        = 'style',
     push         = 'push',
@@ -145,15 +146,16 @@
     // tooltip / popover
     mouseHover = ('onmouseleave' in DOC) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|right)+/,
-    
+  
     // modal
     modalOverlay = 0,
     fixedTop = 'fixed-top',
     fixedBottom = 'fixed-bottom',
-    
+  
     // transitionEnd since 2.0.4
     supportTransitions = Webkit+Transition in HTML[style] || Transition[toLowerCase]() in HTML[style],
     transitionEndEvent = Webkit+Transition in HTML[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
+    transitionDuration = Webkit+Duration in HTML[style] ? Webkit[toLowerCase]()+Transition+Duration : Transition[toLowerCase]()+Duration,
   
     // set new focus element since 2.0.3
     setFocus = function(element){
@@ -207,9 +209,16 @@
         off(element, event, handlerWrapper);
       });
     },
+    getTransitionDurationFromElement = function(element) {
+      var duration = getComputedStyle(element)[transitionDuration];
+      duration = parseFloat(duration);
+      duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
+      return duration + 20; // we take a short offset to make sure we fire on the next frame
+    },
     emulateTransitionEnd = function(element,handler){ // emulateTransitionEnd since 2.0.4
-      if (supportTransitions) { one(element, transitionEndEvent, function(e){ handler(e); }); }
-      else { handler(); }
+      var duration = getTransitionDurationFromElement(element);
+      supportTransitions  ? one(element, transitionEndEvent, function(e){ handler(e); })
+                          : setTimeout(function() { handler(); }, duration);
     },
     bootstrapCustomEvent = function (eventName, componentName, related) {
       var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
@@ -232,8 +241,8 @@
           scroll = parent === DOC[body] ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
           isPopover = hasClass(element,'popover'),
-          topPosition, leftPosition, 
-          
+          topPosition, leftPosition,
+  
           arrow = queryElement('.arrow',element),
           arrowTop, arrowLeft, arrowWidth, arrowHeight,
   
@@ -252,7 +261,7 @@
       position = position === bottom && bottomExceed ? top : position;
       position = position === left && leftExceed ? right : position;
       position = position === right && rightExceed ? left : position;
-      
+  
       // update tooltip/popover class
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
   
