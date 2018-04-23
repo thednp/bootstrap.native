@@ -216,9 +216,20 @@
       return duration + 20; // we take a short offset to make sure we fire on the next frame
     },
     emulateTransitionEnd = function(element,handler){ // emulateTransitionEnd since 2.0.4
-      var duration = getTransitionDurationFromElement(element);
-      supportTransitions  ? one(element, transitionEndEvent, function(e){ handler(e); })
-                          : setTimeout(function() { handler(); }, duration);
+      var duration = getTransitionDurationFromElement(element),
+          called = false;
+      if ( supportTransitions ) {
+        one(element, transitionEndEvent, function(e){
+          handler(e);
+          called = true;
+        });
+      }
+      setTimeout(function() {
+        if ( !supportTransitions || !called ) {
+          handler();
+          called = true;
+        }
+      }, duration);
     },
     bootstrapCustomEvent = function (eventName, componentName, related) {
       var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
