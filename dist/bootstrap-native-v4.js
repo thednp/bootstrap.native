@@ -120,6 +120,7 @@
     getBoundingClientRect  = 'getBoundingClientRect',
     querySelectorAll       = 'querySelectorAll',
     getElementsByCLASSNAME = 'getElementsByClassName',
+    getComputedStyle       = 'getComputedStyle',  
   
     indexOf      = 'indexOf',
     parentNode   = 'parentNode',
@@ -210,7 +211,7 @@
       });
     },
     getTransitionDurationFromElement = function(element) {
-      var duration = getComputedStyle(element)[transitionDuration];
+      var duration = globalObject[getComputedStyle](element)[transitionDuration];
       duration = parseFloat(duration);
       duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
       return duration + 50; // we take a short offset to make sure we fire on the next frame after animation
@@ -947,6 +948,7 @@
     var btnCheck = element[getAttribute](dataTarget)||element[getAttribute]('href'),
       checkModal = queryElement( btnCheck ),
       modal = hasClass(element,'modal') ? element : checkModal,
+      overlayDelay,
   
       // strings
       component = 'modal',
@@ -980,13 +982,13 @@
         return globalObject[innerWidth] || (htmlRect[right] - Math.abs(htmlRect[left]));
       },
       setScrollbar = function () {
-        var bodyStyle = globalObject.getComputedStyle(DOC[body]),
+        var bodyStyle = globalObject[getComputedStyle](DOC[body]),
             bodyPad = parseInt((bodyStyle[paddingRight]), 10), itemPad;
         if (bodyIsOverflowing) {
           DOC[body][style][paddingRight] = (bodyPad + scrollbarWidth) + 'px';
           if (fixedItems[length]){
             for (var i = 0; i < fixedItems[length]; i++) {
-              itemPad = globalObject.getComputedStyle(fixedItems[i])[paddingRight];
+              itemPad = globalObject[getComputedStyle](fixedItems[i])[paddingRight];
               fixedItems[i][style][paddingRight] = ( parseInt(itemPad) + scrollbarWidth) + 'px';
             }
           }
@@ -1128,6 +1130,7 @@
   
       if ( overlay && modalOverlay && !hasClass(overlay,showClass)) {
         overlay[offsetWidth]; // force reflow to enable trasition
+        overlayDelay = getTransitionDurationFromElement(overlay);              
         addClass(overlay, showClass);
       }
   
@@ -1147,18 +1150,19 @@
         keydownHandlerToggle();
   
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
-      }, supportTransitions ? 150 : 0);
+      }, supportTransitions && overlay ? overlayDelay : 0);
     };
     this.hide = function() {
       bootstrapCustomEvent.call(modal, hideEvent, component);
       overlay = queryElement('.'+modalBackdropString);
+      overlayDelay = overlay && getTransitionDurationFromElement(overlay);    
   
       removeClass(modal,showClass);
       modal[setAttribute](ariaHidden, true);
   
       setTimeout(function(){
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
-      }, supportTransitions ? 150 : 0);
+      }, supportTransitions && overlay ? overlayDelay : 0);
     };
     this.setContent = function( content ) {
       queryElement('.'+component+'-content',modal)[innerHTML] = content;
@@ -1260,7 +1264,7 @@
   
       // private methods
       removePopover = function() {
-        popover && self[container].removeChild(popover);
+        self[container].removeChild(popover);
         timer = null; popover = null; 
       },
       createPopover = function() {
@@ -1514,7 +1518,7 @@
               tabsContentContainer[style][height] = nextHeight + 'px'; // height animation
               tabsContentContainer[offsetWidth];
               emulateTransitionEnd(tabsContentContainer, triggerEnd);
-            },150);
+            },50);
           }
         } else {
           tabs[isAnimating] = false; 
@@ -1541,7 +1545,7 @@
           tabsContentContainer[style][height] = containerHeight + 'px'; // height animation
           tabsContentContainer[offsetHeight];
           activeContent[style][float] = '';
-          nextContent[style][float] = '';   
+          nextContent[style][float] = '';
         }
   
         if ( hasClass(nextContent, 'fade') ) {
@@ -1674,7 +1678,7 @@
   
     // private methods
     var removeToolTip = function() {
-        tooltip && self[container].removeChild(tooltip);
+        self[container].removeChild(tooltip);
         tooltip = null; timer = null;
       },
       createToolTip = function() {
