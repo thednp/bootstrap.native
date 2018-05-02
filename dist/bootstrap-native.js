@@ -655,7 +655,7 @@
     this[pause] = (options[pause] === hoverEvent || pauseData) ? hoverEvent : false; // false / hover
   
     this[interval] = typeof intervalOption === 'number' ? intervalOption
-                   : intervalData === 0 || intervalData === false ? 0
+                   : intervalOption === false || intervalData === 0 || intervalData === false ? 0
                    : 5000; // bootstrap carousel default interval
   
     // bind, event targets
