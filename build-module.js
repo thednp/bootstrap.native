@@ -86,7 +86,7 @@ module.exports = (options) => {
 
   function wrap(main) {
     var utils = fs.readFileSync(`${libPath}/V3/utils.js`, 'utf8').split('\n').join('\n  ');
-    var init = fs.readFileSync(`${libPath}/V3/utils-init.js`, 'utf8').split('\n').join('\n  ');
+    var init = options.autoInitDataAPI === false ? '' : fs.readFileSync(`${libPath}/V3/utils-init.js`, 'utf8').split('\n').join('\n  ');
     main = main.split('\n').join('\n  ');
     // Initialize arrays:
     // Arrays will be used in the template literal below
