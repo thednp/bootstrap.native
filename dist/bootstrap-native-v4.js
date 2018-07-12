@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.23 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.24 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -315,7 +315,7 @@
       arrowLeft && (arrow[style][left] = arrowLeft + 'px');
     };
   
-  BSN.version = '2.0.23';
+  BSN.version = '2.0.24';
   
   /* Native Javascript for Bootstrap 4 | Alert
   -------------------------------------------*/
@@ -592,8 +592,11 @@
       var activeItem = this.getActiveIndex(), // the current active
           orientation;
       
-      // determine slideDirection first
-      if  ( (activeItem < next ) || (activeItem === 0 && next === total -1 ) ) {
+      // first return if we're on the same item #227
+      if ( activeItem === next ) {
+        return;
+      // or determine slideDirection
+      } else if  ( (activeItem < next ) || (activeItem === 0 && next === total -1 ) ) {
         slideDirection = self[direction] = left; // next
       } else if  ( (activeItem > next) || (activeItem === total - 1 && next === 0 ) ) {
         slideDirection = self[direction] = right; // prev

@@ -234,7 +234,7 @@
           </a>
         </div>
         <div class="btn-group mt-4 mb-0">
-          <button class="btn btn-light" disabled>Jump</button>
+          <button class="btn btn-light" onclick="document.getElementById('carouselExampleIndicators').Carousel.slideTo(0)">Start</button>
           <button class="btn btn-light" onclick="(function(){ var crsl = document.getElementById('carouselExampleIndicators').Carousel, idx = crsl.getActiveIndex(); crsl.slideTo(idx-1) }())">PREV</button>
           <button class="btn btn-light" onclick="(function(){ var crsl = document.getElementById('carouselExampleIndicators').Carousel, idx = crsl.getActiveIndex(); crsl.slideTo(idx+1) }())">NEXT</button>
         </div>

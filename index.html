@@ -2816,7 +2816,8 @@ mainSlider.addEventListener('slid.bs.carousel', function(e) {
                 </div>
               </div>
               <div class="btn-group">
-                <a class="btn btn-default disabled" href="#">Jump</a>
+                <button class="btn btn-default" 
+                        onclick="document.getElementById('carousel-example-generic').Carousel.slideTo(0)">Start</button>
                 <button class="btn btn-default" data-slide-to="prev" 
                         onclick="document.getElementById('carousel-example-generic').Carousel.slideTo(document.getElementById('carousel-example-generic').Carousel.getActiveIndex() - 1 )">PREV</button>
                 <button class="btn btn-default" data-slide-to="next" 
