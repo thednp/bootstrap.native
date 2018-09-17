@@ -501,7 +501,8 @@
   
     this[interval] = typeof intervalOption === 'number' ? intervalOption
                    : intervalOption === false || intervalData === 0 || intervalData === false ? 0
-                   : 5000; // bootstrap carousel default interval
+                   : isNaN(intervalData) ? 5000 // bootstrap carousel default interval
+                   : intervalData;
   
     // bind, event targets
     var self = this, index = element.index = 0, timer = element.timer = 0, 
