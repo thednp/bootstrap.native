@@ -1028,8 +1028,8 @@
         modal[style][paddingRight] = '';
       },
       createOverlay = function() {
-        modalOverlay = 1;        
-        
+        modalOverlay = 1;
+  
         var newOverlay = DOC[createElement]('div');
         overlay = queryElement('.'+modalBackdropString);
   
@@ -1042,10 +1042,10 @@
       removeOverlay = function() {
         overlay = queryElement('.'+modalBackdropString);
         if ( overlay && overlay !== null && typeof overlay === 'object' ) {
-          modalOverlay = 0;        
+          modalOverlay = 0;
           DOC[body].removeChild(overlay); overlay = null;
         }
-        bootstrapCustomEvent.call(modal, hiddenEvent, component);      
+        bootstrapCustomEvent.call(modal, hiddenEvent, component);
       },
       keydownHandlerToggle = function() {
         if (hasClass(modal,showClass)) {
@@ -1076,13 +1076,13 @@
       triggerHide = function() {
         modal[style].display = '';
         element && (setFocus(element));
-        
+  
         (function(){
           if (!getElementsByClassName(DOC,component+' '+showClass)[0]) {
             resetAdjustments();
             resetScrollbar();
             removeClass(DOC[body],component+'-open');
-            overlay && hasClass(overlay,'fade') ? (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay)) 
+            overlay && hasClass(overlay,'fade') ? (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay))
             : removeOverlay();
   
             resizeHandlerToggle();
@@ -1093,7 +1093,7 @@
       },
       // handlers
       clickHandler = function(e) {
-        var clickTarget = e[target];
+        var clickTarget = this;
         clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
         if ( clickTarget === element && !hasClass(modal,showClass) ) {
           modal.modalTrigger = element;
@@ -1134,7 +1134,7 @@
   
       if ( overlay && modalOverlay && !hasClass(overlay,showClass)) {
         overlay[offsetWidth]; // force reflow to enable trasition
-        overlayDelay = getTransitionDurationFromElement(overlay);              
+        overlayDelay = getTransitionDurationFromElement(overlay);
         addClass(overlay, showClass);
       }
   
@@ -1148,7 +1148,7 @@
         addClass(DOC[body],component+'-open');
         addClass(modal,showClass);
         modal[setAttribute](ariaHidden, false);
-        
+  
         resizeHandlerToggle();
         dismissHandlerToggle();
         keydownHandlerToggle();
@@ -1159,7 +1159,7 @@
     this.hide = function() {
       bootstrapCustomEvent.call(modal, hideEvent, component);
       overlay = queryElement('.'+modalBackdropString);
-      overlayDelay = overlay && getTransitionDurationFromElement(overlay);    
+      overlayDelay = overlay && getTransitionDurationFromElement(overlay);
   
       removeClass(modal,showClass);
       modal[setAttribute](ariaHidden, true);
