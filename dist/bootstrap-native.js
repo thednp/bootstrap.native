@@ -656,7 +656,7 @@
   
     this[interval] = typeof intervalOption === 'number' ? intervalOption
                    : intervalOption === false || intervalData === 0 || intervalData === false ? 0
-                   : isNan(intervalData) ? 5000 // bootstrap carousel default interval
+                   : isNaN(intervalData) ? 5000 // bootstrap carousel default interval
                    : intervalData;
   
     // bind, event targets
