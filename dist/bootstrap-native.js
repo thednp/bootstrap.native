@@ -673,13 +673,13 @@
     var pauseHandler = function () {
         if ( self[interval] !==false && !hasClass(element,paused) ) {
           addClass(element,paused);
-          !isSliding && clearInterval( timer );
+          !isSliding && ( clearInterval(timer), timer = null );
         }
       },
       resumeHandler = function() {
         if ( self[interval] !== false && hasClass(element,paused) ) {
           removeClass(element,paused);
-          !isSliding && clearInterval( timer );
+          !isSliding && ( clearInterval(timer), timer = null );
           !isSliding && self.cycle();
         }
       },
@@ -738,6 +738,11 @@
   
     // public methods
     this.cycle = function() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+  
       timer = setInterval(function() {
         isElementInScrollRange() && (index++, self.slideTo( index ) );
       }, this[interval]);
@@ -759,7 +764,7 @@
   
       // find the right next index 
       if ( next < 0 ) { next = total - 1; } 
-      else if ( next === total ){ next = 0; }
+      else if ( next >= total ){ next = 0; }
   
       // update index
       index = next;
@@ -769,6 +774,7 @@
   
       isSliding = true;
       clearInterval(timer);
+      timer = null;
       setActivePage( next );
   
       if ( supportTransitions && hasClass(element,'slide') ) {
