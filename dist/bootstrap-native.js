@@ -1052,7 +1052,7 @@
       show = function() {
         bootstrapCustomEvent.call(parent, showEvent, component, relatedTarget);
         addClass(parent,open);
-        menu[setAttribute](ariaExpanded,true);
+        element[setAttribute](ariaExpanded,true);
         bootstrapCustomEvent.call(parent, shownEvent, component, relatedTarget);
         element[open] = true;
         off(element, clickEvent, clickHandler);
@@ -1064,7 +1064,7 @@
       hide = function() {
         bootstrapCustomEvent.call(parent, hideEvent, component, relatedTarget);
         removeClass(parent,open);
-        menu[setAttribute](ariaExpanded,false);
+        element[setAttribute](ariaExpanded,false);
         bootstrapCustomEvent.call(parent, hiddenEvent, component, relatedTarget);
         element[open] = false;
         toggleDismiss();
