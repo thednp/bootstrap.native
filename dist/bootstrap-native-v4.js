@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.24 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.25 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -315,7 +315,7 @@
       arrowLeft && (arrow[style][left] = arrowLeft + 'px');
     };
   
-  BSN.version = '2.0.24';
+  BSN.version = '2.0.25';
   
   /* Native Javascript for Bootstrap 4 | Alert
   -------------------------------------------*/
@@ -514,6 +514,9 @@
       indicator = queryElement( '.'+component+'-indicators', element ),
       indicators = indicator && indicator[getElementsByTagName]( "LI" ) || [];
   
+    // invalidate when not enough items
+    if (total < 2) { return; }
+    
     // handlers
     var pauseHandler = function () {
         if ( self[interval] !==false && !hasClass(element,paused) ) {

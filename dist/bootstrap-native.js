@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.24 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.25 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -316,7 +316,7 @@
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
-  BSN.version = '2.0.24';
+  BSN.version = '2.0.25';
   
   /* Native Javascript for Bootstrap 3 | Affix
   -------------------------------------------*/
@@ -668,6 +668,9 @@
       leftArrow = controls[0], rightArrow = controls[1],
       indicator = queryElement( '.'+component+'-indicators', element ),
       indicators = indicator && indicator[getElementsByTagName]( "LI" ) || [];
+  
+    // invalidate when not enough items
+    if (total < 2) { return; }
   
     // handlers
     var pauseHandler = function () {

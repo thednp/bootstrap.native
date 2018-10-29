@@ -11,7 +11,8 @@
     height: 500px;
     width: 100%;
 }
-.carousel-item {
+.carousel-item,
+.carousel-item.active {
   -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
   transition-timing-function: cubic-bezier(.45,.18,0,1);
 }

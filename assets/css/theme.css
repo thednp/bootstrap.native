@@ -156,7 +156,8 @@ p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
   z-index: 10;
 }
 /* do some transition */ 
-#myCarousel .item {
+#myCarousel .item,
+#myCarousel .item.active {
   -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
   transition-timing-function: cubic-bezier(.45,.18,0,1);
 }
