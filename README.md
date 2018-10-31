@@ -8,7 +8,7 @@ This is a library developed with native JavaScript for both **Bootstrap 3** and 
 
  The library is under ***20Kb*** minified and ***6.5Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">demo</a> for scripting examples and instructions.
 
-If you use webpack, here here is the accompanying [webpack loader](https://github.com/jonathanfleckenstein/bootstrap.native-loader).
+If you use webpack, here is the accompanying [webpack loader](https://github.com/jonathanfleckenstein/bootstrap.native-loader).
 
 # Wiki
 Please take a minute to check the `bootstrap.native` Wiki pages, they're updated with every new commit:
