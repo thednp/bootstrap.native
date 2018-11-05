@@ -211,7 +211,7 @@
       });
     },
     getTransitionDurationFromElement = function(element) {
-      var duration = globalObject[getComputedStyle](element)[transitionDuration];
+      var duration = supportTransitions ? globalObject[getComputedStyle](element)[transitionDuration] : 0;
       duration = parseFloat(duration);
       duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
       return duration + 50; // we take a short offset to make sure we fire on the next frame after animation

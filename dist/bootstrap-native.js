@@ -221,7 +221,7 @@
       });
     },
     getTransitionDurationFromElement = function(element) {
-      var duration = globalObject[getComputedStyle](element)[transitionDuration];
+      var duration = supportTransitions ? globalObject[getComputedStyle](element)[transitionDuration] : 0;
       duration = parseFloat(duration);
       duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
       return duration + 50; // we take a short offset to make sure we fire on the next frame after animation
@@ -1736,10 +1736,11 @@
       },
       // handler
       clickHandler = function(e) {
-        var href = e[target][getAttribute]('href');
+        var href = e.currentTarget[getAttribute]('href');
         e[preventDefault]();
-        next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
-             ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
+        // next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
+        //      ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
+        next = e.currentTarget;
         !tabs[isAnimating] && !hasClass(next[parentNode],active) && self.show();
       };
   

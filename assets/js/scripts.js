@@ -303,16 +303,18 @@ if ( document.documentElement && !/ie/.test(document.documentElement.className) 
 	window.addEventListener('resize', adjustNav, false)// adjust on resize
 }
 
-// KUTE.js scrollTo
-var sideLinks = sideNav.getElementsByTagName("A"),
-		scrollTo = function(e){
-			var target = document.getElementById(e.target.getAttribute('href').replace('#',''));
-			e.preventDefault();
-			document.documentElement.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset||document.documentElement.scrollTop) - (i===0?0:60);
-		};
+// scrollTo
+var sideLinks = sideNav.getElementsByTagName("A"), 
+		browserString = navigator.userAgent, 
+		scrollTarget = /(EDGE|Mac)/i.test(browserString) ? document.body : document.documentElement;
 
 for (var i=0, sll=sideLinks.length; i<sll; i++) {
-	sideLinks[i].addEventListener('click', scrollTo, false);
+	sideLinks[i].addEventListener('click', scrollTo = function(e){
+		var target = document.getElementById(e.target.getAttribute('href').replace('#',''));
+		
+		e.preventDefault();
+		scrollTarget.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset||document.documentElement.scrollTop) - (i===0?0:60);
+	}, false);
 }
 
 // scrollSpy stuff
