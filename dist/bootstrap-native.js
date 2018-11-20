@@ -1230,6 +1230,9 @@
       },
       // triggers
       triggerShow = function() {
+        resizeHandlerToggle();
+        dismissHandlerToggle();
+        keydownHandlerToggle();
         setFocus(modal);
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
       },
@@ -1309,10 +1312,6 @@
         addClass(DOC[body],component+'-open');
         addClass(modal,inClass);
         modal[setAttribute](ariaHidden, false);
-        
-        resizeHandlerToggle();
-        dismissHandlerToggle();
-        keydownHandlerToggle();
   
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
       }, supportTransitions && overlay ? overlayDelay : 0);
@@ -1736,11 +1735,10 @@
       },
       // handler
       clickHandler = function(e) {
-        var href = e.currentTarget[getAttribute]('href');
+        var href = e[target][getAttribute]('href');
         e[preventDefault]();
-        // next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
-        //      ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
-        next = e.currentTarget;
+        next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
+             ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
         !tabs[isAnimating] && !hasClass(next[parentNode],active) && self.show();
       };
   

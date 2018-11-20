@@ -516,7 +516,7 @@
   
     // invalidate when not enough items
     if (total < 2) { return; }
-    
+  
     // handlers
     var pauseHandler = function () {
         if ( self[interval] !==false && !hasClass(element,paused) ) {
@@ -1079,6 +1079,9 @@
       },
       // triggers
       triggerShow = function() {
+        resizeHandlerToggle();
+        dismissHandlerToggle();
+        keydownHandlerToggle();
         setFocus(modal);
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
       },
@@ -1157,10 +1160,6 @@
         addClass(DOC[body],component+'-open');
         addClass(modal,showClass);
         modal[setAttribute](ariaHidden, false);
-        
-        resizeHandlerToggle();
-        dismissHandlerToggle();
-        keydownHandlerToggle();
   
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
       }, supportTransitions && overlay ? overlayDelay : 0);
