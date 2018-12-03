@@ -73,7 +73,7 @@
   
     // option keys
     backdrop = 'backdrop', keyboard = 'keyboard', delay = 'delay',
-    content = 'content', target = 'target',
+    content = 'content', target = 'target', currentTarget = 'currentTarget',
     interval = 'interval', pause = 'pause', animation = 'animation',
     placement = 'placement', container = 'container',
   
@@ -89,6 +89,7 @@
     // aria
     ariaExpanded = 'aria-expanded',
     ariaHidden   = 'aria-hidden',
+    ariaSelected = 'aria-selected',
   
     // event names
     clickEvent    = 'click',
@@ -1588,10 +1589,8 @@
       },
       // handler 
       clickHandler = function(e) {
-        var href = e[target][getAttribute]('href');
         e[preventDefault]();
-        next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
-             ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
+        next = e[currentTarget];
         !tabs[isAnimating] && !hasClass(next,active) && self.show();
       };
   
@@ -1604,7 +1603,9 @@
       
       tabs[isAnimating] = true;
       removeClass(activeTab,active);
+      activeTab[setAttribute](ariaSelected,'false');
       addClass(next,active);
+      next[setAttribute](ariaSelected,'true');    
   
       if ( dropdown ) {
         if ( !hasClass(element[parentNode],'dropdown-menu') ) {

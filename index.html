@@ -1427,8 +1427,12 @@ myLastTab.addEventListener('show.bs.tab', function(event){
               <p>OK now we're ready to put this component to the test. We'll use all Bootstrap <code>.nav</code> components in the pool.</p>
 
               <ul id="myTab" class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="home" aria-expanded="true"><i class="glyphicon glyphicon-minus-sign"></i> Home</a></li>
-                <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-height="true" data-toggle="tab" aria-controls="profile">Profile</a></li>
+                <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-height="true" data-toggle="tab" aria-controls="home" aria-expanded="true"><i class="glyphicon glyphicon-home"></i> Home</a></li>
+                <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-height="true" data-toggle="tab" aria-controls="profile">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="14px"  height="14px">
+                    <path class="cursor-pointer" d="M576 706.612v-52.78c70.498-39.728 128-138.772 128-237.832 0-159.058 0-288-192-288s-192 128.942-192 288c0 99.060 57.502 198.104 128 237.832v52.78c-217.102 17.748-384 124.42-384 253.388h896c0-128.968-166.898-235.64-384-253.388z" fill="inherit" stroke="inherit" stroke-width="inherit" stroke-linejoin="inherit" stroke-linecap="inherit" stroke-miterlimit="inherit" opacity="1"></path>
+                  </svg>
+                   Profile</a></li>
                 <li role="presentation" class="dropdown">
                   <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" data-persist="true" aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">

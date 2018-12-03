@@ -75,7 +75,7 @@
   
     // option keys
     backdrop = 'backdrop', keyboard = 'keyboard', delay = 'delay',
-    content = 'content', target = 'target', 
+    content = 'content', target = 'target', currentTarget = 'currentTarget',
     interval = 'interval', pause = 'pause', animation = 'animation',
     placement = 'placement', container = 'container', 
   
@@ -1735,10 +1735,8 @@
       },
       // handler
       clickHandler = function(e) {
-        var href = e[target][getAttribute]('href');
         e[preventDefault]();
-        next = e[target][getAttribute](dataToggle) === component || (href && href.charAt(0) === '#')
-             ? e[target] : e[target][parentNode]; // allow for child elements like icons to use the handler
+        next = e[currentTarget] || this; // IE8 needs to know who really currentTarget is
         !tabs[isAnimating] && !hasClass(next[parentNode],active) && self.show();
       };
   
@@ -1751,7 +1749,9 @@
   
       tabs[isAnimating] = true;
       removeClass(activeTab[parentNode],active);
+      activeTab[setAttribute](ariaExpanded,'false');
       addClass(next[parentNode],active);
+      next[setAttribute](ariaExpanded,'true');
   
       if ( dropdown ) {
         if ( !hasClass(element[parentNode][parentNode],'dropdown-menu') ) {

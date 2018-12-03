@@ -51,4 +51,6 @@ h3:not(.popover-header) {
 .bg-bootstrap { background-color: #563d7c }
 .bg-pink { background-color: #E91E63 }
 .bg-indigo { background-color: #9c27b0 }
-      
+
+/* SVG icons */
+.nav svg {vertical-align: text-top;}

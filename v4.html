@@ -207,7 +207,7 @@
 
       <h2>Carousel</h2>
       <div class="bd-example" data-example-id="">
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
           <ol class="carousel-indicators">
             <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="1" class=""></li>
@@ -595,13 +595,23 @@ sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</
       <div class="bd-example" role="tabpanel" style="margin-bottom: 1rem">
         <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-bottom: 1rem">
           <li class="nav-item">
-            <a class="nav-link active" id="home-tab" data-toggle="tab" data-duration="350" data-height="true" href="#home" role="tab" aria-controls="home" aria-expanded="true">Home</a>
+            <a class="nav-link active" id="home-tab" data-toggle="tab" data-duration="350" data-height="true" href="#home" role="tab" aria-controls="home" aria-selected="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="18px"  height="18px">
+                <path d="M1024 608l-192-192v-288h-128v160l-192-192-512 512v32h128v320h320v-192h128v192h320v-320h128z" fill="inherit" stroke="inherit" stroke-width="inherit" stroke-linejoin="inherit" stroke-linecap="inherit" stroke-miterlimit="inherit" opacity="1"></path>
+              </svg>
+                Home
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="profile-tab" data-toggle="tab" data-duration="350" data-height="true" href="#profile" role="tab" aria-controls="profile" aria-expanded="false">Profile</a>
+            <a class="nav-link" id="profile-tab" data-toggle="tab" data-duration="350" data-height="true" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="18px"  height="18px">
+                <path d="M576 706.612v-52.78c70.498-39.728 128-138.772 128-237.832 0-159.058 0-288-192-288s-192 128.942-192 288c0 99.060 57.502 198.104 128 237.832v52.78c-217.102 17.748-384 124.42-384 253.388h896c0-128.968-166.898-235.64-384-253.388z" fill="inherit" stroke="inherit" stroke-width="inherit" stroke-linejoin="inherit" stroke-linecap="inherit" stroke-miterlimit="inherit" opacity="1"></path>
+              </svg>
+                Profile
+            </a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-persist="true" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <a class="nav-link dropdown-toggle" data-persist="true" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-selected="false">Dropdown</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" id="dropdown1-tab" href="#dropdown1" role="tab" data-toggle="tab" data-duration="350" data-height="true" aria-controls="dropdown1">@fat</a>
               <a class="dropdown-item" id="dropdown2-tab" href="#dropdown2" role="tab" data-toggle="tab" data-duration="350" data-height="true" aria-controls="dropdown2">@mdo</a>
@@ -609,10 +619,10 @@ sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</
           </li>
         </ul>
         <div class="tab-content" id="myTabContent">
-          <div role="tabpanel" class="tab-pane fade active show" id="home" aria-labelledby="home-tab" aria-expanded="true">
+          <div role="tabpanel" class="tab-pane fade active show" id="home" aria-labelledby="home-tab">
             <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
           </div>
-          <div class="tab-pane fade " id="profile" role="tabpanel" aria-labelledby="profile-tab" aria-expanded="false">
+          <div class="tab-pane fade " id="profile" role="tabpanel" aria-labelledby="profile-tab">
             <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
           </div>
           <div class="tab-pane fade" id="dropdown1" role="tabpanel" aria-labelledby="dropdown1-tab">
