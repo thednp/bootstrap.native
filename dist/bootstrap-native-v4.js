@@ -967,7 +967,6 @@
       // strings
       component = 'modal',
       staticString = 'static',
-      paddingLeft = 'paddingLeft',
       paddingRight = 'paddingRight',
       modalBackdropString = 'modal-backdrop';
   
@@ -985,7 +984,7 @@
   
     // bind, constants, event targets and other vars
     var self = this, relatedTarget = null,
-      bodyIsOverflowing, modalIsOverflowing, scrollbarWidth, overlay,
+      bodyIsOverflowing, scrollBarWidth, overlay,
   
       // also find fixed-top / fixed-bottom items
       fixedItems = getElementsByClassName(HTML,fixedTop).concat(getElementsByClassName(HTML,fixedBottom)),
@@ -999,11 +998,11 @@
         var bodyStyle = globalObject[getComputedStyle](DOC[body]),
             bodyPad = parseInt((bodyStyle[paddingRight]), 10), itemPad;
         if (bodyIsOverflowing) {
-          DOC[body][style][paddingRight] = (bodyPad + scrollbarWidth) + 'px';
+          DOC[body][style][paddingRight] = (bodyPad + scrollBarWidth) + 'px';
           if (fixedItems[length]){
             for (var i = 0; i < fixedItems[length]; i++) {
               itemPad = globalObject[getComputedStyle](fixedItems[i])[paddingRight];
-              fixedItems[i][style][paddingRight] = ( parseInt(itemPad) + scrollbarWidth) + 'px';
+              fixedItems[i][style][paddingRight] = ( parseInt(itemPad) + scrollBarWidth) + 'px';
             }
           }
         }
@@ -1017,25 +1016,16 @@
         }
       },
       measureScrollbar = function () { // thx walsh
-        var scrollDiv = DOC[createElement]('div'), scrollBarWidth;
+        var scrollDiv = DOC[createElement]('div'), widthValue;
         scrollDiv.className = component+'-scrollbar-measure'; // this is here to stay
         DOC[body][appendChild](scrollDiv);
-        scrollBarWidth = scrollDiv[offsetWidth] - scrollDiv[clientWidth];
+        widthValue = scrollDiv[offsetWidth] - scrollDiv[clientWidth];
         DOC[body].removeChild(scrollDiv);
-        return scrollBarWidth;
+        return widthValue;
       },
       checkScrollbar = function () {
         bodyIsOverflowing = DOC[body][clientWidth] < getWindowWidth();
-        modalIsOverflowing = modal[scrollHeight] > HTML[clientHeight];
-        scrollbarWidth = measureScrollbar();
-      },
-      adjustDialog = function () {
-        modal[style][paddingLeft] = !bodyIsOverflowing && modalIsOverflowing ? scrollbarWidth + 'px' : '';
-        modal[style][paddingRight] = bodyIsOverflowing && !modalIsOverflowing ? scrollbarWidth + 'px' : '';
-      },
-      resetAdjustments = function () {
-        modal[style][paddingLeft] = '';
-        modal[style][paddingRight] = '';
+        scrollBarWidth = measureScrollbar();
       },
       createOverlay = function() {
         modalOverlay = 1;        
@@ -1092,7 +1082,6 @@
         
         (function(){
           if (!getElementsByClassName(DOC,component+' '+showClass)[0]) {
-            resetAdjustments();
             resetScrollbar();
             removeClass(DOC[body],component+'-open');
             overlay && hasClass(overlay,'fade') ? (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay)) 
@@ -1156,7 +1145,6 @@
   
         checkScrollbar();
         setScrollbar();
-        adjustDialog();
   
         addClass(DOC[body],component+'-open');
         addClass(modal,showClass);
@@ -1184,7 +1172,6 @@
       if (hasClass(modal,showClass)) {
         checkScrollbar();
         setScrollbar();
-        adjustDialog();
       }
     };
   
