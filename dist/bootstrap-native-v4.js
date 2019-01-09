@@ -1677,6 +1677,14 @@
       close = function() {
         removeClass( toast,showClass );
         self[animation] ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
+      },
+      disposeComplete = function(){
+        clearTimeout(timer); timer = null;
+        addClass( toast, hide );
+        off(element, clickEvent, self.hide);
+        element[stringToast] = null;
+        element = null;
+        toast = null;
       };
   
     // public methods
@@ -1684,8 +1692,8 @@
       if (toast) {
         bootstrapCustomEvent.call(toast, showEvent, component);
         self[animation] && addClass( toast,fade );
-        removeClass( toast,hide);
-        addClass( toast,showing);
+        removeClass( toast,hide );
+        addClass( toast,showing );
   
         self[animation] ? emulateTransitionEnd(toast, showComplete) : showComplete();
       }
@@ -1702,14 +1710,10 @@
       }
     };
     this.dispose = function() {
-      clearTimeout(timer); timer = null;
       if ( toast && hasClass(toast,showClass) ) {
         removeClass( toast,showClass );
+        self[animation] ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
       }
-      off(element, clickEvent, self.hide);
-      element[stringToast] = null;
-      element = null;
-      toast = null;
     };
   
     // init
