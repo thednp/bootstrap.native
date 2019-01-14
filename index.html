@@ -446,10 +446,14 @@ myModal.addEventListener('hidden.bs.modal', function(event){
 }, false);
 </code></pre>
 
-              <p>Additionally the component will store in the modal and it's triggering elements some references, for the internal execution, hopefully would help you as well. For instance, when a modal is referenced by one or more triggering elements, it will know which one was clicked last time to execute the <code>.show()</code> instance method.</p>
+              <p>Additionally the component will store in the modal OR its triggering elements some references, for the internal execution, hopefully would help you as well. For instance, when a modal is referenced by one or more triggering elements, it will know which one was clicked last time to execute the <code>.show()</code> instance method.</p>
 
 <pre><code class="language-javascript">// for modals with multiple triggering elements, the value changes every time the triggering element was clicked
 var lastModalTrigger = myModal.modalTrigger;
+
+// for modals targeted directly by the component with no triggering element
+// you can access the initialization object from the modal itself
+var myModalInit = myModal.Modal;
 </code></pre>
 
               <p>Also each triggering element holds the initialization of the <b>Modal</b> component:</p>

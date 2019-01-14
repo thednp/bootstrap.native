@@ -1102,6 +1102,7 @@
         var clickTarget = e[target];
         clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
         if ( clickTarget === element && !hasClass(modal,showClass) ) {
+          modal[modalTrigger] = element;
           relatedTarget = element;
           self.show();
           e[preventDefault]();
