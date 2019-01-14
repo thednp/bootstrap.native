@@ -788,7 +788,7 @@
         addClass(slides[activeItem],slideDirection);
   
         emulateTransitionEnd(slides[next], function(e) {
-          var timeout = e[target] !== slides[next] ? e.elapsedTime*1000+100 : 20;
+          var timeout = e && e[target] !== slides[next] ? e.elapsedTime*1000+100 : 20;
           isSliding && setTimeout(function(){
             isSliding = false;
   
