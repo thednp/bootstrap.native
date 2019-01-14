@@ -637,7 +637,7 @@
         addClass(slides[next],carouselItem +'-'+ slideDirection);
         addClass(slides[activeItem],carouselItem +'-'+ slideDirection);
   
-        one(slides[next], transitionEndEvent, function(e) {
+        emulateTransitionEnd(slides[next], function(e) {
           var timeout = e[target] !== slides[next] ? e.elapsedTime*1000+100 : 20;
           
           isSliding && setTimeout(function(){
