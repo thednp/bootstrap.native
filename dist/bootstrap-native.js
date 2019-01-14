@@ -1108,19 +1108,18 @@
     // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
     element = queryElement(element);
   
-    // determine modal, triggering element
-    var btnCheck = element[getAttribute](dataTarget)||element[getAttribute]('href'),
-      checkModal = queryElement( btnCheck ),
-      modal = hasClass(element,'modal') ? element : checkModal,
-      overlayDelay,
-  
       // strings
-      component = 'modal',
-      staticString = 'static',
-      paddingRight = 'paddingRight',
-      modalBackdropString = 'modal-backdrop';
-  
-    if ( hasClass(element,'modal') ) { element = null; } // modal is now independent of it's triggering element
+      var component = 'modal',
+        staticString = 'static',
+        modalTrigger = 'modalTrigger',
+        paddingRight = 'paddingRight',
+        modalBackdropString = 'modal-backdrop',
+        // determine modal, triggering element
+        btnCheck = element[getAttribute](dataTarget)||element[getAttribute]('href'),
+        checkModal = queryElement( btnCheck ),
+        modal = hasClass(element,component) ? element : checkModal;  
+    
+      if ( hasClass(element, component) ) { element = null; } // modal is now independent of it's triggering element
   
     if ( !modal ) { return; } // invalidate
   
@@ -1134,7 +1133,7 @@
   
     // bind, constants, event targets and other vars
     var self = this, relatedTarget = null,
-      bodyIsOverflowing, scrollBarWidth, overlay,
+      bodyIsOverflowing, scrollBarWidth, overlay, overlayDelay,
   
       // also find fixed-top / fixed-bottom items
       fixedItems = getElementsByClassName(HTML,fixedTop).concat(getElementsByClassName(HTML,fixedBottom)),
@@ -1173,7 +1172,7 @@
         DOC[body][appendChild](scrollDiv);
         widthValue = scrollDiv[offsetWidth] - scrollDiv[clientWidth];
         DOC[body].removeChild(scrollDiv);
-      return widthValue;
+        return widthValue;
       },
       checkScrollbar = function () {
         bodyIsOverflowing = DOC[body][clientWidth] < getWindowWidth();
@@ -1250,7 +1249,6 @@
         var clickTarget = e[target];
         clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
         if ( clickTarget === element && !hasClass(modal,inClass) ) {
-          modal.modalTrigger = element;
           relatedTarget = element;
           self.show();
           e[preventDefault]();
@@ -1281,7 +1279,10 @@
   
       // we elegantly hide any opened modal
       var currentOpen = getElementsByClassName(DOC,component+' in')[0];
-      currentOpen && currentOpen !== modal && currentOpen.modalTrigger[stringModal].hide();
+      if (currentOpen && currentOpen !== modal) {
+        modalTrigger in currentOpen && currentOpen[modalTrigger][stringModal].hide();
+        stringModal in currentOpen && currentOpen[stringModal].hide();
+      }
   
       if ( this[backdrop] ) {
         !modalOverlay && createOverlay();
@@ -1335,7 +1336,8 @@
       on(element, clickEvent, clickHandler);
     }
     if ( !!self[content] ) { self.setContent( self[content] ); }
-    !!element && (element[stringModal] = self);
+    if (element) { element[stringModal] = self; modal[modalTrigger] = element; }
+    else { modal[stringModal] = self; }
   };
   
   // DATA API

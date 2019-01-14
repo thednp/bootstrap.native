@@ -1,7 +1,7 @@
 var myModal = document.getElementById('myModal'); // we need a blank modal to fill up and target our object function
 myModal.addEventListener('show.bs.modal', function(e) {
-	console.log('show.bs.modal triggered for #'+e.target.id);
-	console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
+	e.target && console.log('show.bs.modal triggered for #'+e.target.id);
+	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
 }, false);
 
 

@@ -555,13 +555,18 @@ var modalInitJS = new Modal(myModal, {
 });
 
 // OR initialize with no options provided
-// the options obect is optional
+// the options object is optional
 var modalInitJS = new Modal(myModal);
 
 // when we click btnModal, open the modal
 btnModal.addEventListener('click', function(e){
   modalInitJS.show();
 }, false)
+
+// BONUS
+// since there is no triggering element, you might need
+// access to the initialization object from another application
+var findModalInitJS = myModal.Modal;
 </code></pre>
 
               <p>Here is what the above code does:</p>
@@ -569,7 +574,7 @@ btnModal.addEventListener('click', function(e){
 
               <p>Next we will initialize another triggering button, and attach a handler to it to change content of the modal when clicked.</p>
 
-<pre><code class="language-javascript">// the reiggering element
+<pre><code class="language-javascript">// the triggering element
 var btnModal2 = document.getElementById('openModalViaJS2');
 
 // set some custom content or get if from external sources
@@ -595,6 +600,10 @@ var secondModalContent =
 
 // initialize Modal for this triggering element
 var modalInitJS2 = new Modal(btnModal2, { backdrop: 'static' });
+
+// because we initialized the component for this button
+// this becomes the triggering element to hold the initialization object
+var modalInitJSInit2 = btnModal2.Modal;
 
 // now when we click this modal triggering element, we change the modal content
 btnModal2.addEventListener('click', function() {
