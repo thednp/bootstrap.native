@@ -29,6 +29,7 @@ var argv = require('yargs')
   },
   autoInitDataAPI: {
     type: 'boolean',
+    default: true,
     describe: 'Include the auto-initialization utility in the bundle'
   }  
 })
