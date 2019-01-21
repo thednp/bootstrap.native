@@ -26,7 +26,11 @@ var argv = require('yargs')
   only: {
     type: 'array',
     describe: 'Only include the given module(s) in the bundle'
-  }
+  },
+  autoInitDataAPI: {
+    type: 'boolean',
+    describe: 'Include the auto-initialization utility in the bundle'
+  }  
 })
 .coerce(['ignore', 'only'], getModuleNames)
 .help()
