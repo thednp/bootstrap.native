@@ -228,8 +228,8 @@
     },
     emulateTransitionEnd = function(element,handler){ // emulateTransitionEnd since 2.0.4
       var called = 0, duration = getTransitionDurationFromElement(element);
-      supportTransitions && one(element, transitionEndEvent, function(e){ handler(e); called = 1; });
-      setTimeout(function() { !called && handler(); }, duration + 17);
+      supportTransitions ? one(element, transitionEndEvent, function(e){ !called && handler(e), called = 1; })
+                         : setTimeout(function() { !called && handler(), called = 1; }, duration);
     },
     bootstrapCustomEvent = function (eventName, componentName, related) {
       var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
