@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.25 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.26 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -316,7 +316,7 @@
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
-  BSN.version = '2.0.25';
+  BSN.version = '2.0.26';
   
   /* Native Javascript for Bootstrap 3 | Affix
   -------------------------------------------*/

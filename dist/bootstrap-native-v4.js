@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 4 v2.0.25 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 4 v2.0.26 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -64,15 +64,12 @@
     dataPause         = 'data-pause',
     dataTitle         = 'data-title',
     dataOriginalTitle = 'data-original-title',
-    dataOriginalText  = 'data-original-text',
     dataDismissible   = 'data-dismissible',
     dataTrigger       = 'data-trigger',
     dataAnimation     = 'data-animation',
     dataContainer     = 'data-container',
     dataPlacement     = 'data-placement',
     dataDelay         = 'data-delay',
-    dataOffsetTop     = 'data-offset-top',
-    dataOffsetBottom  = 'data-offset-bottom',
   
     // option keys
     backdrop = 'backdrop', keyboard = 'keyboard', delay = 'delay',
@@ -319,7 +316,7 @@
       arrowLeft && (arrow[style][left] = arrowLeft + 'px');
     };
   
-  BSN.version = '2.0.25';
+  BSN.version = '2.0.26';
   
   /* Native Javascript for Bootstrap 4 | Alert
   -------------------------------------------*/
