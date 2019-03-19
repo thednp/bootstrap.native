@@ -23,10 +23,9 @@
       font-weight: bold;
   }
 }
-.dropdown-menu .dropdown-menu {
-    top: -1px;
-    left: 100%;
-    margin: 0 0 0 3px;
+.dropright .dropdown-menu,
+.dropleft .dropdown-menu {
+  top: -1px;
 }
 
 @media (max-width: 575px) {
