@@ -1,14 +1,16 @@
 {
   "name": "bootstrap.native",
   "version": "2.0.26",
-  "description": "Native Javascript for Bootstrap, the sweetest Javascript library without jQuery.",
+  "description": "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.",
   "main": "dist/bootstrap-native.js",
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.js > dist/bootstrap-native.js && npm run build-min",
-    "build-v4": "node build-v4.js > dist/bootstrap-native-v4.js && npm run build-v4-min",
-    "build-min": "node build.js -m > dist/bootstrap-native.min.js",
-    "build-v4-min": "node build-v4.js -m > dist/bootstrap-native-v4.min.js",
+    "help": "node lib/build.js --help",
+    "build": "node lib/build.js -v 3 > dist/bootstrap-native.js && npm run build-min",
+    "build-v4": "node lib/build.js -v 4 > dist/bootstrap-native-v4.js && npm run build-v4-min",
+    "build-min": "node lib/build.js -m -v 3 > dist/bootstrap-native.min.js",
+    "build-v4-min": "node lib/build.js -m -v 4 > dist/bootstrap-native-v4.min.js",
     "watch": "onchange \"lib/*/**\" -i -- npm run build && npm run build-v4"
   },
   "repository": {

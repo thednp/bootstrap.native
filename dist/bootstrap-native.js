@@ -163,6 +163,9 @@
     transitionEndEvent = Webkit+Transition in HTML[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
     transitionDuration = Webkit+Duration in HTML[style] ? Webkit[toLowerCase]()+Transition+Duration : Transition[toLowerCase]()+Duration,
   
+    // touch since 2.0.26
+    touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove' },
+  
     // set new focus element since 2.0.3
     setFocus = function(element){
       element.focus ? element.focus() : element.setActive();
@@ -321,7 +324,7 @@
   /* Native Javascript for Bootstrap 3 | Affix
   -------------------------------------------*/
   
-  //AFFIX DEFINITION
+  // AFFIX DEFINITION
   var Affix = function(element, options) {
   
     // initialization element
@@ -662,6 +665,7 @@
     // bind, event targets
     var self = this, index = element.index = 0, timer = element.timer = 0, 
       isSliding = false, // isSliding prevents click event handlers when animation is running
+      isTouch = false, startXPosition = null, currentXPosition = null, endXPosition = null, // touch and event coordinates
       slides = getElementsByClassName(element,'item'), total = slides[length],
       slideDirection = this[direction] = left,
       controls = getElementsByClassName(element,component+'-control'),
@@ -725,6 +729,53 @@
         }
         self.slideTo( index ); //Do the slide
       },
+      // touch events
+      toggleTouchEvents = function(toggle){
+        toggle( element, touchEvents.move, touchMoveHandler );
+        toggle( element, touchEvents.end, touchEndHandler );
+      },  
+      touchDownHandler = function(e) {
+        if ( isTouch ) { return; } 
+          
+        startXPosition = parseInt(e.touches[0].pageX);
+  
+        if ( element.contains(e[target]) ) {
+          isTouch = true;
+          toggleTouchEvents(on);
+        }
+      },
+      touchMoveHandler = function(e) {
+        if ( !isTouch ) { e.preventDefault(); return; }
+  
+        currentXPosition = parseInt(e.touches[0].pageX);
+        
+        //cancel touch if more than one touches detected
+        if ( e.type === 'touchmove' && e.touches[length] > 1 ) {
+          e.preventDefault();
+          return false;
+        }
+      },
+      touchEndHandler = function(e) {
+        if ( !isTouch || isSliding ) { return }
+        
+        endXPosition = currentXPosition || parseInt( e.touches[0].pageX );
+  
+        if ( isTouch ) {
+          if ( (!element.contains(e[target]) || !element.contains(e.relatedTarget) ) && Math.abs(startXPosition - endXPosition) < 75 ) {
+            return false;
+          } else {
+            if ( currentXPosition < startXPosition ) {
+              index++;
+            } else if ( currentXPosition > startXPosition ) {
+              index--;        
+            }
+            isTouch = false;
+            self.slideTo(index);
+          }
+          toggleTouchEvents(off);            
+        }
+      },
+  
       // private methods
       isElementInScrollRange = function () {
         var rect = element[getBoundingClientRect](),
@@ -830,9 +881,11 @@
       if ( self[pause] && self[interval] ) {
         on( element, mouseHover[0], pauseHandler );
         on( element, mouseHover[1], resumeHandler );
-        on( element, 'touchstart', pauseHandler );
-        on( element, 'touchend', resumeHandler );
+        on( element, touchEvents.start, pauseHandler );
+        on( element, touchEvents.end, resumeHandler );
       }
+  
+      slides[length] > 1 && on( element, touchEvents.start, touchDownHandler );
     
       rightArrow && on( rightArrow, clickEvent, controlsHandler );
       leftArrow && on( leftArrow, clickEvent, controlsHandler );
@@ -938,8 +991,8 @@
     this.show = function() {
       if ( accordion ) {
         activeCollapse = queryElement('.'+component+'.'+inClass,accordion);
-        activeElement = activeCollapse && (queryElement('['+dataToggle+'="'+component+'"]['+dataTarget+'="#'+activeCollapse.id+'"]', accordion)
-                      || queryElement('['+dataToggle+'="'+component+'"][href="#'+activeCollapse.id+'"]',accordion) );
+        activeElement = activeCollapse && (queryElement('['+dataTarget+'="#'+activeCollapse.id+'"]', accordion)
+                      || queryElement('[href="#'+activeCollapse.id+'"]',accordion) );
       }
   
       if ( !collapse[isAnimating] || activeCollapse && !activeCollapse[isAnimating] ) {
@@ -1372,7 +1425,6 @@
         classString = 'class',
         div = 'div',
         fade = 'fade',
-        content = 'content',
         dataContent = 'data-content',
         dismissible = 'dismissible',
         closeBtn = '<button type="button" class="close">×</button>',
@@ -1403,8 +1455,8 @@
   
     // bind, content
     var self = this, 
-      titleString = element[getAttribute](dataTitle) || null,
-      contentString = element[getAttribute](dataContent) || null;
+      titleString = options.title || element[getAttribute](dataTitle) || null,
+      contentString = options.content || element[getAttribute](dataContent) || null;
   
     if ( !contentString && !this[template] ) return; // invalidate
   
@@ -1548,12 +1600,14 @@
   
     // set options
     options = options || {};
-    if ( !options[target] && !targetData ) { return; } // invalidate
+  
+    // invalidate
+    if ( !options[target] && !targetData ) { return; } 
   
     // event targets, constants
     var self = this, spyTarget = options[target] && queryElement(options[target]) || targetData,
         links = spyTarget && spyTarget[getElementsByTagName]('A'),
-        offset = parseInt(offsetData || options['offset']) || 10,      
+        offset = parseInt(options['offset'] || offsetData) || 10,      
         items = [], targetItems = [], scrollOffset,
         scrollTarget = element[offsetHeight] < element[scrollHeight] ? element : globalObject, // determine which is the real scrollTarget
         isWindow = scrollTarget === globalObject;  
@@ -1911,7 +1965,7 @@
   
   
   
-  /* Native Javascript for Bootstrap 3 | Initialize Data API
+  /* Native Javascript for Bootstrap | Initialize Data API
   --------------------------------------------------------*/
   var initializeDataAPI = function( constructor, collection ){
       for (var i=0, l=collection[length]; i<l; i++) {
