@@ -575,52 +575,52 @@
         }
         self.slideTo( index ); //Do the slide
       },
-        // touch events
-        toggleTouchEvents = function(toggle){
-          toggle( element, touchEvents.move, touchMoveHandler );
-          toggle( element, touchEvents.end, touchEndHandler );
-        },  
-        touchDownHandler = function(e) {
-          if ( isTouch ) { return; } 
-            
-          startXPosition = parseInt(e.touches[0].pageX);
-  
-          if ( element.contains(e[target]) ) {
-            isTouch = true;
-            toggleTouchEvents(on);
-          }
-        },
-        touchMoveHandler = function(e) {
-          if ( !isTouch ) { e.preventDefault(); return; }
-  
-          currentXPosition = parseInt(e.touches[0].pageX);
+      // touch events
+      toggleTouchEvents = function(toggle){
+        toggle( element, touchEvents.move, touchMoveHandler );
+        toggle( element, touchEvents.end, touchEndHandler );
+      },  
+      touchDownHandler = function(e) {
+        if ( isTouch ) { return; } 
           
-          //cancel touch if more than one touches detected
-          if ( e.type === 'touchmove' && e.touches[length] > 1 ) {
-            e.preventDefault();
+        startXPosition = parseInt(e.touches[0].pageX);
+  
+        if ( element.contains(e[target]) ) {
+          isTouch = true;
+          toggleTouchEvents(on);
+        }
+      },
+      touchMoveHandler = function(e) {
+        if ( !isTouch ) { e.preventDefault(); return; }
+  
+        currentXPosition = parseInt(e.touches[0].pageX);
+        
+        //cancel touch if more than one touches detected
+        if ( e.type === 'touchmove' && e.touches[length] > 1 ) {
+          e.preventDefault();
+          return false;
+        }
+      },
+      touchEndHandler = function(e) {
+        if ( !isTouch || isSliding ) { return }
+        
+        endXPosition = currentXPosition || parseInt( e.touches[0].pageX );
+  
+        if ( isTouch ) {
+          if ( (!element.contains(e[target]) || !element.contains(e.relatedTarget) ) && Math.abs(startXPosition - endXPosition) < 75 ) {
             return false;
-          }
-        },
-        touchEndHandler = function(e) {
-          if ( !isTouch || isSliding ) { return }
-          
-          endXPosition = currentXPosition || parseInt( e.touches[0].pageX );
-  
-          if ( isTouch ) {
-            if ( (!element.contains(e[target]) || !element.contains(e.relatedTarget) ) && Math.abs(startXPosition - endXPosition) < 75 ) {
-              return false;
-            } else {
-              if ( currentXPosition < startXPosition ) {
-                index++;
-              } else if ( currentXPosition > startXPosition ) {
-                index--;        
-              }
-              isTouch = false;
-              self.slideTo(index);
+          } else {
+            if ( currentXPosition < startXPosition ) {
+              index++;
+            } else if ( currentXPosition > startXPosition ) {
+              index--;        
             }
-            toggleTouchEvents(off);            
+            isTouch = false;
+            self.slideTo(index);
           }
-        },
+          toggleTouchEvents(off);            
+        }
+      },
   
       // private methods
       isElementInScrollRange = function () {
