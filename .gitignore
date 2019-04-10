@@ -1,2 +1,3 @@
-node_modules/
+.npmignore
 .vscode/
+node_modules/
