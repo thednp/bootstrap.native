@@ -1032,7 +1032,7 @@
     this[keyboard] = options[keyboard] === false || modal[getAttribute](dataKeyboard) === 'false' ? false : true;
     this[backdrop] = options[backdrop] === staticString || modal[getAttribute](databackdrop) === staticString ? staticString : true;
     this[backdrop] = options[backdrop] === false || modal[getAttribute](databackdrop) === 'false' ? false : this[backdrop];
-    this[animation] = options[animation] === false || modal[getAttribute](animation) === 'false' ? false : true;
+    this[animation] = hasClass(modal, 'fade') ? true : false;
     this[content]  = options[content]; // JavaScript only
   
     // bind, constants, event targets and other vars
