@@ -911,7 +911,9 @@
   
       // handlers
       dismissHandler = function(e) {
-        var eventTarget = e[target], hasData = eventTarget && (stringDropdown in eventTarget || stringDropdown in eventTarget[parentNode]);
+        var eventTarget = e[target], hasData = eventTarget && (eventTarget[getAttribute](dataToggle) 
+                              || eventTarget[parentNode] && getAttribute in eventTarget[parentNode] 
+                              && eventTarget[parentNode][getAttribute](dataToggle));
         if ( (eventTarget === menu || menu[contains](eventTarget)) && (self.persist || hasData) ) { return; }
         else {
           relatedTarget = eventTarget === element || element[contains](eventTarget) ? element : null;
