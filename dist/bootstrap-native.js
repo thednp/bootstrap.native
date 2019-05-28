@@ -1233,8 +1233,6 @@
         scrollBarWidth = measureScrollbar();
       },
       createOverlay = function() {
-        modalOverlay = 1;
-  
         var newOverlay = DOC[createElement]('div');
         overlay = queryElement('.'+modalBackdropString);
   
@@ -1243,6 +1241,7 @@
           overlay = newOverlay;
           DOC[body][appendChild](overlay);
         }
+        modalOverlay = 1;
       },
       removeOverlay = function() {
         overlay = queryElement('.'+modalBackdropString);
@@ -1250,7 +1249,6 @@
           modalOverlay = 0;
           DOC[body].removeChild(overlay); overlay = null;
         }
-        bootstrapCustomEvent.call(modal, hiddenEvent, component);
       },
       keydownHandlerToggle = function() {
         if (hasClass(modal,inClass)) {
@@ -1284,6 +1282,7 @@
       triggerHide = function() {
         modal[style].display = '';
         element && (setFocus(element));
+        bootstrapCustomEvent.call(modal, hiddenEvent, component);
   
         (function(){
           if (!getElementsByClassName(DOC,component+' '+inClass)[0]) {
@@ -1339,9 +1338,7 @@
         stringModal in currentOpen && currentOpen[stringModal].hide();
       }
   
-      if ( this[backdrop] ) {
-        !modalOverlay && createOverlay();
-      }
+      this[backdrop] && !modalOverlay && createOverlay();
   
       if ( overlay && modalOverlay && !hasClass(overlay,inClass)) {
         overlay[offsetWidth]; // force reflow to enable trasition
@@ -1360,7 +1357,7 @@
         modal[setAttribute](ariaHidden, false);
   
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
-      }, supportTransitions && overlay ? overlayDelay : 0);
+      }, supportTransitions && overlay && overlayDelay ? overlayDelay : 0);
     };
     this.hide = function() {
       bootstrapCustomEvent.call(modal, hideEvent, component);
@@ -1372,7 +1369,7 @@
   
       setTimeout(function(){
         hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
-      }, supportTransitions && overlay ? overlayDelay : 0);
+      }, supportTransitions && overlay && overlayDelay ? overlayDelay : 1);
     };
     this.setContent = function( content ) {
       queryElement('.'+component+'-content',modal)[innerHTML] = content;

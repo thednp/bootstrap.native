@@ -3,6 +3,18 @@ myModal.addEventListener('show.bs.modal', function(e) {
 	e.target && console.log('show.bs.modal triggered for #'+e.target.id);
 	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
 }, false);
+myModal.addEventListener('shown.bs.modal', function(e) {
+	e.target && console.log('shown.bs.modal triggered for #'+e.target.id);
+	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
+}, false);
+myModal.addEventListener('hide.bs.modal', function(e) {
+	e.target && console.log('hide.bs.modal triggered for #'+e.target.id);
+	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
+}, false);
+myModal.addEventListener('hidden.bs.modal', function(e) {
+	e.target && console.log('hidden.bs.modal triggered for #'+e.target.id);
+	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
+}, false);
 
 
 // Modal initialized with JavaScript
