@@ -93,6 +93,7 @@
   
     // event names
     clickEvent    = 'click',
+    focusEvent    = 'focus',
     hoverEvent    = 'hover',
     keydownEvent  = 'keydown',
     keyupEvent    = 'keyup',
@@ -202,16 +203,18 @@
     },
   
     // event attach jQuery style / trigger  since 1.2.0
-    on = function (element, event, handler) {
-      element.addEventListener(event, handler, false);
+    on = function (element, event, handler, options) {
+      options = options || false;
+      element.addEventListener(event, handler, options);
     },
-    off = function(element, event, handler) {
-      element.removeEventListener(event, handler, false);
+    off = function(element, event, handler, options) {
+      options = options || false;
+      element.removeEventListener(event, handler, options);
     },
-    one = function (element, event, handler) { // one since 2.0.4
+    one = function (element, event, handler, options) { // one since 2.0.4
       on(element, event, function handlerWrapper(e){
         handler(e);
-        off(element, event, handlerWrapper);
+        off(element, event, handlerWrapper, options);
       });
     },
     getTransitionDurationFromElement = function(element) {
@@ -907,6 +910,7 @@
         type(DOC, clickEvent, dismissHandler); 
         type(DOC, keydownEvent, preventScroll);
         type(DOC, keyupEvent, keyHandler);
+        type(DOC, focusEvent, dismissHandler, true);
       },
   
       // handlers
@@ -914,6 +918,9 @@
         var eventTarget = e[target], hasData = eventTarget && (eventTarget[getAttribute](dataToggle) 
                               || eventTarget[parentNode] && getAttribute in eventTarget[parentNode] 
                               && eventTarget[parentNode][getAttribute](dataToggle));
+        if ( e.type === focusEvent && (eventTarget === element || eventTarget === menu || menu[contains](eventTarget) ) ) {
+          return;
+        }
         if ( (eventTarget === menu || menu[contains](eventTarget)) && (self.persist || hasData) ) { return; }
         else {
           relatedTarget = eventTarget === element || element[contains](eventTarget) ? element : null;
@@ -938,7 +945,7 @@
           isInsideMenu = menu[contains](activeItem),
           isMenuItem = activeItem[parentNode] === menu || activeItem[parentNode][parentNode] === menu;          
   
-        if ( isMenuItem || isSameElement ) { // navigate up | down
+        if ( isMenuItem ) { // navigate up | down
           idx = isSameElement ? 0 
                               : key === 38 ? (idx>1?idx-1:0)
                               : key === 40 ? (idx<menuItems[length]-1?idx+1:idx) : idx;
