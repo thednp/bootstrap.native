@@ -97,8 +97,11 @@
     hoverEvent    = 'hover',
     keydownEvent  = 'keydown',
     keyupEvent    = 'keyup',
-    resizeEvent   = 'resize',
-    scrollEvent   = 'scroll',
+    resizeEvent   = 'resize', // passive
+    scrollEvent   = 'scroll', // passive
+    mouseHover = ('onmouseleave' in DOC) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
+    // touch since 2.0.26
+    touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove' }, // passive
     // originalEvents
     showEvent     = 'show',
     shownEvent    = 'shown',
@@ -147,7 +150,6 @@
     bottom     = 'bottom',
   
     // tooltip / popover
-    mouseHover = ('onmouseleave' in DOC) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|right)+/,
   
     // modal
@@ -159,9 +161,6 @@
     supportTransitions = Webkit+Transition in HTML[style] || Transition[toLowerCase]() in HTML[style],
     transitionEndEvent = Webkit+Transition in HTML[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
     transitionDuration = Webkit+Duration in HTML[style] ? Webkit[toLowerCase]()+Transition+Duration : Transition[toLowerCase]()+Duration,
-  
-    // touch since 2.0.26
-    touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove' },
   
     // set new focus element since 2.0.3
     setFocus = function(element){
@@ -215,8 +214,27 @@
       on(element, event, function handlerWrapper(e){
         handler(e);
         off(element, event, handlerWrapper, options);
-      });
+      }, options);
     },
+    // determine support for passive events
+    supportPassive = (function(){
+      // Test via a getter in the options object to see if the passive property is accessed
+      var result = false;
+      try {
+        var opts = Object.defineProperty({}, 'passive', {
+          get: function() {
+            result = true;
+          }
+        });
+        one(globalObject, null, opts);
+      } catch (e) {}
+  
+      return result;
+    }()),
+    // event options
+    // https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md#feature-detection
+    passiveHandler = supportPassive ? { passive: true } : false,
+    // transitions
     getTransitionDurationFromElement = function(element) {
       var duration = supportTransitions ? globalObject[getComputedStyle](element)[transitionDuration] : 0;
       duration = parseFloat(duration);
@@ -580,9 +598,9 @@
       },
       // touch events
       toggleTouchEvents = function(toggle){
-        toggle( element, touchEvents.move, touchMoveHandler );
-        toggle( element, touchEvents.end, touchEndHandler );
-      },  
+        toggle( element, touchEvents.move, touchMoveHandler, passiveHandler );
+        toggle( element, touchEvents.end, touchEndHandler, passiveHandler );
+    },  
       touchDownHandler = function(e) {
         if ( isTouch ) { return; } 
           
@@ -732,17 +750,18 @@
       if ( self[pause] && self[interval] ) {
         on( element, mouseHover[0], pauseHandler );
         on( element, mouseHover[1], resumeHandler );
-        on( element, touchEvents.start, pauseHandler );
-        on( element, touchEvents.end, resumeHandler );
-    }
+        on( element, touchEvents.start, pauseHandler, passiveHandler );
+        on( element, touchEvents.end, resumeHandler, passiveHandler );
+      }
     
-      slides[length] > 1 && on( element, touchEvents.start, touchDownHandler );
+      slides[length] > 1 && on( element, touchEvents.start, touchDownHandler, passiveHandler );
   
       rightArrow && on( rightArrow, clickEvent, controlsHandler );
       leftArrow && on( leftArrow, clickEvent, controlsHandler );
     
       indicator && on( indicator, clickEvent, indicatorHandler );
-      self[keyboard] === true && on( globalObject, keydownEvent, keyHandler );
+      self[keyboard] && on( globalObject, keydownEvent, keyHandler );
+  
     }
     if (self.getActiveIndex()<0) {
       slides[length] && addClass(slides[0],active);
@@ -1119,7 +1138,7 @@
         modal[isAnimating] = false;
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
   
-        on(globalObject, resizeEvent, self.update);
+        on(globalObject, resizeEvent, self.update, passiveHandler);
         on(modal, clickEvent, dismissHandler);
         on(DOC, keydownEvent, keyHandler);      
       },
@@ -1135,7 +1154,7 @@
             overlay && hasClass(overlay,'fade') ? (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay))
             : removeOverlay();
   
-            off(globalObject, resizeEvent, self.update);
+            off(globalObject, resizeEvent, self.update, passiveHandler);
             off(modal, clickEvent, dismissHandler);
             off(DOC, keydownEvent, keyHandler);
           }
@@ -1317,8 +1336,8 @@
     
     // bind, content
     var self = this, 
-      titleString = element[getAttribute](dataTitle) || null,
-      contentString = element[getAttribute](dataContent) || null;
+        titleString = options.title || element[getAttribute](dataTitle) || null,
+        contentString = options.content || element[getAttribute](dataContent) || null;
   
     if ( !contentString && !this[template] ) return; // invalidate
   
@@ -1338,8 +1357,10 @@
         timer = null; popover = null; 
       },
       createPopover = function() {
-        titleString = options.title || element[getAttribute](dataTitle) || null,
-        contentString = options.content || element[getAttribute](dataContent) || null;
+        titleString = options.title || element[getAttribute](dataTitle);
+        contentString = options.content || element[getAttribute](dataContent);
+        // fixing https://github.com/thednp/bootstrap.native/issues/233
+        contentString = contentString.trim();
   
         popover = DOC[createElement](div);
   
@@ -1368,6 +1389,7 @@
   
         } else {  // or create the popover from template
           var popoverTemplate = DOC[createElement](div);
+          self[template] = self[template].trim();
           popoverTemplate[innerHTML] = self[template];
           popover[innerHTML] = popoverTemplate.firstChild[innerHTML];
         }
@@ -1390,7 +1412,7 @@
           !self[dismissible] && type( element, 'blur', self.hide );
         }
         self[dismissible] && type( DOC, clickEvent, dismissibleHandler );     
-        type( globalObject, resizeEvent, self.hide );
+        type( globalObject, resizeEvent, self.hide, passiveHandler );
       },
   
       // triggers
@@ -1466,7 +1488,9 @@
   
     // set options
     options = options || {};
-    if ( !options[target] && !targetData ) { return; } // invalidate
+  
+    // invalidate
+    if ( !options[target] && !targetData ) { return; } 
   
     // event targets, constants
     var self = this, spyTarget = options[target] && queryElement(options[target]) || targetData,
@@ -1534,8 +1558,8 @@
   
     // init
     if ( !(stringScrollSpy in element) ) { // prevent adding event handlers twice
-      on( scrollTarget, scrollEvent, self.refresh );
-      on( globalObject, resizeEvent, self.refresh ); 
+      on( scrollTarget, scrollEvent, self.refresh, passiveHandler );
+      on( globalObject, resizeEvent, self.refresh, passiveHandler );
     }
     self.refresh();
     element[stringScrollSpy] = self;
@@ -1880,11 +1904,11 @@
       },
       // triggers
       showTrigger = function() {
-        on( globalObject, resizeEvent, self.hide );
+        on( globalObject, resizeEvent, self.hide, passiveHandler );
         bootstrapCustomEvent.call(element, shownEvent, component);
       },
       hideTrigger = function() {
-        off( globalObject, resizeEvent, self.hide );
+        off( globalObject, resizeEvent, self.hide, passiveHandler );
         removeToolTip();
         bootstrapCustomEvent.call(element, hiddenEvent, component);
       };

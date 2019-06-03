@@ -98,8 +98,11 @@
     hoverEvent    = 'hover',
     keydownEvent  = 'keydown',
     keyupEvent    = 'keyup',  
-    resizeEvent   = 'resize',
-    scrollEvent   = 'scroll',
+    resizeEvent   = 'resize', // passive
+    scrollEvent   = 'scroll', // passive
+    mouseHover = ('onmouseleave' in DOC) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
+    // touch since 2.0.26
+    touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove' }, // passive
     // originalEvents
     showEvent     = 'show',
     shownEvent    = 'shown',
@@ -151,7 +154,6 @@
     isIE8 = !('opacity' in HTML[style]),
   
     // tooltip / popover
-    mouseHover = ('onmouseleave' in DOC) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ],
     tipPositions = /\b(top|bottom|left|right)+/,
     
     // modal
@@ -163,9 +165,6 @@
     supportTransitions = Webkit+Transition in HTML[style] || Transition[toLowerCase]() in HTML[style],
     transitionEndEvent = Webkit+Transition in HTML[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
     transitionDuration = Webkit+Duration in HTML[style] ? Webkit[toLowerCase]()+Transition+Duration : Transition[toLowerCase]()+Duration,
-  
-    // touch since 2.0.26
-    touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove' },
   
     // set new focus element since 2.0.3
     setFocus = function(element){
@@ -224,8 +223,27 @@
       on(element, event, function handlerWrapper(e){
         handler(e);
         off(element, event, handlerWrapper, options);
-      });
+      }, options);
     },
+    // determine support for passive events
+    supportPassive = false || (function(){
+      // Test via a getter in the options object to see if the passive property is accessed
+      var result = false;
+      try {
+        var opts = Object.defineProperty({}, 'passive', {
+          get: function() {
+            result = true;
+          }
+        });
+        one(globalObject, null, opts);
+      } catch (e) {}
+  
+      return result;
+    }()),
+    // event options
+    // https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md#feature-detection
+    passiveHandler = supportPassive ? { passive: true } : false,
+    // transitions
     getTransitionDurationFromElement = function(element) {
       var duration = supportTransitions ? globalObject[getComputedStyle](element)[transitionDuration] : 0;
       duration = parseFloat(duration);
@@ -434,9 +452,9 @@
   
     // init
     if ( !(stringAffix in element ) ) { // prevent adding event handlers twice
-      on( globalObject, scrollEvent, self[update] );
-      !isIE8 && on( globalObject, resizeEvent, self[update] );
-    }
+      on( globalObject, scrollEvent, self[update], passiveHandler );
+      !isIE8 && on( globalObject, resizeEvent, self[update], passiveHandler );
+  }
     element[stringAffix] = self;
   
     self[update]();
@@ -734,9 +752,9 @@
       },
       // touch events
       toggleTouchEvents = function(toggle){
-        toggle( element, touchEvents.move, touchMoveHandler );
-        toggle( element, touchEvents.end, touchEndHandler );
-      },  
+        toggle( element, touchEvents.move, touchMoveHandler, passiveHandler );
+        toggle( element, touchEvents.end, touchEndHandler, passiveHandler );
+    },  
       touchDownHandler = function(e) {
         if ( isTouch ) { return; } 
           
@@ -805,7 +823,8 @@
       }, this[interval]);
     };
     this.slideTo = function( next ) {
-      if (isSliding) return; // when controled via methods, make sure to check again    
+      if (isSliding) return; // when controled via methods, make sure to check again
+  
       var activeItem = this.getActiveIndex(), // the current active
           orientation;
       
@@ -870,7 +889,7 @@
           if ( self[interval] && !hasClass(element,paused) ) {
             self.cycle();
           }
-          bootstrapCustomEvent.call(element, slidEvent, component, slides[next]); // here we go with the slid event
+          bootstrapCustomEvent.call(element, slidEvent, component, slides[next]);
         }, 100 );
       }
     };
@@ -884,11 +903,11 @@
       if ( self[pause] && self[interval] ) {
         on( element, mouseHover[0], pauseHandler );
         on( element, mouseHover[1], resumeHandler );
-        on( element, touchEvents.start, pauseHandler );
-        on( element, touchEvents.end, resumeHandler );
-      }
+        on( element, touchEvents.start, pauseHandler, passiveHandler );
+        on( element, touchEvents.end, resumeHandler, passiveHandler );
+    }
   
-      slides[length] > 1 && on( element, touchEvents.start, touchDownHandler );
+      slides[length] > 1 && on( element, touchEvents.start, touchDownHandler, passiveHandler );
     
       rightArrow && on( rightArrow, clickEvent, controlsHandler );
       leftArrow && on( leftArrow, clickEvent, controlsHandler );
@@ -1263,14 +1282,13 @@
           DOC[body].removeChild(overlay); overlay = null;
         }    
       },
-  
       // triggers
       triggerShow = function() {
         setFocus(modal);
         modal[isAnimating] = false;
         bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
   
-        on(globalObject, resizeEvent, self.update);
+        on(globalObject, resizeEvent, self.update, passiveHandler);
         on(modal, clickEvent, dismissHandler);
         on(DOC, keydownEvent, keyHandler);      
       },
@@ -1286,7 +1304,7 @@
             overlay && hasClass(overlay,'fade') ? (removeClass(overlay,inClass), emulateTransitionEnd(overlay,removeOverlay))
             : removeOverlay();
   
-            off(globalObject, resizeEvent, self.update);
+            off(globalObject, resizeEvent, self.update, passiveHandler);
             off(modal, clickEvent, dismissHandler);
             off(DOC, keydownEvent, keyHandler);    
           }
@@ -1490,8 +1508,10 @@
         timer = null; popover = null; 
       },
       createPopover = function() {
-        titleString = element[getAttribute](dataTitle); // check content again
-        contentString = element[getAttribute](dataContent);
+        titleString = options.title || element[getAttribute](dataTitle);
+        contentString = options.content || element[getAttribute](dataContent);
+        // fixing https://github.com/thednp/bootstrap.native/issues/233
+        contentString = contentString.replace(/^\s+|\s+$/g, '');      
   
         popover = DOC[createElement](div);
   
@@ -1516,6 +1536,7 @@
   
         } else {  // or create the popover from template
           var popoverTemplate = DOC[createElement](div);
+          self[template] = self[template].replace(/^\s+|\s+$/g, '');
           popoverTemplate[innerHTML] = self[template];
           popover[innerHTML] = popoverTemplate.firstChild[innerHTML];
         }
@@ -1538,7 +1559,7 @@
           !self[dismissible] && type( element, 'blur', self.hide );
         }
         self[dismissible] && type( DOC, clickEvent, dismissibleHandler );
-        !isIE8 && type( globalObject, resizeEvent, self.hide );
+        !isIE8 && type( globalObject, resizeEvent, self.hide, passiveHandler );
       },
   
       // triggers
@@ -1683,9 +1704,9 @@
   
     // init
     if ( !(stringScrollSpy in element) ) { // prevent adding event handlers twice
-      on( scrollTarget, scrollEvent, self.refresh );
-      !isIE8 && on( globalObject, resizeEvent, self.refresh ); 
-    }
+      on( scrollTarget, scrollEvent, self.refresh, passiveHandler );
+      !isIE8 && on( globalObject, resizeEvent, self.refresh, passiveHandler ); 
+  }
     self.refresh();
     element[stringScrollSpy] = self;
   };
@@ -1768,7 +1789,7 @@
         }
   
         if ( hasClass(nextContent, 'fade') ) {
-          setTimeout(function(){ // makes sure to go forward
+          setTimeout(function(){
             addClass(nextContent,inClass);
             emulateTransitionEnd(nextContent,triggerShow);
           },20);
@@ -1926,10 +1947,10 @@
       // triggers
       showTrigger = function() {
         bootstrapCustomEvent.call(element, shownEvent, component);
-        !isIE8 && on( globalObject, resizeEvent, self.hide );      
+        !isIE8 && on( globalObject, resizeEvent, self.hide, passiveHandler );      
       },
       hideTrigger = function() {
-        !isIE8 && off( globalObject, resizeEvent, self.hide );      
+        !isIE8 && off( globalObject, resizeEvent, self.hide, passiveHandler );      
         removeToolTip();
         bootstrapCustomEvent.call(element, hiddenEvent, component);
       };
