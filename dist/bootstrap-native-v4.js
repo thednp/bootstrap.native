@@ -1189,8 +1189,8 @@
             || clickTarget[getAttribute](dataDismiss) === component
             || clickTarget === modal && self[backdrop] !== staticString ) ) {
           self.hide(); relatedTarget = null;
+          e[preventDefault]();
         }
-        e[preventDefault]();
       };
   
     // public methods
