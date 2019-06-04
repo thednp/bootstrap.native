@@ -226,7 +226,7 @@
             result = true;
           }
         });
-        one(globalObject, null, opts);
+        one(globalObject, 'testPassive', null, opts);
       } catch (e) {}
   
       return result;

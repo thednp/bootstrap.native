@@ -226,7 +226,7 @@
       }, options);
     },
     // determine support for passive events
-    supportPassive = false || (function(){
+    supportPassive = (function(){
       // Test via a getter in the options object to see if the passive property is accessed
       var result = false;
       try {
@@ -235,7 +235,7 @@
             result = true;
           }
         });
-        one(globalObject, null, opts);
+        one(globalObject, 'testPassive', null, opts);
       } catch (e) {}
   
       return result;
