@@ -1202,7 +1202,7 @@
   
       clearTimeout(modalTimer);
       modalTimer = setTimeout(function(){
-        modal[isAnimating] = true;    
+        modal[isAnimating] = true;
         bootstrapCustomEvent.call(modal, showEvent, component, relatedTarget);
   
         // we elegantly hide any opened modal
@@ -1360,7 +1360,7 @@
         titleString = options.title || element[getAttribute](dataTitle);
         contentString = options.content || element[getAttribute](dataContent);
         // fixing https://github.com/thednp/bootstrap.native/issues/233
-        contentString = contentString.trim();
+        contentString = !!contentString ? contentString.trim() : null;
   
         popover = DOC[createElement](div);
   

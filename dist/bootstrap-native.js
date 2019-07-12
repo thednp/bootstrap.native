@@ -1392,7 +1392,7 @@
   
       clearTimeout(modalTimer);
       modalTimer = setTimeout(function(){
-        modal[isAnimating] = true;       
+        modal[isAnimating] = true;
         bootstrapCustomEvent.call(modal, hideEvent, component);
         overlay = queryElement('.'+modalBackdropString);
         overlayDelay = overlay && getTransitionDurationFromElement(overlay);
@@ -1511,7 +1511,7 @@
         titleString = options.title || element[getAttribute](dataTitle);
         contentString = options.content || element[getAttribute](dataContent);
         // fixing https://github.com/thednp/bootstrap.native/issues/233
-        contentString = contentString.replace(/^\s+|\s+$/g, '');      
+        contentString = !!contentString ? contentString.replace(/^\s+|\s+$/g, '') : null;
   
         popover = DOC[createElement](div);
   
