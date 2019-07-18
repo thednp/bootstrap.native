@@ -570,11 +570,10 @@
         
         if ( !label ) return; //react if a label or its immediate child is clicked
   
-        var eventTarget = e[target], // the button itself, the target of the handler function
-          labels = getElementsByClassName(eventTarget[parentNode],'btn'), // all the button group buttons
+        var labels = getElementsByClassName(label[parentNode],'btn'), // all the button group buttons
           input = label[getElementsByTagName](INPUT)[0];
   
-        if ( !input ) return; //return if no input found
+        if ( !input ) return; // return if no input found
   
         // manage the dom manipulation
         if ( input.type === 'checkbox' ) { //checkboxes
@@ -598,7 +597,8 @@
         }
   
         if ( input.type === 'radio' && !toggled ) { // radio buttons
-          if ( !input[checked] ) { // don't trigger if already active
+          // don't trigger if already active (the OR condition is a hack to check if the buttons were selected with key press and NOT mouse click)
+          if ( !input[checked] || (e.screenX === 0 && e.screenY == 0) ) {
             addClass(label,active);
             input[setAttribute](checked,checked);
             input[checked] = true;
@@ -630,8 +630,7 @@
       
       if ( !( stringButton in element ) ) { // prevent adding event handlers twice
         on( element, clickEvent, toggle );
-        queryElement('['+tabindex+']',element) && on( element, keyupEvent, keyHandler ), 
-                                                  on( element, keydownEvent, preventScroll );
+        on( element, keyupEvent, keyHandler ), on( element, keydownEvent, preventScroll );
       }
   
       // activate items on load

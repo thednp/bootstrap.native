@@ -409,7 +409,6 @@
         // strings
         component = 'button',
         checked = 'checked',
-        reset = 'reset',
         LABEL = 'LABEL',
         INPUT = 'INPUT',
   
@@ -427,11 +426,10 @@
         
         if ( !label ) return; //react if a label or its immediate child is clicked
   
-        var eventTarget = e[target], // the button itself, the target of the handler function
-          labels = getElementsByClassName(eventTarget[parentNode],'btn'), // all the button group buttons
+        var labels = getElementsByClassName(label[parentNode],'btn'), // all the button group buttons
           input = label[getElementsByTagName](INPUT)[0];
   
-        if ( !input ) return; //return if no input found
+        if ( !input ) return; // return if no input found
   
         // manage the dom manipulation
         if ( input.type === 'checkbox' ) { //checkboxes
@@ -455,8 +453,10 @@
         }
   
         if ( input.type === 'radio' && !toggled ) { // radio buttons
-          if ( !input[checked] ) { // don't trigger if already active
+          // don't trigger if already active (the OR condition is a hack to check if the buttons were selected with key press and NOT mouse click)
+          if ( !input[checked] || (e.screenX === 0 && e.screenY == 0) ) {
             addClass(label,active);
+            addClass(label,focusEvent);
             input[setAttribute](checked,checked);
             input[checked] = true;
             bootstrapCustomEvent.call(input, changeEvent, component); //trigger the change for the input
@@ -475,13 +475,24 @@
           }
         }
         setTimeout( function() { toggled = false; }, 50 );
+      },
+      focusHandler = function(e) {
+        addClass(e[target][parentNode],focusEvent);
+      },
+      blurHandler = function(e) {
+        removeClass(e[target][parentNode],focusEvent);
       };
   
     // init
     if ( !( stringButton in element ) ) { // prevent adding event handlers twice
       on( element, clickEvent, toggle );
-      queryElement('['+tabindex+']',element) && on( element, keyupEvent, keyHandler ), 
-                                                on( element, keydownEvent, preventScroll );    
+      on( element, keyupEvent, keyHandler ), on( element, keydownEvent, preventScroll );
+  
+      var allBtns = getElementsByClassName(element, 'btn');
+      for (var i=0; i<allBtns.length; i++) {
+        var input = allBtns[i][getElementsByTagName](INPUT)[0];
+        on( input, focusEvent, focusHandler), on( input, 'blur', blurHandler);
+      }    
     }
   
     // activate items on load
