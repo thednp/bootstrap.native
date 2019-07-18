@@ -261,8 +261,12 @@
     },
     styleTip = function(link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
       var elementDimensions = { w : element[offsetWidth], h: element[offsetHeight] },
-          windowWidth = (HTML[clientWidth] || DOC[body][clientWidth]),
-          windowHeight = (HTML[clientHeight] || DOC[body][clientHeight]),
+      windowOverflow = (HTML[offsetHeight] !== HTML.scrollHeight || HTML[offsetWidth] !== HTML.scrollWidth) 
+                    || (parent[offsetWidth] !== parent.scrollWidth || parent[offsetHeight] !== parent.scrollHeight),
+          parentStyle = globalObject[getComputedStyle](link[parentNode]),
+          parentIsCenterAligned = parentStyle.alignItems === 'center' && parentStyle.justifyContent === 'center' && parentStyle.display === 'flex',
+          windowWidth = HTML[offsetWidth],
+          windowHeight = HTML[offsetHeight],
           rect = link[getBoundingClientRect](),
           scroll = parent === DOC[body] ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
@@ -327,8 +331,8 @@
           leftPosition = windowWidth - elementDimensions.w*1.01;
           arrowLeft = elementDimensions.w - ( windowWidth - rect[left] ) + linkDimensions.w/2 - arrowWidth/2;
         } else {
-          leftPosition = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
-          arrowLeft = elementDimensions.w/2 - arrowWidth/2;
+          leftPosition = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + ( !isPopover && parentIsCenterAligned && windowOverflow ? arrowWidth/2 : 0 );
+          arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth : arrowWidth/2 );
         }
       }
   
