@@ -84,7 +84,8 @@
     clientWidth  = 'clientWidth',    clientHeight   = 'clientHeight',
     offsetWidth  = 'offsetWidth',    offsetHeight   = 'offsetHeight',
     innerWidth   = 'innerWidth',     innerHeight    = 'innerHeight',
-    scrollHeight = 'scrollHeight',   height         = 'height',
+    scrollHeight = 'scrollHeight',   scrollWidth    = 'scrollWidth',
+    height         = 'height',
   
     // aria
     ariaExpanded = 'aria-expanded',
@@ -259,16 +260,18 @@
         x : globalObject.pageXOffset || HTML[scrollLeft]
       }
     },
-    styleTip = function(link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
+    styleTip = function(link, element, position, parentObject) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
       var elementDimensions = { w : element[offsetWidth], h: element[offsetHeight] },
-      windowOverflow = (HTML[offsetHeight] !== HTML.scrollHeight || HTML[offsetWidth] !== HTML.scrollWidth) 
-                    || (parent[offsetWidth] !== parent.scrollWidth || parent[offsetHeight] !== parent.scrollHeight),
-          parentStyle = globalObject[getComputedStyle](link[parentNode]),
-          parentIsCenterAligned = parentStyle.alignItems === 'center' && parentStyle.justifyContent === 'center' && parentStyle.display === 'flex',
-          windowWidth = HTML[offsetWidth],
-          windowHeight = HTML[offsetHeight],
+          parentIsBody = parentObject[parentNode] === DOC[body],
+          windowOverflow = parentIsBody ? (parentObject[parentNode+offsetHeight] !== parentObject[parentNode+clientHeight] || parentObject[parentNode+offsetWidth] !== parentObject[parentNode+clientWidth])
+                                        : (parentObject[offsetHeight] !== parentObject[clientHeight] || parentObject[offsetWidth] !== parentObject[clientWidth]),
+          linkParentStyle = globalObject[getComputedStyle](link[parentNode]),
+          parentIsCenterAligned = linkParentStyle.alignItems === 'center' && linkParentStyle.justifyContent === 'center' && linkParentStyle.display === 'flex',
+          windowWidth = parentObject[parentNode+clientWidth],
+          windowHeight = parentObject[parentNode+clientHeight],
           rect = link[getBoundingClientRect](),
-          scroll = parent === DOC[body] ? getScroll() : { x: parent[offsetLeft] + parent[scrollLeft], y: parent[offsetTop] + parent[scrollTop] },
+          scroll = parentIsBody ? getScroll() : { x: parentObject[offsetLeft] + parentObject[scrollLeft], 
+                                                  y: parentObject[offsetTop] + parentObject[scrollTop] },
           linkDimensions = { w: rect[right] - rect[left], h: rect[bottom] - rect[top] },
           isPopover = hasClass(element,'popover'),
           topPosition, leftPosition,
@@ -331,7 +334,7 @@
           leftPosition = windowWidth - elementDimensions.w*1.01;
           arrowLeft = elementDimensions.w - ( windowWidth - rect[left] ) + linkDimensions.w/2 - arrowWidth/2;
         } else {
-          leftPosition = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + ( !isPopover && parentIsCenterAligned && windowOverflow ? arrowWidth/2 : 0 );
+          leftPosition = rect[left] + scroll.x - elementDimensions.w/2 + linkDimensions.w/2 + ( !isPopover && parentIsCenterAligned && !windowOverflow ? arrowWidth/2 : 0 );
           arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth : arrowWidth/2 );
         }
       }
@@ -1357,7 +1360,7 @@
     if ( !contentString && !this[template] ) return; // invalidate
   
     // constants, vars
-    var popover = null, timer = 0, placementSetting = this[placement],
+    var popover = null, timer = 0, placementSetting = this[placement], parentObject = {},
       
       // handlers
       dismissibleHandler = function(e) {
@@ -1387,6 +1390,21 @@
         if ( contentString !== null && self[template] === null ) { //create the popover from data attributes
   
           popover[setAttribute]('role','tooltip');
+  
+          // for some reason the parent dimensions are skewed when tooltip is shown
+          parentObject[parentNode] = self[container];
+          parentObject[offsetLeft] = self[container][offsetLeft];
+          parentObject[offsetTop] = self[container][offsetTop];
+          parentObject[offsetWidth] = self[container][offsetWidth];
+          parentObject[offsetHeight] = self[container][offsetHeight];
+          parentObject[clientWidth] = self[container][clientWidth];
+          parentObject[clientHeight] = self[container][clientHeight];
+          parentObject[scrollLeft] = self[container][scrollLeft];          
+          parentObject[scrollTop] = self[container][scrollTop];          
+          parentObject[parentNode+offsetWidth] = HTML[offsetWidth];
+          parentObject[parentNode+offsetHeight] = HTML[offsetHeight];
+          parentObject[parentNode+clientWidth] = HTML[clientWidth];
+          parentObject[parentNode+clientHeight] = HTML[clientHeight];        
   
           if (titleString !== null) {
             var popoverTitle = DOC[createElement]('h3');
@@ -1418,7 +1436,7 @@
         !hasClass(popover,showClass) && ( addClass(popover,showClass) );
       },
       updatePopover = function() {
-        styleTip(element,popover,placementSetting,self[container]);
+        styleTip(element, popover, placementSetting, parentObject);
       },
   
       // event toggle
@@ -1882,8 +1900,8 @@
                     : modal ? modal : DOC[body];
   
     // bind, event targets, title and constants
-    var self = this, timer = 0, placementSetting = this[placement], tooltip = null,
-      titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle);
+    var self = this, timer = 0, placementSetting = this[placement], tooltip = null, parentObject = {},
+        titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle);
   
     if ( !titleString || titleString == "" ) return; // invalidate
   
@@ -1894,25 +1912,42 @@
       },
       createToolTip = function() {
         titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle); // read the title again
-        if ( !titleString || titleString == "" ) return false; // invalidate
-        tooltip = DOC[createElement](div);
-        tooltip[setAttribute]('role',component);
   
-        // tooltip arrow
-        var tooltipArrow = DOC[createElement](div);
-        tooltipArrow[setAttribute](classString,'arrow');
-        tooltip[appendChild](tooltipArrow);
-    
-        var tooltipInner = DOC[createElement](div);
-        tooltipInner[setAttribute](classString,component+'-inner');
-        tooltip[appendChild](tooltipInner);
-        tooltipInner[innerHTML] = titleString;
+        // for some reason the parent dimensions are skewed when tooltip is shown
+        parentObject[parentNode] = self[container];
+        parentObject[offsetLeft] = self[container][offsetLeft];
+        parentObject[offsetTop] = self[container][offsetTop];
+        parentObject[offsetWidth] = self[container][offsetWidth];
+        parentObject[offsetHeight] = self[container][offsetHeight];
+        parentObject[clientWidth] = self[container][clientWidth];
+        parentObject[clientHeight] = self[container][clientHeight];
+        parentObject[scrollLeft] = self[container][scrollLeft];
+        parentObject[scrollTop] = self[container][scrollTop];
+        parentObject[parentNode+offsetWidth] = HTML[offsetWidth];
+        parentObject[parentNode+offsetHeight] = HTML[offsetHeight];
+        parentObject[parentNode+clientWidth] = HTML[clientWidth];
+        parentObject[parentNode+clientHeight] = HTML[clientHeight];
   
-        self[container][appendChild](tooltip);
-        tooltip[setAttribute](classString, component + ' bs-' + component+'-'+placementSetting + ' ' + self[animation]);
+        if ( titleString && titleString !== "" ) { // invalidate, maybe markup changed
+          tooltip = DOC[createElement](div);
+          tooltip[setAttribute]('role',component);
+  
+          // tooltip arrow
+          var tooltipArrow = DOC[createElement](div);
+          tooltipArrow[setAttribute](classString,'arrow');
+          tooltip[appendChild](tooltipArrow);
+      
+          var tooltipInner = DOC[createElement](div);
+          tooltipInner[setAttribute](classString,component+'-inner');
+          tooltip[appendChild](tooltipInner);
+          tooltipInner[innerHTML] = titleString;
+  
+          self[container][appendChild](tooltip);
+          tooltip[setAttribute](classString, component + ' bs-' + component+'-'+placementSetting + ' ' + self[animation]);
+        }
       },
       updateTooltip = function () {
-        styleTip(element,tooltip,placementSetting,self[container]);
+        styleTip(element, tooltip, placementSetting, parentObject);
       },
       showTooltip = function () {
         !hasClass(tooltip,showClass) && ( addClass(tooltip,showClass) );
@@ -1934,11 +1969,13 @@
       timer = setTimeout( function() {
         if (tooltip === null) {
           placementSetting = self[placement]; // we reset placement in all cases
-          if(createToolTip() == false) return;
-          updateTooltip();
-          showTooltip();
-          bootstrapCustomEvent.call(element, showEvent, component);
-          !!self[animation] ? emulateTransitionEnd(tooltip, showTrigger) : showTrigger();
+          // if(createToolTip() == false) return;
+          if(createToolTip() !== false) {
+            updateTooltip();
+            showTooltip();
+            bootstrapCustomEvent.call(element, showEvent, component);
+            !!self[animation] ? emulateTransitionEnd(tooltip, showTrigger) : showTrigger();          
+          }
         }
       }, 20 );
     };
