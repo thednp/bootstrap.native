@@ -66,18 +66,18 @@
         <nav id="bs-navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="v4.html" data-toggle="tooltip" title="Switch to V4">V4</a></li>
-            <li class="dropdown"><a href="#" data-toggle="dropdown">Github <span class="caret"></span></a>
+            <li class="dropdown"><a href="#" data-toggle="dropdown" aria-expanded="false">Github <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="https://github.com/thednp/bootstrap.native/">Fork</a></li>
                 <li><a href="https://github.com/thednp/bootstrap.native/wiki">Wiki</a></li>
                 <li><a href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a></li>
               </ul>
             </li>
-            <li class="dropdown"><a href="#" data-toggle="dropdown">Share <span class="caret"></span></a>
+            <li class="dropdown"><a href="#" data-toggle="dropdown" aria-expanded="false">Share <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://thednp.github.io/bootstrap.native/index.html" title="Share Native JavaScript for Bootstrap on Facebook">Facebook</a></li>
+                <li><a target="_blank" rel="noreferrer" href="https://www.facebook.com/sharer/sharer.php?u=http://thednp.github.io/bootstrap.native/index.html" title="Share Native JavaScript for Bootstrap on Facebook">Facebook</a></li>
                 <li>
-                  <a target="_blank"
+                  <a target="_blank" rel="noreferrer"
                     href="https://twitter.com/home?status=Spread the word about %23BootstrapNative by @dnp_theme and download here http://thednp.github.io/bootstrap.native/index.html"
                     title="Share Native JavaScript for Bootstrap on Twitter">Twitter</a>
                 </li>
@@ -103,7 +103,7 @@
             <div class="carousel-caption slide">
               <h2>A better way to Bootstrap</h2>
               <p>The jQuery plugins for Bootstrap 3 redeveloped with native JavaScript, providing same basic functionality, but lighter in size and delivering higher performance for your application.</p>
-              <p><a class="btn btn-lg btn-default btn-empty" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a> <a class="btn btn-lg btn-info" href="https://github.com/thednp/bootstrap.native/wiki" target="_blank" role="button">Wiki</a></p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a> <a class="btn btn-lg btn-info" rel="noreferrer" href="https://github.com/thednp/bootstrap.native/wiki" target="_blank" role="button">Wiki</a></p>
             </div>
           </div>
         </div>
@@ -112,10 +112,10 @@
           <div class="container">
             <div class="carousel-caption">
               <h2>New to native JavaScript?</h2>
-              <p>Have no worry, the internet is full of scripts and tutorials, <a href="http://vanilla-js.com/" target="_blank">native JavaScript</a> is the coolest programing language ever! Far more powerful and
+              <p>Have no worry, the internet is full of scripts and tutorials, <a href="http://vanilla-js.com/" rel="noreferrer" target="_blank">native JavaScript</a> is the coolest programing language ever! Far more powerful and
                 requires almost <b>zero</b> maintenance on very long periods of time.</p>
-              <p><a class="btn btn-lg btn-default btn-empty" href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank" role="button">Get started</a>
-                <a class="btn btn-lg btn-default btn-empty" href="http://jstherightway.org" role="button" target="_blank">Full Reference</a></p>
+              <p><a class="btn btn-lg btn-default btn-empty" href="http://blog.garstasio.com/you-dont-need-jquery/" rel="noreferrer" target="_blank" role="button">Get started</a>
+                <a class="btn btn-lg btn-default btn-empty" href="http://jstherightway.org" role="button" rel="noreferrer" target="_blank">Full Reference</a></p>
             </div>
           </div>
         </div>
@@ -124,7 +124,7 @@
           <div class="container">
             <div class="carousel-caption">
               <h2>HTML5 inside</h2>
-              <p>This library have been developed for today's standards, for a workflow careless about legacy browsers thanks to <a href="https://polyfill.io" target="_blank">polyfill services</a> and other
+              <p>This library have been developed for today's standards, for a workflow careless about legacy browsers thanks to <a rel="noreferrer" href="https://polyfill.io" target="_blank">polyfill services</a> and other
                 available options to support legacy browsers.</p>
               <p><a class="btn btn-lg btn-default btn-empty" href="https://github.com/thednp/bootstrap.native/wiki/Browser-support" role="button">More</a></p>
             </div>
@@ -136,7 +136,7 @@
             <div class="carousel-caption">
               <h2>What's the fuzz?</h2>
               <p>If you use mainly Bootstrap plugins in your projects, you may drop jQuery right away. Why load jQuery if you don't really need it? It's too old school!</p>
-              <p><a class="btn btn-lg btn-default btn-empty" href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">See Now</a></p>
+              <p><a class="btn btn-lg btn-default btn-empty" rel="noreferrer" href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">See Now</a></p>
             </div>
           </div>
         </div>
@@ -615,7 +615,7 @@ btnModal2.addEventListener('click', function() {
 </code></pre>
 
               <p>By changing the <code>innerHTML</code> of the <code>modal-header</code>, <code>modal-body</code> or <code>modal-footer</code> with variables, you can achieve exactly the same as the
-                <a href="http://getbootstrap.com/javascript/#modals-related-target" target="_blank">other examples</a> from the demo of the original plugin. So we use same modal, but with different content:</p>
+                <a href="http://getbootstrap.com/javascript/#modals-related-target" rel="noreferrer" target="_blank">other examples</a> from the demo of the original plugin. So we use same modal, but with different content:</p>
               <p><a id="openModalViaJS2" class="btn btn-default btn-lg">Open Modal</a></p>
 
               <p>Now if you go back to the previous triggering button and click it, you will notice that the modal is still like it was set by the second triggering button. Let's reset the modal content:</p>
@@ -935,40 +935,40 @@ makeMeDropdown.addEventListener('click', function(e){
                 <li class="dropdown">
                   <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" data-trigger="mouseover" aria-haspopup="true" role="button" aria-expanded="false">Pill <span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                  <li role="presentation"><a role="menuitem" href="#">Action</a></li>
-                  <li role="presentation"><a role="menuitem" href="#">Another action</a></li>
-                  <li role="presentation" class="dropdown">
-                    <a role="menuitem" href="#" data-toggle="dropdown">This is nesting <span class="caret"></span></a>
-                    <ul class="dropdown-menu right" role="menu" aria-labelledby="drop2">
-                      <li role="presentation"><a role="menuitem" href="#">Action</a></li>
-                      <li role="presentation"><a role="menuitem" href="#">Another action</a></li>
-                      <li role="presentation"><a role="menuitem" href="#">Something else here</a></li>
-                      <li role="presentation" class="divider"></li>
-                      <li role="presentation" class="dropdown">
-                        <a role="menuitem" href="#" data-toggle="dropdown">Sub-menu <span class="caret"></span></a>
-                        <ul class="dropdown-menu right" role="menu" aria-labelledby="drop3">
-                          <li role="presentation"><a role="menuitem" href="#">Level 1</a></li>
-                          <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
-                          <li role="presentation" class="dropdown">
-                            <a role="menuitem" href="#" data-toggle="dropdown">Other stuff <span class="caret"></span></a>
-                            <ul class="dropdown-menu right" role="menu" aria-labelledby="drop4">
-                              <li role="presentation"><a role="menuitem" href="#">Level 2</a></li>
-                              <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
-                              <li role="presentation" class="dropdown">
-                                <a role="menuitem" href="#" data-toggle="dropdown">Even more stuff <span class="caret"></span></a>
-                                <ul class="dropdown-menu right" role="menu" aria-labelledby="drop5">
-                                  <li role="presentation"><a role="menuitem" href="#">Level 3</a></li>
-                                  <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
-                                </ul>
-                              </li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
-                  <li role="presentation" class="divider"></li>
-                  <li role="presentation"><a role="menuitem" href="http://google.cn" target="_blank">External link</a></li>
+                    <li role="presentation"><a role="menuitem" href="#">Action</a></li>
+                    <li role="presentation"><a role="menuitem" href="#">Another action</a></li>
+                    <li role="presentation" class="dropdown">
+                      <a role="menuitem" href="#" data-toggle="dropdown" aria-expanded="false">This is nesting <span class="caret"></span></a>
+                      <ul class="dropdown-menu right" role="menu" aria-labelledby="drop2">
+                        <li role="presentation"><a role="menuitem" href="#">Action</a></li>
+                        <li role="presentation"><a role="menuitem" href="#">Another action</a></li>
+                        <li role="presentation"><a role="menuitem" href="#">Something else here</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation" class="dropdown">
+                          <a role="menuitem" href="#" data-toggle="dropdown" aria-expanded="false">Sub-menu <span class="caret"></span></a>
+                          <ul class="dropdown-menu right" role="menu" aria-labelledby="drop3">
+                            <li role="presentation"><a role="menuitem" href="#">Level 1</a></li>
+                            <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
+                            <li role="presentation" class="dropdown">
+                              <a role="menuitem" href="#" data-toggle="dropdown" aria-expanded="false">Other stuff <span class="caret"></span></a>
+                              <ul class="dropdown-menu right" role="menu" aria-labelledby="drop4">
+                                <li role="presentation"><a role="menuitem" href="#">Level 2</a></li>
+                                <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
+                                <li role="presentation" class="dropdown">
+                                  <a role="menuitem" href="#" data-toggle="dropdown" aria-expanded="false">Even more stuff <span class="caret"></span></a>
+                                  <ul class="dropdown-menu right" role="menu" aria-labelledby="drop5">
+                                    <li role="presentation"><a role="menuitem" href="#">Level 3</a></li>
+                                    <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" href="http://google.cn" rel="noreferrer" target="_blank">External link</a></li>
                   </ul>
                 </li>
                 <li class="dropdown pull-right">
@@ -979,17 +979,17 @@ makeMeDropdown.addEventListener('click', function(e){
                     <li role="presentation"><a role="menuitem" href="#">Something else here</a></li>
                     <li role="presentation" class="divider"></li>
                     <li role="presentation" class="dropdown">
-                      <a role="menuitem" href="#" data-toggle="dropdown">Sub-menu <span class="caret"></span></a>
+                      <a role="menuitem" href="#" data-toggle="dropdown" aria-expanded="false">Sub-menu <span class="caret"></span></a>
                       <ul class="dropdown-menu left" role="menu" aria-labelledby="drop3">
                         <li role="presentation"><a role="menuitem" href="#">Level 1</a></li>
                         <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
                         <li role="presentation" class="dropdown">
-                          <a role="menuitem" href="#" data-toggle="dropdown">Other stuff <span class="caret"></span></a>
+                          <a role="menuitem" href="#" data-toggle="dropdown" aria-expanded="false">Other stuff <span class="caret"></span></a>
                           <ul class="dropdown-menu left" role="menu" aria-labelledby="drop4">
                             <li role="presentation"><a role="menuitem" href="#">Level 2</a></li>
                             <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
                             <li role="presentation" class="dropdown">
-                              <a role="menuitem" href="#" data-toggle="dropdown">Even more stuff <span class="caret"></span></a>
+                              <a role="menuitem" href="#" data-toggle="dropdown" aria-expanded="false">Even more stuff <span class="caret"></span></a>
                               <ul class="dropdown-menu left" role="menu" aria-labelledby="drop4">
                                 <li role="presentation"><a role="menuitem" href="#">Level 3</a></li>
                                 <li role="presentation"><a role="menuitem" href="#">Nested Menu</a></li>
@@ -1007,7 +1007,7 @@ makeMeDropdown.addEventListener('click', function(e){
 
           <section id="componentScrollspy">
             <h3>Scrollspy</h3>
-            <p>The <b>ScrollSpy</b> component inherits some of the <a href="http://getbootstrap.com/javascript/#scrollspy-usage" target="_blank">layout and other requirements</a> from the original jQuery plugin in some cases, while in other cases a special markup is required. The component offers public methods, the specific original event, and can be used with JavaScript as well as via DATA API.</p>
+            <p>The <b>ScrollSpy</b> component inherits some of the <a rel="noreferrer" href="http://getbootstrap.com/javascript/#scrollspy-usage" target="_blank">layout and other requirements</a> from the original jQuery plugin in some cases, while in other cases a special markup is required. The component offers public methods, the specific original event, and can be used with JavaScript as well as via DATA API.</p>
             <p>The component will initialize for each element with <code>data-spy="scroll"</code> attribute, but will not work if the above requirements are not met or the anchors don't reference the containers accordingly.</p>
 
             <section id="scrollspyOptions">
@@ -1077,7 +1077,7 @@ makeMeDropdown.addEventListener('click', function(e){
             <section id="scrollspyUsage">
               <h4>Usage</h4>
               <h5>Via DATA API</h5>
-              <p>To initialize <b>ScrollSpy</b>, remember the <a href="http://getbootstrap.com/javascript/#scrollspy-usage" target="_blank">requirements</a> from the original jQuery plugin. The component can initialize any element with <code>overflow: auto|scroll</code> and a fixed height, or the <code>&lt;body&gt;</code> or an immediate child element. For the second case we need some special HTML markup in order to initialize and the appropriate styling for its containers.</p>
+              <p>To initialize <b>ScrollSpy</b>, remember the <a rel="noreferrer" href="http://getbootstrap.com/javascript/#scrollspy-usage" target="_blank">requirements</a> from the original jQuery plugin. The component can initialize any element with <code>overflow: auto|scroll</code> and a fixed height, or the <code>&lt;body&gt;</code> or an immediate child element. For the second case we need some special HTML markup in order to initialize and the appropriate styling for its containers.</p>
 
               <p>An <b>overflowing element</b> that has set <code>overflow: auto|scroll</code> style rule:</p>
               <ul>
@@ -1243,7 +1243,7 @@ myScrollSpyInit.refresh();
                     <li class=""><a href="#first">Tumblr farm</a></li>
                     <li class=""><a href="#second">Carles aesthetic</a></li>
                     <li class="dropdown">
-                      <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">More Items <span class="caret"></span></a>
+                      <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">More Items <span class="caret"></span></a>
                       <ul class="dropdown-menu" role="menu">
                         <li class=""><a href="#one">one</a></li>
                         <li class=""><a href="#two">two</a></li>
@@ -1305,7 +1305,7 @@ myScrollSpyInit.refresh();
                   </tbody>
                 </table>
               </div>
-              <p>When you set the option to <code>true</code>, this enables a custom functionality that assumes you are using the styling of the <b>Collapse</b> component, and the <a href="https://github.com/twbs/bootstrap/blob/v3-dev/less/component-animations.less" target="_blank">component animations</a> styling.</p>
+              <p>When you set the option to <code>true</code>, this enables a custom functionality that assumes you are using the styling of the <b>Collapse</b> component, and the <a rel="noreferrer" href="https://github.com/twbs/bootstrap/blob/v3-dev/less/component-animations.less" target="_blank">component animations</a> styling.</p>
               <p><b>Please note</b> that in certain layouts you may need to use the <code>clearfix</code> class for your <code>&lt;div class="tab-content"&gt;</code> element to avoid inconsistent transitions. The option has no effect on legacy browsers.</p>
             </section>
 
@@ -1539,7 +1539,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                 </table>
               </div>
               <p>If a tooltip is a child element of a modal, a <code>&lt;nav class="navbar-fixed-top"&gt;</code> or a <code>&lt;nav class="navbar-fixed-bottom"&gt;</code>, the <code>container</code> option is set automatically to target that specific parent starting with version 2.0.6.</p>
-              <p>Starting with version 2.0.19, in addition to automatic repositioning, the component will try to make sure the tooltips are always in the viewport as some <a href="https://popper.js.org/" target="_blank">Popper.js</a> functionality have been <a href="https://github.com/thednp/bootstrap.native/issues/158">implemented</a> into both V3 and V4 versions.</p>
+              <p>Starting with version 2.0.19, in addition to automatic repositioning, the component will try to make sure the tooltips are always in the viewport as some <a rel="noreferrer" href="https://popper.js.org/" target="_blank">Popper.js</a> functionality have been <a href="https://github.com/thednp/bootstrap.native/issues/158">implemented</a> into both V3 and V4 versions.</p>
             </section>
 
             <section id="tooltipMethods">
@@ -1771,7 +1771,7 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
               </div>
               <p>If a popover is a child element of a modal, a <code>&lt;nav class="navbar-fixed-top"&gt;</code> or a <code>&lt;nav class="navbar-fixed-bottom"&gt;</code> element, the <code>container</code> option is set automatically to target that specific parent starting with version 2.0.6.</p>
             <p>If a proper template is not specified via JavaScript or the content option is not set in any way, the <b>Popover</b> will not be initialized.</p>
-            <p>Starting with version 2.0.19, in addition to automatic repositioning, the component will try to make sure the popovers are always in the viewport as some <a href="https://popper.js.org/" target="_blank">Popper.js</a> functionality have been <a href="https://github.com/thednp/bootstrap.native/issues/158">implemented</a> into both V3 and V4 versions.</p>
+            <p>Starting with version 2.0.19, in addition to automatic repositioning, the component will try to make sure the popovers are always in the viewport as some <a rel="noreferrer" href="https://popper.js.org/" target="_blank">Popper.js</a> functionality have been <a href="https://github.com/thednp/bootstrap.native/issues/158">implemented</a> into both V3 and V4 versions.</p>
 
             </section>
 
@@ -2057,7 +2057,7 @@ myAlertInit.close();
           <section id="componentButton">
             <h3>Button</h3>
             <p>The <b>Button</b> component provides text/stateful switch and toggle checkboxes and radio buttons for button groups. The component provides a custom event for the button groups' toggling, not covered by the original jQuery Plugin.</p>
-            <p><b>Button</b> doesn't cover <a href="http://getbootstrap.com/javascript/#buttons-single-toggle" target="_blank">single toggle</a> feature. The supported toggle feature could very much fill the same purpose.</p>
+            <p><b>Button</b> doesn't cover <a rel="noreferrer" href="http://getbootstrap.com/javascript/#buttons-single-toggle" target="_blank">single toggle</a> feature. The supported toggle feature could very much fill the same purpose.</p>
             <section id="buttonOptions">
               <h4>Options</h4>
               <div class="table-responsive">
@@ -3175,7 +3175,7 @@ theAffixInit.update();
   <footer>
     <div class="container">
       <p class="pull-right"><a href="#myCarousel">Back to top</a></p>
-      <p><a href="http://themeforest.net/user/dnp_theme" target="_blank">dnp_theme</a> &copy; 2015-2019.</p>
+      <p><a href="http://themeforest.net/user/dnp_theme" rel="noreferrer" target="_blank">dnp_theme</a> &copy; 2015-2019.</p>
      </div>
   </footer>
 
