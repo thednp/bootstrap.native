@@ -8,6 +8,7 @@ myModal.addEventListener('shown.bs.modal', function(e) {
 	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
 }, false);
 myModal.addEventListener('hide.bs.modal', function(e) {
+	e.stopImmediatePropagation(); return false;
 	e.target && console.log('hide.bs.modal triggered for #'+e.target.id);
 	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
 }, false);
@@ -221,7 +222,7 @@ dangerAlert.addEventListener('closed.bs.alert', function(e) {
 	}
 });
 
-// NEW Alert events
+// Alert events
 document.getElementById('alertDemo').addEventListener('close.bs.alert', function(e) {	console.log( 'The "close.bs.alert" event fired for #' + e.target.id ); });
 document.getElementById('alertDemo').addEventListener('closed.bs.alert', function(e) {	console.log( 'The "closed.bs.alert" event fired for #' + e.target.id ); });
 

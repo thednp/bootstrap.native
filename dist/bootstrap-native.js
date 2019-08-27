@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.27 | © dnp_theme | MIT-License
+// Native Javascript for Bootstrap 3 v2.0.28 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -113,6 +113,8 @@
     slidEvent     = 'slid',
     slideEvent    = 'slide',
     changeEvent   = 'change',
+    // custom events related
+    defaultPrevented = 'defaultPrevented',  
   
     // other
     getAttribute           = 'getAttribute',
@@ -256,9 +258,12 @@
                : setTimeout(function() { !called && handler(), called = 1; }, 17);
     },
     bootstrapCustomEvent = function (eventName, componentName, related) {
-      var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName);
+      var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
       OriginalCustomEvent.relatedTarget = related;
-      this.dispatchEvent(OriginalCustomEvent);
+      return OriginalCustomEvent;
+    },
+    dispatchCustomEvent = function(customEvent){
+      this.dispatchEvent(customEvent);
     },
   
     // tooltip / popover stuff
@@ -340,7 +345,7 @@
       element.className[indexOf](position) === -1 && (element.className = element.className.replace(tipPositions,position));
     };
   
-  BSN.version = '2.0.27';
+  BSN.version = '2.0.28';
   
   /* Native Javascript for Bootstrap 3 | Affix
   -------------------------------------------*/
@@ -372,7 +377,13 @@
   
     // internal bind
     var self = this,
-  
+      // custom events
+      affixEvent = bootstrapCustomEvent(affix, affix),
+      affixTopEvent = bootstrapCustomEvent(affixTop, affix),
+      affixBottomEvent = bootstrapCustomEvent(affixBottom, affix),
+      affixedEvent = bootstrapCustomEvent(affixed, affix),
+      affixedTopEvent = bootstrapCustomEvent(affixedTop, affix),
+      affixedBottomEvent = bootstrapCustomEvent(affixedBottom, affix),
       // constants
       pinOffsetTop, pinOffsetBottom, maxScroll, scrollY, pinnedTop, pinnedBottom,
       affixedToTop = false, affixedToBottom = false,
@@ -403,12 +414,12 @@
       },
       pinTop = function () {
         if ( !affixedToTop && !hasClass(element,affix) ) { // on loading a page halfway scrolled these events don't trigger in Chrome
-          bootstrapCustomEvent.call(element, affix, affix);
-          bootstrapCustomEvent.call(element, affixTop, affix);
+          dispatchCustomEvent.call(element, affixEvent); if ( affixEvent[defaultPrevented] ) return; 
+          dispatchCustomEvent.call(element, affixTopEvent); if ( affixTopEvent[defaultPrevented] ) return;
           addClass(element,affix);
           affixedToTop = true;
-          bootstrapCustomEvent.call(element, affixed, affix);
-          bootstrapCustomEvent.call(element, affixedTop, affix);
+          dispatchCustomEvent.call(element, affixedEvent); if ( affixedEvent[defaultPrevented] ) return;
+          dispatchCustomEvent.call(element, affixedTopEvent); if ( affixedTopEvent[defaultPrevented] ) return;
         }
       },
       unPinTop = function () {
@@ -419,12 +430,12 @@
       },
       pinBottom = function () {
         if ( !affixedToBottom && !hasClass(element, affixBottom) ) {
-          bootstrapCustomEvent.call(element, affix, affix);
-          bootstrapCustomEvent.call(element, affixBottom, affix);
+          dispatchCustomEvent.call(element, affixEvent); if ( affixEvent[defaultPrevented] ) return;
+          dispatchCustomEvent.call(element, affixBottomEvent); if ( affixBottomEvent[defaultPrevented] ) return;
           addClass(element,affixBottom);
           affixedToBottom = true;
-          bootstrapCustomEvent.call(element, affixed, affix);
-          bootstrapCustomEvent.call(element, affixedBottom, affix);
+          dispatchCustomEvent.call(element, affixedEvent); if ( affixedEvent[defaultPrevented] ) return;
+          dispatchCustomEvent.call(element, affixedBottomEvent); if (!affixedBottomEvent[defaultPrevented]) return;
         }
       },
       unPinBottom = function () {
@@ -478,6 +489,9 @@
   
     // bind, target alert, duration and stuff
     var self = this, component = 'alert',
+      // custom events
+      closeCustomEvent = bootstrapCustomEvent(closedEvent, component),
+      closedCustomEvent = bootstrapCustomEvent(closeEvent, component),  
       alert = getClosest(element,'.'+component),
       triggerHandler = function(){ hasClass(alert,'fade') ? emulateTransitionEnd(alert,transitionEndHandler) : transitionEndHandler(); },
       // handlers
@@ -487,7 +501,8 @@
         element && alert && (element === e[target] || element[contains](e[target])) && self.close();
       },
       transitionEndHandler = function(){
-        bootstrapCustomEvent.call(alert, closedEvent, component);
+        dispatchCustomEvent.call(alert,closedCustomEvent); 
+        // if ( closedCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
         off(element, clickEvent, clickHandler); // detach it's listener
         alert[parentNode].removeChild(alert);
       };
@@ -495,7 +510,8 @@
     // public method
     this.close = function() {
       if ( alert && element && hasClass(alert,inClass) ) {
-        bootstrapCustomEvent.call(alert, closeEvent, component);
+        dispatchCustomEvent.call(alert,closeCustomEvent);
+        if ( closeCustomEvent[defaultPrevented] ) return;
         removeClass(alert,inClass);
         alert && triggerHandler();
       }
@@ -530,12 +546,15 @@
     // constant
     var toggled = false, // toggled makes sure to prevent triggering twice the change.bs.button events
   
-        // strings
-        component = 'button',
-        checked = 'checked',
-        reset = 'reset',
-        LABEL = 'LABEL',
-        INPUT = 'INPUT',
+      // strings
+      component = 'button',
+      checked = 'checked',
+      reset = 'reset',
+      LABEL = 'LABEL',
+      INPUT = 'INPUT',
+  
+      // changeEvent
+      changeCustomEvent = bootstrapCustomEvent(changeEvent, component),
   
       // private methods
       setState = function() {
@@ -575,8 +594,13 @@
   
         if ( !input ) return; // return if no input found
   
+        dispatchCustomEvent.call(input, changeCustomEvent); // trigger the change for the input
+        dispatchCustomEvent.call(element, changeCustomEvent); // trigger the change for the btn-group
+  
         // manage the dom manipulation
         if ( input.type === 'checkbox' ) { //checkboxes
+          if ( changeCustomEvent[defaultPrevented] ) return; // discontinue when defaultPrevented is true
+  
           if ( !input[checked] ) {
             addClass(label,active);
             input[getAttribute](checked);
@@ -591,28 +615,28 @@
   
           if (!toggled) { // prevent triggering the event twice
             toggled = true;
-            bootstrapCustomEvent.call(input, changeEvent, component); //trigger the change for the input
-            bootstrapCustomEvent.call(element, changeEvent, component); //trigger the change for the btn-group
           }
         }
   
         if ( input.type === 'radio' && !toggled ) { // radio buttons
           // don't trigger if already active (the OR condition is a hack to check if the buttons were selected with key press and NOT mouse click)
           if ( !input[checked] || (e.screenX === 0 && e.screenY == 0) ) {
-            addClass(label,active);
-            input[setAttribute](checked,checked);
-            input[checked] = true;
-            bootstrapCustomEvent.call(input, changeEvent, component); //trigger the change for the input
-            bootstrapCustomEvent.call(element, changeEvent, component); //trigger the change for the btn-group
+            if ( !changeCustomEvent[defaultPrevented] ) {
+              addClass(label,active);
+              input[setAttribute](checked,checked);
+              input[checked] = true;
+              toggled = true;
+            }
   
-            toggled = true;
             for (var i = 0, ll = labels[length]; i<ll; i++) {
               var otherLabel = labels[i], otherInput = otherLabel[getElementsByTagName](INPUT)[0];
               if ( otherLabel !== label && hasClass(otherLabel,active) )  {
-                removeClass(otherLabel,active);
-                otherInput.removeAttribute(checked);
-                otherInput[checked] = false;
-                bootstrapCustomEvent.call(otherInput, changeEvent, component); // trigger the change
+                dispatchCustomEvent.call(otherInput, changeCustomEvent); // trigger the change
+                if ( !changeCustomEvent[defaultPrevented] ) {
+                  removeClass(otherLabel,active);
+                  otherInput.removeAttribute(checked);
+                  otherInput[checked] = false;
+                }
               }
             }
           }
@@ -672,7 +696,10 @@
         component = 'carousel',
         paused = 'paused',
         direction = 'direction',
-        dataSlideTo = 'data-slide-to'; 
+        dataSlideTo = 'data-slide-to',
+          
+        // custom events
+        slideCustomEvent, slidCustomEvent;
   
     this[keyboard] = options[keyboard] === true || keyboardData;
     this[pause] = (options[pause] === hoverEvent || pauseData) ? hoverEvent : false; // false / hover
@@ -844,8 +871,13 @@
       // update index
       index = next;
       
-      orientation = slideDirection === left ? 'next' : 'prev'; //determine type
-      bootstrapCustomEvent.call(element, slideEvent, component, slides[next]); // here we go with the slide
+      orientation = slideDirection === left ? 'next' : 'prev'; // determine type
+  
+      slideCustomEvent = bootstrapCustomEvent(slideEvent, component, slides[next]),
+      slidCustomEvent = bootstrapCustomEvent(slidEvent, component, slides[next]);
+  
+      dispatchCustomEvent.call(element, slideCustomEvent); // here we go with the slide
+      if (slideCustomEvent[defaultPrevented]) return; // discontinue when prevented      
   
       isSliding = true;
       clearInterval(timer);
@@ -862,6 +894,9 @@
         emulateTransitionEnd(slides[next], function(e) {
           var timeout = e && e[target] !== slides[next] ? e.elapsedTime*1000+100 : 20;
           isSliding && setTimeout(function(){
+            dispatchCustomEvent.call(element, slidCustomEvent);
+            // if ( slidCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
+  
             isSliding = false;
   
             addClass(slides[next],active);
@@ -871,8 +906,6 @@
             removeClass(slides[next],slideDirection);
             removeClass(slides[activeItem],slideDirection);
   
-            bootstrapCustomEvent.call(element, slidEvent, component, slides[next]);
-  
             if ( self[interval] && !hasClass(element,paused) ) {
               self.cycle();
             }
@@ -880,15 +913,19 @@
         });
   
       } else {
+  
         addClass(slides[next],active);
         slides[next][offsetWidth];
         removeClass(slides[activeItem],active);
+  
+        dispatchCustomEvent.call(element, slidCustomEvent);
+        // if ( slidCustomEvent[defaultPrevented] ) return; // TO BE DECIDED      
+        
         setTimeout(function() {
           isSliding = false;
           if ( self[interval] && !hasClass(element,paused) ) {
             self.cycle();
           }
-          bootstrapCustomEvent.call(element, slidEvent, component, slides[next]);
         }, 100 );
       }
     };
@@ -952,15 +989,24 @@
       collapsed = 'collapsed',
       isAnimating = 'isAnimating',
   
-      // private methods
+      // custom events
+      showCustomEvent = bootstrapCustomEvent(showEvent, component),
+      shownCustomEvent = bootstrapCustomEvent(shownEvent, component),
+      hideCustomEvent = bootstrapCustomEvent(hideEvent, component),
+      hiddenCustomEvent = bootstrapCustomEvent(hiddenEvent, component),
+  
+        // private methods
       openAction = function(collapseElement,toggle) {
-        bootstrapCustomEvent.call(collapseElement, showEvent, component);
+        dispatchCustomEvent.call(collapseElement, showCustomEvent);
+        if ( showCustomEvent[defaultPrevented] ) return;
         collapseElement[isAnimating] = true;
         addClass(collapseElement,collapsing);
         removeClass(collapseElement,component);
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px';
         
         emulateTransitionEnd(collapseElement, function() {
+          dispatchCustomEvent.call(collapseElement, shownCustomEvent);
+          // if ( shownCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
           collapseElement[isAnimating] = false;
           collapseElement[setAttribute](ariaExpanded,'true');
           toggle[setAttribute](ariaExpanded,'true');          
@@ -968,11 +1014,11 @@
           addClass(collapseElement, component);
           addClass(collapseElement, inClass);
           collapseElement[style][height] = '';
-          bootstrapCustomEvent.call(collapseElement, shownEvent, component);
         });
       },
       closeAction = function(collapseElement,toggle) {
-        bootstrapCustomEvent.call(collapseElement, hideEvent, component);
+        dispatchCustomEvent.call(collapseElement, hideCustomEvent);
+        if ( hideCustomEvent[defaultPrevented] ) return;
         collapseElement[isAnimating] = true;
         collapseElement[style][height] = collapseElement[scrollHeight] + 'px'; // set height first
         removeClass(collapseElement,component);
@@ -982,13 +1028,14 @@
         collapseElement[style][height] = '0px';
         
         emulateTransitionEnd(collapseElement, function() {
+          dispatchCustomEvent.call(collapseElement, hiddenCustomEvent);
+          // if ( hiddenCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
           collapseElement[isAnimating] = false;
           collapseElement[setAttribute](ariaExpanded,'false');
           toggle[setAttribute](ariaExpanded,'false');
           removeClass(collapseElement,collapsing);
           addClass(collapseElement,component);
           collapseElement[style][height] = '';
-          bootstrapCustomEvent.call(collapseElement, hiddenEvent, component);
         });
       },
       getTarget = function() {
@@ -1055,10 +1102,17 @@
     this.persist = option === true || element[getAttribute]('data-persist') === 'true' || false;
   
     // constants, event targets, strings
-    var self = this, children = 'children',
+    var self = this, 
       parent = element[parentNode],
-      component = 'dropdown', open = 'open',
       relatedTarget = null,
+      
+      // strings
+      children = 'children',
+      component = 'dropdown', open = 'open',
+  
+      // custom events
+      showCustomEvent, shownCustomEvent, hideCustomEvent, hiddenCustomEvent,
+  
       menu = queryElement('.dropdown-menu', parent),
       menuItems = (function(){
         var set = menu[children], newSet = [];
@@ -1133,10 +1187,16 @@
   
       // private methods
       show = function() {
-        bootstrapCustomEvent.call(parent, showEvent, component, relatedTarget);
+        showCustomEvent = bootstrapCustomEvent(showEvent, component, relatedTarget);
+        dispatchCustomEvent.call(parent, showCustomEvent);
+        if ( showCustomEvent[defaultPrevented] ) return;
+  
         addClass(parent,open);
         element[setAttribute](ariaExpanded,true);
-        bootstrapCustomEvent.call(parent, shownEvent, component, relatedTarget);
+  
+        shownCustomEvent = bootstrapCustomEvent( shownEvent, component, relatedTarget);
+        dispatchCustomEvent.call(parent, shownCustomEvent);
+        // if ( shownCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
         element[open] = true;
         off(element, clickEvent, clickHandler);
         setTimeout(function(){ 
@@ -1145,10 +1205,17 @@
         },1);
       },
       hide = function() {
-        bootstrapCustomEvent.call(parent, hideEvent, component, relatedTarget);
+        hideCustomEvent = bootstrapCustomEvent(hideEvent, component, relatedTarget);
+        dispatchCustomEvent.call(parent, hideCustomEvent);
+        if ( hideCustomEvent[defaultPrevented] ) return;
+  
         removeClass(parent,open);
         element[setAttribute](ariaExpanded,false);
-        bootstrapCustomEvent.call(parent, hiddenEvent, component, relatedTarget);
+  
+        hiddenCustomEvent = bootstrapCustomEvent(hiddenEvent, component, relatedTarget);
+        dispatchCustomEvent.call(parent, hiddenCustomEvent);
+        // if ( hiddenCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
+  
         element[open] = false;
         toggleDismiss();
         setFocus(element);
@@ -1195,6 +1262,8 @@
         paddingRight = 'paddingRight',
         modalBackdropString = 'modal-backdrop',
         isAnimating = 'isAnimating',
+        // custom events
+        showCustomEvent, shownCustomEvent, hideCustomEvent, hiddenCustomEvent,
         // determine modal, triggering element
         btnCheck = element[getAttribute](dataTarget)||element[getAttribute]('href'),
         checkModal = queryElement( btnCheck ),
@@ -1283,18 +1352,24 @@
       },
       // triggers
       triggerShow = function() {
+        shownCustomEvent = bootstrapCustomEvent(shownEvent, component, relatedTarget);
+        dispatchCustomEvent.call(modal, shownCustomEvent);
+        // if ( shownCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
+  
         setFocus(modal);
         modal[isAnimating] = false;
-        bootstrapCustomEvent.call(modal, shownEvent, component, relatedTarget);
   
         on(globalObject, resizeEvent, self.update, passiveHandler);
         on(modal, clickEvent, dismissHandler);
         on(DOC, keydownEvent, keyHandler);      
       },
       triggerHide = function() {
+        hiddenCustomEvent = bootstrapCustomEvent(hiddenEvent, component);
+        dispatchCustomEvent.call(modal, hiddenCustomEvent);
+        // if ( hiddenCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
+        
         modal[style].display = '';
         element && (setFocus(element));
-        bootstrapCustomEvent.call(modal, hiddenEvent, component);
   
         (function(){
           if (!getElementsByClassName(DOC,component+' '+inClass)[0]) {
@@ -1348,12 +1423,15 @@
       if ( hasClass(modal,inClass) ) {this.hide();} else {this.show();}
     };
     this.show = function() {
-      if ( hasClass(modal,inClass) || modal[isAnimating] ) {return}
+      if ( hasClass(modal,inClass) || modal[isAnimating] ) return;
   
       clearTimeout(modalTimer);
       modalTimer = setTimeout(function(){
+        showCustomEvent = bootstrapCustomEvent(showEvent, component, relatedTarget);
+        dispatchCustomEvent.call(modal, showCustomEvent);
+        if ( showCustomEvent[defaultPrevented] ) return;
+        
         modal[isAnimating] = true;    
-        bootstrapCustomEvent.call(modal, showEvent, component, relatedTarget);
   
         // we elegantly hide any opened modal
         var currentOpen = getElementsByClassName(DOC,component+' in')[0];
@@ -1391,8 +1469,11 @@
   
       clearTimeout(modalTimer);
       modalTimer = setTimeout(function(){
+        hideCustomEvent = bootstrapCustomEvent( hideEvent, component);
+        dispatchCustomEvent.call(modal, hideCustomEvent);
+        if ( hideCustomEvent[defaultPrevented] ) return;
+        
         modal[isAnimating] = true;
-        bootstrapCustomEvent.call(modal, hideEvent, component);
         overlay = queryElement('.'+modalBackdropString);
         overlayDelay = overlay && getTransitionDurationFromElement(overlay);
   
@@ -1459,6 +1540,11 @@
         dataContent = 'data-content',
         dismissible = 'dismissible',
         closeBtn = '<button type="button" class="close">×</button>',
+        // custom events
+        showCustomEvent = bootstrapCustomEvent(showEvent, component),
+        shownCustomEvent = bootstrapCustomEvent(shownEvent, component),
+        hideCustomEvent = bootstrapCustomEvent(hideEvent, component),
+        hiddenCustomEvent = bootstrapCustomEvent(hiddenEvent, component),
   
         // check container
         containerElement = queryElement(options[container]),
@@ -1563,13 +1649,15 @@
   
       // triggers
       showTrigger = function() {
+        dispatchCustomEvent.call(element, shownCustomEvent);
+        // if ( shownCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
         dismissHandlerToggle(on);
-        bootstrapCustomEvent.call(element, shownEvent, component);
       },
       hideTrigger = function() {
+        dispatchCustomEvent.call(element, hiddenCustomEvent);
+        // if ( hiddenCustomEvent[defaultPrevented] ) return; // TO BE DECIDED   
         dismissHandlerToggle(off);
         removePopover();
-        bootstrapCustomEvent.call(element, hiddenEvent, component);
       };
   
     // public methods / handlers
@@ -1581,11 +1669,13 @@
       clearTimeout(timer);
       timer = setTimeout( function() {
         if (popover === null) {
+          dispatchCustomEvent.call(element, showCustomEvent);
+          if ( showCustomEvent[defaultPrevented] ) return;
+  
           placementSetting = self[placement]; // we reset placement in all cases
           createPopover();
           updatePopover();
           showPopover();
-          bootstrapCustomEvent.call(element, showEvent, component);
           !!self[animation] ? emulateTransitionEnd(popover, showTrigger) : showTrigger();
         }
       }, 20 );
@@ -1594,7 +1684,8 @@
       clearTimeout(timer);
       timer = setTimeout( function() {
         if (popover && popover !== null && hasClass(popover,inClass)) {
-          bootstrapCustomEvent.call(element, hideEvent, component);
+          dispatchCustomEvent.call(element, hideCustomEvent);
+          if ( hideCustomEvent[defaultPrevented] ) return;
           removeClass(popover,inClass);
           !!self[animation] ? emulateTransitionEnd(popover, hideTrigger) : hideTrigger();
         }
@@ -1639,7 +1730,8 @@
     if ( !options[target] && !targetData ) { return; } 
   
     // event targets, constants
-    var self = this, spyTarget = options[target] && queryElement(options[target]) || targetData,
+    var self = this,
+        spyTarget = options[target] && queryElement(options[target]) || targetData,
         links = spyTarget && spyTarget[getElementsByTagName]('A'),
         offset = parseInt(options['offset'] || offsetData) || 10,      
         items = [], targetItems = [], scrollOffset,
@@ -1676,7 +1768,7 @@
             if (dropdown && !hasClass(dropdown,active) ) {
               addClass(dropdown,active);
             }
-            bootstrapCustomEvent.call(element, 'activate', 'scrollspy', items[index]);
+            dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', items[index]));
           }
         } else if ( !inside ) {
           if ( parent.tagName === 'LI' && hasClass(parent,active) ) {
@@ -1729,7 +1821,9 @@
     var heightData = element[getAttribute](dataHeight),
       
         // strings
-        component = 'tab', height = 'height', float = 'float', isAnimating = 'isAnimating';
+        component = 'tab', height = 'height', float = 'float', isAnimating = 'isAnimating',
+        // custom events
+        showCustomEvent, shownCustomEvent, hideCustomEvent, hiddenCustomEvent;
   
     // set options
     options = options || {};
@@ -1749,6 +1843,9 @@
         tabs[isAnimating] = false;
       },
       triggerShow = function() {
+        shownCustomEvent = bootstrapCustomEvent(shownEvent, component, activeTab);
+        dispatchCustomEvent.call(next, shownCustomEvent);
+        
         if (tabsContentContainer) { // height animation
           if ( equalContents ) {
             triggerEnd();
@@ -1762,7 +1859,6 @@
         } else {
           tabs[isAnimating] = false; 
         }
-        bootstrapCustomEvent.call(next, shownEvent, component, activeTab);
       },
       triggerHide = function() {
         if (tabsContentContainer) {
@@ -1771,11 +1867,18 @@
           containerHeight = activeContent[scrollHeight];
         }
         
+        showCustomEvent = bootstrapCustomEvent(showEvent, component, activeTab);
+        hiddenCustomEvent = bootstrapCustomEvent(hiddenEvent, component, next);
+  
+        dispatchCustomEvent.call(next, showCustomEvent);
+        if ( showCustomEvent[defaultPrevented] ) return;
+  
         addClass(nextContent,active);
-        bootstrapCustomEvent.call(next, showEvent, component, activeTab);
         
+        dispatchCustomEvent.call(activeTab, hiddenCustomEvent);
+        // if ( hiddenCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
+      
         removeClass(activeContent,active);
-        bootstrapCustomEvent.call(activeTab, hiddenEvent, component, next);
         
         if (tabsContentContainer) {
           nextHeight = nextContent[scrollHeight];
@@ -1827,6 +1930,10 @@
       activeTab = getActiveTab(); 
       activeContent = getActiveContent();
   
+      hideCustomEvent = bootstrapCustomEvent( hideEvent, component, next);
+      dispatchCustomEvent.call(activeTab, hideCustomEvent);
+      if (hideCustomEvent[defaultPrevented]) return;    
+  
       tabs[isAnimating] = true;
       removeClass(activeTab[parentNode],active);
       activeTab[setAttribute](ariaExpanded,'false');
@@ -1840,9 +1947,7 @@
           if (!hasClass(dropdown,active)) addClass(dropdown,active);
         }
       }
-      
-      bootstrapCustomEvent.call(activeTab, hideEvent, component, next);
-      
+  
       if (hasClass(activeContent, 'fade')) {
         removeClass(activeContent,inClass);
         emulateTransitionEnd(activeContent, triggerHide);
@@ -1887,6 +1992,11 @@
         title = 'title',
         fade = 'fade',
         div = 'div',
+        // custom events
+        showCustomEvent = bootstrapCustomEvent(showEvent, component),
+        shownCustomEvent = bootstrapCustomEvent(shownEvent, component),
+        hideCustomEvent = bootstrapCustomEvent(hideEvent, component),
+        hiddenCustomEvent = bootstrapCustomEvent(hiddenEvent, component),      
   
         // check container
         containerElement = queryElement(options[container]),
@@ -1945,13 +2055,13 @@
       },
       // triggers
       showTrigger = function() {
-        bootstrapCustomEvent.call(element, shownEvent, component);
+        dispatchCustomEvent.call(element, shownCustomEvent);
         !isIE8 && on( globalObject, resizeEvent, self.hide, passiveHandler );      
       },
       hideTrigger = function() {
+        dispatchCustomEvent.call(element, hiddenCustomEvent);
         !isIE8 && off( globalObject, resizeEvent, self.hide, passiveHandler );      
         removeToolTip();
-        bootstrapCustomEvent.call(element, hiddenEvent, component);
       };
   
     // public methods
@@ -1959,11 +2069,12 @@
       clearTimeout(timer);
       timer = setTimeout( function() {
         if (tooltip === null) {
+          dispatchCustomEvent.call(element, showCustomEvent);
+          if (showCustomEvent[defaultPrevented]) return; 
           placementSetting = self[placement]; // we reset placement in all cases
           if(createToolTip() == false) return;
           updateTooltip();
           showTooltip();
-          bootstrapCustomEvent.call(element, showEvent, component);
           !!self[animation] ? emulateTransitionEnd(tooltip, showTrigger) : showTrigger();
         }
       }, 20 );
@@ -1972,7 +2083,8 @@
       clearTimeout(timer);
       timer = setTimeout( function() {
         if (tooltip && hasClass(tooltip,inClass)) {
-          bootstrapCustomEvent.call(element, hideEvent, component);
+          dispatchCustomEvent.call(element, hideCustomEvent);
+          if (hideCustomEvent[defaultPrevented]) return; 
           removeClass(tooltip,inClass);
           !!self[animation] ? emulateTransitionEnd(tooltip, hideTrigger) : hideTrigger();
         }
