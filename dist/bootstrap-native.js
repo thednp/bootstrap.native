@@ -1472,7 +1472,7 @@
       modalTimer = setTimeout(function(){
         hideCustomEvent = bootstrapCustomEvent( hideEvent, component);
         dispatchCustomEvent.call(modal, hideCustomEvent);
-        // if ( hideCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
+        if ( hideCustomEvent[defaultPrevented] ) return;
         
         modal[isAnimating] = true;
         overlay = queryElement('.'+modalBackdropString);
