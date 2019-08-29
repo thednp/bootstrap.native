@@ -1,4 +1,4 @@
-// Native Javascript for Bootstrap 3 v2.0.28 | © dnp_theme | MIT-License
+// Native JavaScript for Bootstrap 3 v2.0.28 | © dnp_theme | MIT-License
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD support:
@@ -621,7 +621,7 @@
         }
   
         if ( input.type === 'radio' && !toggled ) { // radio buttons
-          if ( !changeCustomEvent[defaultPrevented] ) return;
+          if ( changeCustomEvent[defaultPrevented] ) return;
           // don't trigger if already active (the OR condition is a hack to check if the buttons were selected with key press and NOT mouse click)
           if ( !input[checked] || (e.screenX === 0 && e.screenY == 0) ) {
             addClass(label,active);
