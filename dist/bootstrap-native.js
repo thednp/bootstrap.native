@@ -872,7 +872,7 @@
       
       orientation = slideDirection === left ? 'next' : 'prev'; // determine type
   
-      slideCustomEvent = bootstrapCustomEvent(slideEvent, component, slides[next]),
+      slideCustomEvent = bootstrapCustomEvent(slideEvent, component, slides[next]);
       slidCustomEvent = bootstrapCustomEvent(slidEvent, component, slides[next]);
   
       dispatchCustomEvent.call(element, slideCustomEvent); // here we go with the slide
@@ -921,12 +921,11 @@
         setTimeout(function() {
           isSliding = false;
   
-          dispatchCustomEvent.call(element, slidCustomEvent);
-          // if ( slidCustomEvent[defaultPrevented] ) return; // TO BE DECIDED      
-  
           if ( self[interval] && !hasClass(element,paused) ) {
             self.cycle();
           }
+          dispatchCustomEvent.call(element, slidCustomEvent);
+          // if ( slidCustomEvent[defaultPrevented] ) return; // TO BE DECIDED      
         }, 100 );
       }
     };
