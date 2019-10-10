@@ -1,26 +1,26 @@
-var myModal = document.getElementById('myModal'); // we need a blank modal to fill up and target our object function
-myModal.addEventListener('show.bs.modal', function(e) {
+let myModal = document.getElementById('myModal'); // we need a blank modal to fill up and target our object function
+myModal.addEventListener('show.bs.modal', e => {
 	e.target && console.log('show.bs.modal triggered for #'+e.target.id);
 	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
 }, false);
-myModal.addEventListener('shown.bs.modal', function(e) {
+myModal.addEventListener('shown.bs.modal', e => {
 	e.target && console.log('shown.bs.modal triggered for #'+e.target.id);
 	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
 }, false);
-myModal.addEventListener('hide.bs.modal', function(e) {
+myModal.addEventListener('hide.bs.modal', e => {
 	e.target && console.log('hide.bs.modal triggered for #'+e.target.id);
 	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
 }, false);
-myModal.addEventListener('hidden.bs.modal', function(e) {
+myModal.addEventListener('hidden.bs.modal', e => {
 	e.target && console.log('hidden.bs.modal triggered for #'+e.target.id);
 	e.relatedTarget && console.log('event.relatedTarget is '+e.relatedTarget.tagName+'.'+e.relatedTarget.className.replace(/\s/g,'.'));
 }, false);
 
 
 // Modal initialized with JavaScript
-var myModalJS = document.getElementById('myModalJS'); // we need a blank modal to fill up and target our object function
-var btnModal = document.getElementById('openModalViaJS');
-var firstModalContent = '<div class="modal-header">'
+let myModalJS = document.getElementById('myModalJS'); // we need a blank modal to fill up and target our object function
+let btnModal = document.getElementById('openModalViaJS');
+let firstModalContent = '<div class="modal-header">'
 		+'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>'
 		+'<h4 class="modal-title" id="myModalJSLabel">Modal title</h4>'
 		+'</div>'
@@ -77,11 +77,11 @@ btnModalNotTrigger.addEventListener('click', function(e) {
 // NEW added events to Modal
 myModalJS.addEventListener('show.bs.modal', function(e) {
 	var related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
-	console.log( 'The "show.bs.modal" event fired for #' + e.target.id + related ); 
+	console.log( 'The "show.bs.modal" event fired for #' + e.target.id + related );
 }, false);
 myModalJS.addEventListener('shown.bs.modal', function(e) {
 	var related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
-	console.log( 'The "shown.bs.modal" event fired for #' + e.target.id + related ); 
+	console.log( 'The "shown.bs.modal" event fired for #' + e.target.id + related );
 }, false);
 myModalJS.addEventListener('hide.bs.modal', function(e) { console.log( 'The "hide.bs.modal" event fired for #' + e.target.id ); }, false);
 myModalJS.addEventListener('hidden.bs.modal', function(e) { console.log( 'The "hidden.bs.modal" event fired for #' + e.target.id ); }, false);
@@ -170,22 +170,22 @@ makeMeDropdown.addEventListener('click', function(e){
 		formDropdown.parentNode.addEventListener('show.bs.dropdown', function(e){
 			var related = null;
 			related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
-			console.log('The show.bs.dropdown event fired for parent of #' + formDropdown.id + related ); 
+			console.log('The show.bs.dropdown event fired for parent of #' + formDropdown.id + related );
 		}, false);
 		formDropdown.parentNode.addEventListener('shown.bs.dropdown', function(e){
 			var related = null;
 			related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
-			console.log('The shown.bs.dropdown event fired for parent of #' + formDropdown.id + related ); 
+			console.log('The shown.bs.dropdown event fired for parent of #' + formDropdown.id + related );
 		}, false);
 		formDropdown.parentNode.addEventListener('hide.bs.dropdown', function(e){
 			var related = null;
 			related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
-			console.log('The hide.bs.dropdown event fired for parent of #' + formDropdown.id + related ); 
+			console.log('The hide.bs.dropdown event fired for parent of #' + formDropdown.id + related );
 		}, false);
 		formDropdown.parentNode.addEventListener('hidden.bs.dropdown', function(e){
 			var related = null;
 			related = ', relatedTarget: '+ (e.relatedTarget ?  e.relatedTarget.tagName + '.'+e.relatedTarget.className.replace(/\s/g,'.') : 'null');
-			console.log('The hidden.bs.dropdown event fired for parent of #' + formDropdown.id + related ); 
+			console.log('The hidden.bs.dropdown event fired for parent of #' + formDropdown.id + related );
 		}, false);
 	}
 }, false);
@@ -278,7 +278,7 @@ genericCarousel.addEventListener('slide.bs.carousel', function(e) {
 	console.log( 'The #' + e.target.id + ' is about to slide, and this was the "slide" event, direction: ' + genericCarousel.Carousel.direction + ', relatedTarget: ' + e.relatedTarget.tagName + '.' + e.relatedTarget.className );
 });
 genericCarousel.addEventListener('slid.bs.carousel', function(e) {
-	console.log( 'The #' + e.target.id + ' has finished the slide transition, and this was the "slid" event, direction: ' + genericCarousel.Carousel.direction + ', relatedTarget: ' + e.relatedTarget.tagName + '.' + e.relatedTarget.className );	
+	console.log( 'The #' + e.target.id + ' has finished the slide transition, and this was the "slid" event, direction: ' + genericCarousel.Carousel.direction + ', relatedTarget: ' + e.relatedTarget.tagName + '.' + e.relatedTarget.className );
 });
 
 //demo myCarousel demonstrating the slid and slide events
@@ -316,14 +316,14 @@ if ( document.documentElement && !/ie/.test(document.documentElement.className) 
 }
 
 // scrollTo
-var sideLinks = sideNav.getElementsByTagName("A"), 
-		browserString = navigator.userAgent, 
+var sideLinks = sideNav.getElementsByTagName("A"),
+		browserString = navigator.userAgent,
 		scrollTarget = /(EDGE|Mac)/i.test(browserString) ? document.body : document.documentElement;
 
 for (var i=0, sll=sideLinks.length; i<sll; i++) {
 	sideLinks[i].addEventListener('click', scrollTo = function(e){
 		var target = document.getElementById(e.target.getAttribute('href').replace('#',''));
-		
+
 		e.preventDefault();
 		scrollTarget.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset||document.documentElement.scrollTop) - (i===0?0:60);
 	}, false);
@@ -344,7 +344,7 @@ mainContainerSpy.addEventListener('activate.bs.scrollspy', function(e){
 	}
 }, false);
 
-/* BOOTSTRAP ORIGINAL EVENTS 
+/* BOOTSTRAP ORIGINAL EVENTS
 ---------------------------*/
 
 // demo for Button toggle, renamed from bs.button.change to change.bs.button
@@ -375,7 +375,7 @@ collapseExample.addEventListener('hidden.bs.collapse', function(){ console.log('
 var scrollSpyElement = document.querySelector('[data-target="#navbar-example"]');
 scrollSpyElement.addEventListener('activate.bs.scrollspy', function(e){
 	var related = e.relatedTarget ? (' by relatedTarget: ' + e.relatedTarget.tagName + '.' + e.relatedTarget.getAttribute('href') ) : '';
-	console.log('The activate.bs.scrollspy event fired for div[data-target="#navbar-example"]' + related ); 
+	console.log('The activate.bs.scrollspy event fired for div[data-target="#navbar-example"]' + related );
 }, false);
 
 // new Tab events
@@ -444,4 +444,3 @@ document.addEventListener('DOMContentLoaded', setNavbarOpacity, false);
 window.addEventListener('scroll', setNavbarOpacity, false);
 navbar.addEventListener(mouseHover[0],setNavbarOpacityOnEnter,false);
 navbar.addEventListener(mouseHover[1],setNavbarOpacityOnLeave,false);
-
