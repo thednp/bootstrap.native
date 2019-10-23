@@ -223,8 +223,10 @@
     },
     one = function (element, event, handler, options) { // one since 2.0.4
       on(element, event, function handlerWrapper(e){
-        handler(e);
-        off(element, event, handlerWrapper, options);
+        if (e[target] === element) {
+          handler(e);
+          off(element, event, handlerWrapper, options);
+        }
       }, options);
     },
     // determine support for passive events
