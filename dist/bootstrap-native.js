@@ -1341,11 +1341,10 @@
       },
       removeOverlay = function() {
         overlay = queryElement('.'+modalBackdropString);
-        if ( overlay && typeof overlay === 'object' && !getElementsByClassName(DOC,component+' '+inClass)[0] ) {
-          DOC[body].removeChild(overlay); overlay = null;
-          removeClass(DOC[body],component+'-open');
-          resetScrollbar();           
-        }   
+        if ( overlay && !getElementsByClassName(DOC,component+' '+inClass)[0] ) {
+          DOC[body].removeChild(overlay); overlay = null;          
+        }
+        overlay === null && (removeClass(DOC[body],component+'-open'), resetScrollbar());
       },
       // triggers
       beforeShow = function(){
@@ -1378,10 +1377,11 @@
   
         overlay = queryElement('.'+modalBackdropString);
         
-        if (!getElementsByClassName(DOC,component+' '+inClass)[0]) {
-          overlay && hasClass(overlay,'fade') && (removeClass(overlay,inClass), emulateTransitionEnd(overlay,removeOverlay));
+        if (overlay && hasClass(overlay,inClass) && !getElementsByClassName(DOC,component+' '+inClass)[0]) {
+          removeClass(overlay,inClass);
+          emulateTransitionEnd(overlay,removeOverlay);
         } else {
-          overlay && removeOverlay();
+          removeOverlay();
         }
           
         off(globalObject, resizeEvent, self.update, passiveHandler);
