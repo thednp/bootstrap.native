@@ -629,7 +629,7 @@
       toggleTouchEvents = function(toggle){
         toggle( element, touchEvents.move, touchMoveHandler, passiveHandler );
         toggle( element, touchEvents.end, touchEndHandler, passiveHandler );
-    },  
+      },  
       touchDownHandler = function(e) {
         if ( isTouch ) { return; } 
           
@@ -1135,10 +1135,6 @@
       fixedItems = getElementsByClassName(HTML,fixedTop).concat(getElementsByClassName(HTML,fixedBottom)),
   
       // private methods
-      getWindowWidth = function() {
-        var htmlRect = HTML[getBoundingClientRect]();
-        return globalObject[innerWidth] || (htmlRect[right] - Math.abs(htmlRect[left]));
-      },
       setScrollbar = function () {
         var openModal = hasClass(DOC[body],component+'-open'),
           bodyStyle = globalObject[getComputedStyle](DOC[body]),
@@ -1218,6 +1214,8 @@
       triggerHide = function() {
         modal[style].display = '';
         element && (setFocus(element));
+  
+        overlay = queryElement('.'+modalBackdropString);
   
         if (!getElementsByClassName(DOC,component+' '+showClass)[0]) {
           overlay && hasClass(overlay,showClass) && (removeClass(overlay,showClass), emulateTransitionEnd(overlay,removeOverlay));

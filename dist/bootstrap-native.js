@@ -1294,10 +1294,6 @@
       fixedItems = getElementsByClassName(HTML,fixedTop).concat(getElementsByClassName(HTML,fixedBottom)),
   
       // private methods
-      getWindowWidth = function() {
-        var htmlRect = HTML[getBoundingClientRect]();
-        return globalObject[innerWidth] || (htmlRect[right] - Math.abs(htmlRect[left]));
-      },
       setScrollbar = function () {
         var openModal = hasClass(DOC[body],component+'-open'),
             bodyStyle = DOC[body].currentStyle || globalObject[getComputedStyle](DOC[body]),
@@ -1379,6 +1375,8 @@
       triggerHide = function() {
         modal[style].display = '';
         element && (setFocus(element));
+  
+        overlay = queryElement('.'+modalBackdropString);
         
         if (!getElementsByClassName(DOC,component+' '+inClass)[0]) {
           overlay && hasClass(overlay,'fade') && (removeClass(overlay,inClass), emulateTransitionEnd(overlay,removeOverlay));
