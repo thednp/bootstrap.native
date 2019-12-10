@@ -1307,7 +1307,7 @@
         modal[style][paddingRight] = (scrollBarWidth?scrollBarWidth+'px':'');
         if (fixedItems[length]){
           for (var i = 0; i < fixedItems[length]; i++) {
-            itemPad = globalObject[getComputedStyle](fixedItems[i])[paddingRight];
+            itemPad = (fixedItems[i].currentStyle || globalObject[getComputedStyle](fixedItems[i]))[paddingRight];
             fixedItems[i][style][paddingRight] = ( parseInt(itemPad) + (openModal?0:scrollBarWidth) ) + 'px';
           }
         }
