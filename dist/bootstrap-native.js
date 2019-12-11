@@ -1346,6 +1346,11 @@
         }
         overlay === null && (removeClass(DOC[body],component+'-open'), resetScrollbar());
       },
+      toggleEvents = function(action){
+        action(globalObject, resizeEvent, self.update, passiveHandler);
+        action(modal, clickEvent, dismissHandler);
+        action(DOC, keydownEvent, keyHandler);
+      },
       // triggers
       beforeShow = function(){
         modal[style].display = 'block'; 
@@ -1362,10 +1367,8 @@
       triggerShow = function() {
         setFocus(modal);
         modal[isAnimating] = false;
-        
-        on(globalObject, resizeEvent, self.update, passiveHandler);
-        on(modal, clickEvent, dismissHandler);
-        on(DOC, keydownEvent, keyHandler);
+  
+        toggleEvents(on);
   
         shownCustomEvent = bootstrapCustomEvent(shownEvent, component, relatedTarget);
         dispatchCustomEvent.call(modal, shownCustomEvent);
@@ -1384,9 +1387,7 @@
           removeOverlay();
         }
           
-        off(globalObject, resizeEvent, self.update, passiveHandler);
-        off(modal, clickEvent, dismissHandler);
-        off(DOC, keydownEvent, keyHandler);    
+        toggleEvents(off);
   
         modal[isAnimating] = false;
   
@@ -1468,15 +1469,11 @@
       if ( hideCustomEvent[defaultPrevented] ) return;
       
       modal[isAnimating] = true;
-      // overlay = queryElement('.'+modalBackdropString);
-      // overlayDelay = overlay && getTransitionDurationFromElement(overlay);
   
       removeClass(modal,inClass);
       modal[setAttribute](ariaHidden, true);
   
-      // setTimeout(function(){
-        hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
-      // }, supportTransitions && overlay && overlayDelay ? overlayDelay : 2);
+      hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
     };
     this.setContent = function( content ) {
       queryElement('.'+component+'-content',modal)[innerHTML] = content;
