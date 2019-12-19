@@ -2011,13 +2011,9 @@
         removeToolTip();
         dispatchCustomEvent.call(element, hiddenCustomEvent);
       },
-      bindEvents = function(element, obj) {
-        on(element, mouseHover[0], obj.show);
-        on(element, mouseHover[1], obj.hide);
-      },
-      unbindEvents = function(element, obj) {
-        off(element, mouseHover[0], obj.show);
-        off(element, mouseHover[1], obj.hide);
+      toggleEvents = function(action, elem, obj){
+        action(elem, mouseHover[0], obj.show);
+        action(elem, mouseHover[1], obj.hide);
       };
   
     // public methods
@@ -2054,7 +2050,7 @@
       else { self.hide(); }
     };
     this.destroy = function() {
-      unbindEvents(element, element[stringTooltip]);
+      toggleEvents(off, element, element[stringTooltip]);
       element[stringTooltip].hide();
       element[setAttribute](title, element[getAttribute](dataOriginalTitle));
       element[removeAttribute](dataOriginalTitle);
@@ -2063,7 +2059,7 @@
   
     element[setAttribute](dataOriginalTitle, titleString);
     element[removeAttribute](title);
-    bindEvents(element, self);
+    toggleEvents(on, element, self);
   
     element[stringTooltip] = self;
   };
