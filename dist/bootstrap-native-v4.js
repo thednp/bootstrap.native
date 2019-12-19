@@ -1916,9 +1916,6 @@
     // initialization element
     element = queryElement(element);
   
-    // The destruction of the old tips, otherwise you will lose references to the methods
-    (stringTooltip in element) && element[stringTooltip].destroy();
-  
     // set options
     options = options || {};
   
@@ -2016,6 +2013,9 @@
         action(elem, mouseHover[1], obj.hide);
       };
   
+    // Overwriting listeners, otherwise you will lose reference to the methods
+    (stringTooltip in element) && toggleEvents(off, element, element[stringTooltip]);
+  
     // public methods
     this.show = function() {
       clearTimeout(timer);
@@ -2057,8 +2057,11 @@
       delete element[stringTooltip];
     };
   
-    element[setAttribute](dataOriginalTitle, titleString);
-    element[removeAttribute](title);
+  
+    if(!element[stringTooltip]){
+      element[setAttribute](dataOriginalTitle, titleString);
+      element[removeAttribute](title);
+    }
     toggleEvents(on, element, self);
   
     element[stringTooltip] = self;
