@@ -1,3 +1,7 @@
 .npmignore
 .vscode/
 node_modules/
+package-lock.json
+.idea
+npm-debug.log
+yarn-error.log

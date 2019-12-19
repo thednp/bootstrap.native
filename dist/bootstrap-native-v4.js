@@ -113,11 +113,12 @@
     slideEvent    = 'slide',
     changeEvent   = 'change',
     // custom events related
-    defaultPrevented = 'defaultPrevented',  
+    defaultPrevented = 'defaultPrevented',
   
     // other
     getAttribute           = 'getAttribute',
     setAttribute           = 'setAttribute',
+    removeAttribute        = 'removeAttribute',
     hasAttribute           = 'hasAttribute',
     createElement          = 'createElement',
     appendChild            = 'appendChild',
@@ -127,7 +128,7 @@
     getBoundingClientRect  = 'getBoundingClientRect',
     querySelectorAll       = 'querySelectorAll',
     getElementsByCLASSNAME = 'getElementsByClassName',
-    getComputedStyle       = 'getComputedStyle',  
+    getComputedStyle       = 'getComputedStyle',
   
     indexOf      = 'indexOf',
     parentNode   = 'parentNode',
@@ -1915,6 +1916,9 @@
     // initialization element
     element = queryElement(element);
   
+    // The destruction of the old tips, otherwise you will lose references to the methods
+    (stringTooltip in element) && element[stringTooltip].destroy();
+  
     // set options
     options = options || {};
   
@@ -1923,7 +1927,7 @@
         placementData = element[getAttribute](dataPlacement),
         delayData = element[getAttribute](dataDelay),
         containerData = element[getAttribute](dataContainer),
-        
+  
         // strings
         component = 'tooltip',
         classString = 'class',
@@ -1938,11 +1942,11 @@
   
         // check container
         containerElement = queryElement(options[container]),
-        containerDataElement = queryElement(containerData),      
+        containerDataElement = queryElement(containerData),
   
         // maybe the element is inside a modal
         modal = getClosest(element,'.modal'),
-        
+  
         // maybe the element is inside a fixed navbar
         navbarFixedTop = getClosest(element,'.'+fixedTop),
         navbarFixedBottom = getClosest(element,'.'+fixedBottom);
@@ -1951,7 +1955,7 @@
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
     this[delay] = parseInt(options[delay] || delayData) || 200;
-    this[container] = containerElement ? containerElement 
+    this[container] = containerElement ? containerElement
                     : containerDataElement ? containerDataElement
                     : navbarFixedTop ? navbarFixedTop
                     : navbarFixedBottom ? navbarFixedBottom
@@ -1975,13 +1979,13 @@
           tooltip = DOC[createElement](div);
           tooltip[setAttribute]('role',component);
           tooltip[style][left] = '0';
-          tooltip[style][top] = '0';        
+          tooltip[style][top] = '0';
   
           // tooltip arrow
           var tooltipArrow = DOC[createElement](div);
           tooltipArrow[setAttribute](classString,'arrow');
           tooltip[appendChild](tooltipArrow);
-      
+  
           var tooltipInner = DOC[createElement](div);
           tooltipInner[setAttribute](classString,component+'-inner');
           tooltip[appendChild](tooltipInner);
@@ -2006,6 +2010,14 @@
         off( globalObject, resizeEvent, self.hide, passiveHandler );
         removeToolTip();
         dispatchCustomEvent.call(element, hiddenCustomEvent);
+      },
+      bindEvents = function(element, obj) {
+        on(element, mouseHover[0], obj.show);
+        on(element, mouseHover[1], obj.hide);
+      },
+      unbindEvents = function(element, obj) {
+        off(element, mouseHover[0], obj.show);
+        off(element, mouseHover[1], obj.hide);
       };
   
     // public methods
@@ -2014,13 +2026,13 @@
       timer = setTimeout( function() {
         if (tooltip === null) {
           dispatchCustomEvent.call(element, showCustomEvent);
-          if (showCustomEvent[defaultPrevented]) return;        
+          if (showCustomEvent[defaultPrevented]) return;
           placementSetting = self[placement]; // we reset placement in all cases
           // if(createToolTip() == false) return;
           if(createToolTip() !== false) {
             updateTooltip();
             showTooltip();
-            !!self[animation] ? emulateTransitionEnd(tooltip, showTrigger) : showTrigger();          
+            !!self[animation] ? emulateTransitionEnd(tooltip, showTrigger) : showTrigger();
           }
         }
       }, 20 );
@@ -2038,17 +2050,21 @@
       }, self[delay]);
     };
     this.toggle = function() {
-      if (!tooltip) { self.show(); } 
+      if (!tooltip) { self.show(); }
       else { self.hide(); }
     };
+    this.destroy = function() {
+      unbindEvents(element, element[stringTooltip]);
+      element[stringTooltip].hide();
+      element[setAttribute](title, element[getAttribute](dataOriginalTitle));
+      element[removeAttribute](dataOriginalTitle);
+      delete element[stringTooltip];
+    };
   
-    // init
-    if ( !(stringTooltip in element) ) { // prevent adding event handlers twice
-      element[setAttribute](dataOriginalTitle,titleString);
-      element.removeAttribute(title);
-      on(element, mouseHover[0], self.show);
-      on(element, mouseHover[1], self.hide);
-    }
+    element[setAttribute](dataOriginalTitle, titleString);
+    element[removeAttribute](title);
+    bindEvents(element, self);
+  
     element[stringTooltip] = self;
   };
   
