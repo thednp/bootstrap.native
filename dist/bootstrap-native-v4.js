@@ -70,12 +70,13 @@
     dataContainer     = 'data-container',
     dataPlacement     = 'data-placement',
     dataDelay         = 'data-delay',
+    dataTemplate      = 'data-template',
   
     // option keys
     backdrop = 'backdrop', keyboard = 'keyboard', delay = 'delay',
     content = 'content', target = 'target', currentTarget = 'currentTarget',
     interval = 'interval', pause = 'pause', animation = 'animation',
-    placement = 'placement', container = 'container',
+    placement = 'placement', container = 'container', template = 'template',
   
     // box model
     offsetTop    = 'offsetTop',      offsetBottom   = 'offsetBottom',
@@ -126,9 +127,11 @@
     getElementsByTagName   = 'getElementsByTagName',
     preventDefault         = 'preventDefault',
     getBoundingClientRect  = 'getBoundingClientRect',
+    querySelector          = 'querySelector',
     querySelectorAll       = 'querySelectorAll',
     getElementsByCLASSNAME = 'getElementsByClassName',
     getComputedStyle       = 'getComputedStyle',
+    insertAdjacentHTML     = 'insertAdjacentHTML',
   
     indexOf      = 'indexOf',
     parentNode   = 'parentNode',
@@ -164,6 +167,12 @@
     transitionEndEvent = Webkit+Transition in HTML[style] ? Webkit[toLowerCase]()+Transition+'End' : Transition[toLowerCase]()+'end',
     transitionDuration = Webkit+Duration in HTML[style] ? Webkit[toLowerCase]()+Transition+Duration : Transition[toLowerCase]()+Duration,
   
+      // insertAdjacentHTML support 6-11 ie - https://caniuse.com/#feat=insertadjacenthtml
+    appendChildHTNL = function(element, html){
+      element[insertAdjacentHTML]('beforeend', html);
+      return element;
+    },
+  
     // set new focus element since 2.0.3
     setFocus = function(element){
       element.focus ? element.focus() : element.setActive();
@@ -186,7 +195,7 @@
     },
     queryElement = function (selector, parent) {
       var lookUp = parent ? parent : DOC;
-      return typeof selector === 'object' ? selector : lookUp.querySelector(selector);
+      return typeof selector === 'object' ? selector : lookUp[querySelector](selector);
     },
     getClosest = function (element, selector) { //element is the element and selector is for the closest parent element to find
       // source http://gomakethings.com/climbing-up-and-down-the-dom-tree-with-vanilla-javascript/
@@ -1924,15 +1933,18 @@
         placementData = element[getAttribute](dataPlacement),
         delayData = element[getAttribute](dataDelay),
         containerData = element[getAttribute](dataContainer),
+        templateData = element[getAttribute](dataTemplate),
   
         // strings
         listenerShow = 'listenerShow',
         listenerHide = 'listenerHide',
         component = 'tooltip',
-        classString = 'class',
+        inner = component+'-inner',
         title = 'title',
         fade = 'fade',
         div = 'div',
+        templateHtml = '<div role="'+component+'" class="'+component+'"><div class="arrow"></div><div class="'+inner+'"></div></div>',
+  
         // custom events
         showCustomEvent = bootstrapCustomEvent(showEvent, component),
         shownCustomEvent = bootstrapCustomEvent(shownEvent, component),
@@ -1953,6 +1965,7 @@
     // set instance options
     this[animation] = options[animation] && options[animation] !== fade ? options[animation] : animationData || fade;
     this[placement] = options[placement] ? options[placement] : placementData || top;
+    this[template] = options[template] || templateData || templateHtml;
     this[delay] = parseInt(options[delay] || delayData) || 200;
     this[container] = containerElement ? containerElement
                     : containerDataElement ? containerDataElement
@@ -1973,25 +1986,18 @@
       },
       createToolTip = function() {
         titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle); // read the title again
-  
         if ( titleString && titleString !== "" ) { // invalidate, maybe markup changed
-          tooltip = DOC[createElement](div);
-          tooltip[setAttribute]('role',component);
+          tooltip = appendChildHTNL(DOC[createElement](div), self[template])[querySelector]('.'+component);
           tooltip[style][left] = '0';
           tooltip[style][top] = '0';
   
-          // tooltip arrow
-          var tooltipArrow = DOC[createElement](div);
-          tooltipArrow[setAttribute](classString,'arrow');
-          tooltip[appendChild](tooltipArrow);
-  
-          var tooltipInner = DOC[createElement](div);
-          tooltipInner[setAttribute](classString,component+'-inner');
-          tooltip[appendChild](tooltipInner);
+          var tooltipInner = tooltip[querySelector]('.'+inner);
           tooltipInner[innerHTML] = titleString;
   
           self[container][appendChild](tooltip);
-          tooltip[setAttribute](classString, component + ' bs-' + component+'-'+placementSetting + ' ' + self[animation]);
+          // IE Does not support multiple parameters for the add() & remove() methods
+          addClass(tooltip, 'bs-' + component+'-'+placementSetting);
+          addClass(tooltip, self[animation]);
         }
       },
       updateTooltip = function () {
