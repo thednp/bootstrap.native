@@ -1926,6 +1926,8 @@
         containerData = element[getAttribute](dataContainer),
   
         // strings
+        listenerShow = 'listenerShow',
+        listenerHide = 'listenerHide',
         component = 'tooltip',
         classString = 'class',
         title = 'title',
@@ -2008,15 +2010,18 @@
         removeToolTip();
         dispatchCustomEvent.call(element, hiddenCustomEvent);
       },
-      toggleEvents = function(action, obj){
-        action(element, mouseHover[0], obj.show);
-        action(element, mouseHover[1], obj.hide);
+      toggleEvents = function(action){
+        action(element, mouseHover[0], self[listenerShow]);
+        action(element, mouseHover[1], self[listenerHide]);
       };
   
-    // Overwriting listeners, otherwise you will lose reference to the methods
-    (stringTooltip in element) && toggleEvents(off, element[stringTooltip]);
-  
     // public methods
+    this[listenerShow] = (element[stringTooltip] && element[stringTooltip][listenerShow]) || function () {
+      this[stringTooltip].show()
+    };
+    this[listenerHide] = (element[stringTooltip] && element[stringTooltip][listenerHide]) || function () {
+      this[stringTooltip].hide()
+    };
     this.show = function() {
       clearTimeout(timer);
       timer = setTimeout( function() {
@@ -2050,7 +2055,7 @@
       else { self.hide(); }
     };
     this.destroy = function() {
-      toggleEvents(off, element[stringTooltip]);
+      toggleEvents(off);
       element[stringTooltip].hide();
       element[setAttribute](title, element[getAttribute](dataOriginalTitle));
       element[removeAttribute](dataOriginalTitle);
@@ -2060,8 +2065,8 @@
     if(!element[stringTooltip]){
       element[setAttribute](dataOriginalTitle, titleString);
       element[removeAttribute](title);
+      toggleEvents(on);
     }
-    toggleEvents(on, self);
   
     element[stringTooltip] = self;
   };
