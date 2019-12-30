@@ -1468,11 +1468,8 @@
                     : modal ? modal : DOC[body];
     
     // title and content
-    var titleString = options.title || element[getAttribute](dataTitle) || null,
-        contentString = options.content || element[getAttribute](dataContent) || null,
+    var titleString, contentString,
         placementClass = 'bs-' + component+'-'+self[placement];
-  
-    if ( !contentString && !self[template] ) return; // invalidate
   
     // private methods
     // handlers
@@ -1483,13 +1480,19 @@
       },
   
       // private methods
+      getContents = function(){
+        return {
+          0 : options.title || element[getAttribute](dataTitle) || null,
+          1 : options.content || element[getAttribute](dataContent) || null,        
+        }
+      },
       removePopover = function() {
         self[container].removeChild(popover);
         timer = null; popover = null; 
       },
       createPopover = function() {
-        titleString = options.title || element[getAttribute](dataTitle);
-        contentString = options.content || element[getAttribute](dataContent);
+        titleString = getContents()[0] || null;
+        contentString = getContents()[1];
         // fixing https://github.com/thednp/bootstrap.native/issues/233
         contentString = !!contentString ? contentString.trim() : null;
   
@@ -1526,6 +1529,7 @@
           var popoverHeader = queryElement('.'+headerClass,popover),
               popoverBody = queryElement('.'+bodyClass,popover);
   
+          // fill the template with content from data attributes
           titleString && popoverHeader && (popoverHeader[innerHTML] = titleString.trim());
           contentString && popoverBody && (popoverBody[innerHTML] = contentString.trim());
         }
@@ -1607,6 +1611,11 @@
       toggleEvents(off);
       delete element[stringPopover];
     };
+  
+    // invalidate
+    titleString = getContents()[0];
+    contentString = getContents()[1];
+    if ( !contentString && !self[template] ) return; 
   
     // init
     if ( !element[stringPopover] ) { // prevent adding event handlers twice
@@ -2074,18 +2083,18 @@
                     : modal ? modal : DOC[body];
   
     // title and placement class
-    var titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle),
-        placementClass = 'bs-' + component + '-' + self[placement];
-  
-    if ( !titleString || titleString == "" ) return; // invalidate
+    var titleString, placementClass = 'bs-' + component + '-' + self[placement];
   
     // private methods
-    var removeToolTip = function() {
+    var getTitle = function() {
+        return element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle);
+      },
+      removeToolTip = function() {
         self[container].removeChild(tooltip);
         tooltip = null; timer = null;
       },
       createToolTip = function() {
-        titleString = element[getAttribute](title) || element[getAttribute](dataTitle) || element[getAttribute](dataOriginalTitle); // read the title again
+        titleString = getTitle(); // read the title again
         if ( titleString && titleString !== "" ) { // invalidate, maybe markup changed
           // create tooltip
           tooltip = DOC[createElement](div);
@@ -2180,7 +2189,11 @@
       element[setAttribute](title, element[getAttribute](dataOriginalTitle));
       element[removeAttribute](dataOriginalTitle);
       delete element[stringTooltip];
-    };  
+    };
+  
+    // invalidate
+    titleString = getTitle();
+    if ( !titleString ) return;
   
     // init
     if (!element[stringTooltip]){ // prevent adding event handlers twice
