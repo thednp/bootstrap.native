@@ -1530,8 +1530,8 @@
               popoverBody = queryElement('.'+bodyClass,popover);
   
           // fill the template with content from data attributes
-          titleString && popoverHeader && (popoverHeader[innerHTML] = titleString.trim());
-          contentString && popoverBody && (popoverBody[innerHTML] = contentString.trim());
+          !!titleString && popoverHeader && (popoverHeader[innerHTML] = titleString.trim());
+          !!contentString && popoverBody && (popoverBody[innerHTML] = contentString.trim());
         }
   
         //append to the container
@@ -2095,7 +2095,7 @@
       },
       createToolTip = function() {
         titleString = getTitle(); // read the title again
-        if ( titleString && titleString !== "" ) { // invalidate, maybe markup changed
+        if ( !!titleString ) { // invalidate, maybe markup changed
           // create tooltip
           tooltip = DOC[createElement](div);
           
