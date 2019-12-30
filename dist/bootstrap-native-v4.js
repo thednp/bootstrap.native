@@ -355,12 +355,15 @@
   // ALERT DEFINITION
   // ================
   var Alert = function( element ) {
-    
+  
     // initialization element
     element = queryElement(element);
   
+    // reset on re-init
+    element[stringAlert] && element[stringAlert].destroy();
+  
     // bind, target alert, duration and stuff
-    var self = element[stringAlert] || this, component = 'alert',
+    var self = this, component = 'alert',
       // custom events
       closeCustomEvent = bootstrapCustomEvent(closeEvent, component),
       closedCustomEvent = bootstrapCustomEvent(closedEvent, component),
@@ -415,8 +418,11 @@
     // initialization element
     element = queryElement(element);
   
+    // reset on re-init
+    element[stringButton] && element[stringButton].destroy();
+  
     // bind
-    var self = element[stringButton] || this,
+    var self = this,
         // constant
         toggled = false, // toggled makes sure to prevent triggering twice the change.bs.button events
   
@@ -547,11 +553,14 @@
     // initialization element
     element = queryElement( element );
   
+    // reset on re-init
+    element[stringCarousel] && element[stringCarousel].destroy();
+  
     // set options
     options = options || {};
   
     // bind, index and timer
-    var self = element[stringCarousel] || this,
+    var self = this,
         index = element.index = 0, timer = element.timer = 0, 
         // DATA API
         intervalAttribute = element[getAttribute](dataInterval),
@@ -848,11 +857,14 @@
     // initialization element
     element = queryElement(element);
   
+    // reset on re-init
+    element[stringCollapse] && element[stringCollapse].destroy();
+  
     // set options
     options = options || {};
   
     // bind, event targets and constants
-    var self = element[stringCollapse] || this, 
+    var self = this, 
       accordion = null, collapse = null,
       accordionData = element[getAttribute]('data-parent'),
       activeCollapse, activeElement,
@@ -973,14 +985,18 @@
     // initialization element
     element = queryElement(element);
   
+    // reset on re-init
+    element[stringDropdown] && element[stringDropdown].destroy();
+  
     // constants, event targets, strings
-    var self = element[stringDropdown] || this,
+    var self = this,
       parent = element[parentNode],
       relatedTarget = null,
   
       // strings
       children = 'children',
-      component = 'dropdown', open = 'open',
+      component = 'dropdown', 
+      open = 'open',
   
       // custom events
       showCustomEvent, shownCustomEvent, hideCustomEvent, hiddenCustomEvent,
@@ -1134,26 +1150,29 @@
     // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
     element = queryElement(element);
   
+    // bind
+    var self = this,
       // strings
-      var component = 'modal',
-        staticString = 'static',
-        modalTrigger = 'modalTrigger',
-        paddingRight = 'paddingRight',
-        modalBackdropString = 'modal-backdrop',
-        isAnimating = 'isAnimating',
-        // custom events
-        showCustomEvent, shownCustomEvent, hideCustomEvent, hiddenCustomEvent,
-        // determine modal, triggering element
-        btnCheck = element[getAttribute](dataTarget)||element[getAttribute]('href'),
-        checkModal = queryElement( btnCheck ),
-        modal = hasClass(element,component) ? element : checkModal;
+      component = 'modal',
+      staticString = 'static',
+      modalTrigger = 'modalTrigger',
+      paddingRight = 'paddingRight',
+      modalBackdropString = 'modal-backdrop',
+      isAnimating = 'isAnimating',
+      // custom events
+      showCustomEvent, shownCustomEvent, hideCustomEvent, hiddenCustomEvent,
+      // determine modal, triggering element
+      btnCheck = element[getAttribute](dataTarget)||element[getAttribute]('href'),
+      checkModal = queryElement( btnCheck ),
+      modal = hasClass(element,component) ? element : checkModal;
   
-      if ( hasClass(element, component) ) { element = null; } // modal is now independent of it's triggering element
+    if ( hasClass(element, component) ) { element = null; } // modal is now independent of it's triggering element
   
     if ( !modal ) { return; } // invalidate
   
-    // bind
-    var self = element[stringModal] || modal[stringModal] || this;
+    // reset on re-init
+    element && element[stringModal] && element[stringModal].destroy();
+    modal[stringModal] && modal[stringModal].destroy();
   
     // set options
     options = options || {};
@@ -1392,11 +1411,14 @@
     // initialization element
     element = queryElement(element);
   
+    // reset on re-init
+    element[stringPopover] && element[stringPopover].destroy();  
+  
     // set options
     options = options || {};
   
     // bind, popover and timer
-    var self = element[stringPopover] || this, popover = null, timer = 0,
+    var self = this, popover = null, timer = 0,
         // DATA API
         triggerData = element[getAttribute](dataTrigger), // click / hover / focus
         animationData = element[getAttribute](dataAnimation), // true / false
@@ -1607,7 +1629,10 @@
   var ScrollSpy = function(element, options) {
   
     // initialization element, the element we spy on
-    element = queryElement(element); 
+    element = queryElement(element);
+  
+    // reset on re-init
+    element[stringScrollSpy] && element[stringScrollSpy].destroy();
   
     // DATA API
     var targetData = queryElement(element[getAttribute](dataTarget)),
@@ -1620,7 +1645,7 @@
     if ( !options[target] && !targetData ) { return; } 
   
     // event targets, constants
-    var self = element[stringScrollSpy] || this,
+    var self = this,
         spyTarget = options[target] && queryElement(options[target]) || targetData,
         links = spyTarget && spyTarget[getElementsByTagName]('A'),
         offset = parseInt(options['offset'] || offsetData) || 10,      
@@ -1715,8 +1740,11 @@
     // initialization element
     element = queryElement(element);
   
+    // reset on re-init
+    element[stringTab] && element[stringTab].destroy();  
+  
     // bind
-    var self = element[stringTab] || this,
+    var self = this,
         // DATA API
         heightData = element[getAttribute](dataHeight),
       
@@ -1728,7 +1756,7 @@
     // set options
     options = options || {};
     self[height] = !supportTransitions || (options[height] === false || heightData === 'false') ? false : true;
-  console.log(self.height)
+  
     // event targets
     var tabs = getClosest(element,'.nav'), next,
       tabsContentContainer = false,
@@ -1878,11 +1906,14 @@
     // initialization element
     element = queryElement(element);
   
+    // reset on re-init
+    element[stringToast] && element[stringToast].destroy();  
+  
     // set options
     options = options || {};
   
     // bind, toast and timer
-    var self = element[stringToast] || this, 
+    var self = this, 
         toast = getClosest(element,'.toast'),
         timer = 0,
   
@@ -1996,8 +2027,11 @@
     // set options
     options = options || {};
   
+    // reset on re-init
+    element[stringTooltip] && element[stringTooltip].destroy();
+  
     // bind, timer and tooltip
-    var self = element[stringTooltip] || this, timer = 0, tooltip = null,
+    var self = this, timer = 0, tooltip = null,
   
         // DATA API
         animationData = element[getAttribute](dataAnimation),
