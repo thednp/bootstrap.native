@@ -1152,6 +1152,7 @@
   
     // bind
     var self = this,
+  
       // strings
       component = 'modal',
       staticString = 'static',
@@ -1466,7 +1467,7 @@
                     : navbarFixedTop ? navbarFixedTop
                     : navbarFixedBottom ? navbarFixedBottom
                     : modal ? modal : DOC[body];
-    
+  
     // title and content
     var titleString, contentString,
         placementClass = 'bs-' + component+'-'+self[placement];
@@ -1530,8 +1531,8 @@
               popoverBody = queryElement('.'+bodyClass,popover);
   
           // fill the template with content from data attributes
-          !!titleString && popoverHeader && (popoverHeader[innerHTML] = titleString.trim());
-          !!contentString && popoverBody && (popoverBody[innerHTML] = contentString.trim());
+          titleString && popoverHeader && (popoverHeader[innerHTML] = titleString.trim());
+          contentString && popoverBody && (popoverBody[innerHTML] = contentString.trim());
         }
   
         //append to the container
@@ -2007,6 +2008,7 @@
     };
     self.destroy = function() {
       self.hide();
+      clearTimeout(timer);
       off(element, clickEvent, self.hide);
       delete element[stringToast];
     };
@@ -2095,7 +2097,7 @@
       },
       createToolTip = function() {
         titleString = getTitle(); // read the title again
-        if ( !!titleString ) { // invalidate, maybe markup changed
+        if ( titleString ) { // invalidate, maybe markup changed
           // create tooltip
           tooltip = DOC[createElement](div);
           
