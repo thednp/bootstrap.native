@@ -6,12 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "node lib/build.js --help",
-    "build": "node lib/build.js -v 3 > dist/bootstrap-native.js && npm run build-min",
+    "build": "rollup -c",
     "build-v4": "node lib/build.js -v 4 > dist/bootstrap-native-v4.js && npm run build-v4-min",
     "build-min": "node lib/build.js -m -v 3 > dist/bootstrap-native.min.js",
     "build-v4-min": "node lib/build.js -m -v 4 > dist/bootstrap-native-v4.min.js",
-    "watch": "onchange \"lib/*/**\" -i -- npm run build && npm run build-v4"
+    "watch": "rollup -c -w"
   },
+  "browserslist": [
+    "last 2 versions",
+    "not <= 1%",
+    "not IE 10"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thednp/bootstrap.native.git"
@@ -30,11 +35,13 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "devDependencies": {
-    "onchange": "^3.0.2",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "rollup": "^1.27.14",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-babel-minify": "^9.1.1",
     "uglify-js": "^2.7.3",
-    "yargs": "^5.0.0",
-    "babel": "^6.23.0",
-    "babel-polyfill": "^6.26.0"
+    "yargs": "^5.0.0"
   },
   "dependencies": {}
 }
