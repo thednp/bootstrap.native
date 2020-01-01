@@ -85,7 +85,7 @@
     passive: true
   } : false;
 
-  function getElementsByClassName$1(element, classNAME) {
+  function getElementsByClassName(element, classNAME) {
     // returns Array
     return [].slice.call(element.getElementsByClassName(classNAME));
   }
@@ -205,7 +205,7 @@
       if (!label) return; //react if a label or its immediate child is clicked
 
       var // all the button group buttons
-      labels = getElementsByClassName$1(label.parentNode, 'btn'),
+      labels = getElementsByClassName(label.parentNode, 'btn'),
           input = label.getElementsByTagName('INPUT')[0];
       if (!input) return; // return if no input found
 
@@ -275,7 +275,7 @@
         toggleEvents = function toggleEvents(action) {
       action(element, 'click', toggle);
       action(element, 'keyup', keyHandler), action(element, 'keydown', preventScroll);
-      var allBtns = getElementsByClassName$1(element, 'btn');
+      var allBtns = getElementsByClassName(element, 'btn');
 
       for (var i = 0; i < allBtns.length; i++) {
         var input = allBtns[i].getElementsByTagName('INPUT')[0];
@@ -296,7 +296,7 @@
     } // activate items on load
 
 
-    var labelsToACtivate = getElementsByClassName$1(element, 'btn'),
+    var labelsToACtivate = getElementsByClassName(element, 'btn'),
         lbll = labelsToACtivate.length;
 
     for (var i = 0; i < lbll; i++) {
@@ -317,20 +317,30 @@
     // initialization element
     element = queryElement(element); // reset on re-init
 
-    element.Carousel && element.Carousel.destroy(); // bind
+    element.Carousel && element.Carousel.destroy(); // set options
+
+    options = options || {}; // bind
 
     var self = this,
         // DATA API
-    intervalAttribute = element.getAttribute('data-interval');
-    intervalOption = options.interval, intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute), pauseData = element.getAttribute('data-pause') === 'hover' || false, keyboardData = element.getAttribute('data-keyboard') === 'true' || false, // carousel elements
-    slides = getElementsByClassName$1(element, 'carousel-item'), total = slides.length, leftArrow = getElementsByClassName$1(element, "carousel-control-prev")[0], rightArrow = getElementsByClassName$1(element, "carousel-control-next")[0], indicator = queryElement(".carousel-indicators", element), indicators = indicator && indicator.getElementsByTagName("LI") || []; // invalidate when not enough items
+    intervalAttribute = element.getAttribute('data-interval'),
+        intervalOption = options.interval,
+        intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
+        pauseData = element.getAttribute('data-pause') === 'hover' || false,
+        keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
+        // carousel elements
+    slides = getElementsByClassName(element, 'carousel-item'),
+        total = slides.length,
+        leftArrow = getElementsByClassName(element, "carousel-control-prev")[0],
+        rightArrow = getElementsByClassName(element, "carousel-control-next")[0],
+        indicator = queryElement(".carousel-indicators", element),
+        indicators = indicator && indicator.getElementsByTagName("LI") || []; // invalidate when not enough items
 
     if (total < 2) {
       return;
-    } // set options
+    } // set instance options
 
 
-    options = options || {};
     self.options = {};
     self.options.keyboard = options.keyboard === true || keyboardData;
     self.options.pause = options.pause === 'hover' || pauseData ? 'hover' : false; // false / hover
@@ -347,7 +357,7 @@
         startXPosition = null,
         currentXPosition = null,
         endXPosition = null,
-        slideDirection = self.direction = left,
+        slideDirection = self.direction = 'left',
         // custom events
     slideCustomEvent,
         slidCustomEvent; // handlers
@@ -580,7 +590,7 @@
     };
 
     self.getActiveIndex = function () {
-      return slides.indexOf(getElementsByClassName$1(element, 'carousel-item active')[0]) || 0;
+      return slides.indexOf(getElementsByClassName(element, 'carousel-item active')[0]) || 0;
     };
 
     self.destroy = function () {
@@ -765,8 +775,8 @@
       w: element.offsetWidth,
       h: element.offsetHeight
     },
-        windowWidth = HTML.clientWidth || document.body.clientWidth,
-        windowHeight = HTML.clientHeight || document.body.clientHeight,
+        windowWidth = document.documentElement.clientWidth || document.body.clientWidth,
+        windowHeight = document.documentElement.clientHeight || document.body.clientHeight,
         rect = link.getBoundingClientRect(),
         scroll = parent === document.body ? getScroll() : {
       x: parent.offsetLeft + parent.scrollLeft,
@@ -821,9 +831,9 @@
         topPosition = rect.top + scroll.y - elementDimensions.h / 2 + linkDimensions.h / 2;
         arrowTop = elementDimensions.h / 2 - (isPopover ? arrowHeight * 0.9 : arrowHeight / 2);
       }
-    } else if (position === top || position === bottom) {
+    } else if (position === 'top' || position === 'bottom') {
       // primary|vertical positions
-      if (position === top) {
+      if (position === 'top') {
         // TOP
         topPosition = rect.top + scroll.y - elementDimensions.h - (isPopover ? arrowHeight : 0);
       } else {
@@ -897,7 +907,7 @@
         // handlers
     dismissHandler = function dismissHandler(e) {
       var eventTarget = e.target,
-          hasData = eventTarget && (eventTarget.getAttribute('data-toggle') || eventTarget.parentNode && getAttribute in eventTarget.parentNode && eventTarget.parentNode.getAttribute('data-toggle'));
+          hasData = eventTarget && (eventTarget.getAttribute('data-toggle') || eventTarget.parentNode && eventTarget.parentNode.getAttribute && eventTarget.parentNode.getAttribute('data-toggle'));
 
       if (e.type === 'focus' && (eventTarget === element || eventTarget === menu || menu.contains(eventTarget))) {
         return;
@@ -956,7 +966,7 @@
       if (showCustomEvent.defaultPrevented) return;
       addClass(menu, 'show');
       addClass(parent, 'show');
-      element.setAttribute(ariaExpanded, true);
+      element.setAttribute('aria-expanded', true);
       element.open = true;
       off(element, 'click', clickHandler);
       setTimeout(function () {
@@ -973,7 +983,7 @@
       if (hideCustomEvent.defaultPrevented) return;
       removeClass(menu, 'show');
       removeClass(parent, 'show');
-      element.setAttribute(ariaExpanded, false);
+      element.setAttribute('aria-expanded', false);
       element.open = false;
       toggleDismiss();
       setFocus(element);
@@ -1042,9 +1052,11 @@
         overlay,
         overlayDelay; // bind
 
-    var self = this; // determine modal, triggering element
-
-    btnCheck = element.getAttribute('data-target') || element.getAttribute('href'), checkModal = queryElement(btnCheck), modal = hasClass(element, 'modal') ? element : checkModal;
+    var self = this,
+        // determine modal, triggering element
+    btnCheck = element.getAttribute('data-target') || element.getAttribute('href'),
+        checkModal = queryElement(btnCheck),
+        modal = hasClass(element, 'modal') ? element : checkModal;
 
     if (hasClass(element, 'modal')) {
       element = null;
@@ -1071,8 +1083,8 @@
 
     modal.isAnimating = false; // also find fixed-top / fixed-bottom items
 
-    var fixedItems = getElementsByClassName$1(document.documentElement, 'fixed-top').concat(getElementsByClassName$1(document.documentElement, 'fixed-bottom')); // private methods
-
+    var fixedItems = getElementsByClassName(document.documentElement, 'fixed-top').concat(getElementsByClassName(document.documentElement, 'fixed-bottom')),
+        // private methods
     setScrollbar = function setScrollbar() {
       var openModal = hasClass(document.body, 'modal-open'),
           bodyStyle = window.getComputedStyle(document.body),
@@ -1087,7 +1099,8 @@
           fixedItems[i].style.paddingRight = "".concat(parseInt(itemPad) + (openModal ? 0 : scrollBarWidth), "px");
         }
       }
-    }, resetScrollbar = function resetScrollbar() {
+    },
+        resetScrollbar = function resetScrollbar() {
       document.body.style.paddingRight = '';
       modal.style.paddingRight = '';
 
@@ -1096,7 +1109,8 @@
           fixedItems[i].style.paddingRight = '';
         }
       }
-    }, measureScrollbar = function measureScrollbar() {
+    },
+        measureScrollbar = function measureScrollbar() {
       var scrollDiv = document.createElement('div');
       var widthValue;
       scrollDiv.className = 'modal-scrollbar-measure'; // this is here to stay
@@ -1105,9 +1119,11 @@
       widthValue = scrollDiv.offsetWidth - scrollDiv.clientWidth;
       document.body.removeChild(scrollDiv);
       return widthValue;
-    }, checkScrollbar = function checkScrollbar() {
+    },
+        checkScrollbar = function checkScrollbar() {
       scrollBarWidth = measureScrollbar();
-    }, createOverlay = function createOverlay() {
+    },
+        createOverlay = function createOverlay() {
       var newOverlay = document.createElement('div');
       overlay = queryElement('.modal-backdrop');
 
@@ -1118,40 +1134,45 @@
       }
 
       return overlay;
-    }, removeOverlay = function removeOverlay() {
+    },
+        removeOverlay = function removeOverlay() {
       overlay = queryElement('.modal-backdrop');
 
-      if (overlay && !getElementsByClassName$1(document, 'modal show')[0]) {
+      if (overlay && !getElementsByClassName(document, 'modal show')[0]) {
         document.body.removeChild(overlay);
         overlay = null;
       }
 
       overlay === null && (removeClass(document.body, 'modal-open'), resetScrollbar());
-    }, toggleEvents = function toggleEvents(action) {
+    },
+        toggleEvents = function toggleEvents(action) {
       action(window, 'resize', self.update, passiveHandler);
       action(modal, 'click', dismissHandler);
       action(document, 'keydown', keyHandler);
-    }, // triggers
+    },
+        // triggers
     beforeShow = function beforeShow() {
       modal.style.display = 'block';
       checkScrollbar();
       setScrollbar();
-      !getElementsByClassName$1(document, 'modal show')[0] && addClass(document.body, 'modal-open');
+      !getElementsByClassName(document, 'modal show')[0] && addClass(document.body, 'modal-open');
       addClass(modal, 'show');
       modal.setAttribute('aria-hidden', false);
       hasClass(modal, 'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
-    }, triggerShow = function triggerShow() {
+    },
+        triggerShow = function triggerShow() {
       setFocus(modal);
       modal.isAnimating = false;
       toggleEvents(on);
       shownCustomEvent = bootstrapCustomEvent('shown', 'modal', relatedTarget);
       dispatchCustomEvent.call(modal, shownCustomEvent);
-    }, triggerHide = function triggerHide() {
+    },
+        triggerHide = function triggerHide() {
       modal.style.display = '';
       element && setFocus(element);
       overlay = queryElement('.modal-backdrop');
 
-      if (overlay && hasClass(overlay, 'show') && !getElementsByClassName$1(document, 'modal show')[0]) {
+      if (overlay && hasClass(overlay, 'show') && !getElementsByClassName(document, 'modal show')[0]) {
         removeClass(overlay, 'show');
         emulateTransitionEnd(overlay, removeOverlay);
       } else {
@@ -1162,7 +1183,8 @@
       modal.isAnimating = false;
       hiddenCustomEvent = bootstrapCustomEvent('hidden', 'modal');
       dispatchCustomEvent.call(modal, hiddenCustomEvent);
-    }, // handlers
+    },
+        // handlers
     clickHandler = function clickHandler(e) {
       if (modal.isAnimating) return;
       var clickTarget = e.target;
@@ -1174,14 +1196,16 @@
         self.show();
         e.preventDefault();
       }
-    }, keyHandler = function keyHandler(_ref) {
+    },
+        keyHandler = function keyHandler(_ref) {
       var which = _ref.which;
       if (modal.isAnimating) return;
 
       if (self.options.keyboard && which == 27 && hasClass(modal, 'show')) {
         self.hide();
       }
-    }, dismissHandler = function dismissHandler(e) {
+    },
+        dismissHandler = function dismissHandler(e) {
       if (modal.isAnimating) return;
       var clickTarget = e.target;
 
@@ -1191,6 +1215,7 @@
         e.preventDefault();
       }
     }; // public methods
+
 
     self.toggle = function () {
       if (hasClass(modal, 'show')) {
@@ -1210,7 +1235,7 @@
       if (showCustomEvent.defaultPrevented) return;
       modal.isAnimating = true; // we elegantly hide any opened modal
 
-      var currentOpen = getElementsByClassName$1(document, 'modal show')[0];
+      var currentOpen = getElementsByClassName(document, 'modal show')[0];
 
       if (currentOpen && currentOpen !== modal) {
         currentOpen.modalTrigger && currentOpen.modalTrigger.Modal.hide();
@@ -1300,7 +1325,9 @@
     // initialization element
     element = queryElement(element); // reset on re-init
 
-    element.Popover && element.Popover.destroy(); // popover and timer
+    element.Popover && element.Popover.destroy(); // set instance options
+
+    options = options || {}; // popover and timer
 
     var popover = null,
         timer = 0,
@@ -1334,13 +1361,12 @@
     navbarFixedTop = element.closest('.fixed-top'),
         navbarFixedBottom = element.closest('.fixed-bottom'); // set instance options
 
-    options = options || {};
     self.options = {};
     self.options.template = options.template ? options.template : null; // JavaScript only
 
     self.options.trigger = options.trigger ? options.trigger : triggerData || 'hover';
     self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-    self.options.placement = options.placement ? options.placement : placementData || top;
+    self.options.placement = options.placement ? options.placement : placementData || 'top';
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
     self.options.container = containerElement ? containerElement : containerDataElement ? containerDataElement : navbarFixedTop ? navbarFixedTop : navbarFixedBottom ? navbarFixedBottom : modal ? modal : document.body; // set initial placement from option
@@ -1725,7 +1751,7 @@
     },
         // private methods
     getActiveTab = function getActiveTab() {
-      var activeTabs = getElementsByClassName$1(tabs, 'active');
+      var activeTabs = getElementsByClassName(tabs, 'active');
       var activeTab;
 
       if (activeTabs.length === 1 && !hasClass(activeTabs[0].parentNode, 'dropdown')) {
@@ -1759,9 +1785,9 @@
       if (hideCustomEvent.defaultPrevented) return;
       tabs.isAnimating = true;
       removeClass(activeTab, 'active');
-      activeTab.setAttribute(ariaSelected, 'false');
+      activeTab.setAttribute('aria-selected', 'false');
       addClass(next, 'active');
-      next.setAttribute(ariaSelected, 'true');
+      next.setAttribute('aria-selected', 'true');
 
       if (dropdown) {
         if (!hasClass(element.parentNode, 'dropdown-menu')) {
@@ -1960,7 +1986,7 @@
 
     self.options = {};
     self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-    self.options.placement = options.placement ? options.placement : placementData || top;
+    self.options.placement = options.placement ? options.placement : placementData || 'top';
     self.options.template = options.template ? options.template : null; // JavaScript only
 
     self.options.delay = parseInt(options.delay || delayData) || 200;
