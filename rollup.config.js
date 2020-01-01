@@ -5,7 +5,8 @@ export default [
   {
     input: 'lib/src/index.js',
     output: {
-      name: 'bootstrap.native',
+      // name: 'bootstrap.native',
+      name: 'BSN',
       file: './dist/bootstrap-native-v4.js',
       format: 'umd', // or iife
       globals: {
@@ -22,7 +23,8 @@ export default [
   {
     input: 'lib/src/index.js',
     output: {
-      name: 'bootstrap.native',
+      // name: 'bootstrap.native',
+      name: 'BSN',
       file: './dist/bootstrap-native-v4.min.js',
       format: 'umd', // or iife
       globals: {

@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, (global.bootstrap = global.bootstrap || {}, global.bootstrap.native = factory()));
+  (global = global || self, global.BSN = factory());
 }(this, (function () { 'use strict';
 
   function _classCallCheck(instance, Constructor) {
