@@ -4,9 +4,9 @@ import { supports } from './globals.js'
 --------------------------------------------------------*/
 export const initCallback = function(lookUp){
   lookUp = lookUp || document;
-  const initializeDataAPI = function( constructor, collection ){
+  const initializeDataAPI = function( Constructor, collection ){
     for (let i=0, cl=collection.length; i<cl; i++) {
-      new constructor(collection[i]);
+      new Constructor(collection[i]);
     }
   };
   for (let j=0, sl=supports.length; j<sl; j++) {
@@ -18,11 +18,11 @@ export const initCallback = function(lookUp){
 --------------------------------------------------------*/
 export const removeDataAPI = function(lookUp){
   lookUp = lookUp || document;
-  const removeElementDataAPI = function( constructor, collection ){
+  const removeElementDataAPI = function( Constructor, collection ){
     for (let i=0, cl=collection.length; i<cl; i++) {
-      if (collection[i][constructor]) {
-        collection[i][constructor].destroy();
-        delete collection[i][constructor];
+      if (collection[i][Constructor]) {
+        collection[i][Constructor].destroy();
+        delete collection[i][Constructor];
       } 
     }
   };  

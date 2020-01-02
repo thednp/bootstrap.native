@@ -1,38 +1,24 @@
-/* Native JavaScript for Bootstrap 3 IE8+ Polyfill
+/* Native JavaScript for Bootstrap Polyfill
 --------------------------------------------*/
 (function(){
 
-  // all repeated strings get a single reference
   // document | window | element + corrections
-  var Doc = 'Document', doc = document, DOCUMENT = this[Doc] || this.HTMLDocument, // IE8
-    WIN = 'Window', win = window, WINDOW =  this.constructor || this[WIN] || Window, // old Safari
-    HTMLELEMENT = 'HTMLElement', documentElement = 'documentElement', ELEMENT = Element,
-
-    // classList related
-    className = 'className', add = 'add', classList = 'classList', remove = 'remove', contains = 'contains',
-    CLASS = 'class', setATTRIBUTE = 'setAttribute', getATTRIBUTE = 'getAttribute',
-    
-    // object | array related
-    prototype = 'prototype', indexOf = 'indexOf', length = 'length', split = 'split', trim = 'trim',
-
-    // event related
-    EVENT = 'Event', CustomEvent = 'CustomEvent', IE8EVENTS = '_events', 
-    etype = 'type', target = 'target', currentTarget = 'currentTarget', relatedTarget = 'relatedTarget',
-    cancelable = 'cancelable', bubbles = 'bubbles', cancelBubble = 'cancelBubble', cancelImmediate = 'cancelImmediate', detail = 'detail',
-    addEventListener = 'addEventListener', removeEventListener = 'removeEventListener', dispatchEvent = 'dispatchEvent';
+  var 
+    IE_DOCUMENT = this.Document || this.HTMLDocument, // IE8
+    SAFARI_WINDOW =  this.constructor || this.Window || Window; // old Safari
 
   // Element
-  if (!win[HTMLELEMENT]) { win[HTMLELEMENT] = win[ELEMENT]; }
+  if (!window.HTMLElement) { window.HTMLElement = window.Element; }
 
-  // Array[prototype][indexOf]
-  if (!Array[prototype][indexOf]) {
-    Array[prototype][indexOf] = function(searchElement) {
+  // Array.prototype.indexOf
+  if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(searchElement) {
       if (this === undefined || this === null) {
         throw new TypeError(this + ' is not an object');
       }
     
-      var  arraylike = this instanceof String ? this[split]('') : this,
-        lengthValue = Math.max(Math.min(arraylike[length], 9007199254740991), 0) || 0,
+      var arraylike = this instanceof String ? this.split('') : this,
+        lengthValue = Math.max(Math.min(arraylike.length, 9007199254740991), 0) || 0,
         index = Number(arguments[1]) || 0;
     
       index = (index < 0 ? Math.max(lengthValue + index, 0) : index) - 1;
@@ -47,31 +33,31 @@
     };
   }
 
-  if (!String[prototype][trim]) {
-    String[prototype][trim] = function () {
+  if (!String.prototype.trim) {
+    String.prototype.trim = function () {
       return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
     };
   }
 
   // Element.prototype.classList by thednp
-  if( !(classList in ELEMENT[prototype]) ) {
+  if( !('classList' in Element.prototype) ) {
     var ClassLIST = function(elem){
-      var classArr = (elem[getATTRIBUTE](CLASS)||'').replace(/^\s+|\s+$/g,'')[split](/\s+/) || [];
+      var classArr = (elem.getAttribute('class')||'').replace(/^\s+|\s+$/g,'').split(/\s+/) || [],
           
           // methods
-          hasClass = this[contains] = function(classNAME){
-            return classArr[indexOf](classNAME) > -1;
+          hasClass = this.contains = function(classNAME){
+            return classArr.indexOf(classNAME) > -1;
           },
-          addClass = this[add] = function(classNAME){
+          addClass = this.add = function(classNAME){
             if (!hasClass(classNAME)) {
               classArr.push(classNAME);
-              elem[setATTRIBUTE](CLASS, classArr.join(' '));
+              elem.setAttribute('class', classArr.join(' '));
             }
           },
-          removeClass = this[remove] = function(classNAME){
+          removeClass = this.remove = function(classNAME){
             if (hasClass(classNAME)) {
-              classArr.splice(classArr[indexOf](classNAME),1);
-              elem[setATTRIBUTE](CLASS, classArr.join(' '));
+              classArr.splice(classArr.indexOf(classNAME),1);
+              elem.setAttribute('class', classArr.join(' '));
             }
           },
           toggleClass = this.toggle = function(classNAME){
@@ -79,121 +65,121 @@
             else { addClass(classNAME); } 
           };
     }
-    Object.defineProperty(ELEMENT[prototype], classList, { get: function () { return new ClassLIST(this); } });
+    Object.defineProperty(Element.prototype, 'classList', { get: function () { return new ClassLIST(this); } });
   }
 
   // Event
-  if (!win[EVENT]||!WINDOW[prototype][EVENT]) {
-    win[EVENT] = WINDOW[prototype][EVENT] = DOCUMENT[prototype][EVENT] = ELEMENT[prototype][EVENT] = function(type, eventInitDict) {
+  if (!window.Event||!SAFARI_WINDOW.prototype.Event) {
+    window.Event = SAFARI_WINDOW.prototype.Event = IE_DOCUMENT.prototype.Event = Element.prototype.Event = function(type, eventInitDict) {
       if (!type) { throw new Error('Not enough arguments'); }
       var event, 
-        bubblesValue = eventInitDict && eventInitDict[bubbles] !== undefined ? eventInitDict[bubbles] : false,
-        cancelableValue = eventInitDict && eventInitDict[cancelable] !== undefined ? eventInitDict[cancelable] : false;
-      if ( 'createEvent' in doc ) {
-        event = doc.createEvent(EVENT);      
+        bubblesValue = eventInitDict && eventInitDict.bubbles !== undefined ? eventInitDict.bubbles : false,
+        cancelableValue = eventInitDict && eventInitDict.cancelable !== undefined ? eventInitDict.cancelable : false;
+      if ( 'createEvent' in document ) {
+        event = document.createEvent('Event');      
         event.initEvent(type, bubblesValue, cancelableValue);
       } else {
-        event = doc.createEventObject();
-        event[etype] = type;
-        event[bubbles] = bubblesValue;
-        event[cancelable] = cancelableValue;
+        event = document.createEventObject();
+        event.etype = type;
+        event.bubbles = bubblesValue;
+        event.cancelable = cancelableValue;
       }
       return event;
     };
   }
 
   // CustomEvent
-  if (!(CustomEvent in win) || !(CustomEvent in WINDOW[prototype])) {
-    win[CustomEvent] = WINDOW[prototype][CustomEvent] = DOCUMENT[prototype][CustomEvent] = Element[prototype][CustomEvent] = function(type, eventInitDict) {
+  if (!window.CustomEvent || !SAFARI_WINDOW.prototype.CustomEvent) {
+    window.CustomEvent = SAFARI_WINDOW.prototype.CustomEvent = IE_DOCUMENT.prototype.CustomEvent = Element.prototype.CustomEvent = function(type, eventInitDict) {
       if (!type) {
         throw Error('CustomEvent TypeError: An event name must be provided.');
       }
       var event = new Event(type, eventInitDict);
-      event[detail] = eventInitDict && eventInitDict[detail] || null;
+      event.detail = eventInitDict && eventInitDict.detail || null;
       return event;
     };
   }
 
   // addEventListener | removeEventListener
-  if (!win[addEventListener]||!WINDOW[prototype][addEventListener]) {
-    win[addEventListener] = WINDOW[prototype][addEventListener] = DOCUMENT[prototype][addEventListener] = ELEMENT[prototype][addEventListener] = function() {
+  if (!window.addEventListener || !SAFARI_WINDOW.prototype.addEventListener) {
+    window.addEventListener = SAFARI_WINDOW.prototype.addEventListener = IE_DOCUMENT.prototype.addEventListener = Element.prototype.addEventListener = function() {
       var  element = this,
         type = arguments[0],
         listener = arguments[1];
 
-      if (!element[IE8EVENTS]) {  element[IE8EVENTS] = {}; }
+      if (!element._events) {  element._events = {}; }
 
-      if (!element[IE8EVENTS][type]) {
-        element[IE8EVENTS][type] = function (event) {
-          var  list = element[IE8EVENTS][event[etype]].list,
+      if (!element._events[type]) {
+        element._events[type] = function (event) {
+          var  list = element._events[event.etype].list,
             events = list.slice(),
             index = -1,
-            lengthValue = events[length],
+            lengthValue = events.length,
             eventElement;
 
           event.preventDefault = function() {
-            if (event[cancelable] !== false) {
+            if (event.cancelable !== false) {
               event.returnValue = false;
             }
           };
 
           event.stopPropagation = function() {
-            event[cancelBubble] = true;
+            event.cancelBubble = true;
           };
 
           event.stopImmediatePropagation = function() {
-            event[cancelBubble] = true;
-            event[cancelImmediate] = true;
+            event.cancelBubble = true;
+            event.cancelImmediate = true;
           };
 
-          event[currentTarget] = element;
-          event[relatedTarget] = event[relatedTarget] || event.fromElement || null;
-          event[target] = event[target] || event.srcElement || element;
+          event.currentTarget = element;
+          event.relatedTarget = event.relatedTarget || event.fromElement || null;
+          event.target = event.target || event.srcElement || element;
           event.timeStamp = new Date().getTime();
 
           if (event.clientX) {
-            event.pageX = event.clientX + doc[documentElement].scrollLeft;
-            event.pageY = event.clientY + doc[documentElement].scrollTop;
+            event.pageX = event.clientX + document.documentElement.scrollLeft;
+            event.pageY = event.clientY + document.documentElement.scrollTop;
           }
 
-          while (++index < lengthValue && !event[cancelImmediate]) {
+          while (++index < lengthValue && !event.cancelImmediate) {
             if (index in events) {
               eventElement = events[index];
 
-              if (list[indexOf](eventElement) !== -1 && typeof eventElement === 'function') {
+              if (list.indexOf(eventElement) !== -1 && typeof eventElement === 'function') {
                 eventElement.call(element, event);
               }
             }
           }
         };
 
-        element[IE8EVENTS][type].list = [];
+        element._events[type].list = [];
 
         if (element.attachEvent) {
-          element.attachEvent('on' + type, element[IE8EVENTS][type]);
+          element.attachEvent('on' + type, element._events[type]);
         }
       }
 
-      element[IE8EVENTS][type].list.push(listener);
+      element._events[type].list.push(listener);
     };
 
-    win[removeEventListener] = WINDOW[prototype][removeEventListener] = DOCUMENT[prototype][removeEventListener] = ELEMENT[prototype][removeEventListener] = function() {
+    window.removeEventListener = SAFARI_WINDOW.prototype.removeEventListener = IE_DOCUMENT.prototype.removeEventListener = Element.prototype.removeEventListener = function() {
       var  element = this,
         type = arguments[0],
         listener = arguments[1],
         index;
 
-      if (element[IE8EVENTS] && element[IE8EVENTS][type] && element[IE8EVENTS][type].list) {
-        index = element[IE8EVENTS][type].list[indexOf](listener);
+      if (element._events && element._events[type] && element._events[type].list) {
+        index = element._events[type].list.indexOf(listener);
 
         if (index !== -1) {
-          element[IE8EVENTS][type].list.splice(index, 1);
+          element._events[type].list.splice(index, 1);
 
-          if (!element[IE8EVENTS][type].list[length]) {
+          if (!element._events[type].list.length) {
             if (element.detachEvent) {
-              element.detachEvent('on' + type, element[IE8EVENTS][type]);
+              element.detachEvent('on' + type, element._events[type]);
             }
-            delete element[IE8EVENTS][type];
+            delete element._events[type];
           }
         }
       }
@@ -201,26 +187,26 @@
   }
 
   // Event dispatcher
-  if (!win[dispatchEvent]||!WINDOW[prototype][dispatchEvent]||!DOCUMENT[prototype][dispatchEvent]||!ELEMENT[prototype][dispatchEvent]) {
-    win[dispatchEvent] = WINDOW[prototype][dispatchEvent] = DOCUMENT[prototype][dispatchEvent] = ELEMENT[prototype][dispatchEvent] = function (event) {
-      if (!arguments[length]) {
+  if (!window.dispatchEvent||!SAFARI_WINDOW.prototype.dispatchEvent||!IE_DOCUMENT.prototype.dispatchEvent||!Element.prototype.dispatchEvent) {
+    window.dispatchEvent = SAFARI_WINDOW.prototype.dispatchEvent = IE_DOCUMENT.prototype.dispatchEvent = Element.prototype.dispatchEvent = function (event) {
+      if (!arguments.length) {
         throw new Error('Not enough arguments');
       }
 
-      if (!event || typeof event[etype] !== 'string') {
+      if (!event || typeof event.etype !== 'string') {
         throw new Error('DOM Events Exception 0');
       }
 
-      var element = this, type = event[etype];
+      var element = this, type = event.etype;
 
       try {
-        if (!event[bubbles]) {
-          event[cancelBubble] = true;
+        if (!event.bubbles) {
+          event.cancelBubble = true;
 
           var cancelBubbleEvent = function (event) {
-            event[cancelBubble] = true;
+            event.cancelBubble = true;
 
-            (element || win).detachEvent('on' + type, cancelBubbleEvent);
+            (element || window).detachEvent('on' + type, cancelBubbleEvent);
           };
 
           this.attachEvent('on' + type, cancelBubbleEvent);
@@ -228,13 +214,13 @@
 
         this.fireEvent('on' + type, event);
       } catch (error) {
-        event[target] = element;
+        event.target = element;
 
         do {
-          event[currentTarget] = element;
+          event.currentTarget = element;
 
-          if (IE8EVENTS in element && typeof element[IE8EVENTS][type] === 'function') {
-            element[IE8EVENTS][type].call(element, event);
+          if ('_events' in element && typeof element._events[type] === 'function') {
+            element._events[type].call(element, event);
           }
 
           if (typeof element['on' + type] === 'function') {
@@ -242,7 +228,7 @@
           }
 
           element = element.nodeType === 9 ? element.parentWindow : element.parentNode;
-        } while (element && !event[cancelBubble]);
+        } while (element && !event.cancelBubble);
       }
 
       return true;
