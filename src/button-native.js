@@ -16,7 +16,7 @@ export default function Button(element) {
   element = queryElement(element);
 
   // reset on re-init
-  element.Button && element.Button.destroy();
+  element.Button && element.Button.dispose();
   
   // constant
   let toggled = false; // toggled makes sure to prevent triggering twice the change.bs.button events
@@ -114,7 +114,7 @@ export default function Button(element) {
     };
 
   // public method
-  self.destroy = () => {
+  self.dispose = () => {
     toggleEvents(off);
     delete element.Button;
   }

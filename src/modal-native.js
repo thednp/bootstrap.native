@@ -40,8 +40,8 @@ export default function Modal(element,options) { // element can be the modal/tri
   if ( !modal ) { return; } // invalidate
 
   // reset on re-init
-  element && element.Modal && element.Modal.destroy();
-  modal.Modal && modal.Modal.destroy();
+  element && element.Modal && element.Modal.dispose();
+  modal.Modal && modal.Modal.dispose();
 
   // set options
   options = options || {};
@@ -251,7 +251,7 @@ export default function Modal(element,options) { // element can be the modal/tri
       setScrollbar();
     }
   };
-  self.destroy = () => {
+  self.dispose = () => {
     self.hide();
     if (element) {off(element, 'click', clickHandler); delete element.Modal; } 
     else {delete modal.Modal;}

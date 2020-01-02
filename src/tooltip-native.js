@@ -21,7 +21,7 @@ export default function Tooltip(element,options) {
   options = options || {};
 
   // reset on re-init
-  element.Tooltip && element.Tooltip.destroy();
+  element.Tooltip && element.Tooltip.dispose();
 
   // tooltip, timer, and title
   let tooltip = null, timer = 0, titleString;
@@ -165,7 +165,7 @@ export default function Tooltip(element,options) {
     if (!tooltip) { self.show(); } 
     else { self.hide(); }
   };
-  self.destroy = () => {
+  self.dispose = () => {
     toggleEvents(off);
     self.hide();
     element.setAttribute('title', element.getAttribute('data-original-title'));
@@ -173,11 +173,16 @@ export default function Tooltip(element,options) {
     delete element.Tooltip;
   };
 
-  // invalidate
+
+  /* invalidate */
+
+
   titleString = getTitle();
   if ( !titleString ) return;
 
-  // init
+  /* init */
+
+
   if (!element.Tooltip){ // prevent adding event handlers twice
     element.setAttribute('data-original-title',titleString);
     element.removeAttribute('title');

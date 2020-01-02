@@ -17,7 +17,7 @@ export default function Toast(element,options) {
   element = queryElement(element);
 
   // reset on re-init
-  element.Toast && element.Toast.destroy();
+  element.Toast && element.Toast.dispose();
 
   // set options
   options = options || {};
@@ -96,15 +96,11 @@ export default function Toast(element,options) {
   };
   self.dispose = () => {
     if ( toast && hasClass(toast,'show') ) {
-      removeClass( toast,'show' );
-      self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
+      close();
+      clearTimeout(timer);
+      off(element, 'click', self.hide);
+      delete element.Toast;
     }
-  };
-  self.destroy = () => {
-    self.hide();
-    clearTimeout(timer);
-    off(element, 'click', self.hide);
-    delete element.Toast;
   };
 
   // init

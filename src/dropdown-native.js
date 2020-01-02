@@ -18,7 +18,7 @@ export default function Dropdown(element,option) {
   element = queryElement(element);
 
   // reset on re-init
-  element.Dropdown && element.Dropdown.destroy();    
+  element.Dropdown && element.Dropdown.dispose();    
 
   // custom events
   let showCustomEvent,
@@ -143,7 +143,7 @@ export default function Dropdown(element,option) {
     if (hasClass(parent,'show') && element.open) { hide(); } 
     else { show(); }
   };
-  self.destroy = () => {
+  self.dispose = () => {
     if (hasClass(parent,'show') && element.open) { hide(); }
     off(element, 'click', clickHandler);
     delete element.Dropdown;

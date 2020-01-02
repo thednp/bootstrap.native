@@ -18,7 +18,7 @@ export default function Popover(element,options) {
   element = queryElement(element);
 
   // reset on re-init
-  element.Popover && element.Popover.destroy();
+  element.Popover && element.Popover.dispose();
 
   // set instance options
   options = options || {};
@@ -211,7 +211,7 @@ export default function Popover(element,options) {
       }
     }, self.options.delay );
   };
-  self.destroy = () => {
+  self.dispose = () => {
     self.hide();
     toggleEvents(off);
     delete element.Popover;

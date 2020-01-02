@@ -116,13 +116,9 @@ function emulateTransitionEnd(element, handler) {
 function Alert(element) {
   element = queryElement(element); // initialization element
 
-  element.Alert && element.Alert.destroy(); // reset on re-init
+  element.Alert && element.Alert.dispose(); // reset on re-init
 
-  /* CONSTANTS
-  * bind 
-  * custom events
-  * handlers
-  */
+  /* CONSTANTS */
 
   var self = this,
       closeCustomEvent = bootstrapCustomEvent('close', 'alert'),
@@ -149,13 +145,12 @@ function Alert(element) {
     if (alert && element && hasClass(alert, 'show')) {
       dispatchCustomEvent.call(alert, closeCustomEvent);
       if (closeCustomEvent.defaultPrevented) return;
-      self.destroy();
+      self.dispose();
     }
   };
 
-  self.destroy = function () {
-    removeClass(alert, 'show');
-    alert && triggerHandler();
+  self.dispose = function () {
+    alert && (removeClass(alert, 'show'), triggerHandler());
     off(element, 'click', clickHandler);
     delete element.Alert;
   };
@@ -189,7 +184,7 @@ function Button(element) {
   // initialization element
   element = queryElement(element); // reset on re-init
 
-  element.Button && element.Button.destroy(); // constant
+  element.Button && element.Button.dispose(); // constant
 
   var toggled = false; // toggled makes sure to prevent triggering twice the change.bs.button events
   // bind
@@ -291,7 +286,7 @@ function Button(element) {
   }; // public method
 
 
-  self.destroy = function () {
+  self.dispose = function () {
     toggleEvents(off);
     delete element.Button;
   }; // init
@@ -326,7 +321,7 @@ function Carousel(element, options) {
   // initialization element
   element = queryElement(element); // reset on re-init
 
-  element.Carousel && element.Carousel.destroy(); // set options
+  element.Carousel && element.Carousel.dispose(); // set options
 
   options = options || {}; // bind
 
@@ -602,7 +597,7 @@ function Carousel(element, options) {
     return slides.indexOf(getElementsByClassName(element, 'carousel-item active')[0]) || 0;
   };
 
-  self.destroy = function () {
+  self.dispose = function () {
     toggleEvents(off);
     clearInterval(timer);
     delete element.Carousel;
@@ -641,7 +636,7 @@ function Collapse(element, options) {
   // initialization element
   element = queryElement(element); // reset on re-init
 
-  element.Collapse && element.Collapse.destroy(); // set options
+  element.Collapse && element.Collapse.dispose(); // set options
 
   options = options || {}; // target practice
 
@@ -740,7 +735,7 @@ function Collapse(element, options) {
     }
   };
 
-  self.destroy = function () {
+  self.dispose = function () {
     off(element, 'click', self.toggle);
     delete element.Collapse;
   }; // init
@@ -877,7 +872,7 @@ function Dropdown(element, option) {
   // initialization element
   element = queryElement(element); // reset on re-init
 
-  element.Dropdown && element.Dropdown.destroy(); // custom events
+  element.Dropdown && element.Dropdown.dispose(); // custom events
 
   var showCustomEvent,
       shownCustomEvent,
@@ -1011,7 +1006,7 @@ function Dropdown(element, option) {
     }
   };
 
-  self.destroy = function () {
+  self.dispose = function () {
     if (hasClass(parent, 'show') && element.open) {
       hide();
     }
@@ -1077,8 +1072,8 @@ function Modal(element, options) {
   // reset on re-init
 
 
-  element && element.Modal && element.Modal.destroy();
-  modal.Modal && modal.Modal.destroy(); // set options
+  element && element.Modal && element.Modal.dispose();
+  modal.Modal && modal.Modal.dispose(); // set options
 
   options = options || {};
   self.options = {};
@@ -1289,7 +1284,7 @@ function Modal(element, options) {
     }
   };
 
-  self.destroy = function () {
+  self.dispose = function () {
     self.hide();
 
     if (element) {
@@ -1334,7 +1329,7 @@ function Popover(element, options) {
   // initialization element
   element = queryElement(element); // reset on re-init
 
-  element.Popover && element.Popover.destroy(); // set instance options
+  element.Popover && element.Popover.dispose(); // set instance options
 
   options = options || {}; // popover and timer
 
@@ -1520,7 +1515,7 @@ function Popover(element, options) {
     }, self.options.delay);
   };
 
-  self.destroy = function () {
+  self.dispose = function () {
     self.hide();
     toggleEvents(off);
     delete element.Popover;
@@ -1552,7 +1547,7 @@ function ScrollSpy(element, options) {
   // initialization element, the element we spy on
   element = queryElement(element); // reset on re-init
 
-  element.ScrollSpy && element.ScrollSpy.destroy(); // set options
+  element.ScrollSpy && element.ScrollSpy.dispose(); // set options
 
   options = options || {}; // bind, event targets, constants
 
@@ -1636,7 +1631,7 @@ function ScrollSpy(element, options) {
     updateItems();
   };
 
-  self.destroy = function () {
+  self.dispose = function () {
     toggleEvents(off);
     delete element.ScrollSpy;
   }; // invalidate
@@ -1669,7 +1664,7 @@ function Tab(element, options) {
   // initialization element
   element = queryElement(element); // reset on re-init
 
-  element.Tab && element.Tab.destroy(); // bind
+  element.Tab && element.Tab.dispose(); // bind
 
   var self = this,
       // DATA API
@@ -1779,7 +1774,8 @@ function Tab(element, options) {
     e.preventDefault();
     next = e.currentTarget;
     !tabs.isAnimating && !hasClass(next, 'active') && self.show();
-  }; // public method
+  };
+  /* public method */
 
 
   self.show = function () {
@@ -1814,15 +1810,18 @@ function Tab(element, options) {
     }
   };
 
-  self.destroy = function () {
+  self.dispose = function () {
     off(element, 'click', clickHandler);
     delete element.Tab;
   };
+  /* invalidate */
 
-  if (!tabs) return; // invalidate
-  // set default animation state
 
-  tabs.isAnimating = false; // init
+  if (!tabs) return;
+  /* set default animation state */
+
+  tabs.isAnimating = false;
+  /* init */
 
   if (!element.Tab) {
     // prevent adding event handlers twice
@@ -1831,7 +1830,8 @@ function Tab(element, options) {
 
   if (self.options.height) {
     tabsContentContainer = getActiveContent().parentNode;
-  } // associate target with init object
+  }
+  /* associate target with init object */
 
 
   self.element = element;
@@ -1849,7 +1849,7 @@ function Toast(element, options) {
   // initialization element
   element = queryElement(element); // reset on re-init
 
-  element.Toast && element.Toast.destroy(); // set options
+  element.Toast && element.Toast.dispose(); // set options
 
   options = options || {}; // toast, timer
 
@@ -1892,16 +1892,8 @@ function Toast(element, options) {
       close = function close() {
     removeClass(toast, 'show');
     self.options.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
-  },
-      disposeComplete = function disposeComplete() {
-    clearTimeout(timer);
-    timer = null;
-    addClass(toast, 'hide');
-    off(element, 'click', self.hide);
-    delete element.Toast;
-    element = null;
-    toast = null;
-  }; // public methods
+  };
+ // public methods
 
 
   self.show = function () {
@@ -1930,16 +1922,11 @@ function Toast(element, options) {
 
   self.dispose = function () {
     if (toast && hasClass(toast, 'show')) {
-      removeClass(toast, 'show');
-      self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
+      close();
+      clearTimeout(timer);
+      off(element, 'click', self.hide);
+      delete element.Toast;
     }
-  };
-
-  self.destroy = function () {
-    self.hide();
-    clearTimeout(timer);
-    off(element, 'click', self.hide);
-    delete element.Toast;
   }; // init
 
 
@@ -1967,7 +1954,7 @@ function Tooltip(element, options) {
 
   options = options || {}; // reset on re-init
 
-  element.Tooltip && element.Tooltip.destroy(); // tooltip, timer, and title
+  element.Tooltip && element.Tooltip.dispose(); // tooltip, timer, and title
 
   var tooltip = null,
       timer = 0,
@@ -2107,17 +2094,19 @@ function Tooltip(element, options) {
     }
   };
 
-  self.destroy = function () {
+  self.dispose = function () {
     toggleEvents(off);
     self.hide();
     element.setAttribute('title', element.getAttribute('data-original-title'));
     element.removeAttribute('data-original-title');
     delete element.Tooltip;
-  }; // invalidate
+  };
+  /* invalidate */
 
 
   titleString = getTitle();
-  if (!titleString) return; // init
+  if (!titleString) return;
+  /* init */
 
   if (!element.Tooltip) {
     // prevent adding event handlers twice

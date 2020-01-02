@@ -17,7 +17,7 @@ export default function Collapse(element,options) {
   element = queryElement(element);
 
   // reset on re-init
-  element.Collapse && element.Collapse.destroy();
+  element.Collapse && element.Collapse.dispose();
 
   // set options
   options = options || {};
@@ -116,7 +116,7 @@ export default function Collapse(element,options) {
       removeClass(element,'collapsed');
     }
   };
-  self.destroy = () => {
+  self.dispose = () => {
     off(element, 'click', self.toggle);
     delete element.Collapse;
   }

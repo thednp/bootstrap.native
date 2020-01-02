@@ -15,13 +15,9 @@ export default function Alert(element) {
 
   element = queryElement(element); // initialization element
 
-  element.Alert && element.Alert.destroy(); // reset on re-init
+  element.Alert && element.Alert.dispose(); // reset on re-init
 
-  /* CONSTANTS
-  * bind 
-  * custom events
-  * handlers
-  */
+  /* CONSTANTS */
 
   const 
     self = this, 
@@ -42,6 +38,7 @@ export default function Alert(element) {
       dispatchCustomEvent.call(alert,closedCustomEvent);
     };
 
+
   /* PUBLIC METHODS
   -----------------*/
 
@@ -49,13 +46,12 @@ export default function Alert(element) {
     if ( alert && element && hasClass(alert,'show') ) {
       dispatchCustomEvent.call(alert,closeCustomEvent);
       if ( closeCustomEvent.defaultPrevented ) return;
-      self.destroy();
+      self.dispose();
     }
   }
 
-  self.destroy = () => {
-    removeClass(alert,'show');
-    alert && triggerHandler();
+  self.dispose = () => {
+    alert && (removeClass(alert,'show'), triggerHandler());
     off(element, 'click', clickHandler);
     delete element.Alert;
   }

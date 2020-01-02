@@ -17,7 +17,7 @@ export default function ScrollSpy(element,options) {
   element = queryElement(element);
 
   // reset on re-init
-  element.ScrollSpy && element.ScrollSpy.destroy();
+  element.ScrollSpy && element.ScrollSpy.dispose();
 
   // set options
   options = options || {};
@@ -103,7 +103,7 @@ export default function ScrollSpy(element,options) {
   self.refresh = () => {
     updateItems();
   }
-  self.destroy = () => {
+  self.dispose = () => {
     toggleEvents(off);
     delete element.ScrollSpy;
   }

@@ -17,7 +17,7 @@ export default function Carousel (element,options) {
   element = queryElement( element );
 
   // reset on re-init
-  element.Carousel && element.Carousel.destroy();
+  element.Carousel && element.Carousel.dispose();
 
   // set options
   options = options || {};    
@@ -284,7 +284,7 @@ export default function Carousel (element,options) {
 
   self.getActiveIndex = () => slides.indexOf(getElementsByClassName(element,'carousel-item active')[0]) || 0
 
-  self.destroy = () => {
+  self.dispose = () => {
     toggleEvents(off);
     clearInterval(timer);
     delete element.Carousel;

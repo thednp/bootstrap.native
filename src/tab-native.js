@@ -17,7 +17,7 @@ export default function Tab(element,options) {
   element = queryElement(element);
 
   // reset on re-init
-  element.Tab && element.Tab.destroy();
+  element.Tab && element.Tab.dispose();
 
   // bind
   const self = this,
@@ -128,7 +128,9 @@ export default function Tab(element,options) {
       !tabs.isAnimating && !hasClass(next,'active') && self.show();
     };
 
-  // public method
+
+  /* public method */
+
   self.show = () => { // the tab we clicked is now the next tab
     next = next || element;
     nextContent = queryElement(next.getAttribute('href')); // this is the actual object, the next tab content to activate
@@ -158,24 +160,32 @@ export default function Tab(element,options) {
       emulateTransitionEnd(activeContent, triggerHide);
     } else { triggerHide(); }
   };
-  self.destroy = () => {
+
+  self.dispose = () => {
     off(element, 'click', clickHandler);
     delete element.Tab;
   };
 
-  if (!tabs) return; // invalidate
 
-  // set default animation state
+  /* invalidate */
+
+  if (!tabs) return; 
+
+  /* set default animation state */
+
   tabs.isAnimating = false;
 
-  // init
+  /* init */
+
   if ( !element.Tab ) { // prevent adding event handlers twice
     on(element, 'click', clickHandler);
   }
 
+
   if (self.options.height) { tabsContentContainer = getActiveContent().parentNode; }
 
-  // associate target with init object
+  /* associate target with init object */
+
   self.element = element;
   element.Tab = self;
 };
