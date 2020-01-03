@@ -193,9 +193,5 @@ export default function Tooltip(element,options) {
   self.element = element;
   element.Tooltip = self;
 
-};
-
-// TOOLTIP DATA API
-// =================
-supports.push( [ 'Tooltip', Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ] );
+}
 

@@ -6,10 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "node lib/build.js --help",
-    "build": "rollup -c",
-    "build-v4": "node lib/build.js -v 4 > dist/bootstrap-native-v4.js && npm run build-v4-min",
-    "build-min": "node lib/build.js -m -v 3 > dist/bootstrap-native.min.js",
-    "build-v4-min": "node lib/build.js -m -v 4 > dist/bootstrap-native-v4.min.js",
+    "build": "rollup -c && npm run minify",
+    "minify": "node minify.js",
     "watch": "rollup -c -w"
   },
   "browserslist": [

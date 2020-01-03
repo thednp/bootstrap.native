@@ -109,8 +109,8 @@
 
       if (!element._events) {  element._events = {}; }
 
-      if (!element._events[type]) {
-        element._events[type] = function (event) {
+      if (!element._events.type) {
+        element._events.type = function (event) {
           var  list = element._events[event.etype].list,
             events = list.slice(),
             index = -1,
@@ -153,14 +153,14 @@
           }
         };
 
-        element._events[type].list = [];
+        element._events.type.list = [];
 
         if (element.attachEvent) {
-          element.attachEvent('on' + type, element._events[type]);
+          element.attachEvent('on' + type, element._events.type);
         }
       }
 
-      element._events[type].list.push(listener);
+      element._events.type.list.push(listener);
     };
 
     window.removeEventListener = SAFARI_WINDOW.prototype.removeEventListener = IE_DOCUMENT.prototype.removeEventListener = Element.prototype.removeEventListener = function() {
@@ -169,17 +169,17 @@
         listener = arguments[1],
         index;
 
-      if (element._events && element._events[type] && element._events[type].list) {
-        index = element._events[type].list.indexOf(listener);
+      if (element._events && element._events.type && element._events.type.list) {
+        index = element._events.type.list.indexOf(listener);
 
         if (index !== -1) {
-          element._events[type].list.splice(index, 1);
+          element._events.type.list.splice(index, 1);
 
-          if (!element._events[type].list.length) {
+          if (!element._events.type.list.length) {
             if (element.detachEvent) {
-              element.detachEvent('on' + type, element._events[type]);
+              element.detachEvent('on' + type, element._events.type);
             }
-            delete element._events[type];
+            delete element._events.type;
           }
         }
       }
@@ -219,8 +219,8 @@
         do {
           event.currentTarget = element;
 
-          if ('_events' in element && typeof element._events[type] === 'function') {
-            element._events[type].call(element, event);
+          if ('_events' in element && typeof element._events.type === 'function') {
+            element._events.type.call(element, event);
           }
 
           if (typeof element['on' + type] === 'function') {

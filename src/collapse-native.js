@@ -142,10 +142,5 @@ export default function Collapse(element,options) {
   self.element = element;
   element.Collapse = self;
 
-};
-
-// COLLAPSE DATA API
-// =================
-
-supports.push( [ 'Collapse', Collapse, '[data-toggle="collapse"]' ] );
+}
 

@@ -166,10 +166,5 @@ export default function Dropdown(element,option) {
   self.element = element;
   element.Dropdown = self;
 
-};
-
-// DROPDOWN DATA API
-// =================
-
-supports.push( ['Dropdown', Dropdown, '[data-toggle="dropdown"]'] );
+}
 

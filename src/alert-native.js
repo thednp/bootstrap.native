@@ -70,8 +70,3 @@ export default function Alert(element) {
   element.Alert = self;
 }
 
-/* ALERT DATA API
- * ============== */
-
-supports.push(['Alert', Alert, '[data-dismiss="alert"]']);
-

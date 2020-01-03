@@ -113,10 +113,5 @@ export default function Toast(element,options) {
   self.element = element;
   element.Toast = self;
 
-};
-
-// TOAST DATA API
-// =================
-
-supports.push( [ 'Toast', Toast, '[data-dismiss="toast"]' ] );
+}
 

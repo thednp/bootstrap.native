@@ -2,7 +2,7 @@ import { supports } from './globals.js'
 
 /* Native JavaScript for Bootstrap | Initialize Data API
 --------------------------------------------------------*/
-export const initCallback = function(lookUp){
+export const initCallback = function (lookUp){
   lookUp = lookUp || document;
   const initializeDataAPI = function( Constructor, collection ){
     for (let i=0, cl=collection.length; i<cl; i++) {
@@ -16,13 +16,12 @@ export const initCallback = function(lookUp){
 
 /* Native JavaScript for Bootstrap | Remove Data API
 --------------------------------------------------------*/
-export const removeDataAPI = function(lookUp){
+export const removeDataAPI = function (lookUp) {
   lookUp = lookUp || document;
   const removeElementDataAPI = function( Constructor, collection ){
     for (let i=0, cl=collection.length; i<cl; i++) {
       if (collection[i][Constructor]) {
-        collection[i][Constructor].destroy();
-        delete collection[i][Constructor];
+        collection[i][Constructor].dispose();
       } 
     }
   };  

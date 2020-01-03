@@ -9,6 +9,8 @@ import ScrollSpy from './scrollspy-native.js'
 import Tab from './tab-native.js'
 import Toast from './toast-native.js'
 import Tooltip from './tooltip-native.js'
+import {initCallback} from './util/callbacks.js'
+import {supports} from './util/globals'
 import './util/init.js'
 
 export default {
@@ -22,5 +24,7 @@ export default {
 	ScrollSpy,
 	Tab,
 	Toast,
-	Tooltip
+	Tooltip,
+	initCallback,
+	supports
 }

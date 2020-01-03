@@ -188,9 +188,5 @@ export default function Tab(element,options) {
 
   self.element = element;
   element.Tab = self;
-};
-
-// TAB DATA API
-// ============
-supports.push( [ 'Tab', Tab, '[data-toggle="tab"]' ] );
+}
 

@@ -171,10 +171,6 @@ function Alert(element) {
   self.element = element;
   element.Alert = self;
 }
-/* ALERT DATA API
- * ============== */
-
-supports.push(['Alert', Alert, '[data-dismiss="alert"]']);
 
 /* Native JavaScript for Bootstrap 4 | Button
 ---------------------------------------------*/
@@ -308,10 +304,7 @@ function Button(element) {
 
   self.element = element;
   element.Button = self;
-} // BUTTON DATA API
-// =================
-
-supports.push(['Button', Button, '[data-toggle="buttons"]']);
+}
 
 /* Native JavaScript for Bootstrap 4 | Carousel
 ----------------------------------------------*/
@@ -624,9 +617,6 @@ function Carousel(element, options) {
   self.element = element;
   element.Carousel = self;
 }
-// =================
-
-supports.push(['Carousel', Carousel, '[data-ride="carousel"]']);
 
 /* Native JavaScript for Bootstrap 4 | Collapse
 -----------------------------------------------*/
@@ -757,9 +747,6 @@ function Collapse(element, options) {
   self.element = element;
   element.Collapse = self;
 }
-// =================
-
-supports.push(['Collapse', Collapse, '[data-toggle="collapse"]']);
 
 function setFocus(element) {
   element.focus ? element.focus() : element.setActive();
@@ -1032,9 +1019,6 @@ function Dropdown(element, option) {
   self.element = element;
   element.Dropdown = self;
 }
-// =================
-
-supports.push(['Dropdown', Dropdown, '[data-toggle="dropdown"]']);
 
 /* Native JavaScript for Bootstrap 4 | Modal
 -------------------------------------------*/
@@ -1317,9 +1301,6 @@ function Modal(element, options) {
     modal.Modal = self;
   }
 }
-// =================
-
-supports.push(['Modal', Modal, '[data-toggle="modal"]']);
 
 /* Native JavaScript for Bootstrap 4 | Popover
 ----------------------------------------------*/
@@ -1535,9 +1516,6 @@ function Popover(element, options) {
   self.element = element;
   element.Popover = self;
 }
-// ================
-
-supports.push(['Popover', Popover, '[data-toggle="popover"],[data-tip="popover"]']);
 
 /* Native JavaScript for Bootstrap 4 | ScrollSpy
 -----------------------------------------------*/
@@ -1652,9 +1630,6 @@ function ScrollSpy(element, options) {
   self.element = element;
   element.ScrollSpy = self;
 }
-// ==================
-
-supports.push(['ScrollSpy', ScrollSpy, '[data-spy="scroll"]']);
 
 /* Native JavaScript for Bootstrap 4 | Tab
 -----------------------------------------*/
@@ -1837,9 +1812,6 @@ function Tab(element, options) {
   self.element = element;
   element.Tab = self;
 }
-// ============
-
-supports.push(['Tab', Tab, '[data-toggle="tab"]']);
 
 /* Native JavaScript for Bootstrap 4 | Toast
 ---------------------------------------------*/
@@ -1940,9 +1912,6 @@ function Toast(element, options) {
   self.element = element;
   element.Toast = self;
 }
-// =================
-
-supports.push(['Toast', Toast, '[data-dismiss="toast"]']);
 
 /* Native JavaScript for Bootstrap 4 | Tooltip
 --------------------------------------------*/
@@ -2119,9 +2088,6 @@ function Tooltip(element, options) {
   self.element = element;
   element.Tooltip = self;
 }
-// =================
-
-supports.push(['Tooltip', Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]']);
 
 /* Native JavaScript for Bootstrap | Initialize Data API
 --------------------------------------------------------*/
@@ -2139,6 +2105,18 @@ var initCallback = function initCallback(lookUp) {
     initializeDataAPI(supports[j][1], lookUp.querySelectorAll(supports[j][2]));
   }
 };
+
+supports.push(['Alert', Alert, '[data-dismiss="alert"]']);
+supports.push(['Button', Button, '[data-toggle="buttons"]']);
+supports.push(['Carousel', Carousel, '[data-ride="carousel"]']);
+supports.push(['Collapse', Collapse, '[data-toggle="collapse"]']);
+supports.push(['Dropdown', Dropdown, '[data-toggle="dropdown"]']);
+supports.push(['Modal', Modal, '[data-toggle="modal"]']);
+supports.push(['Popover', Popover, '[data-toggle="popover"],[data-tip="popover"]']);
+supports.push(['ScrollSpy', ScrollSpy, '[data-spy="scroll"]']);
+supports.push(['Tab', Tab, '[data-toggle="tab"]']);
+supports.push(['Toast', Toast, '[data-dismiss="toast"]']);
+supports.push(['Tooltip', Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]']); // bulk initialize all components
 
 document.body ? initCallback() : on(document, 'DOMContentLoaded', initCallback);
 

@@ -307,9 +307,5 @@ export default function Carousel (element,options) {
   self.element = element;
   element.Carousel = self;
 
-};
-
-// CAROUSEL DATA API
-// =================
-supports.push( [ 'Carousel', Carousel, '[data-ride="carousel"]' ] );
+}
 

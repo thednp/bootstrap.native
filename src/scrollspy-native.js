@@ -123,8 +123,3 @@ export default function ScrollSpy(element,options) {
 
 };
 
-// SCROLLSPY DATA API
-// ==================
-
-supports.push( [ 'ScrollSpy', ScrollSpy, '[data-spy="scroll"]' ] );
-

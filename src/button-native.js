@@ -137,8 +137,3 @@ export default function Button(element) {
   element.Button = self;
 }
 
-// BUTTON DATA API
-// =================
-
-supports.push( [ 'Button', Button, '[data-toggle="buttons"]' ] );
-

@@ -231,10 +231,5 @@ export default function Popover(element,options) {
   self.element = element;
   element.Popover = self;
 
-};
-
-// POPOVER DATA API
-// ================
-
-supports.push( [ 'Popover', Popover, '[data-toggle="popover"],[data-tip="popover"]' ] );
+}
 

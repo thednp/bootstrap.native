@@ -273,9 +273,5 @@ export default function Modal(element,options) { // element can be the modal/tri
     element.Modal = self;
   } else { modal.Modal = self; }
 
-};
+}
 
-// MODAL DATA API
-// =================
-
-supports.push( [ 'Modal', Modal, '[data-toggle="modal"]' ] );
