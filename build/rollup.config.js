@@ -2,10 +2,10 @@
 import babel from 'rollup-plugin-babel'
 import minify from 'rollup-plugin-babel-minify'
 
-const banner = require('./src/util/header.js')
+const banner = require('./header.js')
 
 export default [
-  // UDM version
+  // UDM Version
   {
     input: 'src/index.umd.js',
     output: {
@@ -19,6 +19,24 @@ export default [
       babel({
         exclude: 'node_modules/**' // only transpile our source code
       })
+    ]
+  },
+  // UDM Minified Version
+  {
+    input: 'src/index.umd.js',
+    output: {
+      name: 'BSN',
+      file: './dist/bootstrap-native.min.js',
+      format: 'umd', // or iife
+      globals: {}
+    },
+    plugins: [
+      babel({
+        exclude: 'node_modules/**' // only transpile our source code
+      }),
+      minify({
+        comments: false
+      })      
     ]
   },
   // ESM Version

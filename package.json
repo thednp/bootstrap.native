@@ -5,10 +5,10 @@
   "main": "dist/bootstrap-native.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "help": "node lib/build.js --help",
-    "build": "rollup -c && npm run minify",
-    "minify": "node minify.js",
-    "watch": "rollup -c -w"
+    "help": "rollup --help",
+    "build": "rollup --config build/rollup.config.js && npm run addHeader",
+    "addHeader": "node build/addHeader.js",
+    "watch": "rollup --config build/rollup.config.js -w"
   },
   "browserslist": [
     "last 2 versions",
@@ -37,9 +37,7 @@
     "@babel/preset-env": "^7.7.7",
     "rollup": "^1.27.14",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-babel-minify": "^9.1.1",
-    "uglify-js": "^2.7.3",
-    "yargs": "^5.0.0"
+    "rollup-plugin-babel-minify": "^9.1.1"
   },
   "dependencies": {}
 }

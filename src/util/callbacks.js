@@ -9,8 +9,8 @@ export const initCallback = function (lookUp){
       new Constructor(collection[i]);
     }
   };
-  for (let j=0, sl=supports.length; j<sl; j++) {
-    initializeDataAPI( supports[j][1], lookUp.querySelectorAll (supports[j][2]) );
+  for (let component in supports) {
+    initializeDataAPI( supports[component][0], lookUp.querySelectorAll (supports[component][1]) );
   }
 };
 
@@ -25,7 +25,8 @@ export const removeDataAPI = function (lookUp) {
       } 
     }
   };  
-  for (let j=0, sl=supports.length; j<sl; j++) {
-    removeElementDataAPI( supports[j][1], lookUp.querySelectorAll (supports[j][2]) );
-  }
+
+  for (let component in supports) {
+    removeElementDataAPI( supports[component][0], lookUp.querySelectorAll (supports[component][1]) );
+  }  
 };
