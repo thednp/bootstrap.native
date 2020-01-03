@@ -2,14 +2,13 @@
 /* Native JavaScript for Bootstrap 4 | Alert
 -------------------------------------------- */
 
-import { supports } from './util/globals.js';
 import { hasClass, removeClass  } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from './util/event.js';
 import { queryElement } from './util/selector.js';
 import { emulateTransitionEnd } from './util/transition.js';
 
-/* ALERT DEFINITION
-// ================ */
+// ALERT DEFINITION
+// ================
 
 export default function Alert(element) {
 
@@ -17,8 +16,7 @@ export default function Alert(element) {
 
   element.Alert && element.Alert.dispose(); // reset on re-init
 
-  /* CONSTANTS */
-
+  // CONSTANTS
   const 
     self = this, 
     closeCustomEvent = bootstrapCustomEvent('close','alert'),
@@ -38,10 +36,7 @@ export default function Alert(element) {
       dispatchCustomEvent.call(alert,closedCustomEvent);
     };
 
-
-  /* PUBLIC METHODS
-  -----------------*/
-
+  // PUBLIC METHODS
   self.close = () => {
     if ( alert && element && hasClass(alert,'show') ) {
       dispatchCustomEvent.call(alert,closeCustomEvent);
@@ -56,16 +51,16 @@ export default function Alert(element) {
     delete element.Alert;
   }
 
-  /* INIT
-  * prevent adding event handlers twice */
-  if ( !element.Alert ) { // 
+  // INIT
+  // prevent adding event handlers twice 
+  if ( !element.Alert ) {
     on(element, 'click', clickHandler);
   }
 
-  /* find the parent alert */
+  // find the parent alert 
   let alert = element.closest(`.alert`);
 
-  /* store init object within target element */
+  // store init object within target element 
   self.element = element;
   element.Alert = self;
 }

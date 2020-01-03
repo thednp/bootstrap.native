@@ -2,13 +2,12 @@
 /* Native JavaScript for Bootstrap 4 | Button
 ---------------------------------------------*/
 
-import { supports } from './util/globals.js';
 import { hasClass, addClass, removeClass  } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from './util/event.js';
 import { queryElement, getElementsByClassName } from './util/selector.js';
 
 // BUTTON DEFINITION
-// ===================
+// =================
 
 export default function Button(element) {
 
@@ -32,12 +31,10 @@ export default function Button(element) {
       const key = e.which || e.keyCode;
       key === 32 && e.target === document.activeElement && toggle(e);
     },
-
     preventScroll = e => { 
       const key = e.which || e.keyCode;
       key === 32 && e.preventDefault();
     },
-
     toggle = e => {
       const label = e.target.tagName === 'LABEL' ? e.target : e.target.parentNode.tagName === 'LABEL' ? e.target.parentNode : null; // the .btn label
       
@@ -120,7 +117,8 @@ export default function Button(element) {
   }
 
   // init
-  if ( !element.Button ) { // prevent adding event handlers twice
+  // prevent adding event handlers twice
+  if ( !element.Button ) { 
     toggleEvents(on);
   }
 

@@ -1,6 +1,7 @@
 'use strict'
 import babel from 'rollup-plugin-babel'
 import minify from 'rollup-plugin-babel-minify'
+import cleanup from 'rollup-plugin-cleanup'
 
 const banner = require('./header.js')
 
@@ -16,6 +17,7 @@ export default [
       globals: {}
     },
     plugins: [
+      cleanup(),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
       })
@@ -49,6 +51,7 @@ export default [
       globals: {}
     },
     plugins: [
+      cleanup(),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
       })

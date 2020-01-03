@@ -1,8 +1,7 @@
 
 /* Native JavaScript for Bootstrap 4 | Collapse
------------------------------------------------*/
+----------------------------------------------- */
 
-import { supports } from './util/globals.js';
 import { hasClass, addClass, removeClass } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from './util/event.js';
 import { queryElement } from './util/selector.js';
@@ -123,13 +122,11 @@ export default function Collapse(element,options) {
 
   // init
   // prevent adding event handlers twice
-  
   if ( !element.Collapse ) { 
     on(element, 'click', self.toggle);
   }
 
   // determine targets
-
   collapse = getTarget();
   collapse.isAnimating = false;  
   accordion = queryElement(options.parent) || accordionData && element.closest(accordionData);

@@ -12,15 +12,15 @@ import Tooltip from './tooltip-native.js'
 import './util/init.js'
 
 export {
-	Alert,
-	Button,
-	Carousel,
-	Collapse,
-	Dropdown,
-	Modal,
-	Popover,
-	ScrollSpy,
-	Tab,
-	Toast,
-	Tooltip
+  Alert,
+  Button,
+  Carousel,
+  Collapse,
+  Dropdown,
+  Modal,
+  Popover,
+  ScrollSpy,
+  Tab,
+  Toast,
+  Tooltip
 }

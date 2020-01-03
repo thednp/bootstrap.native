@@ -1,8 +1,7 @@
 
 /* Native JavaScript for Bootstrap 4 | Tooltip
---------------------------------------------*/
+---------------------------------------------- */
 
-import { supports } from './util/globals.js';
 import { styleTip } from './util/misc.js';
 import { hasClass, addClass, removeClass } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, passiveHandler } from './util/event.js';

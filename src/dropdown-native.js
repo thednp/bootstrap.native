@@ -1,8 +1,7 @@
 
 /* Native JavaScript for Bootstrap 4 | Dropdown
-----------------------------------------------*/
+----------------------------------------------- */
 
-import { supports } from './util/globals.js';
 import { setFocus } from './util/misc.js';
 import { hasClass, addClass, removeClass } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from './util/event.js';
@@ -150,7 +149,8 @@ export default function Dropdown(element,option) {
   };
 
   // init
-  if ( !element.Dropdown ) { // prevent adding event handlers twice
+  // prevent adding event handlers twice
+  if ( !element.Dropdown ) { 
     !('tabindex' in menu) && menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome | Safari
     on(element, 'click', clickHandler);
   }

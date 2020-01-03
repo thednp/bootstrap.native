@@ -10,23 +10,23 @@ import Tab from './tab-native.js'
 import Toast from './toast-native.js'
 import Tooltip from './tooltip-native.js'
 import {initCallback} from './util/callbacks.js'
-import {supports} from './util/globals'
+import {supports} from './util/globals.js'
 import './util/init.js'
 
 export default {
-	components: {
-		Alert,
-		Button,
-		Carousel,
-		Collapse,
-		Dropdown,
-		Modal,
-		Popover,
-		ScrollSpy,
-		Tab,
-		Toast,
-		Tooltip
-	},
-	initCallback,
-	supports
+  components: {
+    Alert,
+    Button,
+    Carousel,
+    Collapse,
+    Dropdown,
+    Modal,
+    Popover,
+    ScrollSpy,
+    Tab,
+    Toast,
+    Tooltip
+  },
+  initCallback,
+  supports
 }

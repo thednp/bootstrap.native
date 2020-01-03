@@ -1,7 +1,7 @@
 import { supports } from './globals.js'
 
 /* Native JavaScript for Bootstrap | Initialize Data API
---------------------------------------------------------*/
+-------------------------------------------------------- */
 export const initCallback = function (lookUp){
   lookUp = lookUp || document;
   const initializeDataAPI = function( Constructor, collection ){
@@ -15,7 +15,7 @@ export const initCallback = function (lookUp){
 };
 
 /* Native JavaScript for Bootstrap | Remove Data API
---------------------------------------------------------*/
+---------------------------------------------------- */
 export const removeDataAPI = function (lookUp) {
   lookUp = lookUp || document;
   const removeElementDataAPI = function( Constructor, collection ){

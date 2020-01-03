@@ -1,8 +1,8 @@
 export function getElementsByClassName (element,classNAME) { // returns Array
-	return [].slice.call(element.getElementsByClassName( classNAME ));
+  return [].slice.call(element.getElementsByClassName( classNAME ));
 }
 
 export function queryElement (selector, parent) {
-	var lookUp = parent ? parent : document;
-	return selector instanceof Element ? selector : lookUp.querySelector(selector);
+  var lookUp = parent ? parent : document;
+  return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }

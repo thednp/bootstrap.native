@@ -1,8 +1,7 @@
 
 /* Native JavaScript for Bootstrap 4 | Carousel
-----------------------------------------------*/
+----------------------------------------------- */
 
-import { supports } from './util/globals.js';
 import { hasClass, addClass, removeClass } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, touchEvents, mouseHover, passiveHandler } from './util/event.js';
 import { queryElement, getElementsByClassName } from './util/selector.js';
@@ -291,7 +290,8 @@ export default function Carousel (element,options) {
   }
 
   // init
-  if ( !element.Carousel ) { // prevent adding event handlers twice
+  // prevent adding event handlers twice
+  if ( !element.Carousel ) { 
     toggleEvents(on);
   }
   // set first slide active if none
