@@ -124,57 +124,54 @@ export default function Tab(element,options) {
     clickHandler = e => {
       e.preventDefault();
       next = e.currentTarget;
-      !tabs.isAnimating && !hasClass(next,'active') && self.show();
+      !tabs.isAnimating && self.show();
     };
 
-
-  /* public method */
-
+  // public method
   self.show = () => { // the tab we clicked is now the next tab
     next = next || element;
-    nextContent = queryElement(next.getAttribute('href')); // this is the actual object, the next tab content to activate
-    activeTab = getActiveTab(); 
-    activeContent = getActiveContent();
 
-    hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', next);
-    dispatchCustomEvent.call(activeTab, hideCustomEvent);
-    if (hideCustomEvent.defaultPrevented) return;    
-
-    tabs.isAnimating = true;
-    removeClass(activeTab,'active');
-    activeTab.setAttribute('aria-selected','false');
-    addClass(next,'active');
-    next.setAttribute('aria-selected','true');    
-
-    if ( dropdown ) {
-      if ( !hasClass(element.parentNode,'dropdown-menu') ) {
-        if (hasClass(dropdown,'active')) removeClass(dropdown,'active');
-      } else {
-        if (!hasClass(dropdown,'active')) addClass(dropdown,'active');
+    if (!hasClass(next,'active')) {
+      nextContent = queryElement(next.getAttribute('href')); // this is the actual object, the next tab content to activate
+      activeTab = getActiveTab(); 
+      activeContent = getActiveContent();
+  
+      hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', next);
+      dispatchCustomEvent.call(activeTab, hideCustomEvent);
+      if (hideCustomEvent.defaultPrevented) return;
+  
+  
+      tabs.isAnimating = true;
+      removeClass(activeTab,'active');
+      activeTab.setAttribute('aria-selected','false');
+      addClass(next,'active');
+      next.setAttribute('aria-selected','true');    
+  
+      if ( dropdown ) {
+        if ( !hasClass(element.parentNode,'dropdown-menu') ) {
+          if (hasClass(dropdown,'active')) removeClass(dropdown,'active');
+        } else {
+          if (!hasClass(dropdown,'active')) addClass(dropdown,'active');
+        }
       }
+  
+      if (hasClass(activeContent, 'fade')) {
+        removeClass(activeContent,'show');
+        emulateTransitionEnd(activeContent, triggerHide);
+      } else { triggerHide(); }
     }
-
-    if (hasClass(activeContent, 'fade')) {
-      removeClass(activeContent,'show');
-      emulateTransitionEnd(activeContent, triggerHide);
-    } else { triggerHide(); }
-  };
-
+  }
   self.dispose = () => {
     off(element, 'click', clickHandler);
     delete element.Tab;
-  };
+  }
 
-
-  /* invalidate */
-
+  // invalidate 
   if (!tabs) return; 
-
-  /* set default animation state */
-
+  // set default animation state
   tabs.isAnimating = false;
 
-  /* init */
+  // init
 
   if ( !element.Tab ) { // prevent adding event handlers twice
     on(element, 'click', clickHandler);

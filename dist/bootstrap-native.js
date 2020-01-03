@@ -840,7 +840,7 @@
       toggleDismiss();
       setFocus(element);
       setTimeout(function () {
-        on(element, 'click', clickHandler);
+        element.Dropdown && on(element, 'click', clickHandler);
       }, 1);
       hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', relatedTarget);
       dispatchCustomEvent.call(parent, hiddenCustomEvent);
@@ -1506,36 +1506,39 @@
         clickHandler = function clickHandler(e) {
       e.preventDefault();
       next = e.currentTarget;
-      !tabs.isAnimating && !hasClass(next, 'active') && self.show();
+      !tabs.isAnimating && self.show();
     };
 
     self.show = function () {
       next = next || element;
-      nextContent = queryElement(next.getAttribute('href'));
-      activeTab = getActiveTab();
-      activeContent = getActiveContent();
-      hideCustomEvent = bootstrapCustomEvent('hide', 'tab', next);
-      dispatchCustomEvent.call(activeTab, hideCustomEvent);
-      if (hideCustomEvent.defaultPrevented) return;
-      tabs.isAnimating = true;
-      removeClass(activeTab, 'active');
-      activeTab.setAttribute('aria-selected', 'false');
-      addClass(next, 'active');
-      next.setAttribute('aria-selected', 'true');
 
-      if (dropdown) {
-        if (!hasClass(element.parentNode, 'dropdown-menu')) {
-          if (hasClass(dropdown, 'active')) removeClass(dropdown, 'active');
-        } else {
-          if (!hasClass(dropdown, 'active')) addClass(dropdown, 'active');
+      if (!hasClass(next, 'active')) {
+        nextContent = queryElement(next.getAttribute('href'));
+        activeTab = getActiveTab();
+        activeContent = getActiveContent();
+        hideCustomEvent = bootstrapCustomEvent('hide', 'tab', next);
+        dispatchCustomEvent.call(activeTab, hideCustomEvent);
+        if (hideCustomEvent.defaultPrevented) return;
+        tabs.isAnimating = true;
+        removeClass(activeTab, 'active');
+        activeTab.setAttribute('aria-selected', 'false');
+        addClass(next, 'active');
+        next.setAttribute('aria-selected', 'true');
+
+        if (dropdown) {
+          if (!hasClass(element.parentNode, 'dropdown-menu')) {
+            if (hasClass(dropdown, 'active')) removeClass(dropdown, 'active');
+          } else {
+            if (!hasClass(dropdown, 'active')) addClass(dropdown, 'active');
+          }
         }
-      }
 
-      if (hasClass(activeContent, 'fade')) {
-        removeClass(activeContent, 'show');
-        emulateTransitionEnd(activeContent, triggerHide);
-      } else {
-        triggerHide();
+        if (hasClass(activeContent, 'fade')) {
+          removeClass(activeContent, 'show');
+          emulateTransitionEnd(activeContent, triggerHide);
+        } else {
+          triggerHide();
+        }
       }
     };
 

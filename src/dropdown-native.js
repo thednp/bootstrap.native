@@ -131,7 +131,10 @@ export default function Dropdown(element,option) {
     element.open = false;
     toggleDismiss();
     setFocus(element);
-    setTimeout(() => { on(element, 'click', clickHandler); },1);
+    setTimeout(() => {
+      // only re-attach handler if the init is not disposed
+      element.Dropdown && on(element, 'click', clickHandler); 
+    },1);
 
     hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', relatedTarget);
     dispatchCustomEvent.call(parent, hiddenCustomEvent);
