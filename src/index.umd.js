@@ -14,17 +14,19 @@ import {supports} from './util/globals'
 import './util/init.js'
 
 export default {
-	Alert,
-	Button,
-	Carousel,
-	Collapse,
-	Dropdown,
-	Modal,
-	Popover,
-	ScrollSpy,
-	Tab,
-	Toast,
-	Tooltip,
+	components: {
+		Alert,
+		Button,
+		Carousel,
+		Collapse,
+		Dropdown,
+		Modal,
+		Popover,
+		ScrollSpy,
+		Tab,
+		Toast,
+		Tooltip
+	},
 	initCallback,
 	supports
 }

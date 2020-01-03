@@ -3,9 +3,9 @@ import babel from 'rollup-plugin-babel'
 import minify from 'rollup-plugin-babel-minify'
 
 const banner = require('./src/util/header.js')
-// const miniBanner = require('./src/util/header-mini.js')
 
 export default [
+  // UDM version
   {
     input: 'src/index.umd.js',
     output: {
@@ -13,9 +13,7 @@ export default [
       name: 'BSN',
       file: './dist/bootstrap-native.js',
       format: 'umd', // or iife
-      globals: {
-        BSN: 'BSN'
-      }
+      globals: {}
     },
     plugins: [
       babel({
@@ -23,6 +21,7 @@ export default [
       })
     ]
   },
+  // ESM Version
   {
     input: 'src/index.esm.js',
     output: {
@@ -37,17 +36,13 @@ export default [
       })
     ]
   },
-  // Minfied versions
+  // ESM Minified Version
   {
     input: 'src/index.esm.js',
     output: {
-      // banner: miniBanner,
       file: './dist/bootstrap-native.esm.min.js',
       format: 'esm', // or iife
-      globals: {
-        bsn: 'bsn'
-        // Alert: 'Alert'
-      }
+      globals: {}
     },
     plugins: [
       babel({

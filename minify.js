@@ -4,9 +4,9 @@ const uglify = require('uglify-js')
 const pack = require('./package.json')
 const miniBanner = require('./src/util/header-mini.js')
 
-console.log('Minify dist files.. v'+pack.version);
-
 function minifyJS(srcPath, writePath) {
+  console.log(`Minify [${writePath}] file v${pack.version}..`);
+
   fs.writeFile(writePath, 
     (miniBanner() + uglify.minify(srcPath).code), 
     function (err) {
@@ -17,6 +17,8 @@ function minifyJS(srcPath, writePath) {
 }
 
 function addHeader(srcPath) {
+  console.log(`Adding header to [${srcPath}] file v${pack.version}..`);
+
   fs.writeFile(srcPath, 
     (miniBanner() + fs.readFileSync(srcPath)), 
     function (err) {
@@ -31,8 +33,11 @@ function handleError(err) {
   process.exit(1);
 }
 
+
 // Minify JS
 minifyJS('./dist/bootstrap-native.js', './dist/bootstrap-native.min.js');
+
+
 
 // Add header to esm minified build
 addHeader('./dist/bootstrap-native.esm.min.js');

@@ -2122,17 +2122,19 @@
 	document.body ? initCallback() : on(document, 'DOMContentLoaded', initCallback);
 
 	var index_umd = {
-	  Alert: Alert,
-	  Button: Button,
-	  Carousel: Carousel,
-	  Collapse: Collapse,
-	  Dropdown: Dropdown,
-	  Modal: Modal,
-	  Popover: Popover,
-	  ScrollSpy: ScrollSpy,
-	  Tab: Tab,
-	  Toast: Toast,
-	  Tooltip: Tooltip,
+	  components: {
+	    Alert: Alert,
+	    Button: Button,
+	    Carousel: Carousel,
+	    Collapse: Collapse,
+	    Dropdown: Dropdown,
+	    Modal: Modal,
+	    Popover: Popover,
+	    ScrollSpy: ScrollSpy,
+	    Tab: Tab,
+	    Toast: Toast,
+	    Tooltip: Tooltip
+	  },
 	  initCallback: initCallback,
 	  supports: supports
 	};
