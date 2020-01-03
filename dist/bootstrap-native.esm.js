@@ -117,11 +117,12 @@ function Alert(element) {
       dispatchCustomEvent.call(alert, closeCustomEvent);
       if (closeCustomEvent.defaultPrevented) return;
       self.dispose();
+      removeClass(alert, 'show');
+      triggerHandler();
     }
   };
 
   self.dispose = function () {
-    alert && (removeClass(alert, 'show'), triggerHandler());
     off(element, 'click', clickHandler);
     delete element.Alert;
   };
@@ -584,7 +585,7 @@ function Collapse(element, options) {
   };
 
   self.toggle = function (e) {
-    e.preventDefault();
+    e && e.preventDefault();
 
     if (!hasClass(collapse, 'show')) {
       self.show();
@@ -767,14 +768,14 @@ function Dropdown(element, option) {
       return;
     } else {
       relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
-      hide();
+      self.hide();
     }
 
     preventEmptyAnchor.call(e, eventTarget);
   },
       clickHandler = function clickHandler(e) {
     relatedTarget = element;
-    show();
+    self.show();
     preventEmptyAnchor.call(e, e.target);
   },
       preventScroll = function preventScroll(e) {
@@ -803,8 +804,9 @@ function Dropdown(element, option) {
       self.toggle();
       relatedTarget = null;
     }
-  },
-      show = function show() {
+  };
+
+  self.show = function () {
     showCustomEvent = bootstrapCustomEvent('show', 'dropdown', relatedTarget);
     dispatchCustomEvent.call(parent, showCustomEvent);
     if (showCustomEvent.defaultPrevented) return;
@@ -819,8 +821,9 @@ function Dropdown(element, option) {
       shownCustomEvent = bootstrapCustomEvent('shown', 'dropdown', relatedTarget);
       dispatchCustomEvent.call(parent, shownCustomEvent);
     }, 1);
-  },
-      hide = function hide() {
+  };
+
+  self.hide = function () {
     hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', relatedTarget);
     dispatchCustomEvent.call(parent, hideCustomEvent);
     if (hideCustomEvent.defaultPrevented) return;
@@ -839,15 +842,15 @@ function Dropdown(element, option) {
 
   self.toggle = function () {
     if (hasClass(parent, 'show') && element.open) {
-      hide();
+      self.hide();
     } else {
-      show();
+      self.show();
     }
   };
 
   self.dispose = function () {
     if (hasClass(parent, 'show') && element.open) {
-      hide();
+      self.hide();
     }
 
     off(element, 'click', clickHandler);

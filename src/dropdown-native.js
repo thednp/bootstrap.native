@@ -65,13 +65,13 @@ export default function Dropdown(element,option) {
       if ( (eventTarget === menu || menu.contains(eventTarget)) && (self.options.persist || hasData) ) { return; }
       else {
         relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
-        hide();
+        self.hide();
       }
       preventEmptyAnchor.call(e,eventTarget);
     },
     clickHandler = e => {
       relatedTarget = element;
-      show();
+      self.show();
       preventEmptyAnchor.call(e,e.target);
     },
     preventScroll = e => {
@@ -100,53 +100,51 @@ export default function Dropdown(element,option) {
         self.toggle();
         relatedTarget = null;
       }
-    },
-    // private methods
-    show = () => {
-      showCustomEvent = bootstrapCustomEvent('show', 'dropdown', relatedTarget);
-      dispatchCustomEvent.call(parent, showCustomEvent);
-      if ( showCustomEvent.defaultPrevented ) return;
-
-      addClass(menu,'show');
-      addClass(parent,'show');
-      element.setAttribute('aria-expanded',true);
-      element.open = true;
-      off(element, 'click', clickHandler);
-      setTimeout(() => {
-        setFocus( menu.getElementsByTagName('INPUT')[0] || element ); // focus the first input item | element
-        toggleDismiss();
-        shownCustomEvent = bootstrapCustomEvent( 'shown', 'dropdown', relatedTarget);
-        dispatchCustomEvent.call(parent, shownCustomEvent);        
-      },1);
-    },
-    hide = () => {
-      hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', relatedTarget);
-      dispatchCustomEvent.call(parent, hideCustomEvent);
-      if ( hideCustomEvent.defaultPrevented ) return;
-
-      removeClass(menu,'show');
-      removeClass(parent,'show');
-      element.setAttribute('aria-expanded',false);
-      element.open = false;
-      toggleDismiss();
-      setFocus(element);
-      setTimeout(() => { on(element, 'click', clickHandler); },1);
-
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', relatedTarget);
-      dispatchCustomEvent.call(parent, hiddenCustomEvent);
     };
 
-
   // public methods
+  self.show = () => {
+    showCustomEvent = bootstrapCustomEvent('show', 'dropdown', relatedTarget);
+    dispatchCustomEvent.call(parent, showCustomEvent);
+    if ( showCustomEvent.defaultPrevented ) return;
+
+    addClass(menu,'show');
+    addClass(parent,'show');
+    element.setAttribute('aria-expanded',true);
+    element.open = true;
+    off(element, 'click', clickHandler);
+    setTimeout(() => {
+      setFocus( menu.getElementsByTagName('INPUT')[0] || element ); // focus the first input item | element
+      toggleDismiss();
+      shownCustomEvent = bootstrapCustomEvent( 'shown', 'dropdown', relatedTarget);
+      dispatchCustomEvent.call(parent, shownCustomEvent);        
+    },1);
+  }
+  self.hide = () => {
+    hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', relatedTarget);
+    dispatchCustomEvent.call(parent, hideCustomEvent);
+    if ( hideCustomEvent.defaultPrevented ) return;
+
+    removeClass(menu,'show');
+    removeClass(parent,'show');
+    element.setAttribute('aria-expanded',false);
+    element.open = false;
+    toggleDismiss();
+    setFocus(element);
+    setTimeout(() => { on(element, 'click', clickHandler); },1);
+
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', relatedTarget);
+    dispatchCustomEvent.call(parent, hiddenCustomEvent);
+  }
   self.toggle = () => {
-    if (hasClass(parent,'show') && element.open) { hide(); } 
-    else { show(); }
-  };
+    if (hasClass(parent,'show') && element.open) { self.hide(); } 
+    else { self.show(); }
+  }
   self.dispose = () => {
-    if (hasClass(parent,'show') && element.open) { hide(); }
+    if (hasClass(parent,'show') && element.open) { self.hide(); }
     off(element, 'click', clickHandler);
     delete element.Dropdown;
-  };
+  }
 
   // init
   // prevent adding event handlers twice

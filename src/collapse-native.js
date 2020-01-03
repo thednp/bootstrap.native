@@ -90,7 +90,7 @@ export default function Collapse(element,options) {
 
   // public methods
   self.toggle = e => {
-    e.preventDefault();
+    e && e.preventDefault();
     if (!hasClass(collapse,'show')) { self.show(); } 
     else { self.hide(); }
   };

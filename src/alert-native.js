@@ -42,11 +42,12 @@ export default function Alert(element) {
       dispatchCustomEvent.call(alert,closeCustomEvent);
       if ( closeCustomEvent.defaultPrevented ) return;
       self.dispose();
+      removeClass(alert,'show');
+      triggerHandler();
     }
   }
 
   self.dispose = () => {
-    alert && (removeClass(alert,'show'), triggerHandler());
     off(element, 'click', clickHandler);
     delete element.Alert;
   }
