@@ -1,15 +1,10 @@
 /*!
-  * Native JavaScript for Bootstrap v2.0.28 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.0 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 // globals
-// const globalObject = typeof global !== 'undefined' ? global : window;
-// const BSN = globalObject.BSN = {};
-// export const supports = globalObject.BSN.supports = [];
-var supports =
-/*globalObject.BSN.supports =*/
-[];
+var supports = [];
 
 function addClass(element, classNAME) {
   element.classList.add(classNAME);
