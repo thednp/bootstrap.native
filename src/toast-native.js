@@ -49,8 +49,8 @@ export default function Toast(element,options) {
     showComplete = () => {
       removeClass( toast, 'showing' );
       addClass( toast, 'show' );
-      if (self.options.autohide) { self.hide(); }
       dispatchCustomEvent.call(toast,shownCustomEvent);
+      if (self.options.autohide) { self.hide(); }
     },
     hideComplete = () => {
       addClass( toast, 'hide' );
@@ -61,19 +61,19 @@ export default function Toast(element,options) {
       self.options.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
     },
     disposeComplete = () => {
-      clearTimeout(timer); 
-      addClass( toast, 'hide' );
+      clearTimeout(timer);
       off(element, 'click', self.hide);
       delete element.Toast;
     };
 
   // public methods
   self.show = () => {
-    if (toast) {
+    if (toast && !hasClass(toast,'show')) {
       dispatchCustomEvent.call(toast,showCustomEvent);
       if (showCustomEvent.defaultPrevented) return;
       self.options.animation && addClass( toast,'fade' );
       removeClass( toast,'hide' );
+      toast.offsetWidth; // force reflow
       addClass( toast,'showing' );
 
       self.options.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();

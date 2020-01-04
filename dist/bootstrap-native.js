@@ -1587,12 +1587,11 @@
     var showComplete = function showComplete() {
       removeClass(toast, 'showing');
       addClass(toast, 'show');
+      dispatchCustomEvent.call(toast, shownCustomEvent);
 
       if (self.options.autohide) {
         self.hide();
       }
-
-      dispatchCustomEvent.call(toast, shownCustomEvent);
     },
         hideComplete = function hideComplete() {
       addClass(toast, 'hide');
@@ -1604,17 +1603,17 @@
     },
         disposeComplete = function disposeComplete() {
       clearTimeout(timer);
-      addClass(toast, 'hide');
       off(element, 'click', self.hide);
       delete element.Toast;
     };
 
     self.show = function () {
-      if (toast) {
+      if (toast && !hasClass(toast, 'show')) {
         dispatchCustomEvent.call(toast, showCustomEvent);
         if (showCustomEvent.defaultPrevented) return;
         self.options.animation && addClass(toast, 'fade');
         removeClass(toast, 'hide');
+        toast.offsetWidth;
         addClass(toast, 'showing');
         self.options.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();
       }
