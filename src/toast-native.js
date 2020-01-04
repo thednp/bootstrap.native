@@ -88,7 +88,6 @@ export default function Toast(element,options) {
     }
   };
   self.dispose = () => {
-    toast && hasClass(toast,'show') && self.hide(true);
     self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
   };
 

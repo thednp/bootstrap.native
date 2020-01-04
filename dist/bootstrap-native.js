@@ -1628,7 +1628,6 @@
     };
 
     self.dispose = function () {
-      toast && hasClass(toast, 'show') && self.hide(true);
       self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
     };
 
