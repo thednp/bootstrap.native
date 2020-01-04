@@ -47,3 +47,11 @@ document.addEventListener('DOMContentLoaded', setNavbarOpacity, false);
 window.addEventListener('scroll', setNavbarOpacity, false);
 navbar.addEventListener(mouseHover[0],setNavbarOpacityOnEnter,false);
 navbar.addEventListener(mouseHover[1],setNavbarOpacityOnLeave,false);
+
+// COMPONENTS
+// ==========
+
+function dismissAlert(){
+	this.Tooltip && this.Tooltip.dispose();
+	this.closest('.alert').querySelector('[data-dismiss="alert"]').Alert.close()
+}

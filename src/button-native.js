@@ -27,13 +27,17 @@ export default function Button(element) {
     changeCustomEvent = bootstrapCustomEvent('change', 'button'),
 
     // private methods
-    keyHandler = e => {
-      const key = e.which || e.keyCode;
-      key === 32 && e.target === document.activeElement && toggle(e);
-    },
-    preventScroll = e => { 
-      const key = e.which || e.keyCode;
-      key === 32 && e.preventDefault();
+    activateItems = () => {
+      const labelsToACtivate = getElementsByClassName(element, 'btn'),
+            lbll = labelsToACtivate.length;
+      for (let i=0; i<lbll; i++) {
+        !hasClass(labelsToACtivate[i],'active') 
+          && queryElement('input:checked',labelsToACtivate[i])
+          && addClass(labelsToACtivate[i],'active');
+        hasClass(labelsToACtivate[i],'active') 
+          && !queryElement('input:checked',labelsToACtivate[i])
+          && removeClass(labelsToACtivate[i],'active');
+      }
     },
     toggle = e => {
       const label = e.target.tagName === 'LABEL' ? e.target : e.target.parentNode.tagName === 'LABEL' ? e.target.parentNode : null; // the .btn label
@@ -93,6 +97,15 @@ export default function Button(element) {
       }
       setTimeout( () => { toggled = false; }, 50 );
     },
+    // handlers
+    keyHandler = e => {
+      const key = e.which || e.keyCode;
+      key === 32 && e.target === document.activeElement && toggle(e);
+    },
+    preventScroll = e => { 
+      const key = e.which || e.keyCode;
+      key === 32 && e.preventDefault();
+    },
     focusHandler = e => {
       addClass(e.target.parentNode,'focus');
     },
@@ -123,12 +136,7 @@ export default function Button(element) {
   }
 
   // activate items on load
-  const labelsToACtivate = getElementsByClassName(element, 'btn'), lbll = labelsToACtivate.length;
-  for (let i=0; i<lbll; i++) {
-    !hasClass(labelsToACtivate[i],'active') 
-      && queryElement('input:checked',labelsToACtivate[i]) 
-      && addClass(labelsToACtivate[i],'active');
-  }
+  activateItems();
 
   // associate target with init object
   self.element = element;

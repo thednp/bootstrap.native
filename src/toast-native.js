@@ -85,17 +85,11 @@ export default function Toast(element,options) {
       dispatchCustomEvent.call(toast,hideCustomEvent);
       if(hideCustomEvent.defaultPrevented) return;
 
-      if (noTimer) {
-        close();
-      } else {
-        timer = setTimeout( close, self.options.delay);
-      }
+      noTimer ? close() : (timer = setTimeout( close, self.options.delay));
     }
   };
   self.dispose = () => {
-    if ( toast && hasClass(toast,'show') ) {
-      self.hide(true);
-    }
+    toast && hasClass(toast,'show') && self.hide(true);
     self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
   };
 

@@ -149,13 +149,14 @@
 
     var self = this,
         changeCustomEvent = bootstrapCustomEvent('change', 'button'),
-        keyHandler = function keyHandler(e) {
-      var key = e.which || e.keyCode;
-      key === 32 && e.target === document.activeElement && toggle(e);
-    },
-        preventScroll = function preventScroll(e) {
-      var key = e.which || e.keyCode;
-      key === 32 && e.preventDefault();
+        activateItems = function activateItems() {
+      var labelsToACtivate = getElementsByClassName(element, 'btn'),
+          lbll = labelsToACtivate.length;
+
+      for (var i = 0; i < lbll; i++) {
+        !hasClass(labelsToACtivate[i], 'active') && queryElement('input:checked', labelsToACtivate[i]) && addClass(labelsToACtivate[i], 'active');
+        hasClass(labelsToACtivate[i], 'active') && !queryElement('input:checked', labelsToACtivate[i]) && removeClass(labelsToACtivate[i], 'active');
+      }
     },
         toggle = function toggle(e) {
       var label = e.target.tagName === 'LABEL' ? e.target : e.target.parentNode.tagName === 'LABEL' ? e.target.parentNode : null;
@@ -214,6 +215,14 @@
         toggled = false;
       }, 50);
     },
+        keyHandler = function keyHandler(e) {
+      var key = e.which || e.keyCode;
+      key === 32 && e.target === document.activeElement && toggle(e);
+    },
+        preventScroll = function preventScroll(e) {
+      var key = e.which || e.keyCode;
+      key === 32 && e.preventDefault();
+    },
         focusHandler = function focusHandler(e) {
       addClass(e.target.parentNode, 'focus');
     },
@@ -240,13 +249,7 @@
       toggleEvents(on);
     }
 
-    var labelsToACtivate = getElementsByClassName(element, 'btn'),
-        lbll = labelsToACtivate.length;
-
-    for (var i = 0; i < lbll; i++) {
-      !hasClass(labelsToACtivate[i], 'active') && queryElement('input:checked', labelsToACtivate[i]) && addClass(labelsToACtivate[i], 'active');
-    }
-
+    activateItems();
     self.element = element;
     element.Button = self;
   }
@@ -1622,20 +1625,12 @@
       if (toast && hasClass(toast, 'show')) {
         dispatchCustomEvent.call(toast, hideCustomEvent);
         if (hideCustomEvent.defaultPrevented) return;
-
-        if (noTimer) {
-          close();
-        } else {
-          timer = setTimeout(close, self.options.delay);
-        }
+        noTimer ? close() : timer = setTimeout(close, self.options.delay);
       }
     };
 
     self.dispose = function () {
-      if (toast && hasClass(toast, 'show')) {
-        self.hide(true);
-      }
-
+      toast && hasClass(toast, 'show') && self.hide(true);
       self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
     };
 
