@@ -1598,6 +1598,13 @@
         close = function close() {
       removeClass(toast, 'show');
       self.options.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
+    },
+        disposeComplete = function disposeComplete() {
+      clearTimeout(timer);
+      addClass(toast, 'hide');
+      off(element, 'click', self.hide);
+      delete element.Toast;
+      toast.parentNode.removeChild(toast);
     };
 
     self.show = function () {
@@ -1626,11 +1633,10 @@
 
     self.dispose = function () {
       if (toast && hasClass(toast, 'show')) {
-        close();
-        clearTimeout(timer);
-        off(element, 'click', self.hide);
-        delete element.Toast;
+        self.hide(true);
       }
+
+      self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
     };
 
     if (!element.Toast) {

@@ -61,12 +61,11 @@ export default function Toast(element,options) {
       self.options.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
     },
     disposeComplete = () => {
-      clearTimeout(timer); timer = null;
+      clearTimeout(timer); 
       addClass( toast, 'hide' );
       off(element, 'click', self.hide);
       delete element.Toast;
-      element = null;
-      toast = null;
+      toast.parentNode.removeChild(toast);
     };
 
   // public methods
@@ -95,11 +94,9 @@ export default function Toast(element,options) {
   };
   self.dispose = () => {
     if ( toast && hasClass(toast,'show') ) {
-      close();
-      clearTimeout(timer);
-      off(element, 'click', self.hide);
-      delete element.Toast;
+      self.hide(true);
     }
+    self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
   };
 
   // init
