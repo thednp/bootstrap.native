@@ -1607,7 +1607,6 @@
       addClass(toast, 'hide');
       off(element, 'click', self.hide);
       delete element.Toast;
-      toast.parentNode.removeChild(toast);
     };
 
     self.show = function () {
