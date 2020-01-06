@@ -108,7 +108,7 @@
       hasClass(alert, 'fade') ? emulateTransitionEnd(alert, transitionEndHandler) : transitionEndHandler();
     },
         clickHandler = function clickHandler(e) {
-      alert = e.target.closest(".alert");
+      alert = e && e.target.closest(".alert");
       element = queryElement('[data-dismiss="alert"]', alert);
       element && alert && (element === e.target || element.contains(e.target)) && self.close();
     },
