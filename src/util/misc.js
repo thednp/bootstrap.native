@@ -22,7 +22,6 @@ export function styleTip (link,element,position,parent) { // both popovers and t
       scroll = parent === document.body ? getScroll() : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
       linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
       isPopover = hasClass(element,'popover'),
-      
 
       arrow = queryElement('.arrow',element),
 

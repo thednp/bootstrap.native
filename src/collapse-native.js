@@ -120,14 +120,12 @@ export default function Collapse(element,options) {
     delete element.Collapse;
   }
 
-  // init
-  // prevent adding event handlers twice
-  if ( !element.Collapse ) { 
-    on(element, 'click', self.toggle);
-  }
-
   // determine targets
   collapse = getTarget();
+
+  // invalidate
+  if (!collapse) return;
+
   collapse.isAnimating = false;  
   accordion = queryElement(options.parent) || accordionData && element.closest(accordionData);
 
@@ -135,9 +133,14 @@ export default function Collapse(element,options) {
   collapse && (self.collapse = collapse);
   accordion && (self.options = {}, self.options.parent = accordion);
 
+  // init
+  // prevent adding event handlers twice
+  if ( !element.Collapse ) { 
+    on(element, 'click', self.toggle);
+  }
+
   // associate target to init object
   self.element = element;
   element.Collapse = self;
-
 }
 

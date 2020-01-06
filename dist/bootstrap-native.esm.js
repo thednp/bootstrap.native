@@ -625,15 +625,17 @@ function Collapse(element, options) {
     delete element.Collapse;
   };
 
-  if (!element.Collapse) {
-    on(element, 'click', self.toggle);
-  }
-
   collapse = getTarget();
+  if (!collapse) return;
   collapse.isAnimating = false;
   accordion = queryElement(options.parent) || accordionData && element.closest(accordionData);
   collapse && (self.collapse = collapse);
   accordion && (self.options = {}, self.options.parent = accordion);
+
+  if (!element.Collapse) {
+    on(element, 'click', self.toggle);
+  }
+
   self.element = element;
   element.Collapse = self;
 }
