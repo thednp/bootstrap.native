@@ -103,7 +103,7 @@ function Alert(element) {
   },
       clickHandler = function clickHandler(e) {
     alert = e.target.closest(".alert");
-    element = queryElement("[data-dismiss=\"alert\"]", alert);
+    element = queryElement('[data-dismiss="alert"]', alert);
     element && alert && (element === e.target || element.contains(e.target)) && self.close();
   },
       transitionEndHandler = function transitionEndHandler() {
