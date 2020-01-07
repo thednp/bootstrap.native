@@ -55,48 +55,46 @@ export default function ScrollSpy(element,options) {
   self.options.offset = offset;
 
   // private methods
-  const 
-    updateItem = index => {
-      const 
-        item = items[index], // the menu item targets this element
-        targetItem = targetItems[index],
-        dropdown = item.parentNode.parentNode,
-        dropdownLink = hasClass(dropdown,'dropdown') && dropdown.getElementsByTagName('A')[0],
-        targetRect = isWindow && targetItem.getBoundingClientRect(),
-        isActive = hasClass(item,'active') || false,
-        topEdge = (isWindow ? targetRect.top + scrollOffset : targetItem.offsetTop) - self.options.offset,
-        bottomEdge = isWindow ? targetRect.bottom + scrollOffset - self.options.offset : targetItems[index+1] ? targetItems[index+1].offsetTop - self.options.offset : element.scrollHeight,
-        inside = scrollOffset >= topEdge && bottomEdge > scrollOffset;
+  function updateItem(index) {
+    const item = items[index], // the menu item targets this element
+      targetItem = targetItems[index],
+      dropdown = item.parentNode.parentNode,
+      dropdownLink = hasClass(dropdown,'dropdown') && dropdown.getElementsByTagName('A')[0],
+      targetRect = isWindow && targetItem.getBoundingClientRect(),
+      isActive = hasClass(item,'active') || false,
+      topEdge = (isWindow ? targetRect.top + scrollOffset : targetItem.offsetTop) - self.options.offset,
+      bottomEdge = isWindow ? targetRect.bottom + scrollOffset - self.options.offset : targetItems[index+1] ? targetItems[index+1].offsetTop - self.options.offset : element.scrollHeight,
+      inside = scrollOffset >= topEdge && bottomEdge > scrollOffset;
 
-      if ( !isActive && inside ) {
-        if ( !hasClass(item,'active') ) {
-          addClass(item,'active');
-          if (dropdownLink && !hasClass(dropdownLink,'active') ) {
-            addClass(dropdownLink,'active');
-          }
-          dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', items[index]));
+    if ( !isActive && inside ) {
+      if ( !hasClass(item,'active') ) {
+        addClass(item,'active');
+        if (dropdownLink && !hasClass(dropdownLink,'active') ) {
+          addClass(dropdownLink,'active');
         }
-      } else if ( !inside ) {
-        if ( hasClass(item,'active') ) {
-          removeClass(item,'active');
-          if (dropdownLink && hasClass(dropdownLink,'active') && !getElementsByClassName(item.parentNode,'active').length  ) {
-            removeClass(dropdownLink,'active');
-          }
+        dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', items[index]));
+      }
+    } else if ( !inside ) {
+      if ( hasClass(item,'active') ) {
+        removeClass(item,'active');
+        if (dropdownLink && hasClass(dropdownLink,'active') && !getElementsByClassName(item.parentNode,'active').length  ) {
+          removeClass(dropdownLink,'active');
         }
-      } else if ( !inside && !isActive || isActive && inside ) {
-        return;
       }
-    },
-    toggleEvents = action => {
-      action( scrollTarget, 'scroll', self.refresh, passiveHandler );
-      action( window, 'resize', self.refresh, passiveHandler );
-    },
-    updateItems = () => {
-      scrollOffset = isWindow ? getScroll().y : element.scrollTop;
-      for (let i=0, itl=items.length; i<itl; i++) {
-        updateItem(i);
-      }
-    };
+    } else if ( !inside && !isActive || isActive && inside ) {
+      return;
+    }
+  }
+  function toggleEvents(action) {
+    action( scrollTarget, 'scroll', self.refresh, passiveHandler );
+    action( window, 'resize', self.refresh, passiveHandler );
+  }
+  function updateItems() {
+    scrollOffset = isWindow ? getScroll().y : element.scrollTop;
+    for (let i=0, itl=items.length; i<itl; i++) {
+      updateItem(i);
+    }
+  }
 
   // public method
   self.refresh = () => {
@@ -120,5 +118,5 @@ export default function ScrollSpy(element,options) {
   self.element = element;
   element.ScrollSpy = self;
 
-};
+}
 

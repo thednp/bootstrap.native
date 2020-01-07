@@ -26,10 +26,8 @@ export default function Dropdown(element,option) {
       hiddenCustomEvent,
       relatedTarget = null;
 
-  // constants
+  // bind and targets
   const self = this,
-
-    // targets
     parent = element.parentNode,
     menu = queryElement('.dropdown-menu', parent),
     menuItems = (() => {
@@ -39,68 +37,69 @@ export default function Dropdown(element,option) {
         set[i].tagName === 'A' && newSet.push(set[i]);
       }
       return newSet;
-    })(),
-    // preventDefault on empty anchor links
-    preventEmptyAnchor = function(anchor){
-      (anchor.href && anchor.href.slice(-1) === '#' || anchor.parentNode && anchor.parentNode.href 
-        && anchor.parentNode.href.slice(-1) === '#') && this.preventDefault();    
-    },
-    // toggle dismissible events
-    toggleDismiss = () => {
-      const action = element.open ? on : off;
-      action(document, 'click', dismissHandler); 
-      action(document, 'keydown', preventScroll);
-      action(document, 'keyup', keyHandler);
-      action(document, 'focus', dismissHandler, true);
-    },
-    // handlers
-    dismissHandler = e => {
-      const eventTarget = e.target,
-            hasData = eventTarget && (eventTarget.getAttribute('data-toggle') 
-                                  || eventTarget.parentNode && eventTarget.parentNode.getAttribute
-                                  && eventTarget.parentNode.getAttribute('data-toggle'));
-      if ( e.type === 'focus' && (eventTarget === element || eventTarget === menu || menu.contains(eventTarget) ) ) {
-        return;
-      }
-      if ( (eventTarget === menu || menu.contains(eventTarget)) && (self.options.persist || hasData) ) { return; }
-      else {
-        relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
-        self.hide();
-      }
-      preventEmptyAnchor.call(e,eventTarget);
-    },
-    clickHandler = e => {
-      relatedTarget = element;
-      self.show();
-      preventEmptyAnchor.call(e,e.target);
-    },
-    preventScroll = e => {
-      const key = e.which || e.keyCode;
-      if( key === 38 || key === 40 ) { e.preventDefault(); }
-    },
-    keyHandler = ({which, keyCode}) => {
-      const key = which || keyCode,
-            activeItem = document.activeElement,
-            isSameElement = activeItem === element,
-            isInsideMenu = menu.contains(activeItem),
-            isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu;
-      let idx = menuItems.indexOf(activeItem);
+    })();
+  
+  // preventDefault on empty anchor links
+  function preventEmptyAnchor(anchor) {
+    (anchor.href && anchor.href.slice(-1) === '#' || anchor.parentNode && anchor.parentNode.href 
+      && anchor.parentNode.href.slice(-1) === '#') && this.preventDefault();    
+  }
+  // toggle dismissible events
+  function toggleDismiss() {
+    const action = element.open ? on : off;
+    action(document, 'click', dismissHandler); 
+    action(document, 'keydown', preventScroll);
+    action(document, 'keyup', keyHandler);
+    action(document, 'focus', dismissHandler, true);
+  }
+  // handlers
+  function dismissHandler(e) {
+    const eventTarget = e.target,
+          hasData = eventTarget && (eventTarget.getAttribute('data-toggle') 
+                                || eventTarget.parentNode && eventTarget.parentNode.getAttribute
+                                && eventTarget.parentNode.getAttribute('data-toggle'));
+    if ( e.type === 'focus' && (eventTarget === element || eventTarget === menu || menu.contains(eventTarget) ) ) {
+      return;
+    }
+    if ( (eventTarget === menu || menu.contains(eventTarget)) && (self.options.persist || hasData) ) { return; }
+    else {
+      relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
+      self.hide();
+    }
+    preventEmptyAnchor.call(e,eventTarget);
+  }
+  function clickHandler(e) {
+    relatedTarget = element;
+    self.show();
+    preventEmptyAnchor.call(e,e.target);
+  }
+  function preventScroll(e) {
+    const key = e.which || e.keyCode;
+    if( key === 38 || key === 40 ) { e.preventDefault(); }
+  }
+  function keyHandler({which, keyCode}) {
+    const key = which || keyCode,
+          activeItem = document.activeElement,
+          isSameElement = activeItem === element,
+          isInsideMenu = menu.contains(activeItem),
+          isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu;
+    let idx = menuItems.indexOf(activeItem);
 
-      if ( isMenuItem ) { // navigate up | down
-        idx = isSameElement ? 0 
-                            : key === 38 ? (idx>1?idx-1:0)
-                            : key === 40 ? (idx<menuItems.length-1?idx+1:idx) : idx;
-        menuItems[idx] && setFocus(menuItems[idx]);
-      }
-      if ( (menuItems.length && isMenuItem // menu has items
-            || !menuItems.length && (isInsideMenu || isSameElement)  // menu might be a form
-            || !isInsideMenu ) // or the focused element is not in the menu at all
-            && element.open && key === 27  // menu must be open
-      ) {
-        self.toggle();
-        relatedTarget = null;
-      }
-    };
+    if ( isMenuItem ) { // navigate up | down
+      idx = isSameElement ? 0 
+                          : key === 38 ? (idx>1?idx-1:0)
+                          : key === 40 ? (idx<menuItems.length-1?idx+1:idx) : idx;
+      menuItems[idx] && setFocus(menuItems[idx]);
+    }
+    if ( (menuItems.length && isMenuItem // menu has items
+          || !menuItems.length && (isInsideMenu || isSameElement)  // menu might be a form
+          || !isInsideMenu ) // or the focused element is not in the menu at all
+          && element.open && key === 27  // menu must be open
+    ) {
+      self.toggle();
+      relatedTarget = null;
+    }
+  }
 
   // public methods
   self.show = () => {

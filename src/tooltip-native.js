@@ -64,74 +64,76 @@ export default function Tooltip(element,options) {
                           : modal ? modal : document.body;
 
   // set placement class
-  const placementClass = `bs-tooltip-${self.options.placement}`,
+  const placementClass = `bs-tooltip-${self.options.placement}`;
 
-    // private methods
-    getTitle = () => element.getAttribute('title') 
-                  || element.getAttribute('data-title') 
-                  || element.getAttribute('data-original-title'),
-    removeToolTip = () => {
-      self.options.container.removeChild(tooltip);
-      tooltip = null; timer = null;
-    },
-    createToolTip = () => {
-      titleString = getTitle(); // read the title again
-      if ( titleString ) { // invalidate, maybe markup changed
-        // create tooltip
-        tooltip = document.createElement('div');
-        
-        // set markup
-        if (self.options.template) {
-          const tooltipMarkup = document.createElement('div');
-          tooltipMarkup.innerHTML = self.options.template.trim();
+  // private methods
+  function getTitle() { 
+    return element.getAttribute('title') 
+        || element.getAttribute('data-title') 
+        || element.getAttribute('data-original-title') 
+  }
+  function removeToolTip() {
+    self.options.container.removeChild(tooltip);
+    tooltip = null; timer = null;
+  }
+  function createToolTip() {
+    titleString = getTitle(); // read the title again
+    if ( titleString ) { // invalidate, maybe markup changed
+      // create tooltip
+      tooltip = document.createElement('div');
+      
+      // set markup
+      if (self.options.template) {
+        const tooltipMarkup = document.createElement('div');
+        tooltipMarkup.innerHTML = self.options.template.trim();
 
-          tooltip.className = tooltipMarkup.firstChild.className;
-          tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
+        tooltip.className = tooltipMarkup.firstChild.className;
+        tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
 
-          queryElement('.tooltip-inner',tooltip).innerHTML = titleString.trim();
-        } else {
-          // tooltip arrow
-          const tooltipArrow = document.createElement('div');
-          addClass(tooltipArrow,'arrow');
-          tooltip.appendChild(tooltipArrow);
-          // tooltip inner
-          const tooltipInner = document.createElement('div');
-          addClass(tooltipInner,'tooltip-inner');
-          tooltip.appendChild(tooltipInner);
-          tooltipInner.innerHTML = titleString;
-        }
-        // reset position
-        tooltip.style.left = '0';
-        tooltip.style.top = '0';
-        // set class and role attribute
-        tooltip.setAttribute('role','tooltip');
-        !hasClass(tooltip, 'tooltip') && addClass(tooltip, 'tooltip');
-        !hasClass(tooltip, self.options.animation) && addClass(tooltip, self.options.animation);
-        !hasClass(tooltip, placementClass) && addClass(tooltip, placementClass);
-        // append to container
-        self.options.container.appendChild(tooltip);
+        queryElement('.tooltip-inner',tooltip).innerHTML = titleString.trim();
+      } else {
+        // tooltip arrow
+        const tooltipArrow = document.createElement('div');
+        addClass(tooltipArrow,'arrow');
+        tooltip.appendChild(tooltipArrow);
+        // tooltip inner
+        const tooltipInner = document.createElement('div');
+        addClass(tooltipInner,'tooltip-inner');
+        tooltip.appendChild(tooltipInner);
+        tooltipInner.innerHTML = titleString;
       }
-    },
-    updateTooltip = () => {
-      styleTip(element, tooltip, self.options.placement, self.options.container);
-    },
-    showTooltip = () => {
-      !hasClass(tooltip,'show') && ( addClass(tooltip,'show') );
-    },
-    // triggers
-    showAction = () => {
-      on( window, 'resize', self.hide, passiveHandler );
-      dispatchCustomEvent.call(element, shownCustomEvent);
-    },
-    hideAction = () => {
-      off( window, 'resize', self.hide, passiveHandler );
-      removeToolTip();
-      dispatchCustomEvent.call(element, hiddenCustomEvent);
-    },
-    toggleEvents = action => {
-      action(element, mouseHover[0], self.show);
-      action(element, mouseHover[1], self.hide);
-    };
+      // reset position
+      tooltip.style.left = '0';
+      tooltip.style.top = '0';
+      // set class and role attribute
+      tooltip.setAttribute('role','tooltip');
+      !hasClass(tooltip, 'tooltip') && addClass(tooltip, 'tooltip');
+      !hasClass(tooltip, self.options.animation) && addClass(tooltip, self.options.animation);
+      !hasClass(tooltip, placementClass) && addClass(tooltip, placementClass);
+      // append to container
+      self.options.container.appendChild(tooltip);
+    }
+  }
+  function updateTooltip() {
+    styleTip(element, tooltip, self.options.placement, self.options.container);
+  }
+  function showTooltip() {
+    !hasClass(tooltip,'show') && ( addClass(tooltip,'show') );
+  }
+  // triggers
+  function showAction() {
+    on( window, 'resize', self.hide, passiveHandler );
+    dispatchCustomEvent.call(element, shownCustomEvent);
+  }
+  function hideAction() {
+    off( window, 'resize', self.hide, passiveHandler );
+    removeToolTip();
+    dispatchCustomEvent.call(element, hiddenCustomEvent);
+  }
+  function toggleEvents(action) {
+    action(element, mouseHover[0], self.show);
+    action(element, mouseHover[1], self.hide);
+  }
 
   // public methods
   self.show = () => {
@@ -172,17 +174,15 @@ export default function Tooltip(element,options) {
     delete element.Tooltip;
   };
 
-
-  /* invalidate */
-
-
+  // set tooltip content
   titleString = getTitle();
+  
+  // invalidate
   if ( !titleString ) return;
 
-  /* init */
-
-
-  if (!element.Tooltip){ // prevent adding event handlers twice
+  // init
+  // prevent adding event handlers twice
+  if (!element.Tooltip) { 
     element.setAttribute('data-original-title',titleString);
     element.removeAttribute('title');
     toggleEvents(on);

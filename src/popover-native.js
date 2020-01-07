@@ -77,108 +77,109 @@ export default function Popover(element,options) {
                           : modal ? modal : document.body;
 
   // set initial placement from option
-  const 
-    placementClass = `bs-popover-${self.options.placement}`,
+  const placementClass = `bs-popover-${self.options.placement}`;
 
-    // handlers
-    dismissibleHandler = e => {
-      if (popover !== null && e.target === queryElement('.close',popover)) {
-        self.hide();
-      }
-    },
-    // private methods
-    getContents = () => ({
+  // handlers
+  function dismissibleHandler(e) {
+    if (popover !== null && e.target === queryElement('.close',popover)) {
+      self.hide();
+    }
+  }
+  // private methods
+  function getContents() {
+    return {
       0 : options.title || element.getAttribute('data-title') || null,
       1 : options.content || element.getAttribute('data-content') || null
-    }),
-    removePopover = () => {
-      self.options.container.removeChild(popover);
-      timer = null; popover = null; 
-    },
+    }
+  }
+  function removePopover() {
+    self.options.container.removeChild(popover);
+    timer = null; popover = null; 
+  }
 
-    createPopover = () => {
-      titleString = getContents()[0] || null;
-      contentString = getContents()[1];
-      // fixing https://github.com/thednp/bootstrap.native/issues/233
-      contentString = !!contentString ? contentString.trim() : null;
+  function createPopover() {
+    titleString = getContents()[0] || null;
+    contentString = getContents()[1];
+    // fixing https://github.com/thednp/bootstrap.native/issues/233
+    contentString = !!contentString ? contentString.trim() : null;
 
-      popover = document.createElement('div');
+    popover = document.createElement('div');
 
-      // popover arrow
-      const popoverArrow = document.createElement('div');
-      addClass(popoverArrow,'arrow');
-      popover.appendChild(popoverArrow);
+    // popover arrow
+    const popoverArrow = document.createElement('div');
+    addClass(popoverArrow,'arrow');
+    popover.appendChild(popoverArrow);
 
-      if ( contentString !== null && self.options.template === null ) { //create the popover from data attributes
+    if ( contentString !== null && self.options.template === null ) { //create the popover from data attributes
 
-        popover.setAttribute('role','tooltip');     
+      popover.setAttribute('role','tooltip');     
 
-        if (titleString !== null) {
-          const popoverTitle = document.createElement('h3');
-          addClass(popoverTitle,'popover-header');
-          popoverTitle.innerHTML = self.options.dismissible ? titleString + closeBtn : titleString;
-          popover.appendChild(popoverTitle);
-        }
-
-        //set popover content
-        var popoverBody = document.createElement('div');
-        addClass(popoverBody,'popover-body');
-        popoverBody.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
-        popover.appendChild(popoverBody);
-
-      } else {  // or create the popover from template
-        const popoverTemplate = document.createElement('div');
-        popoverTemplate.innerHTML = self.options.template.trim();
-        popover.className = popoverTemplate.firstChild.className;
-        popover.innerHTML = popoverTemplate.firstChild.innerHTML;
-
-        const popoverHeader = queryElement('.popover-header',popover), 
-              popoverBody = queryElement('.popover-body',popover);
-
-        // fill the template with content from data attributes
-        titleString && popoverHeader && (popoverHeader.innerHTML = titleString.trim());
-        contentString && popoverBody && (popoverBody.innerHTML = contentString.trim());
+      if (titleString !== null) {
+        const popoverTitle = document.createElement('h3');
+        addClass(popoverTitle,'popover-header');
+        popoverTitle.innerHTML = self.options.dismissible ? titleString + closeBtn : titleString;
+        popover.appendChild(popoverTitle);
       }
 
-      //append to the container
-      self.options.container.appendChild(popover);
-      popover.style.display = 'block';
-      !hasClass(popover, 'popover') && addClass(popover, 'popover');
-      !hasClass(popover, self.options.animation) && addClass(popover, self.options.animation);
-      !hasClass(popover, placementClass) && addClass(popover, placementClass);      
-    },
-    showPopover = () => {
-      !hasClass(popover,'show') && ( addClass(popover,'show') );
-    },
-    updatePopover = () => {
-      styleTip(element, popover, self.options.placement, self.options.container);
-    },
-    toggleEvents = action => {
-      if (self.options.trigger === 'hover') {
-        action( element, mouseHover[0], self.show );
-        if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
-      } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
-        action( element, self.options.trigger, self.toggle );
-      }
-    },
-    // event toggle
-    dismissHandlerToggle = action => {
-      if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
-        !self.options.dismissible && action( element, 'blur', self.hide );
-      }
-      self.options.dismissible && action( document, 'click', dismissibleHandler );     
-      action( window, 'resize', self.hide, passiveHandler );
-    },
-    // triggers
-    showTrigger = () => {
-      dismissHandlerToggle(on);
-      dispatchCustomEvent.call(element, shownCustomEvent);
-    },
-    hideTrigger = () => {
-      dismissHandlerToggle(off);
-      removePopover();
-      dispatchCustomEvent.call(element, hiddenCustomEvent);
-    };
+      //set popover content
+      var popoverBody = document.createElement('div');
+      addClass(popoverBody,'popover-body');
+      popoverBody.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
+      popover.appendChild(popoverBody);
+
+    } else {  // or create the popover from template
+      const popoverTemplate = document.createElement('div');
+      popoverTemplate.innerHTML = self.options.template.trim();
+      popover.className = popoverTemplate.firstChild.className;
+      popover.innerHTML = popoverTemplate.firstChild.innerHTML;
+
+      const popoverHeader = queryElement('.popover-header',popover), 
+            popoverBody = queryElement('.popover-body',popover);
+
+      // fill the template with content from data attributes
+      titleString && popoverHeader && (popoverHeader.innerHTML = titleString.trim());
+      contentString && popoverBody && (popoverBody.innerHTML = contentString.trim());
+    }
+
+    //append to the container
+    self.options.container.appendChild(popover);
+    popover.style.display = 'block';
+    !hasClass(popover, 'popover') && addClass(popover, 'popover');
+    !hasClass(popover, self.options.animation) && addClass(popover, self.options.animation);
+    !hasClass(popover, placementClass) && addClass(popover, placementClass);      
+  }
+  function showPopover() {
+    !hasClass(popover,'show') && ( addClass(popover,'show') );
+  }
+  function updatePopover() {
+    styleTip(element, popover, self.options.placement, self.options.container);
+  }
+  function toggleEvents(action) {
+    if (self.options.trigger === 'hover') {
+      action( element, mouseHover[0], self.show );
+      if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
+    } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
+      action( element, self.options.trigger, self.toggle );
+    }
+  }
+  // event toggle
+  function dismissHandlerToggle(action) {
+    if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
+      !self.options.dismissible && action( element, 'blur', self.hide );
+    }
+    self.options.dismissible && action( document, 'click', dismissibleHandler );     
+    action( window, 'resize', self.hide, passiveHandler );
+  }
+  // triggers
+  function showTrigger() {
+    dismissHandlerToggle(on);
+    dispatchCustomEvent.call(element, shownCustomEvent);
+  }
+  function hideTrigger() {
+    dismissHandlerToggle(off);
+    removePopover();
+    dispatchCustomEvent.call(element, hiddenCustomEvent);
+  }
 
   // public methods / handlers
   self.toggle = () => {

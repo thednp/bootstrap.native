@@ -4,7 +4,7 @@
 
 import { hasClass, addClass, removeClass } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, touchEvents, mouseHover, passiveHandler } from './util/event.js';
-import { queryElement, getElementsByClassName } from './util/selector.js';
+import { queryElement } from './util/selector.js';
 import { getElementTransitionDuration, emulateTransitionEnd } from './util/transition.js';
 
 // CAROUSEL DEFINITION
@@ -31,15 +31,14 @@ export default function Carousel (element,options) {
     pauseData = element.getAttribute('data-pause') === 'hover' || false,
     keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
     // carousel elements
-    slides = getElementsByClassName(element,'carousel-item'),
-    total = slides.length,
-    leftArrow = getElementsByClassName(element,`carousel-control-prev`)[0],
-    rightArrow = getElementsByClassName(element,`carousel-control-next`)[0],
+    slides = element.getElementsByClassName('carousel-item'),
+    leftArrow = element.getElementsByClassName('carousel-control-prev')[0],
+    rightArrow = element.getElementsByClassName('carousel-control-next')[0],
     indicator = queryElement( `.carousel-indicators`, element ),
     indicators = indicator && indicator.getElementsByTagName( "LI" ) || [];
 
   // invalidate when not enough items
-  if (total < 2) { return; }
+  if (slides.length < 2) { return; }
 
   // set instance options
   self.options = {};
@@ -51,161 +50,150 @@ export default function Carousel (element,options) {
                         : isNaN(intervalData) ? 5000 // bootstrap carousel default interval
                         : intervalData;
 
-  // vars, index, timer
-  let index = element.index = 0, 
-    timer = element.timer = 0,
-    isSliding = false, // isSliding prevents click event handlers when animation is running
-    // touch and event coordinates
-    isTouch = false,
-    startXPosition = null,
-    currentXPosition = null,
-    endXPosition = null, 
-    slideDirection = self.direction = 'left',
-    // custom events
-    slideCustomEvent,
-    slidCustomEvent;
+  // custom events
+  let slideCustomEvent, slidCustomEvent;
 
   // handlers
-  const 
-    pauseHandler = () => {
-      if ( self.options.interval !==false && !hasClass(element,'paused') ) {
-        addClass(element,'paused');
-        !isSliding && ( clearInterval(timer), timer = null );
-      }
-    },
-    resumeHandler = () => {
-      if ( self.options.interval !== false && hasClass(element,'paused') ) {
-        removeClass(element,'paused');
-        !isSliding && ( clearInterval(timer), timer = null );
-        !isSliding && self.cycle();
-      }
-    },
-    indicatorHandler = e => {
-      e.preventDefault();
-      if (isSliding) return;
+  function pauseHandler() {
+    if ( self.options.interval !==false && !hasClass(element,'paused') ) {
+      addClass(element,'paused');
+      !element.isSliding && ( clearInterval(element.timer), element.timer = null );
+    }
+  }
+  function resumeHandler() {
+    if ( self.options.interval !== false && hasClass(element,'paused') ) {
+      removeClass(element,'paused');
+      !element.isSliding && ( clearInterval(element.timer), element.timer = null );
+      !element.isSliding && self.cycle();
+    }
+  }
+  function indicatorHandler(e) {
+    e.preventDefault();
+    if (element.isSliding) return;
 
-      const eventTarget = e.target; // event target | the current active item
+    const eventTarget = e.target; // event target | the current active item
 
-      if ( eventTarget && !hasClass(eventTarget,'active') && eventTarget.getAttribute('data-slide-to') ) {
-        index = parseInt( eventTarget.getAttribute('data-slide-to'), 10 );
-      } else { return false; }
+    if ( eventTarget && !hasClass(eventTarget,'active') && eventTarget.getAttribute('data-slide-to') ) {
+      element.index = parseInt( eventTarget.getAttribute('data-slide-to'), 10 );
+    } else { return false; }
 
-      self.slideTo( index ); //Do the slide
-    },
-    controlsHandler = e => {
-      e.preventDefault();
-      if (isSliding) return;
+    self.slideTo( element.index ); //Do the slide
+  }
+  function controlsHandler(e) {
+    e.preventDefault();
+    if (element.isSliding) return;
 
-      const eventTarget = e.currentTarget || e.srcElement;
+    const eventTarget = e.currentTarget || e.srcElement;
 
-      if ( eventTarget === rightArrow ) {
-        index++;
-      } else if ( eventTarget === leftArrow ) {
-        index--;
-      }
+    if ( eventTarget === rightArrow ) {
+      element.index++;
+    } else if ( eventTarget === leftArrow ) {
+      element.index--;
+    }
 
-      self.slideTo( index ); //Do the slide
-    },
-    keyHandler = ({which}) => {
-      if (isSliding) return;
-      switch (which) {
-        case 39:
-          index++;
-          break;
-        case 37:
-          index--;
-          break;
-        default: return;
-      }
-      self.slideTo( index ); //Do the slide
-    },
-    toggleEvents = action => {
-      if ( self.options.pause && self.options.interval ) {
-        action( element, mouseHover[0], pauseHandler );
-        action( element, mouseHover[1], resumeHandler );
-        action( element, touchEvents.start, pauseHandler, passiveHandler );
-        action( element, touchEvents.end, resumeHandler, passiveHandler );
-      }
-    
-      slides.length > 1 && action( element, touchEvents.start, touchDownHandler, passiveHandler );
+    self.slideTo( element.index ); //Do the slide
+  }
+  function keyHandler({which}) {
+    if (element.isSliding) return;
+    switch (which) {
+      case 39:
+        element.index++;
+        break;
+      case 37:
+        element.index--;
+        break;
+      default: return;
+    }
+    self.slideTo( element.index ); //Do the slide
+  }
+  function toggleEvents(action) {
+    if ( self.options.pause && self.options.interval ) {
+      action( element, mouseHover[0], pauseHandler );
+      action( element, mouseHover[1], resumeHandler );
+      action( element, touchEvents.start, pauseHandler, passiveHandler );
+      action( element, touchEvents.end, resumeHandler, passiveHandler );
+    }
+  
+    slides.length > 1 && action( element, touchEvents.start, touchDownHandler, passiveHandler );
 
-      rightArrow && action( rightArrow, 'click', controlsHandler );
-      leftArrow && action( leftArrow, 'click', controlsHandler );
-    
-      indicator && action( indicator, 'click', indicatorHandler );
-      self.options.keyboard && action( window, 'keydown', keyHandler );
-    },
-    // touch events
-    toggleTouchEvents = action => {
-      action( element, touchEvents.move, touchMoveHandler, passiveHandler );
-      action( element, touchEvents.end, touchEndHandler, passiveHandler );
-    },
-    touchDownHandler = e => {
-      if ( isTouch ) { return; } 
-        
-      startXPosition = parseInt(e.touches[0].pageX);
-
-      if ( element.contains(e.target) ) {
-        isTouch = true;
-        toggleTouchEvents(on);
-      }
-    },
-    touchMoveHandler = e => {
-      if ( !isTouch ) { e.preventDefault(); return; }
-
-      currentXPosition = parseInt(e.touches[0].pageX);
+    rightArrow && action( rightArrow, 'click', controlsHandler );
+    leftArrow && action( leftArrow, 'click', controlsHandler );
+  
+    indicator && action( indicator, 'click', indicatorHandler );
+    self.options.keyboard && action( window, 'keydown', keyHandler );
+  }
+  // touch events
+  function toggleTouchEvents(action) {
+    action( element, touchEvents.move, touchMoveHandler, passiveHandler );
+    action( element, touchEvents.end, touchEndHandler, passiveHandler );
+  }
+  function touchDownHandler(e) {
+    if ( element.isTouch ) { return; } 
       
-      //cancel touch if more than one touches detected
-      if ( e.type === 'touchmove' && e.touches.length > 1 ) {
-        e.preventDefault();
+    element.touchPosition.startX = parseInt(e.currentTouches[0].pageX);
+
+    if ( element.contains(e.target) ) {
+      element.isTouch = true;
+      toggleTouchEvents(on);
+    }
+  }
+  function touchMoveHandler(e) {
+    if ( !element.isTouch ) { e.preventDefault(); return; }
+
+    element.touchPosition.currentX = parseInt(e.currentTouches[0].pageX);
+    
+    // cancel touch if more than one touches detected
+    if ( e.type === 'touchmove' && e.currentTouches.length > 1 ) {
+      e.preventDefault();
+      return false;
+    }
+  }
+  function touchEndHandler (e) {
+    if ( !element.isTouch || element.isSliding ) { return }
+    
+    element.touchPosition.endX = element.touchPosition.currentX || parseInt( e.currentTouches[0].pageX );
+
+    if ( element.isTouch ) {
+      if ( (!element.contains(e.target) || !element.contains(e.relatedTarget) ) 
+          && Math.abs(element.touchPosition.startX - element.touchPosition.endX) < 75 ) {
         return false;
-      }
-    },
-    touchEndHandler = e => {
-      if ( !isTouch || isSliding ) { return }
-      
-      endXPosition = currentXPosition || parseInt( e.touches[0].pageX );
-
-      if ( isTouch ) {
-        if ( (!element.contains(e.target) || !element.contains(e.relatedTarget) ) && Math.abs(startXPosition - endXPosition) < 75 ) {
-          return false;
-        } else {
-          if ( currentXPosition < startXPosition ) {
-            index++;
-          } else if ( currentXPosition > startXPosition ) {
-            index--;        
-          }
-          isTouch = false;
-          self.slideTo(index);
+      } else {
+        if ( element.touchPosition.currentX < element.touchPosition.startX ) {
+          element.index++;
+        } else if ( element.touchPosition.currentX > element.touchPosition.startX ) {
+          element.index--;        
         }
-        toggleTouchEvents(off);            
+        element.isTouch = false;
+        self.slideTo(element.index);
       }
-    },
-    // private methods
-    isElementInScrollRange = () => {
-      const rect = element.getBoundingClientRect(), viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      return rect.top <= viewportHeight && rect.bottom >= 0; // bottom && top
-    },
-    setActivePage = pageIndex => { //indicators
-      for ( let i = 0, icl = indicators.length; i < icl; i++ ) {
-        removeClass(indicators[i],'active');
-      }
-      if (indicators[pageIndex]) addClass(indicators[pageIndex], 'active');
-    };
+      toggleTouchEvents(off);            
+    }
+  }
+  // private methods
+  function isElementInScrollRange() {
+    const rect = element.getBoundingClientRect(), viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    return rect.top <= viewportHeight && rect.bottom >= 0; // bottom && top
+  }
+  function setActivePage(pageIndex) { //indicators
+    for ( let i = 0, icl = indicators.length; i < icl; i++ ) {
+      removeClass(indicators[i],'active');
+    }
+    if (indicators[pageIndex]) addClass(indicators[pageIndex], 'active');
+  }
 
   // public methods
   self.cycle = () => {
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
+    if (element.timer) {
+      clearInterval(element.timer);
+      element.timer = null;
     }
 
-    timer = setInterval(() => {
-      isElementInScrollRange() && (index++, self.slideTo( index ) );
+    element.timer = setInterval(() => {
+      isElementInScrollRange() && (element.index++, self.slideTo( element.index ) );
     }, self.options.interval);
   }
   self.slideTo = next => {
-    if (isSliding) return; // when controled via methods, make sure to check again      
+    if (element.isSliding) return; // when controled via methods, make sure to check again      
 
     // the current active and orientation
     let activeItem = self.getActiveIndex(), orientation;
@@ -213,51 +201,51 @@ export default function Carousel (element,options) {
     // first return if we're on the same item #227
     if ( activeItem === next ) {
       return;
-    // or determine slideDirection
-    } else if  ( (activeItem < next ) || (activeItem === 0 && next === total -1 ) ) {
-      slideDirection = self.direction = 'left'; // next
-    } else if  ( (activeItem > next) || (activeItem === total - 1 && next === 0 ) ) {
-      slideDirection = self.direction = 'right'; // prev
+    // or determine slide direction
+    } else if  ( (activeItem < next ) || (activeItem === 0 && next === slides.length -1 ) ) {
+      element.direction = 'left'; // next
+    } else if  ( (activeItem > next) || (activeItem === slides.length - 1 && next === 0 ) ) {
+      element.direction = 'right'; // prev
     }
 
     // find the right next index 
-    if ( next < 0 ) { next = total - 1; } 
-    else if ( next >= total ){ next = 0; }
+    if ( next < 0 ) { next = slides.length - 1; } 
+    else if ( next >= slides.length ){ next = 0; }
 
     // update index
-    index = next;
+    element.index = next;
 
-    orientation = slideDirection === 'left' ? 'next' : 'prev'; // determine type
+    orientation = element.direction === 'left' ? 'next' : 'prev'; // determine type
 
     slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', slides[next]);
     slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', slides[next]);
     dispatchCustomEvent.call(element, slideCustomEvent); // here we go with the slide
     if (slideCustomEvent.defaultPrevented) return; // discontinue when prevented
 
-    isSliding = true;
-    clearInterval(timer);
-    timer = null;
+    element.isSliding = true;
+    clearInterval(element.timer);
+    element.timer = null;
     setActivePage( next );
 
     if ( getElementTransitionDuration(slides[next]) && hasClass(element,'slide') ) {
 
       addClass(slides[next],`carousel-item-${orientation}`);
       slides[next].offsetWidth;
-      addClass(slides[next],`carousel-item-${slideDirection}`);
-      addClass(slides[activeItem],`carousel-item-${slideDirection}`);
+      addClass(slides[next],`carousel-item-${element.direction}`);
+      addClass(slides[activeItem],`carousel-item-${element.direction}`);
 
       emulateTransitionEnd(slides[next], e => {
         const timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20;
         
-        isSliding && setTimeout(() => {
-          isSliding = false;
+        element.isSliding && setTimeout(() => {
+          element.isSliding = false;
 
           addClass(slides[next],'active');
           removeClass(slides[activeItem],'active');
 
           removeClass(slides[next],`carousel-item-${orientation}`);
-          removeClass(slides[next],`carousel-item-${slideDirection}`);
-          removeClass(slides[activeItem],`carousel-item-${slideDirection}`);
+          removeClass(slides[next],`carousel-item-${element.direction}`);
+          removeClass(slides[activeItem],`carousel-item-${element.direction}`);
 
           dispatchCustomEvent.call(element, slidCustomEvent);
 
@@ -272,7 +260,7 @@ export default function Carousel (element,options) {
       slides[next].offsetWidth;
       removeClass(slides[activeItem],'active');
       setTimeout(() => {
-        isSliding = false;
+        element.isSliding = false;
         if ( self.options.interval && !hasClass(element,'paused') ) {
           self.cycle();
         }
@@ -281,12 +269,24 @@ export default function Carousel (element,options) {
     }
   }
 
-  self.getActiveIndex = () => slides.indexOf(getElementsByClassName(element,'carousel-item active')[0]) || 0
+  self.getActiveIndex = () => [].slice.call(slides).indexOf(element.getElementsByClassName('carousel-item active')[0]) || 0
 
   self.dispose = () => {
     toggleEvents(off);
-    clearInterval(timer);
+    clearInterval(element.timer);
     delete element.Carousel;
+  }
+
+  // set initial state
+  element.direction = 'left';
+  element.index = 0;
+  element.timer = null;
+  element.isSliding = false;
+  element.isTouch = false;
+  element.touchPosition = {
+    startX : 0,
+    currentX : 0,
+    endX : 0
   }
 
   // init

@@ -1,6 +1,6 @@
 import { initCallback } from './callbacks.js'
 import { one } from './event.js'
-import { supports } from './globals.js'
+import { componentsInit } from './globals.js'
 
 import Alert from './../alert-native.js'
 import Button from './../button-native.js'
@@ -14,17 +14,17 @@ import Tab from './../tab-native.js'
 import Toast from './../toast-native.js'
 import Tooltip from './../tooltip-native.js'
 
-supports.Alert = [ Alert, '[data-dismiss="alert"]']
-supports.Button = [ Button, '[data-toggle="buttons"]' ]
-supports.Carousel = [ Carousel, '[data-ride="carousel"]' ]
-supports.Collapse = [ Collapse, '[data-toggle="collapse"]' ]
-supports.Dropdown = [ Dropdown, '[data-toggle="dropdown"]']
-supports.Modal = [ Modal, '[data-toggle="modal"]' ]
-supports.Popover = [ Popover, '[data-toggle="popover"],[data-tip="popover"]' ]
-supports.ScrollSpy = [ ScrollSpy, '[data-spy="scroll"]' ]
-supports.Tab = [ Tab, '[data-toggle="tab"]' ]
-supports.Toast = [ Toast, '[data-dismiss="toast"]' ]
-supports.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ]
+componentsInit.Alert = [ Alert, '[data-dismiss="alert"]']
+componentsInit.Button = [ Button, '[data-toggle="buttons"]' ]
+componentsInit.Carousel = [ Carousel, '[data-ride="carousel"]' ]
+componentsInit.Collapse = [ Collapse, '[data-toggle="collapse"]' ]
+componentsInit.Dropdown = [ Dropdown, '[data-toggle="dropdown"]']
+componentsInit.Modal = [ Modal, '[data-toggle="modal"]' ]
+componentsInit.Popover = [ Popover, '[data-toggle="popover"],[data-tip="popover"]' ]
+componentsInit.ScrollSpy = [ ScrollSpy, '[data-spy="scroll"]' ]
+componentsInit.Tab = [ Tab, '[data-toggle="tab"]' ]
+componentsInit.Toast = [ Toast, '[data-dismiss="toast"]' ]
+componentsInit.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ]
 
 // bulk initialize all components
 document.body ? initCallback() : one( document, 'DOMContentLoaded', initCallback );

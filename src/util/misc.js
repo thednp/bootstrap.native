@@ -12,10 +12,9 @@ export function getScroll () { // also Affix and ScrollSpy uses it
   }
 }
 
-export const tipPositions = /\b(top|bottom|left|right)+/;
-
 export function styleTip (link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
-  const elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
+  const tipPositions = /\b(top|bottom|left|right)+/,
+      elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
       windowWidth = (document.documentElement.clientWidth || document.body.clientWidth),
       windowHeight = (document.documentElement.clientHeight || document.body.clientHeight),
       rect = link.getBoundingClientRect(),

@@ -1,2 +1,2 @@
 // globals
-export const supports = {};
+export const componentsInit = {};

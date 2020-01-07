@@ -45,26 +45,25 @@ export default function Toast(element,options) {
   self.options.delay = parseInt(options.delay || delayData) || 500; // 500ms default
 
   // private methods
-  const 
-    showComplete = () => {
-      removeClass( toast, 'showing' );
-      addClass( toast, 'show' );
-      dispatchCustomEvent.call(toast,shownCustomEvent);
-      if (self.options.autohide) { self.hide(); }
-    },
-    hideComplete = () => {
-      addClass( toast, 'hide' );
-      dispatchCustomEvent.call(toast,hiddenCustomEvent);
-    },
-    close = () => {
-      removeClass( toast,'show' );
-      self.options.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
-    },
-    disposeComplete = () => {
-      clearTimeout(timer);
-      off(element, 'click', self.hide);
-      delete element.Toast;
-    };
+  function showComplete() {
+    removeClass( toast, 'showing' );
+    addClass( toast, 'show' );
+    dispatchCustomEvent.call(toast,shownCustomEvent);
+    if (self.options.autohide) { self.hide(); }
+  }
+  function hideComplete() {
+    addClass( toast, 'hide' );
+    dispatchCustomEvent.call(toast,hiddenCustomEvent);
+  }
+  function close () {
+    removeClass( toast,'show' );
+    self.options.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
+  }
+  function disposeComplete() {
+    clearTimeout(timer);
+    off(element, 'click', self.hide);
+    delete element.Toast;
+  }
 
   // public methods
   self.show = () => {

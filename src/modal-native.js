@@ -30,8 +30,7 @@ export default function Modal(element,options) { // element can be the modal/tri
   // bind
   const self = this,
     // determine modal, triggering element
-    btnCheck = element.getAttribute('data-target')||element.getAttribute('href'),
-    checkModal = queryElement( btnCheck ),
+    checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') ),
     modal = hasClass(element,'modal') ? element : checkModal;
 
   if ( hasClass(element, 'modal') ) { element = null; } // modal is now independent of it's triggering element
@@ -42,6 +41,9 @@ export default function Modal(element,options) { // element can be the modal/tri
   element && element.Modal && element.Modal.dispose();
   modal.Modal && modal.Modal.dispose();
 
+  // set an initial state of the modal
+  modal.isAnimating = false;  
+
   // set options
   options = options || {};
   self.options = {};
@@ -51,148 +53,144 @@ export default function Modal(element,options) { // element can be the modal/tri
   self.options.animation = hasClass(modal, 'fade') ? true : false;
   self.options.content = options.content; // JavaScript only
 
-  // set an initial state of the modal
-  modal.isAnimating = false;
-
   // also find fixed-top / fixed-bottom items
-  const 
-    fixedItems = getElementsByClassName(document.documentElement,'fixed-top')
-              .concat(getElementsByClassName(document.documentElement,'fixed-bottom')),
+  const fixedItems = getElementsByClassName(document.documentElement,'fixed-top')
+                    .concat(getElementsByClassName(document.documentElement,'fixed-bottom'));
 
-    // private methods
-    setScrollbar = () => {
-      const openModal = hasClass(document.body,'modal-open'),
-            bodyStyle = window.getComputedStyle(document.body),
-            bodyPad = parseInt((bodyStyle.paddingRight), 10);
-      let itemPad;
+  // private methods
+  function setScrollbar() {
+    const openModal = hasClass(document.body,'modal-open'),
+          bodyStyle = window.getComputedStyle(document.body),
+          bodyPad = parseInt((bodyStyle.paddingRight), 10);
+    let itemPad;
 
-      document.body.style.paddingRight = `${bodyPad + (openModal?0:scrollBarWidth)}px`;
-      modal.style.paddingRight = (scrollBarWidth?`${scrollBarWidth}px`:'');
-      if (fixedItems.length){
-        for (let i = 0; i < fixedItems.length; i++) {
-          itemPad = window.getComputedStyle(fixedItems[i]).paddingRight;
-          fixedItems[i].style.paddingRight = `${parseInt(itemPad) + (openModal?0:scrollBarWidth)}px`;
-        }
+    document.body.style.paddingRight = `${bodyPad + (openModal?0:scrollBarWidth)}px`;
+    modal.style.paddingRight = (scrollBarWidth?`${scrollBarWidth}px`:'');
+    if (fixedItems.length){
+      for (let i = 0; i < fixedItems.length; i++) {
+        itemPad = window.getComputedStyle(fixedItems[i]).paddingRight;
+        fixedItems[i].style.paddingRight = `${parseInt(itemPad) + (openModal?0:scrollBarWidth)}px`;
       }
-    },
-    resetScrollbar = () => {
-      document.body.style.paddingRight = '';
-      modal.style.paddingRight = '';
-      if (fixedItems.length){
-        for (let i = 0; i < fixedItems.length; i++) {
-          fixedItems[i].style.paddingRight = '';
-        }
+    }
+  }
+  function resetScrollbar() {
+    document.body.style.paddingRight = '';
+    modal.style.paddingRight = '';
+    if (fixedItems.length){
+      for (let i = 0; i < fixedItems.length; i++) {
+        fixedItems[i].style.paddingRight = '';
       }
-    },
-    measureScrollbar = () => {
-      const scrollDiv = document.createElement('div');
-      let widthValue;
+    }
+  }
+  function measureScrollbar() {
+    const scrollDiv = document.createElement('div');
+    let widthValue;
 
-      scrollDiv.className = 'modal-scrollbar-measure'; // this is here to stay
-      document.body.appendChild(scrollDiv);
-      widthValue = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-      document.body.removeChild(scrollDiv);
-      return widthValue;
-    },
-    checkScrollbar = () => {
-      scrollBarWidth = measureScrollbar();
-    },
-    createOverlay = () => {
-      const newOverlay = document.createElement('div');
-      overlay = queryElement('.modal-backdrop');
+    scrollDiv.className = 'modal-scrollbar-measure'; // this is here to stay
+    document.body.appendChild(scrollDiv);
+    widthValue = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+    document.body.removeChild(scrollDiv);
+    return widthValue;
+  }
+  function checkScrollbar() {
+    scrollBarWidth = measureScrollbar();
+  }
+  function createOverlay() {
+    const newOverlay = document.createElement('div');
+    overlay = queryElement('.modal-backdrop');
 
-      if ( overlay === null ) {
-        newOverlay.setAttribute('class', 'modal-backdrop' + (self.options.animation ? ' fade' : ''));
-        overlay = newOverlay;
-        document.body.appendChild(overlay);
-      }
-      return overlay;
-    },
-    removeOverlay = () => {
-      overlay = queryElement('.modal-backdrop');
-      if ( overlay && !getElementsByClassName(document,'modal show')[0] ) {
-        document.body.removeChild(overlay); overlay = null;       
-      }
-      overlay === null && (removeClass(document.body,'modal-open'), resetScrollbar());
-    },
-    toggleEvents = action => {
-      action(window, 'resize', self.update, passiveHandler);
-      action(modal, 'click', dismissHandler);
-      action(document, 'keydown', keyHandler);
-    },
-    // triggers
-    beforeShow = () => {
-      modal.style.display = 'block'; 
+    if ( overlay === null ) {
+      newOverlay.setAttribute('class', 'modal-backdrop' + (self.options.animation ? ' fade' : ''));
+      overlay = newOverlay;
+      document.body.appendChild(overlay);
+    }
+    return overlay;
+  }
+  function removeOverlay () {
+    overlay = queryElement('.modal-backdrop');
+    if ( overlay && !getElementsByClassName(document,'modal show')[0] ) {
+      document.body.removeChild(overlay); overlay = null;       
+    }
+    overlay === null && (removeClass(document.body,'modal-open'), resetScrollbar());
+  }
+  function toggleEvents(action) {
+    action(window, 'resize', self.update, passiveHandler);
+    action(modal, 'click', dismissHandler);
+    action(document, 'keydown', keyHandler);
+  }
+  // triggers
+  function beforeShow() {
+    modal.style.display = 'block'; 
 
-      checkScrollbar();
-      setScrollbar();
-      !getElementsByClassName(document,'modal show')[0] && addClass(document.body,'modal-open');
+    checkScrollbar();
+    setScrollbar();
+    !getElementsByClassName(document,'modal show')[0] && addClass(document.body,'modal-open');
 
-      addClass(modal,'show');
-      modal.setAttribute('aria-hidden', false);
+    addClass(modal,'show');
+    modal.setAttribute('aria-hidden', false);
 
-      hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
-    },
-    triggerShow = () => {
-      setFocus(modal);
-      modal.isAnimating = false;
+    hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
+  }
+  function triggerShow() {
+    setFocus(modal);
+    modal.isAnimating = false;
 
-      toggleEvents(on);
+    toggleEvents(on);
 
-      shownCustomEvent = bootstrapCustomEvent('shown', 'modal', relatedTarget);
-      dispatchCustomEvent.call(modal, shownCustomEvent);
-    },
-    triggerHide = () => {
-      modal.style.display = '';
-      element && (setFocus(element));
+    shownCustomEvent = bootstrapCustomEvent('shown', 'modal', relatedTarget);
+    dispatchCustomEvent.call(modal, shownCustomEvent);
+  }
+  function triggerHide() {
+    modal.style.display = '';
+    element && (setFocus(element));
 
-      overlay = queryElement('.modal-backdrop');
+    overlay = queryElement('.modal-backdrop');
 
-      if (overlay && hasClass(overlay,'show') && !getElementsByClassName(document,'modal show')[0]) {
-        removeClass(overlay,'show');
-        emulateTransitionEnd(overlay,removeOverlay);
-      } else {
-        removeOverlay();
-      }
+    if (overlay && hasClass(overlay,'show') && !getElementsByClassName(document,'modal show')[0]) {
+      removeClass(overlay,'show');
+      emulateTransitionEnd(overlay,removeOverlay);
+    } else {
+      removeOverlay();
+    }
 
-      toggleEvents(off);
+    toggleEvents(off);
 
-      modal.isAnimating = false;
+    modal.isAnimating = false;
 
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'modal');
-      dispatchCustomEvent.call(modal, hiddenCustomEvent);
-    },
-    // handlers
-    clickHandler = e => {
-      if ( modal.isAnimating ) return;
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'modal');
+    dispatchCustomEvent.call(modal, hiddenCustomEvent);
+  }
+  // handlers
+  function clickHandler(e) {
+    if ( modal.isAnimating ) return;
 
-      let clickTarget = e.target;
-      clickTarget = clickTarget.hasAttribute('data-target') || clickTarget.hasAttribute('href') ? clickTarget : clickTarget.parentNode;
-      if ( clickTarget === element && !hasClass(modal,'show') ) {
-        modal.modalTrigger = element;
-        relatedTarget = element;
-        self.show();
-        e.preventDefault();
-      }
-    },
-    keyHandler = ({which}) => {
-      if ( modal.isAnimating ) return;
+    let clickTarget = e.target;
+    clickTarget = clickTarget.hasAttribute('data-target') || clickTarget.hasAttribute('href') ? clickTarget : clickTarget.parentNode;
+    if ( clickTarget === element && !hasClass(modal,'show') ) {
+      modal.modalTrigger = element;
+      relatedTarget = element;
+      self.show();
+      e.preventDefault();
+    }
+  }
+  function keyHandler({which}) {
+    if ( modal.isAnimating ) return;
 
-      if (self.options.keyboard && which == 27 && hasClass(modal,'show') ) {
-        self.hide();
-      }
-    },
-    dismissHandler = e => {
-      if ( modal.isAnimating ) return;
-      const clickTarget = e.target;
+    if (self.options.keyboard && which == 27 && hasClass(modal,'show') ) {
+      self.hide();
+    }
+  }
+  function dismissHandler(e) {
+    if ( modal.isAnimating ) return;
+    const clickTarget = e.target;
 
-      if ( hasClass(modal,'show') && ( clickTarget.parentNode.getAttribute('data-dismiss') === 'modal'
-          || clickTarget.getAttribute('data-dismiss') === 'modal'
-          || clickTarget === modal && self.options.backdrop !== 'static' ) ) {
-        self.hide(); relatedTarget = null;
-        e.preventDefault();
-      }
-    };
+    if ( hasClass(modal,'show') && ( clickTarget.parentNode.getAttribute('data-dismiss') === 'modal'
+        || clickTarget.getAttribute('data-dismiss') === 'modal'
+        || clickTarget === modal && self.options.backdrop !== 'static' ) ) {
+      self.hide(); relatedTarget = null;
+      e.preventDefault();
+    }
+  }
 
   // public methods
   self.toggle = () => {

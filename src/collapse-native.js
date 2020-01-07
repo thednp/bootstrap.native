@@ -36,10 +36,10 @@ export default function Collapse(element,options) {
         showCustomEvent = bootstrapCustomEvent('show', 'collapse'),
         shownCustomEvent = bootstrapCustomEvent('shown', 'collapse'),
         hideCustomEvent = bootstrapCustomEvent('hide', 'collapse'),
-        hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse'),
+        hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse');
 
   // private methods
-  openAction = (collapseElement, toggle) => {
+  function openAction(collapseElement, toggle) {
     dispatchCustomEvent.call(collapseElement, showCustomEvent);
     if ( showCustomEvent.defaultPrevented ) return;
     collapseElement.isAnimating = true;
@@ -57,9 +57,8 @@ export default function Collapse(element,options) {
       collapseElement.style.height = '';
       dispatchCustomEvent.call(collapseElement, shownCustomEvent);
     });
-  },
-
-  closeAction = (collapseElement, toggle) => {
+  }
+  function closeAction(collapseElement, toggle) {
     dispatchCustomEvent.call(collapseElement, hideCustomEvent);
     if ( hideCustomEvent.defaultPrevented ) return;
     collapseElement.isAnimating = true;
@@ -79,26 +78,19 @@ export default function Collapse(element,options) {
       collapseElement.style.height = '';
       dispatchCustomEvent.call(collapseElement, hiddenCustomEvent);
     });
-  },
-
-  getTarget = () => {
-    const href = element.href && element.getAttribute('href'), 
-          parent = element.getAttribute('data-target'), 
-          id = href || ( parent && parent.charAt(0) === '#' ) && parent;
-    return id && queryElement(id);
-  };
+  }
 
   // public methods
   self.toggle = e => {
     e && e.preventDefault();
     if (!hasClass(collapse,'show')) { self.show(); } 
     else { self.hide(); }
-  };
+  }
   self.hide = () => {
     if ( collapse.isAnimating ) return;    
     closeAction(collapse,element);
     addClass(element,'collapsed');
-  };
+  }
   self.show = () => {
     if ( accordion ) {
       activeCollapse = queryElement(`.collapse.show`,accordion);
@@ -114,20 +106,20 @@ export default function Collapse(element,options) {
       openAction(collapse,element);
       removeClass(element,'collapsed');
     }
-  };
+  }
   self.dispose = () => {
     off(element, 'click', self.toggle);
     delete element.Collapse;
   }
 
   // determine targets
-  collapse = getTarget();
+  collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
 
   // invalidate
   if (!collapse) return;
 
   collapse.isAnimating = false;  
-  accordion = queryElement(options.parent) || accordionData && element.closest(accordionData);
+  accordion = element.closest(options.parent || accordionData);
 
   // associations
   collapse && (self.collapse = collapse);
