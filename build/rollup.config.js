@@ -2,6 +2,7 @@
 import babel from 'rollup-plugin-babel'
 import minify from 'rollup-plugin-babel-minify'
 import cleanup from 'rollup-plugin-cleanup'
+import json from '@rollup/plugin-json'
 
 const banner = require('./header.js')
 
@@ -17,6 +18,7 @@ export default [
       globals: {}
     },
     plugins: [
+      json(),
       cleanup(),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
@@ -33,6 +35,7 @@ export default [
       globals: {}
     },
     plugins: [
+      json(),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
       }),
@@ -51,6 +54,7 @@ export default [
       globals: {}
     },
     plugins: [
+      json(),
       cleanup(),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
@@ -66,6 +70,7 @@ export default [
       globals: {}
     },
     plugins: [
+      json(),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
       }),

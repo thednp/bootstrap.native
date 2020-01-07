@@ -9,9 +9,13 @@ import ScrollSpy from './scrollspy-native.js'
 import Tab from './tab-native.js'
 import Toast from './toast-native.js'
 import Tooltip from './tooltip-native.js'
+import {initCallback,removeDataAPI} from './util/callbacks.js'
+import {componentsInit} from './util/globals.js'
+import {Util} from './util/util.js'
+import {Version} from './util/misc.js'
 import './util/init.js'
 
-export {
+const components = {
   Alert,
   Button,
   Carousel,
@@ -23,4 +27,14 @@ export {
   Tab,
   Toast,
   Tooltip
+}
+
+
+export {
+  components,
+  initCallback,
+  removeDataAPI,
+  componentsInit,
+  Util,
+  Version
 }

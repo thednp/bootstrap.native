@@ -656,6 +656,68 @@ function Collapse(element, options) {
   element.Collapse = self;
 }
 
+var name = "bootstrap.native";
+var version = "3.0.0";
+var description = "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.";
+var main = "dist/bootstrap-native.js";
+var scripts = {
+	test: "echo \"Error: no test specified\" && exit 1",
+	help: "rollup --help",
+	build: "rollup --config build/rollup.config.js && npm run addHeader",
+	addHeader: "node build/addHeader.js",
+	watch: "rollup --config build/rollup.config.js -w"
+};
+var browserslist = [
+	"last 2 versions",
+	"not <= 1%",
+	"not IE 10"
+];
+var repository = {
+	type: "git",
+	url: "git+https://github.com/thednp/bootstrap.native.git"
+};
+var keywords = [
+	"bootstrap.native",
+	"bootstrap",
+	"vanilla js",
+	"native javascript",
+	"vanilla javascript"
+];
+var author = "dnp_theme";
+var license = "MIT";
+var bugs = {
+	url: "https://github.com/thednp/bootstrap.native/issues"
+};
+var homepage = "https://thednp.github.io/bootstrap.native/";
+var devDependencies = {
+	"@babel/core": "^7.7.7",
+	"@babel/preset-env": "^7.7.7",
+	rollup: "^1.27.14",
+	"@rollup/plugin-json": "^4.0.1",
+	"rollup-plugin-babel": "^4.3.3",
+	"rollup-plugin-babel-minify": "^9.1.1",
+	"rollup-plugin-cleanup": "^3.1.1"
+};
+var dependencies = {
+};
+var pkg = {
+	name: name,
+	version: version,
+	description: description,
+	main: main,
+	scripts: scripts,
+	browserslist: browserslist,
+	repository: repository,
+	keywords: keywords,
+	author: author,
+	license: license,
+	bugs: bugs,
+	homepage: homepage,
+	devDependencies: devDependencies,
+	dependencies: dependencies
+};
+
+var Version = pkg.version;
 function setFocus(element) {
   element.focus ? element.focus() : element.setActive();
 }
@@ -1859,6 +1921,44 @@ var initCallback = function initCallback(lookUp) {
     initializeDataAPI(componentsInit[component][0], lookUp.querySelectorAll(componentsInit[component][1]));
   }
 };
+var removeDataAPI = function removeDataAPI(lookUp) {
+  lookUp = lookUp || document;
+
+  var removeElementDataAPI = function removeElementDataAPI(ConstructorName, collection) {
+    for (var i = 0, cl = collection.length; i < cl; i++) {
+      try {
+        if (collection[i][ConstructorName]) {
+          collection[i][ConstructorName].dispose();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  for (var component in componentsInit) {
+    removeElementDataAPI(component, lookUp.querySelectorAll(componentsInit[component][1]));
+  }
+};
+
+var Util = {
+  addClass: addClass,
+  removeClass: removeClass,
+  hasClass: hasClass,
+  queryElement: queryElement,
+  getElementsByClassName: getElementsByClassName,
+  getElementTransitionDuration: getElementTransitionDuration,
+  emulateTransitionEnd: emulateTransitionEnd,
+  on: on,
+  off: off,
+  one: one,
+  bootstrapCustomEvent: bootstrapCustomEvent,
+  dispatchCustomEvent: dispatchCustomEvent,
+  passiveHandler: passiveHandler,
+  setFocus: setFocus,
+  styleTip: styleTip,
+  getScroll: getScroll
+};
 
 componentsInit.Alert = [Alert, '[data-dismiss="alert"]'];
 componentsInit.Button = [Button, '[data-toggle="buttons"]'];
@@ -1873,4 +1973,18 @@ componentsInit.Toast = [Toast, '[data-dismiss="toast"]'];
 componentsInit.Tooltip = [Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]'];
 document.body ? initCallback() : one(document, 'DOMContentLoaded', initCallback);
 
-export { Alert, Button, Carousel, Collapse, Dropdown, Modal, Popover, ScrollSpy, Tab, Toast, Tooltip };
+var components = {
+  Alert: Alert,
+  Button: Button,
+  Carousel: Carousel,
+  Collapse: Collapse,
+  Dropdown: Dropdown,
+  Modal: Modal,
+  Popover: Popover,
+  ScrollSpy: ScrollSpy,
+  Tab: Tab,
+  Toast: Toast,
+  Tooltip: Tooltip
+};
+
+export { Util, Version, components, componentsInit, initCallback, removeDataAPI };

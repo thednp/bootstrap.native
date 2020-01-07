@@ -1,5 +1,8 @@
 import { hasClass } from './class.js';
-import { queryElement } from './selector.js';
+import { queryElement } from './selector.js'
+import pkg from '../../package.json'
+
+export const Version = pkg.version
 
 export function setFocus (element){
   element.focus ? element.focus() : element.setActive();

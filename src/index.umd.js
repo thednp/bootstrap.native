@@ -12,10 +12,11 @@ import Tooltip from './tooltip-native.js'
 import {initCallback,removeDataAPI} from './util/callbacks.js'
 import {componentsInit} from './util/globals.js'
 import {Util} from './util/util.js'
+import {Version} from './util/misc.js'
 import './util/init.js'
 
 export default {
-  components: {
+  components : {
     Alert,
     Button,
     Carousel,
@@ -31,5 +32,6 @@ export default {
   initCallback,
   removeDataAPI,
   componentsInit,
-  Util
+  Util,
+  Version
 }
