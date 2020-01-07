@@ -1,5 +1,5 @@
 import { initCallback } from './callbacks.js'
-import { on } from './event.js'
+import { one } from './event.js'
 import { supports } from './globals.js'
 
 import Alert from './../alert-native.js'
@@ -27,4 +27,4 @@ supports.Toast = [ Toast, '[data-dismiss="toast"]' ]
 supports.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ]
 
 // bulk initialize all components
-document.body ? initCallback() : on( document, 'DOMContentLoaded', initCallback );
+document.body ? initCallback() : one( document, 'DOMContentLoaded', initCallback );

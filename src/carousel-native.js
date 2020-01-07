@@ -5,7 +5,7 @@
 import { hasClass, addClass, removeClass } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, touchEvents, mouseHover, passiveHandler } from './util/event.js';
 import { queryElement, getElementsByClassName } from './util/selector.js';
-import { supportTransitions, emulateTransitionEnd } from './util/transition.js';
+import { getElementTransitionDuration, emulateTransitionEnd } from './util/transition.js';
 
 // CAROUSEL DEFINITION
 // ===================
@@ -239,7 +239,7 @@ export default function Carousel (element,options) {
     timer = null;
     setActivePage( next );
 
-    if ( supportTransitions && hasClass(element,'slide') ) {
+    if ( getElementTransitionDuration(slides[next]) && hasClass(element,'slide') ) {
 
       addClass(slides[next],`carousel-item-${orientation}`);
       slides[next].offsetWidth;

@@ -43,7 +43,10 @@ function setNavbarOpacityOnLeave(){
 	},0)
 }
 
-document.addEventListener('DOMContentLoaded', setNavbarOpacity, false);
+document.addEventListener('DOMContentLoaded', function setNavbarOpacityOnLoad(e){
+	setNavbarOpacity(e);
+	document.removeEventListener('DOMContentLoaded', setNavbarOpacityOnLoad, false);
+}, false);
 window.addEventListener('scroll', setNavbarOpacity, false);
 navbar.addEventListener(mouseHover[0],setNavbarOpacityOnEnter,false);
 navbar.addEventListener(mouseHover[1],setNavbarOpacityOnLeave,false);

@@ -40,7 +40,7 @@ export const supportPassive = (() => {
         result = true;
       }
     });
-    one(window, null, null, opts);
+    one(document, 'DOMContentLoaded', ()=>{}, opts);
   } catch (e) {}
 
   return result;

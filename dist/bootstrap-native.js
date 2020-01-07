@@ -61,7 +61,7 @@
           result = true;
         }
       });
-      one(window, null, null, opts);
+      one(document, 'DOMContentLoaded', function () {}, opts);
     } catch (e) {}
 
     return result;
@@ -81,7 +81,7 @@
   var supportTransitions = 'webkitTransition' in document.body.style || 'transition' in document.body.style;
   var transitionEndEvent = 'webkitTransition' in document.body.style ? 'webkitTransitionEnd' : 'transitionend';
   var transitionDuration = 'webkitTransition' in document.body.style ? 'webkitTransitionDuration' : 'transitionDuration';
-  function getTransitionDurationFromElement(element) {
+  function getElementTransitionDuration(element) {
     var duration = supportTransitions ? window.getComputedStyle(element)[transitionDuration] : 0;
     duration = parseFloat(duration);
     duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
@@ -89,7 +89,7 @@
   }
   function emulateTransitionEnd(element, handler) {
     var called = 0,
-        duration = getTransitionDurationFromElement(element);
+        duration = getElementTransitionDuration(element);
     duration ? one(element, transitionEndEvent, function (e) {
       !called && handler(e), called = 1;
     }) : setTimeout(function () {
@@ -469,7 +469,7 @@
       timer = null;
       setActivePage(next);
 
-      if (supportTransitions && hasClass(element, 'slide')) {
+      if (getElementTransitionDuration(slides[next]) && hasClass(element, 'slide')) {
         addClass(slides[next], "carousel-item-".concat(orientation));
         slides[next].offsetWidth;
         addClass(slides[next], "carousel-item-".concat(slideDirection));
@@ -1073,7 +1073,7 @@
 
       if (overlay && !currentOpen && !hasClass(overlay, 'show')) {
         overlay.offsetWidth;
-        overlayDelay = getTransitionDurationFromElement(overlay);
+        overlayDelay = getElementTransitionDuration(overlay);
         addClass(overlay, 'show');
       }
 
@@ -1814,7 +1814,7 @@
   supports.Tab = [Tab, '[data-toggle="tab"]'];
   supports.Toast = [Toast, '[data-dismiss="toast"]'];
   supports.Tooltip = [Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]'];
-  document.body ? initCallback() : on(document, 'DOMContentLoaded', initCallback);
+  document.body ? initCallback() : one(document, 'DOMContentLoaded', initCallback);
 
   var index_umd = {
     components: {

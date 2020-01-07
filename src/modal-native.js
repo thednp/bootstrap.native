@@ -6,7 +6,7 @@ import { setFocus } from './util/misc.js';
 import { hasClass, addClass, removeClass } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, passiveHandler } from './util/event.js';
 import { queryElement, getElementsByClassName } from './util/selector.js';
-import { emulateTransitionEnd, getTransitionDurationFromElement } from './util/transition.js';
+import { emulateTransitionEnd, getElementTransitionDuration } from './util/transition.js';
 
 // MODAL DEFINITION
 // ================
@@ -221,7 +221,7 @@ export default function Modal(element,options) { // element can be the modal/tri
 
     if ( overlay && !currentOpen && !hasClass(overlay,'show') ) {
       overlay.offsetWidth; // force reflow to enable trasition
-      overlayDelay = getTransitionDurationFromElement(overlay);
+      overlayDelay = getElementTransitionDuration(overlay);
       addClass(overlay, 'show');
     }
 
