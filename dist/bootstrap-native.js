@@ -74,16 +74,8 @@
     return [].slice.call(element.getElementsByClassName(classNAME));
   }
   function queryElement(selector, parent) {
-    var lookUp = parent ? parent : document,
-        element;
-
-    if (selector instanceof Element) {
-      return selector;
-    } else if ((element = lookUp.querySelector(selector)) instanceof Element) {
-      return element;
-    }
-
-    return false;
+    var lookUp = parent ? parent : document;
+    return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
   var supportTransitions = 'webkitTransition' in document.body.style || 'transition' in document.body.style;
@@ -235,18 +227,18 @@
       key === 32 && e.preventDefault();
     }
 
-    function focusHandler(e) {
-      addClass(e.target.closest('.btn'), 'focus');
-    }
+    function focusToggle(e) {
+      var action = e.type === 'focusin' ? addClass : removeClass;
 
-    function blurHandler(e) {
-      removeClass(e.target.closest('.btn'), 'focus');
+      if (e.target.tagName === 'INPUT') {
+        action(e.target.closest('.btn'), 'focus');
+      }
     }
 
     function toggleEvents(action) {
       action(element, 'click', toggle);
       action(element, 'keyup', keyHandler), action(element, 'keydown', preventScroll);
-      action(element, 'focusin', focusHandler), action(element, 'focusout', blurHandler);
+      action(element, 'focusin', focusToggle), action(element, 'focusout', focusToggle);
     }
 
     self.dispose = function () {
@@ -379,7 +371,7 @@
         return;
       }
 
-      self.vars.touchPosition.startX = parseInt(e.currentTouches[0].pageX);
+      self.vars.touchPosition.startX = e.changedTouches[0].pageX;
 
       if (element.contains(e.target)) {
         self.vars.isTouch = true;
@@ -393,9 +385,9 @@
         return;
       }
 
-      self.vars.touchPosition.currentX = parseInt(e.currentTouches[0].pageX);
+      self.vars.touchPosition.currentX = e.changedTouches[0].pageX;
 
-      if (e.type === 'touchmove' && e.currentTouches.length > 1) {
+      if (e.type === 'touchmove' && e.changedTouches.length > 1) {
         e.preventDefault();
         return false;
       }
@@ -406,7 +398,7 @@
         return;
       }
 
-      self.vars.touchPosition.endX = self.vars.touchPosition.currentX || parseInt(e.currentTouches[0].pageX);
+      self.vars.touchPosition.endX = self.vars.touchPosition.currentX || e.changedTouches[0].pageX;
 
       if (self.vars.isTouch) {
         if ((!element.contains(e.target) || !element.contains(e.relatedTarget)) && Math.abs(self.vars.touchPosition.startX - self.vars.touchPosition.endX) < 75) {
@@ -670,68 +662,6 @@
     element.Collapse = self;
   }
 
-  var name = "bootstrap.native";
-  var version = "3.0.0";
-  var description = "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.";
-  var main = "dist/bootstrap-native.js";
-  var scripts = {
-  	test: "echo \"Error: no test specified\" && exit 1",
-  	help: "rollup --help",
-  	build: "rollup --config build/rollup.config.js && npm run addHeader",
-  	addHeader: "node build/addHeader.js",
-  	watch: "rollup --config build/rollup.config.js -w"
-  };
-  var browserslist = [
-  	"last 2 versions",
-  	"not <= 1%",
-  	"not IE 10"
-  ];
-  var repository = {
-  	type: "git",
-  	url: "git+https://github.com/thednp/bootstrap.native.git"
-  };
-  var keywords = [
-  	"bootstrap.native",
-  	"bootstrap",
-  	"vanilla js",
-  	"native javascript",
-  	"vanilla javascript"
-  ];
-  var author = "dnp_theme";
-  var license = "MIT";
-  var bugs = {
-  	url: "https://github.com/thednp/bootstrap.native/issues"
-  };
-  var homepage = "https://thednp.github.io/bootstrap.native/";
-  var devDependencies = {
-  	"@babel/core": "^7.7.7",
-  	"@babel/preset-env": "^7.7.7",
-  	rollup: "^1.27.14",
-  	"@rollup/plugin-json": "^4.0.1",
-  	"rollup-plugin-babel": "^4.3.3",
-  	"rollup-plugin-babel-minify": "^9.1.1",
-  	"rollup-plugin-cleanup": "^3.1.1"
-  };
-  var dependencies = {
-  };
-  var pkg = {
-  	name: name,
-  	version: version,
-  	description: description,
-  	main: main,
-  	scripts: scripts,
-  	browserslist: browserslist,
-  	repository: repository,
-  	keywords: keywords,
-  	author: author,
-  	license: license,
-  	bugs: bugs,
-  	homepage: homepage,
-  	devDependencies: devDependencies,
-  	dependencies: dependencies
-  };
-
-  var Version = pkg.version;
   function setFocus(element) {
     element.focus ? element.focus() : element.setActive();
   }
@@ -1958,6 +1888,19 @@
     }
   };
 
+  componentsInit.Alert = [Alert, '[data-dismiss="alert"]'];
+  componentsInit.Button = [Button, '[data-toggle="buttons"]'];
+  componentsInit.Carousel = [Carousel, '[data-ride="carousel"]'];
+  componentsInit.Collapse = [Collapse, '[data-toggle="collapse"]'];
+  componentsInit.Dropdown = [Dropdown, '[data-toggle="dropdown"]'];
+  componentsInit.Modal = [Modal, '[data-toggle="modal"]'];
+  componentsInit.Popover = [Popover, '[data-toggle="popover"],[data-tip="popover"]'];
+  componentsInit.ScrollSpy = [ScrollSpy, '[data-spy="scroll"]'];
+  componentsInit.Tab = [Tab, '[data-toggle="tab"]'];
+  componentsInit.Toast = [Toast, '[data-dismiss="toast"]'];
+  componentsInit.Tooltip = [Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]'];
+  document.body ? initCallback() : one(document, 'DOMContentLoaded', initCallback);
+
   var Util = {
     addClass: addClass,
     removeClass: removeClass,
@@ -1977,18 +1920,7 @@
     getScroll: getScroll
   };
 
-  componentsInit.Alert = [Alert, '[data-dismiss="alert"]'];
-  componentsInit.Button = [Button, '[data-toggle="buttons"]'];
-  componentsInit.Carousel = [Carousel, '[data-ride="carousel"]'];
-  componentsInit.Collapse = [Collapse, '[data-toggle="collapse"]'];
-  componentsInit.Dropdown = [Dropdown, '[data-toggle="dropdown"]'];
-  componentsInit.Modal = [Modal, '[data-toggle="modal"]'];
-  componentsInit.Popover = [Popover, '[data-toggle="popover"],[data-tip="popover"]'];
-  componentsInit.ScrollSpy = [ScrollSpy, '[data-spy="scroll"]'];
-  componentsInit.Tab = [Tab, '[data-toggle="tab"]'];
-  componentsInit.Toast = [Toast, '[data-dismiss="toast"]'];
-  componentsInit.Tooltip = [Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]'];
-  document.body ? initCallback() : one(document, 'DOMContentLoaded', initCallback);
+  var version = "3.0.0";
 
   var index_umd = {
     components: {
@@ -2008,7 +1940,7 @@
     removeDataAPI: removeDataAPI,
     componentsInit: componentsInit,
     Util: Util,
-    Version: Version
+    Version: version
   };
 
   return index_umd;

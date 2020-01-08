@@ -130,7 +130,7 @@ export default function Carousel (element,options) {
   function touchDownHandler(e) {
     if ( self.vars.isTouch ) { return; } 
       
-    self.vars.touchPosition.startX = parseInt(e.currentTouches[0].pageX);
+    self.vars.touchPosition.startX = e.changedTouches[0].pageX;
 
     if ( element.contains(e.target) ) {
       self.vars.isTouch = true;
@@ -140,10 +140,10 @@ export default function Carousel (element,options) {
   function touchMoveHandler(e) {
     if ( !self.vars.isTouch ) { e.preventDefault(); return; }
 
-    self.vars.touchPosition.currentX = parseInt(e.currentTouches[0].pageX);
+    self.vars.touchPosition.currentX = e.changedTouches[0].pageX;
     
-    // cancel touch if more than one touches detected
-    if ( e.type === 'touchmove' && e.currentTouches.length > 1 ) {
+    // cancel touch if more than one changedTouches detected
+    if ( e.type === 'touchmove' && e.changedTouches.length > 1 ) {
       e.preventDefault();
       return false;
     }
@@ -151,7 +151,7 @@ export default function Carousel (element,options) {
   function touchEndHandler (e) {
     if ( !self.vars.isTouch || self.vars.isSliding ) { return }
     
-    self.vars.touchPosition.endX = self.vars.touchPosition.currentX || parseInt( e.currentTouches[0].pageX );
+    self.vars.touchPosition.endX = self.vars.touchPosition.currentX || e.changedTouches[0].pageX;
 
     if ( self.vars.isTouch ) {
       if ( (!element.contains(e.target) || !element.contains(e.relatedTarget) ) 

@@ -105,16 +105,16 @@ export default function Button(element) {
     const key = e.which || e.keyCode;
     key === 32 && e.preventDefault();
   }
-  function focusHandler(e) {
-    addClass(e.target.closest('.btn'),'focus');
-  }
-  function blurHandler(e) {
-    removeClass(e.target.closest('.btn'),'focus');
+  function focusToggle(e) {
+    const action = e.type === 'focusin' ? addClass : removeClass;
+    if (e.target.tagName === 'INPUT' ) {
+      action(e.target.closest('.btn'),'focus');
+    }
   }
   function toggleEvents(action) {
     action( element, 'click', toggle );
     action( element, 'keyup', keyHandler ), action( element, 'keydown', preventScroll );
-    action( element, 'focusin', focusHandler), action( element, 'focusout', blurHandler);
+    action( element, 'focusin', focusToggle), action( element, 'focusout', focusToggle);
   }
 
   // public method

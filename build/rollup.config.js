@@ -21,7 +21,7 @@ export default [
       json(),
       cleanup(),
       babel({
-        exclude: 'node_modules/**' // only transpile our source code
+        exclude: ['node_modules/**','*.json'] // only transpile our source code
       })
     ]
   },
@@ -37,7 +37,7 @@ export default [
     plugins: [
       json(),
       babel({
-        exclude: 'node_modules/**' // only transpile our source code
+        exclude: ['node_modules/**','*.json'] // only transpile our source code
       }),
       minify({
         comments: false
@@ -57,7 +57,7 @@ export default [
       json(),
       cleanup(),
       babel({
-        exclude: 'node_modules/**' // only transpile our source code
+        exclude: ['node_modules/**','*.json'] // only transpile our source code
       })
     ]
   },
@@ -72,7 +72,7 @@ export default [
     plugins: [
       json(),
       babel({
-        exclude: 'node_modules/**' // only transpile our source code
+        exclude: ['node_modules/**','*.json'] // only transpile our source code
       }),
       minify({
         comments: false
