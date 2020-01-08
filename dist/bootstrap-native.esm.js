@@ -68,8 +68,16 @@ function getElementsByClassName(element, classNAME) {
   return [].slice.call(element.getElementsByClassName(classNAME));
 }
 function queryElement(selector, parent) {
-  var lookUp = parent ? parent : document;
-  return selector instanceof Element ? selector : lookUp.querySelector(selector);
+  var lookUp = parent ? parent : document,
+      element;
+
+  if (selector instanceof Element) {
+    return selector;
+  } else if ((element = lookUp.querySelector(selector)) instanceof Element) {
+    return element;
+  }
+
+  return false;
 }
 
 var supportTransitions = 'webkitTransition' in document.body.style || 'transition' in document.body.style;
@@ -1412,76 +1420,83 @@ function ScrollSpy(element, options) {
   element.ScrollSpy && element.ScrollSpy.dispose();
   options = options || {};
   var self = this,
-      targetData = queryElement(element.getAttribute('data-target')),
+      targetData = element.getAttribute('data-target'),
       offsetData = element.getAttribute('data-offset'),
-      spyTarget = options.target && queryElement(options.target) || targetData,
-      links = spyTarget && spyTarget.getElementsByTagName('A'),
-      offset = parseInt(options.offset || offsetData) || 10,
-      scrollTarget = element.offsetHeight < element.scrollHeight ? element : window,
-      isWindow = scrollTarget === window;
-  var items = [],
-      targetItems = [],
-      scrollOffset;
+      spyTarget = queryElement(options.target || targetData),
+      scrollTarget = element.offsetHeight < element.scrollHeight ? element : window;
+  if (!spyTarget) return;
+  self.options = {};
+  self.options.target = spyTarget;
+  self.options.offset = parseInt(options.offset || offsetData) || 10;
+  self.vars = {};
+  self.vars.length = 0;
+  self.vars.items = [];
+  self.vars.targets = [];
+  self.vars.isWindow = scrollTarget === window;
 
-  for (var i = 0, il = links.length; i < il; i++) {
-    var href = links[i].getAttribute('href'),
-        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
+  function updateTargets() {
+    var links = spyTarget.getElementsByTagName('A');
 
-    if (targetItem) {
-      items.push(links[i]);
-      targetItems.push(targetItem);
+    if (self.vars.length !== links.length) {
+      self.vars.items = [];
+      self.vars.targets = [];
+
+      for (var i = 0, il = links.length; i < il; i++) {
+        var href = links[i].getAttribute('href'),
+            targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
+
+        if (targetItem) {
+          self.vars.items.push(links[i]);
+          self.vars.targets.push(targetItem);
+        }
+      }
+
+      self.vars.length = links.length;
     }
   }
 
-  self.options = {};
-  self.options.target = spyTarget;
-  self.options.offset = offset;
-
   function updateItem(index) {
-    var item = items[index],
-        targetItem = targetItems[index],
+    var item = self.vars.items[index],
+        targetItem = self.vars.targets[index],
         dropdown = item.parentNode.parentNode,
         dropdownLink = hasClass(dropdown, 'dropdown') && dropdown.getElementsByTagName('A')[0],
-        targetRect = isWindow && targetItem.getBoundingClientRect(),
+        targetRect = self.vars.isWindow && targetItem.getBoundingClientRect(),
         isActive = hasClass(item, 'active') || false,
-        topEdge = (isWindow ? targetRect.top + scrollOffset : targetItem.offsetTop) - self.options.offset,
-        bottomEdge = isWindow ? targetRect.bottom + scrollOffset - self.options.offset : targetItems[index + 1] ? targetItems[index + 1].offsetTop - self.options.offset : element.scrollHeight,
-        inside = scrollOffset >= topEdge && bottomEdge > scrollOffset;
+        topEdge = (self.vars.isWindow ? targetRect.top + self.vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
+        bottomEdge = self.vars.isWindow ? targetRect.bottom + self.vars.scrollOffset - self.options.offset : self.vars.targets[index + 1] ? self.vars.targets[index + 1].offsetTop - self.options.offset : element.scrollHeight,
+        inside = self.vars.scrollOffset >= topEdge && bottomEdge > self.vars.scrollOffset;
 
     if (!isActive && inside) {
-      if (!hasClass(item, 'active')) {
-        addClass(item, 'active');
+      addClass(item, 'active');
 
-        if (dropdownLink && !hasClass(dropdownLink, 'active')) {
-          addClass(dropdownLink, 'active');
-        }
-
-        dispatchCustomEvent.call(element, bootstrapCustomEvent('activate', 'scrollspy', items[index]));
+      if (dropdownLink && !hasClass(dropdownLink, 'active')) {
+        addClass(dropdownLink, 'active');
       }
-    } else if (!inside) {
-      if (hasClass(item, 'active')) {
-        removeClass(item, 'active');
 
-        if (dropdownLink && hasClass(dropdownLink, 'active') && !getElementsByClassName(item.parentNode, 'active').length) {
-          removeClass(dropdownLink, 'active');
-        }
+      dispatchCustomEvent.call(element, bootstrapCustomEvent('activate', 'scrollspy', self.vars.items[index]));
+    } else if (isActive && !inside) {
+      removeClass(item, 'active');
+
+      if (dropdownLink && hasClass(dropdownLink, 'active') && !item.parentNode.getElementsByClassName('active').length) {
+        removeClass(dropdownLink, 'active');
       }
     } else if (!inside && !isActive || isActive && inside) {
       return;
     }
   }
 
+  function updateItems() {
+    updateTargets();
+    self.vars.scrollOffset = self.vars.isWindow ? getScroll().y : element.scrollTop;
+
+    for (var i = 0, itl = self.vars.items.length; i < itl; i++) {
+      updateItem(i);
+    }
+  }
+
   function toggleEvents(action) {
     action(scrollTarget, 'scroll', self.refresh, passiveHandler);
     action(window, 'resize', self.refresh, passiveHandler);
-  }
-
-  function updateItems() {
-    scrollOffset = isWindow ? getScroll().y : element.scrollTop;
-
-    for (var _i = 0, itl = items.length; _i < itl; _i++) {
-      updateItem(_i);
-    }
   }
 
   self.refresh = function () {
@@ -1492,10 +1507,6 @@ function ScrollSpy(element, options) {
     toggleEvents(off);
     delete element.ScrollSpy;
   };
-
-  if (!self.options.target) {
-    return;
-  }
 
   if (!element.ScrollSpy) {
     toggleEvents(on);
