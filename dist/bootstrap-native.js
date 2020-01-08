@@ -149,23 +149,21 @@
     element = queryElement(element);
     element.Button && element.Button.dispose();
     var self = this,
-        changeCustomEvent = bootstrapCustomEvent('change', 'button');
+        changeCustomEvent = bootstrapCustomEvent('change', 'button'),
+        labels = element.getElementsByClassName('btn');
+    if (!labels.length) return;
 
     function activateItems() {
-      var labelsToACtivate = getElementsByClassName(element, 'btn'),
-          lbll = labelsToACtivate.length;
-
-      for (var i = 0; i < lbll; i++) {
-        !hasClass(labelsToACtivate[i], 'active') && queryElement('input:checked', labelsToACtivate[i]) && addClass(labelsToACtivate[i], 'active');
-        hasClass(labelsToACtivate[i], 'active') && !queryElement('input:checked', labelsToACtivate[i]) && removeClass(labelsToACtivate[i], 'active');
+      for (var i = 0, lbll = self.buttons.length; i < lbll; i++) {
+        !hasClass(self.buttons[i], 'active') && queryElement('input:checked', self.buttons[i]) && addClass(self.buttons[i], 'active');
+        hasClass(self.buttons[i], 'active') && !queryElement('input:checked', self.buttons[i]) && removeClass(self.buttons[i], 'active');
       }
     }
 
     function toggle(e) {
       var label = e.target.tagName === 'LABEL' ? e.target : e.target.closest('LABEL') ? e.target.closest('LABEL') : null;
       if (!label) return;
-      var labels = getElementsByClassName(label.parentNode, 'btn'),
-          input = label.getElementsByTagName('INPUT')[0];
+      var input = label.getElementsByTagName('INPUT')[0];
       if (!input) return;
       dispatchCustomEvent.call(input, changeCustomEvent);
       dispatchCustomEvent.call(element, changeCustomEvent);
@@ -200,8 +198,8 @@
           input.checked = true;
           element.toggled = true;
 
-          for (var i = 0, ll = labels.length; i < ll; i++) {
-            var otherLabel = labels[i],
+          for (var i = 0, ll = self.buttons.length; i < ll; i++) {
+            var otherLabel = self.buttons[i],
                 otherInput = otherLabel.getElementsByTagName('INPUT')[0];
 
             if (otherLabel !== label && hasClass(otherLabel, 'active')) {
@@ -230,22 +228,17 @@
     }
 
     function focusHandler(e) {
-      addClass(e.target.parentNode, 'focus');
+      addClass(e.target.closest('.btn'), 'focus');
     }
 
     function blurHandler(e) {
-      removeClass(e.target.parentNode, 'focus');
+      removeClass(e.target.closest('.btn'), 'focus');
     }
 
     function toggleEvents(action) {
       action(element, 'click', toggle);
       action(element, 'keyup', keyHandler), action(element, 'keydown', preventScroll);
-      var allBtns = getElementsByClassName(element, 'btn');
-
-      for (var i = 0; i < allBtns.length; i++) {
-        var input = allBtns[i].getElementsByTagName('INPUT')[0];
-        action(input, 'focus', focusHandler), action(input, 'blur', blurHandler);
-      }
+      action(element, 'focusin', focusHandler), action(element, 'focusout', blurHandler);
     }
 
     self.dispose = function () {
@@ -258,9 +251,10 @@
     }
 
     element.toggled = false;
-    activateItems();
     self.element = element;
+    self.buttons = labels;
     element.Button = self;
+    activateItems();
   }
 
   function Carousel(element, options) {

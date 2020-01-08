@@ -4,7 +4,7 @@
 
 import { hasClass, addClass, removeClass  } from './util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from './util/event.js';
-import { queryElement, getElementsByClassName } from './util/selector.js';
+import { queryElement } from './util/selector.js';
 
 // BUTTON DEFINITION
 // =================
@@ -19,31 +19,34 @@ export default function Button(element) {
 
   // bind & changeEvent
   const self = this,
-    changeCustomEvent = bootstrapCustomEvent('change', 'button');
+    changeCustomEvent = bootstrapCustomEvent('change', 'button'),
+    labels = element.getElementsByClassName('btn');
+  
+  // invalidate
+  if (!labels.length) return;
 
   // private methods
   function activateItems() {
-    const labelsToACtivate = getElementsByClassName(element, 'btn'),
-          lbll = labelsToACtivate.length;
-    for (let i=0; i<lbll; i++) {
-      !hasClass(labelsToACtivate[i],'active') 
-        && queryElement('input:checked',labelsToACtivate[i])
-        && addClass(labelsToACtivate[i],'active');
-      hasClass(labelsToACtivate[i],'active') 
-        && !queryElement('input:checked',labelsToACtivate[i])
-        && removeClass(labelsToACtivate[i],'active');
+    for (let i=0,lbll = self.buttons.length; i<lbll; i++) {
+      !hasClass(self.buttons[i],'active') 
+        && queryElement('input:checked',self.buttons[i])
+        && addClass(self.buttons[i],'active');
+      hasClass(self.buttons[i],'active') 
+        && !queryElement('input:checked',self.buttons[i])
+        && removeClass(self.buttons[i],'active');
     }
   }
   function toggle(e) {
     const label = e.target.tagName === 'LABEL' ? e.target : e.target.closest('LABEL') ? e.target.closest('LABEL') : null; // the .btn label
-    
-    if ( !label ) return; // react if a label or its immediate child is clicked
 
-    const // all the button group buttons
-      labels = getElementsByClassName(label.parentNode,'btn'),
-      input = label.getElementsByTagName('INPUT')[0];
+    // invalidate if no label
+    if ( !label ) return; 
 
-    if ( !input ) return; // return if no input found
+    // current input
+    const input = label.getElementsByTagName('INPUT')[0];
+
+    // invalidate if no input
+    if ( !input ) return; 
 
     dispatchCustomEvent.call(input, changeCustomEvent); // trigger the change for the input
     dispatchCustomEvent.call(element, changeCustomEvent); // trigger the change for the btn-group
@@ -79,8 +82,8 @@ export default function Button(element) {
         input.checked = true;
 
         element.toggled = true;
-        for (let i = 0, ll = labels.length; i<ll; i++) {
-          const otherLabel = labels[i], otherInput = otherLabel.getElementsByTagName('INPUT')[0];
+        for (let i = 0, ll = self.buttons.length; i<ll; i++) {
+          const otherLabel = self.buttons[i], otherInput = otherLabel.getElementsByTagName('INPUT')[0];
           if ( otherLabel !== label && hasClass(otherLabel,'active') )  {
             dispatchCustomEvent.call(otherInput, changeCustomEvent); // trigger the change
             removeClass(otherLabel,'active');
@@ -103,20 +106,15 @@ export default function Button(element) {
     key === 32 && e.preventDefault();
   }
   function focusHandler(e) {
-    addClass(e.target.parentNode,'focus');
+    addClass(e.target.closest('.btn'),'focus');
   }
   function blurHandler(e) {
-    removeClass(e.target.parentNode,'focus');
+    removeClass(e.target.closest('.btn'),'focus');
   }
   function toggleEvents(action) {
     action( element, 'click', toggle );
     action( element, 'keyup', keyHandler ), action( element, 'keydown', preventScroll );
-
-    const allBtns = getElementsByClassName(element, 'btn');
-    for (let i=0; i<allBtns.length; i++) {
-      const input = allBtns[i].getElementsByTagName('INPUT')[0];
-      action( input, 'focus', focusHandler), action( input, 'blur', blurHandler);
-    }
+    action( element, 'focusin', focusHandler), action( element, 'focusout', blurHandler);
   }
 
   // public method
@@ -134,12 +132,14 @@ export default function Button(element) {
   // set initial toggled state
   // toggled makes sure to prevent triggering twice the change.bs.button events
   element.toggled = false;  
+  
+  // associate target with init object
+  self.element = element;
+  self.buttons = labels;
+  element.Button = self;
 
   // activate items on load
   activateItems();
 
-  // associate target with init object
-  self.element = element;
-  element.Button = self;
 }
 
