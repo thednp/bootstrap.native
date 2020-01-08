@@ -9,11 +9,11 @@ import ScrollSpy from './scrollspy-native.js'
 import Tab from './tab-native.js'
 import Toast from './toast-native.js'
 import Tooltip from './tooltip-native.js'
+import './util/init.js'
 import {initCallback,removeDataAPI} from './util/callbacks.js'
 import {componentsInit} from './util/globals.js'
 import {Util} from './util/util.js'
-import {Version} from './util/misc.js'
-import './util/init.js'
+import {version as Version} from './../package.json'
 
 const components = {
   Alert,
