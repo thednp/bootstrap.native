@@ -278,7 +278,7 @@
         slides = element.getElementsByClassName('carousel-item'),
         leftArrow = element.getElementsByClassName('carousel-control-prev')[0],
         rightArrow = element.getElementsByClassName('carousel-control-next')[0],
-        indicator = queryElement(".carousel-indicators", element),
+        indicator = queryElement('.carousel-indicators', element),
         indicators = indicator && indicator.getElementsByTagName("LI") || [];
 
     if (slides.length < 2) {
@@ -294,64 +294,64 @@
     function pauseHandler() {
       if (self.options.interval !== false && !hasClass(element, 'paused')) {
         addClass(element, 'paused');
-        !element.isSliding && (clearInterval(element.timer), element.timer = null);
+        !self.vars.isSliding && (clearInterval(self.vars.timer), self.vars.timer = null);
       }
     }
 
     function resumeHandler() {
       if (self.options.interval !== false && hasClass(element, 'paused')) {
         removeClass(element, 'paused');
-        !element.isSliding && (clearInterval(element.timer), element.timer = null);
-        !element.isSliding && self.cycle();
+        !self.vars.isSliding && (clearInterval(self.vars.timer), self.vars.timer = null);
+        !self.vars.isSliding && self.cycle();
       }
     }
 
     function indicatorHandler(e) {
       e.preventDefault();
-      if (element.isSliding) return;
+      if (self.vars.isSliding) return;
       var eventTarget = e.target;
 
       if (eventTarget && !hasClass(eventTarget, 'active') && eventTarget.getAttribute('data-slide-to')) {
-        element.index = parseInt(eventTarget.getAttribute('data-slide-to'), 10);
+        self.vars.index = parseInt(eventTarget.getAttribute('data-slide-to'), 10);
       } else {
         return false;
       }
 
-      self.slideTo(element.index);
+      self.slideTo(self.vars.index);
     }
 
     function controlsHandler(e) {
       e.preventDefault();
-      if (element.isSliding) return;
+      if (self.vars.isSliding) return;
       var eventTarget = e.currentTarget || e.srcElement;
 
       if (eventTarget === rightArrow) {
-        element.index++;
+        self.vars.index++;
       } else if (eventTarget === leftArrow) {
-        element.index--;
+        self.vars.index--;
       }
 
-      self.slideTo(element.index);
+      self.slideTo(self.vars.index);
     }
 
     function keyHandler(_ref) {
       var which = _ref.which;
-      if (element.isSliding) return;
+      if (self.vars.isSliding) return;
 
       switch (which) {
         case 39:
-          element.index++;
+          self.vars.index++;
           break;
 
         case 37:
-          element.index--;
+          self.vars.index--;
           break;
 
         default:
           return;
       }
 
-      self.slideTo(element.index);
+      self.slideTo(self.vars.index);
     }
 
     function toggleEvents(action) {
@@ -375,25 +375,25 @@
     }
 
     function touchDownHandler(e) {
-      if (element.isTouch) {
+      if (self.vars.isTouch) {
         return;
       }
 
-      element.touchPosition.startX = parseInt(e.currentTouches[0].pageX);
+      self.vars.touchPosition.startX = parseInt(e.currentTouches[0].pageX);
 
       if (element.contains(e.target)) {
-        element.isTouch = true;
+        self.vars.isTouch = true;
         toggleTouchEvents(on);
       }
     }
 
     function touchMoveHandler(e) {
-      if (!element.isTouch) {
+      if (!self.vars.isTouch) {
         e.preventDefault();
         return;
       }
 
-      element.touchPosition.currentX = parseInt(e.currentTouches[0].pageX);
+      self.vars.touchPosition.currentX = parseInt(e.currentTouches[0].pageX);
 
       if (e.type === 'touchmove' && e.currentTouches.length > 1) {
         e.preventDefault();
@@ -402,24 +402,24 @@
     }
 
     function touchEndHandler(e) {
-      if (!element.isTouch || element.isSliding) {
+      if (!self.vars.isTouch || self.vars.isSliding) {
         return;
       }
 
-      element.touchPosition.endX = element.touchPosition.currentX || parseInt(e.currentTouches[0].pageX);
+      self.vars.touchPosition.endX = self.vars.touchPosition.currentX || parseInt(e.currentTouches[0].pageX);
 
-      if (element.isTouch) {
-        if ((!element.contains(e.target) || !element.contains(e.relatedTarget)) && Math.abs(element.touchPosition.startX - element.touchPosition.endX) < 75) {
+      if (self.vars.isTouch) {
+        if ((!element.contains(e.target) || !element.contains(e.relatedTarget)) && Math.abs(self.vars.touchPosition.startX - self.vars.touchPosition.endX) < 75) {
           return false;
         } else {
-          if (element.touchPosition.currentX < element.touchPosition.startX) {
-            element.index++;
-          } else if (element.touchPosition.currentX > element.touchPosition.startX) {
-            element.index--;
+          if (self.vars.touchPosition.currentX < self.vars.touchPosition.startX) {
+            self.vars.index++;
+          } else if (self.vars.touchPosition.currentX > self.vars.touchPosition.startX) {
+            self.vars.index--;
           }
 
-          element.isTouch = false;
-          self.slideTo(element.index);
+          self.vars.isTouch = false;
+          self.slideTo(self.vars.index);
         }
 
         toggleTouchEvents(off);
@@ -440,28 +440,35 @@
       if (indicators[pageIndex]) addClass(indicators[pageIndex], 'active');
     }
 
+    function disposeAction() {
+      clearInterval(self.vars.timer);
+      toggleEvents(off);
+      delete element.Carousel;
+      element = null;
+    }
+
     self.cycle = function () {
-      if (element.timer) {
-        clearInterval(element.timer);
-        element.timer = null;
+      if (self.vars.timer) {
+        clearInterval(self.vars.timer);
+        self.vars.timer = null;
       }
 
-      element.timer = setInterval(function () {
-        isElementInScrollRange() && (element.index++, self.slideTo(element.index));
+      self.vars.timer = setInterval(function () {
+        isElementInScrollRange() && (self.vars.index++, self.slideTo(self.vars.index));
       }, self.options.interval);
     };
 
     self.slideTo = function (next) {
-      if (element.isSliding) return;
+      if (self.vars.isSliding) return;
       var activeItem = self.getActiveIndex(),
           orientation;
 
       if (activeItem === next) {
         return;
       } else if (activeItem < next || activeItem === 0 && next === slides.length - 1) {
-        element.direction = 'left';
+        self.vars.direction = 'left';
       } else if (activeItem > next || activeItem === slides.length - 1 && next === 0) {
-        element.direction = 'right';
+        self.vars.direction = 'right';
       }
 
       if (next < 0) {
@@ -470,31 +477,31 @@
         next = 0;
       }
 
-      element.index = next;
-      orientation = element.direction === 'left' ? 'next' : 'prev';
+      self.vars.index = next;
+      orientation = self.vars.direction === 'left' ? 'next' : 'prev';
       slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', slides[next]);
       slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', slides[next]);
       dispatchCustomEvent.call(element, slideCustomEvent);
       if (slideCustomEvent.defaultPrevented) return;
-      element.isSliding = true;
-      clearInterval(element.timer);
-      element.timer = null;
+      self.vars.isSliding = true;
+      clearInterval(self.vars.timer);
+      self.vars.timer = null;
       setActivePage(next);
 
       if (getElementTransitionDuration(slides[next]) && hasClass(element, 'slide')) {
         addClass(slides[next], "carousel-item-".concat(orientation));
         slides[next].offsetWidth;
-        addClass(slides[next], "carousel-item-".concat(element.direction));
-        addClass(slides[activeItem], "carousel-item-".concat(element.direction));
+        addClass(slides[next], "carousel-item-".concat(self.vars.direction));
+        addClass(slides[activeItem], "carousel-item-".concat(self.vars.direction));
         emulateTransitionEnd(slides[next], function (e) {
           var timeout = e && e.target !== slides[next] ? e.elapsedTime * 1000 + 100 : 20;
-          element.isSliding && setTimeout(function () {
-            element.isSliding = false;
+          self.vars.isSliding && setTimeout(function () {
+            self.vars.isSliding = false;
             addClass(slides[next], 'active');
             removeClass(slides[activeItem], 'active');
             removeClass(slides[next], "carousel-item-".concat(orientation));
-            removeClass(slides[next], "carousel-item-".concat(element.direction));
-            removeClass(slides[activeItem], "carousel-item-".concat(element.direction));
+            removeClass(slides[next], "carousel-item-".concat(self.vars.direction));
+            removeClass(slides[activeItem], "carousel-item-".concat(self.vars.direction));
             dispatchCustomEvent.call(element, slidCustomEvent);
 
             if (!document.hidden && self.options.interval && !hasClass(element, 'paused')) {
@@ -507,7 +514,7 @@
         slides[next].offsetWidth;
         removeClass(slides[activeItem], 'active');
         setTimeout(function () {
-          element.isSliding = false;
+          self.vars.isSliding = false;
 
           if (self.options.interval && !hasClass(element, 'paused')) {
             self.cycle();
@@ -523,17 +530,16 @@
     };
 
     self.dispose = function () {
-      toggleEvents(off);
-      clearInterval(element.timer);
-      delete element.Carousel;
+      self.vars.isSliding ? setTimeout(disposeAction, getElementTransitionDuration(slides[self.vars.index]) + 50) : disposeAction();
     };
 
-    element.direction = 'left';
-    element.index = 0;
-    element.timer = null;
-    element.isSliding = false;
-    element.isTouch = false;
-    element.touchPosition = {
+    self.vars = {};
+    self.vars.direction = 'left';
+    self.vars.index = 0;
+    self.vars.timer = null;
+    self.vars.isSliding = false;
+    self.vars.isTouch = false;
+    self.vars.touchPosition = {
       startX: 0,
       currentX: 0,
       endX: 0
