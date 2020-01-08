@@ -4,8 +4,8 @@
 
   // document | window | element + corrections
   var 
-    IE_DOCUMENT = this.Document || this.HTMLDocument, // IE8
-    SAFARI_WINDOW =  this.constructor || this.Window || Window; // old Safari
+    _DOCUMENT = this.Document || this.HTMLDocument, // IE8
+    _WINDOW =  this.constructor || this.Window || Window; // old Safari
 
   // Element
   if (!window.HTMLElement) { window.HTMLElement = window.Element; }
@@ -39,10 +39,10 @@
     };
   }
 
-  // Element.prototype.classList by thednp
+  // Element.prototype.classList by thednp, inspired by Remy Sharp
   if( !('classList' in Element.prototype) ) {
     var ClassLIST = function(elem){
-      var classArr = (elem.getAttribute('class')||'').replace(/^\s+|\s+$/g,'').split(/\s+/) || [],
+      var classArr = (elem.getAttribute('class')||'').trim().split(/\s+/) || [],
           
           // methods
           hasClass = this.contains = function(classNAME){
@@ -68,9 +68,27 @@
     Object.defineProperty(Element.prototype, 'classList', { get: function () { return new ClassLIST(this); } });
   }
 
+  // Element.prototype.closest 
+  // https://github.com/idmadj/element-closest-polyfill/blob/master/index.js
+  if (!Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+  }
+
+  if (!Element.prototype.closest) {
+    Element.prototype.closest = function (s) {
+      var el = this;
+
+      do {
+        if (el.matches(s)) return el;
+        el = el.parentElement || el.parentNode;
+      } while (el !== null && el.nodeType === 1);
+      return null;
+    };
+  }  
+
   // Event
-  if (!window.Event||!SAFARI_WINDOW.prototype.Event) {
-    window.Event = SAFARI_WINDOW.prototype.Event = IE_DOCUMENT.prototype.Event = Element.prototype.Event = function(type, eventInitDict) {
+  if (!window.Event||!_WINDOW.prototype.Event) {
+    window.Event = _WINDOW.prototype.Event = _DOCUMENT.prototype.Event = Element.prototype.Event = function(type, eventInitDict) {
       if (!type) { throw new Error('Not enough arguments'); }
       var event, 
         bubblesValue = eventInitDict && eventInitDict.bubbles !== undefined ? eventInitDict.bubbles : false,
@@ -89,8 +107,8 @@
   }
 
   // CustomEvent
-  if (!window.CustomEvent || !SAFARI_WINDOW.prototype.CustomEvent) {
-    window.CustomEvent = SAFARI_WINDOW.prototype.CustomEvent = IE_DOCUMENT.prototype.CustomEvent = Element.prototype.CustomEvent = function(type, eventInitDict) {
+  if (!window.CustomEvent || !_WINDOW.prototype.CustomEvent) {
+    window.CustomEvent = _WINDOW.prototype.CustomEvent = _DOCUMENT.prototype.CustomEvent = Element.prototype.CustomEvent = function(type, eventInitDict) {
       if (!type) {
         throw Error('CustomEvent TypeError: An event name must be provided.');
       }
@@ -101,8 +119,8 @@
   }
 
   // addEventListener | removeEventListener
-  if (!window.addEventListener || !SAFARI_WINDOW.prototype.addEventListener) {
-    window.addEventListener = SAFARI_WINDOW.prototype.addEventListener = IE_DOCUMENT.prototype.addEventListener = Element.prototype.addEventListener = function() {
+  if (!window.addEventListener || !_WINDOW.prototype.addEventListener) {
+    window.addEventListener = _WINDOW.prototype.addEventListener = _DOCUMENT.prototype.addEventListener = Element.prototype.addEventListener = function() {
       var  element = this,
         type = arguments[0],
         listener = arguments[1];
@@ -163,7 +181,7 @@
       element._events.type.list.push(listener);
     };
 
-    window.removeEventListener = SAFARI_WINDOW.prototype.removeEventListener = IE_DOCUMENT.prototype.removeEventListener = Element.prototype.removeEventListener = function() {
+    window.removeEventListener = _WINDOW.prototype.removeEventListener = _DOCUMENT.prototype.removeEventListener = Element.prototype.removeEventListener = function() {
       var  element = this,
         type = arguments[0],
         listener = arguments[1],
@@ -187,8 +205,8 @@
   }
 
   // Event dispatcher
-  if (!window.dispatchEvent||!SAFARI_WINDOW.prototype.dispatchEvent||!IE_DOCUMENT.prototype.dispatchEvent||!Element.prototype.dispatchEvent) {
-    window.dispatchEvent = SAFARI_WINDOW.prototype.dispatchEvent = IE_DOCUMENT.prototype.dispatchEvent = Element.prototype.dispatchEvent = function (event) {
+  if (!window.dispatchEvent||!_WINDOW.prototype.dispatchEvent||!_DOCUMENT.prototype.dispatchEvent||!Element.prototype.dispatchEvent) {
+    window.dispatchEvent = _WINDOW.prototype.dispatchEvent = _DOCUMENT.prototype.dispatchEvent = Element.prototype.dispatchEvent = function (event) {
       if (!arguments.length) {
         throw new Error('Not enough arguments');
       }
