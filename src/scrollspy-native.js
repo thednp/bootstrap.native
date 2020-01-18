@@ -72,6 +72,8 @@ export default function ScrollSpy(element,options) {
       targetItem = self.vars.targets[index],
       dropdown = item.parentNode.parentNode,
       dropdownLink = hasClass(dropdown,'dropdown') && dropdown.getElementsByTagName('A')[0],
+      parentNav = item.closest('.nav-item'),
+      navLink = parentNav && parentNav.contains(item) && parentNav.getElementsByTagName('A')[0],
       targetRect = self.vars.isWindow && targetItem.getBoundingClientRect(),
       isActive = hasClass(item,'active') || false,
       topEdge = (self.vars.isWindow ? targetRect.top + self.vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
@@ -83,11 +85,17 @@ export default function ScrollSpy(element,options) {
       if (dropdownLink && !hasClass(dropdownLink,'active') ) {
         addClass(dropdownLink,'active');
       }
+      if (navLink && !hasClass(navLink,'active') ) {
+        addClass(navLink,'active');
+      }
       dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', self.vars.items[index]));
     } else if ( isActive && !inside ) {
       removeClass(item,'active');
       if (dropdownLink && hasClass(dropdownLink,'active') && !item.parentNode.getElementsByClassName('active').length ) {
         removeClass(dropdownLink,'active');
+      }
+      if (navLink && hasClass(navLink,'active') && !item.parentNode.getElementsByClassName('active').length ) {
+        removeClass(navLink,'active');
       }
     } else if ( !inside && !isActive || isActive && inside ) {
       return;

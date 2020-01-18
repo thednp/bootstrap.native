@@ -432,13 +432,6 @@
       if (indicators[pageIndex]) addClass(indicators[pageIndex], 'active');
     }
 
-    function disposeAction() {
-      clearInterval(self.vars.timer);
-      toggleEvents(off);
-      delete element.Carousel;
-      element = null;
-    }
-
     self.cycle = function () {
       if (self.vars.timer) {
         clearInterval(self.vars.timer);
@@ -522,7 +515,17 @@
     };
 
     self.dispose = function () {
-      self.vars.isSliding ? setTimeout(disposeAction, getElementTransitionDuration(slides[self.vars.index]) + 50) : disposeAction();
+      var itemClasses = ['left', 'right', 'prev', 'next'];
+
+      for (var s = 0, sl = self.slides.length; s < sl; s++) {
+        for (var c = 0, cl = itemClasses.length; c < cl; c++) {
+          removeClass(self.slides[s], "carousel-item-".concat(itemClasses[c]));
+        }
+      }
+
+      clearInterval(self.vars.timer);
+      toggleEvents(off);
+      delete element.Carousel;
     };
 
     self.vars = {};
@@ -551,6 +554,7 @@
     }
 
     self.element = element;
+    self.slides = slides;
     element.Carousel = self;
   }
 
@@ -1288,6 +1292,7 @@
     function dismissHandlerToggle(action) {
       if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
         !self.options.dismissible && action(element, 'blur', self.hide);
+        !self.options.dismissible && action(document, touchEvents[0], self.hide, passiveHandler);
       }
 
       self.options.dismissible && action(document, 'click', dismissibleHandler);
@@ -1402,6 +1407,8 @@
           targetItem = self.vars.targets[index],
           dropdown = item.parentNode.parentNode,
           dropdownLink = hasClass(dropdown, 'dropdown') && dropdown.getElementsByTagName('A')[0],
+          parentNav = item.closest('.nav-item'),
+          navLink = parentNav && parentNav.contains(item) && parentNav.getElementsByTagName('A')[0],
           targetRect = self.vars.isWindow && targetItem.getBoundingClientRect(),
           isActive = hasClass(item, 'active') || false,
           topEdge = (self.vars.isWindow ? targetRect.top + self.vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
@@ -1415,12 +1422,20 @@
           addClass(dropdownLink, 'active');
         }
 
+        if (navLink && !hasClass(navLink, 'active')) {
+          addClass(navLink, 'active');
+        }
+
         dispatchCustomEvent.call(element, bootstrapCustomEvent('activate', 'scrollspy', self.vars.items[index]));
       } else if (isActive && !inside) {
         removeClass(item, 'active');
 
         if (dropdownLink && hasClass(dropdownLink, 'active') && !item.parentNode.getElementsByClassName('active').length) {
           removeClass(dropdownLink, 'active');
+        }
+
+        if (navLink && hasClass(navLink, 'active') && !item.parentNode.getElementsByClassName('active').length) {
+          removeClass(navLink, 'active');
         }
       } else if (!inside && !isActive || isActive && inside) {
         return;
@@ -1777,11 +1792,13 @@
     }
 
     function showAction() {
+      on(document, touchEvents[0], self.hide, passiveHandler);
       on(window, 'resize', self.hide, passiveHandler);
       dispatchCustomEvent.call(element, shownCustomEvent);
     }
 
     function hideAction() {
+      off(document, touchEvents[0], self.hide, passiveHandler);
       off(window, 'resize', self.hide, passiveHandler);
       removeToolTip();
       dispatchCustomEvent.call(element, hiddenCustomEvent);

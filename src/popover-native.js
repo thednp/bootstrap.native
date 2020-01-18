@@ -4,7 +4,7 @@
 
 import { styleTip } from './util/misc.js';
 import { hasClass, addClass, removeClass } from './util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, passiveHandler } from './util/event.js';
+import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, touchEvents, passiveHandler } from './util/event.js';
 import { queryElement } from './util/selector.js';
 import { emulateTransitionEnd } from './util/transition.js';
 
@@ -157,7 +157,7 @@ export default function Popover(element,options) {
   function toggleEvents(action) {
     if (self.options.trigger === 'hover') {
       action( element, mouseHover[0], self.show );
-      if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
+      if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); } // export const mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
     } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
       action( element, self.options.trigger, self.toggle );
     }
@@ -166,6 +166,7 @@ export default function Popover(element,options) {
   function dismissHandlerToggle(action) {
     if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
       !self.options.dismissible && action( element, 'blur', self.hide );
+      !self.options.dismissible && action( document, touchEvents[0], self.hide, passiveHandler );
     }
     self.options.dismissible && action( document, 'click', dismissibleHandler );     
     action( window, 'resize', self.hide, passiveHandler );

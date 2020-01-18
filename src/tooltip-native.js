@@ -4,7 +4,7 @@
 
 import { styleTip } from './util/misc.js';
 import { hasClass, addClass, removeClass } from './util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, passiveHandler } from './util/event.js';
+import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, touchEvents, passiveHandler } from './util/event.js';
 import { queryElement } from './util/selector.js';
 import { emulateTransitionEnd } from './util/transition.js';
 
@@ -122,10 +122,12 @@ export default function Tooltip(element,options) {
   }
   // triggers
   function showAction() {
+    on( document, touchEvents[0], self.hide, passiveHandler );
     on( window, 'resize', self.hide, passiveHandler );
     dispatchCustomEvent.call(element, shownCustomEvent);
   }
   function hideAction() {
+    off( document, touchEvents[0], self.hide, passiveHandler );
     off( window, 'resize', self.hide, passiveHandler );
     removeToolTip();
     dispatchCustomEvent.call(element, hiddenCustomEvent);

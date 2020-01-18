@@ -180,13 +180,6 @@ export default function Carousel (element,options) {
     }
     if (indicators[pageIndex]) addClass(indicators[pageIndex], 'active');
   }
-  function disposeAction(){
-    clearInterval(self.vars.timer);
-    toggleEvents(off);
-    delete element.Carousel;
-    // self = {};
-    element = null;
-  }
 
   // public methods
   self.cycle = () => {
@@ -279,7 +272,19 @@ export default function Carousel (element,options) {
   self.getActiveIndex = () => [].slice.call(slides).indexOf(element.getElementsByClassName('carousel-item active')[0]) || 0
 
   self.dispose = () => {
-    self.vars.isSliding ? setTimeout(disposeAction,getElementTransitionDuration(slides[self.vars.index])+50) : disposeAction()
+    let itemClasses = ['left','right','prev','next']
+
+    for (let s=0, sl=self.slides.length; s<sl;s++){
+      for (let c=0, cl=itemClasses.length; c<cl; c++){
+        removeClass(self.slides[s],`carousel-item-${itemClasses[c]}`)
+      }
+    }
+
+    clearInterval(self.vars.timer);
+    toggleEvents(off);
+    delete element.Carousel;
+    // self = {};
+    // element = null;
   }
 
   // set initial state
@@ -311,6 +316,7 @@ export default function Carousel (element,options) {
 
   // associate init object to target
   self.element = element;
+  self.slides = slides;
   element.Carousel = self;
 
 }
