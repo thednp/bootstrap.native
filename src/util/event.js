@@ -27,7 +27,7 @@ export function bootstrapCustomEvent (eventName, componentName, related) {
   return OriginalCustomEvent;
 }
 export function dispatchCustomEvent (customEvent){
-  this.dispatchEvent(customEvent);
+  this && this.dispatchEvent(customEvent);
 }
 
 // determine support for passive events

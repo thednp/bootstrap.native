@@ -248,8 +248,8 @@ export default function Carousel (element,options) {
           removeClass(slides[activeItem],`carousel-item-${self.vars.direction}`);
 
           dispatchCustomEvent.call(element, slidCustomEvent);
-
-          if ( !document.hidden && self.options.interval && !hasClass(element,'paused') ) {
+          // check for element, might have been disposed
+          if ( !document.hidden && self.options.interval && element && !hasClass(element,'paused') ) {
             self.cycle();
           }
         }, timeout);
@@ -261,7 +261,8 @@ export default function Carousel (element,options) {
       removeClass(slides[activeItem],'active');
       setTimeout(() => {
         self.vars.isSliding = false;
-        if ( self.options.interval && !hasClass(element,'paused') ) {
+        // check for element, might have been disposed
+        if ( self.options.interval && element && !hasClass(element,'paused') ) {
           self.cycle();
         }
         dispatchCustomEvent.call(element, slidCustomEvent);
@@ -274,17 +275,18 @@ export default function Carousel (element,options) {
   self.dispose = () => {
     let itemClasses = ['left','right','prev','next']
 
-    for (let s=0, sl=self.slides.length; s<sl;s++){
+    clearInterval(self.vars.timer);
+    self.vars.timer = null;
+
+    for (let s=0, sl=slides.length; s<sl;s++){
       for (let c=0, cl=itemClasses.length; c<cl; c++){
-        removeClass(self.slides[s],`carousel-item-${itemClasses[c]}`)
+        removeClass(slides[s],`carousel-item-${itemClasses[c]}`)
       }
     }
 
-    clearInterval(self.vars.timer);
     toggleEvents(off);
     delete element.Carousel;
-    // self = {};
-    // element = null;
+    element=null;
   }
 
   // set initial state
@@ -315,8 +317,6 @@ export default function Carousel (element,options) {
   if ( self.options.interval ){ self.cycle(); }
 
   // associate init object to target
-  self.element = element;
-  self.slides = slides;
   element.Carousel = self;
 
 }

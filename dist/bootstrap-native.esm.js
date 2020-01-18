@@ -44,7 +44,7 @@ function bootstrapCustomEvent(eventName, componentName, related) {
   return OriginalCustomEvent;
 }
 function dispatchCustomEvent(customEvent) {
-  this.dispatchEvent(customEvent);
+  this && this.dispatchEvent(customEvent);
 }
 var supportPassive = function () {
   var result = false;
@@ -483,7 +483,7 @@ function Carousel(element, options) {
           removeClass(slides[activeItem], "carousel-item-".concat(self.vars.direction));
           dispatchCustomEvent.call(element, slidCustomEvent);
 
-          if (!document.hidden && self.options.interval && !hasClass(element, 'paused')) {
+          if (!document.hidden && self.options.interval && element && !hasClass(element, 'paused')) {
             self.cycle();
           }
         }, timeout);
@@ -495,7 +495,7 @@ function Carousel(element, options) {
       setTimeout(function () {
         self.vars.isSliding = false;
 
-        if (self.options.interval && !hasClass(element, 'paused')) {
+        if (self.options.interval && element && !hasClass(element, 'paused')) {
           self.cycle();
         }
 
@@ -510,16 +510,18 @@ function Carousel(element, options) {
 
   self.dispose = function () {
     var itemClasses = ['left', 'right', 'prev', 'next'];
+    clearInterval(self.vars.timer);
+    self.vars.timer = null;
 
-    for (var s = 0, sl = self.slides.length; s < sl; s++) {
+    for (var s = 0, sl = slides.length; s < sl; s++) {
       for (var c = 0, cl = itemClasses.length; c < cl; c++) {
-        removeClass(self.slides[s], "carousel-item-".concat(itemClasses[c]));
+        removeClass(slides[s], "carousel-item-".concat(itemClasses[c]));
       }
     }
 
-    clearInterval(self.vars.timer);
     toggleEvents(off);
     delete element.Carousel;
+    element = null;
   };
 
   self.vars = {};
@@ -547,8 +549,6 @@ function Carousel(element, options) {
     self.cycle();
   }
 
-  self.element = element;
-  self.slides = slides;
   element.Carousel = self;
 }
 
