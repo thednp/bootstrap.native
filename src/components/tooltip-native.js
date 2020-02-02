@@ -2,11 +2,11 @@
 /* Native JavaScript for Bootstrap 4 | Tooltip
 ---------------------------------------------- */
 
-import { styleTip } from './util/misc.js';
-import { hasClass, addClass, removeClass } from './util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, touchEvents, passiveHandler } from './util/event.js';
-import { queryElement } from './util/selector.js';
-import { emulateTransitionEnd } from './util/transition.js';
+import { styleTip } from '../util/misc.js';
+import { hasClass, addClass, removeClass } from '../util/class.js';
+import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, touchEvents, passiveHandler } from '../util/event.js';
+import { queryElement } from '../util/selector.js';
+import { emulateTransitionEnd } from '../util/transition.js';
 
 // TOOLTIP DEFINITION
 // ==================
@@ -120,14 +120,21 @@ export default function Tooltip(element,options) {
   function showTooltip() {
     !hasClass(tooltip,'show') && ( addClass(tooltip,'show') );
   }
+  function touchHandler(e){
+    if ( tooltip && tooltip.contains(e.target) || e.target === element || element.contains(e.target)) {
+      // smile
+    } else {
+      self.hide()
+    }
+  }
   // triggers
   function showAction() {
-    on( document, touchEvents[0], self.hide, passiveHandler );
+    on( document, touchEvents[0], touchHandler, passiveHandler );
     on( window, 'resize', self.hide, passiveHandler );
     dispatchCustomEvent.call(element, shownCustomEvent);
   }
   function hideAction() {
-    off( document, touchEvents[0], self.hide, passiveHandler );
+    off( document, touchEvents[0], touchHandler, passiveHandler );
     off( window, 'resize', self.hide, passiveHandler );
     removeToolTip();
     dispatchCustomEvent.call(element, hiddenCustomEvent);

@@ -425,11 +425,34 @@
     }
 
     function setActivePage(pageIndex) {
-      for (var i = 0, icl = indicators.length; i < icl; i++) {
-        removeClass(indicators[i], 'active');
-      }
+      [].slice.call(indicators).map(function (x) {
+        removeClass(x, 'active');
+      });
+      indicators[pageIndex] && addClass(indicators[pageIndex], 'active');
+    }
 
-      if (indicators[pageIndex]) addClass(indicators[pageIndex], 'active');
+    function transitionEndHandler(e) {
+      if (self.vars) {
+        var next = self.vars.index,
+            timeout = e && e.target !== slides[next] ? e.elapsedTime * 1000 + 100 : 20,
+            activeItem = self.getActiveIndex(),
+            orientation = self.vars.direction === 'left' ? 'next' : 'prev';
+        self.vars.isSliding && setTimeout(function () {
+          if (self.vars) {
+            self.vars.isSliding = false;
+            addClass(slides[next], 'active');
+            removeClass(slides[activeItem], 'active');
+            removeClass(slides[next], "carousel-item-".concat(orientation));
+            removeClass(slides[next], "carousel-item-".concat(self.vars.direction));
+            removeClass(slides[activeItem], "carousel-item-".concat(self.vars.direction));
+            dispatchCustomEvent.call(element, slidCustomEvent);
+
+            if (!document.hidden && self.options.interval && !hasClass(element, 'paused')) {
+              self.cycle();
+            }
+          }
+        }, timeout);
+      }
     }
 
     self.cycle = function () {
@@ -439,7 +462,8 @@
       }
 
       self.vars.timer = setInterval(function () {
-        isElementInScrollRange() && (self.vars.index++, self.slideTo(self.vars.index));
+        var idx = self.vars.index || self.getActiveIndex();
+        isElementInScrollRange() && (idx++, self.slideTo(idx));
       }, self.options.interval);
     };
 
@@ -462,12 +486,12 @@
         next = 0;
       }
 
-      self.vars.index = next;
       orientation = self.vars.direction === 'left' ? 'next' : 'prev';
       slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', slides[next]);
       slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', slides[next]);
       dispatchCustomEvent.call(element, slideCustomEvent);
       if (slideCustomEvent.defaultPrevented) return;
+      self.vars.index = next;
       self.vars.isSliding = true;
       clearInterval(self.vars.timer);
       self.vars.timer = null;
@@ -478,22 +502,7 @@
         slides[next].offsetWidth;
         addClass(slides[next], "carousel-item-".concat(self.vars.direction));
         addClass(slides[activeItem], "carousel-item-".concat(self.vars.direction));
-        emulateTransitionEnd(slides[next], function (e) {
-          var timeout = e && e.target !== slides[next] ? e.elapsedTime * 1000 + 100 : 20;
-          self.vars.isSliding && setTimeout(function () {
-            self.vars.isSliding = false;
-            addClass(slides[next], 'active');
-            removeClass(slides[activeItem], 'active');
-            removeClass(slides[next], "carousel-item-".concat(orientation));
-            removeClass(slides[next], "carousel-item-".concat(self.vars.direction));
-            removeClass(slides[activeItem], "carousel-item-".concat(self.vars.direction));
-            dispatchCustomEvent.call(element, slidCustomEvent);
-
-            if (!document.hidden && self.options.interval && element && !hasClass(element, 'paused')) {
-              self.cycle();
-            }
-          }, timeout);
-        });
+        emulateTransitionEnd(slides[next], transitionEndHandler);
       } else {
         addClass(slides[next], 'active');
         slides[next].offsetWidth;
@@ -516,18 +525,19 @@
 
     self.dispose = function () {
       var itemClasses = ['left', 'right', 'prev', 'next'];
-      clearInterval(self.vars.timer);
-      self.vars.timer = null;
-
-      for (var s = 0, sl = slides.length; s < sl; s++) {
-        for (var c = 0, cl = itemClasses.length; c < cl; c++) {
-          removeClass(slides[s], "carousel-item-".concat(itemClasses[c]));
+      [].slice.call(slides).map(function (slide, idx) {
+        if (hasClass(slide, 'active')) {
+          setActivePage(idx);
         }
-      }
 
+        itemClasses.map(function (cls) {
+          return removeClass(slide, "carousel-item-".concat(cls));
+        });
+      });
+      clearInterval(self.vars.timer);
       toggleEvents(off);
+      delete self.vars;
       delete element.Carousel;
-      element = null;
     };
 
     self.vars = {};
@@ -1289,10 +1299,16 @@
       }
     }
 
+    function touchHandler(e) {
+      if (popover && popover.contains(e.target) || e.target === element || element.contains(e.target)) ; else {
+        self.hide();
+      }
+    }
+
     function dismissHandlerToggle(action) {
       if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
         !self.options.dismissible && action(element, 'blur', self.hide);
-        !self.options.dismissible && action(document, touchEvents[0], self.hide, passiveHandler);
+        !self.options.dismissible && action(document, touchEvents[0], touchHandler, passiveHandler);
       }
 
       self.options.dismissible && action(document, 'click', dismissibleHandler);
@@ -1405,50 +1421,39 @@
     function updateItem(index) {
       var item = self.vars.items[index],
           targetItem = self.vars.targets[index],
-          dropdown = item.parentNode.parentNode,
-          dropdownLink = hasClass(dropdown, 'dropdown') && dropdown.getElementsByTagName('A')[0],
-          parentNav = item.closest('.nav-item'),
-          navLink = parentNav && parentNav.contains(item) && parentNav.getElementsByTagName('A')[0],
+          dropLink = hasClass(item, 'dropdown-item') && item.closest('.dropdown').getElementsByTagName('A')[0],
+          nextSibling = item.nextElementSibling,
           targetRect = self.vars.isWindow && targetItem.getBoundingClientRect(),
           isActive = hasClass(item, 'active') || false,
           topEdge = (self.vars.isWindow ? targetRect.top + self.vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
           bottomEdge = self.vars.isWindow ? targetRect.bottom + self.vars.scrollOffset - self.options.offset : self.vars.targets[index + 1] ? self.vars.targets[index + 1].offsetTop - self.options.offset : element.scrollHeight,
-          inside = self.vars.scrollOffset >= topEdge && bottomEdge > self.vars.scrollOffset;
+          inside = self.vars.scrollOffset >= topEdge && (bottomEdge > self.vars.scrollOffset || nextSibling && nextSibling.getElementsByClassName('active').length);
 
-      if (!isActive && inside) {
+      if (!inside && !isActive || isActive && inside) {
+        return;
+      } else if (!isActive && inside) {
         addClass(item, 'active');
 
-        if (dropdownLink && !hasClass(dropdownLink, 'active')) {
-          addClass(dropdownLink, 'active');
-        }
-
-        if (navLink && !hasClass(navLink, 'active')) {
-          addClass(navLink, 'active');
+        if (dropLink && !hasClass(dropLink, 'active')) {
+          addClass(dropLink, 'active');
         }
 
         dispatchCustomEvent.call(element, bootstrapCustomEvent('activate', 'scrollspy', self.vars.items[index]));
       } else if (isActive && !inside) {
         removeClass(item, 'active');
 
-        if (dropdownLink && hasClass(dropdownLink, 'active') && !item.parentNode.getElementsByClassName('active').length) {
-          removeClass(dropdownLink, 'active');
+        if (dropLink && hasClass(dropLink, 'active') && !item.parentNode.getElementsByClassName('active').length) {
+          removeClass(dropLink, 'active');
         }
-
-        if (navLink && hasClass(navLink, 'active') && !item.parentNode.getElementsByClassName('active').length) {
-          removeClass(navLink, 'active');
-        }
-      } else if (!inside && !isActive || isActive && inside) {
-        return;
       }
     }
 
     function updateItems() {
       updateTargets();
       self.vars.scrollOffset = self.vars.isWindow ? getScroll().y : element.scrollTop;
-
-      for (var i = 0, itl = self.vars.items.length; i < itl; i++) {
-        updateItem(i);
-      }
+      self.vars.items.map(function (l, idx) {
+        return updateItem(idx);
+      });
     }
 
     function toggleEvents(action) {
@@ -1791,14 +1796,20 @@
       !hasClass(tooltip, 'show') && addClass(tooltip, 'show');
     }
 
+    function touchHandler(e) {
+      if (tooltip && tooltip.contains(e.target) || e.target === element || element.contains(e.target)) ; else {
+        self.hide();
+      }
+    }
+
     function showAction() {
-      on(document, touchEvents[0], self.hide, passiveHandler);
+      on(document, touchEvents[0], touchHandler, passiveHandler);
       on(window, 'resize', self.hide, passiveHandler);
       dispatchCustomEvent.call(element, shownCustomEvent);
     }
 
     function hideAction() {
-      off(document, touchEvents[0], self.hide, passiveHandler);
+      off(document, touchEvents[0], touchHandler, passiveHandler);
       off(window, 'resize', self.hide, passiveHandler);
       removeToolTip();
       dispatchCustomEvent.call(element, hiddenCustomEvent);

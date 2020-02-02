@@ -2,9 +2,9 @@
 /* Native JavaScript for Bootstrap 4 | Button
 ---------------------------------------------*/
 
-import { hasClass, addClass, removeClass  } from './util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from './util/event.js';
-import { queryElement } from './util/selector.js';
+import { hasClass, addClass, removeClass  } from '../util/class.js';
+import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from '../util/event.js';
+import { queryElement } from '../util/selector.js';
 
 // BUTTON DEFINITION
 // =================

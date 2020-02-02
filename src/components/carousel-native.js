@@ -2,10 +2,10 @@
 /* Native JavaScript for Bootstrap 4 | Carousel
 ----------------------------------------------- */
 
-import { hasClass, addClass, removeClass } from './util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off, touchEvents, mouseHover, passiveHandler } from './util/event.js';
-import { queryElement } from './util/selector.js';
-import { getElementTransitionDuration, emulateTransitionEnd } from './util/transition.js';
+import { hasClass, addClass, removeClass } from '../util/class.js';
+import { bootstrapCustomEvent, dispatchCustomEvent, on, off, touchEvents, mouseHover, passiveHandler } from '../util/event.js';
+import { queryElement } from '../util/selector.js';
+import { getElementTransitionDuration, emulateTransitionEnd, transitionEndEvent } from '../util/transition.js';
 
 // CAROUSEL DEFINITION
 // ===================
@@ -175,10 +175,35 @@ export default function Carousel (element,options) {
     return rect.top <= viewportHeight && rect.bottom >= 0; // bottom && top
   }
   function setActivePage(pageIndex) { //indicators
-    for ( let i = 0, icl = indicators.length; i < icl; i++ ) {
-      removeClass(indicators[i],'active');
+    [].slice.call(indicators).map(x=>{removeClass(x,'active')})
+    indicators[pageIndex] && addClass(indicators[pageIndex], 'active');
+  }
+  function transitionEndHandler(e){
+    if (self.vars){
+      const next = self.vars.index,
+            timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20,
+            activeItem = self.getActiveIndex(),
+            orientation = self.vars.direction === 'left' ? 'next' : 'prev'
+      
+      self.vars.isSliding && setTimeout(() => {
+        if (self.vars){
+          self.vars.isSliding = false;
+    
+          addClass(slides[next],'active');
+          removeClass(slides[activeItem],'active');
+    
+          removeClass(slides[next],`carousel-item-${orientation}`);
+          removeClass(slides[next],`carousel-item-${self.vars.direction}`);
+          removeClass(slides[activeItem],`carousel-item-${self.vars.direction}`);
+    
+          dispatchCustomEvent.call(element, slidCustomEvent);
+          // check for element, might have been disposed
+          if ( !document.hidden && self.options.interval && !hasClass(element,'paused') ) {
+            self.cycle();
+          }
+        }
+      }, timeout);
     }
-    if (indicators[pageIndex]) addClass(indicators[pageIndex], 'active');
   }
 
   // public methods
@@ -189,7 +214,8 @@ export default function Carousel (element,options) {
     }
 
     self.vars.timer = setInterval(() => {
-      isElementInScrollRange() && (self.vars.index++, self.slideTo( self.vars.index ) );
+      let idx = self.vars.index || self.getActiveIndex()
+      isElementInScrollRange() && (idx++, self.slideTo( idx ) );
     }, self.options.interval);
   }
   self.slideTo = next => {
@@ -212,15 +238,15 @@ export default function Carousel (element,options) {
     if ( next < 0 ) { next = slides.length - 1; } 
     else if ( next >= slides.length ){ next = 0; }
 
-    // update index
-    self.vars.index = next;
-
     orientation = self.vars.direction === 'left' ? 'next' : 'prev'; // determine type
 
     slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', slides[next]);
     slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', slides[next]);
     dispatchCustomEvent.call(element, slideCustomEvent); // here we go with the slide
     if (slideCustomEvent.defaultPrevented) return; // discontinue when prevented
+
+    // update index
+    self.vars.index = next;
 
     self.vars.isSliding = true;
     clearInterval(self.vars.timer);
@@ -234,26 +260,7 @@ export default function Carousel (element,options) {
       addClass(slides[next],`carousel-item-${self.vars.direction}`);
       addClass(slides[activeItem],`carousel-item-${self.vars.direction}`);
 
-      emulateTransitionEnd(slides[next], e => {
-        const timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20;
-        
-        self.vars.isSliding && setTimeout(() => {
-          self.vars.isSliding = false;
-
-          addClass(slides[next],'active');
-          removeClass(slides[activeItem],'active');
-
-          removeClass(slides[next],`carousel-item-${orientation}`);
-          removeClass(slides[next],`carousel-item-${self.vars.direction}`);
-          removeClass(slides[activeItem],`carousel-item-${self.vars.direction}`);
-
-          dispatchCustomEvent.call(element, slidCustomEvent);
-          // check for element, might have been disposed
-          if ( !document.hidden && self.options.interval && element && !hasClass(element,'paused') ) {
-            self.cycle();
-          }
-        }, timeout);
-      });
+      emulateTransitionEnd(slides[next], transitionEndHandler);
 
     } else {
       addClass(slides[next],'active');
@@ -273,20 +280,19 @@ export default function Carousel (element,options) {
   self.getActiveIndex = () => [].slice.call(slides).indexOf(element.getElementsByClassName('carousel-item active')[0]) || 0
 
   self.dispose = () => {
-    let itemClasses = ['left','right','prev','next']
+    let itemClasses = ['left','right','prev','next'];
 
-    clearInterval(self.vars.timer);
-    self.vars.timer = null;
-
-    for (let s=0, sl=slides.length; s<sl;s++){
-      for (let c=0, cl=itemClasses.length; c<cl; c++){
-        removeClass(slides[s],`carousel-item-${itemClasses[c]}`)
+    [].slice.call(slides).map((slide,idx) => {
+      if (hasClass(slide,'active')){
+        setActivePage( idx );
       }
-    }
+      itemClasses.map(cls => removeClass(slide,`carousel-item-${cls}`))
+    })
+    clearInterval(self.vars.timer);
 
     toggleEvents(off);
+    delete self.vars;
     delete element.Carousel;
-    element=null;
   }
 
   // set initial state
