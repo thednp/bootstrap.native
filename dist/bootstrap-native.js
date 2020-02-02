@@ -154,10 +154,10 @@
     if (!labels.length) return;
 
     function activateItems() {
-      for (var i = 0, lbll = self.buttons.length; i < lbll; i++) {
-        !hasClass(self.buttons[i], 'active') && queryElement('input:checked', self.buttons[i]) && addClass(self.buttons[i], 'active');
-        hasClass(self.buttons[i], 'active') && !queryElement('input:checked', self.buttons[i]) && removeClass(self.buttons[i], 'active');
-      }
+      [].slice.call(self.buttons).map(function (btn) {
+        !hasClass(btn, 'active') && queryElement('input:checked', btn) && addClass(btn, 'active');
+        hasClass(btn, 'active') && !queryElement('input:checked', btn) && removeClass(btn, 'active');
+      });
     }
 
     function toggle(e) {
@@ -197,10 +197,8 @@
           input.setAttribute('checked', 'checked');
           input.checked = true;
           element.toggled = true;
-
-          for (var i = 0, ll = self.buttons.length; i < ll; i++) {
-            var otherLabel = self.buttons[i],
-                otherInput = otherLabel.getElementsByTagName('INPUT')[0];
+          [].slice.call(self.buttons).map(function (otherLabel) {
+            var otherInput = otherLabel.getElementsByTagName('INPUT')[0];
 
             if (otherLabel !== label && hasClass(otherLabel, 'active')) {
               dispatchCustomEvent.call(otherInput, changeCustomEvent);
@@ -208,7 +206,7 @@
               otherInput.removeAttribute('checked');
               otherInput.checked = false;
             }
-          }
+          });
         }
       }
 
@@ -777,14 +775,11 @@
         parent = element.parentNode,
         menu = queryElement('.dropdown-menu', parent),
         menuItems = function () {
-      var set = menu.children,
-          newSet = [];
-
-      for (var i = 0; i < set.length; i++) {
-        set[i].children.length && set[i].children[0].tagName === 'A' && newSet.push(set[i].children[0]);
-        set[i].tagName === 'A' && newSet.push(set[i]);
-      }
-
+      var newSet = [];
+      [].slice.call(menu.children).map(function (child) {
+        child.children.length && child.children[0].tagName === 'A' && newSet.push(child.children[0]);
+        child.tagName === 'A' && newSet.push(child);
+      });
       return newSet;
     }();
 
@@ -957,24 +952,18 @@
       var itemPad;
       document.body.style.paddingRight = "".concat(bodyPad + (openModal ? 0 : scrollBarWidth), "px");
       modal.style.paddingRight = scrollBarWidth ? "".concat(scrollBarWidth, "px") : '';
-
-      if (fixedItems.length) {
-        for (var i = 0; i < fixedItems.length; i++) {
-          itemPad = window.getComputedStyle(fixedItems[i]).paddingRight;
-          fixedItems[i].style.paddingRight = "".concat(parseInt(itemPad) + (openModal ? 0 : scrollBarWidth), "px");
-        }
-      }
+      fixedItems.length && fixedItems.map(function (fixed) {
+        itemPad = window.getComputedStyle(fixed).paddingRight;
+        fixed.style.paddingRight = "".concat(parseInt(itemPad) + (openModal ? 0 : scrollBarWidth), "px");
+      });
     }
 
     function resetScrollbar() {
       document.body.style.paddingRight = '';
       modal.style.paddingRight = '';
-
-      if (fixedItems.length) {
-        for (var i = 0; i < fixedItems.length; i++) {
-          fixedItems[i].style.paddingRight = '';
-        }
-      }
+      fixedItems.length && fixedItems.map(function (fixed) {
+        fixed.style.paddingRight = '';
+      });
     }
 
     function measureScrollbar() {
@@ -1403,17 +1392,15 @@
       if (self.vars.length !== links.length) {
         self.vars.items = [];
         self.vars.targets = [];
-
-        for (var i = 0, il = links.length; i < il; i++) {
-          var href = links[i].getAttribute('href'),
+        [].slice.call(links).map(function (link) {
+          var href = link.getAttribute('href'),
               targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
 
           if (targetItem) {
-            self.vars.items.push(links[i]);
+            self.vars.items.push(link);
             self.vars.targets.push(targetItem);
           }
-        }
-
+        });
         self.vars.length = links.length;
       }
     }

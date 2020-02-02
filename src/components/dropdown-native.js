@@ -31,11 +31,11 @@ export default function Dropdown(element,option) {
     parent = element.parentNode,
     menu = queryElement('.dropdown-menu', parent),
     menuItems = (() => {
-      const set = menu.children, newSet = [];
-      for ( let i=0; i<set.length; i++ ){
-        set[i].children.length && (set[i].children[0].tagName === 'A' && newSet.push(set[i].children[0]));
-        set[i].tagName === 'A' && newSet.push(set[i]);
-      }
+      let newSet = [];
+      [].slice.call(menu.children).map(child=>{
+        child.children.length && (child.children[0].tagName === 'A' && newSet.push(child.children[0]));
+        child.tagName === 'A' && newSet.push(child);
+      })
       return newSet;
     })();
   

@@ -52,16 +52,17 @@ export default function ScrollSpy(element,options) {
     const links = spyTarget.getElementsByTagName('A');
     if (self.vars.length !== links.length) {
       // reset arrays
-      self.vars.items = []
-      self.vars.targets = []
-      for (let i=0, il=links.length; i<il; i++) {
-        const href = links[i].getAttribute('href'),
+      self.vars.items = [];
+      self.vars.targets = [];
+
+      [].slice.call(links).map(link=>{
+        const href = link.getAttribute('href'),
           targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
         if ( targetItem ) {
-          self.vars.items.push(links[i]);
+          self.vars.items.push(link);
           self.vars.targets.push(targetItem);
         }
-      }
+      })
       self.vars.length = links.length
     }
   }

@@ -27,14 +27,14 @@ export default function Button(element) {
 
   // private methods
   function activateItems() {
-    for (let i=0,lbll = self.buttons.length; i<lbll; i++) {
-      !hasClass(self.buttons[i],'active') 
-        && queryElement('input:checked',self.buttons[i])
-        && addClass(self.buttons[i],'active');
-      hasClass(self.buttons[i],'active') 
-        && !queryElement('input:checked',self.buttons[i])
-        && removeClass(self.buttons[i],'active');
-    }
+    [].slice.call(self.buttons).map(btn=>{
+      !hasClass(btn,'active') 
+        && queryElement('input:checked',btn)
+        && addClass(btn,'active');
+      hasClass(btn,'active') 
+        && !queryElement('input:checked',btn)
+        && removeClass(btn,'active');
+    })
   }
   function toggle(e) {
     const label = e.target.tagName === 'LABEL' ? e.target : e.target.closest('LABEL') ? e.target.closest('LABEL') : null; // the .btn label
@@ -82,15 +82,15 @@ export default function Button(element) {
         input.checked = true;
 
         element.toggled = true;
-        for (let i = 0, ll = self.buttons.length; i<ll; i++) {
-          const otherLabel = self.buttons[i], otherInput = otherLabel.getElementsByTagName('INPUT')[0];
+        [].slice.call(self.buttons).map(otherLabel=>{
+          const otherInput = otherLabel.getElementsByTagName('INPUT')[0];
           if ( otherLabel !== label && hasClass(otherLabel,'active') )  {
             dispatchCustomEvent.call(otherInput, changeCustomEvent); // trigger the change
             removeClass(otherLabel,'active');
             otherInput.removeAttribute('checked');
             otherInput.checked = false;
           }
-        }
+        })
       }
     }
     setTimeout( () => { element.toggled = false; }, 50 );

@@ -66,21 +66,18 @@ export default function Modal(element,options) { // element can be the modal/tri
 
     document.body.style.paddingRight = `${bodyPad + (openModal?0:scrollBarWidth)}px`;
     modal.style.paddingRight = (scrollBarWidth?`${scrollBarWidth}px`:'');
-    if (fixedItems.length){
-      for (let i = 0; i < fixedItems.length; i++) {
-        itemPad = window.getComputedStyle(fixedItems[i]).paddingRight;
-        fixedItems[i].style.paddingRight = `${parseInt(itemPad) + (openModal?0:scrollBarWidth)}px`;
-      }
-    }
+
+    fixedItems.length && fixedItems.map(fixed=>{
+      itemPad = window.getComputedStyle(fixed).paddingRight;
+      fixed.style.paddingRight = `${parseInt(itemPad) + (openModal?0:scrollBarWidth)}px`;
+    })
   }
   function resetScrollbar() {
     document.body.style.paddingRight = '';
     modal.style.paddingRight = '';
-    if (fixedItems.length){
-      for (let i = 0; i < fixedItems.length; i++) {
-        fixedItems[i].style.paddingRight = '';
-      }
-    }
+    fixedItems.length && fixedItems.map(fixed=>{
+      fixed.style.paddingRight = '';
+    })
   }
   function measureScrollbar() {
     const scrollDiv = document.createElement('div');
