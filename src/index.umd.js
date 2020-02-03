@@ -16,19 +16,18 @@ import {Util} from './util/util.js'
 import {version as Version} from './../package.json'
 
 export default {
-  components : {
-    Alert,
-    Button,
-    Carousel,
-    Collapse,
-    Dropdown,
-    Modal,
-    Popover,
-    ScrollSpy,
-    Tab,
-    Toast,
-    Tooltip
-  },
+  Alert,
+  Button,
+  Carousel,
+  Collapse,
+  Dropdown,
+  Modal,
+  Popover,
+  ScrollSpy,
+  Tab,
+  Toast,
+  Tooltip,
+
   initCallback,
   removeDataAPI,
   componentsInit,

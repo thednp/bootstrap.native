@@ -15,7 +15,7 @@ import {componentsInit} from './util/globals.js'
 import {Util} from './util/util.js'
 import {version as Version} from './../package.json'
 
-const components = {
+export {
   Alert,
   Button,
   Carousel,
@@ -26,12 +26,8 @@ const components = {
   ScrollSpy,
   Tab,
   Toast,
-  Tooltip
-}
+  Tooltip,
 
-
-export {
-  components,
   initCallback,
   removeDataAPI,
   componentsInit,
