@@ -1404,11 +1404,12 @@ function ScrollSpy(element, options) {
         targetItem = self.vars.targets[index],
         dropLink = hasClass(item, 'dropdown-item') && item.closest('.dropdown').getElementsByTagName('A')[0],
         nextSibling = item.nextElementSibling,
+        activeSibling = nextSibling && nextSibling.getElementsByClassName('active').length,
         targetRect = self.vars.isWindow && targetItem.getBoundingClientRect(),
         isActive = hasClass(item, 'active') || false,
         topEdge = (self.vars.isWindow ? targetRect.top + self.vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
         bottomEdge = self.vars.isWindow ? targetRect.bottom + self.vars.scrollOffset - self.options.offset : self.vars.targets[index + 1] ? self.vars.targets[index + 1].offsetTop - self.options.offset : element.scrollHeight,
-        inside = self.vars.scrollOffset >= topEdge && (bottomEdge > self.vars.scrollOffset || nextSibling && nextSibling.getElementsByClassName('active').length);
+        inside = activeSibling || self.vars.scrollOffset >= topEdge && bottomEdge > self.vars.scrollOffset;
 
     if (!inside && !isActive || isActive && inside) {
       return;
