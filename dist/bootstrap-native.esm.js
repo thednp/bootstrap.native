@@ -91,13 +91,105 @@ function emulateTransitionEnd(element, handler) {
   }, 17);
 }
 
+function setFocus(element) {
+  element.focus ? element.focus() : element.setActive();
+}
+function getScroll() {
+  return {
+    y: window.pageYOffset || document.documentElement.scrollTop,
+    x: window.pageXOffset || document.documentElement.scrollLeft
+  };
+}
+function componentInit(fn) {
+  try {
+    fn();
+  } catch (e) {
+    console.error("BSN: ".concat(e));
+  }
+}
+function styleTip(link, element, position, parent) {
+  var tipPositions = /\b(top|bottom|left|right)+/,
+      elementDimensions = {
+    w: element.offsetWidth,
+    h: element.offsetHeight
+  },
+      windowWidth = document.documentElement.clientWidth || document.body.clientWidth,
+      windowHeight = document.documentElement.clientHeight || document.body.clientHeight,
+      rect = link.getBoundingClientRect(),
+      scroll = parent === document.body ? getScroll() : {
+    x: parent.offsetLeft + parent.scrollLeft,
+    y: parent.offsetTop + parent.scrollTop
+  },
+      linkDimensions = {
+    w: rect.right - rect.left,
+    h: rect.bottom - rect.top
+  },
+      isPopover = hasClass(element, 'popover'),
+      arrow = queryElement('.arrow', element),
+      halfTopExceed = rect.top + linkDimensions.h / 2 - elementDimensions.h / 2 < 0,
+      halfLeftExceed = rect.left + linkDimensions.w / 2 - elementDimensions.w / 2 < 0,
+      halfRightExceed = rect.left + elementDimensions.w / 2 + linkDimensions.w / 2 >= windowWidth,
+      halfBottomExceed = rect.top + elementDimensions.h / 2 + linkDimensions.h / 2 >= windowHeight,
+      topExceed = rect.top - elementDimensions.h < 0,
+      leftExceed = rect.left - elementDimensions.w < 0,
+      bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight,
+      rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth;
+  position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position;
+  position = position === 'top' && topExceed ? 'bottom' : position;
+  position = position === 'bottom' && bottomExceed ? 'top' : position;
+  position = position === 'left' && leftExceed ? 'right' : position;
+  position = position === 'right' && rightExceed ? 'left' : position;
+  var topPosition, leftPosition, arrowTop, arrowLeft, arrowWidth, arrowHeight;
+  element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipPositions, position));
+  arrowWidth = arrow.offsetWidth;
+  arrowHeight = arrow.offsetHeight;
+
+  if (position === 'left' || position === 'right') {
+    if (position === 'left') {
+      leftPosition = rect.left + scroll.x - elementDimensions.w - (isPopover ? arrowWidth : 0);
+    } else {
+      leftPosition = rect.left + scroll.x + linkDimensions.w;
+    }
+
+    if (halfTopExceed) {
+      topPosition = rect.top + scroll.y;
+      arrowTop = linkDimensions.h / 2 - arrowWidth;
+    } else if (halfBottomExceed) {
+      topPosition = rect.top + scroll.y - elementDimensions.h + linkDimensions.h;
+      arrowTop = elementDimensions.h - linkDimensions.h / 2 - arrowWidth;
+    } else {
+      topPosition = rect.top + scroll.y - elementDimensions.h / 2 + linkDimensions.h / 2;
+      arrowTop = elementDimensions.h / 2 - (isPopover ? arrowHeight * 0.9 : arrowHeight / 2);
+    }
+  } else if (position === 'top' || position === 'bottom') {
+    if (position === 'top') {
+      topPosition = rect.top + scroll.y - elementDimensions.h - (isPopover ? arrowHeight : 0);
+    } else {
+      topPosition = rect.top + scroll.y + linkDimensions.h;
+    }
+
+    if (halfLeftExceed) {
+      leftPosition = 0;
+      arrowLeft = rect.left + linkDimensions.w / 2 - arrowWidth;
+    } else if (halfRightExceed) {
+      leftPosition = windowWidth - elementDimensions.w * 1.01;
+      arrowLeft = elementDimensions.w - (windowWidth - rect.left) + linkDimensions.w / 2 - arrowWidth / 2;
+    } else {
+      leftPosition = rect.left + scroll.x - elementDimensions.w / 2 + linkDimensions.w / 2;
+      arrowLeft = elementDimensions.w / 2 - (isPopover ? arrowWidth : arrowWidth / 2);
+    }
+  }
+
+  element.style.top = topPosition + 'px';
+  element.style.left = leftPosition + 'px';
+  arrowTop && (arrow.style.top = arrowTop + 'px');
+  arrowLeft && (arrow.style.left = arrowLeft + 'px');
+}
+
 function Alert(element) {
-  element = queryElement(element);
-  var alert = element.closest('.alert');
-  if (!alert) return;
-  element.Alert && element.Alert.dispose();
-  var self = this,
-      closeCustomEvent = bootstrapCustomEvent('close', 'alert'),
+  var self = this;
+  var alert;
+  var closeCustomEvent = bootstrapCustomEvent('close', 'alert'),
       closedCustomEvent = bootstrapCustomEvent('closed', 'alert');
 
   function triggerHandler() {
@@ -131,21 +223,24 @@ function Alert(element) {
     delete element.Alert;
   };
 
-  if (!element.Alert) {
-    on(element, 'click', clickHandler);
-  }
+  componentInit(function () {
+    element = queryElement(element);
+    alert = element.closest('.alert');
+    element.Alert && element.Alert.dispose();
 
-  self.element = element;
-  element.Alert = self;
+    if (!element.Alert) {
+      on(element, 'click', clickHandler);
+    }
+
+    self.element = element;
+    element.Alert = self;
+  });
 }
 
 function Button(element) {
-  element = queryElement(element);
-  element.Button && element.Button.dispose();
   var self = this,
-      changeCustomEvent = bootstrapCustomEvent('change', 'button'),
-      labels = element.getElementsByClassName('btn');
-  if (!labels.length) return;
+      labels;
+  var changeCustomEvent = bootstrapCustomEvent('change', 'button');
 
   function activateItems() {
     [].slice.call(self.buttons).map(function (btn) {
@@ -238,42 +333,29 @@ function Button(element) {
     delete element.Button;
   };
 
-  if (!element.Button) {
-    toggleEvents(on);
-  }
+  componentInit(function () {
+    element = queryElement(element);
+    element.Button && element.Button.dispose();
+    labels = element.getElementsByClassName('btn');
+    if (!labels.length) return;
 
-  element.toggled = false;
-  self.element = element;
-  self.buttons = labels;
-  element.Button = self;
-  activateItems();
+    if (!element.Button) {
+      toggleEvents(on);
+    }
+
+    element.toggled = false;
+    self.element = element;
+    self.buttons = labels;
+    element.Button = self;
+    activateItems();
+  });
 }
 
 function Carousel(element, options) {
-  element = queryElement(element);
-  element.Carousel && element.Carousel.dispose();
   options = options || {};
-  var self = this,
-      intervalAttribute = element.getAttribute('data-interval'),
-      intervalOption = options.interval,
-      intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
-      pauseData = element.getAttribute('data-pause') === 'hover' || false,
-      keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
-      slides = element.getElementsByClassName('carousel-item'),
-      leftArrow = element.getElementsByClassName('carousel-control-prev')[0],
-      rightArrow = element.getElementsByClassName('carousel-control-next')[0],
-      indicator = queryElement('.carousel-indicators', element),
-      indicators = indicator && indicator.getElementsByTagName("LI") || [];
-
-  if (slides.length < 2) {
-    return;
-  }
-
-  self.options = {};
-  self.options.keyboard = options.keyboard === true || keyboardData;
-  self.options.pause = options.pause === 'hover' || pauseData ? 'hover' : false;
-  self.options.interval = typeof intervalOption === 'number' ? intervalOption : intervalOption === false || intervalData === 0 || intervalData === false ? 0 : isNaN(intervalData) ? 5000 : intervalData;
+  var self = this;
   var slideCustomEvent, slidCustomEvent;
+  var slides, leftArrow, rightArrow, indicator, indicators;
 
   function pauseHandler() {
     if (self.options.interval !== false && !hasClass(element, 'paused')) {
@@ -543,37 +625,56 @@ function Carousel(element, options) {
     currentX: 0,
     endX: 0
   };
+  componentInit(function () {
+    element = queryElement(element);
+    element.Carousel && element.Carousel.dispose();
+    var intervalAttribute = element.getAttribute('data-interval'),
+        intervalOption = options.interval,
+        intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
+        pauseData = element.getAttribute('data-pause') === 'hover' || false,
+        keyboardData = element.getAttribute('data-keyboard') === 'true' || false;
+    slides = element.getElementsByClassName('carousel-item');
+    leftArrow = element.getElementsByClassName('carousel-control-prev')[0];
+    rightArrow = element.getElementsByClassName('carousel-control-next')[0];
+    indicator = queryElement('.carousel-indicators', element);
+    indicators = indicator && indicator.getElementsByTagName("LI") || [];
+    self.options = {};
+    self.options.keyboard = options.keyboard === true || keyboardData;
+    self.options.pause = options.pause === 'hover' || pauseData ? 'hover' : false;
+    self.options.interval = typeof intervalOption === 'number' ? intervalOption : intervalOption === false || intervalData === 0 || intervalData === false ? 0 : isNaN(intervalData) ? 5000 : intervalData;
 
-  if (!element.Carousel) {
-    toggleEvents(on);
-  }
+    if (slides.length < 2) {
+      return;
+    }
 
-  if (self.getActiveIndex() < 0) {
-    slides.length && addClass(slides[0], 'active');
-    indicators.length && setActivePage(0);
-  }
+    if (!element.Carousel) {
+      toggleEvents(on);
+    }
 
-  if (self.options.interval) {
-    self.cycle();
-  }
+    if (self.getActiveIndex() < 0) {
+      slides.length && addClass(slides[0], 'active');
+      indicators.length && setActivePage(0);
+    }
 
-  element.Carousel = self;
+    if (self.options.interval) {
+      self.cycle();
+    }
+
+    element.Carousel = self;
+  });
 }
 
 function Collapse(element, options) {
-  element = queryElement(element);
-  element.Collapse && element.Collapse.dispose();
   options = options || {};
+  var self = this;
   var accordion = null,
       collapse = null,
       activeCollapse,
-      activeElement;
-  var self = this,
-      accordionData = element.getAttribute('data-parent'),
-      showCustomEvent = bootstrapCustomEvent('show', 'collapse'),
-      shownCustomEvent = bootstrapCustomEvent('shown', 'collapse'),
-      hideCustomEvent = bootstrapCustomEvent('hide', 'collapse'),
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse');
+      activeElement,
+      showCustomEvent,
+      shownCustomEvent,
+      hideCustomEvent,
+      hiddenCustomEvent;
 
   function openAction(collapseElement, toggle) {
     dispatchCustomEvent.call(collapseElement, showCustomEvent);
@@ -653,129 +754,39 @@ function Collapse(element, options) {
     delete element.Collapse;
   };
 
-  collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
-  if (!collapse) return;
-  collapse.isAnimating = false;
-  accordion = element.closest(options.parent || accordionData);
-  collapse && (self.collapse = collapse);
-  accordion && (self.options = {}, self.options.parent = accordion);
+  componentInit(function () {
+    element = queryElement(element);
+    element.Collapse && element.Collapse.dispose();
+    var accordionData = element.getAttribute('data-parent');
+    showCustomEvent = bootstrapCustomEvent('show', 'collapse');
+    shownCustomEvent = bootstrapCustomEvent('shown', 'collapse');
+    hideCustomEvent = bootstrapCustomEvent('hide', 'collapse');
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse');
+    collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
+    collapse.isAnimating = false;
+    accordion = element.closest(options.parent || accordionData);
+    collapse && (self.collapse = collapse);
+    accordion && (self.options = {}, self.options.parent = accordion);
 
-  if (!element.Collapse) {
-    on(element, 'click', self.toggle);
-  }
-
-  self.element = element;
-  element.Collapse = self;
-}
-
-function setFocus(element) {
-  element.focus ? element.focus() : element.setActive();
-}
-function getScroll() {
-  return {
-    y: window.pageYOffset || document.documentElement.scrollTop,
-    x: window.pageXOffset || document.documentElement.scrollLeft
-  };
-}
-function styleTip(link, element, position, parent) {
-  var tipPositions = /\b(top|bottom|left|right)+/,
-      elementDimensions = {
-    w: element.offsetWidth,
-    h: element.offsetHeight
-  },
-      windowWidth = document.documentElement.clientWidth || document.body.clientWidth,
-      windowHeight = document.documentElement.clientHeight || document.body.clientHeight,
-      rect = link.getBoundingClientRect(),
-      scroll = parent === document.body ? getScroll() : {
-    x: parent.offsetLeft + parent.scrollLeft,
-    y: parent.offsetTop + parent.scrollTop
-  },
-      linkDimensions = {
-    w: rect.right - rect.left,
-    h: rect.bottom - rect.top
-  },
-      isPopover = hasClass(element, 'popover'),
-      arrow = queryElement('.arrow', element),
-      halfTopExceed = rect.top + linkDimensions.h / 2 - elementDimensions.h / 2 < 0,
-      halfLeftExceed = rect.left + linkDimensions.w / 2 - elementDimensions.w / 2 < 0,
-      halfRightExceed = rect.left + elementDimensions.w / 2 + linkDimensions.w / 2 >= windowWidth,
-      halfBottomExceed = rect.top + elementDimensions.h / 2 + linkDimensions.h / 2 >= windowHeight,
-      topExceed = rect.top - elementDimensions.h < 0,
-      leftExceed = rect.left - elementDimensions.w < 0,
-      bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight,
-      rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth;
-  position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position;
-  position = position === 'top' && topExceed ? 'bottom' : position;
-  position = position === 'bottom' && bottomExceed ? 'top' : position;
-  position = position === 'left' && leftExceed ? 'right' : position;
-  position = position === 'right' && rightExceed ? 'left' : position;
-  var topPosition, leftPosition, arrowTop, arrowLeft, arrowWidth, arrowHeight;
-  element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipPositions, position));
-  arrowWidth = arrow.offsetWidth;
-  arrowHeight = arrow.offsetHeight;
-
-  if (position === 'left' || position === 'right') {
-    if (position === 'left') {
-      leftPosition = rect.left + scroll.x - elementDimensions.w - (isPopover ? arrowWidth : 0);
-    } else {
-      leftPosition = rect.left + scroll.x + linkDimensions.w;
+    if (!element.Collapse) {
+      on(element, 'click', self.toggle);
     }
 
-    if (halfTopExceed) {
-      topPosition = rect.top + scroll.y;
-      arrowTop = linkDimensions.h / 2 - arrowWidth;
-    } else if (halfBottomExceed) {
-      topPosition = rect.top + scroll.y - elementDimensions.h + linkDimensions.h;
-      arrowTop = elementDimensions.h - linkDimensions.h / 2 - arrowWidth;
-    } else {
-      topPosition = rect.top + scroll.y - elementDimensions.h / 2 + linkDimensions.h / 2;
-      arrowTop = elementDimensions.h / 2 - (isPopover ? arrowHeight * 0.9 : arrowHeight / 2);
-    }
-  } else if (position === 'top' || position === 'bottom') {
-    if (position === 'top') {
-      topPosition = rect.top + scroll.y - elementDimensions.h - (isPopover ? arrowHeight : 0);
-    } else {
-      topPosition = rect.top + scroll.y + linkDimensions.h;
-    }
-
-    if (halfLeftExceed) {
-      leftPosition = 0;
-      arrowLeft = rect.left + linkDimensions.w / 2 - arrowWidth;
-    } else if (halfRightExceed) {
-      leftPosition = windowWidth - elementDimensions.w * 1.01;
-      arrowLeft = elementDimensions.w - (windowWidth - rect.left) + linkDimensions.w / 2 - arrowWidth / 2;
-    } else {
-      leftPosition = rect.left + scroll.x - elementDimensions.w / 2 + linkDimensions.w / 2;
-      arrowLeft = elementDimensions.w / 2 - (isPopover ? arrowWidth : arrowWidth / 2);
-    }
-  }
-
-  element.style.top = topPosition + 'px';
-  element.style.left = leftPosition + 'px';
-  arrowTop && (arrow.style.top = arrowTop + 'px');
-  arrowLeft && (arrow.style.left = arrowLeft + 'px');
+    self.element = element;
+    element.Collapse = self;
+  });
 }
 
 function Dropdown(element, option) {
-  element = queryElement(element);
-  element.Dropdown && element.Dropdown.dispose();
+  var self = this;
   var showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
       hiddenCustomEvent,
-      relatedTarget = null;
-
-  var self = this,
-      parent = element.parentNode,
-      menu = queryElement('.dropdown-menu', parent),
-      menuItems = function () {
-    var newSet = [];
-    [].slice.call(menu.children).map(function (child) {
-      child.children.length && child.children[0].tagName === 'A' && newSet.push(child.children[0]);
-      child.tagName === 'A' && newSet.push(child);
-    });
-    return newSet;
-  }();
+      relatedTarget = null,
+      parent,
+      menu,
+      menuItems = [];
 
   function preventEmptyAnchor(anchor) {
     (anchor.href && anchor.href.slice(-1) === '#' || anchor.parentNode && anchor.parentNode.href && anchor.parentNode.href.slice(-1) === '#') && this.preventDefault();
@@ -893,21 +904,34 @@ function Dropdown(element, option) {
     delete element.Dropdown;
   };
 
-  if (!element.Dropdown) {
-    !('tabindex' in menu) && menu.setAttribute('tabindex', '0');
-    on(element, 'click', clickHandler);
-  }
+  componentInit(function () {
+    element = queryElement(element);
+    element.Dropdown && element.Dropdown.dispose();
+    parent = element.parentNode;
+    menu = queryElement('.dropdown-menu', parent);
+    [].slice.call(menu.children).map(function (child) {
+      child.children.length && child.children[0].tagName === 'A' && menuItems.push(child.children[0]);
+      child.tagName === 'A' && menuItems.push(child);
+    });
 
-  self.options = {};
-  self.options.persist = option === true || element.getAttribute('data-persist') === 'true' || false;
-  element.open = false;
-  self.element = element;
-  element.Dropdown = self;
+    if (!element.Dropdown) {
+      !('tabindex' in menu) && menu.setAttribute('tabindex', '0');
+      on(element, 'click', clickHandler);
+    }
+
+    self.options = {};
+    self.options.persist = option === true || element.getAttribute('data-persist') === 'true' || false;
+    element.open = false;
+    self.element = element;
+    element.Dropdown = self;
+  });
 }
 
 function Modal(element, options) {
-  element = queryElement(element);
-  var showCustomEvent,
+  options = options || {};
+  var self = this,
+      modal,
+      showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
       hiddenCustomEvent,
@@ -915,28 +939,6 @@ function Modal(element, options) {
       scrollBarWidth,
       overlay,
       overlayDelay;
-  var self = this,
-      checkModal = queryElement(element.getAttribute('data-target') || element.getAttribute('href')),
-      modal = hasClass(element, 'modal') ? element : checkModal;
-
-  if (hasClass(element, 'modal')) {
-    element = null;
-  }
-
-  if (!modal) {
-    return;
-  }
-
-  element && element.Modal && element.Modal.dispose();
-  modal.Modal && modal.Modal.dispose();
-  modal.isAnimating = false;
-  options = options || {};
-  self.options = {};
-  self.options.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
-  self.options.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
-  self.options.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : self.options.backdrop;
-  self.options.animation = hasClass(modal, 'fade') ? true : false;
-  self.options.content = options.content;
   var fixedItems = getElementsByClassName(document.documentElement, 'fixed-top').concat(getElementsByClassName(document.documentElement, 'fixed-bottom'));
 
   function setScrollbar() {
@@ -1146,59 +1148,53 @@ function Modal(element, options) {
     }
   };
 
-  if (element && !element.Modal) {
-    on(element, 'click', clickHandler);
-  }
+  componentInit(function () {
+    element = queryElement(element);
+    var checkModal = queryElement(element.getAttribute('data-target') || element.getAttribute('href'));
+    modal = hasClass(element, 'modal') ? element : checkModal;
 
-  if (self.options.content) {
-    self.setContent(self.options.content.trim());
-  }
+    if (hasClass(element, 'modal')) {
+      element = null;
+    }
 
-  self.modal = modal;
+    element && element.Modal && element.Modal.dispose();
+    modal && modal.Modal && modal.Modal.dispose();
+    self.options = {};
+    self.options.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
+    self.options.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
+    self.options.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : self.options.backdrop;
+    self.options.animation = hasClass(modal, 'fade') ? true : false;
+    self.options.content = options.content;
+    modal.isAnimating = false;
 
-  if (element) {
-    modal.modalTrigger = element;
-    self.element = element;
-    element.Modal = self;
-  } else {
-    modal.Modal = self;
-  }
+    if (element && !element.Modal) {
+      on(element, 'click', clickHandler);
+    }
+
+    if (self.options.content) {
+      self.setContent(self.options.content.trim());
+    }
+
+    self.modal = modal;
+
+    if (element) {
+      modal.modalTrigger = element;
+      self.element = element;
+      element.Modal = self;
+    } else {
+      modal.Modal = self;
+    }
+  });
 }
 
 function Popover(element, options) {
-  element = queryElement(element);
-  element.Popover && element.Popover.dispose();
   options = options || {};
+  var self = this;
   var popover = null,
       timer = 0,
       titleString,
       contentString;
-  var self = this,
-      triggerData = element.getAttribute('data-trigger'),
-      animationData = element.getAttribute('data-animation'),
-      placementData = element.getAttribute('data-placement'),
-      dismissibleData = element.getAttribute('data-dismissible'),
-      delayData = element.getAttribute('data-delay'),
-      containerData = element.getAttribute('data-container'),
-      closeBtn = '<button type="button" class="close">×</button>',
-      showCustomEvent = bootstrapCustomEvent('show', 'popover'),
-      shownCustomEvent = bootstrapCustomEvent('shown', 'popover'),
-      hideCustomEvent = bootstrapCustomEvent('hide', 'popover'),
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'popover'),
-      containerElement = queryElement(options.container),
-      containerDataElement = queryElement(containerData),
-      modal = element.closest('.modal'),
-      navbarFixedTop = element.closest('.fixed-top'),
-      navbarFixedBottom = element.closest('.fixed-bottom');
-  self.options = {};
-  self.options.template = options.template ? options.template : null;
-  self.options.trigger = options.trigger ? options.trigger : triggerData || 'hover';
-  self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-  self.options.placement = options.placement ? options.placement : placementData || 'top';
-  self.options.delay = parseInt(options.delay || delayData) || 200;
-  self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
-  self.options.container = containerElement ? containerElement : containerDataElement ? containerDataElement : navbarFixedTop ? navbarFixedTop : navbarFixedBottom ? navbarFixedBottom : modal ? modal : document.body;
-  var placementClass = "bs-popover-".concat(self.options.placement);
+  var triggerData, animationData, placementData, dismissibleData, delayData, containerData, closeBtn, showCustomEvent, shownCustomEvent, hideCustomEvent, hiddenCustomEvent, containerElement, containerDataElement, modal, navbarFixedTop, navbarFixedBottom, placementClass;
 
   function dismissibleHandler(e) {
     if (popover !== null && e.target === queryElement('.close', popover)) {
@@ -1349,36 +1345,52 @@ function Popover(element, options) {
     delete element.Popover;
   };
 
-  titleString = getContents()[0];
-  contentString = getContents()[1];
-  if (!contentString && !self.options.template) return;
+  componentInit(function () {
+    element = queryElement(element);
+    element.Popover && element.Popover.dispose();
+    triggerData = element.getAttribute('data-trigger');
+    animationData = element.getAttribute('data-animation');
+    placementData = element.getAttribute('data-placement');
+    dismissibleData = element.getAttribute('data-dismissible');
+    delayData = element.getAttribute('data-delay');
+    containerData = element.getAttribute('data-container');
+    closeBtn = '<button type="button" class="close">×</button>';
+    showCustomEvent = bootstrapCustomEvent('show', 'popover');
+    shownCustomEvent = bootstrapCustomEvent('shown', 'popover');
+    hideCustomEvent = bootstrapCustomEvent('hide', 'popover');
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'popover');
+    containerElement = queryElement(options.container);
+    containerDataElement = queryElement(containerData);
+    modal = element.closest('.modal');
+    navbarFixedTop = element.closest('.fixed-top');
+    navbarFixedBottom = element.closest('.fixed-bottom');
+    self.options = {};
+    self.options.template = options.template ? options.template : null;
+    self.options.trigger = options.trigger ? options.trigger : triggerData || 'hover';
+    self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    self.options.placement = options.placement ? options.placement : placementData || 'top';
+    self.options.delay = parseInt(options.delay || delayData) || 200;
+    self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
+    self.options.container = containerElement ? containerElement : containerDataElement ? containerDataElement : navbarFixedTop ? navbarFixedTop : navbarFixedBottom ? navbarFixedBottom : modal ? modal : document.body;
+    placementClass = "bs-popover-".concat(self.options.placement);
+    var popoverContents = getContents();
+    titleString = popoverContents[0];
+    contentString = popoverContents[1];
+    if (!contentString && !self.options.template) return;
 
-  if (!element.Popover) {
-    toggleEvents(on);
-  }
+    if (!element.Popover) {
+      toggleEvents(on);
+    }
 
-  self.element = element;
-  element.Popover = self;
+    self.element = element;
+    element.Popover = self;
+  });
 }
 
 function ScrollSpy(element, options) {
-  element = queryElement(element);
-  element.ScrollSpy && element.ScrollSpy.dispose();
   options = options || {};
-  var self = this,
-      targetData = element.getAttribute('data-target'),
-      offsetData = element.getAttribute('data-offset'),
-      spyTarget = queryElement(options.target || targetData),
-      scrollTarget = element.offsetHeight < element.scrollHeight ? element : window;
-  if (!spyTarget) return;
-  self.options = {};
-  self.options.target = spyTarget;
-  self.options.offset = parseInt(options.offset || offsetData) || 10;
-  self.vars = {};
-  self.vars.length = 0;
-  self.vars.items = [];
-  self.vars.targets = [];
-  self.vars.isWindow = scrollTarget === window;
+  var self = this;
+  var targetData, offsetData, spyTarget, scrollTarget;
 
   function updateTargets() {
     var links = spyTarget.getElementsByTagName('A');
@@ -1452,23 +1464,40 @@ function ScrollSpy(element, options) {
     delete element.ScrollSpy;
   };
 
-  if (!element.ScrollSpy) {
-    toggleEvents(on);
-  }
+  componentInit(function () {
+    element = queryElement(element);
+    element.ScrollSpy && element.ScrollSpy.dispose();
+    targetData = element.getAttribute('data-target');
+    offsetData = element.getAttribute('data-offset');
+    spyTarget = queryElement(options.target || targetData);
+    scrollTarget = element.offsetHeight < element.scrollHeight ? element : window;
+    if (!spyTarget) return;
+    self.options = {};
+    self.options.target = spyTarget;
+    self.options.offset = parseInt(options.offset || offsetData) || 10;
+    self.vars = {};
+    self.vars.length = 0;
+    self.vars.items = [];
+    self.vars.targets = [];
+    self.vars.isWindow = scrollTarget === window;
 
-  self.refresh();
-  self.element = element;
-  element.ScrollSpy = self;
+    if (!element.ScrollSpy) {
+      toggleEvents(on);
+    }
+
+    self.refresh();
+    self.element = element;
+    element.ScrollSpy = self;
+  });
 }
 
 function Tab(element, options) {
-  element = queryElement(element);
-  element.Tab && element.Tab.dispose();
+  options = options || {};
   var self = this,
-      heightData = element.getAttribute('data-height'),
-      tabs = element.closest('.nav'),
-      dropdown = tabs && queryElement('.dropdown-toggle', tabs);
-  var showCustomEvent,
+      heightData,
+      tabs,
+      dropdown,
+      showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
       hiddenCustomEvent,
@@ -1480,9 +1509,6 @@ function Tab(element, options) {
       containerHeight,
       equalContents,
       nextHeight;
-  options = options || {};
-  self.options = {};
-  self.options.height = !supportTransitions || options.height === false || heightData === 'false' ? false : true;
 
   function triggerEnd() {
     tabsContentContainer.style.height = '';
@@ -1606,39 +1632,41 @@ function Tab(element, options) {
     delete element.Tab;
   };
 
-  if (!tabs) return;
-  tabs.isAnimating = false;
+  componentInit(function () {
+    element = queryElement(element);
+    element.Tab && element.Tab.dispose();
+    heightData = element.getAttribute('data-height');
+    tabs = element.closest('.nav');
+    dropdown = tabs && queryElement('.dropdown-toggle', tabs);
+    self.options = {};
+    self.options.height = !supportTransitions || options.height === false || heightData === 'false' ? false : true;
+    tabs.isAnimating = false;
 
-  if (!element.Tab) {
-    on(element, 'click', clickHandler);
-  }
+    if (!element.Tab) {
+      on(element, 'click', clickHandler);
+    }
 
-  if (self.options.height) {
-    tabsContentContainer = getActiveContent().parentNode;
-  }
+    if (self.options.height) {
+      tabsContentContainer = getActiveContent().parentNode;
+    }
 
-  self.element = element;
-  element.Tab = self;
+    self.element = element;
+    element.Tab = self;
+  });
 }
 
 function Toast(element, options) {
-  element = queryElement(element);
-  element.Toast && element.Toast.dispose();
   options = options || {};
-  var toast = element.closest('.toast'),
-      timer = 0;
   var self = this,
-      animationData = element.getAttribute('data-animation'),
-      autohideData = element.getAttribute('data-autohide'),
-      delayData = element.getAttribute('data-delay'),
-      showCustomEvent = bootstrapCustomEvent('show', 'toast'),
-      hideCustomEvent = bootstrapCustomEvent('hide', 'toast'),
-      shownCustomEvent = bootstrapCustomEvent('shown', 'toast'),
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast');
-  self.options = {};
-  self.options.animation = options.animation === false || animationData === 'false' ? 0 : 1;
-  self.options.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1;
-  self.options.delay = parseInt(options.delay || delayData) || 500;
+      toast,
+      timer = 0,
+      animationData,
+      autohideData,
+      delayData,
+      showCustomEvent,
+      hideCustomEvent,
+      shownCustomEvent,
+      hiddenCustomEvent;
 
   function showComplete() {
     removeClass(toast, 'showing');
@@ -1690,43 +1718,52 @@ function Toast(element, options) {
     self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
   };
 
-  if (!element.Toast) {
-    on(element, 'click', self.hide);
-  }
+  componentInit(function () {
+    element = queryElement(element);
+    element.Toast && element.Toast.dispose();
+    toast = element.closest('.toast');
+    animationData = element.getAttribute('data-animation');
+    autohideData = element.getAttribute('data-autohide');
+    delayData = element.getAttribute('data-delay');
+    showCustomEvent = bootstrapCustomEvent('show', 'toast');
+    hideCustomEvent = bootstrapCustomEvent('hide', 'toast');
+    shownCustomEvent = bootstrapCustomEvent('shown', 'toast');
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast');
+    self.options = {};
+    self.options.animation = options.animation === false || animationData === 'false' ? 0 : 1;
+    self.options.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1;
+    self.options.delay = parseInt(options.delay || delayData) || 500;
 
-  self.toast = toast;
-  self.element = element;
-  element.Toast = self;
+    if (!element.Toast) {
+      on(element, 'click', self.hide);
+    }
+
+    self.toast = toast;
+    self.element = element;
+    element.Toast = self;
+  });
 }
 
 function Tooltip(element, options) {
-  element = queryElement(element);
   options = options || {};
-  element.Tooltip && element.Tooltip.dispose();
-  var tooltip = null,
-      timer = 0,
-      titleString;
   var self = this,
-      animationData = element.getAttribute('data-animation'),
-      placementData = element.getAttribute('data-placement'),
-      delayData = element.getAttribute('data-delay'),
-      containerData = element.getAttribute('data-container'),
-      showCustomEvent = bootstrapCustomEvent('show', 'tooltip'),
-      shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip'),
-      hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip'),
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip'),
-      containerElement = queryElement(options.container),
-      containerDataElement = queryElement(containerData),
-      modal = element.closest('.modal'),
-      navbarFixedTop = element.closest('.fixed-top'),
-      navbarFixedBottom = element.closest('.fixed-bottom');
-  self.options = {};
-  self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-  self.options.placement = options.placement ? options.placement : placementData || 'top';
-  self.options.template = options.template ? options.template : null;
-  self.options.delay = parseInt(options.delay || delayData) || 200;
-  self.options.container = containerElement ? containerElement : containerDataElement ? containerDataElement : navbarFixedTop ? navbarFixedTop : navbarFixedBottom ? navbarFixedBottom : modal ? modal : document.body;
-  var placementClass = "bs-tooltip-".concat(self.options.placement);
+      tooltip = null,
+      timer = 0,
+      titleString,
+      animationData,
+      placementData,
+      delayData,
+      containerData,
+      showCustomEvent,
+      shownCustomEvent,
+      hideCustomEvent,
+      hiddenCustomEvent,
+      containerElement,
+      containerDataElement,
+      modal,
+      navbarFixedTop,
+      navbarFixedBottom,
+      placementClass;
 
   function getTitle() {
     return element.getAttribute('title') || element.getAttribute('data-title') || element.getAttribute('data-original-title');
@@ -1846,17 +1883,41 @@ function Tooltip(element, options) {
     delete element.Tooltip;
   };
 
-  titleString = getTitle();
-  if (!titleString) return;
+  componentInit(function () {
+    element = queryElement(element);
+    element.Tooltip && element.Tooltip.dispose();
+    animationData = element.getAttribute('data-animation');
+    placementData = element.getAttribute('data-placement');
+    delayData = element.getAttribute('data-delay');
+    containerData = element.getAttribute('data-container');
+    showCustomEvent = bootstrapCustomEvent('show', 'tooltip');
+    shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip');
+    hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip');
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip');
+    containerElement = queryElement(options.container);
+    containerDataElement = queryElement(containerData);
+    modal = element.closest('.modal');
+    navbarFixedTop = element.closest('.fixed-top');
+    navbarFixedBottom = element.closest('.fixed-bottom');
+    self.options = {};
+    self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    self.options.placement = options.placement ? options.placement : placementData || 'top';
+    self.options.template = options.template ? options.template : null;
+    self.options.delay = parseInt(options.delay || delayData) || 200;
+    self.options.container = containerElement ? containerElement : containerDataElement ? containerDataElement : navbarFixedTop ? navbarFixedTop : navbarFixedBottom ? navbarFixedBottom : modal ? modal : document.body;
+    placementClass = "bs-tooltip-".concat(self.options.placement);
+    titleString = getTitle();
+    if (!titleString) return;
 
-  if (!element.Tooltip) {
-    element.setAttribute('data-original-title', titleString);
-    element.removeAttribute('title');
-    toggleEvents(on);
-  }
+    if (!element.Tooltip) {
+      element.setAttribute('data-original-title', titleString);
+      element.removeAttribute('title');
+      toggleEvents(on);
+    }
 
-  self.element = element;
-  element.Tooltip = self;
+    self.element = element;
+    element.Tooltip = self;
+  });
 }
 
 var componentsInit = {};
@@ -1866,11 +1927,7 @@ var initCallback = function initCallback(lookUp) {
 
   var initializeDataAPI = function initializeDataAPI(Constructor, collection) {
     for (var i = 0, cl = collection.length; i < cl; i++) {
-      try {
-        new Constructor(collection[i]);
-      } catch (e) {
-        console.error(e);
-      }
+      new Constructor(collection[i]);
     }
   };
 
@@ -1883,12 +1940,8 @@ var removeDataAPI = function removeDataAPI(lookUp) {
 
   var removeElementDataAPI = function removeElementDataAPI(ConstructorName, collection) {
     for (var i = 0, cl = collection.length; i < cl; i++) {
-      try {
-        if (collection[i][ConstructorName]) {
-          collection[i][ConstructorName].dispose();
-        }
-      } catch (e) {
-        console.error(e);
+      if (collection[i][ConstructorName]) {
+        collection[i][ConstructorName].dispose();
       }
     }
   };
@@ -1932,18 +1985,4 @@ var Util = {
 
 var version = "3.0.0";
 
-var components = {
-  Alert: Alert,
-  Button: Button,
-  Carousel: Carousel,
-  Collapse: Collapse,
-  Dropdown: Dropdown,
-  Modal: Modal,
-  Popover: Popover,
-  ScrollSpy: ScrollSpy,
-  Tab: Tab,
-  Toast: Toast,
-  Tooltip: Tooltip
-};
-
-export { Util, version as Version, components, componentsInit, initCallback, removeDataAPI };
+export { Alert, Button, Carousel, Collapse, Dropdown, Modal, Popover, ScrollSpy, Tab, Toast, Tooltip, Util, version as Version, componentsInit, initCallback, removeDataAPI };

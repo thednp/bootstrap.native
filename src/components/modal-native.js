@@ -7,17 +7,21 @@ import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, passiveHandler } from '../util/event.js';
 import { queryElement, getElementsByClassName } from '../util/selector.js';
 import { emulateTransitionEnd, getElementTransitionDuration } from '../util/transition.js';
+import { componentInit } from '../util/misc.js';
 
 // MODAL DEFINITION
 // ================
 
 export default function Modal(element,options) { // element can be the modal/triggering button
 
-  // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
-  element = queryElement(element);
+  // set options
+  options = options || {};
 
-  // custom events
-  let showCustomEvent,
+  // bind, modal
+  let self = this, modal,
+
+    // custom events
+    showCustomEvent,
     shownCustomEvent,
     hideCustomEvent,
     hiddenCustomEvent,
@@ -26,32 +30,6 @@ export default function Modal(element,options) { // element can be the modal/tri
     scrollBarWidth,
     overlay,
     overlayDelay;
-
-  // bind
-  const self = this,
-    // determine modal, triggering element
-    checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') ),
-    modal = hasClass(element,'modal') ? element : checkModal;
-
-  if ( hasClass(element, 'modal') ) { element = null; } // modal is now independent of it's triggering element
-
-  if ( !modal ) { return; } // invalidate
-
-  // reset on re-init
-  element && element.Modal && element.Modal.dispose();
-  modal.Modal && modal.Modal.dispose();
-
-  // set an initial state of the modal
-  modal.isAnimating = false;  
-
-  // set options
-  options = options || {};
-  self.options = {};
-  self.options.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
-  self.options.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
-  self.options.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : self.options.backdrop;
-  self.options.animation = hasClass(modal, 'fade') ? true : false;
-  self.options.content = options.content; // JavaScript only
 
   // also find fixed-top / fixed-bottom items
   const fixedItems = getElementsByClassName(document.documentElement,'fixed-top')
@@ -252,20 +230,53 @@ export default function Modal(element,options) { // element can be the modal/tri
   };
 
   // init
-  // prevent adding event handlers over and over
-  // modal is independent of a triggering element
-  if ( element && !element.Modal ) {
-    on(element, 'click', clickHandler);
-  }
-  if ( self.options.content ) { self.setContent( self.options.content.trim() ); }
+  componentInit(()=>{
 
-  // set associations
-  self.modal = modal;
-  if (element) { 
-    modal.modalTrigger = element;
-    self.element = element;
-    element.Modal = self;
-  } else { modal.Modal = self; }
+    // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
+    element = queryElement(element);
+
+    // determine modal, triggering element
+    let checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') )
+    modal = hasClass(element,'modal') ? element : checkModal
+
+    if ( hasClass(element, 'modal') ) { element = null; } // modal is now independent of it's triggering element
+
+    // reset on re-init
+    element && element.Modal && element.Modal.dispose();
+    modal && modal.Modal && modal.Modal.dispose();
+
+    // set options
+    self.options = {};
+    self.options.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
+    self.options.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
+    self.options.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : self.options.backdrop;
+    self.options.animation = hasClass(modal, 'fade') ? true : false;
+    self.options.content = options.content; // JavaScript only
+    
+    // set an initial state of the modal
+    modal.isAnimating = false;  
+
+    // prevent adding event handlers over and over
+    // modal is independent of a triggering element
+    if ( element && !element.Modal ) {
+      on(element, 'click', clickHandler);
+    }
+
+    if ( self.options.content ) { 
+      self.setContent( self.options.content.trim() ); 
+    }
+  
+    // set associations
+    self.modal = modal;
+    if (element) { 
+      modal.modalTrigger = element;
+      self.element = element;
+      element.Modal = self;
+    } else { 
+      modal.Modal = self;
+    }
+
+  })
 
 }
 

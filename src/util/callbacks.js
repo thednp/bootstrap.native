@@ -6,11 +6,7 @@ export const initCallback = function (lookUp){
   lookUp = lookUp || document;
   const initializeDataAPI = function( Constructor, collection ){
     for (let i=0, cl=collection.length; i<cl; i++) {
-      try {
-        new Constructor(collection[i]);
-      } catch(e){
-        console.error(e)
-      }
+      new Constructor(collection[i]);
     }
   };
   for (const component in componentsInit) {
@@ -24,12 +20,8 @@ export const removeDataAPI = function (lookUp) {
   lookUp = lookUp || document;
   const removeElementDataAPI = function( ConstructorName, collection ){
     for (let i=0, cl=collection.length; i<cl; i++) {
-      try {
-        if (collection[i][ConstructorName]) {
-          collection[i][ConstructorName].dispose();
-        }
-      } catch(e){
-        console.error(e)
+      if (collection[i][ConstructorName]) {
+        collection[i][ConstructorName].dispose();
       }
     }
   };  

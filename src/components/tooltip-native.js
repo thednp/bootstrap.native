@@ -7,64 +7,45 @@ import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, touchEvents, passiveHandler } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { emulateTransitionEnd } from '../util/transition.js';
+import { componentInit } from '../util/misc.js';
 
 // TOOLTIP DEFINITION
 // ==================
 
 export default function Tooltip(element,options) {
 
-  // initialization element
-  element = queryElement(element);
-
   // set options
   options = options || {};
 
-  // reset on re-init
-  element.Tooltip && element.Tooltip.dispose();
+  // bind
+  let self = this,
 
-  // tooltip, timer, and title
-  let tooltip = null, timer = 0, titleString;
-
-  // bind, 
-  const self = this,
+    // tooltip, timer, and title
+    tooltip = null, timer = 0, titleString,
 
     // DATA API
-    animationData = element.getAttribute('data-animation'),
-    placementData = element.getAttribute('data-placement'),
-    delayData = element.getAttribute('data-delay'),
-    containerData = element.getAttribute('data-container'),
+    animationData,
+    placementData,
+    delayData,
+    containerData,
 
     // custom events
-    showCustomEvent = bootstrapCustomEvent('show', 'tooltip'),
-    shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip'),
-    hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip'),
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip'),
+    showCustomEvent,
+    shownCustomEvent,
+    hideCustomEvent,
+    hiddenCustomEvent,
 
     // check container
-    containerElement = queryElement(options.container),
-    containerDataElement = queryElement(containerData),
+    containerElement,
+    containerDataElement,
 
     // maybe the element is inside a modal
-    modal = element.closest('.modal'),
+    modal,
 
     // maybe the element is inside a fixed navbar
-    navbarFixedTop = element.closest('.fixed-top'),
-    navbarFixedBottom = element.closest('.fixed-bottom');
-
-  // set instance options
-  self.options = {};
-  self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-  self.options.placement = options.placement ? options.placement : placementData || 'top';
-  self.options.template = options.template ? options.template : null; // JavaScript only
-  self.options.delay = parseInt(options.delay || delayData) || 200;
-  self.options.container = containerElement ? containerElement 
-                          : containerDataElement ? containerDataElement
-                          : navbarFixedTop ? navbarFixedTop
-                          : navbarFixedBottom ? navbarFixedBottom
-                          : modal ? modal : document.body;
-
-  // set placement class
-  const placementClass = `bs-tooltip-${self.options.placement}`;
+    navbarFixedTop,
+    navbarFixedBottom,
+    placementClass;
 
   // private methods
   function getTitle() { 
@@ -183,23 +164,69 @@ export default function Tooltip(element,options) {
     delete element.Tooltip;
   };
 
-  // set tooltip content
-  titleString = getTitle();
-  
-  // invalidate
-  if ( !titleString ) return;
-
   // init
-  // prevent adding event handlers twice
-  if (!element.Tooltip) { 
-    element.setAttribute('data-original-title',titleString);
-    element.removeAttribute('title');
-    toggleEvents(on);
-  }
+  componentInit(()=>{
+    // initialization element
+    element = queryElement(element);
 
-  // associate target to init object
-  self.element = element;
-  element.Tooltip = self;
+    // reset on re-init
+    element.Tooltip && element.Tooltip.dispose();
+
+    // DATA API
+    animationData = element.getAttribute('data-animation')
+    placementData = element.getAttribute('data-placement')
+    delayData = element.getAttribute('data-delay')
+    containerData = element.getAttribute('data-container')
+
+    // custom events
+    showCustomEvent = bootstrapCustomEvent('show', 'tooltip')
+    shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip')
+    hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip')
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip')
+
+    // check container
+    containerElement = queryElement(options.container)
+    containerDataElement = queryElement(containerData)
+
+    // maybe the element is inside a modal
+    modal = element.closest('.modal')
+
+    // maybe the element is inside a fixed navbar
+    navbarFixedTop = element.closest('.fixed-top')
+    navbarFixedBottom = element.closest('.fixed-bottom')
+
+    // set instance options
+    self.options = {};
+    self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    self.options.placement = options.placement ? options.placement : placementData || 'top';
+    self.options.template = options.template ? options.template : null; // JavaScript only
+    self.options.delay = parseInt(options.delay || delayData) || 200;
+    self.options.container = containerElement ? containerElement 
+                            : containerDataElement ? containerDataElement
+                            : navbarFixedTop ? navbarFixedTop
+                            : navbarFixedBottom ? navbarFixedBottom
+                            : modal ? modal : document.body;
+
+    // set placement class
+    placementClass = `bs-tooltip-${self.options.placement}`
+
+    // set tooltip content
+    titleString = getTitle();
+    
+    // invalidate
+    if ( !titleString ) return;    
+
+    // prevent adding event handlers twice
+    if (!element.Tooltip) { 
+      element.setAttribute('data-original-title',titleString);
+      element.removeAttribute('title');
+      toggleEvents(on);
+    }
+  
+    // associate target to init object
+    self.element = element;
+    element.Tooltip = self;
+  })
 
 }
 

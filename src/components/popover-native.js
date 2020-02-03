@@ -7,20 +7,18 @@ import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, touchEvents, passiveHandler } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { emulateTransitionEnd } from '../util/transition.js';
+import { componentInit } from '../util/misc.js';
 
 // POPOVER DEFINITION
 // ==================
 
 export default function Popover(element,options) {
 
-  // initialization element
-  element = queryElement(element);
-
-  // reset on re-init
-  element.Popover && element.Popover.dispose();
-
   // set instance options
   options = options || {};
+
+  // bind
+  let self = this
 
   // popover and timer
   let popover = null,
@@ -29,55 +27,35 @@ export default function Popover(element,options) {
     titleString,
     contentString;
 
-  // bind, popover and timer
-  const 
-    self = this,
+  // DATA API
+  let triggerData, // click / hover / focus
+    animationData, // true / false
 
-    // DATA API
-    triggerData = element.getAttribute('data-trigger'), // click / hover / focus
-    animationData = element.getAttribute('data-animation'), // true / false
-
-    placementData = element.getAttribute('data-placement'),
-    dismissibleData = element.getAttribute('data-dismissible'),
-    delayData = element.getAttribute('data-delay'),
-    containerData = element.getAttribute('data-container'),
+    placementData,
+    dismissibleData,
+    delayData,
+    containerData,
 
     // close btn for dissmissible popover
-    closeBtn = '<button type="button" class="close">×</button>',
+    closeBtn,
 
     // custom events
-    showCustomEvent = bootstrapCustomEvent('show', 'popover'),
-    shownCustomEvent = bootstrapCustomEvent('shown', 'popover'),
-    hideCustomEvent = bootstrapCustomEvent('hide', 'popover'),
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'popover'),
+    showCustomEvent,
+    shownCustomEvent,
+    hideCustomEvent,
+    hiddenCustomEvent,
 
     // check container
-    containerElement = queryElement(options.container),
-    containerDataElement = queryElement(containerData),
+    containerElement,
+    containerDataElement,
 
     // maybe the element is inside a modal
-    modal = element.closest('.modal'),
+    modal,
 
     // maybe the element is inside a fixed navbar
-    navbarFixedTop = element.closest('.fixed-top'),
-    navbarFixedBottom = element.closest('.fixed-bottom');
-
-  // set instance options
-  self.options = {};
-  self.options.template = options.template ? options.template : null; // JavaScript only
-  self.options.trigger = options.trigger ? options.trigger : triggerData || 'hover';
-  self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-  self.options.placement = options.placement ? options.placement : placementData || 'top';
-  self.options.delay = parseInt(options.delay || delayData) || 200;
-  self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
-  self.options.container = containerElement ? containerElement 
-                          : containerDataElement ? containerDataElement 
-                          : navbarFixedTop ? navbarFixedTop
-                          : navbarFixedBottom ? navbarFixedBottom
-                          : modal ? modal : document.body;
-
-  // set initial placement from option
-  const placementClass = `bs-popover-${self.options.placement}`;
+    navbarFixedTop,
+    navbarFixedBottom,
+    placementClass;
 
   // handlers
   function dismissibleHandler(e) {
@@ -225,19 +203,77 @@ export default function Popover(element,options) {
     delete element.Popover;
   };
 
-  // invalidate
-  titleString = getContents()[0];
-  contentString = getContents()[1];
-  if ( !contentString && !self.options.template ) return;
+  componentInit(()=>{
 
-  // init
-  if ( !element.Popover ) { // prevent adding event handlers twice
-    toggleEvents(on);
-  }
+    // initialization element
+    element = queryElement(element)
 
-  // associate target to init object
-  self.element = element;
-  element.Popover = self;
+    // reset on re-init
+    element.Popover && element.Popover.dispose()
+
+    // DATA API
+    triggerData = element.getAttribute('data-trigger') // click / hover / focus
+    animationData = element.getAttribute('data-animation') // true / false
+
+    placementData = element.getAttribute('data-placement')
+    dismissibleData = element.getAttribute('data-dismissible')
+    delayData = element.getAttribute('data-delay')
+    containerData = element.getAttribute('data-container')
+
+    // close btn for dissmissible popover
+    closeBtn = '<button type="button" class="close">×</button>'
+
+    // custom events
+    showCustomEvent = bootstrapCustomEvent('show', 'popover')
+    shownCustomEvent = bootstrapCustomEvent('shown', 'popover')
+    hideCustomEvent = bootstrapCustomEvent('hide', 'popover')
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'popover')
+
+    // check container
+    containerElement = queryElement(options.container)
+    containerDataElement = queryElement(containerData)
+
+    // maybe the element is inside a modal
+    modal = element.closest('.modal')
+
+    // maybe the element is inside a fixed navbar
+    navbarFixedTop = element.closest('.fixed-top')
+    navbarFixedBottom = element.closest('.fixed-bottom')
+
+    // set instance options
+    self.options = {};
+    self.options.template = options.template ? options.template : null; // JavaScript only
+    self.options.trigger = options.trigger ? options.trigger : triggerData || 'hover';
+    self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    self.options.placement = options.placement ? options.placement : placementData || 'top';
+    self.options.delay = parseInt(options.delay || delayData) || 200;
+    self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
+    self.options.container = containerElement ? containerElement 
+                            : containerDataElement ? containerDataElement 
+                            : navbarFixedTop ? navbarFixedTop
+                            : navbarFixedBottom ? navbarFixedBottom
+                            : modal ? modal : document.body;
+
+    placementClass = `bs-popover-${self.options.placement}`
+
+
+    // invalidate
+    let popoverContents = getContents()
+    titleString = popoverContents[0];
+    contentString = popoverContents[1];
+    
+    if ( !contentString && !self.options.template ) return;
+  
+    // init
+    if ( !element.Popover ) { // prevent adding event handlers twice
+      toggleEvents(on);
+    }
+  
+    // associate target to init object
+    self.element = element;
+    element.Popover = self;
+
+  })
 
 }
 

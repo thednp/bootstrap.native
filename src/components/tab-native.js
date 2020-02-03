@@ -6,29 +6,26 @@ import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
 import { queryElement, getElementsByClassName } from '../util/selector.js';
 import { supportTransitions, emulateTransitionEnd } from '../util/transition.js';
+import { componentInit } from '../util/misc.js';
 
 // TAB DEFINITION
 // ==============
 
 export default function Tab(element,options) {
 
-  // initialization element
-  element = queryElement(element);
-
-  // reset on re-init
-  element.Tab && element.Tab.dispose();
+  // set options
+  options = options || {}
 
   // bind
-  const self = this,
+  let self = this,
 
     // DATA API
-    heightData = element.getAttribute('data-height'),
+    heightData,
     // event targets
-    tabs = element.closest('.nav'),
-    dropdown = tabs && queryElement('.dropdown-toggle',tabs);
+    tabs, dropdown,
 
-  // custom events
-  let showCustomEvent,
+    // custom events
+    showCustomEvent,
     shownCustomEvent,
     hideCustomEvent,
     hiddenCustomEvent,
@@ -42,11 +39,6 @@ export default function Tab(element,options) {
     containerHeight,
     equalContents,
     nextHeight;
-
-  // set options
-  options = options || {};
-  self.options = {};
-  self.options.height = !supportTransitions || (options.height === false || heightData === 'false') ? false : true;
 
   // triggers
   function triggerEnd() {
@@ -165,22 +157,41 @@ export default function Tab(element,options) {
     delete element.Tab;
   }
 
-  // invalidate 
-  if (!tabs) return;
+  componentInit(()=>{
 
-  // set default animation state
-  tabs.isAnimating = false;
+    // initialization element
+    element = queryElement(element);
 
-  // init
-  if ( !element.Tab ) { // prevent adding event handlers twice
-    on(element, 'click', clickHandler);
-  }
+    // reset on re-init
+    element.Tab && element.Tab.dispose();
 
-  if (self.options.height) { tabsContentContainer = getActiveContent().parentNode; }
+    // DATA API
+    heightData = element.getAttribute('data-height')
+    // event targets
+    tabs = element.closest('.nav')
+    dropdown = tabs && queryElement('.dropdown-toggle',tabs)
 
-  // associate target with init object
-  self.element = element;
-  element.Tab = self;
+    // instance options
+    self.options = {};
+    self.options.height = !supportTransitions || (options.height === false || heightData === 'false') ? false : true;
+
+    // invalidate 
+    // if (!tabs) return;
+  
+    // set default animation state
+    tabs.isAnimating = false;
+  
+    // init
+    if ( !element.Tab ) { // prevent adding event handlers twice
+      on(element, 'click', clickHandler);
+    }
+  
+    if (self.options.height) { tabsContentContainer = getActiveContent().parentNode; }
+  
+    // associate target with init object
+    self.element = element;
+    element.Tab = self;
+  })
 
 }
 

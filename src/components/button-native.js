@@ -5,25 +5,18 @@
 import { hasClass, addClass, removeClass  } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
+import { componentInit } from '../util/misc.js';
 
 // BUTTON DEFINITION
 // =================
 
 export default function Button(element) {
 
-  // initialization element
-  element = queryElement(element);
+  // bind and labels
+  let self = this, labels
 
-  // reset on re-init
-  element.Button && element.Button.dispose();
-
-  // bind & changeEvent
-  const self = this,
-    changeCustomEvent = bootstrapCustomEvent('change', 'button'),
-    labels = element.getElementsByClassName('btn');
-  
-  // invalidate
-  if (!labels.length) return;
+  // changeEvent
+  const changeCustomEvent = bootstrapCustomEvent('change', 'button')
 
   // private methods
   function activateItems() {
@@ -124,22 +117,35 @@ export default function Button(element) {
   }
 
   // init
-  // prevent adding event handlers twice
-  if ( !element.Button ) { 
-    toggleEvents(on);
-  }
+  componentInit(()=>{
 
-  // set initial toggled state
-  // toggled makes sure to prevent triggering twice the change.bs.button events
-  element.toggled = false;  
+    // initialization element
+    element = queryElement(element);
+
+    // reset on re-init
+    element.Button && element.Button.dispose();
   
-  // associate target with init object
-  self.element = element;
-  self.buttons = labels;
-  element.Button = self;
+    labels = element.getElementsByClassName('btn')
 
-  // activate items on load
-  activateItems();
+    // invalidate
+    if (!labels.length) return;
 
+    // prevent adding event handlers twice
+    if ( !element.Button ) { 
+      toggleEvents(on);
+    }
+  
+    // set initial toggled state
+    // toggled makes sure to prevent triggering twice the change.bs.button events
+    element.toggled = false;  
+    
+    // associate target with init object
+    self.element = element;
+    self.buttons = labels;
+    element.Button = self;
+  
+    // activate items on load
+    activateItems();
+  })
 }
 

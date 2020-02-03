@@ -6,45 +6,28 @@ import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, passiveHandler } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { getScroll } from '../util/misc.js';
+import { componentInit } from '../util/misc.js';
 
 // SCROLLSPY DEFINITION
 // ====================
 
 export default function ScrollSpy(element,options) {
 
-  // initialization element, the element we spy on
-  element = queryElement(element);
-
-  // reset on re-init
-  element.ScrollSpy && element.ScrollSpy.dispose();
-
   // set options
   options = options || {};
 
+  // bind
+  let self = this
+
   // bind, event targets, constants
-  const 
-    self = this,
+  let 
     // DATA API
-    targetData = element.getAttribute('data-target'),
-    offsetData = element.getAttribute('data-offset'),
+    targetData,
+    offsetData,
     // targets
-    spyTarget = queryElement(options.target || targetData),
+    spyTarget,
     // determine which is the real scrollTarget
-    scrollTarget = element.offsetHeight < element.scrollHeight ? element : window;
-
-  if (!spyTarget) return;
-
-  // set instance options
-  self.options = {};
-  self.options.target = spyTarget;
-  self.options.offset = parseInt(options.offset || offsetData) || 10;
-
-  // set instance priority variables
-  self.vars = {}
-  self.vars.length = 0
-  self.vars.items = []
-  self.vars.targets = []
-  self.vars.isWindow = scrollTarget === window
+    scrollTarget;
 
   // private methods
   // populate items and targets
@@ -119,15 +102,47 @@ export default function ScrollSpy(element,options) {
   }
 
   // init
-  // prevent adding event handlers twice
-  if ( !element.ScrollSpy ) { 
-    toggleEvents(on);
-  }
-  self.refresh();
+  componentInit(()=>{
 
-  // associate target with init object
-  self.element = element;
-  element.ScrollSpy = self;
+    // initialization element, the element we spy on
+    element = queryElement(element);
+
+    // reset on re-init
+    element.ScrollSpy && element.ScrollSpy.dispose();
+
+    // event targets, constants   
+    // DATA API
+    targetData = element.getAttribute('data-target')
+    offsetData = element.getAttribute('data-offset')
+    // targets
+    spyTarget = queryElement(options.target || targetData)
+    // determine which is the real scrollTarget
+    scrollTarget = element.offsetHeight < element.scrollHeight ? element : window
+
+    if (!spyTarget) return
+
+    // set instance options
+    self.options = {};
+    self.options.target = spyTarget;
+    self.options.offset = parseInt(options.offset || offsetData) || 10;
+
+    // set instance priority variables
+    self.vars = {}
+    self.vars.length = 0
+    self.vars.items = []
+    self.vars.targets = []
+    self.vars.isWindow = scrollTarget === window
+
+    // prevent adding event handlers twice
+    if ( !element.ScrollSpy ) { 
+      toggleEvents(on)
+    }
+    self.refresh()
+  
+    // associate target with init object
+    self.element = element
+    element.ScrollSpy = self
+  })
 
 }
 

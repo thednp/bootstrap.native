@@ -6,26 +6,21 @@ import { hasClass, removeClass  } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { emulateTransitionEnd } from '../util/transition.js';
+import { componentInit } from '../util/misc.js';
 
 // ALERT DEFINITION
 // ================
 
 export default function Alert(element) {
-
-  // initialization element
-  element = queryElement(element); 
+  
+  // bind
+  let self = this
   
   // find the target alert 
-  let alert = element.closest('.alert');
-
-  // invalidate
-  if (!alert) return;
-
-  // reset on re-init
-  element.Alert && element.Alert.dispose(); 
+  let alert
 
   // CONSTANTS
-  const self = this, 
+  const 
     closeCustomEvent = bootstrapCustomEvent('close','alert'),
     closedCustomEvent = bootstrapCustomEvent('closed','alert');
 
@@ -64,12 +59,23 @@ export default function Alert(element) {
 
   // INIT
   // prevent adding event handlers twice 
-  if ( !element.Alert ) {
-    on(element, 'click', clickHandler);
-  }
+  componentInit(()=>{
+    // initialization element
+    element = queryElement(element);
 
-  // store init object within target element 
-  self.element = element;
-  element.Alert = self;
+    // find the target alert 
+    alert = element.closest('.alert');
+
+    // reset on re-init
+    element.Alert && element.Alert.dispose();     
+
+    if ( !element.Alert ) {
+      on(element, 'click', clickHandler);
+    }
+  
+    // store init object within target element 
+    self.element = element;
+    element.Alert = self;
+  })
 }
 

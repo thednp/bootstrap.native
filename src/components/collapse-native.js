@@ -6,37 +6,30 @@ import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { emulateTransitionEnd } from '../util/transition.js';
+import { componentInit } from '../util/misc.js';
+
 
 // COLLAPSE DEFINITION
 // ===================
 
 export default function Collapse(element,options) {
 
-  // initialization element
-  element = queryElement(element);
-
-  // reset on re-init
-  element.Collapse && element.Collapse.dispose();
-
   // set options
-  options = options || {};
+  options = options || {}
+
+  // bind
+  let self = this
 
   // target practice
   let accordion = null,
       collapse = null,
       activeCollapse,
-      activeElement;
-
-  // bind, event targets and constants
-  const self = this,
-        // DATA API
-        accordionData = element.getAttribute('data-parent'),
-
-        // custom events
-        showCustomEvent = bootstrapCustomEvent('show', 'collapse'),
-        shownCustomEvent = bootstrapCustomEvent('shown', 'collapse'),
-        hideCustomEvent = bootstrapCustomEvent('hide', 'collapse'),
-        hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse');
+      activeElement,
+      // custom events
+      showCustomEvent,
+      shownCustomEvent,
+      hideCustomEvent,
+      hiddenCustomEvent;
 
   // private methods
   function openAction(collapseElement, toggle) {
@@ -112,27 +105,44 @@ export default function Collapse(element,options) {
     delete element.Collapse;
   }
 
-  // determine targets
-  collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
-
-  // invalidate
-  if (!collapse) return;
-
-  collapse.isAnimating = false;  
-  accordion = element.closest(options.parent || accordionData);
-
-  // associations
-  collapse && (self.collapse = collapse);
-  accordion && (self.options = {}, self.options.parent = accordion);
-
   // init
-  // prevent adding event handlers twice
-  if ( !element.Collapse ) { 
-    on(element, 'click', self.toggle);
-  }
+  componentInit(()=>{
+  
+    // initialization element
+    element = queryElement(element);
 
-  // associate target to init object
-  self.element = element;
-  element.Collapse = self;
+    // reset on re-init
+    element.Collapse && element.Collapse.dispose();
+
+    // DATA API
+    const accordionData = element.getAttribute('data-parent')
+
+    // custom events
+    showCustomEvent = bootstrapCustomEvent('show', 'collapse')
+    shownCustomEvent = bootstrapCustomEvent('shown', 'collapse')
+    hideCustomEvent = bootstrapCustomEvent('hide', 'collapse')
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse')
+
+    // determine targets
+    collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
+  
+    // invalidate
+    // if (!collapse) return;
+  
+    collapse.isAnimating = false;  
+    accordion = element.closest(options.parent || accordionData);
+  
+    // associations
+    collapse && (self.collapse = collapse);
+    accordion && (self.options = {}, self.options.parent = accordion);
+    // prevent adding event handlers twice
+    if ( !element.Collapse ) { 
+      on(element, 'click', self.toggle);
+    }
+  
+    // associate target to init object
+    self.element = element;
+    element.Collapse = self;
+  })
 }
 

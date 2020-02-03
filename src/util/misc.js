@@ -5,10 +5,18 @@ export function setFocus (element){
   element.focus ? element.focus() : element.setActive();
 }
 
-export function getScroll () { // also Affix and ScrollSpy uses it
+// Popover, Tooltip & ScrollSpy
+export function getScroll () { 
   return {
     y : window.pageYOffset || document.documentElement.scrollTop,
     x : window.pageXOffset || document.documentElement.scrollLeft
+  }
+}
+
+export function componentInit(fn){
+  try{ fn() } 
+  catch(e){
+    console.error(`BSN: ${e}`)
   }
 }
 

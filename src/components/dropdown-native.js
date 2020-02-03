@@ -6,6 +6,7 @@ import { setFocus } from '../util/misc.js';
 import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
+import { componentInit } from '../util/misc.js';
 
 
 // DROPDOWN DEFINITION
@@ -13,31 +14,17 @@ import { queryElement } from '../util/selector.js';
 
 export default function Dropdown(element,option) {
   
-  // initialization element
-  element = queryElement(element);
-
-  // reset on re-init
-  element.Dropdown && element.Dropdown.dispose();    
+  // bind 
+  let self = this
 
   // custom events
   let showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
       hiddenCustomEvent,
-      relatedTarget = null;
-
-  // bind and targets
-  const self = this,
-    parent = element.parentNode,
-    menu = queryElement('.dropdown-menu', parent),
-    menuItems = (() => {
-      let newSet = [];
-      [].slice.call(menu.children).map(child=>{
-        child.children.length && (child.children[0].tagName === 'A' && newSet.push(child.children[0]));
-        child.tagName === 'A' && newSet.push(child);
-      })
-      return newSet;
-    })();
+      relatedTarget = null,
+      // targets
+      parent, menu, menuItems = [];
   
   // preventDefault on empty anchor links
   function preventEmptyAnchor(anchor) {
@@ -149,22 +136,40 @@ export default function Dropdown(element,option) {
   }
 
   // init
-  // prevent adding event handlers twice
-  if ( !element.Dropdown ) { 
-    !('tabindex' in menu) && menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome | Safari
-    on(element, 'click', clickHandler);
-  }
+  componentInit(()=>{
 
-  // set option
-  self.options = {};
-  self.options.persist = option === true || element.getAttribute('data-persist') === 'true' || false;
+    // initialization element
+    element = queryElement(element);
 
-  // set initial state to closed
-  element.open = false;
+    // reset on re-init
+    element.Dropdown && element.Dropdown.dispose();
 
-  // associate element with init object 
-  self.element = element;
-  element.Dropdown = self;
+    // set  targets
+    parent = element.parentNode
+    menu = queryElement('.dropdown-menu', parent);
+
+    [].slice.call(menu.children).map(child=>{
+      child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
+      child.tagName === 'A' && menuItems.push(child);
+    })
+
+    // prevent adding event handlers twice
+    if ( !element.Dropdown ) { 
+      !('tabindex' in menu) && menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome | Safari
+      on(element, 'click', clickHandler);
+    }
+  
+    // set option
+    self.options = {};
+    self.options.persist = option === true || element.getAttribute('data-persist') === 'true' || false;
+  
+    // set initial state to closed
+    element.open = false;
+  
+    // associate element with init object 
+    self.element = element;
+    element.Dropdown = self;
+  })
 
 }
 

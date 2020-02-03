@@ -6,52 +6,24 @@ import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, touchEvents, mouseHover, passiveHandler } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { getElementTransitionDuration, emulateTransitionEnd, transitionEndEvent } from '../util/transition.js';
+import { componentInit } from '../util/misc.js';
 
 // CAROUSEL DEFINITION
 // ===================
 
 export default function Carousel (element,options) {
 
-  // initialization element
-  element = queryElement( element );
-
-  // reset on re-init
-  element.Carousel && element.Carousel.dispose();
-
   // set options
-  options = options || {};    
+  options = options || {}
 
   // bind
-  const self = this,
-  
-    // DATA API
-    intervalAttribute = element.getAttribute('data-interval'),
-    intervalOption = options.interval,
-    intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
-    pauseData = element.getAttribute('data-pause') === 'hover' || false,
-    keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
-    // carousel elements
-    slides = element.getElementsByClassName('carousel-item'),
-    leftArrow = element.getElementsByClassName('carousel-control-prev')[0],
-    rightArrow = element.getElementsByClassName('carousel-control-next')[0],
-    indicator = queryElement( '.carousel-indicators', element ),
-    indicators = indicator && indicator.getElementsByTagName( "LI" ) || [];
-
-  // invalidate when not enough items
-  if (slides.length < 2) { return; }
-
-  // set instance options
-  self.options = {};
-  self.options.keyboard = options.keyboard === true || keyboardData;
-  self.options.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false; // false / hover
-  
-  self.options.interval = typeof intervalOption === 'number' ? intervalOption
-                        : intervalOption === false || intervalData === 0 || intervalData === false ? 0
-                        : isNaN(intervalData) ? 5000 // bootstrap carousel default interval
-                        : intervalData;
+  const self = this
 
   // custom events
-  let slideCustomEvent, slidCustomEvent;
+  let slideCustomEvent, slidCustomEvent
+
+  // carousel elements
+  let slides, leftArrow, rightArrow, indicator, indicators
 
   // handlers
   function pauseHandler() {
@@ -309,21 +281,61 @@ export default function Carousel (element,options) {
   }
 
   // init
-  // prevent adding event handlers twice
-  if ( !element.Carousel ) { 
-    toggleEvents(on);
-  }
-  // set first slide active if none
-  if (self.getActiveIndex()<0) {
-    slides.length && addClass(slides[0],'active');
-    indicators.length && setActivePage(0);
-  }
+  componentInit(()=>{
 
-  // start to cycle if set
-  if ( self.options.interval ){ self.cycle(); }
+    // initialization element
+    element = queryElement( element );
 
-  // associate init object to target
-  element.Carousel = self;
+    // reset on re-init
+    element.Carousel && element.Carousel.dispose(); 
+
+    // options
+    let
+      // DATA API
+      intervalAttribute = element.getAttribute('data-interval'),
+      intervalOption = options.interval,
+      intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
+      pauseData = element.getAttribute('data-pause') === 'hover' || false,
+      keyboardData = element.getAttribute('data-keyboard') === 'true' || false
+
+    // carousel elements
+    slides = element.getElementsByClassName('carousel-item')
+    leftArrow = element.getElementsByClassName('carousel-control-prev')[0]
+    rightArrow = element.getElementsByClassName('carousel-control-next')[0]
+    indicator = queryElement( '.carousel-indicators', element )
+    indicators = indicator && indicator.getElementsByTagName( "LI" ) || []
+
+    // set instance options
+    self.options = {};
+    self.options.keyboard = options.keyboard === true || keyboardData;
+    self.options.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false; // false / hover
+    
+    self.options.interval = typeof intervalOption === 'number' ? intervalOption
+                          : intervalOption === false || intervalData === 0 || intervalData === false ? 0
+                          : isNaN(intervalData) ? 5000 // bootstrap carousel default interval
+                          : intervalData;
+
+
+
+    // invalidate when not enough items
+    if (slides.length < 2) { return; }
+
+    // prevent adding event handlers twice
+    if ( !element.Carousel ) { 
+      toggleEvents(on);
+    }
+    // set first slide active if none
+    if (self.getActiveIndex()<0) {
+      slides.length && addClass(slides[0],'active');
+      indicators.length && setActivePage(0);
+    }
+  
+    // start to cycle if set
+    if ( self.options.interval ){ self.cycle(); }
+  
+    // associate init object to target
+    element.Carousel = self;
+  })
 
 }
 
