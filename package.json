@@ -7,9 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "rollup --help",
-    "build": "rollup --config rollup.config.js",
-    "addHeader": "node build/addHeader.js",
-    "watch": "rollup --config rollup.config.js -w"
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
   },
   "browserslist": [
     "last 2 versions",

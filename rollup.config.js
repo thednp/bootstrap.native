@@ -43,7 +43,7 @@ export default [
     },
     plugins: [
       json(),
-      cleanup(),
+      // cleanup(),
       buble({
         exclude: ['node_modules/**','*.json'] // only transpile our source code
       }),
@@ -77,7 +77,7 @@ export default [
     },
     plugins: [
       json(),
-      cleanup(),
+      // cleanup(),
       buble({
         exclude: ['node_modules/**','*.json'] // only transpile our source code
       }),
