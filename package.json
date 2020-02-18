@@ -7,9 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "rollup --help",
-    "build": "rollup --config build/rollup.config.js && npm run addHeader",
+    "build": "rollup --config rollup.config.js",
     "addHeader": "node build/addHeader.js",
-    "watch": "rollup --config build/rollup.config.js -w"
+    "watch": "rollup --config rollup.config.js -w"
   },
   "browserslist": [
     "last 2 versions",
@@ -34,13 +34,11 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
+    "@rollup/plugin-buble": "^0.21.1",
     "@rollup/plugin-json": "^4.0.1",
     "rollup": "^1.27.14",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-babel-minify": "^9.1.1",
-    "rollup-plugin-cleanup": "^3.1.1"
+    "rollup-plugin-cleanup": "^3.1.1",
+    "rollup-plugin-terser": "^5.2.0"
   },
   "dependencies": {}
 }

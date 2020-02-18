@@ -54,9 +54,13 @@ export default function ScrollSpy(element,options) {
   function updateItem(index) {
     const item = self.vars.items[index], // the menu item targets this element
       targetItem = self.vars.targets[index],
-      dropLink = hasClass(item,'dropdown-item') && item.closest('.dropdown').getElementsByTagName('A')[0],
+      // parent = hasClass(item,'dropdown-item') ? item.closest('.dropdown-menu')  // child looking up
+      //        : hasClass(item,'nav-link')      ? item.closest('.nav') : 0,
+      dropmenu = hasClass(item,'dropdown-item') && item.closest('.dropdown-menu'),
+      dropLink = dropmenu && dropmenu.previousElementSibling,
+      // parentLink = parent && parent.previousElementSibling,
       nextSibling = item.nextElementSibling,
-      activeSibling = nextSibling && nextSibling.getElementsByClassName('active').length,
+      activeSibling = nextSibling && nextSibling.getElementsByClassName('active').length, // parent looking down
       targetRect = self.vars.isWindow && targetItem.getBoundingClientRect(),
       isActive = hasClass(item,'active') || false,
       topEdge = (self.vars.isWindow ? targetRect.top + self.vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
@@ -65,9 +69,7 @@ export default function ScrollSpy(element,options) {
                  : element.scrollHeight,
       inside = activeSibling || self.vars.scrollOffset >= topEdge && bottomEdge > self.vars.scrollOffset;
 
-    if ( !inside && !isActive || isActive && inside  ) {
-      return;
-    } else if ( !isActive && inside ) {
+     if ( !isActive && inside ) {
       addClass(item,'active');
       if (dropLink && !hasClass(dropLink,'active') ) {
         addClass(dropLink,'active');
@@ -79,7 +81,9 @@ export default function ScrollSpy(element,options) {
       if (dropLink && hasClass(dropLink,'active') && !item.parentNode.getElementsByClassName('active').length ) {
         removeClass(dropLink,'active');
       }
-    } 
+    } else if ( isActive && inside || !inside && !isActive ) {
+      return;
+    }
   }
   // update all items
   function updateItems() {

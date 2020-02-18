@@ -1,10 +1,17 @@
 'use strict'
-import babel from 'rollup-plugin-babel'
-import minify from 'rollup-plugin-babel-minify'
+import buble from '@rollup/plugin-buble'
+import {terser} from 'rollup-plugin-terser'
 import cleanup from 'rollup-plugin-cleanup'
 import json from '@rollup/plugin-json'
+import * as pkg from "./package.json";
 
-const banner = require('./header.js')
+const year = (new Date).getFullYear()
+const banner = `/*!
+  * Native JavaScript for Bootstrap v${pkg.version} (${pkg.homepage})
+  * Copyright 2015-${year} © ${pkg.author}
+  * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
+  */`
+const miniBanner = `// Native JavaScript for Bootstrap v${pkg.version} | ${year} © ${pkg.author} | ${pkg.license}-License`
 
 export default [
   // UDM Version
@@ -20,7 +27,7 @@ export default [
     plugins: [
       json(),
       cleanup(),
-      babel({
+      buble({
         exclude: ['node_modules/**','*.json'] // only transpile our source code
       })
     ]
@@ -36,12 +43,11 @@ export default [
     },
     plugins: [
       json(),
-      babel({
+      cleanup(),
+      buble({
         exclude: ['node_modules/**','*.json'] // only transpile our source code
       }),
-      minify({
-        comments: false
-      })      
+      terser({output: {preamble: miniBanner}})      
     ]
   },
   // ESM Version
@@ -56,7 +62,7 @@ export default [
     plugins: [
       json(),
       cleanup(),
-      babel({
+      buble({
         exclude: ['node_modules/**','*.json'] // only transpile our source code
       })
     ]
@@ -71,12 +77,11 @@ export default [
     },
     plugins: [
       json(),
-      babel({
+      cleanup(),
+      buble({
         exclude: ['node_modules/**','*.json'] // only transpile our source code
       }),
-      minify({
-        comments: false
-      })
+      terser({output: {preamble: miniBanner}}) 
     ]
   }
 ]
