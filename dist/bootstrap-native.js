@@ -1043,19 +1043,19 @@
           popoverTitle.innerHTML = self.options.dismissible ? titleString + closeBtn : titleString;
           popover.appendChild(popoverTitle);
         }
-        var popoverBody = document.createElement('div');
-        addClass(popoverBody,'popover-body');
-        popoverBody.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
-        popover.appendChild(popoverBody);
+        var popoverBodyMarkup = document.createElement('div');
+        addClass(popoverBodyMarkup,'popover-body');
+        popoverBodyMarkup.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
+        popover.appendChild(popoverBodyMarkup);
       } else {
         var popoverTemplate = document.createElement('div');
         popoverTemplate.innerHTML = self.options.template.trim();
         popover.className = popoverTemplate.firstChild.className;
         popover.innerHTML = popoverTemplate.firstChild.innerHTML;
         var popoverHeader = queryElement('.popover-header',popover),
-              popoverBody$1 = queryElement('.popover-body',popover);
+              popoverBody = queryElement('.popover-body',popover);
         titleString && popoverHeader && (popoverHeader.innerHTML = titleString.trim());
-        contentString && popoverBody$1 && (popoverBody$1.innerHTML = contentString.trim());
+        contentString && popoverBody && (popoverBody.innerHTML = contentString.trim());
       }
       self.options.container.appendChild(popover);
       popover.style.display = 'block';

@@ -100,10 +100,10 @@ export default function Popover(element,options) {
       }
 
       //set popover content
-      var popoverBody = document.createElement('div');
-      addClass(popoverBody,'popover-body');
-      popoverBody.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
-      popover.appendChild(popoverBody);
+      const popoverBodyMarkup = document.createElement('div');
+      addClass(popoverBodyMarkup,'popover-body');
+      popoverBodyMarkup.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
+      popover.appendChild(popoverBodyMarkup);
 
     } else {  // or create the popover from template
       const popoverTemplate = document.createElement('div');
