@@ -20,38 +20,38 @@ export default function Tooltip(element,options) {
   // bind
   let self = this,
 
-    // tooltip, timer, and title
-    tooltip = null, timer = 0, titleString,
+      // tooltip, timer, and title
+      tooltip = null, timer = 0, titleString,
 
-    // DATA API
-    animationData,
-    placementData,
-    delayData,
-    containerData,
+      // DATA API
+      animationData,
+      placementData,
+      delayData,
+      containerData,
 
-    // custom events
-    showCustomEvent,
-    shownCustomEvent,
-    hideCustomEvent,
-    hiddenCustomEvent,
+      // custom events
+      showCustomEvent,
+      shownCustomEvent,
+      hideCustomEvent,
+      hiddenCustomEvent,
 
-    // check container
-    containerElement,
-    containerDataElement,
+      // check container
+      containerElement,
+      containerDataElement,
 
-    // maybe the element is inside a modal
-    modal,
+      // maybe the element is inside a modal
+      modal,
 
-    // maybe the element is inside a fixed navbar
-    navbarFixedTop,
-    navbarFixedBottom,
-    placementClass;
+      // maybe the element is inside a fixed navbar
+      navbarFixedTop,
+      navbarFixedBottom,
+      placementClass;
 
   // private methods
   function getTitle() {
     return element.getAttribute('title')
-        || element.getAttribute('data-title')
-        || element.getAttribute('data-original-title')
+      || element.getAttribute('data-title')
+      || element.getAttribute('data-original-title')
   }
   function removeToolTip() {
     self.options.container.removeChild(tooltip);
@@ -203,10 +203,10 @@ export default function Tooltip(element,options) {
     self.options.template = options.template ? options.template : null; // JavaScript only
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.container = containerElement ? containerElement
-                            : containerDataElement ? containerDataElement
-                            : navbarFixedTop ? navbarFixedTop
-                            : navbarFixedBottom ? navbarFixedBottom
-                            : modal ? modal : document.body;
+      : containerDataElement ? containerDataElement
+        : navbarFixedTop ? navbarFixedTop
+          : navbarFixedBottom ? navbarFixedBottom
+            : modal ? modal : document.body;
 
     // set placement class
     placementClass = `bs-tooltip-${self.options.placement}`
@@ -230,4 +230,3 @@ export default function Tooltip(element,options) {
   })
 
 }
-

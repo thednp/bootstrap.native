@@ -992,26 +992,27 @@
     options = options || {};
     var self = this;
     var popover = null,
-      timer = 0,
-      titleString,
-      contentString;
+        timer = 0,
+        isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
+        titleString,
+        contentString;
     var triggerData,
-      animationData,
-      placementData,
-      dismissibleData,
-      delayData,
-      containerData,
-      closeBtn,
-      showCustomEvent,
-      shownCustomEvent,
-      hideCustomEvent,
-      hiddenCustomEvent,
-      containerElement,
-      containerDataElement,
-      modal,
-      navbarFixedTop,
-      navbarFixedBottom,
-      placementClass;
+        animationData,
+        placementData,
+        dismissibleData,
+        delayData,
+        containerData,
+        closeBtn,
+        showCustomEvent,
+        shownCustomEvent,
+        hideCustomEvent,
+        hiddenCustomEvent,
+        containerElement,
+        containerDataElement,
+        modal,
+        navbarFixedTop,
+        navbarFixedBottom,
+        placementClass;
     function dismissibleHandler(e) {
       if (popover !== null && e.target === queryElement('.close',popover)) {
         self.hide();
@@ -1069,12 +1070,18 @@
     function updatePopover() {
       styleTip(element, popover, self.options.placement, self.options.container);
     }
+    function provideFocus () {
+      if (popover === null) { element.focus(); }
+    }
     function toggleEvents(action) {
       if (self.options.trigger === 'hover') {
         action( element, mouseEvents.down, self.show );
         action( element, mouseHover[0], self.show );
         if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
-      } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
+      } else if ('click' == self.options.trigger) {
+        action( element, self.options.trigger, self.toggle );
+      } else if ('focus' == self.options.trigger) {
+        isIphone && action( element, 'click', provideFocus );
         action( element, self.options.trigger, self.toggle );
       }
     }
@@ -1161,10 +1168,10 @@
       self.options.delay = parseInt(options.delay || delayData) || 200;
       self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
       self.options.container = containerElement ? containerElement
-                              : containerDataElement ? containerDataElement
-                              : navbarFixedTop ? navbarFixedTop
-                              : navbarFixedBottom ? navbarFixedBottom
-                              : modal ? modal : document.body;
+        : containerDataElement ? containerDataElement
+          : navbarFixedTop ? navbarFixedTop
+            : navbarFixedBottom ? navbarFixedBottom
+              : modal ? modal : document.body;
       placementClass = "bs-popover-" + (self.options.placement);
       var popoverContents = getContents();
       titleString = popoverContents[0];
@@ -1483,25 +1490,25 @@
   function Tooltip(element,options) {
     options = options || {};
     var self = this,
-      tooltip = null, timer = 0, titleString,
-      animationData,
-      placementData,
-      delayData,
-      containerData,
-      showCustomEvent,
-      shownCustomEvent,
-      hideCustomEvent,
-      hiddenCustomEvent,
-      containerElement,
-      containerDataElement,
-      modal,
-      navbarFixedTop,
-      navbarFixedBottom,
-      placementClass;
+        tooltip = null, timer = 0, titleString,
+        animationData,
+        placementData,
+        delayData,
+        containerData,
+        showCustomEvent,
+        shownCustomEvent,
+        hideCustomEvent,
+        hiddenCustomEvent,
+        containerElement,
+        containerDataElement,
+        modal,
+        navbarFixedTop,
+        navbarFixedBottom,
+        placementClass;
     function getTitle() {
       return element.getAttribute('title')
-          || element.getAttribute('data-title')
-          || element.getAttribute('data-original-title')
+        || element.getAttribute('data-title')
+        || element.getAttribute('data-original-title')
     }
     function removeToolTip() {
       self.options.container.removeChild(tooltip);
@@ -1620,10 +1627,10 @@
       self.options.template = options.template ? options.template : null;
       self.options.delay = parseInt(options.delay || delayData) || 200;
       self.options.container = containerElement ? containerElement
-                              : containerDataElement ? containerDataElement
-                              : navbarFixedTop ? navbarFixedTop
-                              : navbarFixedBottom ? navbarFixedBottom
-                              : modal ? modal : document.body;
+        : containerDataElement ? containerDataElement
+          : navbarFixedTop ? navbarFixedTop
+            : navbarFixedBottom ? navbarFixedBottom
+              : modal ? modal : document.body;
       placementClass = "bs-tooltip-" + (self.options.placement);
       titleString = getTitle();
       if ( !titleString ) { return; }
