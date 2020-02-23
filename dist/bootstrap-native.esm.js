@@ -986,34 +986,31 @@ function Popover(element,options) {
   options = options || {};
   var self = this;
   var popover = null,
-    timer = 0,
-    isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
-    titleString,
-    contentString;
+      timer = 0,
+      isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
+      titleString,
+      contentString;
   var triggerData,
-    animationData,
-    placementData,
-    dismissibleData,
-    delayData,
-    containerData,
-    closeBtn,
-    showCustomEvent,
-    shownCustomEvent,
-    hideCustomEvent,
-    hiddenCustomEvent,
-    containerElement,
-    containerDataElement,
-    modal,
-    navbarFixedTop,
-    navbarFixedBottom,
-    placementClass;
+      animationData,
+      placementData,
+      dismissibleData,
+      delayData,
+      containerData,
+      closeBtn,
+      showCustomEvent,
+      shownCustomEvent,
+      hideCustomEvent,
+      hiddenCustomEvent,
+      containerElement,
+      containerDataElement,
+      modal,
+      navbarFixedTop,
+      navbarFixedBottom,
+      placementClass;
   function dismissibleHandler(e) {
     if (popover !== null && e.target === queryElement('.close',popover)) {
       self.hide();
     }
-  }
-  function isFocusIphone () {
-    return 'focus' == self.options.trigger && isIphone;
   }
   function getContents() {
     return {
@@ -1041,19 +1038,19 @@ function Popover(element,options) {
         popoverTitle.innerHTML = self.options.dismissible ? titleString + closeBtn : titleString;
         popover.appendChild(popoverTitle);
       }
-      var popoverBody = document.createElement('div');
-      addClass(popoverBody,'popover-body');
-      popoverBody.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
-      popover.appendChild(popoverBody);
+      var popoverBodyMarkup = document.createElement('div');
+      addClass(popoverBodyMarkup,'popover-body');
+      popoverBodyMarkup.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
+      popover.appendChild(popoverBodyMarkup);
     } else {
       var popoverTemplate = document.createElement('div');
       popoverTemplate.innerHTML = self.options.template.trim();
       popover.className = popoverTemplate.firstChild.className;
       popover.innerHTML = popoverTemplate.firstChild.innerHTML;
       var popoverHeader = queryElement('.popover-header',popover),
-            popoverBody$1 = queryElement('.popover-body',popover);
+            popoverBody = queryElement('.popover-body',popover);
       titleString && popoverHeader && (popoverHeader.innerHTML = titleString.trim());
-      contentString && popoverBody$1 && (popoverBody$1.innerHTML = contentString.trim());
+      contentString && popoverBody && (popoverBody.innerHTML = contentString.trim());
     }
     self.options.container.appendChild(popover);
     popover.style.display = 'block';
@@ -1067,13 +1064,19 @@ function Popover(element,options) {
   function updatePopover() {
     styleTip(element, popover, self.options.placement, self.options.container);
   }
+  function provideFocus () {
+    if (popover === null) { element.focus(); }
+  }
   function toggleEvents(action) {
     if (self.options.trigger === 'hover') {
       action( element, mouseEvents.down, self.show );
       action( element, mouseHover[0], self.show );
       if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
-    } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
-      action( element, isFocusIphone() && 'click' || self.options.trigger, self.toggle );
+    } else if ('click' == self.options.trigger) {
+      action( element, self.options.trigger, self.toggle );
+    } else if ('focus' == self.options.trigger) {
+      isIphone && action( element, 'click', provideFocus );
+      action( element, self.options.trigger, self.toggle );
     }
   }
   function touchHandler(e){
@@ -1100,13 +1103,8 @@ function Popover(element,options) {
     dispatchCustomEvent.call(element, hiddenCustomEvent);
   }
   self.toggle = function () {
-    if (popover === null) {
-      isFocusIphone() && element.focus();
-      self.show();
-    }
-    else {
-      !isFocusIphone() && self.hide();
-    }
+    if (popover === null) { self.show(); }
+    else { self.hide(); }
   };
   self.show = function () {
     clearTimeout(timer);
@@ -1164,10 +1162,10 @@ function Popover(element,options) {
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
     self.options.container = containerElement ? containerElement
-                            : containerDataElement ? containerDataElement
-                            : navbarFixedTop ? navbarFixedTop
-                            : navbarFixedBottom ? navbarFixedBottom
-                            : modal ? modal : document.body;
+      : containerDataElement ? containerDataElement
+        : navbarFixedTop ? navbarFixedTop
+          : navbarFixedBottom ? navbarFixedBottom
+            : modal ? modal : document.body;
     placementClass = "bs-popover-" + (self.options.placement);
     var popoverContents = getContents();
     titleString = popoverContents[0];
@@ -1486,25 +1484,25 @@ function Toast(element,options) {
 function Tooltip(element,options) {
   options = options || {};
   var self = this,
-    tooltip = null, timer = 0, titleString,
-    animationData,
-    placementData,
-    delayData,
-    containerData,
-    showCustomEvent,
-    shownCustomEvent,
-    hideCustomEvent,
-    hiddenCustomEvent,
-    containerElement,
-    containerDataElement,
-    modal,
-    navbarFixedTop,
-    navbarFixedBottom,
-    placementClass;
+      tooltip = null, timer = 0, titleString,
+      animationData,
+      placementData,
+      delayData,
+      containerData,
+      showCustomEvent,
+      shownCustomEvent,
+      hideCustomEvent,
+      hiddenCustomEvent,
+      containerElement,
+      containerDataElement,
+      modal,
+      navbarFixedTop,
+      navbarFixedBottom,
+      placementClass;
   function getTitle() {
     return element.getAttribute('title')
-        || element.getAttribute('data-title')
-        || element.getAttribute('data-original-title')
+      || element.getAttribute('data-title')
+      || element.getAttribute('data-original-title')
   }
   function removeToolTip() {
     self.options.container.removeChild(tooltip);
@@ -1623,10 +1621,10 @@ function Tooltip(element,options) {
     self.options.template = options.template ? options.template : null;
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.container = containerElement ? containerElement
-                            : containerDataElement ? containerDataElement
-                            : navbarFixedTop ? navbarFixedTop
-                            : navbarFixedBottom ? navbarFixedBottom
-                            : modal ? modal : document.body;
+      : containerDataElement ? containerDataElement
+        : navbarFixedTop ? navbarFixedTop
+          : navbarFixedBottom ? navbarFixedBottom
+            : modal ? modal : document.body;
     placementClass = "bs-tooltip-" + (self.options.placement);
     titleString = getTitle();
     if ( !titleString ) { return; }

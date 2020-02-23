@@ -22,41 +22,41 @@ export default function Popover(element,options) {
 
   // popover and timer
   let popover = null,
-    timer = 0,
-    isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
-    // title and content
-    titleString,
-    contentString;
+      timer = 0,
+      isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
+      // title and content
+      titleString,
+      contentString;
 
   // DATA API
   let triggerData, // click / hover / focus
-    animationData, // true / false
+      animationData, // true / false
 
-    placementData,
-    dismissibleData,
-    delayData,
-    containerData,
+      placementData,
+      dismissibleData,
+      delayData,
+      containerData,
 
-    // close btn for dissmissible popover
-    closeBtn,
+      // close btn for dissmissible popover
+      closeBtn,
 
-    // custom events
-    showCustomEvent,
-    shownCustomEvent,
-    hideCustomEvent,
-    hiddenCustomEvent,
+      // custom events
+      showCustomEvent,
+      shownCustomEvent,
+      hideCustomEvent,
+      hiddenCustomEvent,
 
-    // check container
-    containerElement,
-    containerDataElement,
+      // check container
+      containerElement,
+      containerDataElement,
 
-    // maybe the element is inside a modal
-    modal,
+      // maybe the element is inside a modal
+      modal,
 
-    // maybe the element is inside a fixed navbar
-    navbarFixedTop,
-    navbarFixedBottom,
-    placementClass;
+      // maybe the element is inside a fixed navbar
+      navbarFixedTop,
+      navbarFixedBottom,
+      placementClass;
 
   // handlers
   function dismissibleHandler(e) {
@@ -101,10 +101,10 @@ export default function Popover(element,options) {
       }
 
       //set popover content
-      var popoverBody = document.createElement('div');
-      addClass(popoverBody,'popover-body');
-      popoverBody.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
-      popover.appendChild(popoverBody);
+      const popoverBodyMarkup = document.createElement('div');
+      addClass(popoverBodyMarkup,'popover-body');
+      popoverBodyMarkup.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
+      popover.appendChild(popoverBodyMarkup);
 
     } else {  // or create the popover from template
       const popoverTemplate = document.createElement('div');
@@ -258,10 +258,10 @@ export default function Popover(element,options) {
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
     self.options.container = containerElement ? containerElement
-                            : containerDataElement ? containerDataElement
-                            : navbarFixedTop ? navbarFixedTop
-                            : navbarFixedBottom ? navbarFixedBottom
-                            : modal ? modal : document.body;
+      : containerDataElement ? containerDataElement
+        : navbarFixedTop ? navbarFixedTop
+          : navbarFixedBottom ? navbarFixedBottom
+            : modal ? modal : document.body;
 
     placementClass = `bs-popover-${self.options.placement}`
 
@@ -285,4 +285,3 @@ export default function Popover(element,options) {
   })
 
 }
-
