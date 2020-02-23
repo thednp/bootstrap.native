@@ -157,9 +157,9 @@ export default function Popover(element,options) {
   }
   // event toggle
   function dismissHandlerToggle(action) {
-    if(self.options.dismissible){
+    if (self.options.dismissible) {
       action( document, 'click', dismissibleHandler );
-    }else{
+    } else {
       'focus' == self.options.trigger && action( element, 'blur', self.hide );
       'hover' == self.options.trigger && action( document, touchEvents.start, touchHandler, passiveHandler );
     }
@@ -258,10 +258,10 @@ export default function Popover(element,options) {
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
     self.options.container = containerElement ? containerElement
-      : containerDataElement ? containerDataElement
-        : navbarFixedTop ? navbarFixedTop
-          : navbarFixedBottom ? navbarFixedBottom
-            : modal ? modal : document.body;
+                           : containerDataElement ? containerDataElement
+                           : navbarFixedTop ? navbarFixedTop
+                           : navbarFixedBottom ? navbarFixedBottom
+                           : modal ? modal : document.body;
 
     placementClass = `bs-popover-${self.options.placement}`
 

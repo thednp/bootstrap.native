@@ -1085,9 +1085,9 @@ function Popover(element,options) {
     }
   }
   function dismissHandlerToggle(action) {
-    if(self.options.dismissible){
+    if (self.options.dismissible) {
       action( document, 'click', dismissibleHandler );
-    }else{
+    } else {
       'focus' == self.options.trigger && action( element, 'blur', self.hide );
       'hover' == self.options.trigger && action( document, touchEvents.start, touchHandler, passiveHandler );
     }
@@ -1162,10 +1162,10 @@ function Popover(element,options) {
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
     self.options.container = containerElement ? containerElement
-      : containerDataElement ? containerDataElement
-        : navbarFixedTop ? navbarFixedTop
-          : navbarFixedBottom ? navbarFixedBottom
-            : modal ? modal : document.body;
+                           : containerDataElement ? containerDataElement
+                           : navbarFixedTop ? navbarFixedTop
+                           : navbarFixedBottom ? navbarFixedBottom
+                           : modal ? modal : document.body;
     placementClass = "bs-popover-" + (self.options.placement);
     var popoverContents = getContents();
     titleString = popoverContents[0];
@@ -1501,8 +1501,8 @@ function Tooltip(element,options) {
       placementClass;
   function getTitle() {
     return element.getAttribute('title')
-      || element.getAttribute('data-title')
-      || element.getAttribute('data-original-title')
+        || element.getAttribute('data-title')
+        || element.getAttribute('data-original-title')
   }
   function removeToolTip() {
     self.options.container.removeChild(tooltip);
@@ -1621,10 +1621,10 @@ function Tooltip(element,options) {
     self.options.template = options.template ? options.template : null;
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.container = containerElement ? containerElement
-      : containerDataElement ? containerDataElement
-        : navbarFixedTop ? navbarFixedTop
-          : navbarFixedBottom ? navbarFixedBottom
-            : modal ? modal : document.body;
+                           : containerDataElement ? containerDataElement
+                           : navbarFixedTop ? navbarFixedTop
+                           : navbarFixedBottom ? navbarFixedBottom
+                           : modal ? modal : document.body;
     placementClass = "bs-tooltip-" + (self.options.placement);
     titleString = getTitle();
     if ( !titleString ) { return; }

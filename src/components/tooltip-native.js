@@ -50,8 +50,8 @@ export default function Tooltip(element,options) {
   // private methods
   function getTitle() {
     return element.getAttribute('title')
-      || element.getAttribute('data-title')
-      || element.getAttribute('data-original-title')
+        || element.getAttribute('data-title')
+        || element.getAttribute('data-original-title')
   }
   function removeToolTip() {
     self.options.container.removeChild(tooltip);
@@ -203,10 +203,10 @@ export default function Tooltip(element,options) {
     self.options.template = options.template ? options.template : null; // JavaScript only
     self.options.delay = parseInt(options.delay || delayData) || 200;
     self.options.container = containerElement ? containerElement
-      : containerDataElement ? containerDataElement
-        : navbarFixedTop ? navbarFixedTop
-          : navbarFixedBottom ? navbarFixedBottom
-            : modal ? modal : document.body;
+                           : containerDataElement ? containerDataElement
+                           : navbarFixedTop ? navbarFixedTop
+                           : navbarFixedBottom ? navbarFixedBottom
+                           : modal ? modal : document.body;
 
     // set placement class
     placementClass = `bs-tooltip-${self.options.placement}`
