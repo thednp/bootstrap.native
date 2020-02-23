@@ -23,6 +23,7 @@ export default function Popover(element,options) {
   // popover and timer
   let popover = null,
     timer = 0,
+    isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
     // title and content
     titleString,
     contentString;
@@ -132,12 +133,18 @@ export default function Popover(element,options) {
   function updatePopover() {
     styleTip(element, popover, self.options.placement, self.options.container);
   }
+  function provideFocus () {
+    if (popover === null) { element.focus(); }
+  }
   function toggleEvents(action) {
     if (self.options.trigger === 'hover') {
       action( element, mouseEvents.down, self.show );
       action( element, mouseHover[0], self.show );
       if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); } // export const mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
-    } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
+    } else if ('click' == self.options.trigger) {
+      action( element, self.options.trigger, self.toggle );
+    } else if ('focus' == self.options.trigger) {
+      isIphone && action( element, 'click', provideFocus );
       action( element, self.options.trigger, self.toggle );
     }
   }

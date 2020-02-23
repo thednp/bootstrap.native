@@ -987,6 +987,7 @@ function Popover(element,options) {
   var self = this;
   var popover = null,
     timer = 0,
+    isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
     titleString,
     contentString;
   var triggerData,
@@ -1010,6 +1011,9 @@ function Popover(element,options) {
     if (popover !== null && e.target === queryElement('.close',popover)) {
       self.hide();
     }
+  }
+  function isFocusIphone () {
+    return 'focus' == self.options.trigger && isIphone;
   }
   function getContents() {
     return {
@@ -1069,7 +1073,7 @@ function Popover(element,options) {
       action( element, mouseHover[0], self.show );
       if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
     } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
-      action( element, self.options.trigger, self.toggle );
+      action( element, isFocusIphone() && 'click' || self.options.trigger, self.toggle );
     }
   }
   function touchHandler(e){
@@ -1096,8 +1100,13 @@ function Popover(element,options) {
     dispatchCustomEvent.call(element, hiddenCustomEvent);
   }
   self.toggle = function () {
-    if (popover === null) { self.show(); }
-    else { self.hide(); }
+    if (popover === null) {
+      isFocusIphone() && element.focus();
+      self.show();
+    }
+    else {
+      !isFocusIphone() && self.hide();
+    }
   };
   self.show = function () {
     clearTimeout(timer);
