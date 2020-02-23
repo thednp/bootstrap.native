@@ -1018,9 +1018,6 @@
         self.hide();
       }
     }
-    function isFocusIphone () {
-      return 'focus' == self.options.trigger && isIphone;
-    }
     function getContents() {
       return {
         0 : options.title || element.getAttribute('data-title') || null,
@@ -1073,13 +1070,19 @@
     function updatePopover() {
       styleTip(element, popover, self.options.placement, self.options.container);
     }
+    function provideFocus () {
+      if (popover === null) { element.focus(); }
+    }
     function toggleEvents(action) {
       if (self.options.trigger === 'hover') {
         action( element, mouseEvents.down, self.show );
         action( element, mouseHover[0], self.show );
         if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
-      } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
-        action( element, isFocusIphone() && 'click' || self.options.trigger, self.toggle );
+      } else if ('click' == self.options.trigger) {
+        action( element, self.options.trigger, self.toggle );
+      } else if ('focus' == self.options.trigger) {
+        isIphone && action( element, 'click', provideFocus );
+        action( element, self.options.trigger, self.toggle );
       }
     }
     function touchHandler(e){
@@ -1106,13 +1109,8 @@
       dispatchCustomEvent.call(element, hiddenCustomEvent);
     }
     self.toggle = function () {
-      if (popover === null) {
-        isFocusIphone() && element.focus();
-        self.show();
-      }
-      else {
-        !isFocusIphone() && self.hide();
-      }
+      if (popover === null) { self.show(); }
+      else { self.hide(); }
     };
     self.show = function () {
       clearTimeout(timer);
