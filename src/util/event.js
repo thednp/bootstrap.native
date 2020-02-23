@@ -1,4 +1,5 @@
 // event names
+export const mouseEvents = { down: 'mousedown', up: 'mouseup' }
 export const touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove', cancel:'touchcancel' }
 export const mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
 

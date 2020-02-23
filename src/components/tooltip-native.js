@@ -4,7 +4,7 @@
 
 import { styleTip } from '../util/misc.js';
 import { hasClass, addClass, removeClass } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, touchEvents, passiveHandler } from '../util/event.js';
+import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, mouseEvents, touchEvents, passiveHandler } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { emulateTransitionEnd } from '../util/transition.js';
 import { componentInit } from '../util/misc.js';
@@ -48,10 +48,10 @@ export default function Tooltip(element,options) {
     placementClass;
 
   // private methods
-  function getTitle() { 
-    return element.getAttribute('title') 
-        || element.getAttribute('data-title') 
-        || element.getAttribute('data-original-title') 
+  function getTitle() {
+    return element.getAttribute('title')
+        || element.getAttribute('data-title')
+        || element.getAttribute('data-original-title')
   }
   function removeToolTip() {
     self.options.container.removeChild(tooltip);
@@ -62,7 +62,7 @@ export default function Tooltip(element,options) {
     if ( titleString ) { // invalidate, maybe markup changed
       // create tooltip
       tooltip = document.createElement('div');
-      
+
       // set markup
       if (self.options.template) {
         const tooltipMarkup = document.createElement('div');
@@ -110,17 +110,18 @@ export default function Tooltip(element,options) {
   }
   // triggers
   function showAction() {
-    on( document, touchEvents[0], touchHandler, passiveHandler );
+    on( document, touchEvents.start, touchHandler, passiveHandler );
     on( window, 'resize', self.hide, passiveHandler );
     dispatchCustomEvent.call(element, shownCustomEvent);
   }
   function hideAction() {
-    off( document, touchEvents[0], touchHandler, passiveHandler );
+    off( document, touchEvents.start, touchHandler, passiveHandler );
     off( window, 'resize', self.hide, passiveHandler );
     removeToolTip();
     dispatchCustomEvent.call(element, hiddenCustomEvent);
   }
   function toggleEvents(action) {
+    action(element, mouseEvents.down, self.show);
     action(element, mouseHover[0], self.show);
     action(element, mouseHover[1], self.hide);
   }
@@ -131,12 +132,12 @@ export default function Tooltip(element,options) {
     timer = setTimeout( () => {
       if (tooltip === null) {
         dispatchCustomEvent.call(element, showCustomEvent);
-        if (showCustomEvent.defaultPrevented) return;        
+        if (showCustomEvent.defaultPrevented) return;
         // if(createToolTip() == false) return;
         if(createToolTip() !== false) {
           updateTooltip();
           showTooltip();
-          !!self.options.animation ? emulateTransitionEnd(tooltip, showAction) : showAction();          
+          !!self.options.animation ? emulateTransitionEnd(tooltip, showAction) : showAction();
         }
       }
     }, 20 );
@@ -153,7 +154,7 @@ export default function Tooltip(element,options) {
     }, self.options.delay);
   };
   self.toggle = () => {
-    if (!tooltip) { self.show(); } 
+    if (!tooltip) { self.show(); }
     else { self.hide(); }
   };
   self.dispose = () => {
@@ -201,7 +202,7 @@ export default function Tooltip(element,options) {
     self.options.placement = options.placement ? options.placement : placementData || 'top';
     self.options.template = options.template ? options.template : null; // JavaScript only
     self.options.delay = parseInt(options.delay || delayData) || 200;
-    self.options.container = containerElement ? containerElement 
+    self.options.container = containerElement ? containerElement
                             : containerDataElement ? containerDataElement
                             : navbarFixedTop ? navbarFixedTop
                             : navbarFixedBottom ? navbarFixedBottom
@@ -212,17 +213,17 @@ export default function Tooltip(element,options) {
 
     // set tooltip content
     titleString = getTitle();
-    
+
     // invalidate
-    if ( !titleString ) return;    
+    if ( !titleString ) return;
 
     // prevent adding event handlers twice
-    if (!element.Tooltip) { 
+    if (!element.Tooltip) {
       element.setAttribute('data-original-title',titleString);
       element.removeAttribute('title');
       toggleEvents(on);
     }
-  
+
     // associate target to init object
     self.element = element;
     element.Tooltip = self;

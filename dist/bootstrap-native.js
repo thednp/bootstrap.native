@@ -19,6 +19,7 @@
     return element.classList.contains(classNAME);
   }
 
+  var mouseEvents = { down: 'mousedown', up: 'mouseup' };
   var touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove', cancel:'touchcancel' };
   var mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
   function on (element, event, handler, options) {
@@ -1070,6 +1071,7 @@
     }
     function toggleEvents(action) {
       if (self.options.trigger === 'hover') {
+        action( element, mouseEvents.down, self.show );
         action( element, mouseHover[0], self.show );
         if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
       } else if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
@@ -1082,11 +1084,12 @@
       }
     }
     function dismissHandlerToggle(action) {
-      if ('click' == self.options.trigger || 'focus' == self.options.trigger) {
-        !self.options.dismissible && action( element, 'blur', self.hide );
-        !self.options.dismissible && action( document, touchEvents[0], touchHandler, passiveHandler );
+      if(self.options.dismissible){
+        action( document, 'click', dismissibleHandler );
+      }else{
+        'focus' == self.options.trigger && action( element, 'blur', self.hide );
+        'hover' == self.options.trigger && action( document, touchEvents.start, touchHandler, passiveHandler );
       }
-      self.options.dismissible && action( document, 'click', dismissibleHandler );
       action( window, 'resize', self.hide, passiveHandler );
     }
     function showTrigger() {
@@ -1544,17 +1547,18 @@
       }
     }
     function showAction() {
-      on( document, touchEvents[0], touchHandler, passiveHandler );
+      on( document, touchEvents.start, touchHandler, passiveHandler );
       on( window, 'resize', self.hide, passiveHandler );
       dispatchCustomEvent.call(element, shownCustomEvent);
     }
     function hideAction() {
-      off( document, touchEvents[0], touchHandler, passiveHandler );
+      off( document, touchEvents.start, touchHandler, passiveHandler );
       off( window, 'resize', self.hide, passiveHandler );
       removeToolTip();
       dispatchCustomEvent.call(element, hiddenCustomEvent);
     }
     function toggleEvents(action) {
+      action(element, mouseEvents.down, self.show);
       action(element, mouseHover[0], self.show);
       action(element, mouseHover[1], self.hide);
     }
