@@ -1,11 +1,10 @@
 
 /* Native JavaScript for Bootstrap 4 | Carousel
 ----------------------------------------------- */
-
 import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, touchEvents, mouseHover, passiveHandler } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
-import { getElementTransitionDuration, emulateTransitionEnd, transitionEndEvent } from '../util/transition.js';
+import { getElementTransitionDuration, emulateTransitionEnd } from '../util/transition.js';
 import { componentInit } from '../util/misc.js';
 
 // CAROUSEL DEFINITION

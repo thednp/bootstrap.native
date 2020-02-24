@@ -1,6 +1,7 @@
 .gitignore
 .vscode/
 assets/
+node_modules/
 CONTRIBUTING.md
 package-lock.json
 index.html

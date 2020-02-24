@@ -1,13 +1,11 @@
 
 /* Native JavaScript for Bootstrap 4 | Popover
 ---------------------------------------------- */
-
-import { styleTip } from '../util/misc.js';
 import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, mouseEvents, touchEvents, passiveHandler } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { emulateTransitionEnd } from '../util/transition.js';
-import { componentInit } from '../util/misc.js';
+import { componentInit, styleTip } from '../util/misc.js';
 
 // POPOVER DEFINITION
 // ==================

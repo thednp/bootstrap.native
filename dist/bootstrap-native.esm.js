@@ -77,6 +77,8 @@ function emulateTransitionEnd (element,handler){
            : setTimeout(function() { !called && handler(), called = 1; }, 17);
 }
 
+var componentsInit = {};
+
 function setFocus (element){
   element.focus ? element.focus() : element.setActive();
 }
@@ -343,7 +345,6 @@ function Carousel (element,options) {
   }
   function keyHandler(ref) {
     var which = ref.which;
-
     if (self.vars.isSliding) { return; }
     switch (which) {
       case 39:
@@ -693,7 +694,6 @@ function Dropdown(element,option) {
   function keyHandler(ref) {
     var which = ref.which;
     var keyCode = ref.keyCode;
-
     var key = which || keyCode,
           activeItem = document.activeElement,
           isSameElement = activeItem === element,
@@ -887,7 +887,6 @@ function Modal(element,options) {
   }
   function keyHandler(ref) {
     var which = ref.which;
-
     if ( modal.isAnimating ) { return; }
     if (self.options.keyboard && which == 27 && hasClass(modal,'show') ) {
       self.hide();
@@ -1638,8 +1637,6 @@ function Tooltip(element,options) {
   });
 }
 
-var componentsInit = {};
-
 var initCallback = function (lookUp){
   lookUp = lookUp || document;
   var initializeDataAPI = function( Constructor, collection ){
@@ -1678,25 +1675,24 @@ componentsInit.Toast = [ Toast, '[data-dismiss="toast"]' ];
 componentsInit.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ];
 document.body ? initCallback() : one( document, 'DOMContentLoaded', initCallback );
 
-var Util = {
-	addClass: addClass,
-	removeClass: removeClass,
-	hasClass: hasClass,
-	queryElement: queryElement,
-	getElementsByClassName: getElementsByClassName,
-	getElementTransitionDuration: getElementTransitionDuration,
-	emulateTransitionEnd: emulateTransitionEnd,
-	on: on,
-	off: off,
-	one: one,
-	bootstrapCustomEvent: bootstrapCustomEvent,
-	dispatchCustomEvent: dispatchCustomEvent,
-	passiveHandler: passiveHandler,
-	setFocus: setFocus,
-	styleTip: styleTip,
-	getScroll: getScroll
-};
-
 var version = "3.0.0";
 
-export { Alert, Button, Carousel, Collapse, Dropdown, Modal, Popover, ScrollSpy, Tab, Toast, Tooltip, Util, version as Version, componentsInit, initCallback, removeDataAPI };
+var index = {
+  Alert: Alert,
+  Button: Button,
+  Carousel: Carousel,
+  Collapse: Collapse,
+  Dropdown: Dropdown,
+  Modal: Modal,
+  Popover: Popover,
+  ScrollSpy: ScrollSpy,
+  Tab: Tab,
+  Toast: Toast,
+  Tooltip: Tooltip,
+  initCallback: initCallback,
+  removeDataAPI: removeDataAPI,
+  componentsInit: componentsInit,
+  Version: version
+};
+
+export default index;

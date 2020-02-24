@@ -1,9 +1,8 @@
 
 /* Native JavaScript for Bootstrap 4 | Alert
 -------------------------------------------- */
-
 import { hasClass, removeClass  } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from '../util/event.js';
+import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { emulateTransitionEnd } from '../util/transition.js';
 import { componentInit } from '../util/misc.js';

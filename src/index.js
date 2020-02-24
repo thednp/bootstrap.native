@@ -12,7 +12,6 @@ import Tooltip from './components/tooltip-native.js'
 import './util/init.js'
 import {initCallback,removeDataAPI} from './util/callbacks.js'
 import {componentsInit} from './util/globals.js'
-import {Util} from './util/util.js'
 import {version as Version} from './../package.json'
 
 export default {
@@ -31,6 +30,5 @@ export default {
   initCallback,
   removeDataAPI,
   componentsInit,
-  Util,
   Version
 }

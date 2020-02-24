@@ -1,13 +1,10 @@
 
 /* Native JavaScript for Bootstrap 4 | Dropdown
 ----------------------------------------------- */
-
-import { setFocus } from '../util/misc.js';
 import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
-import { componentInit } from '../util/misc.js';
-
+import { componentInit, setFocus } from '../util/misc.js';
 
 // DROPDOWN DEFINITION
 // ===================

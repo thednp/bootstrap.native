@@ -7,8 +7,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "rollup --help",
-    "build": "rollup -c",
-    "watch": "rollup -c -w"
+    "build": "npm-run-all --parallel build-*",
+    "custom": "rollup -c --environment",
+    "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
+    "build-esm-min": "rollup --environment FORMAT:esm,MIN:true -c",
+    "build-umd": "rollup --environment FORMAT:umd,MIN:false -c",
+    "build-umd-min": "rollup --environment FORMAT:umd,MIN:true -c",
+    "watch": "rollup --environment FORMAT:umd,MIN:false -c -w"
   },
   "browserslist": [
     "last 2 versions",
@@ -35,6 +40,7 @@
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.1",
     "@rollup/plugin-json": "^4.0.1",
+    "npm-run-all": "^4.1.5",
     "rollup": "^1.27.14",
     "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-terser": "^5.2.0"

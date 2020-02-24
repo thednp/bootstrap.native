@@ -1,5 +1,6 @@
 import { hasClass } from './class.js';
 import { queryElement } from './selector.js'
+import { Util } from './globals.js'
 
 export function setFocus (element){
   element.focus ? element.focus() : element.setActive();

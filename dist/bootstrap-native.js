@@ -83,6 +83,8 @@
              : setTimeout(function() { !called && handler(), called = 1; }, 17);
   }
 
+  var componentsInit = {};
+
   function setFocus (element){
     element.focus ? element.focus() : element.setActive();
   }
@@ -349,7 +351,6 @@
     }
     function keyHandler(ref) {
       var which = ref.which;
-
       if (self.vars.isSliding) { return; }
       switch (which) {
         case 39:
@@ -699,7 +700,6 @@
     function keyHandler(ref) {
       var which = ref.which;
       var keyCode = ref.keyCode;
-
       var key = which || keyCode,
             activeItem = document.activeElement,
             isSameElement = activeItem === element,
@@ -893,7 +893,6 @@
     }
     function keyHandler(ref) {
       var which = ref.which;
-
       if ( modal.isAnimating ) { return; }
       if (self.options.keyboard && which == 27 && hasClass(modal,'show') ) {
         self.hide();
@@ -1644,8 +1643,6 @@
     });
   }
 
-  var componentsInit = {};
-
   var initCallback = function (lookUp){
     lookUp = lookUp || document;
     var initializeDataAPI = function( Constructor, collection ){
@@ -1684,28 +1681,9 @@
   componentsInit.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ];
   document.body ? initCallback() : one( document, 'DOMContentLoaded', initCallback );
 
-  var Util = {
-  	addClass: addClass,
-  	removeClass: removeClass,
-  	hasClass: hasClass,
-  	queryElement: queryElement,
-  	getElementsByClassName: getElementsByClassName,
-  	getElementTransitionDuration: getElementTransitionDuration,
-  	emulateTransitionEnd: emulateTransitionEnd,
-  	on: on,
-  	off: off,
-  	one: one,
-  	bootstrapCustomEvent: bootstrapCustomEvent,
-  	dispatchCustomEvent: dispatchCustomEvent,
-  	passiveHandler: passiveHandler,
-  	setFocus: setFocus,
-  	styleTip: styleTip,
-  	getScroll: getScroll
-  };
-
   var version = "3.0.0";
 
-  var index_umd = {
+  var index = {
     Alert: Alert,
     Button: Button,
     Carousel: Carousel,
@@ -1720,10 +1698,9 @@
     initCallback: initCallback,
     removeDataAPI: removeDataAPI,
     componentsInit: componentsInit,
-    Util: Util,
     Version: version
   };
 
-  return index_umd;
+  return index;
 
 })));

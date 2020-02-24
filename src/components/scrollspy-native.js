@@ -1,12 +1,10 @@
 
 /* Native JavaScript for Bootstrap 4 | ScrollSpy
 ------------------------------------------------ */
-
 import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off, passiveHandler } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
-import { getScroll } from '../util/misc.js';
-import { componentInit } from '../util/misc.js';
+import { componentInit, getScroll } from '../util/misc.js';
 
 // SCROLLSPY DEFINITION
 // ====================

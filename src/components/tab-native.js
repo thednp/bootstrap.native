@@ -1,7 +1,6 @@
 
 /* Native JavaScript for Bootstrap 4 | Tab
 ------------------------------------------ */
-
 import { hasClass, addClass, removeClass } from '../util/class.js';
 import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
 import { queryElement, getElementsByClassName } from '../util/selector.js';
