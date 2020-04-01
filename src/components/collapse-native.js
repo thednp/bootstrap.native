@@ -73,7 +73,7 @@ export default function Collapse(element,options) {
 
   // public methods
   self.toggle = e => {
-    e && e.preventDefault();
+    if (e && e.target.tagName === 'A') {e.preventDefault();}
     if (!hasClass(collapse,'show')) { self.show(); } 
     else { self.hide(); }
   }
