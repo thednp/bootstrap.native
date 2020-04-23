@@ -1,10 +1,9 @@
 
 /* Native JavaScript for Bootstrap 4 | Alert
 -------------------------------------------- */
-import { hasClass, removeClass  } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
+import { hasClass, removeClass, on, off, emulateTransitionEnd } from 'shorter-js';
+import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
-import { emulateTransitionEnd } from '../util/transition.js';
 import { componentInit } from '../util/misc.js';
 
 // ALERT DEFINITION
@@ -13,13 +12,12 @@ import { componentInit } from '../util/misc.js';
 export default function Alert(element) {
   
   // bind
-  let self = this
+  let self = this,
   
-  // find the target alert 
-  let alert
+    // the target alert 
+    alert,
 
-  // CONSTANTS
-  const 
+    // custom events
     closeCustomEvent = bootstrapCustomEvent('close','alert'),
     closedCustomEvent = bootstrapCustomEvent('closed','alert');
 

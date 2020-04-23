@@ -3,6 +3,6 @@ export function getElementsByClassName (element,classNAME) { // returns Array
 }
 
 export function queryElement (selector, parent) {
-  var lookUp = parent ? parent : document;
+  var lookUp = parent && parent instanceof Element ? parent : document;
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }

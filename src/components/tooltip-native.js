@@ -1,10 +1,9 @@
 
 /* Native JavaScript for Bootstrap 4 | Tooltip
 ---------------------------------------------- */
-import { hasClass, addClass, removeClass } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off, mouseHover, mouseEvents, touchEvents, passiveHandler } from '../util/event.js';
+import { hasClass, addClass, removeClass, on, off, mouseHover, mouseEvents, touchEvents, passiveHandler, emulateTransitionEnd } from 'shorter-js';
+import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
-import { emulateTransitionEnd } from '../util/transition.js';
 import { componentInit, styleTip } from '../util/misc.js';
 
 // TOOLTIP DEFINITION

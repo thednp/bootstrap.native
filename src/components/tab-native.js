@@ -1,10 +1,9 @@
 
 /* Native JavaScript for Bootstrap 4 | Tab
 ------------------------------------------ */
-import { hasClass, addClass, removeClass } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
-import { queryElement, getElementsByClassName } from '../util/selector.js';
-import { supportTransitions, emulateTransitionEnd } from '../util/transition.js';
+import { hasClass, addClass, removeClass, on, off, supportTransitions, emulateTransitionEnd } from 'shorter-js';
+import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
+import { queryElement } from '../util/selector.js';
 import { componentInit } from '../util/misc.js';
 
 // TAB DEFINITION
@@ -100,7 +99,7 @@ export default function Tab(element,options) {
   }
   // private methods
   function getActiveTab() {
-    const activeTabs = getElementsByClassName(tabs,'active');
+    const activeTabs = tabs.getElementsByClassName('active');
     let activeTab;
     if ( activeTabs.length === 1 && !hasClass(activeTabs[0].parentNode,'dropdown') ) {
       activeTab = activeTabs[0];

@@ -1,8 +1,8 @@
 
 /* Native JavaScript for Bootstrap 4 | Dropdown
 ----------------------------------------------- */
-import { hasClass, addClass, removeClass } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off } from '../util/event.js';
+import { hasClass, addClass, removeClass, on, off } from 'shorter-js';
+import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { componentInit, setFocus } from '../util/misc.js';
 
@@ -12,15 +12,15 @@ import { componentInit, setFocus } from '../util/misc.js';
 export default function Dropdown(element,option) {
   
   // bind 
-  let self = this
+  let self = this,
 
-  // custom events
-  let showCustomEvent,
+      // custom events
+      showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
       hiddenCustomEvent,
-      relatedTarget = null,
       // targets
+      relatedTarget = null,
       parent, menu, menuItems = [];
   
   // preventDefault on empty anchor links

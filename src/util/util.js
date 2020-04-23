@@ -5,7 +5,8 @@ import {addClass,removeClass,hasClass} from './class.js'
 import {on,off,one,bootstrapCustomEvent, dispatchCustomEvent, passiveHandler} from './event.js'
 import {setFocus,styleTip,getScroll} from './misc.js'
 
-// for faster execution, export this object to global
+// for faster execution
+// export this object to global
 export const Util = {
 	// class
 	addClass,

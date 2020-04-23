@@ -1,10 +1,9 @@
 
 /* Native JavaScript for Bootstrap 4 | Modal
 -------------------------------------------- */
-import { hasClass, addClass, removeClass } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off, passiveHandler } from '../util/event.js';
-import { queryElement, getElementsByClassName } from '../util/selector.js';
-import { emulateTransitionEnd, getElementTransitionDuration } from '../util/transition.js';
+import { hasClass, addClass, removeClass, on, off, passiveHandler, emulateTransitionEnd, getElementTransitionDuration } from 'shorter-js';
+import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
+import { queryElement } from '../util/selector.js';
 import { componentInit, setFocus } from '../util/misc.js';
 
 // MODAL DEFINITION
@@ -27,18 +26,17 @@ export default function Modal(element,options) { // element can be the modal/tri
     relatedTarget = null,
     scrollBarWidth,
     overlay,
-    overlayDelay;
+    overlayDelay,
 
   // also find fixed-top / fixed-bottom items
-  const fixedItems = getElementsByClassName(document.documentElement,'fixed-top')
-                    .concat(getElementsByClassName(document.documentElement,'fixed-bottom'));
+    fixedItems;
 
   // private methods
   function setScrollbar() {
-    const openModal = hasClass(document.body,'modal-open'),
+    let openModal = hasClass(document.body,'modal-open'),
           bodyStyle = window.getComputedStyle(document.body),
-          bodyPad = parseInt((bodyStyle.paddingRight), 10);
-    let itemPad;
+          bodyPad = parseInt((bodyStyle.paddingRight), 10),
+          itemPad;
 
     document.body.style.paddingRight = `${bodyPad + (openModal?0:scrollBarWidth)}px`;
     modal.style.paddingRight = (scrollBarWidth?`${scrollBarWidth}px`:'');
@@ -81,7 +79,7 @@ export default function Modal(element,options) { // element can be the modal/tri
   }
   function removeOverlay () {
     overlay = queryElement('.modal-backdrop');
-    if ( overlay && !getElementsByClassName(document,'modal show')[0] ) {
+    if ( overlay && !document.getElementsByClassName('modal show')[0] ) {
       document.body.removeChild(overlay); overlay = null;       
     }
     overlay === null && (removeClass(document.body,'modal-open'), resetScrollbar());
@@ -97,7 +95,7 @@ export default function Modal(element,options) { // element can be the modal/tri
 
     checkScrollbar();
     setScrollbar();
-    !getElementsByClassName(document,'modal show')[0] && addClass(document.body,'modal-open');
+    !document.getElementsByClassName('modal show')[0] && addClass(document.body,'modal-open');
 
     addClass(modal,'show');
     modal.setAttribute('aria-hidden', false);
@@ -119,7 +117,7 @@ export default function Modal(element,options) { // element can be the modal/tri
 
     overlay = queryElement('.modal-backdrop');
 
-    if (overlay && hasClass(overlay,'show') && !getElementsByClassName(document,'modal show')[0]) {
+    if (overlay && hasClass(overlay,'show') && !document.getElementsByClassName('modal show')[0]) {
       removeClass(overlay,'show');
       emulateTransitionEnd(overlay,removeOverlay);
     } else {
@@ -180,7 +178,7 @@ export default function Modal(element,options) { // element can be the modal/tri
     modal.isAnimating = true;
 
     // we elegantly hide any opened modal
-    const currentOpen = getElementsByClassName(document,'modal show')[0];
+    const currentOpen = document.getElementsByClassName('modal show')[0];
     if (currentOpen && currentOpen !== modal) {
       currentOpen.modalTrigger && currentOpen.modalTrigger.Modal.hide();
       currentOpen.Modal && currentOpen.Modal.hide();
@@ -237,6 +235,19 @@ export default function Modal(element,options) { // element can be the modal/tri
     let checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') )
     modal = hasClass(element,'modal') ? element : checkModal
 
+    // set fixed items
+    // fixedItems = getElementsByClassName(document,'fixed-top')
+    //             .concat(getElementsByClassName(document,'fixed-bottom'));
+    // fixedItems = [].slice.call(document.getElementsByClassName('fixed-top'))
+    //             .concat([].slice.call(document.getElementsByClassName('fixed-bottom')));
+
+    // fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
+    //             .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
+
+    fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
+                .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
+    
+
     if ( hasClass(element, 'modal') ) { element = null; } // modal is now independent of it's triggering element
 
     // reset on re-init
@@ -252,7 +263,7 @@ export default function Modal(element,options) { // element can be the modal/tri
     self.options.content = options.content; // JavaScript only
     
     // set an initial state of the modal
-    modal.isAnimating = false;  
+    modal.isAnimating = false;
 
     // prevent adding event handlers over and over
     // modal is independent of a triggering element

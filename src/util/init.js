@@ -1,5 +1,6 @@
+// import { one } from './event.js'
+import { one } from 'shorter-js'
 import { initCallback } from './callbacks.js'
-import { one } from './event.js'
 import { componentsInit } from './globals.js'
 
 import Alert from '../components/alert-native.js'

@@ -1,8 +1,8 @@
 
 /* Native JavaScript for Bootstrap 4 | Button
 ---------------------------------------------*/
-import { hasClass, addClass, removeClass  } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off  } from '../util/event.js';
+import { hasClass, addClass, removeClass, on, off } from 'shorter-js';
+import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { componentInit } from '../util/misc.js';
 
@@ -12,10 +12,10 @@ import { componentInit } from '../util/misc.js';
 export default function Button(element) {
 
   // bind and labels
-  let self = this, labels
+  let self = this, labels,
 
-  // changeEvent
-  const changeCustomEvent = bootstrapCustomEvent('change', 'button')
+      // changeEvent
+      changeCustomEvent = bootstrapCustomEvent('change', 'button')
 
   // private methods
   function activateItems() {
@@ -29,13 +29,12 @@ export default function Button(element) {
     })
   }
   function toggle(e) {
-    const label = e.target.tagName === 'LABEL' ? e.target : e.target.closest('LABEL') ? e.target.closest('LABEL') : null; // the .btn label
-
-    // invalidate if no label
-    if ( !label ) return; 
+    let input,
+        label = e.target.tagName === 'LABEL' ? e.target 
+              : e.target.closest('LABEL') ? e.target.closest('LABEL') : null; // the .btn label
 
     // current input
-    const input = label.getElementsByTagName('INPUT')[0];
+    input = label && label.getElementsByTagName('INPUT')[0];
 
     // invalidate if no input
     if ( !input ) return; 

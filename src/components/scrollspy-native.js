@@ -1,8 +1,8 @@
 
 /* Native JavaScript for Bootstrap 4 | ScrollSpy
 ------------------------------------------------ */
-import { hasClass, addClass, removeClass } from '../util/class.js';
-import { bootstrapCustomEvent, dispatchCustomEvent, on, off, passiveHandler } from '../util/event.js';
+import { hasClass, addClass, removeClass, on, off, passiveHandler } from 'shorter-js';
+import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { queryElement } from '../util/selector.js';
 import { componentInit, getScroll } from '../util/misc.js';
 
@@ -15,10 +15,11 @@ export default function ScrollSpy(element,options) {
   options = options || {};
 
   // bind
-  let self = this
+  let self = this,
 
-  // bind, event targets, constants
-  let 
+    // internals
+    vars,
+
     // DATA API
     targetData,
     offsetData,
@@ -31,27 +32,27 @@ export default function ScrollSpy(element,options) {
   // populate items and targets
   function updateTargets(){
     const links = spyTarget.getElementsByTagName('A');
-    if (self.vars.length !== links.length) {
+    if (vars.length !== links.length) {
       // reset arrays
-      self.vars.items = [];
-      self.vars.targets = [];
+      vars.items = [];
+      vars.targets = [];
 
       [].slice.call(links).map(link=>{
         const href = link.getAttribute('href'),
           targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
         if ( targetItem ) {
-          self.vars.items.push(link);
-          self.vars.targets.push(targetItem);
+          vars.items.push(link);
+          vars.targets.push(targetItem);
         }
       })
-      self.vars.length = links.length
+      vars.length = links.length
     }
   }
 
   // item update
   function updateItem(index) {
-    const item = self.vars.items[index], // the menu item targets this element
-      targetItem = self.vars.targets[index],
+    const item = vars.items[index], // the menu item targets this element
+      targetItem = vars.targets[index],
       // parent = hasClass(item,'dropdown-item') ? item.closest('.dropdown-menu')  // child looking up
       //        : hasClass(item,'nav-link')      ? item.closest('.nav') : 0,
       dropmenu = hasClass(item,'dropdown-item') && item.closest('.dropdown-menu'),
@@ -59,20 +60,20 @@ export default function ScrollSpy(element,options) {
       // parentLink = parent && parent.previousElementSibling,
       nextSibling = item.nextElementSibling,
       activeSibling = nextSibling && nextSibling.getElementsByClassName('active').length, // parent looking down
-      targetRect = self.vars.isWindow && targetItem.getBoundingClientRect(),
+      targetRect = vars.isWindow && targetItem.getBoundingClientRect(),
       isActive = hasClass(item,'active') || false,
-      topEdge = (self.vars.isWindow ? targetRect.top + self.vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
-      bottomEdge = self.vars.isWindow ? targetRect.bottom + self.vars.scrollOffset - self.options.offset 
-                 : self.vars.targets[index+1] ? self.vars.targets[index+1].offsetTop - self.options.offset 
+      topEdge = (vars.isWindow ? targetRect.top + vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
+      bottomEdge = vars.isWindow ? targetRect.bottom + vars.scrollOffset - self.options.offset 
+                 : vars.targets[index+1] ? vars.targets[index+1].offsetTop - self.options.offset 
                  : element.scrollHeight,
-      inside = activeSibling || self.vars.scrollOffset >= topEdge && bottomEdge > self.vars.scrollOffset;
+      inside = activeSibling || vars.scrollOffset >= topEdge && bottomEdge > vars.scrollOffset;
 
      if ( !isActive && inside ) {
       addClass(item,'active');
       if (dropLink && !hasClass(dropLink,'active') ) {
         addClass(dropLink,'active');
       }
-      dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', self.vars.items[index]));
+      dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', vars.items[index]));
     } else if ( isActive && !inside ) {
       removeClass(item,'active');
 
@@ -86,8 +87,8 @@ export default function ScrollSpy(element,options) {
   // update all items
   function updateItems() {
     updateTargets();
-    self.vars.scrollOffset = self.vars.isWindow ? getScroll().y : element.scrollTop;
-    self.vars.items.map((l,idx)=>updateItem(idx))
+    vars.scrollOffset = vars.isWindow ? getScroll().y : element.scrollTop;
+    vars.items.map((l,idx)=>updateItem(idx))
   }
   function toggleEvents(action) {
     action( scrollTarget, 'scroll', self.refresh, passiveHandler );
@@ -129,11 +130,11 @@ export default function ScrollSpy(element,options) {
     self.options.offset = parseInt(options.offset || offsetData) || 10;
 
     // set instance priority variables
-    self.vars = {}
-    self.vars.length = 0
-    self.vars.items = []
-    self.vars.targets = []
-    self.vars.isWindow = scrollTarget === window
+    vars = {}
+    vars.length = 0
+    vars.items = []
+    vars.targets = []
+    vars.isWindow = scrollTarget === window
 
     // prevent adding event handlers twice
     if ( !element.ScrollSpy ) { 
