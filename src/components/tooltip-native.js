@@ -1,9 +1,19 @@
 
 /* Native JavaScript for Bootstrap 4 | Tooltip
 ---------------------------------------------- */
-import { hasClass, addClass, removeClass, on, off, mouseHover, mouseEvents, touchEvents, passiveHandler, emulateTransitionEnd } from 'shorter-js';
+import { hasClass } from 'shorter-js/src/class/hasClass.js';
+import { addClass } from 'shorter-js/src/class/addClass.js';
+import { removeClass } from 'shorter-js/src/class/removeClass.js';
+import { on } from 'shorter-js/src/event/on.js';
+import { off } from 'shorter-js/src/event/off.js';
+import { mouseHoverEvents } from 'shorter-js/src/strings/mouseHoverEvents.js';
+import { mouseClickEvents } from 'shorter-js/src/strings/mouseClickEvents.js';
+import { touchEvents } from 'shorter-js/src/strings/touchEvents.js';
+import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
+import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { queryElement } from '../util/selector.js';
 import { componentInit, styleTip } from '../util/misc.js';
 
 // TOOLTIP DEFINITION
@@ -118,9 +128,9 @@ export default function Tooltip(element,options) {
     dispatchCustomEvent.call(element, hiddenCustomEvent);
   }
   function toggleEvents(action) {
-    action(element, mouseEvents.down, self.show);
-    action(element, mouseHover[0], self.show);
-    action(element, mouseHover[1], self.hide);
+    action(element, mouseClickEvents.down, self.show);
+    action(element, mouseHoverEvents[0], self.show);
+    action(element, mouseHoverEvents[1], self.hide);
   }
 
   // public methods

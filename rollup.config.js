@@ -31,13 +31,14 @@ const PLUGINS = [
   node({mainFields: ['shorter-js', 'module']}),
   json(),
   buble(),
+  cleanup()
 ]
 
 if (MIN){
   PLUGINS.push(terser({output: {preamble: miniBanner}}));
 } else {
   OUTPUT.banner = banner;
-  PLUGINS.push(cleanup());
+  // PLUGINS.push(cleanup());
 }
 
 if (FORMAT!=='esm') {

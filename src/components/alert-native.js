@@ -1,9 +1,14 @@
 
 /* Native JavaScript for Bootstrap 4 | Alert
 -------------------------------------------- */
-import { hasClass, removeClass, on, off, emulateTransitionEnd } from 'shorter-js';
+import { hasClass } from 'shorter-js/src/class/hasClass.js';
+import { removeClass } from 'shorter-js/src/class/removeClass.js';
+import { on } from 'shorter-js/src/event/on.js';
+import { off } from 'shorter-js/src/event/off.js';
+import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { queryElement } from '../util/selector.js';
 import { componentInit } from '../util/misc.js';
 
 // ALERT DEFINITION

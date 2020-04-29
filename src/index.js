@@ -9,6 +9,7 @@ import ScrollSpy from './components/scrollspy-native.js'
 import Tab from './components/tab-native.js'
 import Toast from './components/toast-native.js'
 import Tooltip from './components/tooltip-native.js'
+
 import './util/init.js'
 import {initCallback,removeDataAPI} from './util/callbacks.js'
 import {componentsInit} from './util/globals.js'

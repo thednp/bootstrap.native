@@ -5,9 +5,10 @@ import { componentsInit } from './globals.js'
 export const initCallback = function (lookUp){
   lookUp = lookUp || document;
   const initializeDataAPI = function( Constructor, collection ){
-    for (let i=0, cl=collection.length; i<cl; i++) {
-      new Constructor(collection[i]);
-    }
+    // for (let i=0, cl=collection.length; i<cl; i++) {
+    //   new Constructor(collection[i]);
+    // }
+    Array.from(collection).map(x=>new Constructor(x))
   };
   for (const component in componentsInit) {
     initializeDataAPI( componentsInit[component][0], lookUp.querySelectorAll (componentsInit[component][1]) );
@@ -19,11 +20,12 @@ export const initCallback = function (lookUp){
 export const removeDataAPI = function (lookUp) {
   lookUp = lookUp || document;
   const removeElementDataAPI = function( ConstructorName, collection ){
-    for (let i=0, cl=collection.length; i<cl; i++) {
-      if (collection[i][ConstructorName]) {
-        collection[i][ConstructorName].dispose();
-      }
-    }
+    // for (let i=0, cl=collection.length; i<cl; i++) {
+    //   if (collection[i][ConstructorName]) {
+    //     collection[i][ConstructorName].dispose();
+    //   }
+    // }
+    Array.from(collection).map(x=>x[ConstructorName].dispose())
   };  
 
   for (const component in componentsInit) {

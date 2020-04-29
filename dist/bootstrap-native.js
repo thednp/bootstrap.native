@@ -9,27 +9,24 @@
   (global = global || self, global.BSN = factory());
 }(this, (function () { 'use strict';
 
-  function addClass(element,classNAME) {
-    element.classList.add(classNAME);
+  function hasClass(element,classNAME) {
+    return element.classList.contains(classNAME)
   }
+
   function removeClass(element,classNAME) {
     element.classList.remove(classNAME);
   }
-  function hasClass(element,classNAME) {
-    return element.classList.contains(classNAME);
-  }
 
-  var mouseEvents = { down: 'mousedown', up: 'mouseup' };
-  var touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove', cancel:'touchcancel' };
-  var mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
   function on (element, event, handler, options) {
     options = options || false;
     element.addEventListener(event, handler, options);
   }
+
   function off (element, event, handler, options) {
     options = options || false;
     element.removeEventListener(event, handler, options);
   }
+
   function one (element, event, handler, options) {
     on(element, event, function handlerWrapper(e){
       if (e.target === element) {
@@ -38,6 +35,48 @@
       }
     }, options);
   }
+
+  var transitionEndEvent = 'webkitTransition' in document.body.style ? 'webkitTransitionEnd' : 'transitionend';
+
+  var supportTransition = 'webkitTransition' in document.body.style || 'transition' in document.body.style;
+
+  var transitionDuration = 'webkitTransition' in document.body.style ? 'webkitTransitionDuration' : 'transitionDuration';
+
+  function getElementTransitionDuration (element) {
+    var duration = supportTransition ? window.getComputedStyle(element)[transitionDuration] : 0;
+    duration = parseFloat(duration);
+    duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
+    return duration;
+  }
+
+  function emulateTransitionEnd (element,handler){
+    var called = 0, duration = getElementTransitionDuration(element);
+    duration ? one(element, transitionEndEvent, function(e){ !called && handler(e), called = 1; })
+             : setTimeout(function() { !called && handler(), called = 1; }, 17);
+  }
+
+  function queryElement (selector, parent) {
+    var lookUp = parent && parent instanceof Element ? parent : document;
+    return selector instanceof Element ? selector : lookUp.querySelector(selector);
+  }
+
+  function bootstrapCustomEvent (eventName, componentName, related) {
+    var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
+    OriginalCustomEvent.relatedTarget = related;
+    return OriginalCustomEvent;
+  }
+  function dispatchCustomEvent (customEvent){
+    this && this.dispatchEvent(customEvent);
+  }
+
+  var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
+
+  var mouseHoverEvents = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
+
+  var touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove', cancel:'touchcancel' };
+
+  var support3DTransform = 'webkitPerspective' in document.body.style || 'perspective' in document.body.style;
+
   var supportPassive = (function () {
     var result = false;
     try {
@@ -50,37 +89,20 @@
     } catch (e) {}
     return result;
   })();
-  var passiveHandler = supportPassive ? { passive: true } : false;
 
   var supportTransform = 'webkitTransform' in document.body.style || 'transform' in document.body.style;
-  var supportTransitions = 'webkitTransition' in document.body.style || 'transition' in document.body.style;
-  var transitionEndEvent = 'webkitTransition' in document.body.style ? 'webkitTransitionEnd' : 'transitionend';
-  var transitionDuration = 'webkitTransition' in document.body.style ? 'webkitTransitionDuration' : 'transitionDuration';
-  function getElementTransitionDuration (element) {
-    var duration = supportTransitions ? window.getComputedStyle(element)[transitionDuration] : 0;
-    duration = parseFloat(duration);
-    duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
-    return duration;
-  }
-  function emulateTransitionEnd (element,handler){
-    var called = 0, duration = getElementTransitionDuration(element);
-    duration ? one(element, transitionEndEvent, function(e){ !called && handler(e), called = 1; })
-             : setTimeout(function() { !called && handler(), called = 1; }, 17);
+
+  function addClass(element,classNAME) {
+    element.classList.add(classNAME);
   }
 
-  function bootstrapCustomEvent (eventName, componentName, related) {
-    var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-    OriginalCustomEvent.relatedTarget = related;
-    return OriginalCustomEvent;
-  }
-  function dispatchCustomEvent (customEvent){
-    this && this.dispatchEvent(customEvent);
+  function isElementInScrollRange(element) {
+    var bcr = element.getBoundingClientRect(),
+        viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    return bcr.top <= viewportHeight && bcr.bottom >= 0;
   }
 
-  function queryElement (selector, parent) {
-    var lookUp = parent && parent instanceof Element ? parent : document;
-    return selector instanceof Element ? selector : lookUp.querySelector(selector);
-  }
+  var passiveHandler = supportPassive ? { passive: true } : false;
 
   function setFocus (element){
     element.focus ? element.focus() : element.setActive();
@@ -214,7 +236,7 @@
     var self = this, labels,
         changeCustomEvent = bootstrapCustomEvent('change', 'button');
     function activateItems() {
-      [].slice.call(self.buttons).map(function (btn){
+      Array.from(self.buttons).map(function (btn){
         !hasClass(btn,'active')
           && queryElement('input:checked',btn)
           && addClass(btn,'active');
@@ -256,7 +278,7 @@
           input.setAttribute('checked','checked');
           input.checked = true;
           element.toggled = true;
-          [].slice.call(self.buttons).map(function (otherLabel){
+          Array.from(self.buttons).map(function (otherLabel){
             var otherInput = otherLabel.getElementsByTagName('INPUT')[0];
             if ( otherLabel !== label && hasClass(otherLabel,'active') )  {
               dispatchCustomEvent.call(otherInput, changeCustomEvent);
@@ -363,8 +385,8 @@
     }
     function toggleEvents(action) {
       if ( self.options.pause && self.options.interval ) {
-        action( element, mouseHover[0], pauseHandler );
-        action( element, mouseHover[1], resumeHandler );
+        action( element, mouseHoverEvents[0], pauseHandler );
+        action( element, mouseHoverEvents[1], resumeHandler );
         action( element, touchEvents.start, pauseHandler, passiveHandler );
         action( element, touchEvents.end, resumeHandler, passiveHandler );
       }
@@ -413,10 +435,6 @@
         toggleTouchEvents(off);
       }
     }
-    function isElementInScrollRange() {
-      var rect = element.getBoundingClientRect(), viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      return rect.top <= viewportHeight && rect.bottom >= 0;
-    }
     function setActivePage(pageIndex) {
       Array.from(indicators).map(function (x){removeClass(x,'active');});
       indicators[pageIndex] && addClass(indicators[pageIndex], 'active');
@@ -450,7 +468,7 @@
       }
       vars.timer = setInterval(function () {
         var idx = vars.index || self.getActiveIndex();
-        isElementInScrollRange() && (idx++, self.slideTo( idx ) );
+        isElementInScrollRange(element) && (idx++, self.slideTo( idx ) );
       }, self.options.interval);
     };
     self.slideTo = function (next) {
@@ -614,11 +632,11 @@
     };
     self.show = function () {
       if ( accordion ) {
-        activeCollapse = queryElement(".collapse.show",accordion);
+        activeCollapse = accordion.getElementsByClassName("collapse show")[0];
         activeElement = activeCollapse && (queryElement(("[data-target=\"#" + (activeCollapse.id) + "\"]"),accordion)
                       || queryElement(("[href=\"#" + (activeCollapse.id) + "\"]"),accordion) );
       }
-      if ( !collapse.isAnimating || activeCollapse && !activeCollapse.isAnimating ) {
+      if ( !collapse.isAnimating ) {
         if ( activeElement && activeCollapse !== collapse ) {
           closeAction(activeCollapse,activeElement);
           addClass(activeElement,'collapsed');
@@ -765,7 +783,7 @@
       element.Dropdown && element.Dropdown.dispose();
       parent = element.parentNode;
       menu = queryElement('.dropdown-menu', parent);
-      [].slice.call(menu.children).map(function (child){
+      Array.from(menu.children).map(function (child){
         child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
         child.tagName === 'A' && menuItems.push(child);
       });
@@ -881,7 +899,7 @@
       if ( modal.isAnimating ) { return; }
       var clickTarget = e.target;
       clickTarget = clickTarget.hasAttribute('data-target') || clickTarget.hasAttribute('href') ? clickTarget : clickTarget.parentNode;
-      if ( clickTarget === element && !hasClass(modal,'show') ) {
+      if ( (clickTarget === element || element.contains(clickTarget)) && !hasClass(modal,'show') ) {
         modal.modalTrigger = element;
         relatedTarget = element;
         self.show();
@@ -1073,9 +1091,9 @@
     }
     function toggleEvents(action) {
       if (self.options.trigger === 'hover') {
-        action( element, mouseEvents.down, self.show );
-        action( element, mouseHover[0], self.show );
-        if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); }
+        action( element, mouseClickEvents.down, self.show );
+        action( element, mouseHoverEvents[0], self.show );
+        if (!self.options.dismissible) { action( element, mouseHoverEvents[1], self.hide ); }
       } else if ('click' == self.options.trigger) {
         action( element, self.options.trigger, self.toggle );
       } else if ('focus' == self.options.trigger) {
@@ -1196,7 +1214,7 @@
       if (vars.length !== links.length) {
         vars.items = [];
         vars.targets = [];
-        [].slice.call(links).map(function (link){
+        Array.from(links).map(function (link){
           var href = link.getAttribute('href'),
             targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
           if ( targetItem ) {
@@ -1399,7 +1417,7 @@
       tabs = element.closest('.nav');
       dropdown = tabs && queryElement('.dropdown-toggle',tabs);
       self.options = {};
-      self.options.height = !supportTransitions || (options.height === false || heightData === 'false') ? false : true;
+      self.options.height = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
       tabs.isAnimating = false;
       if ( !element.Tab ) {
         on(element, 'click', clickHandler);
@@ -1563,9 +1581,9 @@
       dispatchCustomEvent.call(element, hiddenCustomEvent);
     }
     function toggleEvents(action) {
-      action(element, mouseEvents.down, self.show);
-      action(element, mouseHover[0], self.show);
-      action(element, mouseHover[1], self.hide);
+      action(element, mouseClickEvents.down, self.show);
+      action(element, mouseHoverEvents[0], self.show);
+      action(element, mouseHoverEvents[1], self.hide);
     }
     self.show = function () {
       clearTimeout(timer);
@@ -1647,9 +1665,7 @@
   var initCallback = function (lookUp){
     lookUp = lookUp || document;
     var initializeDataAPI = function( Constructor, collection ){
-      for (var i=0, cl=collection.length; i<cl; i++) {
-        new Constructor(collection[i]);
-      }
+      Array.from(collection).map(function (x){ return new Constructor(x); });
     };
     for (var component in componentsInit) {
       initializeDataAPI( componentsInit[component][0], lookUp.querySelectorAll (componentsInit[component][1]) );
@@ -1658,11 +1674,7 @@
   var removeDataAPI = function (lookUp) {
     lookUp = lookUp || document;
     var removeElementDataAPI = function( ConstructorName, collection ){
-      for (var i=0, cl=collection.length; i<cl; i++) {
-        if (collection[i][ConstructorName]) {
-          collection[i][ConstructorName].dispose();
-        }
-      }
+      Array.from(collection).map(function (x){ return x[ConstructorName].dispose(); });
     };
     for (var component in componentsInit) {
       removeElementDataAPI( component, lookUp.querySelectorAll (componentsInit[component][1]) );

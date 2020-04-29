@@ -1,9 +1,15 @@
 
 /* Native JavaScript for Bootstrap 4 | ScrollSpy
 ------------------------------------------------ */
-import { hasClass, addClass, removeClass, on, off, passiveHandler } from 'shorter-js';
+import { hasClass } from 'shorter-js/src/class/hasClass.js';
+import { addClass } from 'shorter-js/src/class/addClass.js';
+import { removeClass } from 'shorter-js/src/class/removeClass.js';
+import { on } from 'shorter-js/src/event/on.js';
+import { off } from 'shorter-js/src/event/off.js';
+import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
+import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { queryElement } from '../util/selector.js';
 import { componentInit, getScroll } from '../util/misc.js';
 
 // SCROLLSPY DEFINITION
@@ -37,7 +43,7 @@ export default function ScrollSpy(element,options) {
       vars.items = [];
       vars.targets = [];
 
-      [].slice.call(links).map(link=>{
+      Array.from(links).map(link=>{
         const href = link.getAttribute('href'),
           targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
         if ( targetItem ) {

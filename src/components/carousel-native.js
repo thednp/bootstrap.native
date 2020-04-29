@@ -1,9 +1,20 @@
 
 /* Native JavaScript for Bootstrap 4 | Carousel
 ----------------------------------------------- */
-import { hasClass, addClass, removeClass, on, off, touchEvents, mouseHover, passiveHandler, getElementTransitionDuration, emulateTransitionEnd } from 'shorter-js';
+import { hasClass } from 'shorter-js/src/class/hasClass.js';
+import { addClass } from 'shorter-js/src/class/addClass.js';
+import { removeClass } from 'shorter-js/src/class/removeClass.js';
+import { on } from 'shorter-js/src/event/on.js';
+import { off } from 'shorter-js/src/event/off.js';
+import { touchEvents } from 'shorter-js/src/strings/touchEvents.js';
+import { mouseHoverEvents } from 'shorter-js/src/strings/mouseHoverEvents.js';
+import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
+import { getElementTransitionDuration } from 'shorter-js/src/misc/getElementTransitionDuration.js';
+import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import { isElementInScrollRange } from 'shorter-js/src/misc/isElementInScrollRange.js';
+import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { queryElement } from '../util/selector.js';
 import { componentInit } from '../util/misc.js';
 
 // CAROUSEL DEFINITION
@@ -81,8 +92,8 @@ export default function Carousel (element,options) {
   }
   function toggleEvents(action) {
     if ( self.options.pause && self.options.interval ) {
-      action( element, mouseHover[0], pauseHandler );
-      action( element, mouseHover[1], resumeHandler );
+      action( element, mouseHoverEvents[0], pauseHandler );
+      action( element, mouseHoverEvents[1], resumeHandler );
       action( element, touchEvents.start, pauseHandler, passiveHandler );
       action( element, touchEvents.end, resumeHandler, passiveHandler );
     }
@@ -143,10 +154,6 @@ export default function Carousel (element,options) {
     }
   }
   // private methods
-  function isElementInScrollRange() {
-    const rect = element.getBoundingClientRect(), viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-    return rect.top <= viewportHeight && rect.bottom >= 0; // bottom && top
-  }
   function setActivePage(pageIndex) { //indicators
     // [].slice.call(indicators).map(x=>{removeClass(x,'active')})
     // [...indicators].map(x=>{removeClass(x,'active')})
@@ -190,7 +197,7 @@ export default function Carousel (element,options) {
 
     vars.timer = setInterval(() => {
       let idx = vars.index || self.getActiveIndex()
-      isElementInScrollRange() && (idx++, self.slideTo( idx ) );
+      isElementInScrollRange(element) && (idx++, self.slideTo( idx ) );
     }, self.options.interval);
   }
   self.slideTo = next => {

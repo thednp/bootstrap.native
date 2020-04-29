@@ -1,6 +1,4 @@
-// import { hasClass } from './class.js';
-import { hasClass } from 'shorter-js';
-import { queryElement } from './selector.js'
+import { hasClass, queryElement } from 'shorter-js';
 
 export function setFocus (element){
   element.focus ? element.focus() : element.setActive();

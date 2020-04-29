@@ -1,9 +1,14 @@
 
 /* Native JavaScript for Bootstrap 4 | Button
 ---------------------------------------------*/
-import { hasClass, addClass, removeClass, on, off } from 'shorter-js';
+import { hasClass } from 'shorter-js/src/class/hasClass.js';
+import { addClass } from 'shorter-js/src/class/addClass.js';
+import { removeClass } from 'shorter-js/src/class/removeClass.js';
+import { on } from 'shorter-js/src/event/on.js';
+import { off } from 'shorter-js/src/event/off.js';
+import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { queryElement } from '../util/selector.js';
 import { componentInit } from '../util/misc.js';
 
 // BUTTON DEFINITION
@@ -19,7 +24,7 @@ export default function Button(element) {
 
   // private methods
   function activateItems() {
-    [].slice.call(self.buttons).map(btn=>{
+    Array.from(self.buttons).map(btn=>{
       !hasClass(btn,'active') 
         && queryElement('input:checked',btn)
         && addClass(btn,'active');
@@ -73,7 +78,7 @@ export default function Button(element) {
         input.checked = true;
 
         element.toggled = true;
-        [].slice.call(self.buttons).map(otherLabel=>{
+        Array.from(self.buttons).map(otherLabel=>{
           const otherInput = otherLabel.getElementsByTagName('INPUT')[0];
           if ( otherLabel !== label && hasClass(otherLabel,'active') )  {
             dispatchCustomEvent.call(otherInput, changeCustomEvent); // trigger the change

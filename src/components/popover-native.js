@@ -1,9 +1,19 @@
 
 /* Native JavaScript for Bootstrap 4 | Popover
 ---------------------------------------------- */
-import { hasClass, addClass, removeClass, on, off, mouseHover, mouseEvents, touchEvents, passiveHandler, emulateTransitionEnd } from 'shorter-js';
+import { hasClass } from 'shorter-js/src/class/hasClass.js';
+import { addClass } from 'shorter-js/src/class/addClass.js';
+import { removeClass } from 'shorter-js/src/class/removeClass.js';
+import { on } from 'shorter-js/src/event/on.js';
+import { off } from 'shorter-js/src/event/off.js';
+import { mouseHoverEvents } from 'shorter-js/src/strings/mouseHoverEvents.js';
+import { mouseClickEvents } from 'shorter-js/src/strings/mouseClickEvents.js';
+import { touchEvents } from 'shorter-js/src/strings/touchEvents.js';
+import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
+import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { queryElement } from '../util/selector.js';
 import { componentInit, styleTip } from '../util/misc.js';
 
 // POPOVER DEFINITION
@@ -135,9 +145,9 @@ export default function Popover(element,options) {
   }
   function toggleEvents(action) {
     if (self.options.trigger === 'hover') {
-      action( element, mouseEvents.down, self.show );
-      action( element, mouseHover[0], self.show );
-      if (!self.options.dismissible) { action( element, mouseHover[1], self.hide ); } // export const mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
+      action( element, mouseClickEvents.down, self.show );
+      action( element, mouseHoverEvents[0], self.show );
+      if (!self.options.dismissible) { action( element, mouseHoverEvents[1], self.hide ); } // export const mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
     } else if ('click' == self.options.trigger) {
       action( element, self.options.trigger, self.toggle );
     } else if ('focus' == self.options.trigger) {

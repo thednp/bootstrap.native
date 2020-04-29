@@ -1,9 +1,14 @@
 
 /* Native JavaScript for Bootstrap 4 | Dropdown
 ----------------------------------------------- */
-import { hasClass, addClass, removeClass, on, off } from 'shorter-js';
+import { hasClass } from 'shorter-js/src/class/hasClass.js';
+import { addClass } from 'shorter-js/src/class/addClass.js';
+import { removeClass } from 'shorter-js/src/class/removeClass.js';
+import { on } from 'shorter-js/src/event/on.js';
+import { off } from 'shorter-js/src/event/off.js';
+import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { queryElement } from '../util/selector.js';
 import { componentInit, setFocus } from '../util/misc.js';
 
 // DROPDOWN DEFINITION
@@ -145,7 +150,7 @@ export default function Dropdown(element,option) {
     parent = element.parentNode
     menu = queryElement('.dropdown-menu', parent);
 
-    [].slice.call(menu.children).map(child=>{
+    Array.from(menu.children).map(child=>{
       child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
       child.tagName === 'A' && menuItems.push(child);
     })
