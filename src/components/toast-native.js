@@ -8,9 +8,9 @@ import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit } from '../util/misc.js';
 
 // TOAST DEFINITION
 // ==================
@@ -84,7 +84,7 @@ export default function Toast(element,options) {
   };
 
   // init
-  componentInit(()=>{
+  tryWrapper(()=>{
 
     // initialization element
     element = queryElement(element)
@@ -120,7 +120,6 @@ export default function Toast(element,options) {
     self.toast = toast;
     self.element = element;
     element.Toast = self;
-  })
-
+  },'BSN.Toast')
 }
 

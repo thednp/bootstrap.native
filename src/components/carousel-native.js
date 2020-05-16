@@ -13,9 +13,9 @@ import { getElementTransitionDuration } from 'shorter-js/src/misc/getElementTran
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { isElementInScrollRange } from 'shorter-js/src/misc/isElementInScrollRange.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit } from '../util/misc.js';
 
 // CAROUSEL DEFINITION
 // ===================
@@ -294,7 +294,7 @@ export default function Carousel (element,options) {
   }
 
   // init
-  componentInit(()=>{
+  tryWrapper(()=>{
 
     // initialization element
     element = queryElement( element );
@@ -346,7 +346,7 @@ export default function Carousel (element,options) {
   
     // associate init object to target
     element.Carousel = self;
-  })
+  },"BSN.Carousel")
 
 }
 

@@ -7,9 +7,10 @@ import { removeClass } from 'shorter-js/src/class/removeClass.js';
 import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit, setFocus } from '../util/misc.js';
+import { setFocus } from '../util/misc.js';
 
 // DROPDOWN DEFINITION
 // ===================
@@ -138,7 +139,7 @@ export default function Dropdown(element,option) {
   }
 
   // init
-  componentInit(()=>{
+  tryWrapper(()=>{
 
     // initialization element
     element = queryElement(element);
@@ -171,7 +172,7 @@ export default function Dropdown(element,option) {
     // associate element with init object 
     self.element = element;
     element.Dropdown = self;
-  })
+  },"BSN.Dropdown")
 
 }
 

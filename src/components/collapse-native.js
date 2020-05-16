@@ -8,9 +8,9 @@ import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit } from '../util/misc.js';
 
 // COLLAPSE DEFINITION
 // ===================
@@ -109,7 +109,7 @@ export default function Collapse(element,options) {
   }
 
   // init
-  componentInit(()=>{
+  tryWrapper(()=>{
   
     // initialization element
     element = queryElement(element);
@@ -146,6 +146,6 @@ export default function Collapse(element,options) {
     // associate target to init object
     self.element = element;
     element.Collapse = self;
-  })
+  },"BSN.Collapse")
 }
 

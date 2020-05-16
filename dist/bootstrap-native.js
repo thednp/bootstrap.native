@@ -60,6 +60,13 @@
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
+  function tryWrapper (fn,origin){
+    try{ fn(); }
+    catch(e){
+      console.error((origin + ": " + e));
+    }
+  }
+
   function bootstrapCustomEvent (eventName, componentName, related) {
     var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
     OriginalCustomEvent.relatedTarget = related;
@@ -67,126 +74,6 @@
   }
   function dispatchCustomEvent (customEvent){
     this && this.dispatchEvent(customEvent);
-  }
-
-  var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
-
-  var mouseHoverEvents = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
-
-  var touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove', cancel:'touchcancel' };
-
-  var support3DTransform = 'webkitPerspective' in document.body.style || 'perspective' in document.body.style;
-
-  var supportPassive = (function () {
-    var result = false;
-    try {
-      var opts = Object.defineProperty({}, 'passive', {
-        get: function() {
-          result = true;
-        }
-      });
-      one(document, 'DOMContentLoaded', function (){}, opts);
-    } catch (e) {}
-    return result;
-  })();
-
-  var supportTransform = 'webkitTransform' in document.body.style || 'transform' in document.body.style;
-
-  function addClass(element,classNAME) {
-    element.classList.add(classNAME);
-  }
-
-  function isElementInScrollRange(element) {
-    var bcr = element.getBoundingClientRect(),
-        viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-    return bcr.top <= viewportHeight && bcr.bottom >= 0;
-  }
-
-  var passiveHandler = supportPassive ? { passive: true } : false;
-
-  function setFocus (element){
-    element.focus ? element.focus() : element.setActive();
-  }
-  function getScroll () {
-    return {
-      y : window.pageYOffset || document.documentElement.scrollTop,
-      x : window.pageXOffset || document.documentElement.scrollLeft
-    }
-  }
-  function componentInit(fn){
-    try{ fn(); }
-    catch(e){
-      console.error(("BSN: " + e));
-    }
-  }
-  function styleTip (link,element,position,parent) {
-    var tipPositions = /\b(top|bottom|left|right)+/,
-        elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
-        windowWidth = (document.documentElement.clientWidth || document.body.clientWidth),
-        windowHeight = (document.documentElement.clientHeight || document.body.clientHeight),
-        rect = link.getBoundingClientRect(),
-        scroll = parent === document.body ? getScroll() : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
-        linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
-        isPopover = hasClass(element,'popover'),
-        arrow = queryElement('.arrow',element),
-        halfTopExceed = rect.top + linkDimensions.h/2 - elementDimensions.h/2 < 0,
-        halfLeftExceed = rect.left + linkDimensions.w/2 - elementDimensions.w/2 < 0,
-        halfRightExceed = rect.left + elementDimensions.w/2 + linkDimensions.w/2 >= windowWidth,
-        halfBottomExceed = rect.top + elementDimensions.h/2 + linkDimensions.h/2 >= windowHeight,
-        topExceed = rect.top - elementDimensions.h < 0,
-        leftExceed = rect.left - elementDimensions.w < 0,
-        bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight,
-        rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth;
-    position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position;
-    position = position === 'top' && topExceed ? 'bottom' : position;
-    position = position === 'bottom' && bottomExceed ? 'top' : position;
-    position = position === 'left' && leftExceed ? 'right' : position;
-    position = position === 'right' && rightExceed ? 'left' : position;
-    var topPosition,
-      leftPosition,
-      arrowTop,
-      arrowLeft,
-      arrowWidth,
-      arrowHeight;
-    element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipPositions,position));
-    arrowWidth = arrow.offsetWidth; arrowHeight = arrow.offsetHeight;
-    if ( position === 'left' || position === 'right' ) {
-      if ( position === 'left' ) {
-        leftPosition = rect.left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 );
-      } else {
-        leftPosition = rect.left + scroll.x + linkDimensions.w;
-      }
-      if (halfTopExceed) {
-        topPosition = rect.top + scroll.y;
-        arrowTop = linkDimensions.h/2 - arrowWidth;
-      } else if (halfBottomExceed) {
-        topPosition = rect.top + scroll.y - elementDimensions.h + linkDimensions.h;
-        arrowTop = elementDimensions.h - linkDimensions.h/2 - arrowWidth;
-      } else {
-        topPosition = rect.top + scroll.y - elementDimensions.h/2 + linkDimensions.h/2;
-        arrowTop = elementDimensions.h/2 - (isPopover ? arrowHeight*0.9 : arrowHeight/2);
-      }
-    } else if ( position === 'top' || position === 'bottom' ) {
-      if ( position === 'top') {
-        topPosition =  rect.top + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 );
-      } else {
-        topPosition = rect.top + scroll.y + linkDimensions.h;
-      }
-      if (halfLeftExceed) {
-        leftPosition = 0;
-        arrowLeft = rect.left + linkDimensions.w/2 - arrowWidth;
-      } else if (halfRightExceed) {
-        leftPosition = windowWidth - elementDimensions.w*1.01;
-        arrowLeft = elementDimensions.w - ( windowWidth - rect.left ) + linkDimensions.w/2 - arrowWidth/2;
-      } else {
-        leftPosition = rect.left + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
-        arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth : arrowWidth/2 );
-      }
-    }
-    element.style.top = topPosition + 'px';
-    element.style.left = leftPosition + 'px';
-    arrowTop && (arrow.style.top = arrowTop + 'px');
-    arrowLeft && (arrow.style.left = arrowLeft + 'px');
   }
 
   function Alert(element) {
@@ -220,7 +107,7 @@
       off(element, 'click', clickHandler);
       delete element.Alert;
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       alert = element.closest('.alert');
       element.Alert && element.Alert.dispose();
@@ -229,7 +116,11 @@
       }
       self.element = element;
       element.Alert = self;
-    });
+    },"BSN.Alert");
+  }
+
+  function addClass(element,classNAME) {
+    element.classList.add(classNAME);
   }
 
   function Button(element) {
@@ -314,7 +205,7 @@
       toggleEvents(off);
       delete element.Button;
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       element.Button && element.Button.dispose();
       labels = element.getElementsByClassName('btn');
@@ -327,7 +218,32 @@
       self.buttons = labels;
       element.Button = self;
       activateItems();
-    });
+    },"BSN.Button");
+  }
+
+  var touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove', cancel:'touchcancel' };
+
+  var mouseHoverEvents = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
+
+  var supportPassive = (function () {
+    var result = false;
+    try {
+      var opts = Object.defineProperty({}, 'passive', {
+        get: function() {
+          result = true;
+        }
+      });
+      one(document, 'DOMContentLoaded', function (){}, opts);
+    } catch (e) {}
+    return result;
+  })();
+
+  var passiveHandler = supportPassive ? { passive: true } : false;
+
+  function isElementInScrollRange(element) {
+    var bcr = element.getBoundingClientRect(),
+        viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    return bcr.top <= viewportHeight && bcr.bottom >= 0;
   }
 
   function Carousel (element,options) {
@@ -537,7 +453,7 @@
       currentX : 0,
       endX : 0
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement( element );
       element.Carousel && element.Carousel.dispose();
       var
@@ -568,7 +484,7 @@
       }
       if ( self.options.interval ){ self.cycle(); }
       element.Carousel = self;
-    });
+    },"BSN.Carousel");
   }
 
   function Collapse(element,options) {
@@ -649,7 +565,7 @@
       off(element, 'click', self.toggle);
       delete element.Collapse;
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       element.Collapse && element.Collapse.dispose();
       var accordionData = element.getAttribute('data-parent');
@@ -667,7 +583,92 @@
       }
       self.element = element;
       element.Collapse = self;
-    });
+    },"BSN.Collapse");
+  }
+
+  var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
+
+  var support3DTransform = 'webkitPerspective' in document.body.style || 'perspective' in document.body.style;
+
+  var supportTransform = 'webkitTransform' in document.body.style || 'transform' in document.body.style;
+
+  function setFocus (element){
+    element.focus ? element.focus() : element.setActive();
+  }
+  function getScroll () {
+    return {
+      y : window.pageYOffset || document.documentElement.scrollTop,
+      x : window.pageXOffset || document.documentElement.scrollLeft
+    }
+  }
+  function styleTip (link,element,position,parent) {
+    var tipPositions = /\b(top|bottom|left|right)+/,
+        elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
+        windowWidth = (document.documentElement.clientWidth || document.body.clientWidth),
+        windowHeight = (document.documentElement.clientHeight || document.body.clientHeight),
+        rect = link.getBoundingClientRect(),
+        scroll = parent === document.body ? getScroll() : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
+        linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
+        isPopover = hasClass(element,'popover'),
+        arrow = queryElement('.arrow',element),
+        halfTopExceed = rect.top + linkDimensions.h/2 - elementDimensions.h/2 < 0,
+        halfLeftExceed = rect.left + linkDimensions.w/2 - elementDimensions.w/2 < 0,
+        halfRightExceed = rect.left + elementDimensions.w/2 + linkDimensions.w/2 >= windowWidth,
+        halfBottomExceed = rect.top + elementDimensions.h/2 + linkDimensions.h/2 >= windowHeight,
+        topExceed = rect.top - elementDimensions.h < 0,
+        leftExceed = rect.left - elementDimensions.w < 0,
+        bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight,
+        rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth;
+    position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position;
+    position = position === 'top' && topExceed ? 'bottom' : position;
+    position = position === 'bottom' && bottomExceed ? 'top' : position;
+    position = position === 'left' && leftExceed ? 'right' : position;
+    position = position === 'right' && rightExceed ? 'left' : position;
+    var topPosition,
+      leftPosition,
+      arrowTop,
+      arrowLeft,
+      arrowWidth,
+      arrowHeight;
+    element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipPositions,position));
+    arrowWidth = arrow.offsetWidth; arrowHeight = arrow.offsetHeight;
+    if ( position === 'left' || position === 'right' ) {
+      if ( position === 'left' ) {
+        leftPosition = rect.left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 );
+      } else {
+        leftPosition = rect.left + scroll.x + linkDimensions.w;
+      }
+      if (halfTopExceed) {
+        topPosition = rect.top + scroll.y;
+        arrowTop = linkDimensions.h/2 - arrowWidth;
+      } else if (halfBottomExceed) {
+        topPosition = rect.top + scroll.y - elementDimensions.h + linkDimensions.h;
+        arrowTop = elementDimensions.h - linkDimensions.h/2 - arrowWidth;
+      } else {
+        topPosition = rect.top + scroll.y - elementDimensions.h/2 + linkDimensions.h/2;
+        arrowTop = elementDimensions.h/2 - (isPopover ? arrowHeight*0.9 : arrowHeight/2);
+      }
+    } else if ( position === 'top' || position === 'bottom' ) {
+      if ( position === 'top') {
+        topPosition =  rect.top + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 );
+      } else {
+        topPosition = rect.top + scroll.y + linkDimensions.h;
+      }
+      if (halfLeftExceed) {
+        leftPosition = 0;
+        arrowLeft = rect.left + linkDimensions.w/2 - arrowWidth;
+      } else if (halfRightExceed) {
+        leftPosition = windowWidth - elementDimensions.w*1.01;
+        arrowLeft = elementDimensions.w - ( windowWidth - rect.left ) + linkDimensions.w/2 - arrowWidth/2;
+      } else {
+        leftPosition = rect.left + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
+        arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth : arrowWidth/2 );
+      }
+    }
+    element.style.top = topPosition + 'px';
+    element.style.left = leftPosition + 'px';
+    arrowTop && (arrow.style.top = arrowTop + 'px');
+    arrowLeft && (arrow.style.left = arrowLeft + 'px');
   }
 
   function Dropdown(element,option) {
@@ -778,7 +779,7 @@
       off(element, 'click', clickHandler);
       delete element.Dropdown;
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       element.Dropdown && element.Dropdown.dispose();
       parent = element.parentNode;
@@ -796,7 +797,7 @@
       element.open = false;
       self.element = element;
       element.Dropdown = self;
-    });
+    },"BSN.Dropdown");
   }
 
   function Modal(element,options) {
@@ -971,7 +972,7 @@
       if (element) {off(element, 'click', clickHandler); delete element.Modal; }
       else {delete modal.Modal;}
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       var checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') );
       modal = hasClass(element,'modal') ? element : checkModal;
@@ -1001,7 +1002,7 @@
       } else {
         modal.Modal = self;
       }
-    });
+    },"BSN.Modal");
   }
 
   function Popover(element,options) {
@@ -1157,7 +1158,7 @@
       toggleEvents(off);
       delete element.Popover;
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       element.Popover && element.Popover.dispose();
       triggerData = element.getAttribute('data-trigger');
@@ -1198,7 +1199,7 @@
       }
       self.element = element;
       element.Popover = self;
-    });
+    },"BSN.Popover");
   }
 
   function ScrollSpy(element,options) {
@@ -1270,7 +1271,7 @@
       toggleEvents(off);
       delete element.ScrollSpy;
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       element.ScrollSpy && element.ScrollSpy.dispose();
       targetData = element.getAttribute('data-target');
@@ -1292,7 +1293,7 @@
       self.refresh();
       self.element = element;
       element.ScrollSpy = self;
-    });
+    },"BSN.ScrollSpy");
   }
 
   function Tab(element,options) {
@@ -1410,7 +1411,7 @@
       off(element, 'click', clickHandler);
       delete element.Tab;
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       element.Tab && element.Tab.dispose();
       heightData = element.getAttribute('data-height');
@@ -1425,7 +1426,7 @@
       if (self.options.height) { tabsContentContainer = getActiveContent().parentNode; }
       self.element = element;
       element.Tab = self;
-    });
+    },'BSN.Tab');
   }
 
   function Toast(element,options) {
@@ -1479,7 +1480,7 @@
     self.dispose = function () {
       self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       element.Toast && element.Toast.dispose();
       toast = element.closest('.toast');
@@ -1500,7 +1501,7 @@
       self.toast = toast;
       self.element = element;
       element.Toast = self;
-    });
+    },'BSN.Toast');
   }
 
   function Tooltip(element,options) {
@@ -1621,7 +1622,7 @@
       element.removeAttribute('data-original-title');
       delete element.Tooltip;
     };
-    componentInit(function (){
+    tryWrapper(function (){
       element = queryElement(element);
       element.Tooltip && element.Tooltip.dispose();
       animationData = element.getAttribute('data-animation');
@@ -1657,7 +1658,7 @@
       }
       self.element = element;
       element.Tooltip = self;
-    });
+    },'BSN.Tooltip');
   }
 
   var componentsInit = {};

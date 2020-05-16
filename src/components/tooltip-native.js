@@ -12,9 +12,10 @@ import { touchEvents } from 'shorter-js/src/strings/touchEvents.js';
 import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit, styleTip } from '../util/misc.js';
+import { styleTip } from '../util/misc.js';
 
 // TOOLTIP DEFINITION
 // ==================
@@ -173,7 +174,7 @@ export default function Tooltip(element,options) {
   };
 
   // init
-  componentInit(()=>{
+  tryWrapper(()=>{
     // initialization element
     element = queryElement(element);
 
@@ -234,6 +235,6 @@ export default function Tooltip(element,options) {
     // associate target to init object
     self.element = element;
     element.Tooltip = self;
-  })
+  },'BSN.Tooltip')
 
 }

@@ -10,9 +10,10 @@ import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { getElementTransitionDuration } from 'shorter-js/src/misc/getElementTransitionDuration.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit, setFocus } from '../util/misc.js';
+import { setFocus } from '../util/misc.js';
 
 // MODAL DEFINITION
 // ================
@@ -234,7 +235,7 @@ export default function Modal(element,options) { // element can be the modal/tri
   };
 
   // init
-  componentInit(()=>{
+  tryWrapper(()=>{
 
     // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
     element = queryElement(element);
@@ -293,7 +294,7 @@ export default function Modal(element,options) { // element can be the modal/tri
       modal.Modal = self;
     }
 
-  })
+  },"BSN.Modal")
 
 }
 

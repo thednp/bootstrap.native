@@ -8,9 +8,10 @@ import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit, getScroll } from '../util/misc.js';
+import { getScroll } from '../util/misc.js';
 
 // SCROLLSPY DEFINITION
 // ====================
@@ -111,7 +112,7 @@ export default function ScrollSpy(element,options) {
   }
 
   // init
-  componentInit(()=>{
+  tryWrapper(()=>{
 
     // initialization element, the element we spy on
     element = queryElement(element);
@@ -151,7 +152,7 @@ export default function ScrollSpy(element,options) {
     // associate target with init object
     self.element = element
     element.ScrollSpy = self
-  })
+  },"BSN.ScrollSpy")
 
 }
 

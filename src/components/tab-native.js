@@ -9,9 +9,9 @@ import { off } from 'shorter-js/src/event/off.js';
 import { supportTransition } from 'shorter-js/src/boolean/supportTransition.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit } from '../util/misc.js';
 
 // TAB DEFINITION
 // ==============
@@ -162,7 +162,7 @@ export default function Tab(element,options) {
     delete element.Tab;
   }
 
-  componentInit(()=>{
+  tryWrapper(()=>{
 
     // initialization element
     element = queryElement(element);
@@ -196,7 +196,7 @@ export default function Tab(element,options) {
     // associate target with init object
     self.element = element;
     element.Tab = self;
-  })
+  },'BSN.Tab')
 
 }
 

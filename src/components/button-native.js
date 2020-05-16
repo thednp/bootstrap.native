@@ -7,9 +7,9 @@ import { removeClass } from 'shorter-js/src/class/removeClass.js';
 import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { componentInit } from '../util/misc.js';
 
 // BUTTON DEFINITION
 // =================
@@ -120,7 +120,7 @@ export default function Button(element) {
   }
 
   // init
-  componentInit(()=>{
+  tryWrapper(()=>{
 
     // initialization element
     element = queryElement(element);
@@ -149,6 +149,6 @@ export default function Button(element) {
   
     // activate items on load
     activateItems();
-  })
+  },"BSN.Button")
 }
 

@@ -12,13 +12,6 @@ export function getScroll () {
   }
 }
 
-export function componentInit(fn){
-  try{ fn() } 
-  catch(e){
-    console.error(`BSN: ${e}`)
-  }
-}
-
 export function styleTip (link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
   const tipPositions = /\b(top|bottom|left|right)+/,
       elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
