@@ -378,11 +378,9 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                     <input type="checkbox" checked> Checkbox 1 (pre-checked)
                   </label>
                   <label class="btn btn-outline-secondary">
-                    <span class="glyphicon glyphicon-plus-sign"></span>
                     <input type="checkbox"> Checkbox 2
                   </label>
                   <label class="btn btn-outline-secondary">
-                    <span class="glyphicon glyphicon-plus-sign"></span>
                     <input type="checkbox"> Checkbox 3
                   </label>
                 </span>
@@ -1685,8 +1683,11 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
               <p>The first example is a modal with static content initialized via DATA API, exactly as described in the above <a
                   href="#modalDataAPI">Use via DATA API</a> section, and showcasing the
                 ability to show another modal from a modal currently visible.</p>
-              <p><button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal"><i
-                    class="glyphicon glyphicon-heart"></i> Launch simple modal</button></p>
+              <p><button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal">
+                <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                  <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                </svg>
+                 Launch simple modal</button></p>
               <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -1733,8 +1734,12 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-success" data-toggle="modal" data-target="#anotherModal">Next</button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
-                          class="glyphicon glyphicon-remove"></i> Close</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                          <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                        </svg>
+                        Close
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1959,8 +1964,11 @@ changeModal2.addEventListener('click', function(){
                     <div class="modal-footer">
                       <button id="changeModal1" type="button" class="btn btn-primary hidden">Set content 1</button>
                       <button id="changeModal2" type="button" class="btn btn-primary">Set content 2</button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
-                          class="glyphicon glyphicon-remove"></i> Close</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                          <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -2758,16 +2766,13 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                 <li class="nav-item">
                   <a class="nav-link active" href="#home" id="home-tab" role="tab" data-height="true"
                     data-toggle="tab" aria-controls="home" aria-expanded="true">
-                    <i class="glyphicon glyphicon-home"></i> Home</a>
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                      <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                    </svg>
+                    Home</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link d-flex flex-row align-items-center" href="#profile" role="tab" id="profile-tab" data-height="true" data-toggle="tab" aria-controls="profile">
-                    <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="14px" height="14px">
-                      <path class="cursor-pointer"
-                        d="M576 706.612v-52.78c70.498-39.728 128-138.772 128-237.832 0-159.058 0-288-192-288s-192 128.942-192 288c0 99.060 57.502 198.104 128 237.832v52.78c-217.102 17.748-384 124.42-384 253.388h896c0-128.968-166.898-235.64-384-253.388z"
-                        fill="inherit" stroke="inherit" stroke-width="inherit" stroke-linejoin="inherit" stroke-linecap="inherit"
-                        stroke-miterlimit="inherit" opacity="1"></path>
-                    </svg>
                     Profile
                   </a>
                 </li>

@@ -55,9 +55,6 @@ h3:not(.popover-header) {
 .bg-pink { background-color: #E91E63 }
 .bg-indigo { background-color: #9c27b0 }
 
-/* SVG icons */
-.nav svg {vertical-align: text-top;}
-
 ul.flex-column ul {
   flex-direction: column
 }
@@ -103,4 +100,8 @@ pre[class*="language-"] {margin: 0 0 1rem}
   height: 20px;
   vertical-align: text-bottom;
   display: inline-block;
+}
+
+.btn-lg .btn-icon {
+  height: 1.5rem;
 }
