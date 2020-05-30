@@ -1340,7 +1340,7 @@ makeMeDropdown.addEventListener('click', function(e){
                   </div>
                 </div>
               
-                <div class="btn-group">
+                <div class="btn-group mb-3">
                   <div class="dropdown dropleft">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                       data-persist="true" aria-haspopup="true" aria-expanded="false">
@@ -2013,21 +2013,23 @@ changeModal2.addEventListener('click', function(){
                   <tbody>
                     <tr>
                       <td><code>template</code></td>
-                      <td><em>markup</em></td>
+                      <td><em>string</em></td>
                       <td></td>
-                      <td>Option to use a custom HTML template via JavaScript only for your popovers. See examples below for info.
-                      </td>
+                      <td>Option to use a custom HTML template via JavaScript only for your popovers. The contents from the 
+                        <code>title</code> or <code>data-title</code> will fill the template's <code>.popover-header</code>
+                        element, while the contents of the <code>data-content</code> attribute will fill in the 
+                        <code>.popover-body</code> element.</td>
                     </tr>
                     <tr>
                       <td><code>content</code></td>
-                      <td><em>markup</em></td>
+                      <td><em>string</em></td>
                       <td></td>
                       <td>Option to set the <b>content</b> of the popover via JavaScript or the
                         <code>data-content="CONTENT"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>title</code></td>
-                      <td><em>markup</em></td>
+                      <td><em>string</em></td>
                       <td></td>
                       <td>Option to set the <b>title</b> of the popover via JavaScript or the <code>data-title="TITLE"</code>
                         attribute.</td>
@@ -2036,8 +2038,8 @@ changeModal2.addEventListener('click', function(){
                       <td><code>dismissible</code></td>
                       <td><em>boolean</em></td>
                       <td><em>false</em></td>
-                      <td>Option to make the popover dismissible. When true, it will also add an <kbd>X</kbd> button at
-                        the top-right of the popover. You can enable this option via <code>data-dismissible="true"</code> 
+                      <td>Option to make the popover dismissible. When <code>true</code>, it will also add an <kbd>&times;</kbd> button at
+                        the top-right of the popover. You can enable this option via JavaScript API or the <code>data-dismissible="true"</code> 
                         attribute.</td>
                     </tr>
                     <tr>
@@ -3067,6 +3069,14 @@ myToastInit.dispose();
                   </thead>
                   <tbody>
                     <tr>
+                      <td><code>template</code></td>
+                      <td><em>string</em></td>
+                      <td></td>
+                      <td>Allows you to set a custom template for your tooltips and is not set by default. The 
+                        <code>title=""</code> or <code>data-title=""</code> attribute will fill in for the 
+                        <code>.tooltip-inner</code> element.</td>
+                    </tr>                    
+                    <tr>
                       <td><code>animation</code></td>
                       <td><em>string</em></td>
                       <td><em>fade</em></td>
@@ -3286,127 +3296,126 @@ new BSN.Tooltip('#selector',options).show();
               </p>
             </section>
           </section>
-            
         </div>
         <div class="col-md-3" id="side-nav">
           <ul id="nav-scrollspy" class="nav nav-stacked d-none d-md-flex flex-column">
             <li class="nav-item">
-              <a class="nav-link" href="#componentAlert">Alert</a>
+              <a rel="nofollow" class="nav-link" href="#componentAlert">Alert</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#alertMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#alertEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#alertDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#alertJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#alertExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#alertMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#alertEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#alertDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#alertJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#alertExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentButton">Button</a>
+              <a rel="nofollow" class="nav-link" href="#componentButton">Button</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#buttonMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#buttonEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#buttonDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#buttonJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#buttonExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentCarousel">Carousel</a>
+              <a rel="nofollow" class="nav-link" href="#componentCarousel">Carousel</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#carouselOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#carouselMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#carouselEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#carouselDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#carouselJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#carouselExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#carouselOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#carouselMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#carouselEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#carouselDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#carouselJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#carouselExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentCollapse">Collapse</a>
+              <a rel="nofollow" class="nav-link" href="#componentCollapse">Collapse</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#collapseOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#collapseMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#collapseEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#collapseDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#collapseJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#collapseExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#collapseOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#collapseMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#collapseEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#collapseDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#collapseJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#collapseExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentDropdown">Dropdown</a>
+              <a rel="nofollow" class="nav-link" href="#componentDropdown">Dropdown</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#dropdownOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#dropdownMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#dropdownEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#dropdownDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#dropdownJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#dropdownExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#dropdownOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#dropdownMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#dropdownEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#dropdownDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#dropdownJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#dropdownExamples">Examples</a></li>
               </ul>
             </li>            
             <li class="nav-item">
-              <a class="nav-link" href="#componentModal">Modal</a>
+              <a rel="nofollow" class="nav-link" href="#componentModal">Modal</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#modalOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#modalMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#modalEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#modalDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#modalJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#modalExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentPopover">Popover</a>
+              <a rel="nofollow" class="nav-link" href="#componentPopover">Popover</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#popoverOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#popoverMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#popoverEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#popoverDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#popoverJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#popoverExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#popoverOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#popoverMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#popoverEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#popoverDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#popoverJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#popoverExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentScrollspy">ScrollSpy</a>
+              <a rel="nofollow" class="nav-link" href="#componentScrollspy">ScrollSpy</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#scrollspyOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#scrollspyMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#scrollspyEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#scrollspyDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#scrollspyJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#scrollspyExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#scrollspyOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#scrollspyMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#scrollspyEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#scrollspyDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#scrollspyJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#scrollspyExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentTab">Tab</a>
+              <a rel="nofollow" class="nav-link" href="#componentTab">Tab</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#tabOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tabMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tabEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tabDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tabJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tabExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tabOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tabMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tabEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tabDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tabJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tabExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentToast">Toast</a>
+              <a rel="nofollow" class="nav-link" href="#componentToast">Toast</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#toastOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#toastMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#toastEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#toastDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#toastJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#toastExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#toastOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#toastMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#toastEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#toastDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#toastJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#toastExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#componentTooltip">Tooltip</a>
+              <a rel="nofollow" class="nav-link" href="#componentTooltip">Tooltip</a>
               <ul class="nav">
-                <li class="nav-item"><a class="nav-link" href="#tooltipOptions">Options</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tooltipMethods">Methods</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tooltipEvents">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tooltipDATA">DATA API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tooltipJS">JavaScript API</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tooltipExamples">Examples</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipExamples">Examples</a></li>
               </ul>
             </li>
           </ul>
