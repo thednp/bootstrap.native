@@ -98,3 +98,9 @@ pre[class*="language-"] {margin: 0 0 1rem}
   position: relative; /* required */
   height: 150px; overflow: auto; /* required: height must be px based, and overflow: scroll/auto */
 }
+
+.btn-icon {
+  height: 20px;
+  vertical-align: text-bottom;
+  display: inline-block;
+}

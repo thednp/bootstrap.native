@@ -531,9 +531,11 @@
       });
     }
     self.toggle = function (e) {
-      if (e && e.target.tagName === 'A') {e.preventDefault();}
-      if (!hasClass(collapse,'show')) { self.show(); }
-      else { self.hide(); }
+      if (e && e.target.tagName === 'A' || element.tagName === 'A') {e.preventDefault();}
+      if (element.contains(e.target) || e.target === element) {
+        if (!hasClass(collapse,'show')) { self.show(); }
+        else { self.hide(); }
+      }
     };
     self.hide = function () {
       if ( collapse.isAnimating ) { return; }

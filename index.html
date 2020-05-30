@@ -372,7 +372,9 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
               <p>
                 <span id="checkboxButtons" class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="btn btn-outline-secondary active">
-                    <span class="glyphicon glyphicon-plus-sign"></span>
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                      <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                    </svg>
                     <input type="checkbox" checked> Checkbox 1 (pre-checked)
                   </label>
                   <label class="btn btn-outline-secondary">
@@ -389,15 +391,15 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
               <p>
                 <span id="radioButtons" class="btn-group btn-group-toggle" data-toggle="buttons"> 
                   <label class="btn btn-outline-secondary">
-                    <!-- <span class="glyphicon glyphicon-ok-sign"></span> -->
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                      <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                    </svg>
                     <input type="radio" name="optionz" id="optionz1" checked> Radio 1 (preselected)
                   </label>
                   <label class="btn btn-outline-secondary active">
-                    <!-- <span class="glyphicon glyphicon-ok-sign"></span> -->
                     <input type="radio" name="optionz" id="optionz2"> Radio 2
                   </label>
                   <label class="btn btn-outline-secondary">
-                    <!-- <span class="glyphicon glyphicon-ok-sign"></span> -->
                     <input type="radio" name="optionz" id="optionz3"> Radio 3
                   </label>
                 </span>
@@ -407,15 +409,15 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
               <p>
                 <span class="btn-group-toggle" data-toggle="buttons">
                   <label class="btn btn-outline-secondary">
-                    <!-- <span class="glyphicon glyphicon-ok-sign"></span> -->
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                      <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                    </svg>
                     <input type="radio" name="features" id="feature1"> Radio 1
                   </label>
                   <label class="btn btn-outline-secondary active">
-                    <!-- <span class="glyphicon glyphicon-ok-sign"></span> -->
                     <input type="radio" name="features" id="feature2" checked> Radio 2 (preselected)
                   </label>
                   <label class="btn btn-outline-secondary">
-                    <!-- <span class="glyphicon glyphicon-ok-sign"></span> -->
                     <input type="radio" name="features" id="feature3"> Radio 3
                   </label>
                 </span>
@@ -636,14 +638,12 @@ mySpecialCarouselInit.cycle();
                 <div id="carouselGenericExample" class="carousel slide" data-ride="carousel" data-interval="false">
                   <!-- Indicators -->
                   <ol class="carousel-indicators">
-                    <!--<li data-target="#carouselGenericExample" data-slide-to="0" class="active"></li>-->
                     <li data-target="#carouselGenericExample" data-slide-to="0"></li>
                     <li data-target="#carouselGenericExample" data-slide-to="1"></li>
                     <li data-target="#carouselGenericExample" data-slide-to="2"></li>
                   </ol>
                   <!-- Wrapper for slides -->
                   <div class="carousel-inner" role="listbox">
-                    <!--<div class="item active">-->
                     <div class="carousel-item">
                       <img src="https://unsplash.it/837/300?image=0" alt="">
                       <div class="carousel-caption">
@@ -929,7 +929,12 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                 <p>
                   <span class="btn-group">
                     <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="true"
-                      aria-controls="collapseExample">HREF</a>
+                      aria-controls="collapseExample">
+                      <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                        <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                      </svg>
+                      HREF
+                    </a>
                     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
                       aria-expanded="true" aria-controls="collapseExample">data-target</button>
                   </span>
@@ -949,7 +954,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                 <code>&lt;div id="accordion-id"&gt;</code> via <code>data-parent="selector"</code> and will hide any visible
                 collapsible element.</p>
 
-              <div id="accordion" role="tablist" aria-multiselectable="true">
+              <div id="accordion" role="tablist" aria-multiselectable="true" class="mb-3">
                 <div class="card">
                   <div class="card-header" role="tab" id="headingOne">
                     <h5 class="mb-0">
@@ -1207,7 +1212,11 @@ myDropdownInit.dispose();
               <div class="btn-group" style="margin-bottom:10px">
                 <div class="dropdown">
                   <button class="btn btn-primary" id="myDropdown" type="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">Dropdown trigger <span class="caret"></span>
+                    aria-expanded="false">
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                      <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                    </svg>
+                    Dropdown trigger
                   </button>
                   <div class="dropdown-menu" aria-labelledby="myDropdown">
                     <a class="dropdown-item" href="#">Action</a>
@@ -1276,6 +1285,9 @@ makeMeDropdown.addEventListener('click', function(e){
                   <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                       aria-haspopup="true" aria-expanded="false">
+                      <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                        <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                      </svg>                      
                       Dropdown button
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
