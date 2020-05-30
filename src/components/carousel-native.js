@@ -29,7 +29,7 @@ export default function Carousel (element,options) {
   let self = this,
 
     // internal variables
-    vars,
+    vars, ops = {},
 
     // custom events
     slideCustomEvent, slidCustomEvent,
@@ -39,13 +39,13 @@ export default function Carousel (element,options) {
 
   // handlers
   function pauseHandler() {
-    if ( self.options.interval !==false && !hasClass(element,'paused') ) {
+    if ( ops.interval !==false && !hasClass(element,'paused') ) {
       addClass(element,'paused');
       !vars.isSliding && ( clearInterval(vars.timer), vars.timer = null );
     }
   }
   function resumeHandler() {
-    if ( self.options.interval !== false && hasClass(element,'paused') ) {
+    if ( ops.interval !== false && hasClass(element,'paused') ) {
       removeClass(element,'paused');
       !vars.isSliding && ( clearInterval(vars.timer), vars.timer = null );
       !vars.isSliding && self.cycle();
@@ -55,7 +55,7 @@ export default function Carousel (element,options) {
     e.preventDefault();
     if (vars.isSliding) return;
 
-    const eventTarget = e.target; // event target | the current active item
+    let eventTarget = e.target; // event target | the current active item
 
     if ( eventTarget && !hasClass(eventTarget,'active') && eventTarget.getAttribute('data-slide-to') ) {
       vars.index = parseInt( eventTarget.getAttribute('data-slide-to'), 10 );
@@ -67,7 +67,7 @@ export default function Carousel (element,options) {
     e.preventDefault();
     if (vars.isSliding) return;
 
-    const eventTarget = e.currentTarget || e.srcElement;
+    let eventTarget = e.currentTarget || e.srcElement;
 
     if ( eventTarget === rightArrow ) {
       vars.index++;
@@ -91,7 +91,7 @@ export default function Carousel (element,options) {
     self.slideTo( vars.index ); //Do the slide
   }
   function toggleEvents(action) {
-    if ( self.options.pause && self.options.interval ) {
+    if ( ops.pause && ops.interval ) {
       action( element, mouseHoverEvents[0], pauseHandler );
       action( element, mouseHoverEvents[1], resumeHandler );
       action( element, touchEvents.start, pauseHandler, passiveHandler );
@@ -104,7 +104,7 @@ export default function Carousel (element,options) {
     leftArrow && action( leftArrow, 'click', controlsHandler );
   
     indicator && action( indicator, 'click', indicatorHandler );
-    self.options.keyboard && action( window, 'keydown', keyHandler );
+    ops.keyboard && action( window, 'keydown', keyHandler );
   }
   // touch events
   function toggleTouchEvents(action) {
@@ -155,17 +155,15 @@ export default function Carousel (element,options) {
   }
   // private methods
   function setActivePage(pageIndex) { //indicators
-    // [].slice.call(indicators).map(x=>{removeClass(x,'active')})
-    // [...indicators].map(x=>{removeClass(x,'active')})
     Array.from(indicators).map(x=>{removeClass(x,'active')})
     indicators[pageIndex] && addClass(indicators[pageIndex], 'active');
   }
   function transitionEndHandler(e){
     if (vars.touchPosition){
-      const next = vars.index,
-            timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20,
-            activeItem = self.getActiveIndex(),
-            orientation = vars.direction === 'left' ? 'next' : 'prev'
+      let next = vars.index,
+          timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20,
+          activeItem = self.getActiveIndex(),
+          orientation = vars.direction === 'left' ? 'next' : 'prev'
 
       vars.isSliding && setTimeout(() => {
         if (vars.touchPosition){
@@ -180,7 +178,7 @@ export default function Carousel (element,options) {
     
           dispatchCustomEvent.call(element, slidCustomEvent);
           // check for element, might have been disposed
-          if ( !document.hidden && self.options.interval && !hasClass(element,'paused') ) {
+          if ( !document.hidden && ops.interval && !hasClass(element,'paused') ) {
             self.cycle();
           }
         }
@@ -198,7 +196,7 @@ export default function Carousel (element,options) {
     vars.timer = setInterval(() => {
       let idx = vars.index || self.getActiveIndex()
       isElementInScrollRange(element) && (idx++, self.slideTo( idx ) );
-    }, self.options.interval);
+    }, ops.interval);
   }
   self.slideTo = next => {
     if (vars.isSliding) return; // when controled via methods, make sure to check again      
@@ -251,7 +249,7 @@ export default function Carousel (element,options) {
       setTimeout(() => {
         vars.isSliding = false;
         // check for element, might have been disposed
-        if ( self.options.interval && element && !hasClass(element,'paused') ) {
+        if ( ops.interval && element && !hasClass(element,'paused') ) {
           self.cycle();
         }
         dispatchCustomEvent.call(element, slidCustomEvent);
@@ -319,11 +317,10 @@ export default function Carousel (element,options) {
     indicators = indicator && indicator.getElementsByTagName( "LI" ) || []
 
     // set instance options
-    self.options = {};
-    self.options.keyboard = options.keyboard === true || keyboardData;
-    self.options.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false; // false / hover
+    ops.keyboard = options.keyboard === true || keyboardData;
+    ops.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false; // false / hover
     
-    self.options.interval = typeof intervalOption === 'number' ? intervalOption
+    ops.interval = typeof intervalOption === 'number' ? intervalOption
                           : intervalOption === false || intervalData === 0 || intervalData === false ? 0
                           : isNaN(intervalData) ? 5000 // bootstrap carousel default interval
                           : intervalData;
@@ -342,7 +339,7 @@ export default function Carousel (element,options) {
     }
   
     // start to cycle if set
-    if ( self.options.interval ){ self.cycle(); }
+    if ( ops.interval ){ self.cycle(); }
   
     // associate init object to target
     element.Carousel = self;

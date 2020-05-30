@@ -35,14 +35,15 @@ export default function Toast(element,options) {
       showCustomEvent,
       hideCustomEvent,
       shownCustomEvent,
-      hiddenCustomEvent;
+      hiddenCustomEvent,
+      ops = {};
 
   // private methods
   function showComplete() {
     removeClass( toast, 'showing' );
     addClass( toast, 'show' );
     dispatchCustomEvent.call(toast,shownCustomEvent);
-    if (self.options.autohide) { self.hide(); }
+    if (ops.autohide) { self.hide(); }
   }
   function hideComplete() {
     addClass( toast, 'hide' );
@@ -50,7 +51,7 @@ export default function Toast(element,options) {
   }
   function close () {
     removeClass( toast,'show' );
-    self.options.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
+    ops.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
   }
   function disposeComplete() {
     clearTimeout(timer);
@@ -63,12 +64,12 @@ export default function Toast(element,options) {
     if (toast && !hasClass(toast,'show')) {
       dispatchCustomEvent.call(toast,showCustomEvent);
       if (showCustomEvent.defaultPrevented) return;
-      self.options.animation && addClass( toast,'fade' );
+      ops.animation && addClass( toast,'fade' );
       removeClass( toast,'hide' );
       toast.offsetWidth; // force reflow
       addClass( toast,'showing' );
 
-      self.options.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();
+      ops.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();
     }
   };
   self.hide = noTimer => {
@@ -76,11 +77,11 @@ export default function Toast(element,options) {
       dispatchCustomEvent.call(toast,hideCustomEvent);
       if(hideCustomEvent.defaultPrevented) return;
 
-      noTimer ? close() : (timer = setTimeout( close, self.options.delay));
+      noTimer ? close() : (timer = setTimeout( close, ops.delay));
     }
   };
   self.dispose = () => {
-    self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
+    ops.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
   };
 
   // init
@@ -107,18 +108,15 @@ export default function Toast(element,options) {
     hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast')
 
     // set instance options
-    self.options = {};
-    self.options.animation = options.animation === false || animationData === 'false' ? 0 : 1; // true by default
-    self.options.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1; // true by default
-    self.options.delay = parseInt(options.delay || delayData) || 500; // 500ms default    
+    ops.animation = options.animation === false || animationData === 'false' ? 0 : 1; // true by default
+    ops.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1; // true by default
+    ops.delay = parseInt(options.delay || delayData) || 500; // 500ms default    
     
     if ( !element.Toast ) { // prevent adding event handlers twice
       on(element, 'click', self.hide);
     }
   
     // associate targets to init object
-    self.toast = toast;
-    self.element = element;
     element.Toast = self;
   },'BSN.Toast')
 }

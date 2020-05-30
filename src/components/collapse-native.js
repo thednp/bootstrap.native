@@ -118,7 +118,7 @@ export default function Collapse(element,options) {
     element.Collapse && element.Collapse.dispose();
 
     // DATA API
-    const accordionData = element.getAttribute('data-parent')
+    let accordionData = element.getAttribute('data-parent')
 
     // custom events
     showCustomEvent = bootstrapCustomEvent('show', 'collapse')
@@ -128,23 +128,16 @@ export default function Collapse(element,options) {
 
     // determine targets
     collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
-  
-    // invalidate
-    // if (!collapse) return;
-  
+    
     collapse.isAnimating = false;  
     accordion = element.closest(options.parent || accordionData);
   
-    // associations
-    collapse && (self.collapse = collapse);
-    accordion && (self.options = {}, self.options.parent = accordion);
     // prevent adding event handlers twice
     if ( !element.Collapse ) { 
       on(element, 'click', self.toggle);
     }
   
     // associate target to init object
-    self.element = element;
     element.Collapse = self;
   },"BSN.Collapse")
 }

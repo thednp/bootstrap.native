@@ -34,7 +34,9 @@ export default function Popover(element,options) {
       isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
       // title and content
       titleString,
-      contentString;
+      contentString,
+      // options
+      ops = {};
 
   // DATA API
   let triggerData, // click / hover / focus
@@ -80,7 +82,7 @@ export default function Popover(element,options) {
     }
   }
   function removePopover() {
-    self.options.container.removeChild(popover);
+    ops.container.removeChild(popover);
     timer = null; popover = null;
   }
 
@@ -93,35 +95,35 @@ export default function Popover(element,options) {
     popover = document.createElement('div');
 
     // popover arrow
-    const popoverArrow = document.createElement('div');
+    let popoverArrow = document.createElement('div');
     addClass(popoverArrow,'arrow');
     popover.appendChild(popoverArrow);
 
-    if ( contentString !== null && self.options.template === null ) { //create the popover from data attributes
+    if ( contentString !== null && ops.template === null ) { //create the popover from data attributes
 
       popover.setAttribute('role','tooltip');
 
       if (titleString !== null) {
-        const popoverTitle = document.createElement('h3');
+        let popoverTitle = document.createElement('h3');
         addClass(popoverTitle,'popover-header');
-        popoverTitle.innerHTML = self.options.dismissible ? titleString + closeBtn : titleString;
+        popoverTitle.innerHTML = ops.dismissible ? titleString + closeBtn : titleString;
         popover.appendChild(popoverTitle);
       }
 
       //set popover content
-      const popoverBodyMarkup = document.createElement('div');
+      let popoverBodyMarkup = document.createElement('div');
       addClass(popoverBodyMarkup,'popover-body');
-      popoverBodyMarkup.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
+      popoverBodyMarkup.innerHTML = ops.dismissible && titleString === null ? contentString + closeBtn : contentString;
       popover.appendChild(popoverBodyMarkup);
 
     } else {  // or create the popover from template
-      const popoverTemplate = document.createElement('div');
-      popoverTemplate.innerHTML = self.options.template.trim();
+      let popoverTemplate = document.createElement('div');
+      popoverTemplate.innerHTML = ops.template.trim();
       popover.className = popoverTemplate.firstChild.className;
       popover.innerHTML = popoverTemplate.firstChild.innerHTML;
 
-      const popoverHeader = queryElement('.popover-header',popover),
-            popoverBody = queryElement('.popover-body',popover);
+      let popoverHeader = queryElement('.popover-header',popover),
+          popoverBody = queryElement('.popover-body',popover);
 
       // fill the template with content from data attributes
       titleString && popoverHeader && (popoverHeader.innerHTML = titleString.trim());
@@ -129,31 +131,31 @@ export default function Popover(element,options) {
     }
 
     //append to the container
-    self.options.container.appendChild(popover);
+    ops.container.appendChild(popover);
     popover.style.display = 'block';
     !hasClass(popover, 'popover') && addClass(popover, 'popover');
-    !hasClass(popover, self.options.animation) && addClass(popover, self.options.animation);
+    !hasClass(popover, ops.animation) && addClass(popover, ops.animation);
     !hasClass(popover, placementClass) && addClass(popover, placementClass);
   }
   function showPopover() {
     !hasClass(popover,'show') && ( addClass(popover,'show') );
   }
   function updatePopover() {
-    styleTip(element, popover, self.options.placement, self.options.container);
+    styleTip(element, popover, ops.placement, ops.container);
   }
   function provideFocus () {
     if (popover === null) { element.focus(); }
   }
   function toggleEvents(action) {
-    if (self.options.trigger === 'hover') {
+    if (ops.trigger === 'hover') {
       action( element, mouseClickEvents.down, self.show );
       action( element, mouseHoverEvents[0], self.show );
-      if (!self.options.dismissible) { action( element, mouseHoverEvents[1], self.hide ); } // export const mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
-    } else if ('click' == self.options.trigger) {
-      action( element, self.options.trigger, self.toggle );
-    } else if ('focus' == self.options.trigger) {
+      if (!ops.dismissible) { action( element, mouseHoverEvents[1], self.hide ); } // mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
+    } else if ('click' == ops.trigger) {
+      action( element, ops.trigger, self.toggle );
+    } else if ('focus' == ops.trigger) {
       isIphone && action( element, 'click', provideFocus );
-      action( element, self.options.trigger, self.toggle );
+      action( element, ops.trigger, self.toggle );
     }
   }
   function touchHandler(e){
@@ -165,11 +167,11 @@ export default function Popover(element,options) {
   }
   // event toggle
   function dismissHandlerToggle(action) {
-    if (self.options.dismissible) {
+    if (ops.dismissible) {
       action( document, 'click', dismissibleHandler );
     } else {
-      'focus' == self.options.trigger && action( element, 'blur', self.hide );
-      'hover' == self.options.trigger && action( document, touchEvents.start, touchHandler, passiveHandler );
+      'focus' == ops.trigger && action( element, 'blur', self.hide );
+      'hover' == ops.trigger && action( document, touchEvents.start, touchHandler, passiveHandler );
     }
     action( window, 'resize', self.hide, passiveHandler );
   }
@@ -199,7 +201,7 @@ export default function Popover(element,options) {
         createPopover();
         updatePopover();
         showPopover();
-        !!self.options.animation ? emulateTransitionEnd(popover, showTrigger) : showTrigger();
+        !!ops.animation ? emulateTransitionEnd(popover, showTrigger) : showTrigger();
       }
     }, 20 );
   };
@@ -210,9 +212,9 @@ export default function Popover(element,options) {
         dispatchCustomEvent.call(element, hideCustomEvent);
         if ( hideCustomEvent.defaultPrevented ) return;
         removeClass(popover,'show');
-        !!self.options.animation ? emulateTransitionEnd(popover, hideTrigger) : hideTrigger();
+        !!ops.animation ? emulateTransitionEnd(popover, hideTrigger) : hideTrigger();
       }
-    }, self.options.delay );
+    }, ops.delay );
   };
   self.dispose = () => {
     self.hide();
@@ -258,20 +260,19 @@ export default function Popover(element,options) {
     navbarFixedBottom = element.closest('.fixed-bottom')
 
     // set instance options
-    self.options = {};
-    self.options.template = options.template ? options.template : null; // JavaScript only
-    self.options.trigger = options.trigger ? options.trigger : triggerData || 'hover';
-    self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-    self.options.placement = options.placement ? options.placement : placementData || 'top';
-    self.options.delay = parseInt(options.delay || delayData) || 200;
-    self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
-    self.options.container = containerElement ? containerElement
+    ops.template = options.template ? options.template : null; // JavaScript only
+    ops.trigger = options.trigger ? options.trigger : triggerData || 'hover';
+    ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    ops.placement = options.placement ? options.placement : placementData || 'top';
+    ops.delay = parseInt(options.delay || delayData) || 200;
+    ops.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
+    ops.container = containerElement ? containerElement
                            : containerDataElement ? containerDataElement
                            : navbarFixedTop ? navbarFixedTop
                            : navbarFixedBottom ? navbarFixedBottom
                            : modal ? modal : document.body;
 
-    placementClass = `bs-popover-${self.options.placement}`
+    placementClass = `bs-popover-${ops.placement}`
 
 
     // invalidate
@@ -279,7 +280,7 @@ export default function Popover(element,options) {
     titleString = popoverContents[0];
     contentString = popoverContents[1];
 
-    if ( !contentString && !self.options.template ) return;
+    if ( !contentString && !ops.template ) return;
 
     // init
     if ( !element.Popover ) { // prevent adding event handlers twice
@@ -287,7 +288,6 @@ export default function Popover(element,options) {
     }
 
     // associate target to init object
-    self.element = element;
     element.Popover = self;
 
   },"BSN.Popover")

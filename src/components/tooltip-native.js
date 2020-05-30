@@ -53,7 +53,8 @@ export default function Tooltip(element,options) {
       // maybe the element is inside a fixed navbar
       navbarFixedTop,
       navbarFixedBottom,
-      placementClass;
+      placementClass,
+      ops = {};
 
   // private methods
   function getTitle() {
@@ -62,7 +63,7 @@ export default function Tooltip(element,options) {
         || element.getAttribute('data-original-title')
   }
   function removeToolTip() {
-    self.options.container.removeChild(tooltip);
+    ops.container.removeChild(tooltip);
     tooltip = null; timer = null;
   }
   function createToolTip() {
@@ -72,9 +73,9 @@ export default function Tooltip(element,options) {
       tooltip = document.createElement('div');
 
       // set markup
-      if (self.options.template) {
-        const tooltipMarkup = document.createElement('div');
-        tooltipMarkup.innerHTML = self.options.template.trim();
+      if (ops.template) {
+        let tooltipMarkup = document.createElement('div');
+        tooltipMarkup.innerHTML = ops.template.trim();
 
         tooltip.className = tooltipMarkup.firstChild.className;
         tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
@@ -82,11 +83,11 @@ export default function Tooltip(element,options) {
         queryElement('.tooltip-inner',tooltip).innerHTML = titleString.trim();
       } else {
         // tooltip arrow
-        const tooltipArrow = document.createElement('div');
+        let tooltipArrow = document.createElement('div');
         addClass(tooltipArrow,'arrow');
         tooltip.appendChild(tooltipArrow);
         // tooltip inner
-        const tooltipInner = document.createElement('div');
+        let tooltipInner = document.createElement('div');
         addClass(tooltipInner,'tooltip-inner');
         tooltip.appendChild(tooltipInner);
         tooltipInner.innerHTML = titleString;
@@ -97,14 +98,14 @@ export default function Tooltip(element,options) {
       // set class and role attribute
       tooltip.setAttribute('role','tooltip');
       !hasClass(tooltip, 'tooltip') && addClass(tooltip, 'tooltip');
-      !hasClass(tooltip, self.options.animation) && addClass(tooltip, self.options.animation);
+      !hasClass(tooltip, ops.animation) && addClass(tooltip, ops.animation);
       !hasClass(tooltip, placementClass) && addClass(tooltip, placementClass);
       // append to container
-      self.options.container.appendChild(tooltip);
+      ops.container.appendChild(tooltip);
     }
   }
   function updateTooltip() {
-    styleTip(element, tooltip, self.options.placement, self.options.container);
+    styleTip(element, tooltip, ops.placement, ops.container);
   }
   function showTooltip() {
     !hasClass(tooltip,'show') && ( addClass(tooltip,'show') );
@@ -145,7 +146,7 @@ export default function Tooltip(element,options) {
         if(createToolTip() !== false) {
           updateTooltip();
           showTooltip();
-          !!self.options.animation ? emulateTransitionEnd(tooltip, showAction) : showAction();
+          !!ops.animation ? emulateTransitionEnd(tooltip, showAction) : showAction();
         }
       }
     }, 20 );
@@ -157,9 +158,9 @@ export default function Tooltip(element,options) {
         dispatchCustomEvent.call(element, hideCustomEvent);
         if (hideCustomEvent.defaultPrevented) return;
         removeClass(tooltip,'show');
-        !!self.options.animation ? emulateTransitionEnd(tooltip, hideAction) : hideAction();
+        !!ops.animation ? emulateTransitionEnd(tooltip, hideAction) : hideAction();
       }
-    }, self.options.delay);
+    }, ops.delay);
   };
   self.toggle = () => {
     if (!tooltip) { self.show(); }
@@ -205,19 +206,18 @@ export default function Tooltip(element,options) {
     navbarFixedBottom = element.closest('.fixed-bottom')
 
     // set instance options
-    self.options = {};
-    self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-    self.options.placement = options.placement ? options.placement : placementData || 'top';
-    self.options.template = options.template ? options.template : null; // JavaScript only
-    self.options.delay = parseInt(options.delay || delayData) || 200;
-    self.options.container = containerElement ? containerElement
+    ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    ops.placement = options.placement ? options.placement : placementData || 'top';
+    ops.template = options.template ? options.template : null; // JavaScript only
+    ops.delay = parseInt(options.delay || delayData) || 200;
+    ops.container = containerElement ? containerElement
                            : containerDataElement ? containerDataElement
                            : navbarFixedTop ? navbarFixedTop
                            : navbarFixedBottom ? navbarFixedBottom
                            : modal ? modal : document.body;
 
     // set placement class
-    placementClass = `bs-tooltip-${self.options.placement}`
+    placementClass = `bs-tooltip-${ops.placement}`
 
     // set tooltip content
     titleString = getTitle();
@@ -233,7 +233,6 @@ export default function Tooltip(element,options) {
     }
 
     // associate target to init object
-    self.element = element;
     element.Tooltip = self;
   },'BSN.Tooltip')
 

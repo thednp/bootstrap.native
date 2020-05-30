@@ -72,16 +72,11 @@
       };
 
       return function from(arrayLike/*, mapFn, thisArg */) {
-        var C = this;
-
-        var items = Object(arrayLike);
-
+        var C = this, items = Object(arrayLike);
         if (arrayLike == null) {
           throw new TypeError('Array.from requires an array-like object - not null or undefined');
         }
-
-        var mapFn = arguments.length > 1 ? arguments[1] : void undefined;
-        var T;
+        var mapFn = arguments.length > 1 ? arguments[1] : void undefined, T;
         if (typeof mapFn !== 'undefined') {
           if (!isCallable(mapFn)) {
             throw new TypeError('Array.from: when provided, the second argument must be a function');

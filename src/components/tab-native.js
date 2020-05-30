@@ -43,7 +43,8 @@ export default function Tab(element,options) {
     nextContent,
     containerHeight,
     equalContents,
-    nextHeight;
+    nextHeight,
+    animateHeight;
 
   // triggers
   function triggerEnd() {
@@ -106,8 +107,7 @@ export default function Tab(element,options) {
   }
   // private methods
   function getActiveTab() {
-    const activeTabs = tabs.getElementsByClassName('active');
-    let activeTab;
+    let activeTabs = tabs.getElementsByClassName('active'), activeTab;
     if ( activeTabs.length === 1 && !hasClass(activeTabs[0].parentNode,'dropdown') ) {
       activeTab = activeTabs[0];
     } else if ( activeTabs.length > 1 ) {
@@ -177,8 +177,7 @@ export default function Tab(element,options) {
     dropdown = tabs && queryElement('.dropdown-toggle',tabs)
 
     // instance options
-    self.options = {};
-    self.options.height = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
+    animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
 
     // invalidate 
     // if (!tabs) return;
@@ -191,10 +190,9 @@ export default function Tab(element,options) {
       on(element, 'click', clickHandler);
     }
   
-    if (self.options.height) { tabsContentContainer = getActiveContent().parentNode; }
+    if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
   
     // associate target with init object
-    self.element = element;
     element.Tab = self;
   },'BSN.Tab')
 

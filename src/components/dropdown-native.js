@@ -27,7 +27,9 @@ export default function Dropdown(element,option) {
       hiddenCustomEvent,
       // targets
       relatedTarget = null,
-      parent, menu, menuItems = [];
+      parent, menu, menuItems = [],
+      // option
+      persist;
   
   // preventDefault on empty anchor links
   function preventEmptyAnchor(anchor) {
@@ -36,7 +38,7 @@ export default function Dropdown(element,option) {
   }
   // toggle dismissible events
   function toggleDismiss() {
-    const action = element.open ? on : off;
+    let action = element.open ? on : off;
     action(document, 'click', dismissHandler); 
     action(document, 'keydown', preventScroll);
     action(document, 'keyup', keyHandler);
@@ -44,14 +46,14 @@ export default function Dropdown(element,option) {
   }
   // handlers
   function dismissHandler(e) {
-    const eventTarget = e.target,
+    let eventTarget = e.target,
           hasData = eventTarget && (eventTarget.getAttribute('data-toggle') 
                                 || eventTarget.parentNode && eventTarget.parentNode.getAttribute
                                 && eventTarget.parentNode.getAttribute('data-toggle'));
     if ( e.type === 'focus' && (eventTarget === element || eventTarget === menu || menu.contains(eventTarget) ) ) {
       return;
     }
-    if ( (eventTarget === menu || menu.contains(eventTarget)) && (self.options.persist || hasData) ) { return; }
+    if ( (eventTarget === menu || menu.contains(eventTarget)) && (persist || hasData) ) { return; }
     else {
       relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
       self.hide();
@@ -64,15 +66,15 @@ export default function Dropdown(element,option) {
     preventEmptyAnchor.call(e,e.target);
   }
   function preventScroll(e) {
-    const key = e.which || e.keyCode;
+    let key = e.which || e.keyCode;
     if( key === 38 || key === 40 ) { e.preventDefault(); }
   }
   function keyHandler({which, keyCode}) {
-    const key = which || keyCode,
-          activeItem = document.activeElement,
-          isSameElement = activeItem === element,
-          isInsideMenu = menu.contains(activeItem),
-          isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu;
+    let key = which || keyCode,
+        activeItem = document.activeElement,
+        isSameElement = activeItem === element,
+        isInsideMenu = menu.contains(activeItem),
+        isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu;
     let idx = menuItems.indexOf(activeItem);
 
     if ( isMenuItem ) { // navigate up | down
@@ -163,14 +165,12 @@ export default function Dropdown(element,option) {
     }
   
     // set option
-    self.options = {};
-    self.options.persist = option === true || element.getAttribute('data-persist') === 'true' || false;
+    persist = option === true || element.getAttribute('data-persist') === 'true' || false
   
     // set initial state to closed
     element.open = false;
   
     // associate element with init object 
-    self.element = element;
     element.Dropdown = self;
   },"BSN.Dropdown")
 

@@ -23,16 +23,6 @@ export default function Button(element) {
       changeCustomEvent = bootstrapCustomEvent('change', 'button')
 
   // private methods
-  function activateItems() {
-    Array.from(self.buttons).map(btn=>{
-      !hasClass(btn,'active') 
-        && queryElement('input:checked',btn)
-        && addClass(btn,'active');
-      hasClass(btn,'active') 
-        && !queryElement('input:checked',btn)
-        && removeClass(btn,'active');
-    })
-  }
   function toggle(e) {
     let input,
         label = e.target.tagName === 'LABEL' ? e.target 
@@ -78,8 +68,8 @@ export default function Button(element) {
         input.checked = true;
 
         element.toggled = true;
-        Array.from(self.buttons).map(otherLabel=>{
-          const otherInput = otherLabel.getElementsByTagName('INPUT')[0];
+        Array.from(labels).map(otherLabel=>{
+          let otherInput = otherLabel.getElementsByTagName('INPUT')[0];
           if ( otherLabel !== label && hasClass(otherLabel,'active') )  {
             dispatchCustomEvent.call(otherInput, changeCustomEvent); // trigger the change
             removeClass(otherLabel,'active');
@@ -94,15 +84,15 @@ export default function Button(element) {
 
   // handlers
   function keyHandler(e) {
-    const key = e.which || e.keyCode;
+    let key = e.which || e.keyCode;
     key === 32 && e.target === document.activeElement && toggle(e);
   }
   function preventScroll(e) { 
-    const key = e.which || e.keyCode;
+    let key = e.which || e.keyCode;
     key === 32 && e.preventDefault();
   }
   function focusToggle(e) {
-    const action = e.type === 'focusin' ? addClass : removeClass;
+    let action = e.type === 'focusin' ? addClass : removeClass;
     if (e.target.tagName === 'INPUT' ) {
       action(e.target.closest('.btn'),'focus');
     }
@@ -143,12 +133,17 @@ export default function Button(element) {
     element.toggled = false;  
     
     // associate target with init object
-    self.element = element;
-    self.buttons = labels;
     element.Button = self;
   
     // activate items on load
-    activateItems();
+    Array.from(labels).map((btn)=>{
+      !hasClass(btn,'active') 
+        && queryElement('input:checked',btn)
+        && addClass(btn,'active');
+      hasClass(btn,'active') 
+        && !queryElement('input:checked',btn)
+        && removeClass(btn,'active');
+    })
   },"BSN.Button")
 }
 

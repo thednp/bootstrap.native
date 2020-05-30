@@ -1,319 +1,100 @@
-/* REQUIRED STYLING */
-/* styles the close button for the dismissible popovers */
-.popover .close { position: absolute; top: 7px; right: 10px; }
-/* REQUIRED STYLING */
-
-
-/* GLOBAL STYLES
--------------------------------------------------- */
-/* Padding below the footer and lighter body text */
-
-body {
-  color: #5a5a5a;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+/* carousel */
+#myCarousel { margin-bottom: 4rem }
+#myCarousel .carousel-inner > .carousel-item > .item-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 500px;
+}
+#myCarousel .carousel-item {
+    height: 500px;
+    width: 100%;
+}
+.carousel-item,
+.carousel-item.active {
+  -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
+  transition-timing-function: cubic-bezier(.45,.18,0,1);
+}
+@media (min-width: 768px) {
+  .carousel h1 {
+      letter-spacing: -3px;
+      font-size: 56px;
+      font-weight: bold;
+  }
 }
 
-#main-container {padding-top: 20px;}
+@media (max-width: 575px) {
+  #myCarousel .container {
+    width: 100%;
+  }
+  .hidden-xs {display: none !important}
+}
 
-footer { padding: 20px 0 10px; background: #e6f0f8 }
+h2 {
+  letter-spacing: -3px;
+  font-size: 56px;
+  font-weight: bold;
+}
 
-/* some typo */
-h1,h2,h3,h4,h5,strong,b { color: #111 }
-h1 { letter-spacing: -2px }
-h2 { letter-spacing: -3px; font-size: 56px; font-weight: bold }
-h3:not(.popover-title) {
+h3:not(.popover-header) {
   font-size: 32px;
   font-weight: bold;
   letter-spacing: -2px;
 }
 
-hr.clearfix {clear: both; width: 100%; float: left}
+/* misc */
+.dropright .dropdown-menu,
+.dropleft .dropdown-menu {
+  top: -1px;
+}
+.popover .close {line-height: 0.75;}
 
-/* colors */
+/* bg */
 .bg-bootstrap { background-color: #563d7c }
 .bg-pink { background-color: #E91E63 }
-.bg-indigo { background-color: #673ab7 }
-.bg-purple { background-color: #9c27b0 }
-.bg-red { background-color: #e51c23 }
+.bg-indigo { background-color: #9c27b0 }
 
+/* SVG icons */
+.nav svg {vertical-align: text-top;}
 
-/* CONTENT STYLING
--------------------------------------------------- */
-
- /* required for scrollspy to work perfect */
- section { position: relative; display: inline-block; width: 100%; } 
-
-.scrollspy-example {
-  position: relative; height: 150px; overflow: auto; margin-bottom: 20px;
-  padding: 0 15px; border: 1px solid #ddd; border-radius: 4px 0 0 4px;
-}
- /* required for scrollspy to work perfect */
-
-/* some content customization | because why not */
-#componentTab .nav-tabs, #componentTab .nav-pills, #componentTab .navbar-nav, #componentTab .nav-stacked { margin-bottom: 15px }
-
-#componentTab .nav-stacked li a {padding: 5px 10px}
-#componentTab .nav-stacked,
-#componentTab .nav.panel { float: left; margin: 0 15px 20px 0 }
-#componentTab .nav-list { float: left; margin: 0 15px 20px 0; border-right: 1px solid #ddd }
-
-#componentTab .nav.panel > li.active > a,
-#componentTab .nav-list > li.active > a { background: #286090; color: #fff }
-
-#componentTab .nav.panel > li:first-child > a { border-radius: 3px 3px 0 0; }
-#componentTab .nav.panel > li:last-child > a { border-radius: 0 0 3px 3px; }
-
-#componentTab .navbar-nav { background: #eee; width: 100%; border-radius: 3px; }
-#componentTab .navbar-nav > li:first-child > a { border-radius: 3px 0 0 3px; }
-#componentTab .navbar-nav > li.active > a { background: #286090; color: #fff }
-
-#componentTab .nav.nav-stacked .dropdown-menu,
-#componentTab .nav.panel .dropdown-menu,
-#componentTab .nav-list .dropdown-menu { margin: 0; top: 0; left: 103%; }
-
-#componentTab .nav.panel + .tab-content,
-#componentTab .nav.nav-list + .tab-content { display: table-cell }
-
-/*#componentTab .btn-group { position: absolute; top:8px; left: 85px }*/
-#componentTab .btn-group > .btn { margin: 0}
-#componentTab .btn-group { margin: 0 0 20px }
-
-/* buttons */
-p .btn, p .form-control {vertical-align: top}
-p .btn, p .form-control {margin-bottom: 20px; vertical-align: top}
-
-/*p .btn-group {margin-bottom: 20px}*/
-#collapseExampleWrapper { padding: 20px 20px 10px }
-#collapseExample .well {margin-bottom: 10px}
-.btn-group .btn {margin-bottom: 0}
-
-#components {padding-bottom: 20px }
-
-/* nested dropdowns */
-.dropdown-menu .dropdown-menu.left {
-  top: -1px;
-  left: auto; right: 100%;
-  margin: 0 3px 0 0;
-}
-.dropdown-menu .dropdown-menu.right {
-  top: -1px;
-  left: 100%;
-  margin: 0 0 0 3px;
+ul.flex-column ul {
+  flex-direction: column
 }
 
-/* when on mobile, disable affix position */
-#side-nav {clear: both}
-#side-nav .nav.affix,
-#side-nav .nav.affix.affix-bottom { position: relative; margin: 20px 0; backface-visibility: hidden; }
+/* code */
+code {word-break: normal}
+pre[class*="language-"] {margin: 0 0 1rem}
 
-#side-nav > .nav li.active > a,
-#side-nav > .nav li.active:hover > a { background-color: #e6f0f8 }
-#side-nav > .nav li:hover > a { background-color: #f5f9fc }
-
-
-/* CUSTOMIZE THE NAVBAR
--------------------------------------------------- */
-
-.navbar-inverse .navbar-brand { color: #fff }
-
-.navbar-nav .open .dropdown-menu { left: auto; right:0 }
-
-.navbar-collapse.collapsing {overflow-y: hidden}
-
-.navbar-nav { float: none }
-.navbar-fixed-top { padding: .5rem 0; border:0 }
-.navbar-brand { font-size: 20px }
-.navbar-brand svg { display: inline-block; vertical-align:top; margin: -8px 0 0 0 } 
-.navbar-brand span { display: inline-block; vertical-align: top }
-
-.navbar-inverse .navbar-nav>.open>a, 
-.navbar-inverse .navbar-nav>.open>a:focus, 
-.navbar-inverse .navbar-nav>.open>a:hover {
-    background-color: transparent;
+/* sidenav*/
+#nav-scrollspy {
+  position: sticky;
+  top: calc(62px + 0.5rem)
 }
+.nav-stacked ul {
+  padding-left: 1rem;
+  display: none
+}
+.nav-stacked li > a.active + ul { display: block }
 
-.navbar-inverse .navbar-toggle {
-    border-color: #eee;
-}
-.navbar-inverse .navbar-toggle:hover,
-.navbar-inverse .navbar-toggle:focus {
-    border-color: #fff;
-}
+/* .nav-stacked li > a { background: #f6f6f6; color: #777 } */
+.nav-stacked li > a { color: #777 }
 
-.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {
-    background-color: #673ab7;
-}
+.nav-stacked li + li,
+.nav-stacked li > ul { margin-top: 2px }
 
-/* CUSTOMIZE THE CAROUSEL
--------------------------------------------------- */
-
-/* Carousel base class */
-#myCarousel.carousel {
-  height: 500px;
-}
-/* Since positioning the image, we need to help out the caption */
-.carousel-caption {
-  z-index: 10;
-}
-/* do some transition */ 
-#myCarousel .item,
-#myCarousel .item.active {
-  -webkit-transition-timing-function: cubic-bezier(.45,.18,0,1);
-  transition-timing-function: cubic-bezier(.45,.18,0,1);
-}
-#myCarousel .carousel-caption {
-  -webkit-transition: all 0.3s; 
-  transition: all 0.3s;
-  -webkit-transition-timing-function: cubic-bezier(0,.24,0,1);
-  transition-timing-function: cubic-bezier(0,.24,0,1);
-  opacity: 0;
-}
-
-/* when going forward, captions slide left */
-#myCarousel .next .carousel-caption {
-  -webkit-transform: translate3d(50%, 0, 0);
-  transform: translate3d(50%, 0, 0);
-}
-#myCarousel .prev .carousel-caption {
-  -webkit-transform: translate3d(-50%, 0, 0);
-  transform: translate3d(-50%, 0, 0);
-}
-/* when going backward, captions move different */
-#myCarousel .right.next .carousel-caption {
-  -webkit-transform: /*translate3d(50%, 0, 0)*/ rotateX(90deg);
-  transform: /*translate3d(50%, 0, 0)*/ rotateX(90deg);
-}
-#myCarousel .right.prev .carousel-caption {
-  -webkit-transform: /*translate3d(-50%, 0, 0)*/ rotateX(-90deg);
-  transform: /*translate3d(-50%, 0, 0)*/ rotateX(-90deg);
-}
-#myCarousel .carousel-caption.slide {
-  -webkit-transform: translate3d( 0%, 0, 0);
-  transform: translate3d(0%, 0, 0);
-  opacity:1;
-  /*visibility: visible;  */
-}
-
-/* Declare heights because of positioning of img element */
-#myCarousel .item {
-  height: 500px; width: 100%;
-  background-color: #777;
-}
-
-.carousel h2 { letter-spacing: -1px; font-size: 30px; font-weight: bold }
-
-.carousel .item.prev,
-.carousel .item.next {display: block}
-
-#myCarousel .carousel-inner > .item > .item-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 500px;
-}
-
-.carousel .btn-default.btn-empty { border-width: 2px; color: #fff; border-color: #fff; background: none transparent }
-.carousel .btn-default.btn-empty:hover { color: #337ab7; background: #fff }
-
-.carousel h1,.carousel h2,.carousel h3,.carousel strong,.carousel b { color: #fff }
-.carousel a { color: #fff; text-decoration:underline }
-.carousel a:hover { color: #eee }
-.carousel a.btn { text-decoration:none }
-
-/* the small carousel thumbnail */
-#carousel-example-generic { margin: 0 }
-#carousel-example-generic,
-#carousel-example-generic .carousel-inner > .item > img { height: auto }
+.nav-stacked > li > a.active { background: #ccc; color: #222 }
+.nav-stacked li li > a.active { background: #ddd; color: #333 }
+.nav-stacked li li li > a.active { background: #eee; color: #444 }
 
 /* dropdown form */
-
 .form-vertical {
-  padding: 10px 10px 5px 10px;
-  width: 250px;
+    padding: 10px 10px 5px 10px;
+    width: 250px;
 }
 
-/* side navigation */
-#side-nav  { margin-top: 40px; clear: none }
-
-/*#side-nav > .nav > li > ul { margin-top: 2px; height:0; opacity: 0; padding-left: 15px; transition: all 0.3s ease-out; }*/
-#side-nav > .nav li > ul { height:0; opacity: 0; padding-left: 15px; transition: height 0.3s ease-out, opacity 0.3s ease; }
-#side-nav > .nav li { overflow: hidden }
-#side-nav > .nav li.active > ul { opacity: 1; margin-top: 2px; }
-#side-nav > .nav li.active.list2 > ul { height: 66px; height: calc(32px*2 + 2px); }
-#side-nav > .nav li.active.list3 > ul { height: 100px; height: calc(32px*3 + 2px*2); }
-#side-nav > .nav li.active.list4 > ul { height: 134px; height: calc(32px*4 + 2px*3); }
-#side-nav > .nav li.active.list5 > ul { height: 168px; height: calc(32px*5 + 2px*4); }
-#side-nav > .nav li.active.list6 > ul { height: 202px; height: calc(32px*6 + 2px*5); }
-#side-nav > .nav li.active.list7 > ul { height: 236px; height: calc(32px*7 + 2px*6); }
-#side-nav > .nav li.active.list8 > ul { height: 270px; height: calc(32px*8 + 2px*7); }
-#side-nav > .nav li.active.list9 > ul { height: 304px; height: calc(32px*9 + 2px*8); }
-
-#side-nav > .nav li.active.list11 > ul { height: 338px; height: calc(32px*11 + 2px*10); }
-#side-nav > .nav li.active.list11.additional > ul { height: 506px; height: calc(32px*11 + 2px*10 + 32px*5 + 2px*4); }
-
-#side-nav > .nav li > a { z-index: 1; padding: 6px 10px; }
-#side-nav > .nav li > ul { z-index: 0 }
-
-.tooltip b, .tooltip strong {color: #fff}
-
-/* RESPONSIVE CSS
--------------------------------------------------- */
-@media screen and (max-width: 1200px) {
-	.carousel-caption {
-	  right: 10%;
-	  left: 10%;
-	  padding-bottom: 30px;
-	}
+/* scrollspy example */
+.scrollspy-example {
+  position: relative; /* required */
+  height: 150px; overflow: auto; /* required: height must be px based, and overflow: scroll/auto */
 }
-@media (min-width: 768px) {
-
-	/* affix example */
-	#side-nav .nav.affix,
-	#side-nav .nav.affix-bottom { position: fixed !important;  width: 263px; }
-	#side-nav .nav.affix { top: 50px; }
-	#side-nav .nav.affix-bottom { top: auto; bottom: 100px }
-
-  /* Navbar positioning foo */
-  .navbar .navbar-nav {margin-right: 15px; float: right}
-
-  
-  /* Bump up size of carousel content */
-  .carousel-caption p {
-    margin-bottom: 20px;
-    font-size: 21px;
-    line-height: 1.4;
-  }
-  .carousel h2 { letter-spacing: -3px; font-size: 56px; font-weight: bold }
-
-}
-
-
-/* IE8 without modernizr */
-.ie8 #side-nav .nav.affix { position: fixed !important;  width: 215px; top: 0; }
-.ie8 #side-nav .nav.affix.affix-bottom { top: auto;  bottom: 100px; } 
-
-.ie8 .navbar-wrapper {  margin-top: 40px; }
-.ie8 .navbar-wrapper .container { padding-right: 15px; padding-left: 15px; }
-.ie8 .navbar-wrapper .navbar { padding-right: 0; padding-left: 0; }
-
-.ie8 .navbar .navbar-nav {margin-right: 15px; float: right}
-/* IE8 without modernizr */
-
-
-/* code wrapping */
-pre {
-	display: block;
-	padding: 10px 15px !important;
-	/*margin: 0 0 20px !important;*/
-	line-height: 2.08;
-	color: #999;
-	word-break: break-all;
-	background-color: rgb(33,33,33);
-	background-color: rgba(11,11,11,0.8);
-	border: none;
-	border-radius: 4px;
-	text-align: left;
-	position: relative;
-}
-pre code {background: none;padding: 0; font-weight: normal; font-size: 100%;}

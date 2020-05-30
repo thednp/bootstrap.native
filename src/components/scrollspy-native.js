@@ -33,19 +33,21 @@ export default function ScrollSpy(element,options) {
     // targets
     spyTarget,
     // determine which is the real scrollTarget
-    scrollTarget;
+    scrollTarget,
+    // options
+    ops = {};
 
   // private methods
   // populate items and targets
   function updateTargets(){
-    const links = spyTarget.getElementsByTagName('A');
+    let links = spyTarget.getElementsByTagName('A');
     if (vars.length !== links.length) {
       // reset arrays
       vars.items = [];
       vars.targets = [];
 
       Array.from(links).map(link=>{
-        const href = link.getAttribute('href'),
+        let href = link.getAttribute('href'),
           targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
         if ( targetItem ) {
           vars.items.push(link);
@@ -58,7 +60,7 @@ export default function ScrollSpy(element,options) {
 
   // item update
   function updateItem(index) {
-    const item = vars.items[index], // the menu item targets this element
+    let item = vars.items[index], // the menu item targets this element
       targetItem = vars.targets[index],
       // parent = hasClass(item,'dropdown-item') ? item.closest('.dropdown-menu')  // child looking up
       //        : hasClass(item,'nav-link')      ? item.closest('.nav') : 0,
@@ -69,9 +71,9 @@ export default function ScrollSpy(element,options) {
       activeSibling = nextSibling && nextSibling.getElementsByClassName('active').length, // parent looking down
       targetRect = vars.isWindow && targetItem.getBoundingClientRect(),
       isActive = hasClass(item,'active') || false,
-      topEdge = (vars.isWindow ? targetRect.top + vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
-      bottomEdge = vars.isWindow ? targetRect.bottom + vars.scrollOffset - self.options.offset 
-                 : vars.targets[index+1] ? vars.targets[index+1].offsetTop - self.options.offset 
+      topEdge = (vars.isWindow ? targetRect.top + vars.scrollOffset : targetItem.offsetTop) - ops.offset,
+      bottomEdge = vars.isWindow ? targetRect.bottom + vars.scrollOffset - ops.offset 
+                 : vars.targets[index+1] ? vars.targets[index+1].offsetTop - ops.offset 
                  : element.scrollHeight,
       inside = activeSibling || vars.scrollOffset >= topEdge && bottomEdge > vars.scrollOffset;
 
@@ -132,9 +134,8 @@ export default function ScrollSpy(element,options) {
     if (!spyTarget) return
 
     // set instance options
-    self.options = {};
-    self.options.target = spyTarget;
-    self.options.offset = parseInt(options.offset || offsetData) || 10;
+    ops.target = spyTarget;
+    ops.offset = parseInt(options.offset || offsetData) || 10;
 
     // set instance priority variables
     vars = {}
@@ -150,7 +151,6 @@ export default function ScrollSpy(element,options) {
     self.refresh()
   
     // associate target with init object
-    self.element = element
     element.ScrollSpy = self
   },"BSN.ScrollSpy")
 

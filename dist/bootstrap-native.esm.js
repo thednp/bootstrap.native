@@ -120,16 +120,6 @@ function addClass(element,classNAME) {
 function Button(element) {
   var self = this, labels,
       changeCustomEvent = bootstrapCustomEvent('change', 'button');
-  function activateItems() {
-    Array.from(self.buttons).map(function (btn){
-      !hasClass(btn,'active')
-        && queryElement('input:checked',btn)
-        && addClass(btn,'active');
-      hasClass(btn,'active')
-        && !queryElement('input:checked',btn)
-        && removeClass(btn,'active');
-    });
-  }
   function toggle(e) {
     var input,
         label = e.target.tagName === 'LABEL' ? e.target
@@ -163,7 +153,7 @@ function Button(element) {
         input.setAttribute('checked','checked');
         input.checked = true;
         element.toggled = true;
-        Array.from(self.buttons).map(function (otherLabel){
+        Array.from(labels).map(function (otherLabel){
           var otherInput = otherLabel.getElementsByTagName('INPUT')[0];
           if ( otherLabel !== label && hasClass(otherLabel,'active') )  {
             dispatchCustomEvent.call(otherInput, changeCustomEvent);
@@ -208,10 +198,15 @@ function Button(element) {
       toggleEvents(on);
     }
     element.toggled = false;
-    self.element = element;
-    self.buttons = labels;
     element.Button = self;
-    activateItems();
+    Array.from(labels).map(function (btn){
+      !hasClass(btn,'active')
+        && queryElement('input:checked',btn)
+        && addClass(btn,'active');
+      hasClass(btn,'active')
+        && !queryElement('input:checked',btn)
+        && removeClass(btn,'active');
+    });
   },"BSN.Button");
 }
 
@@ -243,17 +238,17 @@ function isElementInScrollRange(element) {
 function Carousel (element,options) {
   options = options || {};
   var self = this,
-    vars,
+    vars, ops = {},
     slideCustomEvent, slidCustomEvent,
     slides, leftArrow, rightArrow, indicator, indicators;
   function pauseHandler() {
-    if ( self.options.interval !==false && !hasClass(element,'paused') ) {
+    if ( ops.interval !==false && !hasClass(element,'paused') ) {
       addClass(element,'paused');
       !vars.isSliding && ( clearInterval(vars.timer), vars.timer = null );
     }
   }
   function resumeHandler() {
-    if ( self.options.interval !== false && hasClass(element,'paused') ) {
+    if ( ops.interval !== false && hasClass(element,'paused') ) {
       removeClass(element,'paused');
       !vars.isSliding && ( clearInterval(vars.timer), vars.timer = null );
       !vars.isSliding && self.cycle();
@@ -294,7 +289,7 @@ function Carousel (element,options) {
     self.slideTo( vars.index );
   }
   function toggleEvents(action) {
-    if ( self.options.pause && self.options.interval ) {
+    if ( ops.pause && ops.interval ) {
       action( element, mouseHoverEvents[0], pauseHandler );
       action( element, mouseHoverEvents[1], resumeHandler );
       action( element, touchEvents.start, pauseHandler, passiveHandler );
@@ -304,7 +299,7 @@ function Carousel (element,options) {
     rightArrow && action( rightArrow, 'click', controlsHandler );
     leftArrow && action( leftArrow, 'click', controlsHandler );
     indicator && action( indicator, 'click', indicatorHandler );
-    self.options.keyboard && action( window, 'keydown', keyHandler );
+    ops.keyboard && action( window, 'keydown', keyHandler );
   }
   function toggleTouchEvents(action) {
     action( element, touchEvents.move, touchMoveHandler, passiveHandler );
@@ -352,9 +347,9 @@ function Carousel (element,options) {
   function transitionEndHandler(e){
     if (vars.touchPosition){
       var next = vars.index,
-            timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20,
-            activeItem = self.getActiveIndex(),
-            orientation = vars.direction === 'left' ? 'next' : 'prev';
+          timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20,
+          activeItem = self.getActiveIndex(),
+          orientation = vars.direction === 'left' ? 'next' : 'prev';
       vars.isSliding && setTimeout(function () {
         if (vars.touchPosition){
           vars.isSliding = false;
@@ -364,7 +359,7 @@ function Carousel (element,options) {
           removeClass(slides[next],("carousel-item-" + (vars.direction)));
           removeClass(slides[activeItem],("carousel-item-" + (vars.direction)));
           dispatchCustomEvent.call(element, slidCustomEvent);
-          if ( !document.hidden && self.options.interval && !hasClass(element,'paused') ) {
+          if ( !document.hidden && ops.interval && !hasClass(element,'paused') ) {
             self.cycle();
           }
         }
@@ -379,7 +374,7 @@ function Carousel (element,options) {
     vars.timer = setInterval(function () {
       var idx = vars.index || self.getActiveIndex();
       isElementInScrollRange(element) && (idx++, self.slideTo( idx ) );
-    }, self.options.interval);
+    }, ops.interval);
   };
   self.slideTo = function (next) {
     if (vars.isSliding) { return; }
@@ -415,7 +410,7 @@ function Carousel (element,options) {
       removeClass(slides[activeItem],'active');
       setTimeout(function () {
         vars.isSliding = false;
-        if ( self.options.interval && element && !hasClass(element,'paused') ) {
+        if ( ops.interval && element && !hasClass(element,'paused') ) {
           self.cycle();
         }
         dispatchCustomEvent.call(element, slidCustomEvent);
@@ -461,10 +456,9 @@ function Carousel (element,options) {
     rightArrow = element.getElementsByClassName('carousel-control-next')[0];
     indicator = element.getElementsByClassName('carousel-indicators')[0];
     indicators = indicator && indicator.getElementsByTagName( "LI" ) || [];
-    self.options = {};
-    self.options.keyboard = options.keyboard === true || keyboardData;
-    self.options.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false;
-    self.options.interval = typeof intervalOption === 'number' ? intervalOption
+    ops.keyboard = options.keyboard === true || keyboardData;
+    ops.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false;
+    ops.interval = typeof intervalOption === 'number' ? intervalOption
                           : intervalOption === false || intervalData === 0 || intervalData === false ? 0
                           : isNaN(intervalData) ? 5000
                           : intervalData;
@@ -476,7 +470,7 @@ function Carousel (element,options) {
       slides.length && addClass(slides[0],'active');
       indicators.length && setActivePage(0);
     }
-    if ( self.options.interval ){ self.cycle(); }
+    if ( ops.interval ){ self.cycle(); }
     element.Carousel = self;
   },"BSN.Carousel");
 }
@@ -570,12 +564,9 @@ function Collapse(element,options) {
     collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
     collapse.isAnimating = false;
     accordion = element.closest(options.parent || accordionData);
-    collapse && (self.collapse = collapse);
-    accordion && (self.options = {}, self.options.parent = accordion);
     if ( !element.Collapse ) {
       on(element, 'click', self.toggle);
     }
-    self.element = element;
     element.Collapse = self;
   },"BSN.Collapse");
 }
@@ -672,7 +663,8 @@ function Dropdown(element,option) {
       hideCustomEvent,
       hiddenCustomEvent,
       relatedTarget = null,
-      parent, menu, menuItems = [];
+      parent, menu, menuItems = [],
+      persist;
   function preventEmptyAnchor(anchor) {
     (anchor.href && anchor.href.slice(-1) === '#' || anchor.parentNode && anchor.parentNode.href
       && anchor.parentNode.href.slice(-1) === '#') && this.preventDefault();
@@ -692,7 +684,7 @@ function Dropdown(element,option) {
     if ( e.type === 'focus' && (eventTarget === element || eventTarget === menu || menu.contains(eventTarget) ) ) {
       return;
     }
-    if ( (eventTarget === menu || menu.contains(eventTarget)) && (self.options.persist || hasData) ) { return; }
+    if ( (eventTarget === menu || menu.contains(eventTarget)) && (persist || hasData) ) { return; }
     else {
       relatedTarget = eventTarget === element || element.contains(eventTarget) ? element : null;
       self.hide();
@@ -712,10 +704,10 @@ function Dropdown(element,option) {
     var which = ref.which;
     var keyCode = ref.keyCode;
     var key = which || keyCode,
-          activeItem = document.activeElement,
-          isSameElement = activeItem === element,
-          isInsideMenu = menu.contains(activeItem),
-          isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu;
+        activeItem = document.activeElement,
+        isSameElement = activeItem === element,
+        isInsideMenu = menu.contains(activeItem),
+        isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu;
     var idx = menuItems.indexOf(activeItem);
     if ( isMenuItem ) {
       idx = isSameElement ? 0
@@ -786,10 +778,8 @@ function Dropdown(element,option) {
       !('tabindex' in menu) && menu.setAttribute('tabindex', '0');
       on(element, 'click', clickHandler);
     }
-    self.options = {};
-    self.options.persist = option === true || element.getAttribute('data-persist') === 'true' || false;
+    persist = option === true || element.getAttribute('data-persist') === 'true' || false;
     element.open = false;
-    self.element = element;
     element.Dropdown = self;
   },"BSN.Dropdown");
 }
@@ -805,16 +795,17 @@ function Modal(element,options) {
     scrollBarWidth,
     overlay,
     overlayDelay,
-    fixedItems;
+    fixedItems,
+    ops = {};
   function setScrollbar() {
     var openModal = hasClass(document.body,'modal-open'),
-          bodyStyle = window.getComputedStyle(document.body),
-          bodyPad = parseInt((bodyStyle.paddingRight), 10),
-          itemPad;
-    document.body.style.paddingRight = (bodyPad + (openModal?0:scrollBarWidth)) + "px";
-    modal.style.paddingRight = (scrollBarWidth?(scrollBarWidth + "px"):'');
+        bodyPad = parseInt(getComputedStyle(document.body).paddingRight),
+        modalOverflow = modal.clientHeight !== modal.scrollHeight,
+        itemPad;
+    modal.style.paddingRight = (!modalOverflow && scrollBarWidth?(scrollBarWidth + "px"):'');
+    document.body.style.paddingRight = (bodyPad + (openModal ?0:scrollBarWidth)) + "px";
     fixedItems.length && fixedItems.map(function (fixed){
-      itemPad = window.getComputedStyle(fixed).paddingRight;
+      itemPad = getComputedStyle(fixed).paddingRight;
       fixed.style.paddingRight = (parseInt(itemPad) + (openModal?0:scrollBarWidth)) + "px";
     });
   }
@@ -826,8 +817,7 @@ function Modal(element,options) {
     });
   }
   function measureScrollbar() {
-    var scrollDiv = document.createElement('div');
-    var widthValue;
+    var scrollDiv = document.createElement('div'), widthValue;
     scrollDiv.className = 'modal-scrollbar-measure';
     document.body.appendChild(scrollDiv);
     widthValue = scrollDiv.offsetWidth - scrollDiv.clientWidth;
@@ -841,7 +831,7 @@ function Modal(element,options) {
     var newOverlay = document.createElement('div');
     overlay = queryElement('.modal-backdrop');
     if ( overlay === null ) {
-      newOverlay.setAttribute('class', 'modal-backdrop' + (self.options.animation ? ' fade' : ''));
+      newOverlay.setAttribute('class', 'modal-backdrop' + (ops.animation ? ' fade' : ''));
       overlay = newOverlay;
       document.body.appendChild(overlay);
     }
@@ -875,11 +865,11 @@ function Modal(element,options) {
     shownCustomEvent = bootstrapCustomEvent('shown', 'modal', relatedTarget);
     dispatchCustomEvent.call(modal, shownCustomEvent);
   }
-  function triggerHide() {
+  function triggerHide(force) {
     modal.style.display = '';
     element && (setFocus(element));
     overlay = queryElement('.modal-backdrop');
-    if (overlay && hasClass(overlay,'show') && !document.getElementsByClassName('modal show')[0]) {
+    if (force !== 1 && overlay && hasClass(overlay,'show') && !document.getElementsByClassName('modal show')[0]) {
       removeClass(overlay,'show');
       emulateTransitionEnd(overlay,removeOverlay);
     } else {
@@ -904,7 +894,7 @@ function Modal(element,options) {
   function keyHandler(ref) {
     var which = ref.which;
     if ( modal.isAnimating ) { return; }
-    if (self.options.keyboard && which == 27 && hasClass(modal,'show') ) {
+    if (ops.keyboard && which == 27 && hasClass(modal,'show') ) {
       self.hide();
     }
   }
@@ -913,7 +903,7 @@ function Modal(element,options) {
     var clickTarget = e.target;
     if ( hasClass(modal,'show') && ( clickTarget.parentNode.getAttribute('data-dismiss') === 'modal'
         || clickTarget.getAttribute('data-dismiss') === 'modal'
-        || clickTarget === modal && self.options.backdrop !== 'static' ) ) {
+        || clickTarget === modal && ops.backdrop !== 'static' ) ) {
       self.hide(); relatedTarget = null;
       e.preventDefault();
     }
@@ -922,7 +912,7 @@ function Modal(element,options) {
     if ( hasClass(modal,'show') ) {self.hide();} else {self.show();}
   };
   self.show = function () {
-    if ( hasClass(modal,'show') ) {return}
+    if (hasClass(modal, 'show') && !!modal.isAnimating ) {return}
     showCustomEvent = bootstrapCustomEvent('show', 'modal', relatedTarget);
     dispatchCustomEvent.call(modal, showCustomEvent);
     if ( showCustomEvent.defaultPrevented ) { return; }
@@ -932,7 +922,7 @@ function Modal(element,options) {
       currentOpen.modalTrigger && currentOpen.modalTrigger.Modal.hide();
       currentOpen.Modal && currentOpen.Modal.hide();
     }
-    if ( self.options.backdrop ) {
+    if ( ops.backdrop ) {
       overlay = createOverlay();
     }
     if ( overlay && !currentOpen && !hasClass(overlay,'show') ) {
@@ -942,7 +932,7 @@ function Modal(element,options) {
     }
     !currentOpen ? setTimeout( beforeShow, overlay && overlayDelay ? overlayDelay:0 ) : beforeShow();
   };
-  self.hide = function () {
+  self.hide = function (force) {
     if ( !hasClass(modal,'show') ) {return}
     hideCustomEvent = bootstrapCustomEvent( 'hide', 'modal');
     dispatchCustomEvent.call(modal, hideCustomEvent);
@@ -950,7 +940,7 @@ function Modal(element,options) {
     modal.isAnimating = true;
     removeClass(modal,'show');
     modal.setAttribute('aria-hidden', true);
-    hasClass(modal,'fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
+    hasClass(modal,'fade') && force !== 1 ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
   };
   self.setContent = function (content) {
     queryElement('.modal-content',modal).innerHTML = content;
@@ -962,7 +952,7 @@ function Modal(element,options) {
     }
   };
   self.dispose = function () {
-    self.hide();
+    self.hide(1);
     if (element) {off(element, 'click', clickHandler); delete element.Modal; }
     else {delete modal.Modal;}
   };
@@ -971,27 +961,24 @@ function Modal(element,options) {
     var checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') );
     modal = hasClass(element,'modal') ? element : checkModal;
     fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
-                .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
+                      .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
     if ( hasClass(element, 'modal') ) { element = null; }
     element && element.Modal && element.Modal.dispose();
     modal && modal.Modal && modal.Modal.dispose();
-    self.options = {};
-    self.options.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
-    self.options.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
-    self.options.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : self.options.backdrop;
-    self.options.animation = hasClass(modal, 'fade') ? true : false;
-    self.options.content = options.content;
+    ops.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
+    ops.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
+    ops.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : ops.backdrop;
+    ops.animation = hasClass(modal, 'fade') ? true : false;
+    ops.content = options.content;
     modal.isAnimating = false;
     if ( element && !element.Modal ) {
       on(element, 'click', clickHandler);
     }
-    if ( self.options.content ) {
-      self.setContent( self.options.content.trim() );
+    if ( ops.content ) {
+      self.setContent( ops.content.trim() );
     }
-    self.modal = modal;
     if (element) {
       modal.modalTrigger = element;
-      self.element = element;
       element.Modal = self;
     } else {
       modal.Modal = self;
@@ -1006,7 +993,8 @@ function Popover(element,options) {
       timer = 0,
       isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
       titleString,
-      contentString;
+      contentString,
+      ops = {};
   var triggerData,
       animationData,
       placementData,
@@ -1036,7 +1024,7 @@ function Popover(element,options) {
     }
   }
   function removePopover() {
-    self.options.container.removeChild(popover);
+    ops.container.removeChild(popover);
     timer = null; popover = null;
   }
   function createPopover() {
@@ -1047,53 +1035,53 @@ function Popover(element,options) {
     var popoverArrow = document.createElement('div');
     addClass(popoverArrow,'arrow');
     popover.appendChild(popoverArrow);
-    if ( contentString !== null && self.options.template === null ) {
+    if ( contentString !== null && ops.template === null ) {
       popover.setAttribute('role','tooltip');
       if (titleString !== null) {
         var popoverTitle = document.createElement('h3');
         addClass(popoverTitle,'popover-header');
-        popoverTitle.innerHTML = self.options.dismissible ? titleString + closeBtn : titleString;
+        popoverTitle.innerHTML = ops.dismissible ? titleString + closeBtn : titleString;
         popover.appendChild(popoverTitle);
       }
       var popoverBodyMarkup = document.createElement('div');
       addClass(popoverBodyMarkup,'popover-body');
-      popoverBodyMarkup.innerHTML = self.options.dismissible && titleString === null ? contentString + closeBtn : contentString;
+      popoverBodyMarkup.innerHTML = ops.dismissible && titleString === null ? contentString + closeBtn : contentString;
       popover.appendChild(popoverBodyMarkup);
     } else {
       var popoverTemplate = document.createElement('div');
-      popoverTemplate.innerHTML = self.options.template.trim();
+      popoverTemplate.innerHTML = ops.template.trim();
       popover.className = popoverTemplate.firstChild.className;
       popover.innerHTML = popoverTemplate.firstChild.innerHTML;
       var popoverHeader = queryElement('.popover-header',popover),
-            popoverBody = queryElement('.popover-body',popover);
+          popoverBody = queryElement('.popover-body',popover);
       titleString && popoverHeader && (popoverHeader.innerHTML = titleString.trim());
       contentString && popoverBody && (popoverBody.innerHTML = contentString.trim());
     }
-    self.options.container.appendChild(popover);
+    ops.container.appendChild(popover);
     popover.style.display = 'block';
     !hasClass(popover, 'popover') && addClass(popover, 'popover');
-    !hasClass(popover, self.options.animation) && addClass(popover, self.options.animation);
+    !hasClass(popover, ops.animation) && addClass(popover, ops.animation);
     !hasClass(popover, placementClass) && addClass(popover, placementClass);
   }
   function showPopover() {
     !hasClass(popover,'show') && ( addClass(popover,'show') );
   }
   function updatePopover() {
-    styleTip(element, popover, self.options.placement, self.options.container);
+    styleTip(element, popover, ops.placement, ops.container);
   }
   function provideFocus () {
     if (popover === null) { element.focus(); }
   }
   function toggleEvents(action) {
-    if (self.options.trigger === 'hover') {
+    if (ops.trigger === 'hover') {
       action( element, mouseClickEvents.down, self.show );
       action( element, mouseHoverEvents[0], self.show );
-      if (!self.options.dismissible) { action( element, mouseHoverEvents[1], self.hide ); }
-    } else if ('click' == self.options.trigger) {
-      action( element, self.options.trigger, self.toggle );
-    } else if ('focus' == self.options.trigger) {
+      if (!ops.dismissible) { action( element, mouseHoverEvents[1], self.hide ); }
+    } else if ('click' == ops.trigger) {
+      action( element, ops.trigger, self.toggle );
+    } else if ('focus' == ops.trigger) {
       isIphone && action( element, 'click', provideFocus );
-      action( element, self.options.trigger, self.toggle );
+      action( element, ops.trigger, self.toggle );
     }
   }
   function touchHandler(e){
@@ -1102,11 +1090,11 @@ function Popover(element,options) {
     }
   }
   function dismissHandlerToggle(action) {
-    if (self.options.dismissible) {
+    if (ops.dismissible) {
       action( document, 'click', dismissibleHandler );
     } else {
-      'focus' == self.options.trigger && action( element, 'blur', self.hide );
-      'hover' == self.options.trigger && action( document, touchEvents.start, touchHandler, passiveHandler );
+      'focus' == ops.trigger && action( element, 'blur', self.hide );
+      'hover' == ops.trigger && action( document, touchEvents.start, touchHandler, passiveHandler );
     }
     action( window, 'resize', self.hide, passiveHandler );
   }
@@ -1132,7 +1120,7 @@ function Popover(element,options) {
         createPopover();
         updatePopover();
         showPopover();
-        !!self.options.animation ? emulateTransitionEnd(popover, showTrigger) : showTrigger();
+        !!ops.animation ? emulateTransitionEnd(popover, showTrigger) : showTrigger();
       }
     }, 20 );
   };
@@ -1143,9 +1131,9 @@ function Popover(element,options) {
         dispatchCustomEvent.call(element, hideCustomEvent);
         if ( hideCustomEvent.defaultPrevented ) { return; }
         removeClass(popover,'show');
-        !!self.options.animation ? emulateTransitionEnd(popover, hideTrigger) : hideTrigger();
+        !!ops.animation ? emulateTransitionEnd(popover, hideTrigger) : hideTrigger();
       }
-    }, self.options.delay );
+    }, ops.delay );
   };
   self.dispose = function () {
     self.hide();
@@ -1171,27 +1159,25 @@ function Popover(element,options) {
     modal = element.closest('.modal');
     navbarFixedTop = element.closest('.fixed-top');
     navbarFixedBottom = element.closest('.fixed-bottom');
-    self.options = {};
-    self.options.template = options.template ? options.template : null;
-    self.options.trigger = options.trigger ? options.trigger : triggerData || 'hover';
-    self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-    self.options.placement = options.placement ? options.placement : placementData || 'top';
-    self.options.delay = parseInt(options.delay || delayData) || 200;
-    self.options.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
-    self.options.container = containerElement ? containerElement
+    ops.template = options.template ? options.template : null;
+    ops.trigger = options.trigger ? options.trigger : triggerData || 'hover';
+    ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    ops.placement = options.placement ? options.placement : placementData || 'top';
+    ops.delay = parseInt(options.delay || delayData) || 200;
+    ops.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
+    ops.container = containerElement ? containerElement
                            : containerDataElement ? containerDataElement
                            : navbarFixedTop ? navbarFixedTop
                            : navbarFixedBottom ? navbarFixedBottom
                            : modal ? modal : document.body;
-    placementClass = "bs-popover-" + (self.options.placement);
+    placementClass = "bs-popover-" + (ops.placement);
     var popoverContents = getContents();
     titleString = popoverContents[0];
     contentString = popoverContents[1];
-    if ( !contentString && !self.options.template ) { return; }
+    if ( !contentString && !ops.template ) { return; }
     if ( !element.Popover ) {
       toggleEvents(on);
     }
-    self.element = element;
     element.Popover = self;
   },"BSN.Popover");
 }
@@ -1203,7 +1189,8 @@ function ScrollSpy(element,options) {
     targetData,
     offsetData,
     spyTarget,
-    scrollTarget;
+    scrollTarget,
+    ops = {};
   function updateTargets(){
     var links = spyTarget.getElementsByTagName('A');
     if (vars.length !== links.length) {
@@ -1229,9 +1216,9 @@ function ScrollSpy(element,options) {
       activeSibling = nextSibling && nextSibling.getElementsByClassName('active').length,
       targetRect = vars.isWindow && targetItem.getBoundingClientRect(),
       isActive = hasClass(item,'active') || false,
-      topEdge = (vars.isWindow ? targetRect.top + vars.scrollOffset : targetItem.offsetTop) - self.options.offset,
-      bottomEdge = vars.isWindow ? targetRect.bottom + vars.scrollOffset - self.options.offset
-                 : vars.targets[index+1] ? vars.targets[index+1].offsetTop - self.options.offset
+      topEdge = (vars.isWindow ? targetRect.top + vars.scrollOffset : targetItem.offsetTop) - ops.offset,
+      bottomEdge = vars.isWindow ? targetRect.bottom + vars.scrollOffset - ops.offset
+                 : vars.targets[index+1] ? vars.targets[index+1].offsetTop - ops.offset
                  : element.scrollHeight,
       inside = activeSibling || vars.scrollOffset >= topEdge && bottomEdge > vars.scrollOffset;
      if ( !isActive && inside ) {
@@ -1273,9 +1260,8 @@ function ScrollSpy(element,options) {
     spyTarget = queryElement(options.target || targetData);
     scrollTarget = element.offsetHeight < element.scrollHeight ? element : window;
     if (!spyTarget) { return }
-    self.options = {};
-    self.options.target = spyTarget;
-    self.options.offset = parseInt(options.offset || offsetData) || 10;
+    ops.target = spyTarget;
+    ops.offset = parseInt(options.offset || offsetData) || 10;
     vars = {};
     vars.length = 0;
     vars.items = [];
@@ -1285,7 +1271,6 @@ function ScrollSpy(element,options) {
       toggleEvents(on);
     }
     self.refresh();
-    self.element = element;
     element.ScrollSpy = self;
   },"BSN.ScrollSpy");
 }
@@ -1306,7 +1291,8 @@ function Tab(element,options) {
     nextContent,
     containerHeight,
     equalContents,
-    nextHeight;
+    nextHeight,
+    animateHeight;
   function triggerEnd() {
     tabsContentContainer.style.height = '';
     removeClass(tabsContentContainer,'collapsing');
@@ -1359,8 +1345,7 @@ function Tab(element,options) {
     dispatchCustomEvent.call(activeTab, hiddenCustomEvent);
   }
   function getActiveTab() {
-    var activeTabs = tabs.getElementsByClassName('active');
-    var activeTab;
+    var activeTabs = tabs.getElementsByClassName('active'), activeTab;
     if ( activeTabs.length === 1 && !hasClass(activeTabs[0].parentNode,'dropdown') ) {
       activeTab = activeTabs[0];
     } else if ( activeTabs.length > 1 ) {
@@ -1411,14 +1396,12 @@ function Tab(element,options) {
     heightData = element.getAttribute('data-height');
     tabs = element.closest('.nav');
     dropdown = tabs && queryElement('.dropdown-toggle',tabs);
-    self.options = {};
-    self.options.height = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
+    animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
     tabs.isAnimating = false;
     if ( !element.Tab ) {
       on(element, 'click', clickHandler);
     }
-    if (self.options.height) { tabsContentContainer = getActiveContent().parentNode; }
-    self.element = element;
+    if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
     element.Tab = self;
   },'BSN.Tab');
 }
@@ -1433,12 +1416,13 @@ function Toast(element,options) {
       showCustomEvent,
       hideCustomEvent,
       shownCustomEvent,
-      hiddenCustomEvent;
+      hiddenCustomEvent,
+      ops = {};
   function showComplete() {
     removeClass( toast, 'showing' );
     addClass( toast, 'show' );
     dispatchCustomEvent.call(toast,shownCustomEvent);
-    if (self.options.autohide) { self.hide(); }
+    if (ops.autohide) { self.hide(); }
   }
   function hideComplete() {
     addClass( toast, 'hide' );
@@ -1446,7 +1430,7 @@ function Toast(element,options) {
   }
   function close () {
     removeClass( toast,'show' );
-    self.options.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
+    ops.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
   }
   function disposeComplete() {
     clearTimeout(timer);
@@ -1457,22 +1441,22 @@ function Toast(element,options) {
     if (toast && !hasClass(toast,'show')) {
       dispatchCustomEvent.call(toast,showCustomEvent);
       if (showCustomEvent.defaultPrevented) { return; }
-      self.options.animation && addClass( toast,'fade' );
+      ops.animation && addClass( toast,'fade' );
       removeClass( toast,'hide' );
       toast.offsetWidth;
       addClass( toast,'showing' );
-      self.options.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();
+      ops.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();
     }
   };
   self.hide = function (noTimer) {
     if (toast && hasClass(toast,'show')) {
       dispatchCustomEvent.call(toast,hideCustomEvent);
       if(hideCustomEvent.defaultPrevented) { return; }
-      noTimer ? close() : (timer = setTimeout( close, self.options.delay));
+      noTimer ? close() : (timer = setTimeout( close, ops.delay));
     }
   };
   self.dispose = function () {
-    self.options.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
+    ops.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
   };
   tryWrapper(function (){
     element = queryElement(element);
@@ -1485,15 +1469,12 @@ function Toast(element,options) {
     hideCustomEvent = bootstrapCustomEvent('hide', 'toast');
     shownCustomEvent = bootstrapCustomEvent('shown', 'toast');
     hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast');
-    self.options = {};
-    self.options.animation = options.animation === false || animationData === 'false' ? 0 : 1;
-    self.options.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1;
-    self.options.delay = parseInt(options.delay || delayData) || 500;
+    ops.animation = options.animation === false || animationData === 'false' ? 0 : 1;
+    ops.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1;
+    ops.delay = parseInt(options.delay || delayData) || 500;
     if ( !element.Toast ) {
       on(element, 'click', self.hide);
     }
-    self.toast = toast;
-    self.element = element;
     element.Toast = self;
   },'BSN.Toast');
 }
@@ -1515,23 +1496,24 @@ function Tooltip(element,options) {
       modal,
       navbarFixedTop,
       navbarFixedBottom,
-      placementClass;
+      placementClass,
+      ops = {};
   function getTitle() {
     return element.getAttribute('title')
         || element.getAttribute('data-title')
         || element.getAttribute('data-original-title')
   }
   function removeToolTip() {
-    self.options.container.removeChild(tooltip);
+    ops.container.removeChild(tooltip);
     tooltip = null; timer = null;
   }
   function createToolTip() {
     titleString = getTitle();
     if ( titleString ) {
       tooltip = document.createElement('div');
-      if (self.options.template) {
+      if (ops.template) {
         var tooltipMarkup = document.createElement('div');
-        tooltipMarkup.innerHTML = self.options.template.trim();
+        tooltipMarkup.innerHTML = ops.template.trim();
         tooltip.className = tooltipMarkup.firstChild.className;
         tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
         queryElement('.tooltip-inner',tooltip).innerHTML = titleString.trim();
@@ -1548,13 +1530,13 @@ function Tooltip(element,options) {
       tooltip.style.top = '0';
       tooltip.setAttribute('role','tooltip');
       !hasClass(tooltip, 'tooltip') && addClass(tooltip, 'tooltip');
-      !hasClass(tooltip, self.options.animation) && addClass(tooltip, self.options.animation);
+      !hasClass(tooltip, ops.animation) && addClass(tooltip, ops.animation);
       !hasClass(tooltip, placementClass) && addClass(tooltip, placementClass);
-      self.options.container.appendChild(tooltip);
+      ops.container.appendChild(tooltip);
     }
   }
   function updateTooltip() {
-    styleTip(element, tooltip, self.options.placement, self.options.container);
+    styleTip(element, tooltip, ops.placement, ops.container);
   }
   function showTooltip() {
     !hasClass(tooltip,'show') && ( addClass(tooltip,'show') );
@@ -1589,7 +1571,7 @@ function Tooltip(element,options) {
         if(createToolTip() !== false) {
           updateTooltip();
           showTooltip();
-          !!self.options.animation ? emulateTransitionEnd(tooltip, showAction) : showAction();
+          !!ops.animation ? emulateTransitionEnd(tooltip, showAction) : showAction();
         }
       }
     }, 20 );
@@ -1601,9 +1583,9 @@ function Tooltip(element,options) {
         dispatchCustomEvent.call(element, hideCustomEvent);
         if (hideCustomEvent.defaultPrevented) { return; }
         removeClass(tooltip,'show');
-        !!self.options.animation ? emulateTransitionEnd(tooltip, hideAction) : hideAction();
+        !!ops.animation ? emulateTransitionEnd(tooltip, hideAction) : hideAction();
       }
-    }, self.options.delay);
+    }, ops.delay);
   };
   self.toggle = function () {
     if (!tooltip) { self.show(); }
@@ -1632,17 +1614,16 @@ function Tooltip(element,options) {
     modal = element.closest('.modal');
     navbarFixedTop = element.closest('.fixed-top');
     navbarFixedBottom = element.closest('.fixed-bottom');
-    self.options = {};
-    self.options.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-    self.options.placement = options.placement ? options.placement : placementData || 'top';
-    self.options.template = options.template ? options.template : null;
-    self.options.delay = parseInt(options.delay || delayData) || 200;
-    self.options.container = containerElement ? containerElement
+    ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    ops.placement = options.placement ? options.placement : placementData || 'top';
+    ops.template = options.template ? options.template : null;
+    ops.delay = parseInt(options.delay || delayData) || 200;
+    ops.container = containerElement ? containerElement
                            : containerDataElement ? containerDataElement
                            : navbarFixedTop ? navbarFixedTop
                            : navbarFixedBottom ? navbarFixedBottom
                            : modal ? modal : document.body;
-    placementClass = "bs-tooltip-" + (self.options.placement);
+    placementClass = "bs-tooltip-" + (ops.placement);
     titleString = getTitle();
     if ( !titleString ) { return; }
     if (!element.Tooltip) {
@@ -1650,7 +1631,6 @@ function Tooltip(element,options) {
       element.removeAttribute('title');
       toggleEvents(on);
     }
-    self.element = element;
     element.Tooltip = self;
   },'BSN.Tooltip');
 }
