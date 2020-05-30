@@ -1,17 +1,20 @@
 // MISC
 // scrollTo
-var sideNav = document.getElementById('side-nav'),
-		sideLinks = sideNav.getElementsByTagName("A"),
+var offCanvasCollapse = document.getElementsByClassName('offcanvas-collapse')[0],
+		sideNav = document.getElementById('side-nav'),
+		topNav = document.getElementById('top-nav'),
+		sideLinks = Array.from(sideNav.getElementsByTagName("A")).concat(Array.from(topNav.getElementsByTagName("A"))),
 		scrollTarget = /(EDGE|Mac)/i.test(navigator.userAgent) ? document.body : document.documentElement;
 
-Array.from(sideLinks).map((x,i) => x.addEventListener('click', (e) => { 
+sideLinks.map((x,i) => x.addEventListener('click', (e) => { 
 	var target = document.getElementById(x.getAttribute('href').replace('#', ''));
 	e.preventDefault();
 	scrollTarget.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) -  70;
+	topNav.contains(x) && offCanvasCollapse.classList.toggle('open')
 })) 
 // offcanvas
 document.querySelector('[data-toggle="offcanvas"]').addEventListener('click', function () {
-	document.getElementsByClassName('offcanvas-collapse')[0].classList.toggle('open')
+	offCanvasCollapse.classList.toggle('open')
 })
 
 // COMPONENTS

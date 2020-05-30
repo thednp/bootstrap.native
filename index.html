@@ -34,7 +34,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="offcanvas-collapse navbar-collapse">
-        <ul class="navbar-nav ml-auto mr-0">
+        <ul class="navbar-nav ml-auto mr-0 d-none d-md-flex">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">Github</a>
             <div class="dropdown-menu dropdown-menu-right">
@@ -53,6 +53,19 @@
             </div>
           </li>
         </ul>
+        <ul id="top-nav" class="navbar-nav d-flex d-md-none flex-column">
+          <li class="nav-item"><a class="nav-link" href="#componentAlert">Alert</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentButton">Button</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentCarousel">Carousel</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentCollapse">Collapse</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentDropdown">Dropdown</a></li>            
+          <li class="nav-item"><a class="nav-link" href="#componentModal">Modal</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentPopover">Popover</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentScrollspy">ScrollSpy</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentTab">Tab</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentToast">Toast</a></li>
+          <li class="nav-item"><a class="nav-link" href="#componentTooltip">Tooltip</a></li>
+        </ul>        
       </div>
     </nav>
 
@@ -3276,7 +3289,7 @@ new BSN.Tooltip('#selector',options).show();
             
         </div>
         <div class="col-md-3" id="side-nav">
-          <ul id="nav-scrollspy" class="nav nav-stacked flex-column">
+          <ul id="nav-scrollspy" class="nav nav-stacked d-none d-md-flex flex-column">
             <li class="nav-item">
               <a class="nav-link" href="#componentAlert">Alert</a>
               <ul class="nav">
