@@ -475,8 +475,8 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                       <td><em>5000</em></td>
                       <td>Sets the component's delay between transitions in miliseconds. Can be set via JavaScript or the
                         <code>data-interval="INTERVAL"</code> attribute. If you want to disable the automatic transition, you can
-                        set this option to <em>false</em>. Starting with version 2.0.19 the component will not automatically slide
-                        if the element is not visible in the viewport.</td>
+                        set this option to <em>false</em>. However the component will not automatically slide if the element is 
+                        not visible in the viewport.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1601,18 +1601,18 @@ var myModalInstance = new BSN.Modal(
 );
 </code></pre>
           
-              <p>Starting with BSN v3.0, you can re-initialize your target elements very much like the original plugin, but
+              <p>Now you can re-initialize your target elements very much like the original plugin, but
                 with native JavaScript syntax:</p>
           
 <pre><code class="language-javascript">// re-initialize on a target with different options
-// also call the .show() method
+// also call the .show() method right away
 var myNewModalInstance = new BSN.Modal('#myModal', { backdrop: true }).show();
 </code></pre>
 
               <p>Keep in mind that re-initializing will make use of the <code>.dispose()</code> method to clear memory
-                allocated for previous initialization, which involves two things: reseting the options' values to the 
+                allocated for previous initialization, which involves two things: reseting the other options' values to the 
                 DATA API specified, or default values if not specified on re-initialization AND lastly, if the modal
-                is open on re-initialization, it will be made hidden via <code>.hide()</code> and you can still access the
+                is open, on re-initialization the modal will be hidden via <code>.hide()</code>, but you can still access the
                 <code>.show()</code> method right away.</p>
           
               <p>In other cases you can designate one or multiple triggering elements to open your modal, they will be the target
@@ -3144,13 +3144,13 @@ myToastInit.dispose();
                   </tbody>
                 </table>
               </div>
-              <p>If a tooltip is a child element of a modal, a <code>&lt;nav class="navbar-fixed-top"&gt;</code> or a
-                <code>&lt;nav class="navbar-fixed-bottom"&gt;</code>, the <code>container</code> option is set automatically to
-                target that specific parent starting with version 2.0.6.</p>
-              <p>Starting with version 2.0.19, in addition to automatic repositioning, the component will try to make sure the
-                tooltips are always in the viewport as some <a rel="noreferrer" href="https://popper.js.org/"
-                  target="_blank">Popper.js</a> functionality have been <a
-                  href="https://github.com/thednp/bootstrap.native/issues/158">implemented</a> into both V3 and V4 versions.</p>
+              <p>If your tooltip is a child element of a modal, a <code>&lt;nav class="navbar fixed-top"&gt;</code> or a
+                <code>&lt;nav class="navbar fixed-bottom"&gt;</code>, the <code>container</code> option is set automatically to
+                target that specific parent.</p>
+              <p>The component also provides automatic repositioning, which means it will try to make sure the
+                tooltips are always in the viewport, somewhat similar to the
+                  <a rel="noreferrer" href="https://popper.js.org/" target="_blank">Popper.js</a> functionality, check 
+                  <a href="https://github.com/thednp/bootstrap.native/issues/158">right here</a>.</p>
             </section>
           
             <section id="tooltipMethods">
@@ -3179,9 +3179,8 @@ myToastInit.dispose();
             <section id="tooltipEvents">
               <h3>Tooltip Events</h3>
               <p>The component's original events are same as with the original jQuery Plugin, except
-                <code>inserted.bs.tooltip</code>, the way the component works makes that this event is not needed, as it would
-                fire
-                on every instance of the <code>.show()</code> method.</p>
+                <code>inserted.bs.tooltip</code>, the way the component works makes that this event is not needed, 
+                as it would fire on every instance of the <code>.show()</code> call.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
