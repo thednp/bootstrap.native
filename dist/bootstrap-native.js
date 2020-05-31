@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.0 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -890,9 +890,13 @@
     }
     function clickHandler(e) {
       if ( modal.isAnimating ) { return; }
-      var clickTarget = e.target;
-      clickTarget = clickTarget.hasAttribute('data-target') || clickTarget.hasAttribute('href') ? clickTarget : clickTarget.parentNode;
-      if ( (clickTarget === element || element.contains(clickTarget)) && !hasClass(modal,'show') ) {
+      var clickTarget = e.target,
+          modalID = "#" + (modal.getAttribute('id')),
+          targetAttrValue = clickTarget.getAttribute('data-target') || clickTarget.getAttribute('href'),
+          elemAttrValue = element.getAttribute('data-target') || element.getAttribute('href');
+      if ( !hasClass(modal,'show')
+          && (clickTarget === element && targetAttrValue === modalID
+          || element.contains(clickTarget) && elemAttrValue === modalID) ) {
         modal.modalTrigger = element;
         relatedTarget = element;
         self.show();
@@ -901,16 +905,16 @@
     }
     function keyHandler(ref) {
       var which = ref.which;
-      if ( modal.isAnimating ) { return; }
-      if (ops.keyboard && which == 27 && hasClass(modal,'show') ) {
+      if (!modal.isAnimating && ops.keyboard && which == 27 && hasClass(modal,'show') ) {
         self.hide();
       }
     }
     function dismissHandler(e) {
       if ( modal.isAnimating ) { return; }
-      var clickTarget = e.target;
-      if ( hasClass(modal,'show') && ( clickTarget.parentNode.getAttribute('data-dismiss') === 'modal'
-          || clickTarget.getAttribute('data-dismiss') === 'modal'
+      var clickTarget = e.target,
+          hasData = clickTarget.getAttribute('data-dismiss') === 'modal',
+          parentWithData = clickTarget.closest('[data-dismiss="modal"]');
+      if ( hasClass(modal,'show') && ( parentWithData || hasData
           || clickTarget === modal && ops.backdrop !== 'static' ) ) {
         self.hide(); relatedTarget = null;
         e.preventDefault();
@@ -1677,7 +1681,7 @@
   componentsInit.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ];
   document.body ? initCallback() : one( document, 'DOMContentLoaded', initCallback );
 
-  var version = "3.0.0";
+  var version = "3.0.1";
 
   var index = {
     Alert: Alert,

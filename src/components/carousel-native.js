@@ -257,14 +257,11 @@ export default function Carousel (element,options) {
     }
   }
 
-  // self.getActiveIndex = () => [].slice.call(slides).indexOf(element.getElementsByClassName('carousel-item active')[0]) || 0
   self.getActiveIndex = () => Array.from(slides).indexOf(element.getElementsByClassName('carousel-item active')[0]) || 0
 
   self.dispose = () => {
     let itemClasses = ['left','right','prev','next'];
 
-    // [].slice.call(slides).map((slide,idx) => {
-    // [...slides].map((slide,idx) => { // this doesn't work with buble
     Array.from(slides).map((slide,idx) => {
       if (hasClass(slide,'active')){
         setActivePage( idx );

@@ -439,8 +439,8 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
 
           <section id="componentCarousel">
             <h2>Carousel</h2>
-            <p>The <b>Carousel</b> component covers the original events, along with a set of useful options and public methods. In
-              addition it also provides a solid DATA API, it adds a <code>paused</code> class to the targeted element when in
+            <p>The <b>Carousel</b> component covers the original events, along with a set of essential options and public methods. In
+              addition it also provides a solid DATA API, it adds a <code>paused</code> class to the target element when in
               paused state, and a solid event handling implementation.</p>
           
             <section id="carouselOptions">
@@ -501,11 +501,8 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
           
             <section id="carouselEvents">
               <h3>Carousel Events</h3>
-              <p>All the component's events are attached to the <code>&lt;div class="carousel"&gt;</code> element, and the
-                <code>event.relatedTarget</code> is the newly activated carousel item. The events provide no mention of the
-                animation direction, because most polyfills do not allow us to set new custom properties to the event objects, we
-                store the transition direction in the initialization object. See the <a href="#usageCarousel">Usage</a> section.
-              </p>
+              <p>All the component's event handlers are attached to the <code>&lt;div class="carousel"&gt;</code> element, and the
+                <code>event.relatedTarget</code> is the newly activated carousel item.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -532,13 +529,11 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
             <section id="carouselDATA">
               <h3>Carousel DATA API</h3>
               <p>The component covers most of the original implementation in regards to DATA API, except that you can ignore
-                <code>data-slide="prev"</code> and <code>data-slide="next"</code> attributes for the controls, but they must have
-                at least the class <code>carousel-control</code> in order to work. The elements with the
-                <code>data-ride="carousel"</code> attribute will be initialized via DATA API, and the basic template looks like
-                this: </p>
+                some of the attributes for the controls, but they must have at least their specific class in order to work. 
+                This is a basic template markup followed by a complete attribute breakdown:</p>
           
 <pre><code class="language-markup">&lt;!-- the Carousel component --&gt;
-&lt;div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="5000"&gt;
+&lt;div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="5000" data-pause="hover"&gt;
   &lt;!-- Indicators --&gt;
   &lt;ol class="carousel-indicators"&gt;
     &lt;li data-target="#myCarousel" data-slide-to="0" class="active"&gt;&lt;/li&gt;
@@ -546,21 +541,21 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
     &lt;li data-target="#myCarousel" data-slide-to="2"&gt;&lt;/li&gt;
   &lt;/ol&gt;
   &lt;!-- Wrapper for slides --&gt;
-  &lt;div class="carousel-inner" role="listbox"&gt;
+  &lt;div class="carousel-inner"&gt;
     &lt;div class="carousel-item active"&gt;
-      &lt;img src="https://unsplash.it/837/300?image=0" alt=""&gt;
+      &lt;img src="..." alt="..."&gt;
       &lt;div class="carousel-caption"&gt;
-      &lt;h3&gt;This is another carousel&lt;/h3&gt;
+      &lt;h3&gt;This is a carousel caption&lt;/h3&gt;
       &lt;/div&gt;
     &lt;/div&gt;
     &lt;div class="carousel-item"&gt;
-      &lt;img src="https://unsplash.it/837/300?image=10" alt=""&gt;
+      &lt;img src="..." alt="..."&gt;
       &lt;div class="carousel-caption"&gt;
       &lt;h3&gt;This is a caption&lt;/h3&gt;
       &lt;/div&gt;
     &lt;/div&gt;
     &lt;div class="carousel-item"&gt;
-      &lt;img src="https://unsplash.it/837/300?image=210" alt=""&gt;
+      &lt;img src="..." alt="..."&gt;
       &lt;div class="carousel-caption"&gt;
       &lt;h3&gt;This is another caption&lt;/h3&gt;
       &lt;/div&gt;
@@ -580,18 +575,29 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
 </code></pre>
               <p>A quick walk through the attributes:</p>
               <ul>
-                <li><code>id="myCarousel"</code> is required only if you inject the above template into the DOM and need a way to
-                  target this specific element;</li>
-                <li><code>data-ride="carousel"</code> exposes the element to the <b>Carousel</b> component initialization;</li>
-                <li><code>data-interval="5000"</code> sets the automatic slide interval;</li>
-                <li><code>data-slide-to="0"</code> when clicked, will slide to the carousel item with that index, 0 (zero) in this
-                  case;</li>
+                <li><code>id="myCarousel"</code> is required if you append the above template into the DOM and need a way to
+                  target this exact element;</li>
+                <li><code>data-ride="carousel"</code> is the attribute required if you want the <b>Carousel</b> component
+                  to initialize your element on page load;</li>
+                <li><code>data-keyboard="false"</code> (not shown in the sample markup) is the attribute that enables carousel 
+                  navigation via keyboard left and right arrow keys;</li>
+                <li><code>data-interval="5000"</code> sets the automatic slide interval; the <code>false</code> value will 
+                  disable automatic slide transition; the usage of this attribute for each item is not implemented in BSN;</li>
+                <li><code>data-pause="hover"</code> is the attribute you can set to pause the carousel on mouse hover, but 
+                  it also adds a <code>paused</code> class to your carousel; if the above is also <code>false</code>,
+                  this setting has no effect;</li>
+                <li><code>data-slide-to="0"</code> is an attribute used by <code>.carousel-indicators</code> elements, BSN 
+                  does not require this attribute in order to work, it will simply look into elements of the 
+                  <code>.carousel-indicators</code>; when clicked will slide to the carousel item with the same index, 
+                  0 (zero) in this case;</li>
                 <li><code>data-slide="prev"</code> / <code>data-slide="next"</code> when clicked, will slide to the next /
                   previous carousel item; these attributes are <b>optional</b>, but the class <code>carousel-control</code> is
                   <b>required</b>;</li>
-                <li><code>class="carousel-item active"</code> / <code>class="active"</code> when <em>active</em> is present for an item or
-                  indicator, that indicates which carousel item is currently shown to the user, the above
-                  <code>.getActiveIndex()</code> method will look for it when needed.</li>
+                <li><code>href="#myCarousel"</code> attribute is not required for the next and previous controls; we will see
+                  in the example below why now and how to do it with BSN;</li>
+                <li><code>class="carousel-item active"</code> / <code>class="active"</code> when <em>active</em> class is 
+                  present for a carousel item or indicator, that indicates which carousel item is currently shown to the user, 
+                  the above <code>.getActiveIndex()</code> method will look for it when needed.</li>
               </ul>
 
             </section>
@@ -689,12 +695,40 @@ mySpecialCarouselInit.cycle();
 
               <div class="btn-group my-3">
                 <button class="btn btn-outline-secondary"
-                  onclick="carouselGenericExample.Carousel.slideTo(0)">Start</button>
-                <button class="btn btn-outline-secondary" data-slide-to="prev"
-                  onclick="carouselGenericExample.Carousel.slideTo(carouselGenericExample.Carousel.getActiveIndex() - 1 )">PREV</button>
-                <button class="btn btn-outline-secondary" data-slide-to="next"
-                  onclick="carouselGenericExample.Carousel.slideTo(carouselGenericExample.Carousel.getActiveIndex() + 1 )">NEXT</button>
+                        onclick="carouselGenericExample.Carousel.slideTo(0)">START</button>
+                <button class="btn btn-outline-secondary"
+                        onclick="carouselGenericExample.Carousel.slideTo(carouselGenericExample.Carousel.getActiveIndex() - 1 )">PREV</button>
+                <button class="btn btn-outline-secondary"
+                        onclick="carouselGenericExample.Carousel.slideTo(carouselGenericExample.Carousel.getActiveIndex() + 1 )">NEXT</button>
               </div>
+              <p>These three independent buttons use some inline JavaScript to control the carousel:</p>
+<pre><code class="language-markup">&lt;button class="btn btn-secondary" 
+        onclick="myCarousel.Carousel.slideTo(0)">
+  START
+&lt/button>
+
+&ltbutton 
+  class="btn btn-secondary"
+  onclick="myCarousel.Carousel.slideTo(myCarousel.Carousel.getActiveIndex() - 1 )">
+  PREV
+&lt/button>
+
+&ltbutton 
+  class="btn btn-secondary"
+  onclick="myCarousel.Carousel.slideTo(myCarousel.Carousel.getActiveIndex() + 1 )">
+  NEXT
+&lt/button>
+</code></pre>
+
+              <p>This highlights the fact that we don't need to use <code>href="#myCarousel"</code> 
+                attribute for the carousel controls, if the carousel itself has an ID, the above
+                markup shows you how to do it, easily:</p>
+              <ul>
+                <li>when clicked, the first <code>&lt;button></code> will slide to first slide</li>
+                <li>when clicked, the second <code>&lt;button></code> will slide to PREVIOUS slide</li>
+                <li>when clicked, the third <code>&lt;button></code> will slide to NEXT slide</li>
+              </ul>
+
             </section>
           </section>
 
@@ -816,44 +850,44 @@ mySpecialCarouselInit.cycle();
                 CSS classes, we can easily create an accordion.</p>
           
 <pre><code class="language-markup">&lt;!-- accordion template --&gt;
-&lt;div id="myAccordion" role="tablist" aria-multiselectable="true"&gt;
+&lt;div class="accordion" id="myAccordion"&gt;
   &lt;div class="card"&gt;
-    &lt;div class="card-header" role="tab" id="headingOne"&gt;
+    &lt;div class="card-header" id="headingOne"&gt;
       &lt;h4&gt;
         &lt;a role="button" data-toggle="collapse" data-parent="#myAccordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"&gt;
           Collapsible Group Item #1
         &lt;/a&gt;
       &lt;/h4&gt;
     &lt;/div&gt;
-    &lt;div id="collapseOne" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="headingOne"&gt;
+    &lt;div id="collapseOne" class="panel-collapse collapse show" aria-labelledby="headingOne"&gt;
       &lt;div class="card-body"&gt;
         Collapse CONTENT 1
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div class="card"&gt;
-    &lt;div class="card-header" role="tab" id="headingTwo"&gt;
+    &lt;div class="card-header" id="headingTwo"&gt;
       &lt;h4&gt;
         &lt;a class="collapsed" role="button" data-toggle="collapse" data-parent="#myAccordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"&gt;
           Collapsible Group Item #2
         &lt;/a&gt;
       &lt;/h4&gt;
     &lt;/div&gt;
-    &lt;div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo"&gt;
+    &lt;div id="collapseTwo" class="panel-collapse collapse" aria-labelledby="headingTwo"&gt;
       &lt;div class="card-body"&gt;
         Collapse CONTENT 2
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div class="card"&gt;
-    &lt;div class="card-header" role="tab" id="headingThree"&gt;
+    &lt;div class="card-header" id="headingThree"&gt;
       &lt;h4&gt;
         &lt;a class="collapsed" role="button" data-toggle="collapse" data-parent="#myAccordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree"&gt;
           Collapsible Group Item #3
         &lt;/a&gt;
       &lt;/h4&gt;
     &lt;/div&gt;
-    &lt;div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree"&gt;
+    &lt;div id="collapseThree" class="panel-collapse collapse" aria-labelledby="headingThree"&gt;
       &lt;div class="card-body"&gt;
         Collapse CONTENT 3
       &lt;/div&gt;
@@ -965,9 +999,9 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                 <code>&lt;div id="accordion-id"&gt;</code> via <code>data-parent="selector"</code> and will hide any visible
                 collapsible element.</p>
 
-              <div id="accordion" role="tablist" aria-multiselectable="true" class="mb-3">
+              <div class="accordion mb-3" id="accordion">
                 <div class="card">
-                  <div class="card-header" role="tab" id="headingOne">
+                  <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
                       <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true"
                         aria-controls="collapseOne">
@@ -975,7 +1009,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                       </a>
                     </h5>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                  <div id="collapseOne" class="panel-collapse collapse in" aria-labelledby="headingOne">
                     <div class="card-body">
                       Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon
                       officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3
@@ -987,7 +1021,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                   </div>
                 </div>
                 <div class="card">
-                  <div class="card-header" role="tab" id="headingTwo">
+                  <div class="card-header" id="headingTwo">
                     <h5 class="mb-0">
                       <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
                         aria-expanded="false" aria-controls="collapseTwo">
@@ -995,7 +1029,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                       </a>
                     </h5>
                   </div>
-                  <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                  <div id="collapseTwo" class="panel-collapse collapse" aria-labelledby="headingTwo">
                     <div class="card-body">
                       Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon
                       officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3
@@ -1007,7 +1041,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                   </div>
                 </div>
                 <div class="card">
-                  <div class="card-header" role="tab" id="headingThree">
+                  <div class="card-header" id="headingThree">
                     <h5 class="mb-0">
                       <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
                         aria-expanded="false" aria-controls="collapseThree">
@@ -1015,7 +1049,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                       </a>
                     </h5>
                   </div>
-                  <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                  <div id="collapseThree" class="panel-collapse collapse" aria-labelledby="headingThree">
                     <div class="card-body">
                       Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon
                       officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3
@@ -1134,14 +1168,13 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
           
 <pre><code class="language-markup">&lt;!-- basic dropdown template --&gt;
 &lt;div class="dropdown"&gt;
-&lt;button id="myDropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;
-  Dropdown trigger
-  &lt;span class="caret">&lt;/span&gt;
-&lt;/button&gt;
-&lt;div class="dropdown-menu" aria-labelledby="myDropdown"&gt;
-  &lt;a class="dropdown-item" href="#">Action 1&lt;/a>
-  &lt;a class="dropdown-item" href="#">Action 2&lt;/a>
-&lt;/div&gt;
+  &lt;button id="myDropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;
+    Dropdown button
+  &lt;/button&gt;
+  &lt;div class="dropdown-menu" aria-labelledby="myDropdown"&gt;
+    &lt;a class="dropdown-item" href="#">Action 1&lt;/a>
+    &lt;a class="dropdown-item" href="#">Action 2&lt;/a>
+  &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
             </section>
@@ -1365,9 +1398,10 @@ makeMeDropdown.addEventListener('click', function(e){
                       </div>
                     </form>
                   </div>
-                </div>
-              
+                </div>                
               </div>
+              <p>In this example we've showcased the direction to which the dropdown menus are displayed via the
+                <code>class="dropdown dropleft"</code> and <code>class="dropdown right"</code> attributes.</p>
             </section>
           </section>          
 
@@ -1507,21 +1541,21 @@ makeMeDropdown.addEventListener('click', function(e){
 
 &lt;!-- also the modal itself --&gt;
 &lt;div id="myModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"&gt;
-&lt;div class="modal-dialog"&gt;
-  &lt;div class="modal-content"&gt;
-    &lt;div class="modal-header">
-      &lt;h5 class="modal-title" id="myModalLabel"&gt;Modal title&lt;/h5&gt;
-      &lt;button type="button" class="close" data-dismiss="modal" aria-label="Close">&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;
+  &lt;div class="modal-dialog"&gt;
+    &lt;div class="modal-content"&gt;
+      &lt;div class="modal-header">
+        &lt;h5 class="modal-title" id="myModalLabel"&gt;Modal title&lt;/h5&gt;
+        &lt;button type="button" class="close" data-dismiss="modal" aria-label="Close">&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class="modal-body"&gt;
+        Some content
+      &lt;/div>
+      &lt;div class="modal-footer"&gt;
+        &lt;button type="button" class="btn btn-secondary" data-dismiss="modal"&gt;Close&lt;/button&gt;
+        &lt;button type="button" class="btn btn-success"&gt;Save changes&lt;/button&gt;
+      &lt;/div>
     &lt;/div&gt;
-    &lt;div class="modal-body"&gt;
-      Some content
-    &lt;/div>
-    &lt;div class="modal-footer"&gt;
-      &lt;button type="button" class="btn btn-secondary" data-dismiss="modal"&gt;Close&lt;/button&gt;
-      &lt;button type="button" class="btn btn-success"&gt;Save changes&lt;/button&gt;
-    &lt;/div>
   &lt;/div&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
           
@@ -1544,7 +1578,7 @@ makeMeDropdown.addEventListener('click', function(e){
                 basic modal template for this guide.</p>
           
 <pre><code class="language-markup">&lt;!-- blank modal template --&gt;
-&lt;div id="modalID" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"&gt;
+&lt;div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"&gt;
   &lt;div class="modal-dialog"&gt;
     &lt;div class="modal-content"&gt;
       &lt;!-- the .setContent() method will update this element's HTML --&gt;
@@ -1798,22 +1832,22 @@ var btnModal = document.getElementById('openModalViaJS');
 
 // set a custom content
 var firstModalContent = '&lt;div class="modal-header"&gt;'
-+'&lt;h4 class="modal-title" id="myModalJSLabel"&gt;Modal title&lt;/h4&gt;'
-+'&lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;'
-  +'&lt;span aria-hidden="true"&gt;×&lt;/span&gt;'
-+'&lt;/button&gt;'
-+'&lt;/div&gt;'
-+'&lt;div class="modal-body"&gt;'
-  +'&lt;p&gt;This is where you fill up content you know, etc.&lt;/p&gt;'
-+'&lt;/div&gt;'
-+'&lt;div class="modal-footer"&gt;'
-  +'&lt;button type="button" class="btn btn-secondary" data-dismiss="modal"&gt;Close&lt;/button&gt;'
-+'&lt;/div&gt;';
+  +'&lt;h4 class="modal-title" id="myModalJSLabel"&gt;Modal title&lt;/h4&gt;'
+  +'&lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;'
+    +'&lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;'
+  +'&lt;/button&gt;'
+  +'&lt;/div&gt;'
+  +'&lt;div class="modal-body"&gt;'
+    +'&lt;p&gt;This is where you fill up content you know, etc.&lt;/p&gt;'
+  +'&lt;/div&gt;'
+  +'&lt;div class="modal-footer"&gt;'
+    +'&lt;button type="button" class="btn btn-secondary" data-dismiss="modal"&gt;Close&lt;/button&gt;'
+  +'&lt;/div&gt;';
 
 // initialize Modal for this triggering element
 var modalInitJS = new BSN.Modal(myModal, {
-content: firstModalContent,
-backdrop: 'static'
+  content: firstModalContent,
+  backdrop: 'static'
 });
 
 // OR initialize with no options provided
@@ -1981,6 +2015,7 @@ changeModal2.addEventListener('click', function(){
                         <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                           <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                         </svg>
+                        Close
                       </button>
                     </div>
                   </div>

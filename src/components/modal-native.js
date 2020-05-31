@@ -144,10 +144,14 @@ export default function Modal(element,options) { // element can be the modal/tri
   // handlers
   function clickHandler(e) {
     if ( modal.isAnimating ) return;
+    let clickTarget = e.target,
+        modalID = `#${modal.getAttribute('id')}`,
+        targetAttrValue = clickTarget.getAttribute('data-target') || clickTarget.getAttribute('href'),
+        elemAttrValue = element.getAttribute('data-target') || element.getAttribute('href');
 
-    let clickTarget = e.target;
-    clickTarget = clickTarget.hasAttribute('data-target') || clickTarget.hasAttribute('href') ? clickTarget : clickTarget.parentNode;
-    if ( (clickTarget === element || element.contains(clickTarget)) && !hasClass(modal,'show') ) {
+    if ( !hasClass(modal,'show') 
+        && (clickTarget === element && targetAttrValue === modalID 
+        || element.contains(clickTarget) && elemAttrValue === modalID) ) {
       modal.modalTrigger = element;
       relatedTarget = element;
       self.show();
@@ -155,18 +159,17 @@ export default function Modal(element,options) { // element can be the modal/tri
     }
   }
   function keyHandler({which}) {
-    if ( modal.isAnimating ) return;
-
-    if (ops.keyboard && which == 27 && hasClass(modal,'show') ) {
+    if (!modal.isAnimating && ops.keyboard && which == 27 && hasClass(modal,'show') ) {
       self.hide();
     }
   }
   function dismissHandler(e) {
     if ( modal.isAnimating ) return;
-    let clickTarget = e.target;
+    let clickTarget = e.target,
+        hasData = clickTarget.getAttribute('data-dismiss') === 'modal',
+        parentWithData = clickTarget.closest('[data-dismiss="modal"]');
 
-    if ( hasClass(modal,'show') && ( clickTarget.parentNode.getAttribute('data-dismiss') === 'modal'
-        || clickTarget.getAttribute('data-dismiss') === 'modal'
+    if ( hasClass(modal,'show') && ( parentWithData || hasData
         || clickTarget === modal && ops.backdrop !== 'static' ) ) {
       self.hide(); relatedTarget = null;
       e.preventDefault();
