@@ -246,6 +246,11 @@ tooltipEvents.addEventListener('show.bs.tooltip', function(){ console.log('The s
 tooltipEvents.addEventListener('shown.bs.tooltip', function(){ console.log('The shown.bs.tooltip event fired for #' + tooltipEvents.id); }, false);
 tooltipEvents.addEventListener('hide.bs.tooltip', function(){ console.log('The hide.bs.tooltip event fired for #' + tooltipEvents.id); }, false);
 tooltipEvents.addEventListener('hidden.bs.tooltip', function(){ console.log('The hidden.bs.tooltip event fired for #' + tooltipEvents.id); }, false);
+// Tooltip template example
+var tooltipTemplateExample = new BSN.Tooltip('#tooltipTemplateExample', {
+	template: '<div class="tooltip custom-class" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
+	position: top
+})
 
 // Popover 
 var popover1 = new BSN.Popover('#popover-via-click', { trigger: 'click'} );

@@ -45,15 +45,18 @@ export default function Modal(element,options) { // element can be the modal/tri
   function setScrollbar() {
     let openModal = hasClass(document.body,'modal-open'),
         bodyPad = parseInt(getComputedStyle(document.body).paddingRight),
-        modalOverflow = modal.clientHeight !== modal.scrollHeight,
-        itemPad;
+        bodyOverflow = document.documentElement.clientHeight !== document.documentElement.scrollHeight 
+                    || document.body.clientHeight !== document.body.scrollHeight,
+        modalOverflow = modal.clientHeight !== modal.scrollHeight;
 
-    modal.style.paddingRight = (!modalOverflow && scrollBarWidth?`${scrollBarWidth}px`:'');
-    document.body.style.paddingRight = `${bodyPad + (openModal ?0:scrollBarWidth)}px`;
+    scrollBarWidth = measureScrollbar();
+
+    modal.style.paddingRight = !modalOverflow && scrollBarWidth ? `${scrollBarWidth}px` : '';
+    document.body.style.paddingRight = modalOverflow || bodyOverflow ? `${bodyPad + (openModal ? 0:scrollBarWidth)}px` : '';
 
     fixedItems.length && fixedItems.map(fixed=>{
-      itemPad = getComputedStyle(fixed).paddingRight;
-      fixed.style.paddingRight = `${parseInt(itemPad) + (openModal?0:scrollBarWidth)}px`;
+      let itemPad = getComputedStyle(fixed).paddingRight;
+      fixed.style.paddingRight = modalOverflow || bodyOverflow ? `${parseInt(itemPad) + (openModal?0:scrollBarWidth)}px` : `${parseInt(itemPad)}px`;
     })
   }
   function resetScrollbar() {
@@ -73,7 +76,7 @@ export default function Modal(element,options) { // element can be the modal/tri
     return widthValue;
   }
   function checkScrollbar() {
-    scrollBarWidth = measureScrollbar();
+    
   }
   function createOverlay() {
     let newOverlay = document.createElement('div');
@@ -102,7 +105,6 @@ export default function Modal(element,options) { // element can be the modal/tri
   function beforeShow() {
     modal.style.display = 'block'; 
 
-    checkScrollbar();
     setScrollbar();
     !document.getElementsByClassName('modal show')[0] && addClass(document.body,'modal-open');
 
@@ -228,7 +230,6 @@ export default function Modal(element,options) { // element can be the modal/tri
   };
   self.update = () => {
     if (hasClass(modal,'show')) {
-      checkScrollbar();
       setScrollbar();
     }
   };

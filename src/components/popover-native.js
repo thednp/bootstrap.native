@@ -143,7 +143,7 @@ export default function Popover(element,options) {
   function updatePopover() {
     styleTip(element, popover, ops.placement, ops.container);
   }
-  function provideFocus () {
+  function forceFocus () {
     if (popover === null) { element.focus(); }
   }
   function toggleEvents(action) {
@@ -154,7 +154,7 @@ export default function Popover(element,options) {
     } else if ('click' == ops.trigger) {
       action( element, ops.trigger, self.toggle );
     } else if ('focus' == ops.trigger) {
-      isIphone && action( element, 'click', provideFocus );
+      isIphone && action( element, 'click', forceFocus );
       action( element, ops.trigger, self.toggle );
     }
   }

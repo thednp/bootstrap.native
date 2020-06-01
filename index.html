@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="./assets/img/favicon.ico">
     <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
 
-    <title>Native JavaScript for Bootstrap 4</title>
+    <title>Native JavaScript for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -171,7 +171,9 @@
           
             <section id="alertEvents">
               <h3>Alert Events</h3>
-              <p>The component's original events are same as with the original jQuery Plugin.</p>
+              <p>The component's original events are same as with the original jQuery Plugin. The <code>event.target</code> of the 
+                events is the <code>&lt;div class="alert"></code> element, and not the initialization target with the
+                <code>data-dismiss="alert"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -299,7 +301,8 @@ myAlertInit.dispose();
             <section id="buttonEvents">
               <h3>Button Events</h3>
               <p>Unlike the original jQuery Plugin, the <b>Button</b> component comes with an original event, consistent in all
-                supported browsers.</p>
+                supported browsers. The <code>event.target</code> can be the element with the <code>data-toggle="buttons"</code>
+                attribute and the button that just changed it's active state.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -470,6 +473,13 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                         disable pause on hover, do that via JavaScript or the <code>data-pause="false"</code> attribute.</td>
                     </tr>
                     <tr>
+                      <td><code>touch</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>true</em></td>
+                      <td>Option that enables support for touch events. This option is <code>true</code> by default, but you can 
+                        disable it via JavaScript or the <code>data-touch="false"</code> attribute.</td>
+                    </tr>
+                    <tr>
                       <td><code>interval</code></td>
                       <td><em>number</em></td>
                       <td><em>5000</em></td>
@@ -501,7 +511,7 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
           
             <section id="carouselEvents">
               <h3>Carousel Events</h3>
-              <p>All the component's event handlers are attached to the <code>&lt;div class="carousel"&gt;</code> element, and the
+              <p>All the component's original event are triggered for the <code>&lt;div class="carousel"&gt;</code> element, and the
                 <code>event.relatedTarget</code> is the newly activated carousel item.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
@@ -533,7 +543,7 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                 This is a basic template markup followed by a complete attribute breakdown:</p>
           
 <pre><code class="language-markup">&lt;!-- the Carousel component --&gt;
-&lt;div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="5000" data-pause="hover"&gt;
+&lt;div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="5000" data-touch="true" data-pause="hover"&gt;
   &lt;!-- Indicators --&gt;
   &lt;ol class="carousel-indicators"&gt;
     &lt;li data-target="#myCarousel" data-slide-to="0" class="active"&gt;&lt;/li&gt;
@@ -586,6 +596,8 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                 <li><code>data-pause="hover"</code> is the attribute you can set to pause the carousel on mouse hover, but 
                   it also adds a <code>paused</code> class to your carousel; if the above is also <code>false</code>,
                   this setting has no effect;</li>
+                <li><code>data-touch="true"</code> is the attribute you can set to enable touch support for your carousel,
+                  however, you must have at least 3 <code>.carousel-item</code> elements in order to work;</li>
                 <li><code>data-slide-to="0"</code> is an attribute used by <code>.carousel-indicators</code> elements, BSN 
                   does not require this attribute in order to work, it will simply look into elements of the 
                   <code>.carousel-indicators</code>; when clicked will slide to the carousel item with the same index, 
@@ -1123,7 +1135,12 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
           
             <section id="dropdownEvents">
               <h3>Dropdown Events</h3>
-              <p>Just like the original jQuery plugin, the <b>Dropdown</b> component covers this part as well:</p>
+              <p>The <b>Dropdown</b> component covers original events. The target of all events is the 
+                <code>&lt;div class="dropdown"&gt;</code> element, while the <code>event.relatedTarget</code> can be either the 
+                triggering element with the specific <code>data-toggle="dropdown"</code> attribute or a child element 
+                of the <code>&lt;div class="dropdown-menu"></code> element, depending on which one you click.</p>
+              <p>If you dismiss the dropdown via JavaScript, the <kbd>Esc</kbd> key 
+                or by clicking outside the triggering button, the <code>event.relatedTarget</code> is <em>null</em>.</p>              
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -1154,10 +1171,6 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                   </tbody>
                 </table>
               </div>
-              <p>The target of all component events is the parent <code>&lt;div class="dropdown"&gt;</code>, while the
-                <code>event.relatedTarget</code> is the triggering element with the specific <code>data-toggle="dropdown"</code> 
-                attribute. If you dismiss the dropdown via JavaScript, the <kbd>Esc</kbd> key or by clicking outside the 
-                triggering button, the <code>event.relatedTarget</code> is <em>null</em>.</p>
             </section>
 
 
@@ -1454,6 +1467,8 @@ makeMeDropdown.addEventListener('click', function(e){
                 </table>
               </div>
               <p>The default options' values are same as their jQuery plugin equivalents so you can expect same behavior.</p>
+              <p>When your modal title and/or content is in fact an HTML markup string, please make sure you 
+                <a href="https://www.npmjs.com/package/sanitizer">sanitize the content</a> of that markup string.</p>
             </section>
             <section id="modalMethods">
               <h3>Modal Methods</h3>
@@ -1475,7 +1490,7 @@ makeMeDropdown.addEventListener('click', function(e){
                 <dt class="col-sm-2">.setContent()</dt>
                 <dd class="col-sm-10">The method to enable you to set/overwrite the content of
                 <code>&lt;div class="modal-content"&gt;</code> element of your modal at any time, but you might want to avoid
-                using this method while the modal is animating.</dd>
+                using this method while the modal is animating. Make sure your content is sanitized.</dd>
               
                 <dt class="col-sm-2">.update()</dt>
                 <dd class="col-sm-10">This allows you to update the modal layout (handling overflowing/non-overflowing
@@ -1491,6 +1506,8 @@ makeMeDropdown.addEventListener('click', function(e){
             </section>
             <section id="modalEvents">
               <h3>Modal Events</h3>
+              <p>All original events are triggered for the <code>&lt;div class="modal"></code> element and not the 
+                initialization target with its usual <code>data-toggle="modal"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -1502,9 +1519,9 @@ makeMeDropdown.addEventListener('click', function(e){
                   <tbody>
                     <tr>
                       <td><code>show.bs.modal</code></td>
-                      <td>This event fires immediately when the <code>.show()</code> instance method is called. If caused by a
-                        click and the clicked element is a modal triggering element, that element is available
-                        as the <code>event.relatedTarget</code> property of the event.<br>
+                      <td>This event fires immediately when the <code>.show()</code> method is called. If the called
+                        came via click and the click target is a modal triggering element, that element is then marked
+                        as the <code>event.relatedTarget</code> property of the event object.<br>
                         <b>This event can be default prevented.</b></td>
                     </tr>
                     <tr>
@@ -2050,17 +2067,17 @@ changeModal2.addEventListener('click', function(){
                       <td><code>template</code></td>
                       <td><em>string</em></td>
                       <td></td>
-                      <td>Option to use a custom HTML template via JavaScript only for your popovers. The contents from the 
+                      <td>Option to use a custom HTML template for your popover initialization. The contents from the 
                         <code>title</code> or <code>data-title</code> will fill the template's <code>.popover-header</code>
                         element, while the contents of the <code>data-content</code> attribute will fill in the 
-                        <code>.popover-body</code> element.</td>
+                        <code>.popover-body</code> element.<br><b>This option is JavaScript API only.</b></td>
                     </tr>
                     <tr>
                       <td><code>content</code></td>
                       <td><em>string</em></td>
                       <td></td>
-                      <td>Option to set the <b>content</b> of the popover via JavaScript or the
-                        <code>data-content="CONTENT"</code> attribute.</td>
+                      <td>Option to set the <b>content</b> of the popover via JavaScript or the <code>data-content="CONTENT"</code> 
+                        attribute.</td>
                     </tr>
                     <tr>
                       <td><code>title</code></td>
@@ -2081,10 +2098,9 @@ changeModal2.addEventListener('click', function(){
                       <td><code>trigger</code></td>
                       <td><em>string</em></td>
                       <td><em>hover</em></td>
-                      <td>Option to change the component's action trigger event: <em>hover</em>, <em>focus</em> and
-                        <em>click</em>. In some cases you may want to open a popover on focus
-                        for form elements or click for other buttons, you can specify that via JavaScript or the
-                        <code>data-trigger="EVENT"</code> attribute.</td>
+                      <td>Option to change the component's action trigger event: <code>hover</code>, <code>focus</code> and <code>click</code>. 
+                        In some cases you may want to open a popover on focus for form elements or click for other buttons, you can specify that 
+                        via JavaScript or the <code>data-trigger="EVENT"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>animation</code></td>
@@ -2128,6 +2144,8 @@ changeModal2.addEventListener('click', function(){
                 the viewport as some <a rel="noreferrer" href="https://popper.js.org/" target="_blank">Popper.js</a> 
                 functionality have been <a href="https://github.com/thednp/bootstrap.native/issues/158">implemented</a> 
                 into our component.</p>
+              <p>When your popover title and/or content is an HTML markup string, please make sure you 
+                <a href="https://www.npmjs.com/package/sanitizer">sanitize the content</a> of the markup string.</p>
           
             </section>
           
@@ -2156,6 +2174,8 @@ changeModal2.addEventListener('click', function(){
               <h3>Popover Events</h3>
               <p>The component's original events are same as with the original jQuery Plugin, except
                 <code>inserted.bs.popover</code>, just as explained for the <b>Tooltip</b> component.</p>
+              <p>The <code>event.target</code> of the original events is the the initialization target with the
+              <code>data-toggle="popover"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -2332,7 +2352,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
             <p>The <b>ScrollSpy</b> component inherits some of the <a rel="noreferrer"
                 href="https://getbootstrap.com/docs/4.5/components/scrollspy/" target="_blank">layout and other requirements</a> from
               the original jQuery plugin in some cases, while in other cases a special markup is required. The component offers
-              public methods, the specific original event, and can be used with JavaScript as well as via DATA API.</p>
+              public methods, the specific original event, and provides rich JavaScript and DATA APIs.</p>
             <p>The component will initialize for each element with <code>data-spy="scroll"</code> attribute, but will not work if
               the above requirements are not met or the anchors don't reference the containers accordingly.</p>
           
@@ -2383,6 +2403,9 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
           
             <section id="scrollspyEvents">
               <h3>ScrollSpy Events</h3>
+              <p>The <code>event.target</code> is the element we initialized the component via JavaScript or has the 
+                <code>data-spy="scroll"</code> attribute. The newly activated menu item is the <code>event.relatedTarget</code>
+                of the event object.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -2399,9 +2422,6 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                   </tbody>
                 </table>
               </div>
-              <p>The event target is the element we initialized the component via JavaScript or the <code>data-spy="scroll"</code>
-                attribute. The newly activated menu item's link is the <code>event.relatedTarget</code>
-                for the event.</p>
             </section>
           
             <section id="scrollspyDATA">
@@ -2676,15 +2696,16 @@ myScrollSpyInit.dispose();
               <h3>Tab Methods</h3>
               <dl class="row">
                 <dt class="col-md-2">.show()</dt>
-                <dd class="col-md-10">The method to be used to switch to a certain tab of your choice via JavaScript.
-                  If that tab is already visible or the method is used while animation is running, the
-                  method will produce no effect.</dd>
+                <dd class="col-md-10">The public method to switch to a certain tab of your choice via JavaScript. If that tab is already 
+                  visible / active or the method is called while animation is running, the call has no effect.</dd>
               </dl>
             </section>
           
             <section id="tabEvents">
               <h3>Tab Events</h3>
-              <p>The component events will fire in the exact order shown in table below:</p>
+              <p>The <code>event.target</code> for the component original events is either the current active tab or the next tab
+                to be activated, depending on the specific event, as explained below. The events will fire in the exact order shown
+                in table below:</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -2880,9 +2901,8 @@ myLastTab.addEventListener('show.bs.tab', function(event){
 
           <section id="componentToast">
             <h2>Toast</h2>
-            <p>The <b>Toast</b> component covers the specific original event and public methods, but does not provide any option.
-              Still, the component will initialize both via JavaScript or the DATA API. In contrast with the original plugin is 
-              the fact that the component does not require the class <code>alert-dismissible</code> in order to work.</p>
+            <p>The <b>Toast</b> component covers the original events and its specific instance methods, but has no option.
+              The component does not require the <code>alert-dismissible</code> class in order to work.</p>
             <p>For design customization and accessibility guidelines please refer back to the 
               <a href="https://getbootstrap.com/docs/4.5/components/toasts/">original plugin</a>. </p>
 
@@ -2944,7 +2964,9 @@ myLastTab.addEventListener('show.bs.tab', function(event){
           
             <section id="toastEvents">
               <h3>Toast Events</h3>
-              <p>The component's original events are same as with the original jQuery Plugin.</p>
+              <p>The <code>event.target</code> for the component's original events is the one with the 
+                <code>class="toast"</code> attribute, which is also the parent of the initialization target, usually the
+                element having the <code>data-toggle="toast"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -3109,7 +3131,7 @@ myToastInit.dispose();
                       <td></td>
                       <td>Allows you to set a custom template for your tooltips and is not set by default. The 
                         <code>title=""</code> or <code>data-title=""</code> attribute will fill in for the 
-                        <code>.tooltip-inner</code> element.</td>
+                        <code>.tooltip-inner</code> element.<br><b>This option is JavaScript API only.</b></td>
                     </tr>                    
                     <tr>
                       <td><code>animation</code></td>
@@ -3151,6 +3173,8 @@ myToastInit.dispose();
                 tooltips are always in the viewport, somewhat similar to the
                   <a rel="noreferrer" href="https://popper.js.org/" target="_blank">Popper.js</a> functionality, check 
                   <a href="https://github.com/thednp/bootstrap.native/issues/158">right here</a>.</p>
+              <p>When your tooltip title is an HTML markup string, please make sure you 
+                <a href="https://www.npmjs.com/package/sanitizer">sanitize the content</a> of the markup string.</p>
             </section>
           
             <section id="tooltipMethods">
@@ -3172,8 +3196,7 @@ myToastInit.dispose();
                   two methods.</dd>
                 <dt class="col-md-2">.dispose()</dt>
                 <dd class="col-md-10">Removes the component from the target element.</dd>
-              </dl>                
-
+              </dl>
             </section>
           
             <section id="tooltipEvents">
@@ -3181,6 +3204,8 @@ myToastInit.dispose();
               <p>The component's original events are same as with the original jQuery Plugin, except
                 <code>inserted.bs.tooltip</code>, the way the component works makes that this event is not needed, 
                 as it would fire on every instance of the <code>.show()</code> call.</p>
+              <p>The <code>event.target</code> of the original events is the target element of component, likelly your 
+                element with the <code>data-toggle="tooltip"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -3314,13 +3339,13 @@ new BSN.Tooltip('#selector',options).show();
                 <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="right"
                   title="&lt;b&gt;Tooltip on right&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
                 <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="left"
-                  title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='label label-success'&gt;NEW&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
-                <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top"
-                  title="&lt;b&gt;Tooltip on top&lt;/b&gt; &lt;span class='label label-danger'&gt;HOT&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Top</button>
+                  title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge badge-success'&gt;NEW&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
+                <button id="tooltipTemplateExample" type="button" class="btn btn-danger"
+                  title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge badge-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
                 <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
-                  title="&lt;b&gt;Tooltip on bottom&lt;/b&gt; &lt;span class='label label-warning'&gt;COOL&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
+                  title="&lt;b&gt;Tooltip on bottom&lt;/b&gt; &lt;span class='badge badge-warning'&gt;COOL&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
                 <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="right"
-                  title="&lt;b&gt;Tooltip on right&lt;/b&gt; &lt;span class='label label-info'&gt;FYI&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+                  title="&lt;b&gt;Tooltip on right&lt;/b&gt; &lt;span class='badge badge-info'&gt;FYI&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
           
                 <svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg">
                   <rect data-toggle="tooltip" data-placement="top" data-title="Demo Title for SVG" fill="#fff" stroke="#ccc"

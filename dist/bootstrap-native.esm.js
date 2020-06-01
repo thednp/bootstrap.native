@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -238,7 +238,7 @@ function isElementInScrollRange(element) {
 function Carousel (element,options) {
   options = options || {};
   var self = this,
-    vars, ops = {},
+    vars, ops,
     slideCustomEvent, slidCustomEvent,
     slides, leftArrow, rightArrow, indicator, indicators;
   function pauseHandler() {
@@ -295,7 +295,7 @@ function Carousel (element,options) {
       action( element, touchEvents.start, pauseHandler, passiveHandler );
       action( element, touchEvents.end, resumeHandler, passiveHandler );
     }
-    slides.length > 1 && action( element, touchEvents.start, touchDownHandler, passiveHandler );
+    ops.touch && slides.length > 1 && action( element, touchEvents.start, touchDownHandler, passiveHandler );
     rightArrow && action( rightArrow, 'click', controlsHandler );
     leftArrow && action( leftArrow, 'click', controlsHandler );
     indicator && action( indicator, 'click', indicatorHandler );
@@ -421,55 +421,56 @@ function Carousel (element,options) {
   self.dispose = function () {
     var itemClasses = ['left','right','prev','next'];
     Array.from(slides).map(function (slide,idx) {
-      if (hasClass(slide,'active')){
-        setActivePage( idx );
-      }
+      hasClass(slide,'active') && setActivePage( idx );
       itemClasses.map(function (cls) { return removeClass(slide,("carousel-item-" + cls)); });
     });
     clearInterval(vars.timer);
     toggleEvents(off);
     vars = {};
+    ops = {};
     delete element.Carousel;
-  };
-  vars = {};
-  vars.direction = 'left';
-  vars.index = 0;
-  vars.timer = null;
-  vars.isSliding = false;
-  vars.isTouch = false;
-  vars.touchPosition = {
-    startX : 0,
-    currentX : 0,
-    endX : 0
   };
   tryWrapper(function (){
     element = queryElement( element );
     element.Carousel && element.Carousel.dispose();
-    var
-      intervalAttribute = element.getAttribute('data-interval'),
-      intervalOption = options.interval,
-      intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
-      pauseData = element.getAttribute('data-pause') === 'hover' || false,
-      keyboardData = element.getAttribute('data-keyboard') === 'true' || false;
     slides = element.getElementsByClassName('carousel-item');
     leftArrow = element.getElementsByClassName('carousel-control-prev')[0];
     rightArrow = element.getElementsByClassName('carousel-control-next')[0];
     indicator = element.getElementsByClassName('carousel-indicators')[0];
     indicators = indicator && indicator.getElementsByTagName( "LI" ) || [];
+    if (slides.length < 2) { return }
+    var
+      intervalAttribute = element.getAttribute('data-interval'),
+      intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
+      touchData = element.getAttribute('data-touch') === 'false' ? 0 : 1,
+      pauseData = element.getAttribute('data-pause') === 'hover' || false,
+      keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
+      intervalOption = options.interval,
+      touchOption = options.touch;
+    ops = {};
     ops.keyboard = options.keyboard === true || keyboardData;
     ops.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false;
+    ops.touch = touchOption || touchData;
     ops.interval = typeof intervalOption === 'number' ? intervalOption
-                          : intervalOption === false || intervalData === 0 || intervalData === false ? 0
-                          : isNaN(intervalData) ? 5000
-                          : intervalData;
-    if (slides.length < 2) { return; }
-    if ( !element.Carousel ) {
-      toggleEvents(on);
-    }
+                : intervalOption === false || intervalData === 0 || intervalData === false ? 0
+                : isNaN(intervalData) ? 5000
+                : intervalData;
     if (self.getActiveIndex()<0) {
       slides.length && addClass(slides[0],'active');
       indicators.length && setActivePage(0);
     }
+    vars = {};
+    vars.direction = 'left';
+    vars.index = 0;
+    vars.timer = null;
+    vars.isSliding = false;
+    vars.isTouch = false;
+    vars.touchPosition = {
+      startX : 0,
+      currentX : 0,
+      endX : 0
+    };
+    toggleEvents(on);
     if ( ops.interval ){ self.cycle(); }
     element.Carousel = self;
   },"BSN.Carousel");
@@ -802,13 +803,15 @@ function Modal(element,options) {
   function setScrollbar() {
     var openModal = hasClass(document.body,'modal-open'),
         bodyPad = parseInt(getComputedStyle(document.body).paddingRight),
-        modalOverflow = modal.clientHeight !== modal.scrollHeight,
-        itemPad;
-    modal.style.paddingRight = (!modalOverflow && scrollBarWidth?(scrollBarWidth + "px"):'');
-    document.body.style.paddingRight = (bodyPad + (openModal ?0:scrollBarWidth)) + "px";
+        bodyOverflow = document.documentElement.clientHeight !== document.documentElement.scrollHeight
+                    || document.body.clientHeight !== document.body.scrollHeight,
+        modalOverflow = modal.clientHeight !== modal.scrollHeight;
+    scrollBarWidth = measureScrollbar();
+    modal.style.paddingRight = !modalOverflow && scrollBarWidth ? (scrollBarWidth + "px") : '';
+    document.body.style.paddingRight = modalOverflow || bodyOverflow ? ((bodyPad + (openModal ? 0:scrollBarWidth)) + "px") : '';
     fixedItems.length && fixedItems.map(function (fixed){
-      itemPad = getComputedStyle(fixed).paddingRight;
-      fixed.style.paddingRight = (parseInt(itemPad) + (openModal?0:scrollBarWidth)) + "px";
+      var itemPad = getComputedStyle(fixed).paddingRight;
+      fixed.style.paddingRight = modalOverflow || bodyOverflow ? ((parseInt(itemPad) + (openModal?0:scrollBarWidth)) + "px") : ((parseInt(itemPad)) + "px");
     });
   }
   function resetScrollbar() {
@@ -825,9 +828,6 @@ function Modal(element,options) {
     widthValue = scrollDiv.offsetWidth - scrollDiv.clientWidth;
     document.body.removeChild(scrollDiv);
     return widthValue;
-  }
-  function checkScrollbar() {
-    scrollBarWidth = measureScrollbar();
   }
   function createOverlay() {
     var newOverlay = document.createElement('div');
@@ -853,7 +853,6 @@ function Modal(element,options) {
   }
   function beforeShow() {
     modal.style.display = 'block';
-    checkScrollbar();
     setScrollbar();
     !document.getElementsByClassName('modal show')[0] && addClass(document.body,'modal-open');
     addClass(modal,'show');
@@ -953,7 +952,6 @@ function Modal(element,options) {
   };
   self.update = function () {
     if (hasClass(modal,'show')) {
-      checkScrollbar();
       setScrollbar();
     }
   };
@@ -1075,7 +1073,7 @@ function Popover(element,options) {
   function updatePopover() {
     styleTip(element, popover, ops.placement, ops.container);
   }
-  function provideFocus () {
+  function forceFocus () {
     if (popover === null) { element.focus(); }
   }
   function toggleEvents(action) {
@@ -1086,7 +1084,7 @@ function Popover(element,options) {
     } else if ('click' == ops.trigger) {
       action( element, ops.trigger, self.toggle );
     } else if ('focus' == ops.trigger) {
-      isIphone && action( element, 'click', provideFocus );
+      isIphone && action( element, 'click', forceFocus );
       action( element, ops.trigger, self.toggle );
     }
   }
@@ -1675,7 +1673,7 @@ componentsInit.Toast = [ Toast, '[data-dismiss="toast"]' ];
 componentsInit.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ];
 document.body ? initCallback() : one( document, 'DOMContentLoaded', initCallback );
 
-var version = "3.0.1";
+var version = "3.0.2";
 
 var index = {
   Alert: Alert,

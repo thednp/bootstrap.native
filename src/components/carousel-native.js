@@ -29,7 +29,7 @@ export default function Carousel (element,options) {
   let self = this,
 
     // internal variables
-    vars, ops = {},
+    vars, ops,
 
     // custom events
     slideCustomEvent, slidCustomEvent,
@@ -98,7 +98,7 @@ export default function Carousel (element,options) {
       action( element, touchEvents.end, resumeHandler, passiveHandler );
     }
   
-    slides.length > 1 && action( element, touchEvents.start, touchDownHandler, passiveHandler );
+    ops.touch && slides.length > 1 && action( element, touchEvents.start, touchDownHandler, passiveHandler );
 
     rightArrow && action( rightArrow, 'click', controlsHandler );
     leftArrow && action( leftArrow, 'click', controlsHandler );
@@ -263,29 +263,15 @@ export default function Carousel (element,options) {
     let itemClasses = ['left','right','prev','next'];
 
     Array.from(slides).map((slide,idx) => {
-      if (hasClass(slide,'active')){
-        setActivePage( idx );
-      }
+      hasClass(slide,'active') && setActivePage( idx )
       itemClasses.map(cls => removeClass(slide,`carousel-item-${cls}`))
     })
     clearInterval(vars.timer);
 
     toggleEvents(off);
     vars = {};
+    ops = {};
     delete element.Carousel;
-  }
-
-  // set initial state
-  vars = {}
-  vars.direction = 'left';
-  vars.index = 0;
-  vars.timer = null;
-  vars.isSliding = false;
-  vars.isTouch = false;
-  vars.touchPosition = {
-    startX : 0,
-    currentX : 0,
-    endX : 0
   }
 
   // init
@@ -295,16 +281,7 @@ export default function Carousel (element,options) {
     element = queryElement( element );
 
     // reset on re-init
-    element.Carousel && element.Carousel.dispose(); 
-
-    // options
-    let
-      // DATA API
-      intervalAttribute = element.getAttribute('data-interval'),
-      intervalOption = options.interval,
-      intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
-      pauseData = element.getAttribute('data-pause') === 'hover' || false,
-      keyboardData = element.getAttribute('data-keyboard') === 'true' || false
+    element.Carousel && element.Carousel.dispose();
 
     // carousel elements
     slides = element.getElementsByClassName('carousel-item')
@@ -313,34 +290,59 @@ export default function Carousel (element,options) {
     indicator = element.getElementsByClassName('carousel-indicators')[0]
     indicators = indicator && indicator.getElementsByTagName( "LI" ) || []
 
+    // invalidate when not enough items
+    if (slides.length < 2) { return }    
+
+    // check options
+    let
+      // DATA API
+      intervalAttribute = element.getAttribute('data-interval'),
+      intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
+      touchData = element.getAttribute('data-touch') === 'false' ? 0 : 1,
+      pauseData = element.getAttribute('data-pause') === 'hover' || false,
+      keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
+      
+      // JS options
+      intervalOption = options.interval,
+      touchOption = options.touch;
+
     // set instance options
+    ops = {};
     ops.keyboard = options.keyboard === true || keyboardData;
     ops.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false; // false / hover
+    ops.touch = touchOption || touchData
     
     ops.interval = typeof intervalOption === 'number' ? intervalOption
-                          : intervalOption === false || intervalData === 0 || intervalData === false ? 0
-                          : isNaN(intervalData) ? 5000 // bootstrap carousel default interval
-                          : intervalData;
+                : intervalOption === false || intervalData === 0 || intervalData === false ? 0
+                : isNaN(intervalData) ? 5000 // bootstrap carousel default interval
+                : intervalData;
 
-    // invalidate when not enough items
-    if (slides.length < 2) { return; }
-
-    // prevent adding event handlers twice
-    if ( !element.Carousel ) { 
-      toggleEvents(on);
-    }
     // set first slide active if none
     if (self.getActiveIndex()<0) {
       slides.length && addClass(slides[0],'active');
       indicators.length && setActivePage(0);
     }
+
+    // set initial state
+    vars = {}
+    vars.direction = 'left';
+    vars.index = 0;
+    vars.timer = null;
+    vars.isSliding = false;
+    vars.isTouch = false;
+    vars.touchPosition = {
+      startX : 0,
+      currentX : 0,
+      endX : 0
+    }                
+
+    // attach event handlers
+    toggleEvents(on);
   
-    // start to cycle if set
+    // start to cycle if interval is set
     if ( ops.interval ){ self.cycle(); }
   
     // associate init object to target
     element.Carousel = self;
   },"BSN.Carousel")
-
 }
-

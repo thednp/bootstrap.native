@@ -104,3 +104,20 @@ pre[class*="language-"] {margin: 0 0 1rem}
 .btn-lg .btn-icon {
   height: 1.5rem;
 }
+
+/* tooltip custom-class */
+.tooltip.custom-class .tooltip-inner {
+  background: #0e3763
+}
+.bs-tooltip-top.custom-class .arrow::before {
+  border-top-color: #0e3763
+}
+.bs-tooltip-right.custom-class .arrow::before {
+  border-right-color: #0e3763
+}
+.bs-tooltip-left.custom-class .arrow::before {
+  border-left-color: #0e3763
+}
+.bs-tooltip-bottom.custom-class .arrow::before {
+  border-bottom-color: #0e3763
+}
