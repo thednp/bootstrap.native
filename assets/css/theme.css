@@ -1,5 +1,4 @@
 /* carousel */
-#myCarousel { margin-bottom: 4rem }
 #myCarousel .carousel-inner > .carousel-item > .item-bg {
     position: absolute;
     top: 0;
@@ -28,6 +27,19 @@
     width: 100%;
   }
   .hidden-xs {display: none !important}
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 10%
+}
+
+svg.carousel-control-prev-icon,
+svg.carousel-control-next-icon {
+  fill: currentColor;
+  background: none;
+  width: 3.5rem;
+  height: auto;
 }
 
 h2 {

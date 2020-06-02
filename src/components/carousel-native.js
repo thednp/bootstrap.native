@@ -58,7 +58,7 @@ export default function Carousel (element,options) {
     let eventTarget = e.target; // event target | the current active item
 
     if ( eventTarget && !hasClass(eventTarget,'active') && eventTarget.getAttribute('data-slide-to') ) {
-      vars.index = parseInt( eventTarget.getAttribute('data-slide-to'), 10 );
+      vars.index = parseInt( eventTarget.getAttribute('data-slide-to'));
     } else { return false; }
 
     self.slideTo( vars.index ); //Do the slide

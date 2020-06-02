@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.3 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -259,7 +259,7 @@ function Carousel (element,options) {
     if (vars.isSliding) { return; }
     var eventTarget = e.target;
     if ( eventTarget && !hasClass(eventTarget,'active') && eventTarget.getAttribute('data-slide-to') ) {
-      vars.index = parseInt( eventTarget.getAttribute('data-slide-to'), 10 );
+      vars.index = parseInt( eventTarget.getAttribute('data-slide-to'));
     } else { return false; }
     self.slideTo( vars.index );
   }
@@ -1673,7 +1673,7 @@ componentsInit.Toast = [ Toast, '[data-dismiss="toast"]' ];
 componentsInit.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ];
 document.body ? initCallback() : one( document, 'DOMContentLoaded', initCallback );
 
-var version = "3.0.2";
+var version = "3.0.3";
 
 var index = {
   Alert: Alert,

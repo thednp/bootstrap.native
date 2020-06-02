@@ -69,7 +69,7 @@
       </div>
     </nav>
 
-    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="7000" data-pause="hover">
+    <div id="myCarousel" class="carousel slide mb-5" data-ride="carousel" data-interval="7000" data-pause="hover">
       <ol class="carousel-indicators">
         <li data-toggle="tooltip" data-title="Download Native JavaScript for Bootstrap" data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-toggle="tooltip" data-title="Getting started with Native JavaScript" data-target="#myCarousel" data-slide-to="1"></li>
@@ -110,11 +110,15 @@
         </div>
       </div>
       <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <svg class="carousel-control-prev-icon" viewBox="0 0 1024 1024" aria-hidden="true">
+          <path d="M658 686l-60 60-256-256 256-256 60 60-196 196z"></path>
+        </svg>
         <span class="sr-only">Previous</span>
       </a>
       <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <svg class="carousel-control-next-icon" viewBox="0 0 1024 1024" aria-hidden="true">
+          <path d="M366 698l196-196-196-196 60-60 256 256-256 256z"></path>
+        </svg>
         <span class="sr-only">Next</span>
       </a>
     </div>
@@ -152,9 +156,9 @@
 
           <section id="componentAlert">
             <h2>Alert</h2>
-            <p>The <b>Alert</b> component covers the specific original event and public methods, but does not provide any option.
-              Still, the component will initialize both via JavaScript or the DATA API. In contrast with the original plugin is 
-              the fact that the component does not require the class <code>alert-dismissible</code> in order to work.</p>
+            <p>The <b>Alert</b> component covers the specific original events and public methods, but does not provide any option.
+              The component covers most essential JavaScript and DATA API, and does not require the class <code>alert-dismissible</code>
+              for the initialization to work.</p>
           
             <section id="alertMethods">
               <h3>Alert Methods</h3>
@@ -442,8 +446,8 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
 
           <section id="componentCarousel">
             <h2>Carousel</h2>
-            <p>The <b>Carousel</b> component covers the original events, along with a set of essential options and public methods. In
-              addition it also provides a solid DATA API, it adds a <code>paused</code> class to the target element when in
+            <p>The <b>Carousel</b> component covers the original events, as well as a set of essential options and public methods. 
+              In addition it also provides a solid DATA API, it adds a <code>paused</code> class to the target element when in
               paused state, and a solid event handling implementation.</p>
           
             <section id="carouselOptions">
@@ -485,7 +489,7 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                       <td><em>5000</em></td>
                       <td>Sets the component's delay between transitions in miliseconds. Can be set via JavaScript or the
                         <code>data-interval="INTERVAL"</code> attribute. If you want to disable the automatic transition, you can
-                        set this option to <em>false</em>. However the component will not automatically slide if the element is 
+                        set this option to <em>false</em>. The component will not automatically slide if the element is 
                         not visible in the viewport.</td>
                     </tr>
                   </tbody>
@@ -715,7 +719,7 @@ mySpecialCarouselInit.cycle();
               </div>
               <p>These three independent buttons use some inline JavaScript to control the carousel:</p>
 <pre><code class="language-markup">&lt;button class="btn btn-secondary" 
-        onclick="myCarousel.Carousel.slideTo(0)">
+  onclick="myCarousel.Carousel.slideTo(0)">
   START
 &lt/button>
 
