@@ -28,7 +28,7 @@ const OUTPUT = {
 }
 
 const PLUGINS = [
-  node({mainFields: ['shorter-js', 'module']}),
+  node({mainFields: ['jsnext', 'module']}),
   json(),
   buble(),
   cleanup()

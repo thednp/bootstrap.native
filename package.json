@@ -4,6 +4,11 @@
   "description": "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.",
   "main": "dist/bootstrap-native.min.js",
   "module": "dist/bootstrap-native.esm.js",
+  "jsnext": "src/index.js",
+  "files" :[
+    "dist/*.{js,map}",
+    "src/*.{js,map}"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "rollup --help",
