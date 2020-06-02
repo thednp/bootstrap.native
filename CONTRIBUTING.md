@@ -14,6 +14,6 @@ Please use the [Issues](https://github.com/thednp/bootstrap.native/issues) secti
 Certain changes or custom scripts/developments may not be suitable for everybody so they may get rejected. Generally the PR must explain the issue in detail, link it from issues section, must be **consistent** and in line with the below requirements.
  
 **Requirements**
-* changes must take into account browser compatibility: `bootstrap.native` for Bootstrap 3 series must be IE8+, while `bootstrap.native` for Bootstrap 4 must be IE10+
+* changes must take into account browser compatibility: `bootstrap.native` for Bootstrap 4 must be IE10+
 * changes that break backward compatibility are to be decided by the community first before getting accepted
-* changes must take into account the namespace of variables in `utils.js`
+* changes must make sense to the community at large
