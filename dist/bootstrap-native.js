@@ -1647,20 +1647,20 @@
 
   var componentsInit = {};
 
+  function initializeDataAPI( Constructor, collection ){
+    Array.from(collection).map(function (x){ return new Constructor(x); });
+  }
   var initCallback = function (lookUp){
     lookUp = lookUp || document;
-    var initializeDataAPI = function( Constructor, collection ){
-      Array.from(collection).map(function (x){ return new Constructor(x); });
-    };
     for (var component in componentsInit) {
       initializeDataAPI( componentsInit[component][0], lookUp.querySelectorAll (componentsInit[component][1]) );
     }
   };
+  function removeElementDataAPI( ConstructorName, collection ){
+    Array.from(collection).map(function (x){ return x[ConstructorName].dispose(); });
+  }
   var removeDataAPI = function (lookUp) {
     lookUp = lookUp || document;
-    var removeElementDataAPI = function( ConstructorName, collection ){
-      Array.from(collection).map(function (x){ return x[ConstructorName].dispose(); });
-    };
     for (var component in componentsInit) {
       removeElementDataAPI( component, lookUp.querySelectorAll (componentsInit[component][1]) );
     }
