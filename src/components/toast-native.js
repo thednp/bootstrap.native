@@ -8,7 +8,7 @@ import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
+// import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 
@@ -85,39 +85,38 @@ export default function Toast(element,options) {
   };
 
   // init
-  tryWrapper(()=>{
 
-    // initialization element
-    element = queryElement(element)
+  // initialization element
+  element = queryElement(element)
 
-    // reset on re-init
-    element.Toast && element.Toast.dispose()
+  // reset on re-init
+  element.Toast && element.Toast.dispose()
 
-    // toast, timer
-    toast = element.closest('.toast')
+  // toast, timer
+  toast = element.closest('.toast')
 
-    // DATA API
-    animationData = element.getAttribute('data-animation')
-    autohideData = element.getAttribute('data-autohide')
-    delayData = element.getAttribute('data-delay')
+  // DATA API
+  animationData = element.getAttribute('data-animation')
+  autohideData = element.getAttribute('data-autohide')
+  delayData = element.getAttribute('data-delay')
 
-    // custom events
-    showCustomEvent = bootstrapCustomEvent('show', 'toast')
-    hideCustomEvent = bootstrapCustomEvent('hide', 'toast')
-    shownCustomEvent = bootstrapCustomEvent('shown', 'toast')
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast')
+  // custom events
+  showCustomEvent = bootstrapCustomEvent('show', 'toast')
+  hideCustomEvent = bootstrapCustomEvent('hide', 'toast')
+  shownCustomEvent = bootstrapCustomEvent('shown', 'toast')
+  hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast')
 
-    // set instance options
-    ops.animation = options.animation === false || animationData === 'false' ? 0 : 1; // true by default
-    ops.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1; // true by default
-    ops.delay = parseInt(options.delay || delayData) || 500; // 500ms default    
-    
-    if ( !element.Toast ) { // prevent adding event handlers twice
-      on(element, 'click', self.hide);
-    }
+  // set instance options
+  ops.animation = options.animation === false || animationData === 'false' ? 0 : 1; // true by default
+  ops.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1; // true by default
+  ops.delay = parseInt(options.delay || delayData) || 500; // 500ms default    
   
-    // associate targets to init object
-    element.Toast = self;
-  },'BSN.Toast')
+  if ( !element.Toast ) { // prevent adding event handlers twice
+    on(element, 'click', self.hide);
+  }
+
+  // associate targets to init object
+  element.Toast = self;
+
 }
 

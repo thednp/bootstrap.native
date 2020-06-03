@@ -12,7 +12,7 @@ import { touchEvents } from 'shorter-js/src/strings/touchEvents.js';
 import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
+// import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { styleTip } from '../util/misc.js';
@@ -175,65 +175,64 @@ export default function Tooltip(element,options) {
   };
 
   // init
-  tryWrapper(()=>{
-    // initialization element
-    element = queryElement(element);
+  // initialization element
+  element = queryElement(element);
 
-    // reset on re-init
-    element.Tooltip && element.Tooltip.dispose();
+  // reset on re-init
+  element.Tooltip && element.Tooltip.dispose();
 
-    // DATA API
-    animationData = element.getAttribute('data-animation')
-    placementData = element.getAttribute('data-placement')
-    delayData = element.getAttribute('data-delay')
-    containerData = element.getAttribute('data-container')
+  // DATA API
+  animationData = element.getAttribute('data-animation')
+  placementData = element.getAttribute('data-placement')
+  delayData = element.getAttribute('data-delay')
+  containerData = element.getAttribute('data-container')
 
-    // custom events
-    showCustomEvent = bootstrapCustomEvent('show', 'tooltip')
-    shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip')
-    hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip')
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip')
+  // custom events
+  showCustomEvent = bootstrapCustomEvent('show', 'tooltip')
+  shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip')
+  hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip')
+  hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip')
 
-    // check container
-    containerElement = queryElement(options.container)
-    containerDataElement = queryElement(containerData)
+  // check container
+  containerElement = queryElement(options.container)
+  containerDataElement = queryElement(containerData)
 
-    // maybe the element is inside a modal
-    modal = element.closest('.modal')
+  // maybe the element is inside a modal
+  modal = element.closest('.modal')
 
-    // maybe the element is inside a fixed navbar
-    navbarFixedTop = element.closest('.fixed-top')
-    navbarFixedBottom = element.closest('.fixed-bottom')
+  // maybe the element is inside a fixed navbar
+  navbarFixedTop = element.closest('.fixed-top')
+  navbarFixedBottom = element.closest('.fixed-bottom')
 
-    // set instance options
-    ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-    ops.placement = options.placement ? options.placement : placementData || 'top';
-    ops.template = options.template ? options.template : null; // JavaScript only
-    ops.delay = parseInt(options.delay || delayData) || 200;
-    ops.container = containerElement ? containerElement
-                           : containerDataElement ? containerDataElement
-                           : navbarFixedTop ? navbarFixedTop
-                           : navbarFixedBottom ? navbarFixedBottom
-                           : modal ? modal : document.body;
+  // set instance options
+  ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+  ops.placement = options.placement ? options.placement : placementData || 'top';
+  ops.template = options.template ? options.template : null; // JavaScript only
+  ops.delay = parseInt(options.delay || delayData) || 200;
+  ops.container = containerElement ? containerElement
+                          : containerDataElement ? containerDataElement
+                          : navbarFixedTop ? navbarFixedTop
+                          : navbarFixedBottom ? navbarFixedBottom
+                          : modal ? modal : document.body;
 
-    // set placement class
-    placementClass = `bs-tooltip-${ops.placement}`
+  // set placement class
+  placementClass = `bs-tooltip-${ops.placement}`
 
-    // set tooltip content
-    titleString = getTitle();
+  // set tooltip content
+  titleString = getTitle();
 
-    // invalidate
-    if ( !titleString ) return;
+  // invalidate
+  if ( !titleString ) return;
 
-    // prevent adding event handlers twice
-    if (!element.Tooltip) {
-      element.setAttribute('data-original-title',titleString);
-      element.removeAttribute('title');
-      toggleEvents(on);
-    }
+  // prevent adding event handlers twice
+  if (!element.Tooltip) {
+    element.setAttribute('data-original-title',titleString);
+    element.removeAttribute('title');
+    toggleEvents(on);
+  }
 
-    // associate target to init object
-    element.Tooltip = self;
-  },'BSN.Tooltip')
+  // associate target to init object
+  element.Tooltip = self;
 
 }
+

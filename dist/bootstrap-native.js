@@ -60,13 +60,6 @@
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
-  function tryWrapper (fn,origin){
-    try{ fn(); }
-    catch(e){
-      console.error((origin + ": " + e));
-    }
-  }
-
   function bootstrapCustomEvent (eventName, componentName, related) {
     var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
     OriginalCustomEvent.relatedTarget = related;
@@ -107,16 +100,14 @@
       off(element, 'click', clickHandler);
       delete element.Alert;
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      alert = element.closest('.alert');
-      element.Alert && element.Alert.dispose();
-      if ( !element.Alert ) {
-        on(element, 'click', clickHandler);
-      }
-      self.element = element;
-      element.Alert = self;
-    },"BSN.Alert");
+    element = queryElement(element);
+    alert = element.closest('.alert');
+    element.Alert && element.Alert.dispose();
+    if ( !element.Alert ) {
+      on(element, 'click', clickHandler);
+    }
+    self.element = element;
+    element.Alert = self;
   }
 
   function addClass(element,classNAME) {
@@ -195,25 +186,23 @@
       toggleEvents(off);
       delete element.Button;
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      element.Button && element.Button.dispose();
-      labels = element.getElementsByClassName('btn');
-      if (!labels.length) { return; }
-      if ( !element.Button ) {
-        toggleEvents(on);
-      }
-      element.toggled = false;
-      element.Button = self;
-      Array.from(labels).map(function (btn){
-        !hasClass(btn,'active')
-          && queryElement('input:checked',btn)
-          && addClass(btn,'active');
-        hasClass(btn,'active')
-          && !queryElement('input:checked',btn)
-          && removeClass(btn,'active');
-      });
-    },"BSN.Button");
+    element = queryElement(element);
+    element.Button && element.Button.dispose();
+    labels = element.getElementsByClassName('btn');
+    if (!labels.length) { return; }
+    if ( !element.Button ) {
+      toggleEvents(on);
+    }
+    element.toggled = false;
+    element.Button = self;
+    Array.from(labels).map(function (btn){
+      !hasClass(btn,'active')
+        && queryElement('input:checked',btn)
+        && addClass(btn,'active');
+      hasClass(btn,'active')
+        && !queryElement('input:checked',btn)
+        && removeClass(btn,'active');
+    });
   }
 
   var touchEvents = { start: 'touchstart', end: 'touchend', move:'touchmove', cancel:'touchcancel' };
@@ -436,50 +425,48 @@
       ops = {};
       delete element.Carousel;
     };
-    tryWrapper(function (){
-      element = queryElement( element );
-      element.Carousel && element.Carousel.dispose();
-      slides = element.getElementsByClassName('carousel-item');
-      leftArrow = element.getElementsByClassName('carousel-control-prev')[0];
-      rightArrow = element.getElementsByClassName('carousel-control-next')[0];
-      indicator = element.getElementsByClassName('carousel-indicators')[0];
-      indicators = indicator && indicator.getElementsByTagName( "LI" ) || [];
-      if (slides.length < 2) { return }
-      var
-        intervalAttribute = element.getAttribute('data-interval'),
-        intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
-        touchData = element.getAttribute('data-touch') === 'false' ? 0 : 1,
-        pauseData = element.getAttribute('data-pause') === 'hover' || false,
-        keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
-        intervalOption = options.interval,
-        touchOption = options.touch;
-      ops = {};
-      ops.keyboard = options.keyboard === true || keyboardData;
-      ops.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false;
-      ops.touch = touchOption || touchData;
-      ops.interval = typeof intervalOption === 'number' ? intervalOption
-                  : intervalOption === false || intervalData === 0 || intervalData === false ? 0
-                  : isNaN(intervalData) ? 5000
-                  : intervalData;
-      if (self.getActiveIndex()<0) {
-        slides.length && addClass(slides[0],'active');
-        indicators.length && setActivePage(0);
-      }
-      vars = {};
-      vars.direction = 'left';
-      vars.index = 0;
-      vars.timer = null;
-      vars.isSliding = false;
-      vars.isTouch = false;
-      vars.touchPosition = {
-        startX : 0,
-        currentX : 0,
-        endX : 0
-      };
-      toggleEvents(on);
-      if ( ops.interval ){ self.cycle(); }
-      element.Carousel = self;
-    },"BSN.Carousel");
+    element = queryElement( element );
+    element.Carousel && element.Carousel.dispose();
+    slides = element.getElementsByClassName('carousel-item');
+    leftArrow = element.getElementsByClassName('carousel-control-prev')[0];
+    rightArrow = element.getElementsByClassName('carousel-control-next')[0];
+    indicator = element.getElementsByClassName('carousel-indicators')[0];
+    indicators = indicator && indicator.getElementsByTagName( "LI" ) || [];
+    if (slides.length < 2) { return }
+    var
+      intervalAttribute = element.getAttribute('data-interval'),
+      intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
+      touchData = element.getAttribute('data-touch') === 'false' ? 0 : 1,
+      pauseData = element.getAttribute('data-pause') === 'hover' || false,
+      keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
+      intervalOption = options.interval,
+      touchOption = options.touch;
+    ops = {};
+    ops.keyboard = options.keyboard === true || keyboardData;
+    ops.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false;
+    ops.touch = touchOption || touchData;
+    ops.interval = typeof intervalOption === 'number' ? intervalOption
+                : intervalOption === false || intervalData === 0 || intervalData === false ? 0
+                : isNaN(intervalData) ? 5000
+                : intervalData;
+    if (self.getActiveIndex()<0) {
+      slides.length && addClass(slides[0],'active');
+      indicators.length && setActivePage(0);
+    }
+    vars = {};
+    vars.direction = 'left';
+    vars.index = 0;
+    vars.timer = null;
+    vars.isSliding = false;
+    vars.isTouch = false;
+    vars.touchPosition = {
+      startX : 0,
+      currentX : 0,
+      endX : 0
+    };
+    toggleEvents(on);
+    if ( ops.interval ){ self.cycle(); }
+    element.Carousel = self;
   }
 
   function Collapse(element,options) {
@@ -562,7 +549,6 @@
       off(element, 'click', self.toggle);
       delete element.Collapse;
     };
-    tryWrapper(function (){
       element = queryElement(element);
       element.Collapse && element.Collapse.dispose();
       var accordionData = element.getAttribute('data-parent');
@@ -577,7 +563,6 @@
         on(element, 'click', self.toggle);
       }
       element.Collapse = self;
-    },"BSN.Collapse");
   }
 
   var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
@@ -585,6 +570,13 @@
   var support3DTransform = 'webkitPerspective' in document.body.style || 'perspective' in document.body.style;
 
   var supportTransform = 'webkitTransform' in document.body.style || 'transform' in document.body.style;
+
+  function tryWrapper (fn,origin){
+    try{ fn(); }
+    catch(e){
+      console.error((origin + ": " + e));
+    }
+  }
 
   function setFocus (element){
     element.focus ? element.focus() : element.setActive();
@@ -774,23 +766,21 @@
       off(element, 'click', clickHandler);
       delete element.Dropdown;
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      element.Dropdown && element.Dropdown.dispose();
-      parent = element.parentNode;
-      menu = queryElement('.dropdown-menu', parent);
-      Array.from(menu.children).map(function (child){
-        child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
-        child.tagName === 'A' && menuItems.push(child);
-      });
-      if ( !element.Dropdown ) {
-        !('tabindex' in menu) && menu.setAttribute('tabindex', '0');
-        on(element, 'click', clickHandler);
-      }
-      persist = option === true || element.getAttribute('data-persist') === 'true' || false;
-      element.open = false;
-      element.Dropdown = self;
-    },"BSN.Dropdown");
+    element = queryElement(element);
+    element.Dropdown && element.Dropdown.dispose();
+    parent = element.parentNode;
+    menu = queryElement('.dropdown-menu', parent);
+    Array.from(menu.children).map(function (child){
+      child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
+      child.tagName === 'A' && menuItems.push(child);
+    });
+    if ( !element.Dropdown ) {
+      !('tabindex' in menu) && menu.setAttribute('tabindex', '0');
+      on(element, 'click', clickHandler);
+    }
+    persist = option === true || element.getAttribute('data-persist') === 'true' || false;
+    element.open = false;
+    element.Dropdown = self;
   }
 
   function Modal(element,options) {
@@ -966,34 +956,32 @@
       if (element) {off(element, 'click', clickHandler); delete element.Modal; }
       else {delete modal.Modal;}
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      var checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') );
-      modal = hasClass(element,'modal') ? element : checkModal;
-      fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
-                        .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
-      if ( hasClass(element, 'modal') ) { element = null; }
-      element && element.Modal && element.Modal.dispose();
-      modal && modal.Modal && modal.Modal.dispose();
-      ops.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
-      ops.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
-      ops.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : ops.backdrop;
-      ops.animation = hasClass(modal, 'fade') ? true : false;
-      ops.content = options.content;
-      modal.isAnimating = false;
-      if ( element && !element.Modal ) {
-        on(element, 'click', clickHandler);
-      }
-      if ( ops.content ) {
-        self.setContent( ops.content.trim() );
-      }
-      if (element) {
-        modal.modalTrigger = element;
-        element.Modal = self;
-      } else {
-        modal.Modal = self;
-      }
-    },"BSN.Modal");
+    element = queryElement(element);
+    var checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') );
+    modal = hasClass(element,'modal') ? element : checkModal;
+    fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
+                      .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
+    if ( hasClass(element, 'modal') ) { element = null; }
+    element && element.Modal && element.Modal.dispose();
+    modal && modal.Modal && modal.Modal.dispose();
+    ops.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
+    ops.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
+    ops.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : ops.backdrop;
+    ops.animation = hasClass(modal, 'fade') ? true : false;
+    ops.content = options.content;
+    modal.isAnimating = false;
+    if ( element && !element.Modal ) {
+      on(element, 'click', clickHandler);
+    }
+    if ( ops.content ) {
+      self.setContent( ops.content.trim() );
+    }
+    if (element) {
+      modal.modalTrigger = element;
+      element.Modal = self;
+    } else {
+      modal.Modal = self;
+    }
   }
 
   function Popover(element,options) {
@@ -1150,46 +1138,44 @@
       toggleEvents(off);
       delete element.Popover;
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      element.Popover && element.Popover.dispose();
-      triggerData = element.getAttribute('data-trigger');
-      animationData = element.getAttribute('data-animation');
-      placementData = element.getAttribute('data-placement');
-      dismissibleData = element.getAttribute('data-dismissible');
-      delayData = element.getAttribute('data-delay');
-      containerData = element.getAttribute('data-container');
-      closeBtn = '<button type="button" class="close">×</button>';
-      showCustomEvent = bootstrapCustomEvent('show', 'popover');
-      shownCustomEvent = bootstrapCustomEvent('shown', 'popover');
-      hideCustomEvent = bootstrapCustomEvent('hide', 'popover');
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'popover');
-      containerElement = queryElement(options.container);
-      containerDataElement = queryElement(containerData);
-      modal = element.closest('.modal');
-      navbarFixedTop = element.closest('.fixed-top');
-      navbarFixedBottom = element.closest('.fixed-bottom');
-      ops.template = options.template ? options.template : null;
-      ops.trigger = options.trigger ? options.trigger : triggerData || 'hover';
-      ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-      ops.placement = options.placement ? options.placement : placementData || 'top';
-      ops.delay = parseInt(options.delay || delayData) || 200;
-      ops.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
-      ops.container = containerElement ? containerElement
-                             : containerDataElement ? containerDataElement
-                             : navbarFixedTop ? navbarFixedTop
-                             : navbarFixedBottom ? navbarFixedBottom
-                             : modal ? modal : document.body;
-      placementClass = "bs-popover-" + (ops.placement);
-      var popoverContents = getContents();
-      titleString = popoverContents[0];
-      contentString = popoverContents[1];
-      if ( !contentString && !ops.template ) { return; }
-      if ( !element.Popover ) {
-        toggleEvents(on);
-      }
-      element.Popover = self;
-    },"BSN.Popover");
+    element = queryElement(element);
+    element.Popover && element.Popover.dispose();
+    triggerData = element.getAttribute('data-trigger');
+    animationData = element.getAttribute('data-animation');
+    placementData = element.getAttribute('data-placement');
+    dismissibleData = element.getAttribute('data-dismissible');
+    delayData = element.getAttribute('data-delay');
+    containerData = element.getAttribute('data-container');
+    closeBtn = '<button type="button" class="close">×</button>';
+    showCustomEvent = bootstrapCustomEvent('show', 'popover');
+    shownCustomEvent = bootstrapCustomEvent('shown', 'popover');
+    hideCustomEvent = bootstrapCustomEvent('hide', 'popover');
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'popover');
+    containerElement = queryElement(options.container);
+    containerDataElement = queryElement(containerData);
+    modal = element.closest('.modal');
+    navbarFixedTop = element.closest('.fixed-top');
+    navbarFixedBottom = element.closest('.fixed-bottom');
+    ops.template = options.template ? options.template : null;
+    ops.trigger = options.trigger ? options.trigger : triggerData || 'hover';
+    ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    ops.placement = options.placement ? options.placement : placementData || 'top';
+    ops.delay = parseInt(options.delay || delayData) || 200;
+    ops.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
+    ops.container = containerElement ? containerElement
+                            : containerDataElement ? containerDataElement
+                            : navbarFixedTop ? navbarFixedTop
+                            : navbarFixedBottom ? navbarFixedBottom
+                            : modal ? modal : document.body;
+    placementClass = "bs-popover-" + (ops.placement);
+    var popoverContents = getContents();
+    titleString = popoverContents[0];
+    contentString = popoverContents[1];
+    if ( !contentString && !ops.template ) { return; }
+    if ( !element.Popover ) {
+      toggleEvents(on);
+    }
+    element.Popover = self;
   }
 
   function ScrollSpy(element,options) {
@@ -1262,27 +1248,25 @@
       toggleEvents(off);
       delete element.ScrollSpy;
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      element.ScrollSpy && element.ScrollSpy.dispose();
-      targetData = element.getAttribute('data-target');
-      offsetData = element.getAttribute('data-offset');
-      spyTarget = queryElement(options.target || targetData);
-      scrollTarget = element.offsetHeight < element.scrollHeight ? element : window;
-      if (!spyTarget) { return }
-      ops.target = spyTarget;
-      ops.offset = parseInt(options.offset || offsetData) || 10;
-      vars = {};
-      vars.length = 0;
-      vars.items = [];
-      vars.targets = [];
-      vars.isWindow = scrollTarget === window;
-      if ( !element.ScrollSpy ) {
-        toggleEvents(on);
-      }
-      self.refresh();
-      element.ScrollSpy = self;
-    },"BSN.ScrollSpy");
+    element = queryElement(element);
+    element.ScrollSpy && element.ScrollSpy.dispose();
+    targetData = element.getAttribute('data-target');
+    offsetData = element.getAttribute('data-offset');
+    spyTarget = queryElement(options.target || targetData);
+    scrollTarget = element.offsetHeight < element.scrollHeight ? element : window;
+    if (!spyTarget) { return }
+    ops.target = spyTarget;
+    ops.offset = parseInt(options.offset || offsetData) || 10;
+    vars = {};
+    vars.length = 0;
+    vars.items = [];
+    vars.targets = [];
+    vars.isWindow = scrollTarget === window;
+    if ( !element.ScrollSpy ) {
+      toggleEvents(on);
+    }
+    self.refresh();
+    element.ScrollSpy = self;
   }
 
   function Tab(element,options) {
@@ -1400,20 +1384,18 @@
       off(element, 'click', clickHandler);
       delete element.Tab;
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      element.Tab && element.Tab.dispose();
-      heightData = element.getAttribute('data-height');
-      tabs = element.closest('.nav');
-      dropdown = tabs && queryElement('.dropdown-toggle',tabs);
-      animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
-      tabs.isAnimating = false;
-      if ( !element.Tab ) {
-        on(element, 'click', clickHandler);
-      }
-      if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
-      element.Tab = self;
-    },'BSN.Tab');
+    element = queryElement(element);
+    element.Tab && element.Tab.dispose();
+    heightData = element.getAttribute('data-height');
+    tabs = element.closest('.nav');
+    dropdown = tabs && queryElement('.dropdown-toggle',tabs);
+    animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
+    tabs.isAnimating = false;
+    if ( !element.Tab ) {
+      on(element, 'click', clickHandler);
+    }
+    if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
+    element.Tab = self;
   }
 
   function Toast(element,options) {
@@ -1468,25 +1450,23 @@
     self.dispose = function () {
       ops.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      element.Toast && element.Toast.dispose();
-      toast = element.closest('.toast');
-      animationData = element.getAttribute('data-animation');
-      autohideData = element.getAttribute('data-autohide');
-      delayData = element.getAttribute('data-delay');
-      showCustomEvent = bootstrapCustomEvent('show', 'toast');
-      hideCustomEvent = bootstrapCustomEvent('hide', 'toast');
-      shownCustomEvent = bootstrapCustomEvent('shown', 'toast');
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast');
-      ops.animation = options.animation === false || animationData === 'false' ? 0 : 1;
-      ops.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1;
-      ops.delay = parseInt(options.delay || delayData) || 500;
-      if ( !element.Toast ) {
-        on(element, 'click', self.hide);
-      }
-      element.Toast = self;
-    },'BSN.Toast');
+    element = queryElement(element);
+    element.Toast && element.Toast.dispose();
+    toast = element.closest('.toast');
+    animationData = element.getAttribute('data-animation');
+    autohideData = element.getAttribute('data-autohide');
+    delayData = element.getAttribute('data-delay');
+    showCustomEvent = bootstrapCustomEvent('show', 'toast');
+    hideCustomEvent = bootstrapCustomEvent('hide', 'toast');
+    shownCustomEvent = bootstrapCustomEvent('shown', 'toast');
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast');
+    ops.animation = options.animation === false || animationData === 'false' ? 0 : 1;
+    ops.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1;
+    ops.delay = parseInt(options.delay || delayData) || 500;
+    if ( !element.Toast ) {
+      on(element, 'click', self.hide);
+    }
+    element.Toast = self;
   }
 
   function Tooltip(element,options) {
@@ -1608,41 +1588,39 @@
       element.removeAttribute('data-original-title');
       delete element.Tooltip;
     };
-    tryWrapper(function (){
-      element = queryElement(element);
-      element.Tooltip && element.Tooltip.dispose();
-      animationData = element.getAttribute('data-animation');
-      placementData = element.getAttribute('data-placement');
-      delayData = element.getAttribute('data-delay');
-      containerData = element.getAttribute('data-container');
-      showCustomEvent = bootstrapCustomEvent('show', 'tooltip');
-      shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip');
-      hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip');
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip');
-      containerElement = queryElement(options.container);
-      containerDataElement = queryElement(containerData);
-      modal = element.closest('.modal');
-      navbarFixedTop = element.closest('.fixed-top');
-      navbarFixedBottom = element.closest('.fixed-bottom');
-      ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
-      ops.placement = options.placement ? options.placement : placementData || 'top';
-      ops.template = options.template ? options.template : null;
-      ops.delay = parseInt(options.delay || delayData) || 200;
-      ops.container = containerElement ? containerElement
-                             : containerDataElement ? containerDataElement
-                             : navbarFixedTop ? navbarFixedTop
-                             : navbarFixedBottom ? navbarFixedBottom
-                             : modal ? modal : document.body;
-      placementClass = "bs-tooltip-" + (ops.placement);
-      titleString = getTitle();
-      if ( !titleString ) { return; }
-      if (!element.Tooltip) {
-        element.setAttribute('data-original-title',titleString);
-        element.removeAttribute('title');
-        toggleEvents(on);
-      }
-      element.Tooltip = self;
-    },'BSN.Tooltip');
+    element = queryElement(element);
+    element.Tooltip && element.Tooltip.dispose();
+    animationData = element.getAttribute('data-animation');
+    placementData = element.getAttribute('data-placement');
+    delayData = element.getAttribute('data-delay');
+    containerData = element.getAttribute('data-container');
+    showCustomEvent = bootstrapCustomEvent('show', 'tooltip');
+    shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip');
+    hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip');
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip');
+    containerElement = queryElement(options.container);
+    containerDataElement = queryElement(containerData);
+    modal = element.closest('.modal');
+    navbarFixedTop = element.closest('.fixed-top');
+    navbarFixedBottom = element.closest('.fixed-bottom');
+    ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+    ops.placement = options.placement ? options.placement : placementData || 'top';
+    ops.template = options.template ? options.template : null;
+    ops.delay = parseInt(options.delay || delayData) || 200;
+    ops.container = containerElement ? containerElement
+                            : containerDataElement ? containerDataElement
+                            : navbarFixedTop ? navbarFixedTop
+                            : navbarFixedBottom ? navbarFixedBottom
+                            : modal ? modal : document.body;
+    placementClass = "bs-tooltip-" + (ops.placement);
+    titleString = getTitle();
+    if ( !titleString ) { return; }
+    if (!element.Tooltip) {
+      element.setAttribute('data-original-title',titleString);
+      element.removeAttribute('title');
+      toggleEvents(on);
+    }
+    element.Tooltip = self;
   }
 
   var componentsInit = {};
@@ -1650,21 +1628,29 @@
   function initializeDataAPI( Constructor, collection ){
     Array.from(collection).map(function (x){ return new Constructor(x); });
   }
-  var initCallback = function (lookUp){
+  function initCallback (lookUp){
     lookUp = lookUp || document;
-    for (var component in componentsInit) {
-      initializeDataAPI( componentsInit[component][0], lookUp.querySelectorAll (componentsInit[component][1]) );
-    }
-  };
+    var loop = function ( component ) {
+      tryWrapper(
+        function () { return initializeDataAPI( componentsInit[component][0], lookUp.querySelectorAll (componentsInit[component][1]) ); },
+        ("BSN." + component)
+      );
+    };
+    for (var component in componentsInit) loop( component );
+  }
   function removeElementDataAPI( ConstructorName, collection ){
     Array.from(collection).map(function (x){ return x[ConstructorName].dispose(); });
   }
-  var removeDataAPI = function (lookUp) {
+  function removeDataAPI (lookUp) {
     lookUp = lookUp || document;
-    for (var component in componentsInit) {
-      removeElementDataAPI( component, lookUp.querySelectorAll (componentsInit[component][1]) );
-    }
-  };
+    var loop = function ( component ) {
+      tryWrapper(
+        function () { return removeElementDataAPI( component, lookUp.querySelectorAll (componentsInit[component][1]) ); },
+        ("BSN." + component)
+      );
+    };
+    for (var component in componentsInit) loop( component );
+  }
 
   componentsInit.Alert = [ Alert, '[data-dismiss="alert"]'];
   componentsInit.Button = [ Button, '[data-toggle="buttons"]' ];

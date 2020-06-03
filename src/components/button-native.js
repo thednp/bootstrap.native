@@ -7,7 +7,6 @@ import { removeClass } from 'shorter-js/src/class/removeClass.js';
 import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 
@@ -110,40 +109,37 @@ export default function Button(element) {
   }
 
   // init
-  tryWrapper(()=>{
+  // initialization element
+  element = queryElement(element);
 
-    // initialization element
-    element = queryElement(element);
+  // reset on re-init
+  element.Button && element.Button.dispose();
 
-    // reset on re-init
-    element.Button && element.Button.dispose();
+  labels = element.getElementsByClassName('btn')
+
+  // invalidate
+  if (!labels.length) return;
+
+  // prevent adding event handlers twice
+  if ( !element.Button ) { 
+    toggleEvents(on);
+  }
+
+  // set initial toggled state
+  // toggled makes sure to prevent triggering twice the change.bs.button events
+  element.toggled = false;  
   
-    labels = element.getElementsByClassName('btn')
+  // associate target with init object
+  element.Button = self;
 
-    // invalidate
-    if (!labels.length) return;
-
-    // prevent adding event handlers twice
-    if ( !element.Button ) { 
-      toggleEvents(on);
-    }
-  
-    // set initial toggled state
-    // toggled makes sure to prevent triggering twice the change.bs.button events
-    element.toggled = false;  
-    
-    // associate target with init object
-    element.Button = self;
-  
-    // activate items on load
-    Array.from(labels).map((btn)=>{
-      !hasClass(btn,'active') 
-        && queryElement('input:checked',btn)
-        && addClass(btn,'active');
-      hasClass(btn,'active') 
-        && !queryElement('input:checked',btn)
-        && removeClass(btn,'active');
-    })
-  },"BSN.Button")
+  // activate items on load
+  Array.from(labels).map((btn)=>{
+    !hasClass(btn,'active') 
+      && queryElement('input:checked',btn)
+      && addClass(btn,'active');
+    hasClass(btn,'active') 
+      && !queryElement('input:checked',btn)
+      && removeClass(btn,'active');
+  })
 }
 

@@ -8,7 +8,7 @@ import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
+// import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { getScroll } from '../util/misc.js';
@@ -114,45 +114,43 @@ export default function ScrollSpy(element,options) {
   }
 
   // init
-  tryWrapper(()=>{
 
-    // initialization element, the element we spy on
-    element = queryElement(element);
+  // initialization element, the element we spy on
+  element = queryElement(element);
 
-    // reset on re-init
-    element.ScrollSpy && element.ScrollSpy.dispose();
+  // reset on re-init
+  element.ScrollSpy && element.ScrollSpy.dispose();
 
-    // event targets, constants   
-    // DATA API
-    targetData = element.getAttribute('data-target')
-    offsetData = element.getAttribute('data-offset')
-    // targets
-    spyTarget = queryElement(options.target || targetData)
-    // determine which is the real scrollTarget
-    scrollTarget = element.offsetHeight < element.scrollHeight ? element : window
+  // event targets, constants   
+  // DATA API
+  targetData = element.getAttribute('data-target')
+  offsetData = element.getAttribute('data-offset')
+  // targets
+  spyTarget = queryElement(options.target || targetData)
+  // determine which is the real scrollTarget
+  scrollTarget = element.offsetHeight < element.scrollHeight ? element : window
 
-    if (!spyTarget) return
+  if (!spyTarget) return
 
-    // set instance options
-    ops.target = spyTarget;
-    ops.offset = parseInt(options.offset || offsetData) || 10;
+  // set instance options
+  ops.target = spyTarget;
+  ops.offset = parseInt(options.offset || offsetData) || 10;
 
-    // set instance priority variables
-    vars = {}
-    vars.length = 0
-    vars.items = []
-    vars.targets = []
-    vars.isWindow = scrollTarget === window
+  // set instance priority variables
+  vars = {}
+  vars.length = 0
+  vars.items = []
+  vars.targets = []
+  vars.isWindow = scrollTarget === window
 
-    // prevent adding event handlers twice
-    if ( !element.ScrollSpy ) { 
-      toggleEvents(on)
-    }
-    self.refresh()
-  
-    // associate target with init object
-    element.ScrollSpy = self
-  },"BSN.ScrollSpy")
+  // prevent adding event handlers twice
+  if ( !element.ScrollSpy ) { 
+    toggleEvents(on)
+  }
+  self.refresh()
+
+  // associate target with init object
+  element.ScrollSpy = self
 
 }
 

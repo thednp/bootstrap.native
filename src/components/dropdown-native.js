@@ -7,7 +7,6 @@ import { removeClass } from 'shorter-js/src/class/removeClass.js';
 import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { setFocus } from '../util/misc.js';
@@ -141,38 +140,35 @@ export default function Dropdown(element,option) {
   }
 
   // init
-  tryWrapper(()=>{
 
-    // initialization element
-    element = queryElement(element);
+  // initialization element
+  element = queryElement(element);
 
-    // reset on re-init
-    element.Dropdown && element.Dropdown.dispose();
+  // reset on re-init
+  element.Dropdown && element.Dropdown.dispose();
 
-    // set  targets
-    parent = element.parentNode
-    menu = queryElement('.dropdown-menu', parent);
+  // set  targets
+  parent = element.parentNode
+  menu = queryElement('.dropdown-menu', parent);
 
-    Array.from(menu.children).map(child=>{
-      child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
-      child.tagName === 'A' && menuItems.push(child);
-    })
+  Array.from(menu.children).map(child=>{
+    child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
+    child.tagName === 'A' && menuItems.push(child);
+  })
 
-    // prevent adding event handlers twice
-    if ( !element.Dropdown ) { 
-      !('tabindex' in menu) && menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome | Safari
-      on(element, 'click', clickHandler);
-    }
-  
-    // set option
-    persist = option === true || element.getAttribute('data-persist') === 'true' || false
-  
-    // set initial state to closed
-    element.open = false;
-  
-    // associate element with init object 
-    element.Dropdown = self;
-  },"BSN.Dropdown")
+  // prevent adding event handlers twice
+  if ( !element.Dropdown ) { 
+    !('tabindex' in menu) && menu.setAttribute('tabindex', '0'); // Fix onblur on Chrome | Safari
+    on(element, 'click', clickHandler);
+  }
 
+  // set option
+  persist = option === true || element.getAttribute('data-persist') === 'true' || false
+
+  // set initial state to closed
+  element.open = false;
+
+  // associate element with init object 
+  element.Dropdown = self;
 }
 

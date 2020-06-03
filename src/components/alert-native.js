@@ -7,7 +7,6 @@ import { on } from 'shorter-js/src/event/on.js';
 import { off } from 'shorter-js/src/event/off.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 
@@ -60,24 +59,22 @@ export default function Alert(element) {
   }
 
   // INIT
-  // prevent adding event handlers twice 
-  tryWrapper(()=>{
-    // initialization element
-    element = queryElement(element);
-
-    // find the target alert 
-    alert = element.closest('.alert');
-
-    // reset on re-init
-    element.Alert && element.Alert.dispose();     
-
-    if ( !element.Alert ) {
-      on(element, 'click', clickHandler);
-    }
+  // initialization element
+  element = queryElement(element);
   
-    // store init object within target element 
-    self.element = element;
-    element.Alert = self;
-  },"BSN.Alert")
+  // find the target alert 
+  alert = element.closest('.alert');
+  
+  // reset on re-init
+  element.Alert && element.Alert.dispose();     
+  
+  // prevent adding event handlers twice 
+  if ( !element.Alert ) {
+    on(element, 'click', clickHandler);
+  }
+
+  // store init object within target element 
+  self.element = element;
+  element.Alert = self;
 }
 

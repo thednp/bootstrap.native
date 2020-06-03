@@ -9,7 +9,7 @@ import { off } from 'shorter-js/src/event/off.js';
 import { supportTransition } from 'shorter-js/src/boolean/supportTransition.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
+// import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 
@@ -162,39 +162,34 @@ export default function Tab(element,options) {
     delete element.Tab;
   }
 
-  tryWrapper(()=>{
+  // INIT
+  // initialization element
+  element = queryElement(element);
 
-    // initialization element
-    element = queryElement(element);
+  // reset on re-init
+  element.Tab && element.Tab.dispose();
 
-    // reset on re-init
-    element.Tab && element.Tab.dispose();
+  // DATA API
+  heightData = element.getAttribute('data-height')
+  // event targets
+  tabs = element.closest('.nav')
+  dropdown = tabs && queryElement('.dropdown-toggle',tabs)
 
-    // DATA API
-    heightData = element.getAttribute('data-height')
-    // event targets
-    tabs = element.closest('.nav')
-    dropdown = tabs && queryElement('.dropdown-toggle',tabs)
+  // instance options
+  animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
 
-    // instance options
-    animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
+  // set default animation state
+  tabs.isAnimating = false;
 
-    // invalidate 
-    // if (!tabs) return;
-  
-    // set default animation state
-    tabs.isAnimating = false;
-  
-    // init
-    if ( !element.Tab ) { // prevent adding event handlers twice
-      on(element, 'click', clickHandler);
-    }
-  
-    if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
-  
-    // associate target with init object
-    element.Tab = self;
-  },'BSN.Tab')
+  // init
+  if ( !element.Tab ) { // prevent adding event handlers twice
+    on(element, 'click', clickHandler);
+  }
+
+  if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
+
+  // associate target with init object
+  element.Tab = self;
 
 }
 

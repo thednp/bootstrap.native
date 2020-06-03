@@ -10,7 +10,6 @@ import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
 import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import { getElementTransitionDuration } from 'shorter-js/src/misc/getElementTransitionDuration.js';
 import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
 
 import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
 import { setFocus } from '../util/misc.js';
@@ -240,54 +239,51 @@ export default function Modal(element,options) { // element can be the modal/tri
   };
 
   // init
-  tryWrapper(()=>{
 
-    // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
-    element = queryElement(element);
+  // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
+  element = queryElement(element);
 
-    // determine modal, triggering element
-    let checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') )
-    modal = hasClass(element,'modal') ? element : checkModal
+  // determine modal, triggering element
+  let checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') )
+  modal = hasClass(element,'modal') ? element : checkModal
 
-    // set fixed items
-    fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
-                      .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
+  // set fixed items
+  fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
+                    .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
 
-    if ( hasClass(element, 'modal') ) { element = null; } // modal is now independent of it's triggering element
+  if ( hasClass(element, 'modal') ) { element = null; } // modal is now independent of it's triggering element
 
-    // reset on re-init
-    element && element.Modal && element.Modal.dispose();
-    modal && modal.Modal && modal.Modal.dispose();
+  // reset on re-init
+  element && element.Modal && element.Modal.dispose();
+  modal && modal.Modal && modal.Modal.dispose();
 
-    // set options
-    ops.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
-    ops.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
-    ops.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : ops.backdrop;
-    ops.animation = hasClass(modal, 'fade') ? true : false;
-    ops.content = options.content; // JavaScript only
-    
-    // set an initial state of the modal
-    modal.isAnimating = false;
-
-    // prevent adding event handlers over and over
-    // modal is independent of a triggering element
-    if ( element && !element.Modal ) {
-      on(element, 'click', clickHandler);
-    }
-
-    if ( ops.content ) { 
-      self.setContent( ops.content.trim() ); 
-    }
+  // set options
+  ops.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
+  ops.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
+  ops.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : ops.backdrop;
+  ops.animation = hasClass(modal, 'fade') ? true : false;
+  ops.content = options.content; // JavaScript only
   
-    // set associations
-    if (element) { 
-      modal.modalTrigger = element;
-      element.Modal = self;
-    } else { 
-      modal.Modal = self;
-    }
+  // set an initial state of the modal
+  modal.isAnimating = false;
 
-  },"BSN.Modal")
+  // prevent adding event handlers over and over
+  // modal is independent of a triggering element
+  if ( element && !element.Modal ) {
+    on(element, 'click', clickHandler);
+  }
+
+  if ( ops.content ) { 
+    self.setContent( ops.content.trim() ); 
+  }
+
+  // set associations
+  if (element) { 
+    modal.modalTrigger = element;
+    element.Modal = self;
+  } else { 
+    modal.Modal = self;
+  }
 
 }
 
