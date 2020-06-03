@@ -19,6 +19,9 @@
     "build-esm-min": "rollup --environment FORMAT:esm,MIN:true -c",
     "build-umd": "rollup --environment FORMAT:umd,MIN:false -c",
     "build-umd-min": "rollup --environment FORMAT:umd,MIN:true -c",
+    "polyfill": "npm-run-all --parallel pln plnm",
+    "pln": "rollup --environment INPUTFILE:src/util/polyfill.js,OUTPUTFILE:dist/polyfill.js,FORMAT:esm,MIN:false,POLYFILL:true -c",
+    "plnm": "rollup --environment INPUTFILE:src/util/polyfill.js,OUTPUTFILE:dist/polyfill.min.js,FORMAT:esm,MIN:true,POLYFILL:true -c",
     "watch": "rollup --environment FORMAT:umd,MIN:false -c -w"
   },
   "browserslist": [
@@ -44,7 +47,8 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
-    "shorter-js": "^0.0.5"
+    "shorter-js": "^0.0.5",
+    "minifill": "^0.0.7"
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",

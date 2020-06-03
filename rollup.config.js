@@ -7,13 +7,25 @@ import cleanup from 'rollup-plugin-cleanup'
 import * as pkg from "./package.json";
 
 // set headers
+const POLYFILL = process.env.POLYFILL
 const year = (new Date).getFullYear()
-const banner = `/*!
+const banner = POLYFILL 
+?`/*!
+  * Native JavaScript for Bootstrap Polyfill v${pkg.version} (${pkg.homepage})
+  * Copyright 2015-${year} © ${pkg.author}
+  * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
+  */
+ "use strict";`
+:`/*!
   * Native JavaScript for Bootstrap v${pkg.version} (${pkg.homepage})
   * Copyright 2015-${year} © ${pkg.author}
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */`
-const miniBanner = `// Native JavaScript for Bootstrap v${pkg.version} | ${year} © ${pkg.author} | ${pkg.license}-License`
+
+const miniBanner = POLYFILL
+?`// Native JavaScript for Bootstrap Polyfill v${pkg.version} | ${year} © ${pkg.author} | ${pkg.license}-License
+"use strict";`
+:`// Native JavaScript for Bootstrap v${pkg.version} | ${year} © ${pkg.author} | ${pkg.license}-License`
 
 // set config
 const MIN = process.env.MIN === 'true' // true/false|unset
