@@ -1,9 +1,4 @@
-/*!
-  * Native JavaScript for Bootstrap Polyfill v3.0.5 (https://thednp.github.io/bootstrap.native/)
-  * Copyright 2015-2020 © dnp_theme
-  * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
-  */
- "use strict";
+"use strict";
 if (!Array.from) {
   Array.from = (function () {
     var toStr = Object.prototype.toString;
