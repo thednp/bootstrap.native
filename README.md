@@ -9,8 +9,6 @@ The **bootstrap.native** library is available on npm, CDN and comes packed with 
 
  The library is around ***25Kb*** minified and ***7.5Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">the demo</a> for components guidelines and examples, or the [Wiki/How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) on how to use the library or create custom builds.
 
-If you use webpack, here is the accompanying [webpack loader](https://github.com/jonathanfleckenstein/bootstrap.native-loader) (not up to date).
-
 # BSN Wiki
 Please check the `bootstrap.native` Wiki pages, they're updated with almost every new commit:
 * [Acknowledgements](https://github.com/thednp/bootstrap.native/wiki/Acknowledgements) - there are similarities and differences with the original jQuery plugins, good to know for maximizing your workflow.
