@@ -1,14 +1,11 @@
 
 /* Native JavaScript for Bootstrap 4 | Alert
 -------------------------------------------- */
-import { hasClass } from 'shorter-js/src/class/hasClass.js';
-import { removeClass } from 'shorter-js/src/class/removeClass.js';
-import { on } from 'shorter-js/src/event/on.js';
-import { off } from 'shorter-js/src/event/off.js';
-import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
 
-import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
+import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
 
 // ALERT DEFINITION
 // ================
@@ -27,7 +24,11 @@ export default function Alert(element) {
 
   // private methods
   function triggerHandler() {
-    hasClass(alert,'fade') ? emulateTransitionEnd(alert,transitionEndHandler) : transitionEndHandler(); 
+    alert.classList.contains('fade') ? emulateTransitionEnd(alert,transitionEndHandler) : transitionEndHandler(); 
+  }
+  function toggleEvents(action){
+    action = action ? 'addEventListener' : 'removeEventListener';
+    element[action]('click',clickHandler,false);
   }
 
   // event handlers
@@ -37,24 +38,26 @@ export default function Alert(element) {
     element && alert && (element === e.target || element.contains(e.target)) && self.close();
   }
   function transitionEndHandler() {
-    off(element, 'click', clickHandler); // detach it's listener
+    // off(element, 'click', clickHandler); // detach it's listener
+    toggleEvents()
     alert.parentNode.removeChild(alert);
     dispatchCustomEvent.call(alert,closedCustomEvent);
   }
 
   // PUBLIC METHODS
   self.close = () => {
-    if ( alert && element && hasClass(alert,'show') ) {
+    if ( alert && element && alert.classList.contains('show') ) {
       dispatchCustomEvent.call(alert,closeCustomEvent);
       if ( closeCustomEvent.defaultPrevented ) return;
       self.dispose();
-      removeClass(alert,'show');
+      alert.classList.remove('show');
       triggerHandler();
     }
   }
 
-  self.dispose = () => {
-    off(element, 'click', clickHandler);
+  self.dispose = () => {    
+    // off(element, 'click', clickHandler);
+    toggleEvents()
     delete element.Alert;
   }
 
@@ -70,7 +73,8 @@ export default function Alert(element) {
   
   // prevent adding event handlers twice 
   if ( !element.Alert ) {
-    on(element, 'click', clickHandler);
+    // on(element, 'click', clickHandler);
+    toggleEvents(1)
   }
 
   // store init object within target element 

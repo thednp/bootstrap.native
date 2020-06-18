@@ -11,8 +11,9 @@ import Toast from './components/toast-native.js'
 import Tooltip from './components/tooltip-native.js'
 
 import './util/init.js'
-import {initCallback,removeDataAPI} from './util/callbacks.js'
-import {componentsInit} from './util/globals.js'
+import initCallback from './util/initCallback.js'
+import removeDataAPI from './util/removeDataAPI.js'
+import componentsInit from './util/componentsInit.js'
 import {version as Version} from './../package.json'
 
 export default {

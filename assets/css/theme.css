@@ -54,6 +54,11 @@ h3:not(.popover-header) {
   letter-spacing: -2px;
 }
 
+/* smooth scroll */
+html {
+	scroll-behavior: smooth;
+}
+
 /* misc */
 .dropright .dropdown-menu,
 .dropleft .dropdown-menu {

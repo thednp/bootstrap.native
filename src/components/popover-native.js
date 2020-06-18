@@ -1,21 +1,15 @@
 
 /* Native JavaScript for Bootstrap 4 | Popover
 ---------------------------------------------- */
-import { hasClass } from 'shorter-js/src/class/hasClass.js';
-import { addClass } from 'shorter-js/src/class/addClass.js';
-import { removeClass } from 'shorter-js/src/class/removeClass.js';
-import { on } from 'shorter-js/src/event/on.js';
-import { off } from 'shorter-js/src/event/off.js';
-import { mouseHoverEvents } from 'shorter-js/src/strings/mouseHoverEvents.js';
-import { mouseClickEvents } from 'shorter-js/src/strings/mouseClickEvents.js';
-import { touchEvents } from 'shorter-js/src/strings/touchEvents.js';
-import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
-import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-// import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
+import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents.js';
+import mouseClickEvents from 'shorter-js/src/strings/mouseClickEvents.js';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
 
-import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { styleTip } from '../util/misc.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
+import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import styleTip from '../util/styleTip.js';
 
 // POPOVER DEFINITION
 // ==================
@@ -96,7 +90,7 @@ export default function Popover(element,options) {
 
     // popover arrow
     let popoverArrow = document.createElement('div');
-    addClass(popoverArrow,'arrow');
+    popoverArrow.classList.add('arrow');
     popover.appendChild(popoverArrow);
 
     if ( contentString !== null && ops.template === null ) { //create the popover from data attributes
@@ -105,14 +99,14 @@ export default function Popover(element,options) {
 
       if (titleString !== null) {
         let popoverTitle = document.createElement('h3');
-        addClass(popoverTitle,'popover-header');
+        popoverTitle.classList.add('popover-header');
         popoverTitle.innerHTML = ops.dismissible ? titleString + closeBtn : titleString;
         popover.appendChild(popoverTitle);
       }
 
       //set popover content
       let popoverBodyMarkup = document.createElement('div');
-      addClass(popoverBodyMarkup,'popover-body');
+      popoverBodyMarkup.classList.add('popover-body');
       popoverBodyMarkup.innerHTML = ops.dismissible && titleString === null ? contentString + closeBtn : contentString;
       popover.appendChild(popoverBodyMarkup);
 
@@ -133,12 +127,12 @@ export default function Popover(element,options) {
     //append to the container
     ops.container.appendChild(popover);
     popover.style.display = 'block';
-    !hasClass(popover, 'popover') && addClass(popover, 'popover');
-    !hasClass(popover, ops.animation) && addClass(popover, ops.animation);
-    !hasClass(popover, placementClass) && addClass(popover, placementClass);
+    !popover.classList.contains( 'popover') && popover.classList.add('popover');
+    !popover.classList.contains( ops.animation) && popover.classList.add(ops.animation);
+    !popover.classList.contains( placementClass) && popover.classList.add(placementClass);
   }
   function showPopover() {
-    !hasClass(popover,'show') && ( addClass(popover,'show') );
+    !popover.classList.contains('show') && ( popover.classList.add('show') );
   }
   function updatePopover() {
     styleTip(element, popover, ops.placement, ops.container);
@@ -147,15 +141,16 @@ export default function Popover(element,options) {
     if (popover === null) { element.focus(); }
   }
   function toggleEvents(action) {
+    action = action ? 'addEventListener' : 'removeEventListener';
     if (ops.trigger === 'hover') {
-      action( element, mouseClickEvents.down, self.show );
-      action( element, mouseHoverEvents[0], self.show );
-      if (!ops.dismissible) { action( element, mouseHoverEvents[1], self.hide ); } // mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
+      element[action]( mouseClickEvents.down, self.show );
+      element[action]( mouseHoverEvents[0], self.show );
+      if (!ops.dismissible) { element[action]( mouseHoverEvents[1], self.hide ); } // mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
     } else if ('click' == ops.trigger) {
-      action( element, ops.trigger, self.toggle );
+      element[action]( ops.trigger, self.toggle );
     } else if ('focus' == ops.trigger) {
-      isIphone && action( element, 'click', forceFocus );
-      action( element, ops.trigger, self.toggle );
+      isIphone && element[action]( 'click', forceFocus, false );
+      element[action]( ops.trigger, self.toggle );
     }
   }
   function touchHandler(e){
@@ -167,21 +162,22 @@ export default function Popover(element,options) {
   }
   // event toggle
   function dismissHandlerToggle(action) {
+    action = action ? 'addEventListener' : 'removeEventListener';
     if (ops.dismissible) {
-      action( document, 'click', dismissibleHandler );
+      document[action]('click', dismissibleHandler, false );
     } else {
-      'focus' == ops.trigger && action( element, 'blur', self.hide );
-      'hover' == ops.trigger && action( document, touchEvents.start, touchHandler, passiveHandler );
+      'focus' == ops.trigger && element[action]( 'blur', self.hide );
+      'hover' == ops.trigger && document[action]( 'touchstart', touchHandler, passiveHandler );
     }
-    action( window, 'resize', self.hide, passiveHandler );
+    window[action]('resize', self.hide, passiveHandler );
   }
   // triggers
   function showTrigger() {
-    dismissHandlerToggle(on);
+    dismissHandlerToggle(1);
     dispatchCustomEvent.call(element, shownCustomEvent);
   }
   function hideTrigger() {
-    dismissHandlerToggle(off);
+    dismissHandlerToggle();
     removePopover();
     dispatchCustomEvent.call(element, hiddenCustomEvent);
   }
@@ -208,17 +204,17 @@ export default function Popover(element,options) {
   self.hide = () => {
     clearTimeout(timer);
     timer = setTimeout( () => {
-      if (popover && popover !== null && hasClass(popover,'show')) {
+      if (popover && popover !== null && popover.classList.contains('show')) {
         dispatchCustomEvent.call(element, hideCustomEvent);
         if ( hideCustomEvent.defaultPrevented ) return;
-        removeClass(popover,'show');
+        popover.classList.remove('show');
         !!ops.animation ? emulateTransitionEnd(popover, hideTrigger) : hideTrigger();
       }
     }, ops.delay );
   };
   self.dispose = () => {
     self.hide();
-    toggleEvents(off);
+    toggleEvents();
     delete element.Popover;
   };
 
@@ -283,7 +279,7 @@ export default function Popover(element,options) {
 
   // init
   if ( !element.Popover ) { // prevent adding event handlers twice
-    toggleEvents(on);
+    toggleEvents(1);
   }
 
   // associate target to init object

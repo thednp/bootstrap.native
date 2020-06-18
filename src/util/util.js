@@ -1,29 +1,23 @@
 // summon all utils together and export them to globals for better performance
-import {addClass,removeClass,hasClass,mouseClickEvents,mouseHoverEvents,touchEvents,getElementTransitionDuration,emulateTransitionEnd,on,off,one,passiveHandler,queryElement} from 'shorter-js'
-import {bootstrapCustomEvent, dispatchCustomEvent} from './event.js'
-import {setFocus,styleTip,getScroll} from './misc.js'
+import {mouseClickEvents,mouseHoverEvents,getElementTransitionDuration,emulateTransitionEnd,passiveHandler,queryElement} from 'shorter-js'
+import bootstrapCustomEvent from './bootstrapCustomEvent.js'
+import dispatchCustomEvent from './dispatchCustomEvent.js'
+import setFocus from './setFocus.js'
+import styleTip from './styleTip.js'
+import getScroll from './getScroll.js'
 
 // for faster execution
 // export this object to global
-export const Util = {
-	// class
-	addClass,
-	removeClass,
-	hasClass,
+export default Util = {
 	// selector
 	queryElement,
 	// transition
 	getElementTransitionDuration,
 	emulateTransitionEnd,
-	// event 
-	on,
-	off,
-	one,
 	bootstrapCustomEvent,
 	dispatchCustomEvent,
 	mouseClickEvents,
 	mouseHoverEvents,
-	touchEvents,
 	passiveHandler,
 	// misc
 	setFocus,

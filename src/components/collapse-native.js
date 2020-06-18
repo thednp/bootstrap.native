@@ -1,15 +1,11 @@
 
 /* Native JavaScript for Bootstrap 4 | Collapse
 ----------------------------------------------- */
-import { hasClass } from 'shorter-js/src/class/hasClass.js';
-import { addClass } from 'shorter-js/src/class/addClass.js';
-import { removeClass } from 'shorter-js/src/class/removeClass.js';
-import { on } from 'shorter-js/src/event/on.js';
-import { off } from 'shorter-js/src/event/off.js';
-import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
 
-import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
+import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
 
 // COLLAPSE DEFINITION
 // ===================
@@ -38,17 +34,17 @@ export default function Collapse(element,options) {
     dispatchCustomEvent.call(collapseElement, showCustomEvent);
     if ( showCustomEvent.defaultPrevented ) return;
     collapseElement.isAnimating = true;
-    addClass(collapseElement,'collapsing');
-    removeClass(collapseElement,'collapse');
+    collapseElement.classList.add('collapsing');
+    collapseElement.classList.remove('collapse');
     collapseElement.style.height = `${collapseElement.scrollHeight}px`;
     
     emulateTransitionEnd(collapseElement, () => {
       collapseElement.isAnimating = false;
       collapseElement.setAttribute('aria-expanded','true');
       toggle.setAttribute('aria-expanded','true');
-      removeClass(collapseElement,'collapsing');
-      addClass(collapseElement, 'collapse');
-      addClass(collapseElement,'show');
+      collapseElement.classList.remove('collapsing');
+      collapseElement.classList.add('collapse');
+      collapseElement.classList.add('show');
       collapseElement.style.height = '';
       dispatchCustomEvent.call(collapseElement, shownCustomEvent);
     });
@@ -58,9 +54,9 @@ export default function Collapse(element,options) {
     if ( hideCustomEvent.defaultPrevented ) return;
     collapseElement.isAnimating = true;
     collapseElement.style.height = `${collapseElement.scrollHeight}px`; // set height first
-    removeClass(collapseElement,'collapse');
-    removeClass(collapseElement,'show');
-    addClass(collapseElement,'collapsing');
+    collapseElement.classList.remove('collapse');
+    collapseElement.classList.remove('show');
+    collapseElement.classList.add('collapsing');
     collapseElement.offsetWidth; // force reflow to enable transition
     collapseElement.style.height = '0px';
     
@@ -68,8 +64,8 @@ export default function Collapse(element,options) {
       collapseElement.isAnimating = false;
       collapseElement.setAttribute('aria-expanded','false');
       toggle.setAttribute('aria-expanded','false');
-      removeClass(collapseElement,'collapsing');
-      addClass(collapseElement,'collapse');
+      collapseElement.classList.remove('collapsing');
+      collapseElement.classList.add('collapse');
       collapseElement.style.height = '';
       dispatchCustomEvent.call(collapseElement, hiddenCustomEvent);
     });
@@ -79,14 +75,14 @@ export default function Collapse(element,options) {
   self.toggle = e => {
     if (e && e.target.tagName === 'A' || element.tagName === 'A') {e.preventDefault();}
     if (element.contains(e.target) || e.target === element) {
-      if (!hasClass(collapse,'show')) { self.show(); } 
+      if (!collapse.classList.contains('show')) { self.show(); } 
       else { self.hide(); }
     }
   }
   self.hide = () => {
     if ( collapse.isAnimating ) return;    
     closeAction(collapse,element);
-    addClass(element,'collapsed');
+    element.classList.add('collapsed');
   }
   self.show = () => {
     if ( accordion ) {
@@ -98,14 +94,14 @@ export default function Collapse(element,options) {
     if ( !collapse.isAnimating ) {
       if ( activeElement && activeCollapse !== collapse ) {
         closeAction(activeCollapse,activeElement); 
-        addClass(activeElement,'collapsed');
+        activeElement.classList.add('collapsed');
       }
       openAction(collapse,element);
-      removeClass(element,'collapsed');
+      element.classList.remove('collapsed');
     }
   }
   self.dispose = () => {
-    off(element, 'click', self.toggle);
+    element.removeEventListener('click',self.toggle,false);
     delete element.Collapse;
   }
 
@@ -134,7 +130,7 @@ export default function Collapse(element,options) {
   
     // prevent adding event handlers twice
     if ( !element.Collapse ) { 
-      on(element, 'click', self.toggle);
+      element.addEventListener('click',self.toggle,false);
     }
   
     // associate target to init object

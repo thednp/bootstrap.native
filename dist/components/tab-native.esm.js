@@ -1,36 +1,53 @@
+/*!
+  * Native JavaScript for Bootstrap v3.0.5 (https://thednp.github.io/bootstrap.native/)
+  * Copyright 2015-2020 © dnp_theme
+  * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
+  */
+var supportTransition = 'webkitTransition' in document.body.style || 'transition' in document.body.style;
 
-/* Native JavaScript for Bootstrap 4 | Tab
------------------------------------------- */
-import supportTransition from 'shorter-js/src/boolean/supportTransition.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
+var transitionEndEvent = 'webkitTransition' in document.body.style ? 'webkitTransitionEnd' : 'transitionend';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+var transitionDuration = 'webkitTransition' in document.body.style ? 'webkitTransitionDuration' : 'transitionDuration';
 
-// TAB DEFINITION
-// ==============
+function getElementTransitionDuration(element) {
+  var duration = supportTransition ? parseFloat(getComputedStyle(element)[transitionDuration]) : 0;
+  duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
+  return duration;
+}
 
-export default function Tab(element,options) {
+function emulateTransitionEnd(element,handler){
+  var called = 0, duration = getElementTransitionDuration(element);
+  duration ? element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){
+              !called && handler(e), called = 1;
+              element.removeEventListener( transitionEndEvent, transitionEndWrapper);
+            })
+           : setTimeout(function() { !called && handler(), called = 1; }, 17);
+}
 
-  // set options
-  options = options || {}
+function queryElement(selector, parent) {
+  var lookUp = parent && parent instanceof Element ? parent : document;
+  return selector instanceof Element ? selector : lookUp.querySelector(selector);
+}
 
-  // bind
-  let self = this,
+function bootstrapCustomEvent(eventName, componentName, related) {
+  var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
+  OriginalCustomEvent.relatedTarget = related;
+  return OriginalCustomEvent;
+}
 
-    // DATA API
+function dispatchCustomEvent(customEvent){
+  this && this.dispatchEvent(customEvent);
+}
+
+function Tab(element,options) {
+  options = options || {};
+  var self = this,
     heightData,
-    // event targets
     tabs, dropdown,
-
-    // custom events
     showCustomEvent,
     shownCustomEvent,
     hideCustomEvent,
     hiddenCustomEvent,
-
-    // more GC material
     next,
     tabsContentContainer = false,
     activeTab,
@@ -40,26 +57,24 @@ export default function Tab(element,options) {
     equalContents,
     nextHeight,
     animateHeight;
-
-  // triggers
   function triggerEnd() {
     tabsContentContainer.style.height = '';
     tabsContentContainer.classList.remove('collapsing');
     tabs.isAnimating = false;
   }
   function triggerShow() {
-    if (tabsContentContainer) { // height animation
+    if (tabsContentContainer) {
       if ( equalContents ) {
         triggerEnd();
       } else {
-        setTimeout(() => { // enables height animation
-          tabsContentContainer.style.height = `${nextHeight}px`; // height animation
+        setTimeout(function () {
+          tabsContentContainer.style.height = nextHeight + "px";
           tabsContentContainer.offsetWidth;
           emulateTransitionEnd(tabsContentContainer, triggerEnd);
         },50);
       }
     } else {
-      tabs.isAnimating = false; 
+      tabs.isAnimating = false;
     }
     shownCustomEvent = bootstrapCustomEvent('shown', 'tab', activeTab);
     dispatchCustomEvent.call(next, shownCustomEvent);
@@ -67,42 +82,34 @@ export default function Tab(element,options) {
   function triggerHide() {
     if (tabsContentContainer) {
       activeContent.style.float = 'left';
-      nextContent.style.float = 'left';        
+      nextContent.style.float = 'left';
       containerHeight = activeContent.scrollHeight;
     }
-
     showCustomEvent = bootstrapCustomEvent('show', 'tab', activeTab);
     hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', next);
-
     dispatchCustomEvent.call(next, showCustomEvent);
-    if ( showCustomEvent.defaultPrevented ) return;
-      
+    if ( showCustomEvent.defaultPrevented ) { return; }
     nextContent.classList.add('active');
-
     activeContent.classList.remove('active');
-
     if (tabsContentContainer) {
       nextHeight = nextContent.scrollHeight;
       equalContents = nextHeight === containerHeight;
       tabsContentContainer.classList.add('collapsing');
-      tabsContentContainer.style.height = `${containerHeight}px`; // height animation
+      tabsContentContainer.style.height = containerHeight + "px";
       tabsContentContainer.offsetHeight;
       activeContent.style.float = '';
       nextContent.style.float = '';
     }
-
     if ( nextContent.classList.contains('fade') ) {
-      setTimeout(() => {
+      setTimeout(function () {
         nextContent.classList.add('show');
         emulateTransitionEnd(nextContent,triggerShow);
       },20);
     } else { triggerShow(); }
-
     dispatchCustomEvent.call(activeTab, hiddenCustomEvent);
   }
-  // private methods
   function getActiveTab() {
-    let activeTabs = tabs.getElementsByClassName('active'), activeTab;
+    var activeTabs = tabs.getElementsByClassName('active'), activeTab;
     if ( activeTabs.length === 1 && !activeTabs[0].parentNode.classList.contains('dropdown') ) {
       activeTab = activeTabs[0];
     } else if ( activeTabs.length > 1 ) {
@@ -111,80 +118,54 @@ export default function Tab(element,options) {
     return activeTab;
   }
   function getActiveContent() { return queryElement(getActiveTab().getAttribute('href')) }
-  // handler 
   function clickHandler(e) {
     e.preventDefault();
     next = e.currentTarget;
     !tabs.isAnimating && self.show();
   }
-
-  // public method
-  self.show = () => { // the tab we clicked is now the next tab
+  self.show = function () {
     next = next || element;
-
     if (!next.classList.contains('active')) {
-      nextContent = queryElement(next.getAttribute('href')); // this is the actual object, the next tab content to activate
-      activeTab = getActiveTab(); 
+      nextContent = queryElement(next.getAttribute('href'));
+      activeTab = getActiveTab();
       activeContent = getActiveContent();
-  
       hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', next);
       dispatchCustomEvent.call(activeTab, hideCustomEvent);
-      if (hideCustomEvent.defaultPrevented) return;
-  
-  
+      if (hideCustomEvent.defaultPrevented) { return; }
       tabs.isAnimating = true;
       activeTab.classList.remove('active');
       activeTab.setAttribute('aria-selected','false');
       next.classList.add('active');
-      next.setAttribute('aria-selected','true');    
-  
+      next.setAttribute('aria-selected','true');
       if ( dropdown ) {
         if ( !element.parentNode.classList.contains('dropdown-menu') ) {
-          if (dropdown.classList.contains('active')) dropdown.classList.remove('active');
+          if (dropdown.classList.contains('active')) { dropdown.classList.remove('active'); }
         } else {
-          if (!dropdown.classList.contains('active')) dropdown.classList.add('active');
+          if (!dropdown.classList.contains('active')) { dropdown.classList.add('active'); }
         }
       }
-  
       if (activeContent.classList.contains('fade')) {
         activeContent.classList.remove('show');
         emulateTransitionEnd(activeContent, triggerHide);
       } else { triggerHide(); }
     }
-  }
-  self.dispose = () => {
+  };
+  self.dispose = function () {
     element.removeEventListener('click',clickHandler,false);
     delete element.Tab;
-  }
-
-  // INIT
-  // initialization element
+  };
   element = queryElement(element);
-
-  // reset on re-init
   element.Tab && element.Tab.dispose();
-
-  // DATA API
-  heightData = element.getAttribute('data-height')
-  // event targets
-  tabs = element.closest('.nav')
-  dropdown = tabs && queryElement('.dropdown-toggle',tabs)
-
-  // instance options
+  heightData = element.getAttribute('data-height');
+  tabs = element.closest('.nav');
+  dropdown = tabs && queryElement('.dropdown-toggle',tabs);
   animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
-
-  // set default animation state
   tabs.isAnimating = false;
-
-  // init
-  if ( !element.Tab ) { // prevent adding event handlers twice
+  if ( !element.Tab ) {
     element.addEventListener('click',clickHandler,false);
   }
-
   if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
-
-  // associate target with init object
   element.Tab = self;
-
 }
 
+export default Tab;

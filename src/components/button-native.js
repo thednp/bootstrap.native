@@ -1,14 +1,10 @@
 
 /* Native JavaScript for Bootstrap 4 | Button
 ---------------------------------------------*/
-import { hasClass } from 'shorter-js/src/class/hasClass.js';
-import { addClass } from 'shorter-js/src/class/addClass.js';
-import { removeClass } from 'shorter-js/src/class/removeClass.js';
-import { on } from 'shorter-js/src/event/on.js';
-import { off } from 'shorter-js/src/event/off.js';
-import { queryElement } from 'shorter-js/src/misc/queryElement.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
 
-import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
+import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
 
 // BUTTON DEFINITION
 // =================
@@ -41,12 +37,12 @@ export default function Button(element) {
       if ( changeCustomEvent.defaultPrevented ) return; // discontinue when defaultPrevented is true
 
       if ( !input.checked ) {
-        addClass(label,'active');
+        label.classList.add('active');
         input.getAttribute('checked');
         input.setAttribute('checked','checked');
         input.checked = true;
       } else {
-        removeClass(label,'active');
+        label.classList.remove('active');
         input.getAttribute('checked');
         input.removeAttribute('checked');
         input.checked = false;
@@ -61,17 +57,17 @@ export default function Button(element) {
       if ( changeCustomEvent.defaultPrevented ) return;
       // don't trigger if already active (the OR condition is a hack to check if the buttons were selected with key press and NOT mouse click)
       if ( !input.checked || (e.screenX === 0 && e.screenY == 0) ) {
-        addClass(label,'active');
-        addClass(label,'focus');
+        label.classList.add('active');
+        label.classList.add('focus');
         input.setAttribute('checked','checked');
         input.checked = true;
 
         element.toggled = true;
         Array.from(labels).map(otherLabel=>{
           let otherInput = otherLabel.getElementsByTagName('INPUT')[0];
-          if ( otherLabel !== label && hasClass(otherLabel,'active') )  {
+          if ( otherLabel !== label && otherLabel.classList.contains('active') )  {
             dispatchCustomEvent.call(otherInput, changeCustomEvent); // trigger the change
-            removeClass(otherLabel,'active');
+            otherLabel.classList.remove('active');
             otherInput.removeAttribute('checked');
             otherInput.checked = false;
           }
@@ -91,20 +87,21 @@ export default function Button(element) {
     key === 32 && e.preventDefault();
   }
   function focusToggle(e) {
-    let action = e.type === 'focusin' ? addClass : removeClass;
     if (e.target.tagName === 'INPUT' ) {
-      action(e.target.closest('.btn'),'focus');
+      let action = e.type === 'focusin' ? 'add' : 'remove';
+      e.target.closest('.btn').classList[action]('focus');
     }
   }
   function toggleEvents(action) {
-    action( element, 'click', toggle );
-    action( element, 'keyup', keyHandler ), action( element, 'keydown', preventScroll );
-    action( element, 'focusin', focusToggle), action( element, 'focusout', focusToggle);
+    action = action ? 'addEventListener' : 'removeEventListener';
+    element[action]('click',toggle,false );
+    element[action]('keyup',keyHandler,false), element[action]('keydown',preventScroll,false);
+    element[action]('focusin',focusToggle,false), element[action]('focusout',focusToggle,false);
   }
 
   // public method
   self.dispose = () => {
-    toggleEvents(off);
+    toggleEvents();
     delete element.Button;
   }
 
@@ -122,7 +119,7 @@ export default function Button(element) {
 
   // prevent adding event handlers twice
   if ( !element.Button ) { 
-    toggleEvents(on);
+    toggleEvents(1);
   }
 
   // set initial toggled state
@@ -134,12 +131,12 @@ export default function Button(element) {
 
   // activate items on load
   Array.from(labels).map((btn)=>{
-    !hasClass(btn,'active') 
+    !btn.classList.contains('active') 
       && queryElement('input:checked',btn)
-      && addClass(btn,'active');
-    hasClass(btn,'active') 
+      && btn.classList.add('active');
+    btn.classList.contains('active')
       && !queryElement('input:checked',btn)
-      && removeClass(btn,'active');
+      && btn.classList.remove('active');
   })
 }
 

@@ -1,6 +1,5 @@
-import { one } from 'shorter-js/src/event/one.js'
-import { initCallback } from './callbacks.js'
-import { componentsInit } from './globals.js'
+import initCallback from './initCallback.js'
+import componentsInit from './componentsInit.js'
 
 import Alert from '../components/alert-native.js'
 import Button from '../components/button-native.js'
@@ -27,4 +26,7 @@ componentsInit.Toast = [ Toast, '[data-dismiss="toast"]' ]
 componentsInit.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ]
 
 // bulk initialize all components
-document.body ? initCallback() : one( document, 'DOMContentLoaded', initCallback );
+document.body ? initCallback() : document.addEventListener( 'DOMContentLoaded', function initWrapper(){
+	initCallback()
+	document.removeEventListener('DOMContentLoaded',initWrapper,false)
+}, false );

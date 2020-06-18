@@ -1,2 +1,0 @@
-// globals
-export const componentsInit = {}

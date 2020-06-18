@@ -1,18 +1,6 @@
-import { hasClass, queryElement } from 'shorter-js';
+import getScroll from './getScroll.js'
 
-export function setFocus (element){
-  element.focus ? element.focus() : element.setActive();
-}
-
-// Popover, Tooltip & ScrollSpy
-export function getScroll () { 
-  return {
-    y : window.pageYOffset || document.documentElement.scrollTop,
-    x : window.pageXOffset || document.documentElement.scrollLeft
-  }
-}
-
-export function styleTip (link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
+export default function(link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
   const tipPositions = /\b(top|bottom|left|right)+/,
       elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
       windowWidth = (document.documentElement.clientWidth || document.body.clientWidth),
@@ -20,9 +8,9 @@ export function styleTip (link,element,position,parent) { // both popovers and t
       rect = link.getBoundingClientRect(),
       scroll = parent === document.body ? getScroll() : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
       linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
-      isPopover = hasClass(element,'popover'),
+      isPopover = element.classList.contains('popover'),
 
-      arrow = queryElement('.arrow',element),
+      arrow = element.getElementsByClassName('arrow')[0],
 
       halfTopExceed = rect.top + linkDimensions.h/2 - elementDimensions.h/2 < 0,
       halfLeftExceed = rect.left + linkDimensions.w/2 - elementDimensions.w/2 < 0,

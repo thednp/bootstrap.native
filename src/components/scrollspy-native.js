@@ -1,17 +1,12 @@
 
 /* Native JavaScript for Bootstrap 4 | ScrollSpy
 ------------------------------------------------ */
-import { hasClass } from 'shorter-js/src/class/hasClass.js';
-import { addClass } from 'shorter-js/src/class/addClass.js';
-import { removeClass } from 'shorter-js/src/class/removeClass.js';
-import { on } from 'shorter-js/src/event/on.js';
-import { off } from 'shorter-js/src/event/off.js';
-import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
-import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-// import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
 
-import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { getScroll } from '../util/misc.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
+import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import getScroll from '../util/getScroll.js';
 
 // SCROLLSPY DEFINITION
 // ====================
@@ -62,15 +57,15 @@ export default function ScrollSpy(element,options) {
   function updateItem(index) {
     let item = vars.items[index], // the menu item targets this element
       targetItem = vars.targets[index],
-      // parent = hasClass(item,'dropdown-item') ? item.closest('.dropdown-menu')  // child looking up
-      //        : hasClass(item,'nav-link')      ? item.closest('.nav') : 0,
-      dropmenu = hasClass(item,'dropdown-item') && item.closest('.dropdown-menu'),
+      // parent = item.classList.contains('dropdown-item') ? item.closest('.dropdown-menu')  // child looking up
+      //        : item.classList.contains('nav-link')      ? item.closest('.nav') : 0,
+      dropmenu = item.classList.contains('dropdown-item') && item.closest('.dropdown-menu'),
       dropLink = dropmenu && dropmenu.previousElementSibling,
       // parentLink = parent && parent.previousElementSibling,
       nextSibling = item.nextElementSibling,
       activeSibling = nextSibling && nextSibling.getElementsByClassName('active').length, // parent looking down
       targetRect = vars.isWindow && targetItem.getBoundingClientRect(),
-      isActive = hasClass(item,'active') || false,
+      isActive = item.classList.contains('active') || false,
       topEdge = (vars.isWindow ? targetRect.top + vars.scrollOffset : targetItem.offsetTop) - ops.offset,
       bottomEdge = vars.isWindow ? targetRect.bottom + vars.scrollOffset - ops.offset 
                  : vars.targets[index+1] ? vars.targets[index+1].offsetTop - ops.offset 
@@ -78,16 +73,16 @@ export default function ScrollSpy(element,options) {
       inside = activeSibling || vars.scrollOffset >= topEdge && bottomEdge > vars.scrollOffset;
 
      if ( !isActive && inside ) {
-      addClass(item,'active');
-      if (dropLink && !hasClass(dropLink,'active') ) {
-        addClass(dropLink,'active');
+      item.classList.add('active');
+      if (dropLink && !dropLink.classList.contains('active') ) {
+        dropLink.classList.add('active');
       }
       dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', vars.items[index]));
     } else if ( isActive && !inside ) {
-      removeClass(item,'active');
+      item.classList.remove('active');
 
-      if (dropLink && hasClass(dropLink,'active') && !item.parentNode.getElementsByClassName('active').length ) {
-        removeClass(dropLink,'active');
+      if (dropLink && dropLink.classList.contains('active') && !item.parentNode.getElementsByClassName('active').length ) {
+        dropLink.classList.remove('active');
       }
     } else if ( isActive && inside || !inside && !isActive ) {
       return;
@@ -100,8 +95,9 @@ export default function ScrollSpy(element,options) {
     vars.items.map((l,idx)=>updateItem(idx))
   }
   function toggleEvents(action) {
-    action( scrollTarget, 'scroll', self.refresh, passiveHandler );
-    action( window, 'resize', self.refresh, passiveHandler );
+    action = action ? 'addEventListener' : 'removeEventListener'
+    scrollTarget[action]('scroll', self.refresh, passiveHandler );
+    window[action]( 'resize', self.refresh, passiveHandler );
   }
 
   // public method
@@ -109,7 +105,7 @@ export default function ScrollSpy(element,options) {
     updateItems();
   }
   self.dispose = () => {
-    toggleEvents(off);
+    toggleEvents();
     delete element.ScrollSpy;
   }
 
@@ -145,7 +141,7 @@ export default function ScrollSpy(element,options) {
 
   // prevent adding event handlers twice
   if ( !element.ScrollSpy ) { 
-    toggleEvents(on)
+    toggleEvents(1)
   }
   self.refresh()
 

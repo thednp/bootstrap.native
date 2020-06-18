@@ -1,16 +1,11 @@
 
 /* Native JavaScript for Bootstrap 4 | Toast
 -------------------------------------------- */
-import { hasClass } from 'shorter-js/src/class/hasClass.js';
-import { addClass } from 'shorter-js/src/class/addClass.js';
-import { removeClass } from 'shorter-js/src/class/removeClass.js';
-import { on } from 'shorter-js/src/event/on.js';
-import { off } from 'shorter-js/src/event/off.js';
-import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-// import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
 
-import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
+import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
 
 // TOAST DEFINITION
 // ==================
@@ -40,40 +35,41 @@ export default function Toast(element,options) {
 
   // private methods
   function showComplete() {
-    removeClass( toast, 'showing' );
-    addClass( toast, 'show' );
+    toast.classList.remove( 'showing' );
+    toast.classList.add( 'show' );
     dispatchCustomEvent.call(toast,shownCustomEvent);
     if (ops.autohide) { self.hide(); }
   }
   function hideComplete() {
-    addClass( toast, 'hide' );
+    toast.classList.add( 'hide' );
     dispatchCustomEvent.call(toast,hiddenCustomEvent);
   }
   function close () {
-    removeClass( toast,'show' );
+    toast.classList.remove('show' );
     ops.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
   }
   function disposeComplete() {
     clearTimeout(timer);
-    off(element, 'click', self.hide);
+    element.removeEventListener('click',self.hide,false);
+
     delete element.Toast;
   }
 
   // public methods
   self.show = () => {
-    if (toast && !hasClass(toast,'show')) {
+    if (toast && !toast.classList.contains('show')) {
       dispatchCustomEvent.call(toast,showCustomEvent);
       if (showCustomEvent.defaultPrevented) return;
-      ops.animation && addClass( toast,'fade' );
-      removeClass( toast,'hide' );
+      ops.animation && toast.classList.add( 'fade' );
+      toast.classList.remove('hide' );
       toast.offsetWidth; // force reflow
-      addClass( toast,'showing' );
+      toast.classList.add('showing' );
 
       ops.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();
     }
   };
   self.hide = noTimer => {
-    if (toast && hasClass(toast,'show')) {
+    if (toast && toast.classList.contains('show')) {
       dispatchCustomEvent.call(toast,hideCustomEvent);
       if(hideCustomEvent.defaultPrevented) return;
 
@@ -112,11 +108,10 @@ export default function Toast(element,options) {
   ops.delay = parseInt(options.delay || delayData) || 500; // 500ms default    
   
   if ( !element.Toast ) { // prevent adding event handlers twice
-    on(element, 'click', self.hide);
+    element.addEventListener('click',self.hide,false);
   }
 
   // associate targets to init object
   element.Toast = self;
-
 }
 

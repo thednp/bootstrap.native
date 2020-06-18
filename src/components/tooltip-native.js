@@ -1,21 +1,15 @@
 
 /* Native JavaScript for Bootstrap 4 | Tooltip
 ---------------------------------------------- */
-import { hasClass } from 'shorter-js/src/class/hasClass.js';
-import { addClass } from 'shorter-js/src/class/addClass.js';
-import { removeClass } from 'shorter-js/src/class/removeClass.js';
-import { on } from 'shorter-js/src/event/on.js';
-import { off } from 'shorter-js/src/event/off.js';
-import { mouseHoverEvents } from 'shorter-js/src/strings/mouseHoverEvents.js';
-import { mouseClickEvents } from 'shorter-js/src/strings/mouseClickEvents.js';
-import { touchEvents } from 'shorter-js/src/strings/touchEvents.js';
-import { passiveHandler } from 'shorter-js/src/misc/passiveHandler.js';
-import { emulateTransitionEnd } from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import { queryElement } from 'shorter-js/src/misc/queryElement.js';
-// import { tryWrapper } from 'shorter-js/src/misc/tryWrapper.js';
+import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents.js';
+import mouseClickEvents from 'shorter-js/src/strings/mouseClickEvents.js';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
 
-import { bootstrapCustomEvent, dispatchCustomEvent } from '../util/event.js';
-import { styleTip } from '../util/misc.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
+import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import styleTip from '../util/styleTip.js';
 
 // TOOLTIP DEFINITION
 // ==================
@@ -84,11 +78,11 @@ export default function Tooltip(element,options) {
       } else {
         // tooltip arrow
         let tooltipArrow = document.createElement('div');
-        addClass(tooltipArrow,'arrow');
+        tooltipArrow.classList.add('arrow');
         tooltip.appendChild(tooltipArrow);
         // tooltip inner
         let tooltipInner = document.createElement('div');
-        addClass(tooltipInner,'tooltip-inner');
+        tooltipInner.classList.add('tooltip-inner');
         tooltip.appendChild(tooltipInner);
         tooltipInner.innerHTML = titleString;
       }
@@ -97,9 +91,9 @@ export default function Tooltip(element,options) {
       tooltip.style.top = '0';
       // set class and role attribute
       tooltip.setAttribute('role','tooltip');
-      !hasClass(tooltip, 'tooltip') && addClass(tooltip, 'tooltip');
-      !hasClass(tooltip, ops.animation) && addClass(tooltip, ops.animation);
-      !hasClass(tooltip, placementClass) && addClass(tooltip, placementClass);
+      !tooltip.classList.contains('tooltip') && tooltip.classList.add('tooltip');
+      !tooltip.classList.contains(ops.animation) && tooltip.classList.add(ops.animation);
+      !tooltip.classList.contains(placementClass) && tooltip.classList.add(placementClass);
       // append to container
       ops.container.appendChild(tooltip);
     }
@@ -108,7 +102,7 @@ export default function Tooltip(element,options) {
     styleTip(element, tooltip, ops.placement, ops.container);
   }
   function showTooltip() {
-    !hasClass(tooltip,'show') && ( addClass(tooltip,'show') );
+    !tooltip.classList.contains('show') && ( tooltip.classList.add('show') );
   }
   function touchHandler(e){
     if ( tooltip && tooltip.contains(e.target) || e.target === element || element.contains(e.target)) {
@@ -118,21 +112,25 @@ export default function Tooltip(element,options) {
     }
   }
   // triggers
+  function toggleAction(action){
+    action = action ? 'addEventListener' : 'removeEventListener';
+    document[action]( 'touchstart', touchHandler, passiveHandler );
+    window[action]( 'resize', self.hide, passiveHandler );
+  }
   function showAction() {
-    on( document, touchEvents.start, touchHandler, passiveHandler );
-    on( window, 'resize', self.hide, passiveHandler );
+    toggleAction(1)
     dispatchCustomEvent.call(element, shownCustomEvent);
   }
   function hideAction() {
-    off( document, touchEvents.start, touchHandler, passiveHandler );
-    off( window, 'resize', self.hide, passiveHandler );
+    toggleAction();
     removeToolTip();
     dispatchCustomEvent.call(element, hiddenCustomEvent);
   }
   function toggleEvents(action) {
-    action(element, mouseClickEvents.down, self.show);
-    action(element, mouseHoverEvents[0], self.show);
-    action(element, mouseHoverEvents[1], self.hide);
+    action = action ? 'addEventListener' : 'removeEventListener';
+    element[action](mouseClickEvents.down, self.show,false);
+    element[action](mouseHoverEvents[0], self.show,false);
+    element[action](mouseHoverEvents[1], self.hide,false);
   }
 
   // public methods
@@ -154,10 +152,10 @@ export default function Tooltip(element,options) {
   self.hide = () => {
     clearTimeout(timer);
     timer = setTimeout( () => {
-      if (tooltip && hasClass(tooltip,'show')) {
+      if (tooltip && tooltip.classList.contains('show')) {
         dispatchCustomEvent.call(element, hideCustomEvent);
         if (hideCustomEvent.defaultPrevented) return;
-        removeClass(tooltip,'show');
+        tooltip.classList.remove('show');
         !!ops.animation ? emulateTransitionEnd(tooltip, hideAction) : hideAction();
       }
     }, ops.delay);
@@ -167,7 +165,7 @@ export default function Tooltip(element,options) {
     else { self.hide(); }
   };
   self.dispose = () => {
-    toggleEvents(off);
+    toggleEvents();
     self.hide();
     element.setAttribute('title', element.getAttribute('data-original-title'));
     element.removeAttribute('data-original-title');
@@ -228,7 +226,7 @@ export default function Tooltip(element,options) {
   if (!element.Tooltip) {
     element.setAttribute('data-original-title',titleString);
     element.removeAttribute('title');
-    toggleEvents(on);
+    toggleEvents(1);
   }
 
   // associate target to init object
