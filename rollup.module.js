@@ -7,22 +7,24 @@ import cleanup from 'rollup-plugin-cleanup'
 import * as pkg from "./package.json";
 
 // set headers
+const MODULE = process.env.MODULE
+const NAME = MODULE === 'scrollspy' ? 'ScrollSpy' : MODULE.charAt(0).toUpperCase() + MODULE.slice(1)
+
 const year = (new Date).getFullYear()
-const banner = 
-`/*!
-  * Native JavaScript for Bootstrap v${pkg.version} (${pkg.homepage})
+const banner = `/*!
+  * Native JavaScript for Bootstrap ${NAME} v${pkg.version} (${pkg.homepage})
   * Copyright 2015-${year} © ${pkg.author}
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */`
 
-const miniBanner = `// Native JavaScript for Bootstrap v${pkg.version} | ${year} © ${pkg.author} | ${pkg.license}-License`
+const miniBanner = `// Native JavaScript for Bootstrap ${NAME} v${pkg.version} | ${year} © ${pkg.author} | ${pkg.license}-License`
 
 // set config
 const MIN = process.env.MIN === 'true' // true/false|unset
 const FORMAT = process.env.FORMAT // umd|iife|esm|cjs
 
-const INPUTFILE = process.env.INPUTFILE ? process.env.INPUTFILE : 'src/index.js'
-const OUTPUTFILE = process.env.OUTPUTFILE ? process.env.OUTPUTFILE : (FORMAT === 'umd' ? './dist/bootstrap-native'+(MIN?'.min':'')+'.js' : './dist/bootstrap-native.'+FORMAT+(MIN?'.min':'')+'.js')
+const INPUTFILE = './src/components/'+MODULE+'-native.js'
+const OUTPUTFILE = './dist/components/'+MODULE+'-native'+(FORMAT!=='umd'?'.'+FORMAT:'')+(MIN?'.min':'')+'.js'
 
 const OUTPUT = {
   file: OUTPUTFILE,
@@ -44,7 +46,7 @@ if (MIN){
 }
 
 if (FORMAT!=='esm') {
-  OUTPUT.name = 'BSN';
+  OUTPUT.name = NAME;
 }
 
 export default [

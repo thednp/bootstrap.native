@@ -1,12 +1,12 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.5 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Toast v3.0.6 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.BSN = factory());
+  (global = global || self, global.Toast = factory());
 }(this, (function () { 'use strict';
 
   var transitionEndEvent = 'webkitTransition' in document.body.style ? 'webkitTransitionEnd' : 'transitionend';
