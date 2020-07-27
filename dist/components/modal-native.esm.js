@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Modal v3.0.9 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Modal v3.1.0 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
