@@ -4,7 +4,7 @@ var offCanvasCollapse = document.getElementsByClassName('offcanvas-collapse')[0]
 		sideNav = document.getElementById('side-nav'),
 		topNav = document.getElementById('top-nav'),
 		sideLinks = Array.from(sideNav.getElementsByTagName("A")).concat(Array.from(topNav.getElementsByTagName("A"))),
-		scrollTarget = /(EDGE|Mac)/i.test(navigator.userAgent) ? document.body : document.documentElement;
+		scrollTarget = /(EDGE)/i.test(navigator.userAgent) ? document.body : document.documentElement;
 
 sideLinks.map((x,i) => x.addEventListener('click', (e) => { 
 	var target = document.getElementById(x.getAttribute('href').replace('#', ''));
