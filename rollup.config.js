@@ -30,7 +30,7 @@ const OUTPUT = {
 }
 
 const PLUGINS = [
-  node({mainFields: ['jsnext', 'module']}),
+  node({mainFields: ['jsnext','module'], dedupe: ['shorter-js']}) ,
   json(),
   buble(),
   cleanup()
