@@ -71,7 +71,7 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
-    "shorter-js": "^0.1.4",
+    "shorter-js": "^0.1.5",
     "minifill": "^0.0.8"
   },
   "devDependencies": {
@@ -80,7 +80,7 @@
     "@rollup/plugin-node-resolve": "^7.1.0",
     "npm-run-all": "^4.1.5",
     "rollup": "^1.32.1",
-    "rollup-plugin-cleanup": "^3.1.1",
-    "rollup-plugin-terser": "^5.3.0"
+    "rollup-plugin-cleanup": "^3.2.1",
+    "rollup-plugin-terser": "^5.3.1"
   }
 }

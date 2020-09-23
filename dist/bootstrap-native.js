@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.10 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.11 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -15,10 +15,14 @@
 
   var transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
 
+  var transitionProperty = 'webkitTransition' in document.body.style ? 'webkitTransitionProperty' : 'transitionProperty';
+
   function getElementTransitionDuration(element) {
-    var duration = supportTransition ? parseFloat(getComputedStyle(element)[transitionDuration]) : 0;
-    duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
-    return duration;
+    var computedStyle = getComputedStyle(element),
+        property = computedStyle[transitionProperty],
+        duration = supportTransition && property && property !== 'none'
+                 ? parseFloat(computedStyle[transitionDuration]) : 0;
+    return !isNaN(duration) ? duration * 1000 : 0;
   }
 
   function emulateTransitionEnd(element,handler){
@@ -1637,7 +1641,7 @@
     }
   }
 
-  var version = "3.0.10";
+  var version = "3.0.11";
 
   var index = {
     Alert: Alert,
