@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "3.0.11",
+  "version": "3.0.12",
   "description": "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.",
   "main": "dist/bootstrap-native.min.js",
   "module": "dist/bootstrap-native.esm.js",
@@ -14,7 +14,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "rollup --help",
-    "build": "npm-run-all --parallel build-*",
+    "build": "npm-run-all --parallel build-* && npm-run-all --parallel module-*",
     "custom": "rollup -c --environment",
     "build-esm": "rollup --environment FORMAT:esm,MIN:false -c",
     "build-esm-min": "rollup --environment FORMAT:esm,MIN:true -c",

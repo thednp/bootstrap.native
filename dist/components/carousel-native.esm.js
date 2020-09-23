@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Carousel v3.1.0 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Carousel v3.0.12 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -22,17 +22,21 @@ var supportPassive = (function () {
 
 var passiveHandler = supportPassive ? { passive: true } : false;
 
-var supportTransition = 'webkitTransition' in document.body.style || 'transition' in document.body.style;
+var supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
 
-var transitionDuration = 'webkitTransition' in document.body.style ? 'webkitTransitionDuration' : 'transitionDuration';
+var transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+
+var transitionProperty = 'webkitTransition' in document.body.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
 function getElementTransitionDuration(element) {
-  var duration = supportTransition ? parseFloat(getComputedStyle(element)[transitionDuration]) : 0;
-  duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
-  return duration;
+  var computedStyle = getComputedStyle(element),
+      property = computedStyle[transitionProperty],
+      duration = supportTransition && property && property !== 'none'
+               ? parseFloat(computedStyle[transitionDuration]) : 0;
+  return !isNaN(duration) ? duration * 1000 : 0;
 }
 
-var transitionEndEvent = 'webkitTransition' in document.body.style ? 'webkitTransitionEnd' : 'transitionend';
+var transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
 
 function emulateTransitionEnd(element,handler){
   var called = 0, duration = getElementTransitionDuration(element);
