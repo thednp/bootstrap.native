@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Carousel v3.0.12 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Carousel v3.0.13 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -32,7 +32,7 @@
 
   var transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
 
-  var transitionProperty = 'webkitTransition' in document.body.style ? 'webkitTransitionProperty' : 'transitionProperty';
+  var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
   function getElementTransitionDuration(element) {
     var computedStyle = getComputedStyle(element),
