@@ -519,8 +519,17 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
           
             <section id="carouselEvents">
               <h3>Carousel Events</h3>
-              <p>All the component's original event are triggered for the <code>&lt;div class="carousel"&gt;</code> element, and the
-                <code>event.relatedTarget</code> is the newly activated carousel item.</p>
+              <p>The carousel component exposes two events that allow you to trigger custom functionality when the carousel slides. All the component's events are triggered on the <code>&lt;div class="carousel"&gt;</code> element. Both events have the following additional properties:</p>
+              <dl class="row">
+                <dt class="col-md-2">direction<dt>
+                <dd class="col-md-10">The direction the carousel is sliding, either <code>left</code> or <code>right</code>.</dd>
+                <dt class="col-md-2">from</dt>
+                <dd class="col-md-10">The index of the current carousel item (integer starting with <code>0</code> index).</dd>
+                <dt class="col-md-2">to</dt>
+                <dd class="col-md-10">The index of the next carousel item.</dd>
+                <dt class="col-md-2">relatedTarget</dt>
+                <dd class="col-md-10">The DOM element of the next carousel item.</dd>
+              </dl>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -542,6 +551,12 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                   </tbody>
                 </table>
               </div>
+              <p>For example:</p>
+<pre><code class="language-javascript">// this function will run when the carousel begins to slide
+document.querySelector('.carousel').addEventListener('slide.bs.carousel', event => {
+  console.log("The carousel is sliding " + event.direction);
+});
+</code></pre>
             </section>
           
             <section id="carouselDATA">
