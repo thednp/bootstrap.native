@@ -1,5 +1,11 @@
-export default function(eventName, componentName, related) {
+export default function(eventName, componentName, properties) {
   let OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-  OriginalCustomEvent.relatedTarget = related;
+  if (typeof properties !== 'undefined') {
+    Object.keys(properties).forEach(key => {
+      Object.defineProperty(OriginalCustomEvent, key, {
+        value: properties[key]
+      });
+    });
+  }
   return OriginalCustomEvent;
 }

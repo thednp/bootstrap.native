@@ -77,7 +77,7 @@ export default function ScrollSpy(element,options) {
       if (dropLink && !dropLink.classList.contains('active') ) {
         dropLink.classList.add('active');
       }
-      dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', vars.items[index]));
+      dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', { relatedTarget: vars.items[index] }));
     } else if ( isActive && !inside ) {
       item.classList.remove('active');
 

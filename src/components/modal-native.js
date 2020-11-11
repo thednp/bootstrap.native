@@ -115,7 +115,7 @@ export default function Modal(element,options) { // element can be the modal/tri
 
     toggleEvents(1);
 
-    shownCustomEvent = bootstrapCustomEvent('shown', 'modal', relatedTarget);
+    shownCustomEvent = bootstrapCustomEvent('shown', 'modal', { relatedTarget: relatedTarget });
     dispatchCustomEvent.call(modal, shownCustomEvent);
   }
   function triggerHide(force) {
@@ -181,7 +181,7 @@ export default function Modal(element,options) { // element can be the modal/tri
   self.show = () => {
     if (modal.classList.contains('show') && !!modal.isAnimating ) {return}
 
-    showCustomEvent = bootstrapCustomEvent('show', 'modal', relatedTarget);
+    showCustomEvent = bootstrapCustomEvent('show', 'modal', { relatedTarget: relatedTarget });
     dispatchCustomEvent.call(modal, showCustomEvent);
 
     if ( showCustomEvent.defaultPrevented ) return;

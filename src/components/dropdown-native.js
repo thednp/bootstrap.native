@@ -90,7 +90,7 @@ export default function Dropdown(element,option) {
 
   // public methods
   self.show = () => {
-    showCustomEvent = bootstrapCustomEvent('show', 'dropdown', relatedTarget);
+    showCustomEvent = bootstrapCustomEvent('show', 'dropdown', { relatedTarget: relatedTarget });
     dispatchCustomEvent.call(parent, showCustomEvent);
     if ( showCustomEvent.defaultPrevented ) return;
 
@@ -102,12 +102,12 @@ export default function Dropdown(element,option) {
     setTimeout(() => {
       setFocus( menu.getElementsByTagName('INPUT')[0] || element ); // focus the first input item | element
       toggleDismiss();
-      shownCustomEvent = bootstrapCustomEvent( 'shown', 'dropdown', relatedTarget);
+      shownCustomEvent = bootstrapCustomEvent('shown', 'dropdown', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(parent, shownCustomEvent);        
     },1);
   }
   self.hide = () => {
-    hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', relatedTarget);
+    hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', { relatedTarget: relatedTarget });
     dispatchCustomEvent.call(parent, hideCustomEvent);
     if ( hideCustomEvent.defaultPrevented ) return;
 
@@ -122,7 +122,7 @@ export default function Dropdown(element,option) {
       element.Dropdown && element.addEventListener('click',clickHandler,false); 
     },1);
 
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', relatedTarget);
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', { relatedTarget: relatedTarget });
     dispatchCustomEvent.call(parent, hiddenCustomEvent);
   }
   self.toggle = () => {
