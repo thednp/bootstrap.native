@@ -61,7 +61,7 @@ export default function Tab(element,options) {
     } else {
       tabs.isAnimating = false; 
     }
-    shownCustomEvent = bootstrapCustomEvent('shown', 'tab', activeTab);
+    shownCustomEvent = bootstrapCustomEvent('shown', 'tab', { relatedTarget: activeTab });
     dispatchCustomEvent.call(next, shownCustomEvent);
   }
   function triggerHide() {
@@ -71,8 +71,8 @@ export default function Tab(element,options) {
       containerHeight = activeContent.scrollHeight;
     }
 
-    showCustomEvent = bootstrapCustomEvent('show', 'tab', activeTab);
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', next);
+    showCustomEvent = bootstrapCustomEvent('show', 'tab', { relatedTarget: activeTab });
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', { relatedTarget: next });
 
     dispatchCustomEvent.call(next, showCustomEvent);
     if ( showCustomEvent.defaultPrevented ) return;
@@ -127,7 +127,7 @@ export default function Tab(element,options) {
       activeTab = getActiveTab(); 
       activeContent = getActiveContent();
   
-      hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', next);
+      hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', { relatedTarget: next });
       dispatchCustomEvent.call(activeTab, hideCustomEvent);
       if (hideCustomEvent.defaultPrevented) return;
   
