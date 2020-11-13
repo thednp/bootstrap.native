@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Popover v3.0.13 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Popover v3.0.14 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -54,9 +54,15 @@ function queryElement(selector, parent) {
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }
 
-function bootstrapCustomEvent(eventName, componentName, related) {
+function bootstrapCustomEvent(eventName, componentName, eventProperties) {
   var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-  OriginalCustomEvent.relatedTarget = related;
+  if (typeof eventProperties !== 'undefined') {
+    Object.keys(eventProperties).forEach(function (key) {
+      Object.defineProperty(OriginalCustomEvent, key, {
+        value: eventProperties[key]
+      });
+    });
+  }
   return OriginalCustomEvent;
 }
 

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Modal v3.0.13 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Modal v3.0.14 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -56,9 +56,15 @@
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
-  function bootstrapCustomEvent(eventName, componentName, related) {
+  function bootstrapCustomEvent(eventName, componentName, eventProperties) {
     var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-    OriginalCustomEvent.relatedTarget = related;
+    if (typeof eventProperties !== 'undefined') {
+      Object.keys(eventProperties).forEach(function (key) {
+        Object.defineProperty(OriginalCustomEvent, key, {
+          value: eventProperties[key]
+        });
+      });
+    }
     return OriginalCustomEvent;
   }
 
@@ -147,7 +153,7 @@
       setFocus(modal);
       modal.isAnimating = false;
       toggleEvents(1);
-      shownCustomEvent = bootstrapCustomEvent('shown', 'modal', relatedTarget);
+      shownCustomEvent = bootstrapCustomEvent('shown', 'modal', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(modal, shownCustomEvent);
     }
     function triggerHide(force) {
@@ -202,7 +208,7 @@
     };
     self.show = function () {
       if (modal.classList.contains('show') && !!modal.isAnimating ) {return}
-      showCustomEvent = bootstrapCustomEvent('show', 'modal', relatedTarget);
+      showCustomEvent = bootstrapCustomEvent('show', 'modal', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(modal, showCustomEvent);
       if ( showCustomEvent.defaultPrevented ) { return; }
       modal.isAnimating = true;

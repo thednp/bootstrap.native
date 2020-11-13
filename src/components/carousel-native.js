@@ -197,8 +197,8 @@ export default function Carousel (element,options) {
   self.slideTo = next => {
     if (vars.isSliding) return; // when controled via methods, make sure to check again      
 
-    // the current active, orientation, event properties
-    let activeItem = self.getActiveIndex(), orientation, properties;
+    // the current active, orientation, event eventProperties
+    let activeItem = self.getActiveIndex(), orientation, eventProperties;
 
     // first return if we're on the same item #227
     if ( activeItem === next ) {
@@ -216,9 +216,9 @@ export default function Carousel (element,options) {
 
     orientation = vars.direction === 'left' ? 'next' : 'prev'; // determine type
 
-    properties = { relatedTarget: slides[next], direction: vars.direction, from: activeItem, to: next };
-    slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', properties);
-    slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', properties);
+    eventProperties = { relatedTarget: slides[next], direction: vars.direction, from: activeItem, to: next };
+    slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', eventProperties);
+    slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', eventProperties);
     dispatchCustomEvent.call(element, slideCustomEvent); // here we go with the slide
     if (slideCustomEvent.defaultPrevented) return; // discontinue when prevented
 

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Carousel v3.0.13 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Carousel v3.0.14 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -64,9 +64,15 @@
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
-  function bootstrapCustomEvent(eventName, componentName, related) {
+  function bootstrapCustomEvent(eventName, componentName, eventProperties) {
     var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-    OriginalCustomEvent.relatedTarget = related;
+    if (typeof eventProperties !== 'undefined') {
+      Object.keys(eventProperties).forEach(function (key) {
+        Object.defineProperty(OriginalCustomEvent, key, {
+          value: eventProperties[key]
+        });
+      });
+    }
     return OriginalCustomEvent;
   }
 
@@ -219,7 +225,7 @@
     };
     self.slideTo = function (next) {
       if (vars.isSliding) { return; }
-      var activeItem = self.getActiveIndex(), orientation;
+      var activeItem = self.getActiveIndex(), orientation, eventProperties;
       if ( activeItem === next ) {
         return;
       } else if  ( (activeItem < next ) || (activeItem === 0 && next === slides.length -1 ) ) {
@@ -230,8 +236,9 @@
       if ( next < 0 ) { next = slides.length - 1; }
       else if ( next >= slides.length ){ next = 0; }
       orientation = vars.direction === 'left' ? 'next' : 'prev';
-      slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', slides[next]);
-      slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', slides[next]);
+      eventProperties = { relatedTarget: slides[next], direction: vars.direction, from: activeItem, to: next };
+      slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', eventProperties);
+      slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', eventProperties);
       dispatchCustomEvent.call(element, slideCustomEvent);
       if (slideCustomEvent.defaultPrevented) { return; }
       vars.index = next;

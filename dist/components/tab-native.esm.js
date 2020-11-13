@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Tab v3.0.13 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Tab v3.0.14 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -33,9 +33,15 @@ function queryElement(selector, parent) {
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }
 
-function bootstrapCustomEvent(eventName, componentName, related) {
+function bootstrapCustomEvent(eventName, componentName, eventProperties) {
   var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-  OriginalCustomEvent.relatedTarget = related;
+  if (typeof eventProperties !== 'undefined') {
+    Object.keys(eventProperties).forEach(function (key) {
+      Object.defineProperty(OriginalCustomEvent, key, {
+        value: eventProperties[key]
+      });
+    });
+  }
   return OriginalCustomEvent;
 }
 
@@ -80,7 +86,7 @@ function Tab(element,options) {
     } else {
       tabs.isAnimating = false;
     }
-    shownCustomEvent = bootstrapCustomEvent('shown', 'tab', activeTab);
+    shownCustomEvent = bootstrapCustomEvent('shown', 'tab', { relatedTarget: activeTab });
     dispatchCustomEvent.call(next, shownCustomEvent);
   }
   function triggerHide() {
@@ -89,8 +95,8 @@ function Tab(element,options) {
       nextContent.style.float = 'left';
       containerHeight = activeContent.scrollHeight;
     }
-    showCustomEvent = bootstrapCustomEvent('show', 'tab', activeTab);
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', next);
+    showCustomEvent = bootstrapCustomEvent('show', 'tab', { relatedTarget: activeTab });
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', { relatedTarget: next });
     dispatchCustomEvent.call(next, showCustomEvent);
     if ( showCustomEvent.defaultPrevented ) { return; }
     nextContent.classList.add('active');
@@ -133,7 +139,7 @@ function Tab(element,options) {
       nextContent = queryElement(next.getAttribute('href'));
       activeTab = getActiveTab();
       activeContent = getActiveContent();
-      hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', next);
+      hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', { relatedTarget: next });
       dispatchCustomEvent.call(activeTab, hideCustomEvent);
       if (hideCustomEvent.defaultPrevented) { return; }
       tabs.isAnimating = true;

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.13 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.14 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -39,9 +39,15 @@
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
-  function bootstrapCustomEvent(eventName, componentName, related) {
+  function bootstrapCustomEvent(eventName, componentName, eventProperties) {
     var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-    OriginalCustomEvent.relatedTarget = related;
+    if (typeof eventProperties !== 'undefined') {
+      Object.keys(eventProperties).forEach(function (key) {
+        Object.defineProperty(OriginalCustomEvent, key, {
+          value: eventProperties[key]
+        });
+      });
+    }
     return OriginalCustomEvent;
   }
 
@@ -356,7 +362,7 @@
     };
     self.slideTo = function (next) {
       if (vars.isSliding) { return; }
-      var activeItem = self.getActiveIndex(), orientation;
+      var activeItem = self.getActiveIndex(), orientation, eventProperties;
       if ( activeItem === next ) {
         return;
       } else if  ( (activeItem < next ) || (activeItem === 0 && next === slides.length -1 ) ) {
@@ -367,8 +373,9 @@
       if ( next < 0 ) { next = slides.length - 1; }
       else if ( next >= slides.length ){ next = 0; }
       orientation = vars.direction === 'left' ? 'next' : 'prev';
-      slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', slides[next]);
-      slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', slides[next]);
+      eventProperties = { relatedTarget: slides[next], direction: vars.direction, from: activeItem, to: next };
+      slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', eventProperties);
+      slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', eventProperties);
       dispatchCustomEvent.call(element, slideCustomEvent);
       if (slideCustomEvent.defaultPrevented) { return; }
       vars.index = next;
@@ -619,7 +626,7 @@
       }
     }
     self.show = function () {
-      showCustomEvent = bootstrapCustomEvent('show', 'dropdown', relatedTarget);
+      showCustomEvent = bootstrapCustomEvent('show', 'dropdown', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(parent, showCustomEvent);
       if ( showCustomEvent.defaultPrevented ) { return; }
       menu.classList.add('show');
@@ -630,12 +637,12 @@
       setTimeout(function () {
         setFocus( menu.getElementsByTagName('INPUT')[0] || element );
         toggleDismiss();
-        shownCustomEvent = bootstrapCustomEvent( 'shown', 'dropdown', relatedTarget);
+        shownCustomEvent = bootstrapCustomEvent('shown', 'dropdown', { relatedTarget: relatedTarget });
         dispatchCustomEvent.call(parent, shownCustomEvent);
       },1);
     };
     self.hide = function () {
-      hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', relatedTarget);
+      hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(parent, hideCustomEvent);
       if ( hideCustomEvent.defaultPrevented ) { return; }
       menu.classList.remove('show');
@@ -647,7 +654,7 @@
       setTimeout(function () {
         element.Dropdown && element.addEventListener('click',clickHandler,false);
       },1);
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', relatedTarget);
+      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(parent, hiddenCustomEvent);
     };
     self.toggle = function () {
@@ -753,7 +760,7 @@
       setFocus(modal);
       modal.isAnimating = false;
       toggleEvents(1);
-      shownCustomEvent = bootstrapCustomEvent('shown', 'modal', relatedTarget);
+      shownCustomEvent = bootstrapCustomEvent('shown', 'modal', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(modal, shownCustomEvent);
     }
     function triggerHide(force) {
@@ -808,7 +815,7 @@
     };
     self.show = function () {
       if (modal.classList.contains('show') && !!modal.isAnimating ) {return}
-      showCustomEvent = bootstrapCustomEvent('show', 'modal', relatedTarget);
+      showCustomEvent = bootstrapCustomEvent('show', 'modal', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(modal, showCustomEvent);
       if ( showCustomEvent.defaultPrevented ) { return; }
       modal.isAnimating = true;
@@ -1197,7 +1204,7 @@
         if (dropLink && !dropLink.classList.contains('active') ) {
           dropLink.classList.add('active');
         }
-        dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', vars.items[index]));
+        dispatchCustomEvent.call(element, bootstrapCustomEvent( 'activate', 'scrollspy', { relatedTarget: vars.items[index] }));
       } else if ( isActive && !inside ) {
         item.classList.remove('active');
         if (dropLink && dropLink.classList.contains('active') && !item.parentNode.getElementsByClassName('active').length ) {
@@ -1282,7 +1289,7 @@
       } else {
         tabs.isAnimating = false;
       }
-      shownCustomEvent = bootstrapCustomEvent('shown', 'tab', activeTab);
+      shownCustomEvent = bootstrapCustomEvent('shown', 'tab', { relatedTarget: activeTab });
       dispatchCustomEvent.call(next, shownCustomEvent);
     }
     function triggerHide() {
@@ -1291,8 +1298,8 @@
         nextContent.style.float = 'left';
         containerHeight = activeContent.scrollHeight;
       }
-      showCustomEvent = bootstrapCustomEvent('show', 'tab', activeTab);
-      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', next);
+      showCustomEvent = bootstrapCustomEvent('show', 'tab', { relatedTarget: activeTab });
+      hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', { relatedTarget: next });
       dispatchCustomEvent.call(next, showCustomEvent);
       if ( showCustomEvent.defaultPrevented ) { return; }
       nextContent.classList.add('active');
@@ -1335,7 +1342,7 @@
         nextContent = queryElement(next.getAttribute('href'));
         activeTab = getActiveTab();
         activeContent = getActiveContent();
-        hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', next);
+        hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', { relatedTarget: next });
         dispatchCustomEvent.call(activeTab, hideCustomEvent);
         if (hideCustomEvent.defaultPrevented) { return; }
         tabs.isAnimating = true;
@@ -1641,7 +1648,7 @@
     }
   }
 
-  var version = "3.0.13";
+  var version = "3.0.14";
 
   var index = {
     Alert: Alert,

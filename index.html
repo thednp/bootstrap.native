@@ -85,7 +85,7 @@
           <div class="container d-flex align-items-end h-100">
             <div class="position-relative text-white text-left mb-5">
               <h1>A better way to Bootstrap</h1>
-              <p>The faster, lighter and more secure set of JavaScript components for Bootstrap, developed on modern ES6/ES7 standards.<br> The <b>bootstrap.native</b> 
+              <p>The faster, lighter and more secure set of JavaScript components for Bootstrap, developed on modern ES6+ standards.<br> The <b>bootstrap.native</b> 
                 library comes packed with build tools and well documented.</p>
               <p><a class="btn btn-lg btn-primary" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
             </div>
@@ -292,7 +292,7 @@ myAlertInit.dispose();
                 target="_blank">single toggle</a> functionality The supported toggle feature could very much fill the same purpose.
                 The component covers accessibility features instead:</p>
             <ul>
-              <li>Users to toggle checkbox inputs via keyboard <kbd>Space</kbd> key, a must have feature for real world form application. 
+              <li>Users can toggle checkbox inputs via keyboard <kbd>Space</kbd> key, a must have feature for real world form application. 
                 <a href="#buttonExamples">Examples</a> will showcase this feature.</li>
               <li>Keyboard navigation for checkbox inputs can be done via the <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> keys, 
                 while for radio inputs is done via <kbd>&lt;</kbd> and <kbd>&gt;</kbd> arrow keys.</li>
@@ -519,7 +519,9 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
           
             <section id="carouselEvents">
               <h3>Carousel Events</h3>
-              <p>The carousel component exposes two events that allow you to trigger custom functionality when the carousel slides. All the component's events are triggered on the <code>&lt;div class="carousel"&gt;</code> element. Both events have the following additional properties:</p>
+              <p>The <b>Carousel</b> component exposes two events that allow you to trigger custom functionality when the carousel slides. 
+                All the component's events are triggered on the <code>&lt;div class="carousel"&gt;</code> element. 
+                Both events have the following additional properties:</p>
               <dl class="row">
                 <dt class="col-md-2">direction<dt>
                 <dd class="col-md-10">The direction the carousel is sliding, either <code>left</code> or <code>right</code>.</dd>
@@ -551,12 +553,6 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                   </tbody>
                 </table>
               </div>
-              <p>For example:</p>
-<pre><code class="language-javascript">// this function will run when the carousel begins to slide
-document.querySelector('.carousel').addEventListener('slide.bs.carousel', event => {
-  console.log("The carousel is sliding " + event.direction);
-});
-</code></pre>
             </section>
           
             <section id="carouselDATA">
@@ -677,7 +673,20 @@ var mySpecialCarouselInit = document.getElementById('mySpecialCarousel').Carouse
 mySpecialCarouselInit.cycle();
 </code></pre>
 
-          
+              <p>Also, additional interaction can be coded around the original events:</p>
+<pre><code class="language-javascript">// this event handler function will run when the carousel begins to slide
+document.querySelector('.carousel').addEventListener('slide.bs.carousel', event => {
+  if (event.target.id !== '#myCarousel') {
+    event.preventDefault(); // preventDefault for your special case
+    return;
+  }
+  // or do something with the event specific properties
+  console.log("The carousel is sliding " + event.direction);
+  console.log("The carousel is sliding to index " + event.to);
+  console.log("The carousel is sliding from index " + event.from);
+});
+</code></pre>
+
             </section>
             
             <section id="carouselExamples">

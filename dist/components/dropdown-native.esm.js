@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Dropdown v3.0.13 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Dropdown v3.0.14 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2020 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -8,9 +8,15 @@ function queryElement(selector, parent) {
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }
 
-function bootstrapCustomEvent(eventName, componentName, related) {
+function bootstrapCustomEvent(eventName, componentName, eventProperties) {
   var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-  OriginalCustomEvent.relatedTarget = related;
+  if (typeof eventProperties !== 'undefined') {
+    Object.keys(eventProperties).forEach(function (key) {
+      Object.defineProperty(OriginalCustomEvent, key, {
+        value: eventProperties[key]
+      });
+    });
+  }
   return OriginalCustomEvent;
 }
 
@@ -89,7 +95,7 @@ function Dropdown(element,option) {
     }
   }
   self.show = function () {
-    showCustomEvent = bootstrapCustomEvent('show', 'dropdown', relatedTarget);
+    showCustomEvent = bootstrapCustomEvent('show', 'dropdown', { relatedTarget: relatedTarget });
     dispatchCustomEvent.call(parent, showCustomEvent);
     if ( showCustomEvent.defaultPrevented ) { return; }
     menu.classList.add('show');
@@ -100,12 +106,12 @@ function Dropdown(element,option) {
     setTimeout(function () {
       setFocus( menu.getElementsByTagName('INPUT')[0] || element );
       toggleDismiss();
-      shownCustomEvent = bootstrapCustomEvent( 'shown', 'dropdown', relatedTarget);
+      shownCustomEvent = bootstrapCustomEvent('shown', 'dropdown', { relatedTarget: relatedTarget });
       dispatchCustomEvent.call(parent, shownCustomEvent);
     },1);
   };
   self.hide = function () {
-    hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', relatedTarget);
+    hideCustomEvent = bootstrapCustomEvent('hide', 'dropdown', { relatedTarget: relatedTarget });
     dispatchCustomEvent.call(parent, hideCustomEvent);
     if ( hideCustomEvent.defaultPrevented ) { return; }
     menu.classList.remove('show');
@@ -117,7 +123,7 @@ function Dropdown(element,option) {
     setTimeout(function () {
       element.Dropdown && element.addEventListener('click',clickHandler,false);
     },1);
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', relatedTarget);
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'dropdown', { relatedTarget: relatedTarget });
     dispatchCustomEvent.call(parent, hiddenCustomEvent);
   };
   self.toggle = function () {
