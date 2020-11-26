@@ -284,6 +284,7 @@ declare module "bootstrap.native" {
     import ScrollSpy from "bootstrap.native/src/components/scrollspy-native.js";
     import Tab from "bootstrap.native/src/components/tab-native.js";
     import Toast from "bootstrap.native/src/components/toast-native.js";
+    import Tooltip from "bootstrap.native/src/components/tooltip-native.js";
 
     interface Components {
         Alert: typeof Alert;
@@ -296,6 +297,7 @@ declare module "bootstrap.native" {
         ScrollSpy: typeof ScrollSpy;
         Tab: typeof Tab;
         Toast: typeof Toast;
+        Tooltip: typeof Tooltip;
     }
 
     interface BSN extends Components {
