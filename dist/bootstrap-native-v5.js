@@ -220,7 +220,7 @@
   function Carousel (element,options) {
     options = options || {};
     var self = this,
-      vars, ops,
+      vars, ops, directionClass,
       slideCustomEvent, slidCustomEvent,
       slides, leftArrow, rightArrow, indicator, indicators;
     function pauseHandler() {
@@ -333,15 +333,16 @@
         var next = vars.index,
             timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20,
             activeItem = self.getActiveIndex(),
-            orientation = vars.direction === 'start' ? 'next' : 'prev';
+            orientation = vars.direction === 'left' ? 'next' : 'prev';
+        directionClass = vars.direction === 'left' ? 'start' : 'end';
         vars.isSliding && setTimeout(function () {
           if (vars.touchPosition){
             vars.isSliding = false;
             slides[next].classList.add('active');
             slides[activeItem].classList.remove('active');
             slides[next].classList.remove(("carousel-item-" + orientation));
-            slides[next].classList.remove(("carousel-item-" + (vars.direction)));
-            slides[activeItem].classList.remove(("carousel-item-" + (vars.direction)));
+            slides[next].classList.remove(("carousel-item-" + directionClass));
+            slides[activeItem].classList.remove(("carousel-item-" + directionClass));
             dispatchCustomEvent.call(element, slidCustomEvent);
             if ( !document.hidden && ops.interval && !element.classList.contains('paused') ) {
               self.cycle();
@@ -366,13 +367,14 @@
       if ( activeItem === next ) {
         return;
       } else if  ( (activeItem < next ) || (activeItem === 0 && next === slides.length -1 ) ) {
-        vars.direction = 'start';
+        vars.direction = 'left';
       } else if  ( (activeItem > next) || (activeItem === slides.length - 1 && next === 0 ) ) {
-        vars.direction = 'end';
+        vars.direction = 'right';
       }
       if ( next < 0 ) { next = slides.length - 1; }
       else if ( next >= slides.length ){ next = 0; }
-      orientation = vars.direction === 'start' ? 'next' : 'prev';
+      orientation = vars.direction === 'left' ? 'next' : 'prev';
+      directionClass = vars.direction === 'left' ? 'start' : 'end';
       eventProperties = { relatedTarget: slides[next], direction: vars.direction, from: activeItem, to: next };
       slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', eventProperties);
       slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', eventProperties);
@@ -386,8 +388,8 @@
       if ( getElementTransitionDuration(slides[next]) && element.classList.contains('slide') ) {
         slides[next].classList.add(("carousel-item-" + orientation));
         slides[next].offsetWidth;
-        slides[next].classList.add(("carousel-item-" + (vars.direction)));
-        slides[activeItem].classList.add(("carousel-item-" + (vars.direction)));
+        slides[next].classList.add(("carousel-item-" + directionClass));
+        slides[activeItem].classList.add(("carousel-item-" + directionClass));
         emulateTransitionEnd(slides[next], transitionEndHandler);
       } else {
         slides[next].classList.add('active');
@@ -404,7 +406,7 @@
     };
     self.getActiveIndex = function () { return Array.from(slides).indexOf(element.getElementsByClassName('carousel-item active')[0]) || 0; };
     self.dispose = function () {
-      var itemClasses = ['left','right','prev','next'];
+      var itemClasses = ['start','end','prev','next'];
       Array.from(slides).map(function (slide,idx) {
         slide.classList.contains('active') && setActivePage( idx );
         itemClasses.map(function (cls) { return slide.classList.remove(("carousel-item-" + cls)); });

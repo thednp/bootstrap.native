@@ -23,7 +23,7 @@ export default function Carousel (element,options) {
   let self = this,
 
     // internal variables
-    vars, ops,
+    vars, ops, directionClass,
 
     // custom events
     slideCustomEvent, slidCustomEvent,
@@ -159,7 +159,9 @@ export default function Carousel (element,options) {
       let next = vars.index,
           timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20,
           activeItem = self.getActiveIndex(),
-          orientation = vars.direction === 'start' ? 'next' : 'prev'
+          orientation = vars.direction === 'left' ? 'next' : 'prev'
+
+      directionClass = vars.direction === 'left' ? 'start' : 'end'
 
       vars.isSliding && setTimeout(() => {
         if (vars.touchPosition){
@@ -169,8 +171,8 @@ export default function Carousel (element,options) {
           slides[activeItem].classList.remove('active');
     
           slides[next].classList.remove(`carousel-item-${orientation}`);
-          slides[next].classList.remove(`carousel-item-${vars.direction}`);
-          slides[activeItem].classList.remove(`carousel-item-${vars.direction}`);
+          slides[next].classList.remove(`carousel-item-${directionClass}`);
+          slides[activeItem].classList.remove(`carousel-item-${directionClass}`);
     
           dispatchCustomEvent.call(element, slidCustomEvent);
           // check for element, might have been disposed
@@ -205,16 +207,17 @@ export default function Carousel (element,options) {
       return;
     // or determine slide direction
     } else if  ( (activeItem < next ) || (activeItem === 0 && next === slides.length -1 ) ) {
-      vars.direction = 'start'; // next
+      vars.direction = 'left'; // next
     } else if  ( (activeItem > next) || (activeItem === slides.length - 1 && next === 0 ) ) {
-      vars.direction = 'end'; // prev
+      vars.direction = 'right'; // prev
     }
 
     // find the right next index 
     if ( next < 0 ) { next = slides.length - 1; } 
     else if ( next >= slides.length ){ next = 0; }
 
-    orientation = vars.direction === 'start' ? 'next' : 'prev'; // determine type
+    orientation = vars.direction === 'left' ? 'next' : 'prev' // determine type
+    directionClass = vars.direction === 'left' ? 'start' : 'end'
 
     eventProperties = { relatedTarget: slides[next], direction: vars.direction, from: activeItem, to: next };
     slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', eventProperties);
@@ -234,8 +237,8 @@ export default function Carousel (element,options) {
 
       slides[next].classList.add(`carousel-item-${orientation}`);
       slides[next].offsetWidth;
-      slides[next].classList.add(`carousel-item-${vars.direction}`);
-      slides[activeItem].classList.add(`carousel-item-${vars.direction}`);
+      slides[next].classList.add(`carousel-item-${directionClass}`);
+      slides[activeItem].classList.add(`carousel-item-${directionClass}`);
 
       emulateTransitionEnd(slides[next], transitionEndHandler);
 
@@ -257,7 +260,7 @@ export default function Carousel (element,options) {
   self.getActiveIndex = () => Array.from(slides).indexOf(element.getElementsByClassName('carousel-item active')[0]) || 0
 
   self.dispose = () => {
-    let itemClasses = ['left','right','prev','next'];
+    let itemClasses = ['start','end','prev','next'];
 
     Array.from(slides).map((slide,idx) => {
       slide.classList.contains('active') && setActivePage( idx )
