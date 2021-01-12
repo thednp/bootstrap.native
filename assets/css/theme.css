@@ -65,6 +65,7 @@ html {
   top: -1px;
 }
 .popover .close {line-height: 0.75;}
+.popover .btn-close {position: absolute; right:1em}
 
 /* bg */
 .bg-bootstrap { background-color: #563d7c }

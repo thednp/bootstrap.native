@@ -1,6 +1,6 @@
 /*!
-  * Native JavaScript for Bootstrap Alert v3.0.14 (https://thednp.github.io/bootstrap.native/)
-  * Copyright 2015-2020 © dnp_theme
+  * Native JavaScript for Bootstrap Alert v3.0.15 (https://thednp.github.io/bootstrap.native/)
+  * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 var transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';

@@ -13,7 +13,8 @@
     <title>Native JavaScript for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="./assets/css/offcanvas.css">
 
     <!-- Prism: Code Highlight -->
@@ -27,67 +28,69 @@
     <script src="./dist/bootstrap-native.js"></script>     -->
   </head>
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-bootstrap">
-      <a data-toggle="tooltip" data-placement="bottom" class="navbar-brand mr-0 mr-md-2" title="&lt;b&gt;Native JavaScript for Bootstrap&lt;/b&gt;&lt;br&gt;The sweetest Vanilla JavaScript library for everyone" href="https://github.com/thednp/bootstrap.native/">
-        <svg class="d-inline-block align-top" width="32" height="32" viewBox="0 0 612 612" xmlns="http://www.w3.org/2000/svg" focusable="false"><title>Bootstrap</title>
-          <path fill="currentColor" d="M510 8a94.3 94.3 0 0 1 94 94v408a94.3 94.3 0 0 1-94 94H102a94.3 94.3 0 0 1-94-94V102a94.3 94.3 0 0 1 94-94h408m0-8H102C45.9 0 0 45.9 0 102v408c0 56.1 45.9 102 102 102h408c56.1 0 102-45.9 102-102V102C612 45.9 566.1 0 510 0z"></path><path fill="currentColor" d="M196.77 471.5V154.43h124.15c54.27 0 91 31.64 91 79.1 0 33-24.17 63.72-54.71 69.21v1.76c43.07 5.49 70.75 35.82 70.75 78 0 55.81-40 89-107.45 89zm39.55-180.4h63.28c46.8 0 72.29-18.68 72.29-53 0-31.42-21.53-48.78-60-48.78h-75.57zm78.22 145.46c47.68 0 72.73-19.34 72.73-56s-25.93-55.37-76.46-55.37h-74.49v111.4z"></path>
-        </svg>
-        <span class="d-inline-block align-middle hidden-xs">Native JavaScript for Bootstrap</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="offcanvas" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="offcanvas-collapse navbar-collapse">
-        <ul class="navbar-nav ml-auto mr-0 d-none d-md-flex">
-          <li class="nav-item">
-            <a class="nav-link" href="v5.html">V5</a>
-          </li>          
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">Github</a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="https://github.com/thednp/bootstrap.native/">Fork</a>
-              <a class="dropdown-item" href="https://github.com/thednp/bootstrap.native/wiki">Wiki</a>
-              <a class="dropdown-item" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">Share</a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" target="_blank" rel="noreferrer" href="https://www.facebook.com/sharer/sharer.php?u=http://thednp.github.io/bootstrap.native/index.html" title="Share Native JavaScript for Bootstrap on Facebook">Facebook</a>
-              <a class="dropdown-item" target="_blank" href="https://twitter.com/intent/tweet?text=Spread the word about %23BootstrapNative by @dnp_theme and download here http://thednp.github.io/bootstrap.native/index.html" title="Share Bootstrap Native on Twitter">
-                Twitter
-              </a>
-            </div>
-          </li>
-        </ul>
-        <ul id="top-nav" class="navbar-nav d-flex d-md-none flex-column">
-          <li class="nav-item"><a class="nav-link" href="#componentAlert">Alert</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentButton">Button</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentCarousel">Carousel</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentCollapse">Collapse</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentDropdown">Dropdown</a></li>            
-          <li class="nav-item"><a class="nav-link" href="#componentModal">Modal</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentPopover">Popover</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentScrollspy">ScrollSpy</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentTab">Tab</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentToast">Toast</a></li>
-          <li class="nav-item"><a class="nav-link" href="#componentTooltip">Tooltip</a></li>
-        </ul>        
-      </div>
-    </nav>
+    <header class="navbar navbar-expand-md navbar-dark fixed-top bg-purple">
+      <nav class="container-fluid">
+        <a data-bs-toggle="tooltip" data-bs-placement="bottom" class="navbar-brand me-0 me-md-2" title="&lt;b&gt;Native JavaScript for Bootstrap&lt;/b&gt;&lt;br&gt;The sweetest Vanilla JavaScript library for everyone" href="https://github.com/thednp/bootstrap.native/">
+          <svg class="d-inline-block align-top" width="40" height="32" viewBox="0 0 118 94" xmlns="http://www.w3.org/2000/svg" focusable="false"><title>Bootstrap</title>
+            <path fill="currentColor" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+          </svg>
+          <span class="ms-1 hidden-xs">Native JavaScript for Bootstrap</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="offcanvas" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas-collapse collapse show">
+          <ul class="navbar-nav d-none d-md-flex flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">V4</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Github</a>
+              <div class="dropdown-menu dropdown-menu-end">
+                <a class="dropdown-item" href="https://github.com/thednp/bootstrap.native/">Fork</a>
+                <a class="dropdown-item" href="https://github.com/thednp/bootstrap.native/wiki">Wiki</a>
+                <a class="dropdown-item" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Share</a>
+              <div class="dropdown-menu dropdown-menu-end">
+                <a class="dropdown-item" target="_blank" rel="noreferrer" href="https://www.facebook.com/sharer/sharer.php?u=http://thednp.github.io/bootstrap.native/index.html" title="Share Native JavaScript for Bootstrap on Facebook">Facebook</a>
+                <a class="dropdown-item" target="_blank" href="https://twitter.com/intent/tweet?text=Spread the word about %23BootstrapNative by @dnp_theme and download here http://thednp.github.io/bootstrap.native/index.html" title="Share Bootstrap Native on Twitter">
+                  Twitter
+                </a>
+              </div>
+            </li>
+          </ul>
+          <ul id="top-nav" class="navbar-nav d-flex d-md-none flex-column">
+            <li class="nav-item"><a class="nav-link" href="#componentAlert">Alert</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentButton">Button</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentCarousel">Carousel</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentCollapse">Collapse</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentDropdown">Dropdown</a></li>            
+            <li class="nav-item"><a class="nav-link" href="#componentModal">Modal</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentPopover">Popover</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentScrollspy">ScrollSpy</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentTab">Tab</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentToast">Toast</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentTooltip">Tooltip</a></li>
+          </ul>        
+        </div>
+      </nav>
+    </header>
 
-    <div id="myCarousel" class="carousel slide mb-5" data-ride="carousel" data-interval="7000" data-pause="hover">
+    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover">
       <ol class="carousel-indicators">
-        <li data-toggle="tooltip" data-title="Download Native JavaScript for Bootstrap" data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-toggle="tooltip" data-title="Getting started with Native JavaScript" data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-toggle="tooltip" data-title="Why BSN?" data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-bs-toggle="tooltip" data-bs-title="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
+        <li data-bs-toggle="tooltip" data-bs-title="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
+        <li data-bs-toggle="tooltip" data-bs-title="Why BSN?" data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
       </ol>
       <div class="carousel-inner" role="listbox">
         <div class="carousel-item active">
-          <div class="item-bg bg-indigo"></div>
+          <div class="item-bg bg-warning"></div>
           <div class="container d-flex align-items-end h-100">
-            <div class="position-relative text-white text-left mb-5">
-              <h1>A better way to Bootstrap</h1>
+            <div class="position-relative text-dark text-left mb-5">
+              <h1>A better way to Bootstrap 5</h1>
               <p>The faster, lighter and more secure set of JavaScript components for Bootstrap, developed on modern ES6+ standards.<br> The <b>bootstrap.native</b> 
                 library comes packed with build tools and well documented.</p>
               <p><a class="btn btn-lg btn-primary" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
@@ -95,18 +98,18 @@
           </div>
         </div>
         <div class="carousel-item">
-          <div class="item-bg bg-pink"></div>
+          <div class="item-bg bg-info"></div>
           <div class="container d-flex align-items-end h-100">
-            <div class="position-relative text-white text-center w-100 mb-5">
+            <div class="position-relative text-dark w-100 mb-5">
               <h1>New to native JavaScript?</h1>
-              <p>Not to worry, <a style="color:#eee; text-decoration: underline" href="http://vanilla-js.com/" target="_blank">native JavaScript</a> is the coolest programing language 
+              <p>Not to worry, <a style="text-decoration: underline" href="http://vanilla-js.com/" target="_blank">native JavaScript</a> is the coolest programing language 
                 ever!<br> Far more powerful and requires almost <b>zero</b> maintenance on very long periods of time.</p>
               <p><a class="btn btn-lg btn-primary" rel="noreferrer" href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank" role="button">Get started</a></p>
             </div>
           </div>
         </div>
         <div class="carousel-item">
-          <div class="item-bg bg-primary"></div>
+          <div class="item-bg bg-danger"></div>
           <div class="container d-flex align-items-end h-100">
             <div class="position-relative text-white text-right w-100 mb-5">
               <h1>What's the fuzz?</h1>
@@ -116,17 +119,17 @@
           </div>
         </div>
       </div>
-      <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+      <a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev">
         <svg class="carousel-control-prev-icon" viewBox="0 0 1024 1024" aria-hidden="true">
           <path d="M658 686l-60 60-256-256 256-256 60 60-196 196z"></path>
         </svg>
-        <span class="sr-only">Previous</span>
+        <span class="visually-hidden">Previous</span>
       </a>
-      <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+      <a class="carousel-control-next" href="#myCarousel" role="button" data-bs-slide="next">
         <svg class="carousel-control-next-icon" viewBox="0 0 1024 1024" aria-hidden="true">
           <path d="M366 698l196-196-196-196 60-60 256 256-256 256z"></path>
         </svg>
-        <span class="sr-only">Next</span>
+        <span class="visually-hidden">Next</span>
       </a>
     </div>
 
@@ -159,7 +162,7 @@
         </div>
       </section>
       <div class="row">
-        <div class="col-md-9" data-spy="scroll" data-target="#side-nav" data-offset="84">
+        <div class="col-md-9" data-bs-spy="scroll" data-bs-target="#side-nav" data-bs-offset="84">
 
           <section id="componentAlert">
             <h2>Alert</h2>
@@ -184,7 +187,7 @@
               <h3>Alert Events</h3>
               <p>The component's original events are same as with the original jQuery Plugin. The <code>event.target</code> of the 
                 events is the <code>&lt;div class="alert"></code> element, and not the initialization target with the
-                <code>data-dismiss="alert"</code> attribute.</p>
+                <code>data-bs-dismiss="alert"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -211,13 +214,11 @@
             <section id="alertDATA">
               <h3>Alert DATA API</h3>
               <p>The component will initialize all elements with proper DATA API found in the DOM. Note that the
-                <code>data-dismiss="alert"</code> attribute is required for the triggering button.</p>
+                <code>data-bs-dismiss="alert"</code> attribute is required for the triggering button.</p>
           
-<pre><code class="language-markup">&lt;!-- notice the &lt;button&gt; with the data-dismiss="alert" attribute --&gt;
+<pre><code class="language-markup">&lt;!-- notice the &lt;button&gt; with the data-bs-dismiss="alert" attribute --&gt;
 &lt;div class="alert alert-warning alert-dismissible fade show" role="alert"&gt;
-  &lt;button id="myButtonAlert" type="button" class="close" data-dismiss="alert" aria-label="Close"&gt;
-    &lt;span aria-hidden="true">&amp;times;&lt;/span&gt;
-  &lt;/button&gt;
+  &lt;button id="myButtonAlert" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"&gt;&lt;/button&gt;
   Some critical notice.
 &lt;/div&gt;
 </code></pre>
@@ -270,15 +271,13 @@ myAlertInit.dispose();
               <p>This alert has some handlers attached to <code>close.bs.alert</code> and <code>closed.bs.alert</code> events, so
                 check your console.</p>
               <div id="alertDemo" class="alert alert-warning alert-dismissible fade show" role="alert">
-                <button type="button" class="close" id="alertDemo1" data-dismiss="alert" aria-label="Close"><span
-                    aria-hidden="true">×</span></button>
+                <button type="button" class="btn-close" id="alertDemo1" data-bs-dismiss="alert" aria-label="Close"></button>
                 <b>Holy guacamole!</b> Best check yo self, you're not looking too good.
               </div>
           
               <p>This alert uses the <code>closed.bs.alert</code> event to show another alert.</p>
               <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                    aria-hidden="true">×</span></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <h4>Oh snap! You got an error!</h4>
                 <p>If you close this alert, your PC will start formatting your drive.</p>
                 <button type="button" class="btn btn-danger">Take this action</button>
@@ -312,7 +311,7 @@ myAlertInit.dispose();
             <section id="buttonEvents">
               <h3>Button Events</h3>
               <p>Unlike the original jQuery Plugin, the <b>Button</b> component comes with an original event, consistent in all
-                supported browsers. The <code>event.target</code> can be the element with the <code>data-toggle="buttons"</code>
+                supported browsers. The <code>event.target</code> can be the element with the <code>data-bs-toggle="buttons"</code>
                 attribute and the button that just changed it's active state.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
@@ -335,19 +334,19 @@ myAlertInit.dispose();
           
             <section id="buttonDATA">
               <h3>Button DATA API</h3>
-              <p>The component will initialize all <code>.btn-group</code> elements with the <code>data-toggle="buttons"</code>
+              <p>The component will initialize all <code>.btn-group</code> elements with the <code>data-bs-toggle="buttons"</code>
                   and works with radio buttons and checkboxes that use this markup:</p>
           
 <pre><code class="language-markup"> &lt;!-- the btn-group component --&gt;
-&lt;div id="myRadioButtonGroup" class="btn-group btn-group-toggle" data-toggle="buttons"&gt;
+&lt;div id="myRadioButtonGroup" class="btn-group btn-group-toggle" data-bs-toggle="buttons"&gt;
   &lt;label class="btn btn-secondary active"&gt;
-    &lt;input type="radio" checked&gt; Checkbox 1 (pre-checked) &lt;!-- OR type="radio" --&gt;
+    &lt;input type="radio" class="btn-check" checked&gt; Checkbox 1 (pre-checked) &lt;!-- OR type="radio" --&gt;
   &lt;/label&gt;
   &lt;label class="btn btn-secondary"&gt;
-    &lt;input type="radio"&gt; Checkbox 2 &lt;!-- OR type="radio" --&gt;
+    &lt;input type="radio" class="btn-check"&gt; Checkbox 2 &lt;!-- OR type="radio" --&gt;
   &lt;/label&gt;
   &lt;label class="btn btn-secondary"&gt;
-    &lt;input type="radio"&gt; Checkbox 3 &lt;!-- OR type="radio" --&gt;
+    &lt;input type="radio" class="btn-check"&gt; Checkbox 3 &lt;!-- OR type="radio" --&gt;
   &lt;/label&gt;
 &lt;/div&gt;
 </code></pre>
@@ -397,53 +396,53 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                 the following checkboxes and radio buttons. You should notice that the event isn't triggered twice.</p>
               <p>First we'll toggle some checkboxes. </p>
               <p>
-                <span id="checkboxButtons" class="btn-group btn-group-toggle" data-toggle="buttons">
+                <span id="checkboxButtons" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
                   <label class="btn btn-outline-secondary active">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
-                    <input type="checkbox" checked> Checkbox 1 (pre-checked)
+                    <input type="checkbox" class="btn-check" checked> Checkbox 1 (pre-checked)
                   </label>
                   <label class="btn btn-outline-secondary">
-                    <input type="checkbox"> Checkbox 2
+                    <input class="btn-check" type="checkbox"> Checkbox 2
                   </label>
                   <label class="btn btn-outline-secondary">
-                    <input type="checkbox"> Checkbox 3
+                    <input class="btn-check" type="checkbox"> Checkbox 3
                   </label>
                 </span>
               </p>
               <p>Finally we toggle radio buttons.</p>
               <p>
-                <span id="radioButtons" class="btn-group btn-group-toggle" data-toggle="buttons"> 
+                <span id="radioButtons" class="btn-group btn-group-toggle" data-bs-toggle="buttons"> 
                   <label class="btn btn-outline-secondary">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
-                    <input type="radio" name="optionz" id="optionz1" checked> Radio 1 (preselected)
+                    <input type="radio" class="btn-check" name="optionz" id="optionz1" checked> Radio 1 (preselected)
                   </label>
                   <label class="btn btn-outline-secondary active">
-                    <input type="radio" name="optionz" id="optionz2"> Radio 2
+                    <input type="radio" class="btn-check" name="optionz" id="optionz2"> Radio 2
                   </label>
                   <label class="btn btn-outline-secondary">
-                    <input type="radio" name="optionz" id="optionz3"> Radio 3
+                    <input type="radio" class="btn-check" name="optionz" id="optionz3"> Radio 3
                   </label>
                 </span>
               </p>
           
               <p>In addition, the component will also work outside the <code>&lt;div class="btn-group"&gt;</code>.</p>
               <p>
-                <span class="btn-group-toggle" data-toggle="buttons">
+                <span class="btn-group-toggle" data-bs-toggle="buttons">
                   <label class="btn btn-outline-secondary">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
-                    <input type="radio" name="features" id="feature1"> Radio 1
+                    <input type="radio" class="btn-check" name="features" id="feature1"> Radio 1
                   </label>
                   <label class="btn btn-outline-secondary active">
-                    <input type="radio" name="features" id="feature2" checked> Radio 2 (preselected)
+                    <input type="radio" class="btn-check" name="features" id="feature2" checked> Radio 2 (preselected)
                   </label>
                   <label class="btn btn-outline-secondary">
-                    <input type="radio" name="features" id="feature3"> Radio 3
+                    <input type="radio" class="btn-check" name="features" id="feature3"> Radio 3
                   </label>
                 </span>
               </p>
@@ -482,14 +481,14 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                       <td><em>boolean</em><br>or<br> the text <em>'hover'</em></td>
                       <td><em>'hover'</em></td>
                       <td>Option that makes possible to pause the carousel transition on mouse hover and touchdown. If you want to
-                        disable pause on hover, do that via JavaScript or the <code>data-pause="false"</code> attribute.</td>
+                        disable pause on hover, do that via JavaScript or the <code>data-bs-pause="false"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>touch</code></td>
                       <td><em>boolean</em></td>
                       <td><em>true</em></td>
                       <td>Option that enables support for touch events. This option is <code>true</code> by default, but you can 
-                        disable it via JavaScript or the <code>data-touch="false"</code> attribute.</td>
+                        disable it via JavaScript or the <code>data-bs-touch="false"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>interval</code></td>
@@ -528,7 +527,7 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                 Both events have the following additional properties:</p>
               <dl class="row">
                 <dt class="col-md-2">direction</dt>
-                <dd class="col-md-10">The direction the carousel is sliding, either <code>left</code> or <code>right</code>.</dd>
+                <dd class="col-md-10">The direction the carousel is sliding, either <code>start</code> or <code>end</code>.</dd>
                 <dt class="col-md-2">from</dt>
                 <dd class="col-md-10">The index of the current carousel item (integer starting with <code>0</code> index).</dd>
                 <dt class="col-md-2">to</dt>
@@ -566,12 +565,12 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                 This is a basic template markup followed by a complete attribute breakdown:</p>
           
 <pre><code class="language-markup">&lt;!-- the Carousel component --&gt;
-&lt;div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="5000" data-touch="true" data-pause="hover"&gt;
+&lt;div id="myCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-touch="true" data-bs-pause="hover"&gt;
   &lt;!-- Indicators --&gt;
   &lt;ol class="carousel-indicators"&gt;
-    &lt;li data-target="#myCarousel" data-slide-to="0" class="active"&gt;&lt;/li&gt;
-    &lt;li data-target="#myCarousel" data-slide-to="1"&gt;&lt;/li&gt;
-    &lt;li data-target="#myCarousel" data-slide-to="2"&gt;&lt;/li&gt;
+    &lt;li data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"&gt;&lt;/li&gt;
+    &lt;li data-bs-target="#myCarousel" data-bs-slide-to="1"&gt;&lt;/li&gt;
+    &lt;li data-bs-target="#myCarousel" data-bs-slide-to="2"&gt;&lt;/li&gt;
   &lt;/ol&gt;
   &lt;!-- Wrapper for slides --&gt;
   &lt;div class="carousel-inner"&gt;
@@ -596,13 +595,13 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
   &lt;/div&gt;
 
   &lt;!-- Controls --&gt;
-  &lt;a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev"&gt;
+  &lt;a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev"&gt;
     &lt;span class="carousel-control-prev-icon" aria-hidden="true">&lt;/span>
-    &lt;span class="sr-only">Prev&lt;/span>
+    &lt;span class="visually-hidden">Prev&lt;/span>
   &lt;/a&gt;
-  &lt;a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next"&gt;
+  &lt;a class="carousel-control-next" href="#myCarousel" role="button" data-bs-slide="next"&gt;
     &lt;span class="carousel-control-next-icon" aria-hidden="true">&lt;/span>
-    &lt;span class="sr-only">Next&lt;/span>
+    &lt;span class="visually-hidden">Next&lt;/span>
   &lt;/a&gt;
 &lt;/div&gt;
 </code></pre>
@@ -610,22 +609,22 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
               <ul>
                 <li><code>id="myCarousel"</code> is <b>not</b> required for any of the component's functionality, except 
                   cases when you need to interact with it and attach additional functionality;</li>
-                <li><code>data-ride="carousel"</code> is the attribute required if you want the <b>Carousel</b> component
+                <li><code>data-bs-ride="carousel"</code> is the attribute required if you want the <b>Carousel</b> component
                   to initialize your element on page load;</li>
-                <li><code>data-keyboard="false"</code> (not shown in the sample markup) is the attribute that enables carousel 
+                <li><code>data-bs-keyboard="false"</code> (not shown in the sample markup) is the attribute that enables carousel 
                   navigation via keyboard left and right arrow keys;</li>
-                <li><code>data-interval="5000"</code> sets the automatic slide interval; the <code>false</code> value will 
+                <li><code>data-bs-interval="5000"</code> sets the automatic slide interval; the <code>false</code> value will 
                   disable automatic slide transition; the usage of this attribute for each item is not implemented in BSN;</li>
-                <li><code>data-pause="hover"</code> is the attribute you can set to pause the carousel on mouse hover, but 
+                <li><code>data-bs-pause="hover"</code> is the attribute you can set to pause the carousel on mouse hover, but 
                   it also adds a <code>paused</code> class to your carousel; if the above is also <code>false</code>,
                   this setting has no effect;</li>
-                <li><code>data-touch="true"</code> is the attribute you can set to enable touch support for your carousel,
+                <li><code>data-bs-touch="true"</code> is the attribute you can set to enable touch support for your carousel,
                   however, you must have at least 3 <code>.carousel-item</code> elements in order to work;</li>
-                <li><code>data-slide-to="0"</code> is an attribute used by <code>.carousel-indicators</code> elements, BSN 
+                <li><code>data-bs-slide-to="0"</code> is an attribute used by <code>.carousel-indicators</code> elements, BSN 
                   does not require this attribute in order to work, it will simply look into elements of the 
                   <code>.carousel-indicators</code>; when clicked will slide to the carousel item with the same index, 
                   0 (zero) in this case;</li>
-                <li><code>data-slide="prev"</code> / <code>data-slide="next"</code> when clicked, will slide to the next /
+                <li><code>data-bs-slide="prev"</code> / <code>data-bs-slide="next"</code> when clicked, will slide to the next /
                   previous carousel item; these attributes are <b>optional</b>, but the class <code>carousel-control</code> is
                   <b>required</b>;</li>
                 <li><code>href="#myCarousel"</code> attribute is not required for the next and previous controls; we will see
@@ -700,12 +699,12 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
                 default in the markup, proving the component can successfully manage this case by setting the first item as active
                 on initialization.</p>
               <div class="thumbnail">
-                <div id="carouselGenericExample" class="carousel slide" data-ride="carousel" data-interval="false">
+                <div id="carouselGenericExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
                   <!-- Indicators -->
                   <ol class="carousel-indicators">
-                    <li data-target="#carouselGenericExample" data-slide-to="0"></li>
-                    <li data-target="#carouselGenericExample" data-slide-to="1"></li>
-                    <li data-target="#carouselGenericExample" data-slide-to="2"></li>
+                    <li data-bs-target="#carouselGenericExample" data-bs-slide-to="0"></li>
+                    <li data-bs-target="#carouselGenericExample" data-bs-slide-to="1"></li>
+                    <li data-bs-target="#carouselGenericExample" data-bs-slide-to="2"></li>
                   </ol>
                   <!-- Wrapper for slides -->
                   <div class="carousel-inner" role="listbox">
@@ -730,13 +729,13 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
                   </div>
           
                   <!-- Controls -->
-                  <a class="carousel-control-prev" href="#carouselGenericExample" role="button" data-slide="prev">
+                  <a class="carousel-control-prev" href="#carouselGenericExample" role="button" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
+                    <span class="visually-hidden">Previous</span>
                   </a>
-                  <a class="carousel-control-next" href="#carouselGenericExample" role="button" data-slide="next">
+                  <a class="carousel-control-next" href="#carouselGenericExample" role="button" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
+                    <span class="visually-hidden">Next</span>
                   </a>
                 </div>
               </div>
@@ -785,7 +784,7 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
             <h2>Collapse</h2>
             <p>The <b>Collapse</b> component covers the original events and methods of the jQuery plugin counterpart. This
               component understands there is a triggering element that finds its target collapsible element via the
-              <code>data-target="#collapse-id"</code> attribute or the <code>href="#collapse-id"</code> attribute if it's a link.
+              <code>data-bs-target="#collapse-id"</code> attribute or the <code>href="#collapse-id"</code> attribute if it's a link.
             </p>
           
             <section id="collapseOptions">
@@ -808,7 +807,7 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
                       <td></td>
                       <td>Option to reference a parent to be used as an accordion. When a parent is set and found, it will enable
                         the functionality described in the <code>show()</code> method below. Can be set
-                        via JavaScript or the <code>data-parent="SELECTOR"</code> attribute.</td>
+                        via JavaScript or the <code>data-bs-parent="SELECTOR"</code> attribute.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -872,18 +871,18 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
             <section id="collapseDATA">
               <h3>Collapse DATA API</h3>
               <p>In the following markup, the component will initialize the two <code>.btn</code> elements with the
-                <code>data-toggle="collapse"</code> attribute, both refferencing the same collapsible element via specific atttributes.</p>
+                <code>data-bs-toggle="collapse"</code> attribute, both refferencing the same collapsible element via specific atttributes.</p>
           
 <pre><code class="language-markup">&lt;!-- toggle collapse via link with HREF reference --&gt;
 &lt;a id="collapseLink" class="btn btn-primary" role="button" aria-expanded="false" aria-controls="collapseExample"
-  data-toggle="collapse" href="#collapseExample"&gt; &lt;!-- required DATA API --&gt;
+  data-bs-toggle="collapse" href="#collapseExample"&gt; &lt;!-- required DATA API --&gt;
   Link with href
 &lt;/a&gt;
 
-&lt;!-- AND / OR toggle collapse via button with data-target attribute reference --&gt;
+&lt;!-- AND / OR toggle collapse via button with data-bs-target attribute reference --&gt;
 &lt;button id="collapseButton" class="btn btn-primary" type="button" aria-expanded="false" aria-controls="collapseExample"
-  data-toggle="collapse" data-target="#collapseExample"&gt; &lt;!-- required DATA API --&gt;
-  Button with data-target
+  data-bs-toggle="collapse" data-bs-target="#collapseExample"&gt; &lt;!-- required DATA API --&gt;
+  Button with data-bs-target
 &lt;/button&gt;
 
 &lt;!-- and the basic collapsible template --&gt;
@@ -898,50 +897,44 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
                 CSS classes, we can easily create an accordion.</p>
           
 <pre><code class="language-markup">&lt;!-- accordion template --&gt;
-&lt;div class="accordion" id="myAccordion"&gt;
-  &lt;div class="card"&gt;
-    &lt;div class="card-header" id="headingOne"&gt;
-      &lt;h4&gt;
-        &lt;a role="button" data-toggle="collapse" data-parent="#myAccordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"&gt;
-          Collapsible Group Item #1
-        &lt;/a&gt;
-      &lt;/h4&gt;
-    &lt;/div&gt;
-    &lt;div id="collapseOne" class="panel-collapse collapse show" aria-labelledby="headingOne"&gt;
-      &lt;div class="card-body"&gt;
-        Collapse CONTENT 1
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="card"&gt;
-    &lt;div class="card-header" id="headingTwo"&gt;
-      &lt;h4&gt;
-        &lt;a class="collapsed" role="button" data-toggle="collapse" data-parent="#myAccordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"&gt;
-          Collapsible Group Item #2
-        &lt;/a&gt;
-      &lt;/h4&gt;
-    &lt;/div&gt;
-    &lt;div id="collapseTwo" class="panel-collapse collapse" aria-labelledby="headingTwo"&gt;
-      &lt;div class="card-body"&gt;
-        Collapse CONTENT 2
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="card"&gt;
-    &lt;div class="card-header" id="headingThree"&gt;
-      &lt;h4&gt;
-        &lt;a class="collapsed" role="button" data-toggle="collapse" data-parent="#myAccordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree"&gt;
-          Collapsible Group Item #3
-        &lt;/a&gt;
-      &lt;/h4&gt;
-    &lt;/div&gt;
-    &lt;div id="collapseThree" class="panel-collapse collapse" aria-labelledby="headingThree"&gt;
-      &lt;div class="card-body"&gt;
-        Collapse CONTENT 3
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+&lt;div class="accordion" id="accordionExample">
+  &lt;div class="accordion-item">
+    &lt;h2 class="accordion-header" id="headingOne">
+      &lt;button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Accordion Item #1
+      &lt;/button>
+    &lt;/h2>
+    &lt;div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      &lt;div class="accordion-body">
+        Accordion item 1 content.
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+  &lt;div class="accordion-item">
+    &lt;h2 class="accordion-header" id="headingTwo">
+      &lt;button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Accordion Item #2
+      &lt;/button>
+    &lt;/h2>
+    &lt;div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+      &lt;div class="accordion-body">
+        Accordion item 2 content.
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+  &lt;div class="accordion-item">
+    &lt;h2 class="accordion-header" id="headingThree">
+      &lt;button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Accordion Item #3
+      &lt;/button>
+    &lt;/h2>
+    &lt;div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+      &lt;div class="accordion-body">
+        Accordion item 3 content.
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+&lt;/div>
 </code></pre>
           
             </section>
@@ -989,7 +982,7 @@ myCollapseExample.addEventListener('show.bs.collapse', function(event){
 var myAccordion = document.getElementById('myAccordion');
 
 // grab the collapsible triggers for this accordion
-var myAccordionTriggers = myAccordion.querySelectorAll('[data-toggle="collapse"]');
+var myAccordionTriggers = myAccordion.querySelectorAll('[data-bs-toggle="collapse"]');
 
 // initialize the component for each collapse trigger
 Array.from(myAccordionTriggers).map(
@@ -1021,19 +1014,19 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
               <div id="collapseExampleWrapper">
                 <p>
                   <span class="btn-group">
-                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="true"
+                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" aria-expanded="true"
                       aria-controls="collapseExample">
                       <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                         <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                       </svg>
                       HREF
                     </a>
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
-                      aria-expanded="true" aria-controls="collapseExample">data-target</button>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                      aria-expanded="true" aria-controls="collapseExample">data-bs-target</button>
                   </span>
                 </p>
                 <div class="collapse" id="collapseExample" aria-expanded="false" >
-                  <div class="card card-body">
+                  <div class="card card-body mb-3">
                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim
                     keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
                   </div>
@@ -1044,72 +1037,49 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
               <p>Here's an <b>Accordion</b> example, built with a set of <b>Panel</b>s wrapped in a
                 <code>&lt;div class="panel-group"&gt;</code> element. When the toggle links are clicked, our <b>Collapse</b>
                 component will look for the closest <code>&lt;div class="accordion-className"&gt;</code> or
-                <code>&lt;div id="accordion-id"&gt;</code> via <code>data-parent="selector"</code> and will hide any visible
+                <code>&lt;div id="accordion-id"&gt;</code> via <code>data-bs-parent="selector"</code> and will hide any visible
                 collapsible element.</p>
 
-              <div class="accordion mb-3" id="accordion">
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h5 class="mb-0">
-                      <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true"
-                        aria-controls="collapseOne">
-                        Collapsible Group Item #1
-                      </a>
-                    </h5>
-                  </div>
-                  <div id="collapseOne" class="panel-collapse collapse show" aria-labelledby="headingOne">
-                    <div class="card-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon
-                      officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3
-                      wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                      Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
-                      excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                      you probably haven't heard of them accusamus labore sustainable VHS.
+              <div class="accordion mb-3" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                      Accordion Item #1
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <strong>This is the first item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
                     </div>
                   </div>
                 </div>
-                <div class="card">
-                  <div class="card-header" id="headingTwo">
-                    <h5 class="mb-0">
-                      <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
-                        aria-expanded="false" aria-controls="collapseTwo">
-                        Collapsible Group Item #2
-                      </a>
-                    </h5>
-                  </div>
-                  <div id="collapseTwo" class="panel-collapse collapse" aria-labelledby="headingTwo">
-                    <div class="card-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon
-                      officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3
-                      wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                      Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
-                      excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                      you probably haven't heard of them accusamus labore sustainable VHS.
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Accordion Item #2
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
                     </div>
                   </div>
                 </div>
-                <div class="card">
-                  <div class="card-header" id="headingThree">
-                    <h5 class="mb-0">
-                      <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
-                        aria-expanded="false" aria-controls="collapseThree">
-                        Collapsible Group Item #3
-                      </a>
-                    </h5>
-                  </div>
-                  <div id="collapseThree" class="panel-collapse collapse" aria-labelledby="headingThree">
-                    <div class="card-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon
-                      officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3
-                      wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-                      Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
-                      excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                      you probably haven't heard of them accusamus labore sustainable VHS.
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      Accordion Item #3
+                    </button>
+                  </h2>
+                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
                     </div>
                   </div>
                 </div>
               </div>
-              <p>Remember that all triggering buttons must reference the accordion via <code>data-parent="selector"</code> as
+
+              <p>Remember that all triggering buttons must reference the accordion via <code>data-bs-parent="selector"</code> as
                 described above in order to collapse current opened collapsible element.</p>
             </section>
           </section>
@@ -1149,7 +1119,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
                       <td><em>boolean</em></td>
                       <td><em>false</em></td>
                       <td>Option to keep the dropdown-menu open when <code>click</code> event targets a child element, useful for
-                        forms or interactive content. Use <code>data-persist="true"</code> attribute to enable this functionality
+                        forms or interactive content. Use <code>data-bs-persist="true"</code> attribute to enable this functionality
                         via DATA-API.</td>
                     </tr>
                   </tbody>
@@ -1173,7 +1143,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
               <h3>Dropdown Events</h3>
               <p>The <b>Dropdown</b> component covers original events. The target of all events is the 
                 <code>&lt;div class="dropdown"&gt;</code> element, while the <code>event.relatedTarget</code> can be either the 
-                triggering element with the specific <code>data-toggle="dropdown"</code> attribute or a child element 
+                triggering element with the specific <code>data-bs-toggle="dropdown"</code> attribute or a child element 
                 of the <code>&lt;div class="dropdown-menu"></code> element, depending on which one you click.</p>
               <p>If you dismiss the dropdown via JavaScript, the <kbd>Esc</kbd> key 
                 or by clicking outside the triggering button, the <code>event.relatedTarget</code> is <em>null</em>.</p>              
@@ -1213,11 +1183,11 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
             <section id="dropdownDATA">
               <h3>Dropdown DATA API</h3>
               <p>Notice we use same markup as the original example, the triggering element with the
-                <code>data-toggle="dropdown"</code> attribute will initialize the <b>Dropdown</b> component.</p>
+                <code>data-bs-toggle="dropdown"</code> attribute will initialize the <b>Dropdown</b> component.</p>
           
 <pre><code class="language-markup">&lt;!-- basic dropdown template --&gt;
 &lt;div class="dropdown"&gt;
-  &lt;button id="myDropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;
+  &lt;button id="myDropdown" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;
     Dropdown button
   &lt;/button&gt;
   &lt;div class="dropdown-menu" aria-labelledby="myDropdown"&gt;
@@ -1302,9 +1272,9 @@ myDropdownInit.dispose();
             <section id="dropdownExamples">
               <h3>Dropdown Examples</h3>
               <p>Right out of the box, the above dropdown template is initialized via DATA-API right away.</p>
-              <div class="btn-group" style="margin-bottom:10px">
+              <div class="btn-group mb-3">
                 <div class="dropdown">
-                  <button class="btn btn-primary" id="myDropdown" type="button" data-toggle="dropdown" aria-haspopup="true"
+                  <button class="btn btn-primary" id="myDropdown" type="button" data-bs-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
@@ -1371,99 +1341,90 @@ makeMeDropdown.addEventListener('click', function(e){
                 <button id="makeMeDropdown" class="btn btn-success">Make me a Dropdown</button>
               </div>
               <p>A quick last example is with nested dropdown-menus, as the component will look for the child elements and will
-                prevent itself from closing if the click target is a child item with <code>data-toggle</code> attribute.</p>
+                prevent itself from closing if the click target is a child item with <code>data-bs-toggle</code> attribute.</p>
 
               <div class="btn-toolbar mb-3">
-                <div class="btn-group mr-2">
-                  <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">
-                      <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-                        <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
-                      </svg>                      
-                      Dropdown
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+                <div class="btn-group dropdown me-2">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                      <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                    </svg>                      
+                    Dropdown
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
                   </div>
                 </div>
-
-                <div class="btn-group mr-2">
-                  <div class="dropup">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">                  
-                      Dropup
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+                <div class="btn-group dropup me-2">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">                    
+                    Dropup
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
                   </div>
                 </div>
               
-                <div class="btn-group dropright mr-2">
-                  <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">
-                      Nested Dropright
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Second action</a>
-                      <div class="dropdown dropright">
-                        <a class="dropdown-item dropdown-toggle" href="#" id="dropdownMenuButton3" data-toggle="dropdown"
-                          aria-haspopup="true" aria-expanded="false">Third action</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                          <a class="dropdown-item" href="#">The other action</a>
-                          <a class="dropdown-item" href="#">Different action</a>
-                          <a class="dropdown-item" href="#">More soon</a>
-                        </div>
+                <div class="btn-group dropend me-2">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Nested Dropright
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Second action</a>
+                    <div class="dropdown dropright">
+                      <a class="dropdown-item dropdown-toggle" href="#" id="dropdownMenuButton21" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Third action</a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton21">
+                        <a class="dropdown-item" href="#">The other action</a>
+                        <a class="dropdown-item" href="#">Different action</a>
+                        <a class="dropdown-item" href="#">More soon</a>
                       </div>
-                      <div class="dropdown dropright">
-                        <a class="dropdown-item dropdown-toggle" href="#" id="dropdownMenuButton4" data-toggle="dropdown"
-                          aria-haspopup="true" aria-expanded="false">More</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                          <a class="dropdown-item" href="#">The other action</a>
-                          <a class="dropdown-item" href="#">Different action</a>
-                          <a class="dropdown-item" href="#">More soon</a>
-                        </div>
+                    </div>
+                    <div class="dropdown dropright">
+                      <a class="dropdown-item dropdown-toggle" href="#" id="dropdownMenuButton3" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">More</a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                        <a class="dropdown-item" href="#">The other action</a>
+                        <a class="dropdown-item" href="#">Different action</a>
+                        <a class="dropdown-item" href="#">More soon</a>
                       </div>
                     </div>
                   </div>
                 </div>
               
-                <div class="btn-group">
-                  <div class="dropdown dropleft">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton5" data-toggle="dropdown"
-                      data-persist="true" aria-haspopup="true" aria-expanded="false">
-                      Form Dropleft
-                    </button>
-                    <form class="pl-3 pr-3 dropdown-menu form-vertical" aria-expanded="false" aria-labelledby="dropdownMenuButton5">
-                      <div class="form-group">
-                        <label for="inputEmail3" class="control-label">Email</label>
-                        <div class=""><input type="email" class="form-control" id="inputEmail3" placeholder="Email"></div>
+                <div class="btn-group dropstart dropleft">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown"
+                    data-persist="true" aria-haspopup="true" aria-expanded="false">
+                    Form Dropleft
+                  </button>
+                  <form class="px-3 dropdown-menu form-vertical" aria-expanded="false" aria-labelledby="dropdownMenuButton4">
+                    <div class="mb-3">
+                      <label for="inputEmail3" class="control-label">Email</label>
+                      <div class=""><input type="email" class="form-control" id="inputEmail3" placeholder="Email"></div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="inputPassword3" class="control-label">Password</label>
+                      <div class=""><input type="password" class="form-control" id="inputPassword3" placeholder="Password"></div>
+                    </div>
+                    <div class="mb-3">
+                      <div class="">
+                        <div class="checkbox"><label><input type="checkbox"> Remember me</label></div>
                       </div>
-                      <div class="form-group">
-                        <label for="inputPassword3" class="control-label">Password</label>
-                        <div class=""><input type="password" class="form-control" id="inputPassword3" placeholder="Password"></div>
-                      </div>
-                      <div class="form-group">
-                        <div class="">
-                          <div class="checkbox"><label><input type="checkbox"> Remember me</label></div>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="btn-group"><button type="submit" class="btn btn-secondary">Sign in</button></div>
-                      </div>
-                    </form>
-                  </div>
+                    </div>
+                    <div class="mb-3">
+                      <div class="btn-group"><button type="submit" class="btn btn-secondary">Sign in</button></div>
+                    </div>
+                  </form>
                 </div>                
               </div>
-              <p>Be sure to check the markup of the above examples and the original plugin <a href="https://getbootstrap.com/docs/4.5/components/dropdowns/">
+              <p>Be sure to check the markup of the above examples and the original plugin <a href="https://getbootstrap.com/docs/5.0/components/dropdowns/">
                 documentation page</a>.</p>
             </section>
           </section>          
@@ -1557,7 +1518,7 @@ makeMeDropdown.addEventListener('click', function(e){
             <section id="modalEvents">
               <h3>Modal Events</h3>
               <p>All original events are triggered for the <code>&lt;div class="modal"></code> element and not the 
-                initialization target with its usual <code>data-toggle="modal"</code> attribute.</p>
+                initialization target with its usual <code>data-bs-toggle="modal"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -1597,14 +1558,14 @@ makeMeDropdown.addEventListener('click', function(e){
             <section id="modalDATA">
               <h3 id="modalDataAPI">Modal DATA API</h3>
               <p>You can initialize <b>Modal</b> without writing any code as long as you have a modal and a trigger with
-                <code>data-target</code> or a link with <code>href</code> referencing that modal. The component
-                will initialize for all elements with <code>data-toggle="modal"</code> found in the DOM.</p>
+                <code>data-bs-target</code> or a link with <code>href</code> referencing that modal. The component
+                will initialize for all elements with <code>data-bs-toggle="modal"</code> found in the DOM.</p>
           
 <pre><code class="language-markup">&lt;!-- provide a trigger button --&gt;
-&lt;button id="myModalTrigger" type="button" data-toggle="modal" data-target="#myModal"&gt;Launch modal&lt;/button&gt;
+&lt;button id="myModalTrigger" type="button" data-bs-toggle="modal" data-bs-target="#myModal"&gt;Launch modal&lt;/button&gt;
 
 &lt;!-- Alternatively provide a link --&gt;
-&lt;a id="myModalTrigger" data-toggle="modal" href="#myModal"&gt;Launch modal&lt;/a&gt;
+&lt;a id="myModalTrigger" data-bs-toggle="modal" href="#myModal"&gt;Launch modal&lt;/a&gt;
 
 &lt;!-- also the modal itself --&gt;
 &lt;div id="myModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"&gt;
@@ -1612,13 +1573,13 @@ makeMeDropdown.addEventListener('click', function(e){
     &lt;div class="modal-content"&gt;
       &lt;div class="modal-header">
         &lt;h5 class="modal-title" id="myModalLabel"&gt;Modal title&lt;/h5&gt;
-        &lt;button type="button" class="close" data-dismiss="modal" aria-label="Close">&lt;span aria-hidden="true"&gt;&times;&lt;/span&gt;&lt;/button&gt;
+        &lt;button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&lt;/button&gt;
       &lt;/div&gt;
       &lt;div class="modal-body"&gt;
         Some content
       &lt;/div>
       &lt;div class="modal-footer"&gt;
-        &lt;button type="button" class="btn btn-secondary" data-dismiss="modal"&gt;Close&lt;/button&gt;
+        &lt;button type="button" class="btn btn-secondary" data-bs-dismiss="modal"&gt;Close&lt;/button&gt;
         &lt;button type="button" class="btn btn-success"&gt;Save changes&lt;/button&gt;
       &lt;/div>
     &lt;/div&gt;
@@ -1633,11 +1594,11 @@ makeMeDropdown.addEventListener('click', function(e){
               <h3>Modal JavaScript API</h3>
               <p>Generally you can initialize <b>Modal</b> for any instance of <code>&lt;div class="modal"&gt;</code> and immediately 
                 get access to methods. Alternativelly you can initialize on a triggering element, similar to how the DATA API works, 
-                in this case the <code>data-toggle="modal"</code> is not required, but you need to specify a modal reference via a specific
+                in this case the <code>data-bs-toggle="modal"</code> is not required, but you need to specify a modal reference via a specific
                 attribute:
               </p>
               <ul>
-                <li><code>data-target="#modalId"</code> which is suitable for <code>&lt;button></code> elements;</li>
+                <li><code>data-bs-target="#modalId"</code> which is suitable for <code>&lt;button></code> elements;</li>
                 <li><code>href="#modalId"</code> which is specific for <code>&lt;a></code> anchor link elements.</li>
               </ul>
 
@@ -1687,7 +1648,7 @@ var myNewModalInstance = new BSN.Modal('#myModal', { backdrop: true }).show();
                 triggering elements.</p>
           
 <pre><code class="language-markup">&lt;!-- &lt;button&gt; referencing the modal --&gt;
-&lt;button type="button" id="buttonID" class="btn btn-primary" data-target="#modalID"&gt;My Button&lt;/button&gt;
+&lt;button type="button" id="buttonID" class="btn btn-primary" data-bs-target="#modalID"&gt;My Button&lt;/button&gt;
 
 &lt;!-- &lt;a&gt; referencing the modal --&gt;
 &lt;a id="anchorID" class="btn btn-primary" href="#modalID"&gt;My Link&lt;/a&gt;
@@ -1735,7 +1696,7 @@ var myModal = document.getElementById('modalID');
 // a triggering element is a link
 var myModal = document.getElementById(myModalTriggerButton.getAttribute('href').replace('#',''));
 // OR triggering element is not a link
-var myModal = document.getElementById(myModalTriggerButton.getAttribute('data-target').replace('#',''));
+var myModal = document.getElementById(myModalTriggerButton.getAttribute('data-bs-target').replace('#',''));
 
 // ATTACH HANDLERS
 // show.bs.modal event
@@ -1797,7 +1758,7 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
               <p>The first example is a modal with static content initialized via DATA API, exactly as described in the above <a
                   href="#modalDATA">Use via DATA API</a> section, and showcasing the
                 ability to show another modal from a modal currently visible.</p>
-              <p><button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal">
+              <p><button type="button" class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#myModal">
                 <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                   <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                 </svg>
@@ -1807,24 +1768,22 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                   <div class="modal-content">
                     <div class="modal-header"> 
                       <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">×</span>
-                        </button>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                       <h4>Text in a modal</h4>
                       <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
                       <h4>Popover in a modal</h4>
-                      <p>This <a href="#" style="margin:-5px 0 0 0" role="button" data-toggle="popover"
+                      <p>This <a href="#" style="margin:-5px 0 0 0" role="button" data-bs-toggle="popover"
                           class="btn btn-secondary popover-test"
-                          data-content="And here's some amazing content. It's very engaging. right?"
-                          data-title="A Title">button</a> should trigger a popover on click.</p>
+                          data-bs-content="And here's some amazing content. It's very engaging. right?"
+                          data-bs-title="A Title">button</a> should trigger a popover on click.</p>
                       <h4>Tooltips in a modal</h4>
-                      <p><a href="#" class="tooltip-test" data-toggle="tooltip" title="Tooltip">This link</a> and <a href="#"
-                          data-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.
+                      <p><a href="#" class="tooltip-test" data-bs-toggle="tooltip" title="Tooltip">This link</a> and <a href="#"
+                          data-bs-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.
                       </p>
                       <h4>Open modal from modal</h4>
-                      <p>Click <a data-toggle="modal" href="#anotherModal">here</a> to open another modal.</p>
+                      <p>Click <a data-bs-toggle="modal" href="#anotherModal">here</a> to open another modal.</p>
                       <hr>
                       <h4>Overflowing text to show scroll behavior</h4>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
@@ -1847,8 +1806,8 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#anotherModal">Next</button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#anotherModal">Next</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                           <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                         </svg>
@@ -1864,9 +1823,7 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                   <div class="modal-content">
                     <div class="modal-header"> 
                       <h4 class="modal-title" id="anotherModalLabel">Another Modal Title</h4>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                      </button>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                       <h4>This modal was opened from another modal</h4>
@@ -1878,8 +1835,8 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                     </div>
                     <div class="modal-footer">
-                      <button data-toggle="modal" data-target="#myModal" type="button" class="btn btn-primary">Back</button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button data-bs-toggle="modal" data-bs-target="#myModal" type="button" class="btn btn-primary">Back</button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                   </div>
                 </div>
@@ -1900,15 +1857,13 @@ var btnModal = document.getElementById('openModalViaJS');
 // set a custom content
 var firstModalContent = '&lt;div class="modal-header"&gt;'
   +'&lt;h4 class="modal-title" id="myModalJSLabel"&gt;Modal title&lt;/h4&gt;'
-  +'&lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;'
-    +'&lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;'
-  +'&lt;/button&gt;'
+  +'&lt;button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"&gt;&lt;/button&gt;'
   +'&lt;/div&gt;'
   +'&lt;div class="modal-body"&gt;'
     +'&lt;p&gt;This is where you fill up content you know, etc.&lt;/p&gt;'
   +'&lt;/div&gt;'
   +'&lt;div class="modal-footer"&gt;'
-    +'&lt;button type="button" class="btn btn-secondary" data-dismiss="modal"&gt;Close&lt;/button&gt;'
+    +'&lt;button type="button" class="btn btn-secondary" data-bs-dismiss="modal"&gt;Close&lt;/button&gt;'
   +'&lt;/div&gt;';
 
 // initialize Modal for this triggering element
@@ -1951,15 +1906,13 @@ var externalModalContent = {
 var secondModalContent =
 '&lt;div class="modal-header"&gt;'
   +'&lt;h4 class="modal-title" id="gridModalLabel"&gt;' + externalModalContent.title + '&lt;/h4&gt;'
-  +'&lt;button type="button" class="close" data-dismiss="modal" aria-label="Close"&gt;'
-    +'&lt;span aria-hidden="true"&gt;×&lt;/span&gt;'
-  +'&lt;/button&gt;'
+  +'&lt;button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"&gt;&lt;/button&gt;'
 +'&lt;/div&gt;'
 +'&lt;div class="modal-body"&gt;'
   +'&lt;p&gt;' + externalModalContent.content + '&lt;/p&gt;'
 +'&lt;/div&gt;'
 +'&lt;div class="modal-footer"&gt;'
-  +'&lt;button type="button" class="btn btn-secondary" data-dismiss="modal"&gt;Close&lt;/button&gt;'
+  +'&lt;button type="button" class="btn btn-secondary" data-bs-dismiss="modal"&gt;Close&lt;/button&gt;'
 +'&lt;/div&gt;';
 
 // initialize Modal for this triggering element
@@ -2031,7 +1984,7 @@ changeModal2.addEventListener('click', function(){
 </code></pre>
           
               <p>A quick demo to showcase the above script:</p>
-              <p><a id="modalUpdate" class="btn btn-secondary btn-lg" data-toggle="modal" href="#anotherStaticModal">Show modal</a></p>
+              <p><a id="modalUpdate" class="btn btn-secondary btn-lg" data-bs-toggle="modal" href="#anotherStaticModal">Show modal</a></p>
           
               <div id="anotherStaticModal" class="modal fade" tabindex="-1" role="dialog"
                 aria-labelledby="anotherStaticModalLabel" aria-hidden="true">
@@ -2039,7 +1992,7 @@ changeModal2.addEventListener('click', function(){
                   <div class="modal-content">
                     <div class="modal-header"> 
                       <h4 class="modal-title" id="anotherStaticModalLabel">Some Modal Title</h4>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                       <h4>This modal is initialized via DATA API</h4>
@@ -2077,7 +2030,7 @@ changeModal2.addEventListener('click', function(){
                     <div class="modal-footer">
                       <button id="changeModal1" type="button" class="btn btn-primary hidden">Set content 1</button>
                       <button id="changeModal2" type="button" class="btn btn-primary">Set content 2</button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                           <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                         </svg>
@@ -2093,7 +2046,7 @@ changeModal2.addEventListener('click', function(){
           
           <section id="componentPopover">
             <h2>Popover</h2>
-            <p>The <b>Popover</b> component will initialize all elements with the <code>data-toggle="popover"</code> attribute. 
+            <p>The <b>Popover</b> component will initialize all elements with the <code>data-bs-toggle="popover"</code> attribute. 
               Unlike the original jQuery plugin, this component does not require
               the <b>Tooltip</b> component and works just about the same except that <b>Popover</b> has the ability
               to work with trigger options.</p>
@@ -2117,22 +2070,22 @@ changeModal2.addEventListener('click', function(){
                       <td><em>string</em></td>
                       <td></td>
                       <td>Option to use a custom HTML template for your popover initialization. The contents from the 
-                        <code>title</code> or <code>data-title</code> will fill the template's <code>.popover-header</code>
-                        element, while the contents of the <code>data-content</code> attribute will fill in the 
+                        <code>title</code> or <code>data-bs-title</code> will fill the template's <code>.popover-header</code>
+                        element, while the contents of the <code>data-bs-content</code> attribute will fill in the 
                         <code>.popover-body</code> element.<br><b>This option is JavaScript API only.</b></td>
                     </tr>
                     <tr>
                       <td><code>content</code></td>
                       <td><em>string</em></td>
                       <td></td>
-                      <td>Option to set the <b>content</b> of the popover via JavaScript or the <code>data-content="CONTENT"</code> 
+                      <td>Option to set the <b>content</b> of the popover via JavaScript or the <code>data-bs-content="CONTENT"</code> 
                         attribute.</td>
                     </tr>
                     <tr>
                       <td><code>title</code></td>
                       <td><em>string</em></td>
                       <td></td>
-                      <td>Option to set the <b>title</b> of the popover via JavaScript or the <code>data-title="TITLE"</code>
+                      <td>Option to set the <b>title</b> of the popover via JavaScript or the <code>data-bs-title="TITLE"</code>
                         attribute.</td>
                     </tr>
                     <tr>
@@ -2140,7 +2093,7 @@ changeModal2.addEventListener('click', function(){
                       <td><em>boolean</em></td>
                       <td><em>false</em></td>
                       <td>Option to make the popover dismissible. When <code>true</code>, it will also add an <kbd>&times;</kbd> button at
-                        the top-right of the popover. You can enable this option via JavaScript API or the <code>data-dismissible="true"</code> 
+                        the top-right of the popover. You can enable this option via JavaScript API or the <code>data-bs-dismissible="true"</code> 
                         attribute.</td>
                     </tr>
                     <tr>
@@ -2149,14 +2102,14 @@ changeModal2.addEventListener('click', function(){
                       <td><em>hover</em></td>
                       <td>Option to change the component's action trigger event: <code>hover</code>, <code>focus</code> and <code>click</code>. 
                         In some cases you may want to open a popover on focus for form elements or click for other buttons, you can specify that 
-                        via JavaScript or the <code>data-trigger="EVENT"</code> attribute.</td>
+                        via JavaScript or the <code>data-bs-trigger="EVENT"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>animation</code></td>
                       <td><em>string</em></td>
                       <td><em>fade</em></td>
                       <td>Option to customize the component animation. If you are using a different animation other than
-                        <code>fade</code>, you can specify that via the <code>data-animation="ANIMATION"</code>
+                        <code>fade</code>, you can specify that via the <code>data-bs-animation="ANIMATION"</code>
                         attribute. This will add an additional CSS class to the popover to enable a custom transition.</td>
                     </tr>
                     <tr>
@@ -2165,21 +2118,21 @@ changeModal2.addEventListener('click', function(){
                       <td><em>top</em></td>
                       <td>Option to set a specific placement to <code>top</code>, <code>bottom</code>, <code>left</code> or
                         <code>right</code>, relative to it's target. Can be set via both JavaScript and the
-                        <code>data-placement="POSITION"</code> attribute.</td>
+                        <code>data-bs-placement="POSITION"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>delay</code></td>
                       <td><em>number</em></td>
                       <td><em>200</em></td>
                       <td>A short delay before hiding the popover.<br> Can be set via JavaScript or the
-                        <code>data-delay="DELAY"</code> attribute.</td>
+                        <code>data-bs-delay="DELAY"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>container</code></td>
                       <td><em>selector</em><br>or <em>object</em></td>
                       <td><code>&lt;body&gt;</code></td>
                       <td>The container where your popovers get appended to. You can set the option via JavaScript or the
-                        <code>data-container="#elementID"</code> attribute.</td>
+                        <code>data-bs-container="#elementID"</code> attribute.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2223,7 +2176,7 @@ changeModal2.addEventListener('click', function(){
               <p>The component's original events are same as with the original jQuery Plugin, except
                 <code>inserted.bs.popover</code>, just as explained for the <b>Tooltip</b> component.</p>
               <p>The <code>event.target</code> of the original events is the the initialization target with the
-              <code>data-toggle="popover"</code> attribute.</p>
+              <code>data-bs-toggle="popover"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -2258,15 +2211,15 @@ changeModal2.addEventListener('click', function(){
           
             <section id="popoverDATA">
               <h3>Popover DATA API</h3>
-              <p>Our component will initialize any element found to have the <code>data-toggle="popover"</code> attribute and at
-                least the <code>data-content</code> attribute.</p>
+              <p>Our component will initialize any element found to have the <code>data-bs-toggle="popover"</code> attribute and at
+                least the <code>data-bs-content</code> attribute.</p>
           
-<pre><code class="language-markup">&lt;!-- any regular link with data-toggle="popover" --&gt;
-&lt;a href="https://google.com" data-title="Google" data-content="Google is cool" data-toggle="popover"&gt;Google&lt;/a&gt;
+<pre><code class="language-markup">&lt;!-- any regular link with data-bs-toggle="popover" --&gt;
+&lt;a href="https://google.com" data-bs-title="Google" data-bs-content="Google is cool" data-bs-toggle="popover"&gt;Google&lt;/a&gt;
 
-&lt;!-- any SVG shape with data-toggle="popover" --&gt;
+&lt;!-- any SVG shape with data-bs-toggle="popover" --&gt;
 &lt;svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg"&gt;
-  &lt;rect data-toggle="popover" data-placement="top" data-delay="150" data-content="Demo Title for SVG" rx="5">&lt;/rect&gt;
+  &lt;rect data-bs-toggle="popover" data-bs-placement="top" data-bs-delay="150" data-bs-content="Demo Title for SVG" rx="5">&lt;/rect&gt;
 &lt;/svg&gt;
 </code></pre>
 
@@ -2277,8 +2230,8 @@ changeModal2.addEventListener('click', function(){
               <p>After inserting new content into the page, you can initialize any element with <b>Popover</b> via JavaScript. You
                 can also initialize for elements not having the specific DATA API. You can do the following:</p>
 
-<pre><code class="language-javascript">// find all elements with data-content attribute
-var popoverTargets = document.querySelectorAll('[data-content]'); // also a certain class would go fine
+<pre><code class="language-javascript">// find all elements with data-bs-content attribute
+var popoverTargets = document.querySelectorAll('[data-bs-content]'); // also a certain class would go fine
 
 // initialize Popover for each element
 Array.from(popoverTargets).map(
@@ -2357,36 +2310,36 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
             <section id="popoverExamples">
               <h3>Popover Examples</h3>
               <p>First let's test all the placement positions, we start with inline links having the <a href="#"
-                  data-toggle="popover" data-placement="bottom" data-content="Testing bottom placement">bottom</a>
-                placement, then <a href="#" data-toggle="popover" data-placement="left"
-                  data-content="Testing left placement">left</a>, and
-                <a href="#" data-toggle="popover" data-placement="right" data-content="Testing right placement">right</a>.</p>
+                  data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Testing bottom placement">bottom</a>
+                placement, then <a href="#" data-bs-toggle="popover" data-bs-placement="left"
+                  data-bs-content="Testing left placement">left</a>, and
+                <a href="#" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Testing right placement">right</a>.</p>
               <p>Now we are going to test buttons with a popover with large contents. The last two examples below are using the
                 template system and different trigger options. The popover generated for the last two
                 examples can be dismissed on window resize or blur (focus out).</p>
               <p>
-                <button type="button" class="btn btn-dark" data-toggle="popover" data-placement="left" data-content="Popover on left">
+                <button type="button" class="btn btn-dark" data-bs-toggle="popover" data-bs-placement="left" data-bs-content="Popover on left">
                   Left
                 </button>
-                <button id="popoverWithEvents" type="button" class="btn btn-secondary" data-toggle="popover" data-placement="top" data-content="Popover on top">
+                <button id="popoverWithEvents" type="button" class="btn btn-secondary" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Popover on top">
                   Top with Events
                 </button>
-                <button type="button" class="btn btn-primary" data-toggle="popover" data-placement="bottom"
-                  data-content="Popover on bottom&lt;br> Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
+                <button type="button" class="btn btn-primary" data-bs-toggle="popover" data-bs-placement="bottom"
+                  data-bs-content="Popover on bottom&lt;br> Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
                   Bottom
                 </button>
-                <button type="button" class="btn btn-success" data-dismissible="true" data-toggle="popover"
-                  data-title="Dismissible Popover &lt;span class='badge badge-primary'>COOL&lt;/span>" data-placement="right"
-                  data-content="Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
+                <button type="button" class="btn btn-success" data-bs-dismissible="true" data-bs-toggle="popover"
+                  data-bs-title="Dismissible Popover &lt;span class='badge bg-primary'>COOL&lt;/span>" data-bs-placement="right"
+                  data-bs-content="Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                   Right Dismissible
                 </button>
-                <input style="max-width: 180px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template" placeholder="Focus me" data-toggle="popover">
-                <button type="button" id="popover-via-click" class="btn btn-warning" data-content="You clicked the button and as a result, this message box simply.. popped.&lt;br>Now simply click anywhere to dismiss.">
+                <input style="max-width: 180px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template" placeholder="Focus me" data-bs-toggle="popover">
+                <button type="button" id="popover-via-click" class="btn btn-warning" data-bs-content="You clicked the button and as a result, this message box simply.. popped.&lt;br>Now simply click anywhere to dismiss.">
                   Click to open
                 </button>
                 <svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg">
-                  <rect data-toggle="popover" data-placement="top" data-title="Demo Popover Title for SVG"
-                    data-content="This is a demo popover for SVG elements." fill="#fff" stroke="#ccc" stroke-width="1"
+                  <rect data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
+                    data-bs-content="This is a demo popover for SVG elements." fill="#fff" stroke="#ccc" stroke-width="1"
                     width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
@@ -2398,10 +2351,10 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
           <section id="componentScrollspy">
             <h2>Scrollspy</h2>
             <p>The <b>ScrollSpy</b> component inherits some of the <a rel="noreferrer"
-                href="https://getbootstrap.com/docs/4.5/components/scrollspy/" target="_blank">layout and other requirements</a> from
+                href="https://getbootstrap.com/docs/5.0/components/scrollspy/" target="_blank">layout and other requirements</a> from
               the original jQuery plugin in some cases, while in other cases a special markup is required. The component offers
               public methods, the specific original event, and provides rich JavaScript and DATA APIs.</p>
-            <p>The component will initialize for each element with <code>data-spy="scroll"</code> attribute, but will not work if
+            <p>The component will initialize for each element with <code>data-bs-spy="scroll"</code> attribute, but will not work if
               the above requirements are not met or the anchors don't reference the containers accordingly.</p>
           
             <section id="scrollspyOptions">
@@ -2423,15 +2376,15 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                       <td>element <code>'#ID'</code><br>
                         or other reference
                       </td>
-                      <td>The option to target the container with <code>data-spy="scroll"</code> attribute.<br>EG:
-                        <code>data-target="#myMenuID"</code></td>
+                      <td>The option to target the container with <code>data-bs-spy="scroll"</code> attribute.<br>EG:
+                        <code>data-bs-target="#myMenuID"</code></td>
                     </tr>
                     <tr>
                       <td><code>offset</code></td>
                       <td><em>number</em></td>
                       <td>10</td>
                       <td>Option to set a number of pixels as offset from top when calculating position of scroll. Can be set via
-                        <code>data-offset="NUMBER"</code> attribute or simply <code>offset</code> via JavaScript invokation.</td>
+                        <code>data-bs-offset="NUMBER"</code> attribute or simply <code>offset</code> via JavaScript invokation.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2452,7 +2405,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
             <section id="scrollspyEvents">
               <h3>ScrollSpy Events</h3>
               <p>The <code>event.target</code> is the element we initialized the component via JavaScript or has the 
-                <code>data-spy="scroll"</code> attribute. The newly activated menu item is the <code>event.relatedTarget</code>
+                <code>data-bs-spy="scroll"</code> attribute. The newly activated menu item is the <code>event.relatedTarget</code>
                 of the event object.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
@@ -2488,7 +2441,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
               </ul>
 
 <pre><code class="language-markup">&lt;!-- the element we initialize ScrollSpy on --&gt;
-&lt;div data-spy="scroll" data-target="#navbar-example" class="scrollspy-example"&gt;
+&lt;div data-bs-spy="scroll" data-bs-target="#navbar-example" class="scrollspy-example"&gt;
 
   &lt;!-- we look for the position of heading --&gt;
   &lt;h4 id="one"&gt;Title ONE&lt;/h4&gt;
@@ -2528,7 +2481,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
               </ul>
 
 <pre><code class="language-markup">&lt;!-- the element we initialize ScrollSpy on --&gt;
-&lt;div data-spy="scroll" data-target="#navbar-example" class="scrollspy-example"&gt;
+&lt;div data-bs-spy="scroll" data-bs-target="#navbar-example" class="scrollspy-example"&gt;
 
 &lt;section id="one"&gt; &lt;!-- this is a ScrollSpy container --&gt;
   Valid HTML goes here
@@ -2632,9 +2585,9 @@ myScrollSpyInit.dispose();
               <p>According to the above <a href="#scrollspyUsage">Usage Guide</a> let's initialize an overflowing element via DATA
                 API:</p>
           
-              <nav class="navbar navbar-dark navbar-expand-md bg-dark">
+              <nav class="navbar navbar-dark navbar-expand-md bg-dark px-3">
                 <a class="navbar-brand" href="#">SS Example</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#scrollSpy-nav"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#scrollSpy-nav"
                   aria-controls="scrollSpy-nav" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
                 </button>
@@ -2643,7 +2596,7 @@ myScrollSpyInit.dispose();
                     <li class="nav-item"><a class="nav-link" href="#first">Tumblr farm</a></li>
                     <li class="nav-item"><a class="nav-link" href="#second">Carles aesthetic</a></li>
                     <div class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">More Items <span class="caret"></span></a>
+                      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">More Items <span class="caret"></span></a>
                       <div class="dropdown-menu" role="menu">
                         <a class="dropdown-item" href="#one">one</a>
                         <a class="dropdown-item" href="#two">two</a>
@@ -2654,7 +2607,7 @@ myScrollSpyInit.dispose();
                 </div>
               </nav>
           
-              <div data-spy="scroll" data-target="#navbar-example" class="scrollspy-example border py-1 px-3 mb-3">
+              <div data-bs-spy="scroll" data-bs-target="#navbar-example" class="scrollspy-example border py-1 px-3 mb-3">
                 <h4 id="first">Tumblr farm</h4>
                 <p>Ad leggings keytar, brunch id art party dolor labore. Pitchfork yr enim lo-fi before they sold out qui. Tumblr
                   farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan. Velit seitan mcsweeney's photo booth 3
@@ -2727,7 +2680,7 @@ myScrollSpyInit.dispose();
                       <td><em>boolean</em></td>
                       <td><em>true</em></td>
                       <td>Option to enable animation of the height of the <code>.tab-content</code> tabs container. Can be set via
-                        JavaScript or the <code>data-height="true"</code> attribute.</td>
+                        JavaScript or the <code>data-bs-height="true"</code> attribute.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2800,7 +2753,7 @@ myScrollSpyInit.dispose();
             <section id="tabDATA">
               <h3>Tab DATA API</h3>
               <p>Here is a sample markup to showcase the usage of the component with the above mentioned methods. As you can see,
-                each of the elements with the <code>data-toggle="tab"</code> attribute are subject to the
+                each of the elements with the <code>data-bs-toggle="tab"</code> attribute are subject to the
                 <b>Tab</b> component initialization.</p>
           
 <pre><code class="language-markup">&lt;!-- for better usage, wrap the tabs and contents --&gt;
@@ -2809,16 +2762,16 @@ myScrollSpyInit.dispose();
 &lt;!-- Nav tabs --&gt;
 &lt;ul id="myTabs" class="nav nav-tabs" role="tablist"&gt;
   &lt;li class="nav-item"&gt;
-    &lt;a class="nav-link active" id="home-tab" href="#home" data-toggle="tab" data-height="true" aria-controls="home" aria-selected="true" role="tab"&gt;Home&lt;/a&gt;
+    &lt;a class="nav-link active" id="home-tab" href="#home" data-bs-toggle="tab" data-height="true" aria-controls="home" aria-selected="true" role="tab"&gt;Home&lt;/a&gt;
   &lt;/li&gt;
   &lt;li class="nav-item"&gt;
-    &lt;a class="nav-link" id="profile-tab" href="#profile" data-toggle="tab" data-height="true" aria-controls="profile" aria-selected="false" role="tab"&gt;Profile&lt;/a&gt;
+    &lt;a class="nav-link" id="profile-tab" href="#profile" data-bs-toggle="tab" data-height="true" aria-controls="profile" aria-selected="false" role="tab"&gt;Profile&lt;/a&gt;
   &lt;/li&gt;
   &lt;li class="nav-item"&gt;
-    &lt;a class="nav-link" id="messages-tab" href="#messages" data-toggle="tab" data-height="true" aria-controls="messages" aria-selected="false" role="tab"&gt;Messages&lt;/a&gt;
+    &lt;a class="nav-link" id="messages-tab" href="#messages" data-bs-toggle="tab" data-height="true" aria-controls="messages" aria-selected="false" role="tab"&gt;Messages&lt;/a&gt;
   &lt;/li&gt;
   &lt;li class="nav-item"&gt;
-    &lt;a class="nav-link" id="settings-tab" href="#settings" data-toggle="tab" data-height="true" aria-controls="settings" aria-selected="false" role="tab"&gt;Settings&lt;/a&gt;
+    &lt;a class="nav-link" id="settings-tab" href="#settings" data-bs-toggle="tab" data-height="true" aria-controls="settings" aria-selected="false" role="tab"&gt;Settings&lt;/a&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
@@ -2839,9 +2792,9 @@ myScrollSpyInit.dispose();
 
             <section id="tabJS">
               <h3>Tab JavaScript API</h3>
-              <p>Since the component will target a single element with / or without <code>data-toggle="tab"</code> attribute, but
+              <p>Since the component will target a single element with / or without <code>data-bs-toggle="tab"</code> attribute, but
                 at least it references a corresponding tab via <code>href</code> or
-                <code>data-target</code>, we will need to do a simple loop to initialize multiple elements. Assuming the above
+                <code>data-bs-target</code>, we will need to do a simple loop to initialize multiple elements. Assuming the above
                 markup have been injected into the DOM, let's initialize, use the public
                 method and attach handlers to the original events.</p>
           
@@ -2888,23 +2841,23 @@ myLastTab.addEventListener('show.bs.tab', function(event){
               <ul id="myTab" class="nav nav-tabs mb-2" role="tablist">
                 <li class="nav-item">
                   <a class="nav-link active" href="#home" id="home-tab" role="tab" data-height="true"
-                    data-toggle="tab" aria-controls="home" aria-expanded="true">
+                    data-bs-toggle="tab" aria-controls="home" aria-expanded="true">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
                     Home</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link d-flex flex-row align-items-center" href="#profile" role="tab" id="profile-tab" data-height="true" data-toggle="tab" aria-controls="profile">
+                  <a class="nav-link d-flex flex-row align-items-center" href="#profile" role="tab" id="profile-tab" data-height="true" data-bs-toggle="tab" aria-controls="profile">
                     Profile
                   </a>
                 </li>
                 <li class="nav-item dropdown">
-                  <a class="nav-link" href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" data-persist="true"
+                  <a class="nav-link" href="#" id="myTabDrop1" class="dropdown-toggle" data-bs-toggle="dropdown" data-persist="true"
                     aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span>
                   </a>
                   <div class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
-                    <a class="dropdown-item" href="#dropdown1" role="tab" id="dropdown1-tab" data-toggle="tab" data-height="true"
+                    <a class="dropdown-item" href="#dropdown1" role="tab" id="dropdown1-tab" data-bs-toggle="tab" data-height="true"
                         aria-controls="dropdown1" aria-expanded="false">Some tab</a>
                     <a class="dropdown-item" id="tabEventsExample" href="#dropdown2" role="tab" data-height="true" aria-controls="dropdown2"
                         aria-expanded="false">Events</a>
@@ -2956,7 +2909,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
             <p>The <b>Toast</b> component covers the original events and its specific instance methods as well as specific options.
               The component does not require the <code>alert-dismissible</code> class in order to work.</p>
             <p>For design customization and accessibility guidelines please refer back to the 
-              <a href="https://getbootstrap.com/docs/4.5/components/toasts/">original plugin</a>. </p>
+              <a href="https://getbootstrap.com/docs/5.0/components/toasts/">original plugin</a>. </p>
 
             <section id="toastOptions">
               <h3>Toast Options</h3>
@@ -2976,7 +2929,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                       <td><em>boolean</em></td>
                       <td><em>true</em></td>
                       <td>Option to customize the component animation. If you are using a different animation other than
-                        <code>fade</code>, you can specify that via the <code>data-animation="ANIMATION"</code> attribute.
+                        <code>fade</code>, you can specify that via the <code>data-bs-animation="ANIMATION"</code> attribute.
                         This will add an additional CSS class to the tooltip to enable a custom transition.</td>
                     </tr>
                     <tr>
@@ -2984,7 +2937,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                       <td><em>boolean</em></td>
                       <td><em>true</em></td>
                       <td>Option to set a hide your toast notification automatically after being shown to the used for a 
-                        certain amount of time set below. Can be set via both JavaScript and the <code>data-autohide="true"</code> 
+                        certain amount of time set below. Can be set via both JavaScript and the <code>data-bs-autohide="true"</code> 
                         attribute.</td>
                     </tr>
                     <tr>
@@ -2992,7 +2945,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                       <td><em>number</em></td>
                       <td><em>500</em></td>
                       <td>A short delay before hiding the tooltip. Can be set via JavaScript or the
-                        <code>data-delay="DELAY"</code> attribute.</td>
+                        <code>data-bs-delay="DELAY"</code> attribute.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -3018,7 +2971,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
               <h3>Toast Events</h3>
               <p>The <code>event.target</code> for the component's original events is the one with the 
                 <code>class="toast"</code> attribute, which is also the parent of the initialization target, usually the
-                element having the <code>data-toggle="toast"</code> attribute.</p>
+                element having the <code>data-bs-toggle="toast"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -3054,17 +3007,15 @@ myLastTab.addEventListener('show.bs.tab', function(event){
             <section id="toastDATA">
               <h3>Toast DATA API</h3>
               <p>The component will initialize all elements with proper markup and the specific DATA API attributes found in
-                the DOM. Note that the <code>data-dismiss="toast"</code> attribute is required for the triggering button.</p>
+                the DOM. Note that the <code>data-bs-dismiss="toast"</code> attribute is required for the triggering button.</p>
           
-<pre><code class="language-markup">&lt;!-- notice the &lt;button&gt; with the data-dismiss="toast" attribute --&gt;
+<pre><code class="language-markup">&lt;!-- notice the &lt;button&gt; with the data-bs-dismiss="toast" attribute --&gt;
 &lt;div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
   &lt;div class="toast-header">
     &lt;img src="..." class="rounded mr-2" alt="...">
     &lt;strong class="mr-auto">Bootstrap&lt;/strong>
     &lt;small>11 mins ago&lt;/small>
-    &lt;button id="myTastyToast" type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-      &lt;span aria-hidden="true">&amp;times;&lt;/span>
-    &lt;/button>
+    &lt;button id="myTastyToast" type="button" class="ml-2 mb-1 btn-close" data-bs-dismiss="toast" aria-label="Close">&lt;/button>
   &lt;/div>
   &lt;div class="toast-body">
     Hello, world! This is a toast message.
@@ -3132,22 +3083,21 @@ myToastInit.dispose();
               <h3>Toast Example</h3>
               <p>This toast has some handlers attached to all its original events, so check your console.</p>
 
-              <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                  <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
-                    <rect fill="#007aff" width="100%" height="100%"></rect>
-                  </svg>
-                  <strong class="mr-auto">Bootstrap</strong>
-                  <small>11 mins ago</small>
-                  <button id="myTastyToastBTN" type="button" class="ml-2 mb-1 close" data-dismiss="toast" data-autohide="false" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                  </button>
-                </div>
-                <div class="toast-body">
-                  Hello, world! This is a toast message.
+              <div class="toast-container">
+                <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                  <div class="toast-header">
+                    <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                      <rect fill="#007aff" width="100%" height="100%"></rect>
+                    </svg>
+                    <strong class="me-auto">Bootstrap</strong>
+                    <small>11 mins ago</small>
+                    <button id="myTastyToastBTN" type="button" class="btn-close" data-bs-dismiss="toast" data-bs-autohide="false" aria-label="Close"></button>
+                  </div>
+                  <div class="toast-body">
+                    Hello, world! This is a toast message.
+                  </div>
                 </div>
               </div>
-
               <p><button class="btn btn-info d-none" id="showToastBTN">Show Toast</button></p>
 
             </section>
@@ -3156,7 +3106,7 @@ myToastInit.dispose();
           <section id="componentTooltip">
             <h2>Tooltip</h2>
             <p>Unlike the original jQuery plugin, our <b>Tooltip</b> component will initialize right away all elements with the
-              <code>data-toggle="tooltip"</code> attribute. Additionally the component can do automatic placement without any
+              <code>data-bs-toggle="tooltip"</code> attribute. Additionally the component can do automatic placement without any
               options required. At half the size of the original plugin, our component covers essential options, methods
               and original events.</p>
           
@@ -3181,7 +3131,7 @@ myToastInit.dispose();
                       <td><em>string</em></td>
                       <td></td>
                       <td>Allows you to set a custom template for your tooltips and is not set by default. The 
-                        <code>title=""</code> or <code>data-title=""</code> attribute will fill in for the 
+                        <code>title=""</code> or <code>data-bs-title=""</code> attribute will fill in for the 
                         <code>.tooltip-inner</code> element.<br><b>This option is JavaScript API only.</b></td>
                     </tr>                    
                     <tr>
@@ -3189,7 +3139,7 @@ myToastInit.dispose();
                       <td><em>string</em></td>
                       <td><em>fade</em></td>
                       <td>Option to customize the component animation. If you are using a different animation other than
-                        <code>fade</code>, you can specify that via the <code>data-animation="ANIMATION"</code> attribute.
+                        <code>fade</code>, you can specify that via the <code>data-bs-animation="ANIMATION"</code> attribute.
                         This will add an additional CSS class to the tooltip to enable a custom transition.</td>
                     </tr>
                     <tr>
@@ -3198,21 +3148,21 @@ myToastInit.dispose();
                       <td><em>top</em></td>
                       <td>Option to set a specific placement to <code>top</code>, <code>bottom</code>, <code>left</code> or
                         <code>right</code>, relative to it's target. Can be set via both JavaScript and the
-                        <code>data-placement="POSITION"</code> attribute.</td>
+                        <code>data-bs-placement="POSITION"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>delay</code></td>
                       <td><em>number</em></td>
                       <td><em>200</em></td>
                       <td>A short delay before hiding the tooltip. Can be set via JavaScript or the
-                        <code>data-delay="DELAY"</code> attribute.</td>
+                        <code>data-bs-delay="DELAY"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>container</code></td>
                       <td><em>selector</em><br>or <em>object</em></td>
                       <td><code>&lt;body&gt;</code></td>
                       <td>The container where your tooltips get appended to. You can set the option via JavaScript or the
-                        <code>data-container="#elementID"</code> attribute.</td>
+                        <code>data-bs-container="#elementID"</code> attribute.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -3253,7 +3203,7 @@ myToastInit.dispose();
                 <code>inserted.bs.tooltip</code>, the way the component works makes that this event is not needed, 
                 as it would fire on every instance of the <code>.show()</code> call.</p>
               <p>The <code>event.target</code> of the original events is the target element of component, likelly your 
-                element with the <code>data-toggle="tooltip"</code> attribute.</p>
+                element with the <code>data-bs-toggle="tooltip"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped bs-events-table">
                   <thead>
@@ -3289,15 +3239,15 @@ myToastInit.dispose();
             <section id="tooltipDATA">
               <h3>Tooltip DATA API</h3>
               <p>As mentioned before the component will initialize any element found to have the
-                <code>data-toggle="tooltip"</code> attribute and a <code>title</code> or a <code>data-title</code>
+                <code>data-bs-toggle="tooltip"</code> attribute and a <code>title</code> or a <code>data-bs-title</code>
                 attribute for SVG elements.</p>
 
-<pre><code class="language-markup">&lt;!-- any regular link with data-toggle="tooltip" --&gt;
-&lt;a href="https://google.com" title="Google" data-toggle="tooltip"&gt;Google&lt;/a&gt;
+<pre><code class="language-markup">&lt;!-- any regular link with data-bs-toggle="tooltip" --&gt;
+&lt;a href="https://google.com" title="Google" data-bs-toggle="tooltip"&gt;Google&lt;/a&gt;
 
-&lt;!-- any SVG shape with data-toggle="tooltip" --&gt;
+&lt;!-- any SVG shape with data-bs-toggle="tooltip" --&gt;
 &lt;svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg"&gt;
-  &lt;rect data-toggle="tooltip" data-placement="top" data-delay="150" data-title="Demo Title for SVG" rx="5">&lt;/rect&gt;
+  &lt;rect data-bs-toggle="tooltip" data-bs-placement="top" data-bs-delay="150" data-bs-title="Demo Title for SVG" rx="5">&lt;/rect&gt;
 &lt;/svg&gt;
 </code></pre>
 
@@ -3371,32 +3321,32 @@ new BSN.Tooltip('#selector',options).show();
             <section id="tooltipExamples">
               <h3>Tooltip Examples</h3>
               <p>Now let's test all the other placement positions, we start with inline links having the <a href="#"
-                  title="Testing bottom placement" data-toggle="tooltip" data-placement="bottom">bottom</a> placement,
-                then <a href="#" title="Testing left placement" data-toggle="tooltip" data-placement="left">left</a>, and <a
-                  href="#" title="Testing right placement" data-toggle="tooltip" data-placement="right">right</a>.
+                  title="Testing bottom placement" data-bs-toggle="tooltip" data-bs-placement="bottom">bottom</a> placement,
+                then <a href="#" title="Testing left placement" data-bs-toggle="tooltip" data-bs-placement="left">left</a>, and <a
+                  href="#" title="Testing right placement" data-bs-toggle="tooltip" data-bs-placement="right">right</a>.
                 Let's put it to the test! Some heavy testing on the automatic repositioning with very very long tooltips.</p>
               <p>
           
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="left"
+                <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="left"
                   title="&lt;b&gt;Tooltip on left&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
-                <button id="tooltipWithEvents" type="button" class="btn btn-dark" data-toggle="tooltip" data-placement="top"
+                <button id="tooltipWithEvents" type="button" class="btn btn-dark" data-bs-toggle="tooltip" data-bs-placement="top"
                   title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Top With
                   Events</button>
-                <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom"
+                <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom"
                   title="&lt;b&gt;Tooltip on bottom&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
-                <button type="button" class="btn btn-success" data-toggle="tooltip" data-placement="right"
+                <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="right"
                   title="&lt;b&gt;Tooltip on right&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
-                <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="left"
-                  title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge badge-success'&gt;NEW&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
+                <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="left"
+                  title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
                 <button id="tooltipTemplateExample" type="button" class="btn btn-danger"
-                  title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge badge-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
-                <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom"
-                  title="&lt;b&gt;Tooltip on bottom&lt;/b&gt; &lt;span class='badge badge-warning'&gt;COOL&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
-                <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="right"
-                  title="&lt;b&gt;Tooltip on right&lt;/b&gt; &lt;span class='badge badge-info'&gt;FYI&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+                  title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
+                <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                  title="&lt;b&gt;Tooltip on bottom&lt;/b&gt; &lt;span class='badge bg-warning'&gt;COOL&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
+                <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="right"
+                  title="&lt;b&gt;Tooltip on right&lt;/b&gt; &lt;span class='badge bg-info'&gt;FYI&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
           
                 <svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg">
-                  <rect data-toggle="tooltip" data-placement="top" data-title="Demo Title for SVG" fill="#fff" stroke="#ccc"
+                  <rect data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Demo Title for SVG" fill="#fff" stroke="#ccc"
                     stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
@@ -3532,7 +3482,7 @@ new BSN.Tooltip('#selector',options).show();
       <!-- FOOTER -->
       <footer class="mt-3 pt-3 border-top">
         <div class="container">
-          <p class="float-right"><a href="#myCarousel">Back to top</a></p>
+          <p class="float-end"><a href="#myCarousel">Back to top</a></p>
           <p><a href="http://themeforest.net/user/dnp_theme" rel="noreferrer" target="_blank">dnp_theme</a> &copy; 2015-2021.</p>
         </div>
       </footer>
@@ -3541,8 +3491,8 @@ new BSN.Tooltip('#selector',options).show();
 
 		<script src="./dist/polyfill.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
-    <script src="./dist/bootstrap-native.js"></script>
-    <script src="./assets/js/scripts.js"></script>
+    <script src="./dist/bootstrap-native-v5.js"></script>
+    <script src="./assets/js/scripts-v5.js"></script>
     <script src="./assets/js/prism.js"></script>
   </body>
 </html>

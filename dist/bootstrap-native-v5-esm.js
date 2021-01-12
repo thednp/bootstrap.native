@@ -63,7 +63,7 @@ function Alert(element) {
   }
   function clickHandler(e) {
     alert = e && e.target.closest(".alert");
-    element = queryElement('[data-dismiss="alert"]',alert);
+    element = queryElement('[data-bs-dismiss="alert"]',alert);
     element && alert && (element === e.target || element.contains(e.target)) && self.close();
   }
   function transitionEndHandler() {
@@ -234,8 +234,8 @@ function Carousel (element,options) {
     e.preventDefault();
     if (vars.isSliding) { return; }
     var eventTarget = e.target;
-    if ( eventTarget && !eventTarget.classList.contains('active') && eventTarget.getAttribute('data-slide-to') ) {
-      vars.index = parseInt( eventTarget.getAttribute('data-slide-to'));
+    if ( eventTarget && !eventTarget.classList.contains('active') && eventTarget.getAttribute('data-bs-slide-to') ) {
+      vars.index = parseInt( eventTarget.getAttribute('data-bs-slide-to'));
     } else { return false; }
     self.slideTo( vars.index );
   }
@@ -327,7 +327,7 @@ function Carousel (element,options) {
       var next = vars.index,
           timeout = e && e.target !== slides[next] ? e.elapsedTime*1000+100 : 20,
           activeItem = self.getActiveIndex(),
-          orientation = vars.direction === 'left' ? 'next' : 'prev';
+          orientation = vars.direction === 'start' ? 'next' : 'prev';
       vars.isSliding && setTimeout(function () {
         if (vars.touchPosition){
           vars.isSliding = false;
@@ -360,13 +360,13 @@ function Carousel (element,options) {
     if ( activeItem === next ) {
       return;
     } else if  ( (activeItem < next ) || (activeItem === 0 && next === slides.length -1 ) ) {
-      vars.direction = 'left';
+      vars.direction = 'start';
     } else if  ( (activeItem > next) || (activeItem === slides.length - 1 && next === 0 ) ) {
-      vars.direction = 'right';
+      vars.direction = 'end';
     }
     if ( next < 0 ) { next = slides.length - 1; }
     else if ( next >= slides.length ){ next = 0; }
-    orientation = vars.direction === 'left' ? 'next' : 'prev';
+    orientation = vars.direction === 'start' ? 'next' : 'prev';
     eventProperties = { relatedTarget: slides[next], direction: vars.direction, from: activeItem, to: next };
     slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', eventProperties);
     slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', eventProperties);
@@ -418,11 +418,11 @@ function Carousel (element,options) {
   indicators = indicator && indicator.getElementsByTagName( "LI" ) || [];
   if (slides.length < 2) { return }
   var
-    intervalAttribute = element.getAttribute('data-interval'),
+    intervalAttribute = element.getAttribute('data-bs-interval'),
     intervalData = intervalAttribute === 'false' ? 0 : parseInt(intervalAttribute),
-    touchData = element.getAttribute('data-touch') === 'false' ? 0 : 1,
-    pauseData = element.getAttribute('data-pause') === 'hover' || false,
-    keyboardData = element.getAttribute('data-keyboard') === 'true' || false,
+    touchData = element.getAttribute('data-bs-touch') === 'false' ? 0 : 1,
+    pauseData = element.getAttribute('data-bs-pause') === 'hover' || false,
+    keyboardData = element.getAttribute('data-bs-keyboard') === 'true' || false,
     intervalOption = options.interval,
     touchOption = options.touch;
   ops = {};
@@ -438,7 +438,7 @@ function Carousel (element,options) {
     indicators.length && setActivePage(0);
   }
   vars = {};
-  vars.direction = 'left';
+  vars.direction = 'start';
   vars.index = 0;
   vars.timer = null;
   vars.isSliding = false;
@@ -460,6 +460,7 @@ function Collapse(element,options) {
       collapse = null,
       activeCollapse,
       activeElement,
+      accordionData,
       showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
@@ -517,7 +518,7 @@ function Collapse(element,options) {
   self.show = function () {
     if ( accordion ) {
       activeCollapse = accordion.getElementsByClassName("collapse show")[0];
-      activeElement = activeCollapse && (queryElement(("[data-target=\"#" + (activeCollapse.id) + "\"]"),accordion)
+      activeElement = activeCollapse && (queryElement(("[data-bs-target=\"#" + (activeCollapse.id) + "\"]"),accordion)
                     || queryElement(("[href=\"#" + (activeCollapse.id) + "\"]"),accordion) );
     }
     if ( !collapse.isAnimating ) {
@@ -535,12 +536,12 @@ function Collapse(element,options) {
   };
     element = queryElement(element);
     element.Collapse && element.Collapse.dispose();
-    var accordionData = element.getAttribute('data-parent');
     showCustomEvent = bootstrapCustomEvent('show', 'collapse');
     shownCustomEvent = bootstrapCustomEvent('shown', 'collapse');
     hideCustomEvent = bootstrapCustomEvent('hide', 'collapse');
     hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse');
-    collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
+    collapse = queryElement(options.target || element.getAttribute('data-bs-target') || element.getAttribute('href'));
+    accordionData = collapse.getAttribute('data-bs-parent');
     collapse.isAnimating = false;
     accordion = element.closest(options.parent || accordionData);
     if ( !element.Collapse ) {
@@ -575,9 +576,9 @@ function Dropdown(element,option) {
   }
   function dismissHandler(e) {
     var eventTarget = e.target,
-          hasData = eventTarget && (eventTarget.getAttribute('data-toggle')
+          hasData = eventTarget && (eventTarget.getAttribute('data-bs-toggle')
                                 || eventTarget.parentNode && eventTarget.parentNode.getAttribute
-                                && eventTarget.parentNode.getAttribute('data-toggle'));
+                                && eventTarget.parentNode.getAttribute('data-bs-toggle'));
     if ( e.type === 'focus' && (eventTarget === element || eventTarget === menu || menu.contains(eventTarget) ) ) {
       return;
     }
@@ -672,7 +673,7 @@ function Dropdown(element,option) {
     !('tabindex' in menu) && menu.setAttribute('tabindex', '0');
     element.addEventListener('click',clickHandler,false);
   }
-  persist = option === true || element.getAttribute('data-persist') === 'true' || false;
+  persist = option === true || element.getAttribute('data-bs-persist') === 'true' || false;
   element.open = false;
   element.Dropdown = self;
 }
@@ -776,8 +777,8 @@ function Modal(element,options) {
     if ( modal.isAnimating ) { return; }
     var clickTarget = e.target,
         modalID = "#" + (modal.getAttribute('id')),
-        targetAttrValue = clickTarget.getAttribute('data-target') || clickTarget.getAttribute('href'),
-        elemAttrValue = element.getAttribute('data-target') || element.getAttribute('href');
+        targetAttrValue = clickTarget.getAttribute('data-bs-target') || clickTarget.getAttribute('href'),
+        elemAttrValue = element.getAttribute('data-bs-target') || element.getAttribute('href');
     if ( !modal.classList.contains('show')
         && (clickTarget === element && targetAttrValue === modalID
         || element.contains(clickTarget) && elemAttrValue === modalID) ) {
@@ -796,8 +797,8 @@ function Modal(element,options) {
   function dismissHandler(e) {
     if ( modal.isAnimating ) { return; }
     var clickTarget = e.target,
-        hasData = clickTarget.getAttribute('data-dismiss') === 'modal',
-        parentWithData = clickTarget.closest('[data-dismiss="modal"]');
+        hasData = clickTarget.getAttribute('data-bs-dismiss') === 'modal',
+        parentWithData = clickTarget.closest('[data-bs-dismiss="modal"]');
     if ( modal.classList.contains('show') && ( parentWithData || hasData
         || clickTarget === modal && ops.backdrop !== 'static' ) ) {
       self.hide(); relatedTarget = null;
@@ -852,16 +853,16 @@ function Modal(element,options) {
     else {delete modal.Modal;}
   };
   element = queryElement(element);
-  var checkModal = queryElement( element.getAttribute('data-target') || element.getAttribute('href') );
+  var checkModal = queryElement( element.getAttribute('data-bs-target') || element.getAttribute('href') );
   modal = element.classList.contains('modal') ? element : checkModal;
   fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
                     .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
   if ( element.classList.contains('modal') ) { element = null; }
   element && element.Modal && element.Modal.dispose();
   modal && modal.Modal && modal.Modal.dispose();
-  ops.keyboard = options.keyboard === false || modal.getAttribute('data-keyboard') === 'false' ? false : true;
-  ops.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
-  ops.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : ops.backdrop;
+  ops.keyboard = options.keyboard === false || modal.getAttribute('data-bs-keyboard') === 'false' ? false : true;
+  ops.backdrop = options.backdrop === 'static' || modal.getAttribute('data-bs-backdrop') === 'static' ? 'static' : true;
+  ops.backdrop = options.backdrop === false || modal.getAttribute('data-bs-backdrop') === 'false' ? false : ops.backdrop;
   ops.animation = modal.classList.contains('fade') ? true : false;
   ops.content = options.content;
   modal.isAnimating = false;
@@ -888,8 +889,10 @@ function getScroll() {
   }
 }
 
+var tipClassPositions = {top:'top', bottom:'bottom', left:'start', right:'end'};
+
 function styleTip(link,element,position,parent) {
-  var tipPositions = /\b(top|bottom|left|right)+/,
+  var tipClasses = /\b(top|bottom|start|end)+/,
       elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
       windowWidth = (document.documentElement.clientWidth || document.body.clientWidth),
       windowHeight = (document.documentElement.clientHeight || document.body.clientHeight),
@@ -897,7 +900,10 @@ function styleTip(link,element,position,parent) {
       scroll = parent === document.body ? getScroll() : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
       linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
       isPopover = element.classList.contains('popover'),
-      arrow = element.getElementsByClassName('arrow')[0],
+      arrow = element.getElementsByClassName(((isPopover?'popover':'tooltip') + "-arrow"))[0],
+      topPosition, leftPosition,
+      arrowTop, arrowLeft,
+      arrowWidth, arrowHeight,
       halfTopExceed = rect.top + linkDimensions.h/2 - elementDimensions.h/2 < 0,
       halfLeftExceed = rect.left + linkDimensions.w/2 - elementDimensions.w/2 < 0,
       halfRightExceed = rect.left + elementDimensions.w/2 + linkDimensions.w/2 >= windowWidth,
@@ -911,14 +917,9 @@ function styleTip(link,element,position,parent) {
   position = position === 'bottom' && bottomExceed ? 'top' : position;
   position = position === 'left' && leftExceed ? 'right' : position;
   position = position === 'right' && rightExceed ? 'left' : position;
-  var topPosition,
-    leftPosition,
-    arrowTop,
-    arrowLeft,
-    arrowWidth,
-    arrowHeight;
-  element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipPositions,position));
-  arrowWidth = arrow.offsetWidth; arrowHeight = arrow.offsetHeight;
+  element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipClasses,tipClassPositions[position]));
+  arrowWidth = arrow ? arrow.offsetWidth : 0;
+  arrowHeight = arrow ? arrow.offsetHeight : 0;
   if ( position === 'left' || position === 'right' ) {
     if ( position === 'left' ) {
       leftPosition = rect.left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 );
@@ -985,14 +986,14 @@ function Popover(element,options) {
       navbarFixedBottom,
       placementClass;
   function dismissibleHandler(e) {
-    if (popover !== null && e.target === queryElement('.close',popover)) {
+    if (popover !== null && e.target === queryElement('.btn-close',popover)) {
       self.hide();
     }
   }
   function getContents() {
     return {
-      0 : options.title || element.getAttribute('data-title') || null,
-      1 : options.content || element.getAttribute('data-content') || null
+      0 : options.title || element.getAttribute('data-bs-title') || null,
+      1 : options.content || element.getAttribute('data-bs-content') || null
     }
   }
   function removePopover() {
@@ -1005,7 +1006,7 @@ function Popover(element,options) {
     contentString = !!contentString ? contentString.trim() : null;
     popover = document.createElement('div');
     var popoverArrow = document.createElement('div');
-    popoverArrow.classList.add('arrow');
+    popoverArrow.classList.add('popover-arrow');
     popover.appendChild(popoverArrow);
     if ( contentString !== null && ops.template === null ) {
       popover.setAttribute('role','tooltip');
@@ -1031,9 +1032,9 @@ function Popover(element,options) {
     }
     ops.container.appendChild(popover);
     popover.style.display = 'block';
-    !popover.classList.contains( 'popover') && popover.classList.add('popover');
-    !popover.classList.contains( ops.animation) && popover.classList.add(ops.animation);
-    !popover.classList.contains( placementClass) && popover.classList.add(placementClass);
+    !popover.classList.contains('popover') && popover.classList.add('popover');
+    !popover.classList.contains(ops.animation) && popover.classList.add(ops.animation);
+    !popover.classList.contains(placementClass) && popover.classList.add(placementClass);
   }
   function showPopover() {
     !popover.classList.contains('show') && ( popover.classList.add('show') );
@@ -1116,13 +1117,13 @@ function Popover(element,options) {
   };
   element = queryElement(element);
   element.Popover && element.Popover.dispose();
-  triggerData = element.getAttribute('data-trigger');
-  animationData = element.getAttribute('data-animation');
-  placementData = element.getAttribute('data-placement');
-  dismissibleData = element.getAttribute('data-dismissible');
-  delayData = element.getAttribute('data-delay');
-  containerData = element.getAttribute('data-container');
-  closeBtn = '<button type="button" class="close">×</button>';
+  triggerData = element.getAttribute('data-bs-trigger');
+  animationData = element.getAttribute('data-bs-animation');
+  placementData = element.getAttribute('data-bs-placement');
+  dismissibleData = element.getAttribute('data-bs-dismissible');
+  delayData = element.getAttribute('data-bs-delay');
+  containerData = element.getAttribute('data-bs-container');
+  closeBtn = '<button type="button" class="btn-close"></button>';
   showCustomEvent = bootstrapCustomEvent('show', 'popover');
   shownCustomEvent = bootstrapCustomEvent('shown', 'popover');
   hideCustomEvent = bootstrapCustomEvent('hide', 'popover');
@@ -1143,7 +1144,7 @@ function Popover(element,options) {
                           : navbarFixedTop ? navbarFixedTop
                           : navbarFixedBottom ? navbarFixedBottom
                           : modal ? modal : document.body;
-  placementClass = "bs-popover-" + (ops.placement);
+  placementClass = "bs-popover-" + (tipClassPositions[ops.placement]);
   var popoverContents = getContents();
   titleString = popoverContents[0];
   contentString = popoverContents[1];
@@ -1227,8 +1228,8 @@ function ScrollSpy(element,options) {
   };
   element = queryElement(element);
   element.ScrollSpy && element.ScrollSpy.dispose();
-  targetData = element.getAttribute('data-target');
-  offsetData = element.getAttribute('data-offset');
+  targetData = element.getAttribute('data-bs-target');
+  offsetData = element.getAttribute('data-bs-offset');
   spyTarget = queryElement(options.target || targetData);
   scrollTarget = element.offsetHeight < element.scrollHeight ? element : window;
   if (!spyTarget) { return }
@@ -1363,7 +1364,7 @@ function Tab(element,options) {
   };
   element = queryElement(element);
   element.Tab && element.Tab.dispose();
-  heightData = element.getAttribute('data-height');
+  heightData = element.getAttribute('data-bs-height');
   tabs = element.closest('.nav');
   dropdown = tabs && queryElement('.dropdown-toggle',tabs);
   animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
@@ -1388,18 +1389,36 @@ function Toast(element,options) {
       hiddenCustomEvent,
       ops = {};
   function showComplete() {
-    toast.classList.remove( 'showing' );
-    toast.classList.add( 'show' );
+    if (!ops.animation) {
+      toast.classList.remove('showing');
+      toast.classList.add('show');
+    }
     dispatchCustomEvent.call(toast,shownCustomEvent);
-    if (ops.autohide) { self.hide(); }
+    ops.autohide && self.hide();
   }
   function hideComplete() {
     toast.classList.add( 'hide' );
     dispatchCustomEvent.call(toast,hiddenCustomEvent);
   }
-  function close () {
-    toast.classList.remove('show' );
-    ops.animation ? emulateTransitionEnd(toast, hideComplete) : hideComplete();
+  function close() {
+    toast.classList.remove('show');
+    if (ops.animation){
+      toast.offsetWidth;
+      emulateTransitionEnd(toast, hideComplete);
+    } else {
+      hideComplete();
+    }
+  }
+  function open() {
+    toast.classList.remove('hide');
+    if (ops.animation) {
+      toast.offsetWidth;
+      toast.classList.add('showing');
+      toast.classList.add('show');
+      emulateTransitionEnd(toast, showComplete);
+    } else {
+      showComplete();
+    }
   }
   function disposeComplete() {
     clearTimeout(timer);
@@ -1407,21 +1426,20 @@ function Toast(element,options) {
     delete element.Toast;
   }
   self.show = function () {
-    if (toast && !toast.classList.contains('show')) {
+    if (toast && toast.classList.contains('hide')) {
       dispatchCustomEvent.call(toast,showCustomEvent);
-      if (showCustomEvent.defaultPrevented) { return; }
-      ops.animation && toast.classList.add( 'fade' );
-      toast.classList.remove('hide' );
-      toast.offsetWidth;
-      toast.classList.add('showing' );
-      ops.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();
+      if (showCustomEvent.defaultPrevented) { return }
+      toast.classList.add('fade');
+      clearTimeout(timer);
+      timer = setTimeout( open, 10);
     }
   };
   self.hide = function (noTimer) {
     if (toast && toast.classList.contains('show')) {
       dispatchCustomEvent.call(toast,hideCustomEvent);
-      if(hideCustomEvent.defaultPrevented) { return; }
-      noTimer ? close() : (timer = setTimeout( close, ops.delay));
+      if (hideCustomEvent.defaultPrevented) { return }
+      clearTimeout(timer);
+      timer = setTimeout( close, noTimer ? 10 : ops.delay);
     }
   };
   self.dispose = function () {
@@ -1430,9 +1448,9 @@ function Toast(element,options) {
   element = queryElement(element);
   element.Toast && element.Toast.dispose();
   toast = element.closest('.toast');
-  animationData = element.getAttribute('data-animation');
-  autohideData = element.getAttribute('data-autohide');
-  delayData = element.getAttribute('data-delay');
+  animationData = element.getAttribute('data-bs-animation');
+  autohideData = element.getAttribute('data-bs-autohide');
+  delayData = element.getAttribute('data-bs-delay');
   showCustomEvent = bootstrapCustomEvent('show', 'toast');
   hideCustomEvent = bootstrapCustomEvent('hide', 'toast');
   shownCustomEvent = bootstrapCustomEvent('shown', 'toast');
@@ -1467,7 +1485,7 @@ function Tooltip(element,options) {
       ops = {};
   function getTitle() {
     return element.getAttribute('title')
-        || element.getAttribute('data-title')
+        || element.getAttribute('data-bs-title')
         || element.getAttribute('data-original-title')
   }
   function removeToolTip() {
@@ -1486,7 +1504,7 @@ function Tooltip(element,options) {
         queryElement('.tooltip-inner',tooltip).innerHTML = titleString.trim();
       } else {
         var tooltipArrow = document.createElement('div');
-        tooltipArrow.classList.add('arrow');
+        tooltipArrow.classList.add('tooltip-arrow');
         tooltip.appendChild(tooltipArrow);
         var tooltipInner = document.createElement('div');
         tooltipInner.classList.add('tooltip-inner');
@@ -1571,10 +1589,10 @@ function Tooltip(element,options) {
   };
   element = queryElement(element);
   element.Tooltip && element.Tooltip.dispose();
-  animationData = element.getAttribute('data-animation');
-  placementData = element.getAttribute('data-placement');
-  delayData = element.getAttribute('data-delay');
-  containerData = element.getAttribute('data-container');
+  animationData = element.getAttribute('data-bs-animation');
+  placementData = element.getAttribute('data-bs-placement');
+  delayData = element.getAttribute('data-bs-delay');
+  containerData = element.getAttribute('data-bs-container');
   showCustomEvent = bootstrapCustomEvent('show', 'tooltip');
   shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip');
   hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip');
@@ -1593,7 +1611,7 @@ function Tooltip(element,options) {
                           : navbarFixedTop ? navbarFixedTop
                           : navbarFixedBottom ? navbarFixedBottom
                           : modal ? modal : document.body;
-  placementClass = "bs-tooltip-" + (ops.placement);
+  placementClass = "bs-tooltip-" + (tipClassPositions[ops.placement]);
   titleString = getTitle();
   if ( !titleString ) { return; }
   if (!element.Tooltip) {
@@ -1616,17 +1634,17 @@ function initCallback(lookUp){
   }
 }
 
-componentsInit.Alert = [ Alert, '[data-dismiss="alert"]'];
-componentsInit.Button = [ Button, '[data-toggle="buttons"]' ];
-componentsInit.Carousel = [ Carousel, '[data-ride="carousel"]' ];
-componentsInit.Collapse = [ Collapse, '[data-toggle="collapse"]' ];
-componentsInit.Dropdown = [ Dropdown, '[data-toggle="dropdown"]'];
-componentsInit.Modal = [ Modal, '[data-toggle="modal"]' ];
-componentsInit.Popover = [ Popover, '[data-toggle="popover"],[data-tip="popover"]' ];
-componentsInit.ScrollSpy = [ ScrollSpy, '[data-spy="scroll"]' ];
-componentsInit.Tab = [ Tab, '[data-toggle="tab"]' ];
-componentsInit.Toast = [ Toast, '[data-dismiss="toast"]' ];
-componentsInit.Tooltip = [ Tooltip, '[data-toggle="tooltip"],[data-tip="tooltip"]' ];
+componentsInit.Alert = [ Alert, '[data-bs-dismiss="alert"]'];
+componentsInit.Button = [ Button, '[data-bs-toggle="buttons"]' ];
+componentsInit.Carousel = [ Carousel, '[data-bs-ride="carousel"]' ];
+componentsInit.Collapse = [ Collapse, '[data-bs-toggle="collapse"]' ];
+componentsInit.Dropdown = [ Dropdown, '[data-bs-toggle="dropdown"]'];
+componentsInit.Modal = [ Modal, '[data-bs-toggle="modal"]' ];
+componentsInit.Popover = [ Popover, '[data-bs-toggle="popover"],[data-tip="popover"]' ];
+componentsInit.ScrollSpy = [ ScrollSpy, '[data-bs-spy="scroll"]' ];
+componentsInit.Tab = [ Tab, '[data-bs-toggle="tab"]' ];
+componentsInit.Toast = [ Toast, '[data-bs-dismiss="toast"]' ];
+componentsInit.Tooltip = [ Tooltip, '[data-bs-toggle="tooltip"],[data-tip="tooltip"]' ];
 document.body ? initCallback() : document.addEventListener( 'DOMContentLoaded', function initWrapper(){
 	initCallback();
 	document.removeEventListener('DOMContentLoaded',initWrapper,false);
@@ -1644,7 +1662,7 @@ function removeDataAPI(lookUp) {
 
 var version = "3.0.15";
 
-var index = {
+var indexV5 = {
   Alert: Alert,
   Button: Button,
   Carousel: Carousel,
@@ -1662,4 +1680,4 @@ var index = {
   Version: version
 };
 
-export default index;
+export default indexV5;
