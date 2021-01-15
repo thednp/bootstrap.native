@@ -125,7 +125,10 @@ export default function Collapse(element,options) {
     // determine targets
     collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
     
-    collapse.isAnimating = false;  
+    if(collapse !== null) {
+      collapse.isAnimating = false;  
+    }
+  
     accordion = element.closest(options.parent || accordionData);
   
     // prevent adding event handlers twice
