@@ -39,6 +39,11 @@ dangerAlert.addEventListener('closed.bs.alert', function(e) {
 document.getElementById('alertDemo').addEventListener('close.bs.alert', function(e) {	console.log( 'The "close.bs.alert" event fired for #' + e.target.id ); });
 document.getElementById('alertDemo').addEventListener('closed.bs.alert', function(e) {	console.log( 'The "closed.bs.alert" event fired for #' + e.target.id ); });
 
+// BUTTON
+// var buttonTarget = document.querySelector('[data-bs-toggle="buttons"]')
+// buttonTarget.addEventListener('change.bs.button', function(e){
+// 	console.log('Button triggered "change.bs.button" event for '+ e.target.tagName + '.' + e.target.className.replace(/\s/g, '.'))
+// })
 
 // MODAL
 var myModal = document.getElementById('myModal'); // we need a blank modal to fill up and target our object function
@@ -159,7 +164,7 @@ changeModal2.addEventListener('click', function () {
 // Dropdown init via JS
 var makeMeDropdown = document.getElementById('makeMeDropdown');
 var myDropdownTemplate = '<div class="dropdown btn-group">'
-	+ '<button id="formDropdown" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false" tabindex="0">Login <span class="caret"></span></button>'
+	+ '<button id="formDropdown" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false" tabindex="0">Login <span class="caret"></span></button>'
 	+ '<form class="form-vertical dropdown-menu px-3">'
 	+ '<div class="mb-3">'
 	+ '<label for="inputEmail3" class="control-label">Email</label>'
@@ -261,8 +266,11 @@ var someTitleFromOtherCode = 'Popover via JavaScript <span class="label label-pr
 var someContentFromOuterSpace = '<p>Some sample message from outer space wrapped in &lt;p&gt; tags. You can add your own functions to combine with Popover template as you wish.</p>';
 var popover2 = new BSN.Popover('.popover-via-template', {
 	trigger: 'focus',
-	template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header">'+someTitleFromOtherCode+'</h3><div class="popover-body">'+someContentFromOuterSpace+'</div></div>'
+	title: someTitleFromOtherCode,
+	content: someContentFromOuterSpace,
+	template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
 });
+
 var popoverEvents = document.getElementById('popoverWithEvents');
 popoverEvents.addEventListener('show.bs.popover', function(){ console.log('The show.bs.popover event fired for #' + popoverEvents.id); }, false);
 popoverEvents.addEventListener('shown.bs.popover', function(){ console.log('The shown.bs.popover event fired for #' + popoverEvents.id); }, false);

@@ -6,7 +6,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Tab = factory());
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Tab = factory());
 }(this, (function () { 'use strict';
 
   var supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
@@ -39,16 +39,16 @@
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
-  function bootstrapCustomEvent(eventName, componentName, eventProperties) {
-    var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-    if (typeof eventProperties !== 'undefined') {
-      Object.keys(eventProperties).forEach(function (key) {
-        Object.defineProperty(OriginalCustomEvent, key, {
+  function bootstrapCustomEvent( eventType, componentName, eventProperties ) {
+    var OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } );
+    if ( typeof eventProperties !== 'undefined' ) {
+      Object.keys( eventProperties ).forEach( function (key) {
+        Object.defineProperty( OriginalCustomEvent, key, {
           value: eventProperties[key]
         });
       });
     }
-    return OriginalCustomEvent;
+    return OriginalCustomEvent
   }
 
   function dispatchCustomEvent(customEvent){

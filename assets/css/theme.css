@@ -65,7 +65,7 @@ html {
   top: -1px;
 }
 .popover .close {line-height: 0.75;}
-.popover .btn-close {position: absolute; right:1em}
+.popover .btn-close {position: absolute; right:0.75em}
 
 /* bg */
 .bg-bootstrap { background-color: #563d7c }
@@ -127,15 +127,17 @@ pre[class*="language-"] {margin: 0 0 1rem}
 .tooltip.custom-class .tooltip-inner {
   background: #0e3763
 }
-.bs-tooltip-top.custom-class .arrow::before {
+.bs-tooltip-top.custom-class .tooltip-arrow::before {
   border-top-color: #0e3763
 }
-.bs-tooltip-right.custom-class .arrow::before {
+.bs-tooltip-end.custom-class .tooltip-arrow::before,
+.bs-tooltip-right.custom-class .tooltip-arrow::before {
   border-right-color: #0e3763
 }
-.bs-tooltip-left.custom-class .arrow::before {
+.bs-tooltip-start.custom-class .tooltip-arrow::before,
+.bs-tooltip-left.custom-class .tooltip-arrow::before {
   border-left-color: #0e3763
 }
-.bs-tooltip-bottom.custom-class .arrow::before {
+.bs-tooltip-bottom.custom-class .tooltip-arrow::before {
   border-bottom-color: #0e3763
 }

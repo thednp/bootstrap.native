@@ -10,11 +10,9 @@ import Tab from './components-v5/tab-native.js'
 import Toast from './components-v5/toast-native.js'
 import Tooltip from './components-v5/tooltip-native.js'
 
-import './util/init-v5.js'
-import initCallback from './util/initCallback.js'
-import removeDataAPI from './util/removeDataAPI.js'
-import componentsInit from './util/componentsInit.js'
 import {version as Version} from '../package.json'
+import {Callback} from './util/init-v5.js'
+import './util/init-v5.js'
 
 export default {
   Alert,
@@ -29,8 +27,6 @@ export default {
   Toast,
   Tooltip,
 
-  initCallback,
-  removeDataAPI,
-  componentsInit,
+  Callback,
   Version
 }

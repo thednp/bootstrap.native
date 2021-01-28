@@ -1,84 +1,110 @@
 
 /* Native JavaScript for Bootstrap 5 | Alert
 -------------------------------------------- */
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
+import queryElement from 'shorter-js/src/misc/queryElement.js'
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
+import privateProperties from '../util/privateProperties.js'
+import getUID from '../util/getUID.js'
+
+
+// ALERT PRIVATE GC
+// ================
+const alertString = 'alert',
+      alertComponent = 'Alert',
+      alertSelector = '[data-bs-dismiss="alert"]',
+      alertIDKey = `${alertString}UID`
+
+
+// ALERT CUSTOM EVENTS
+// ===================
+const closeAlertEvent = bootstrapCustomEvent( `close.bs.${alertString}` ), // 'type.bs.component'
+      closedAlertEvent = bootstrapCustomEvent( `closed.bs.${alertString}` )
+
+
+// ALERT EVENT HANDLERS
+// ====================
+function alertTransitionEndHandler( alert ) {
+  const element = queryElement( alertSelector, alert )
+
+  element.removeEventListener( 'click', alertClickHandler )
+  alert.dispatchEvent( closedAlertEvent )
+
+  alert.parentNode.removeChild( alert )
+}
+
+function alertClickHandler(e) {
+  const eventTarget = e.target,
+        element = this,
+        alert = eventTarget && eventTarget.closest( '.alert' ) // go around and check
+
+  alert && ( element === eventTarget || element.contains( eventTarget ) )
+    && element[alertComponent].close()
+}
+
 
 // ALERT DEFINITION
 // ================
+export default class Alert {
+  constructor( element ){
 
-export default function Alert(element) {
-  
-  // bind
-  let self = this,
-  
-    // the target alert 
-    alert,
+    // initialization element
+    element = queryElement( element )
+    
+    // reset on re-init
+    element[alertComponent] && element[alertComponent].dispose()
 
-    // custom events
-    closeCustomEvent = bootstrapCustomEvent('close','alert'),
-    closedCustomEvent = bootstrapCustomEvent('closed','alert');
+    // set private properties unique ID key
+    const elementID = getUID( element, alertIDKey )
 
-  // private methods
-  function triggerHandler() {
-    alert.classList.contains('fade') ? emulateTransitionEnd(alert,transitionEndHandler) : transitionEndHandler(); 
-  }
-  function toggleEvents(action){
-    action = action ? 'addEventListener' : 'removeEventListener';
-    element[action]('click',clickHandler,false);
-  }
+    this[alertIDKey] = elementID
+    privateProperties[elementID] = {
+      element: element,
+      alert: element.closest( '.alert' )
+    }
 
-  // event handlers
-  function clickHandler(e) {
-    alert = e && e.target.closest(`.alert`);
-    element = queryElement('[data-bs-dismiss="alert"]',alert);
-    element && alert && (element === e.target || element.contains(e.target)) && self.close();
-  }
-  function transitionEndHandler() {
-    // off(element, 'click', clickHandler); // detach it's listener
-    toggleEvents()
-    alert.parentNode.removeChild(alert);
-    dispatchCustomEvent.call(alert,closedCustomEvent);
+    // add event listener
+    element.addEventListener( 'click', alertClickHandler )
+
+    // store init object within target element 
+    element[alertComponent] = this
   }
 
-  // PUBLIC METHODS
-  self.close = () => {
-    if ( alert && element && alert.classList.contains('show') ) {
-      dispatchCustomEvent.call(alert,closeCustomEvent);
-      if ( closeCustomEvent.defaultPrevented ) return;
-      self.dispose();
-      alert.classList.remove('show');
-      triggerHandler();
+  // ALERT PUBLIC METHODS
+  // ====================
+  close(){
+    const { alert } = privateProperties[ this[alertIDKey] ]
+
+    if ( alert && alert.classList.contains( 'show' ) ) {
+      alert.dispatchEvent( closeAlertEvent )
+      if ( closeAlertEvent.defaultPrevented ) return
+
+      alert.classList.remove( 'show' )
+
+      alert.classList.contains( 'fade' )
+        ? emulateTransitionEnd( alert, function endWrap() { alertTransitionEndHandler( alert ) } ) 
+        : alertTransitionEndHandler( alert )
+
+      this.dispose()
     }
   }
 
-  self.dispose = () => {    
-    // off(element, 'click', clickHandler);
-    toggleEvents()
-    delete element.Alert;
-  }
+  dispose() {
+    const uid = this[alertIDKey],
+    { element } = privateProperties[ uid ]
 
-  // INIT
-  // initialization element
-  element = queryElement(element);
-  
-  // find the target alert 
-  alert = element.closest('.alert');
-  
-  // reset on re-init
-  element.Alert && element.Alert.dispose();     
-  
-  // prevent adding event handlers twice 
-  if ( !element.Alert ) {
-    // on(element, 'click', clickHandler);
-    toggleEvents(1)
-  }
+    element.removeEventListener( 'click', alertClickHandler )
 
-  // store init object within target element 
-  self.element = element;
-  element.Alert = self;
+    delete element[alertComponent]
+    delete element[alertIDKey]
+    delete this[alertIDKey]
+    delete privateProperties[uid]
+  }
 }
 
+export const alertInit = {
+  component: alertComponent,
+  selector: alertSelector,
+  constructor: Alert
+}

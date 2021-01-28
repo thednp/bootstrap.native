@@ -1016,8 +1016,8 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
             <section id="collapseExamples">
               <h3>Collapse Examples</h3>
               <h4>Single collapsible element</h4>
-              <p>Here's a quick demo with a single collapsible element, using the <code>.well</code> as the container, exactly as
-                described in the <a href="#collapseUsage">Usage</a> section. The demo also features the original events. </p>
+              <p>Here's a quick demo with a single collapsible element, using the <code>.card</code> as the container, exactly as
+                described in the <a href="#collapseDATA">DATA API</a> section. The demo also features the original events.</p>
               <div id="collapseExampleWrapper">
                 <p>
                   <span class="btn-group">
@@ -1540,7 +1540,7 @@ makeMeDropdown.addEventListener('click', function(e){
                 <dt class="col-sm-2">.setContent()</dt>
                 <dd class="col-sm-10">The method to enable you to set/overwrite the content of
                 <code>&lt;div class="modal-content"&gt;</code> element of your modal at any time, but you might want to avoid
-                using this method while the modal is animating. Make sure your content is sanitized.</dd>
+                using this method while the modal is animating. <b>Make sure your content is sanitized.</b></dd>
               
                 <dt class="col-sm-2">.update()</dt>
                 <dd class="col-sm-10">This allows you to update the modal layout (handling overflowing/non-overflowing
@@ -2204,12 +2204,10 @@ changeModal2.addEventListener('click', function(){
               <dl class="row">
                 <dt class="col-md-2">.show()</dt>
                 <dd class="col-md-10">The method shows an initialized popover. When the method is called, it will
-                  always <b>create</b> a new popover and append it into your designated container.<br>
-                  <b>This event can be default prevented.</b></dd>
+                  always <b>create</b> a new popover and append it into your designated container.</dd>
                 <dt class="col-md-2">.hide()</dt>
                 <dd class="col-md-10">The method hides an initialized popover and remove it from its container and
-                  also from the memory, as if you would automatically <em>destroy</em> it.<br>
-                  <b>This event can be default prevented.</b></dd>
+                  also from the memory, as if you would automatically <em>destroy</em> it.</dd>
                 <dt class="col-md-2">.toggle()</dt>
                 <dd class="col-md-10">The method shows the popover if hidden and hides it otherwise, using the above
                   two methods.</dd>
@@ -2685,14 +2683,7 @@ myScrollSpyInit.dispose();
                 <h5 id="three">three</h5>
                 <p>Ad leggings keytar, brunch id art party dolor labore. Pitchfork yr enim lo-fi before they sold out qui. Tumblr
                   farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan. Velit seitan mcsweeney's photo booth 3
-                  wolf moon irure. Cosby sweater lomo jean shorts, williamsburg hoodie minim qui you probably haven't heard of
-                  them et cardigan trust fund culpa biodiesel wes anderson aesthetic. Nihil tattooed accusamus, cred irony
-                  biodiesel keffiyeh artisan ullamco consequat.</p>
-                <p>Keytar twee blog, culpa messenger bag marfa whatever delectus food truck. Sapiente synth id assumenda. Locavore
-                  sed helvetica cliche irony, thundercats you probably haven't heard of them consequat hoodie gluten-free lo-fi
-                  fap aliquip. Labore elit placeat before they sold out, terry richardson proident brunch nesciunt quis cosby
-                  sweater pariatur keffiyeh ut helvetica artisan. Cardigan craft beer seitan readymade velit. VHS chambray laboris
-                  tempor veniam. Anim mollit minim commodo ullamco thundercats.</p>
+                  wolf moon irure.</p>
               </div>
           
               <p>For this example the overflowing element itself is the target of the <code>scroll</code> event, and above it the

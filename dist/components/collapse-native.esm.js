@@ -33,16 +33,16 @@ function queryElement(selector, parent) {
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }
 
-function bootstrapCustomEvent(eventName, componentName, eventProperties) {
-  var OriginalCustomEvent = new CustomEvent( eventName + '.bs.' + componentName, {cancelable: true});
-  if (typeof eventProperties !== 'undefined') {
-    Object.keys(eventProperties).forEach(function (key) {
-      Object.defineProperty(OriginalCustomEvent, key, {
+function bootstrapCustomEvent( eventType, componentName, eventProperties ) {
+  var OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } );
+  if ( typeof eventProperties !== 'undefined' ) {
+    Object.keys( eventProperties ).forEach( function (key) {
+      Object.defineProperty( OriginalCustomEvent, key, {
         value: eventProperties[key]
       });
     });
   }
-  return OriginalCustomEvent;
+  return OriginalCustomEvent
 }
 
 function dispatchCustomEvent(customEvent){
@@ -137,7 +137,7 @@ function Collapse(element,options) {
     hideCustomEvent = bootstrapCustomEvent('hide', 'collapse');
     hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse');
     collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
-    collapse.isAnimating = false;
+    collapse !== null && (collapse.isAnimating = false);
     accordion = element.closest(options.parent || accordionData);
     if ( !element.Collapse ) {
       element.addEventListener('click',self.toggle,false);

@@ -14,11 +14,10 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="./assets/css/offcanvas.css">
 
     <!-- Prism: Code Highlight -->
-    <link rel="stylesheet" href="./assets/css/prism.css">
+    <link rel="stylesheet" href="./assets/css/prism-coy.css">
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="./assets/css/theme.css">
@@ -26,6 +25,9 @@
 		<!-- <script src="./dist/polyfill.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
     <script src="./dist/bootstrap-native.js"></script>     -->
+
+    <!-- <script src="./dist/bootstrap-native-v5.js"></script> -->
+
   </head>
   <body>
     <header class="navbar navbar-expand-md navbar-dark fixed-top bg-purple">
@@ -138,28 +140,8 @@
         <h2>Read First</h2>
         <p>Welcome to the demo page! Before you do anything, please make sure to check the <a href="https://github.com/thednp/bootstrap.native/wiki">Wiki pages</a>, 
           as they give you quick start with using the library and also provide a good set of valuable guides on how to get the best out of it.</p>
-        <div class="list-group mb-3">
-          <a class="list-group-item list-group-item-action" href="https://github.com/thednp/bootstrap.native/wiki/Acknowledgements">
-            <h4>Acknowledgements</h4>
-            <p class="mb-0">A quick note on some of the similarities and differences with the original jQuery plugins. Nothing to worry about, but still good to know all the tricks on how to maximize your workflow.</p>
-          </a>
-          <a class="list-group-item list-group-item-action" href="https://github.com/thednp/bootstrap.native/wiki/How-to-use">
-            <h4>How to use</h4>
-            <p class="mb-0">An indepth guide on how to use it with stuff like <code>npm</code>, <code>RequireJS</code> or <b>CDN</b> links.</p>
-          </a>
-          <a class="list-group-item list-group-item-action" href="https://github.com/thednp/bootstrap.native/wiki/FAQs">
-            <h4>FAQs</h4>
-            <p class="mb-0">A short list of frequent asked questions regarding the use of the library.</p>
-          </a>
-          <a class="list-group-item list-group-item-action" href="https://github.com/thednp/bootstrap.native/wiki/Browser-support">
-            <h4>Browser Support</h4>
-            <p class="mb-0">A word on how to enable the library for legacy browsers.</p>
-          </a>
-          <a class="list-group-item list-group-item-action" href="https://github.com/thednp/bootstrap.native/wiki/About">
-            <h4>About</h4>
-            <p class="mb-0">Learn about the <code>bootstrap.native</code> project inception, goals and motivations.</p>
-          </a>
-        </div>
+        <p>The components on this page have been developed with ES6+ JavaScript and are subject to change. The last check was with Bootstrap 5.0.0 beta1 and we expect
+          future changes. Be sure to check <a href="https://github.com/thednp/bootstrap.native/issues/400">the pulse on the development</a>.</p>
       </section>
       <div class="row">
         <div class="col-md-9" data-bs-spy="scroll" data-bs-target="#side-nav" data-bs-offset="84">
@@ -173,14 +155,27 @@
             <section id="alertMethods">
               <h3>Alert Methods</h3>
               <p>The <b>Alert</b> component exposes two public methods to be used via JavaScript:</p>
-              <dl class="row">
-                <dt class="col-md-2">.close()</dt>
-                <dd class="col-md-10">The method hides an initialized alert and remove it from DOM.</dd>
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the component from target element. If the alert has been closed, calling this method
-                  should produce no effect, since the alert was already removed from the DOM.</dd>
-              </dl>
-
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.close()</code></td>
+                      <td>The method hides an initialized alert and remove it from DOM.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element. If the alert has been closed, calling this method
+                        should produce no effect, since the alert was already removed from the DOM.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="alertEvents">
@@ -189,7 +184,7 @@
                 events is the <code>&lt;div class="alert"></code> element, and not the initialization target with the
                 <code>data-bs-dismiss="alert"</code> attribute.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -302,10 +297,22 @@ myAlertInit.dispose();
           
             <section id="buttonMethods">
               <h3>Button Methods</h3>
-              <dl class="row">
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the component from target element.</dd>
-              </dl>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="buttonEvents">
@@ -314,7 +321,7 @@ myAlertInit.dispose();
                 supported browsers. The <code>event.target</code> can be the element with the <code>data-bs-toggle="buttons"</code>
                 attribute and the button that just changed it's active state.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -459,13 +466,13 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
             <section id="carouselOptions">
               <h3>Carousel Options</h3>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -506,37 +513,43 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
           
             <section id="carouselMethods">
               <h3>Carousel Methods</h3>
-              <dl class="row">
-                <dt class="col-md-2">.cycle()</dt>
-                <dd class="col-md-10">The method will cycle through items. Using the method while the animation is
-                  running will produce no effect.</dd>
-                <dt class="col-md-2">.slideTo()</dt>
-                <dd class="col-md-10">The method will allow you to jump to the index of a certain item. Using the
-                  method while the animation is running will produce no effect.</dd>
-                <dt class="col-md-2">.getActiveIndex()</dt>
-                <dd class="col-md-10">The method returns the index of the current active item.</dd>
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the component from target element.</dd>
-              </dl>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.cycle()</code></td>
+                      <td>The method will cycle through items. Using the method while the animation is
+                        running will produce no effect.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.slideTo()</code></td>
+                      <td>The method will allow you to jump to the index of a certain item. Using the
+                        method while the animation is running will produce no effect.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.getActiveIndex()</code></td>
+                      <td>The method returns the index of the current active item.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="carouselEvents">
               <h3>Carousel Events</h3>
-              <p>The <b>Carousel</b> component exposes two events that allow you to trigger custom functionality when the carousel slides. 
-                All the component's events are triggered on the <code>&lt;div class="carousel"&gt;</code> element. 
-                Both events have the following additional properties:</p>
-              <dl class="row">
-                <dt class="col-md-2">direction</dt>
-                <dd class="col-md-10">The direction the carousel is sliding, either <code>left</code> or <code>right</code>.</dd>
-                <dt class="col-md-2">from</dt>
-                <dd class="col-md-10">The index of the current carousel item (integer starting with <code>0</code> index).</dd>
-                <dt class="col-md-2">to</dt>
-                <dd class="col-md-10">The index of the next carousel item.</dd>
-                <dt class="col-md-2">relatedTarget</dt>
-                <dd class="col-md-10">The DOM element of the next carousel item.</dd>
-              </dl>
+              <p>The <b>Carousel</b> component exposes two events that allow you to trigger custom functionality when the carousel slides.</p> 
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -548,7 +561,7 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                       <td><code>slide.bs.carousel</code></td>
                       <td>This event fires immediately when the <code>slideTo()</code> instance method is called.<br>
                         <b>This event can be default prevented.</b></td>
-                    </tr>
+                      </tr>
                     <tr>
                       <td><code>slid.bs.carousel</code></td>
                       <td>This event is fired when transition has finished.</td>
@@ -556,8 +569,38 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                   </tbody>
                 </table>
               </div>
+              <p>These component specific events are triggered on the <code>&lt;div class="carousel"&gt;</code> element and 
+                both expose the following additional properties:</p>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Event Property</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>direction</code></td>
+                      <td>The direction the carousel is sliding, either <code>left</code> or <code>right</code>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>from</code></td>
+                      <td>The index of the current active carousel item (integer starting with <code>0</code> index).</td>
+                    </tr>
+                    <tr>
+                      <td><code>to</code></td>
+                      <td>The index of the next active carousel item.</td>
+                    </tr>
+                    <tr>
+                      <td><code>relatedTarget</code></td>
+                      <td>The DOM element of the next active carousel item.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>  
             </section>
-          
+            
             <section id="carouselDATA">
               <h3>Carousel DATA API</h3>
               <p>The component covers most of the original implementation in regards to DATA API, except that you can ignore
@@ -791,13 +834,13 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
               <h3>Collapse Options</h3>
               <p>The option below allow you to connect a collapse to a parent accordion.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -817,19 +860,37 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
             <section id="collapseMethods">
               <h3>Collapse Methods</h3>
               <p>Calling any of the public methods while animation is running, will produce no effect.</p>
-              <dl class="row">
-                <dt class="col-md-2">.show()</dt>
-                <dd class="col-md-10">The method will expand a collapsible element. In addition, if the collapsible
-                  element is part of an accordion (it's options include a reference to a parent), it will also close any other
-                  visible collapsible element.</dd>
-                <dt class="col-md-2">.hide()</dt>
-                <dd class="col-md-10">The method hides a collapsible element.</dd>
-                <dt class="col-md-2">.toggle()</dt>
-                <dd class="col-md-10">The method will show / or hide a collapsible element using the above methods and
-                  their full functionalities.</dd>
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the component from the target element.</dd>
-              </dl>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.show()</code></td>
+                      <td>The method will expand a collapsible element. In addition, if the collapsible
+                        element is part of an accordion (it's options include a reference to a parent), 
+                        it will also close any other visible collapsible element.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.hide()</code></td>
+                      <td>The method hides a collapsible element.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.toggle()</code></td>
+                      <td>The method will show or hide a collapsible element using the above methods and
+                        their full functionalities, based on the visibility state at the time of the call.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="collapseEvents">
@@ -837,7 +898,7 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
               <p>All the component's events are attached to the collapsible element and not its targeting button / element, with
                 other words, the <code>event.target</code> is the element with the <code>class="collapse"</code> attribute.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -1009,8 +1070,8 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
             <section id="collapseExamples">
               <h3>Collapse Examples</h3>
               <h4>Single collapsible element</h4>
-              <p>Here's a quick demo with a single collapsible element, using the <code>.well</code> as the container, exactly as
-                described in the <a href="#collapseUsage">Usage</a> section. The demo also features the original events. </p>
+              <p>Here's a quick demo with a single collapsible element, using the <code>.card</code> as the container, exactly as
+                described in the <a href="#collapseDATA">DATA API</a> section. The demo also features the original events.</p>
               <div id="collapseExampleWrapper">
                 <p>
                   <span class="btn-group">
@@ -1087,8 +1148,23 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
 
           <section id="componentDropdown">
             <h2>Dropdown</h2>
-            <p>The <b>Dropdown</b> component covers most of the functionality from the original plugin and offers an additional
-              option enabling the ability to handle click event in a way that you can toggle nested dropdowns and other uses.</p>
+            <p>The <b>Dropdown</b> component covers most of the functionality from the original plugin in terms of original events,
+              instance methods and options, but also offers some additional functionality without using any third party library.</p>
+            <p>To get on par with the original plugin, our component now sports automatic repositioning without the use of Popper.js. 
+              This functionality is made possible thanks to the excelent CSS classes provided by Bootstrap 5: <code>dropup</code>, 
+              <code>dropstart</code>, <code>dropend</code>, <code>dropdown-menu-end</code> and others.</p>
+            <p>Here's how it works:</p>
+            <ul>
+              <li>on initialization, the component will store all class names of the target and its corresponding dropdown menu
+                to be used by other private methods;</li>
+              <li>when showing the dropdown menu to the user, the component will calculate all possible scenarios and update the CSS3
+                classes of the target and its corresponding dropdown menu so that the dropdown-menu is displayed fully into the 
+                viewport;</li>
+              <li>while the dropdown menu is visible to the user, event handlers will update the CSS classes with new position for 
+                the dropdown menu, just like when showing it again to the user;</li>
+              <li>when hidding the dropdown menu from the user, the component will revert back to the original CSS classes.</li>
+            </ul>
+
             <p>The component supports accessibility features:</p>
             <ul>
               <li><kbd>Up</kbd> and <kbd>Down</kbd> arrow keys will enable users to select menu items, and also when pressed, the
@@ -1101,42 +1177,40 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
               <li>opening/closing the dropdown now it will focus the triggering button (on close) or the first focusable element
                 from inside the dropdown menu (on open).</li>
             </ul>
+
+            <p>This version of the <b>Dropdown</b> component for Bootstrap 5 no longer supports nesting due to the implementation of 
+              automatic repositioning and ES6+ class conversion.</p>
+
             <section id="dropdownOptions">
               <h3>Dropdown Options</h3>
-              <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>persist</code></td>
-                      <td><em>boolean</em></td>
-                      <td><em>false</em></td>
-                      <td>Option to keep the dropdown-menu open when <code>click</code> event targets a child element, useful for
-                        forms or interactive content. Use <code>data-bs-persist="true"</code> attribute to enable this functionality
-                        via DATA-API.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <p>The previously featured <code>persist</code> options has been deprecated. The <code>.dropdown-menu</code> can be or
+                contain a <code>&lt;form&gt;</code>, a case in which the component will not dismiss it and allow the user to interact
+                with it.</p>
             </section>
 
             <section id="dropdownMethods">
               <h3>Dropdown Methods</h3>
-              <dl class="row">
-                <dt class="col-md-2">.toggle()</dt>
-                <dd class="col-md-10">For a given initialization the method shows the dropdown-menu if hidden or hides
-                it otherwise.</dd>
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the Dropdown component from target element.</dd>
-              </dl>
-
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.toggle()</code></td>
+                      <td>For a given initialization the method shows the dropdown-menu if hidden or hides
+                        it otherwise.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="dropdownEvents">
@@ -1148,7 +1222,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
               <p>If you dismiss the dropdown via JavaScript, the <kbd>Esc</kbd> key 
                 or by clicking outside the triggering button, the <code>event.relatedTarget</code> is <em>null</em>.</p>              
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -1345,64 +1419,12 @@ makeMeDropdown.addEventListener('click', function(e){
 
               <div class="btn-toolbar mb-3">
                 <div class="btn-group dropdown me-2">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown"
+                    data-bs-persist="true" aria-haspopup="true" aria-expanded="false">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
-                    </svg>                      
-                    Dropdown
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
-                <div class="btn-group dropup me-2">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">                    
-                    Dropup
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
-              
-                <div class="btn-group dropend me-2">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    Nested Dropright
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Second action</a>
-                    <div class="dropdown dropright">
-                      <a class="dropdown-item dropdown-toggle" href="#" id="dropdownMenuButton21" data-bs-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">Third action</a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton21">
-                        <a class="dropdown-item" href="#">The other action</a>
-                        <a class="dropdown-item" href="#">Different action</a>
-                        <a class="dropdown-item" href="#">More soon</a>
-                      </div>
-                    </div>
-                    <div class="dropdown dropright">
-                      <a class="dropdown-item dropdown-toggle" href="#" id="dropdownMenuButton3" data-bs-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">More</a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                        <a class="dropdown-item" href="#">The other action</a>
-                        <a class="dropdown-item" href="#">Different action</a>
-                        <a class="dropdown-item" href="#">More soon</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              
-                <div class="btn-group dropstart dropleft">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown"
-                    data-persist="true" aria-haspopup="true" aria-expanded="false">
-                    Form Dropleft
+                    </svg>
+                    Form
                   </button>
                   <form class="px-3 dropdown-menu form-vertical" aria-expanded="false" aria-labelledby="dropdownMenuButton4">
                     <div class="mb-3">
@@ -1422,8 +1444,47 @@ makeMeDropdown.addEventListener('click', function(e){
                       <div class="btn-group"><button type="submit" class="btn btn-secondary">Sign in</button></div>
                     </div>
                   </form>
-                </div>                
+                </div>
+                <div class="btn-group dropup me-2">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">                   
+                    Dropup
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </div>
+                </div>
+                <div class="btn-group dropstart dropleft me-2">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">                    
+                    Left
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </div>
+                </div>
+                <div class="btn-group dropend dropright">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Right
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Second action</a>
+                    <a class="dropdown-item" href="#">Third action</a>
+                  </div>
+                </div>
+              
               </div>
+              <p>If you resize or scroll the window pushing the opened dropdown menus outside the viewport, the new automatic positioning kicks in. 
+                Notice it doesn't apply any CSS styling, the component will only use the right CSS classes to display the dropdown menu in the 
+                viewport, then revert to its original class if closed. The feature doesn't require Popper.js.</p>
+              <p>The original plugin doesn't support nesting nor recommend using it, and due to the implementation of automatic repositioning
+                we decided to deprecate nesting functionality from our component.</p>
               <p>Be sure to check the markup of the above examples and the original plugin <a href="https://getbootstrap.com/docs/5.0/components/dropdowns/">
                 documentation page</a>.</p>
             </section>
@@ -1445,13 +1506,13 @@ makeMeDropdown.addEventListener('click', function(e){
               <p>With native JavaScript we don't need the <code>show</code> option because we can immediatelly access the component's 
                 public methods right after initialiation, we'll have a look at an example in a minute.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1485,42 +1546,59 @@ makeMeDropdown.addEventListener('click', function(e){
               <h3>Modal Methods</h3>
               <p>For full control the <b>Modal</b> component exposes a couple of public methods to be used via JavaScript :</p>
 
-              <dl class="row">
-                <dt class="col-sm-2">.show()</dt>
-                <dd class="col-sm-10">The method that shows an initialized modal. When called, it will also hide any
-                other visible modal before showing the one requested, making sure to keep the backdrop in place.</dd>
-              
-                <dt class="col-sm-2">.hide()</dt>
-                <dd class="col-sm-10">This hides an initialized modal. Additionally it will also close (if enabled)
-                the backdrop.</dd>
-              
-                <dt class="col-sm-2">.toggle()</dt>
-                <dd class="col-sm-10">When called it shows the modal if hidden and hides it otherwise, using one of
-                the above two methods.</dd>
-              
-                <dt class="col-sm-2">.setContent()</dt>
-                <dd class="col-sm-10">The method to enable you to set/overwrite the content of
-                <code>&lt;div class="modal-content"&gt;</code> element of your modal at any time, but you might want to avoid
-                using this method while the modal is animating. Make sure your content is sanitized.</dd>
-              
-                <dt class="col-sm-2">.update()</dt>
-                <dd class="col-sm-10">This allows you to update the modal layout (handling overflowing/non-overflowing
-                body and/or modal) after you have changed it's content or other layout changes occured.
-                This would naturally follow the previous <code>.setContent()</code> method.</dd>
-              
-                <dt class="col-sm-2">.dispose()</dt>
-                <dd class="col-sm-10">New with BSN 3.0 is the addition of <code>.dispose()</code> method that allow
-                you to remove the modal functionality from a target element. If the modal is shown, this method will
-                close it first by calling the <code>.hide()</code> method before the removal of the functionality.</dd>
-              
-              </dl>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.show()</code></td>
+                      <td>The method that shows an initialized modal. When called, it will also hide any
+                        other visible modal before showing the one requested, making sure to keep the backdrop in place.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.hide()</code></td>
+                      <td>This hides an initialized modal. Additionally it will also close (if enabled)
+                        the backdrop.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.toggle()</code></td>
+                      <td>When called it shows the modal if hidden and hides it otherwise, using one of
+                        the above two methods.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.setContent()</code></td>
+                      <td>The method to enable you to set/overwrite the content of
+                        <code>&lt;div class="modal-content"&gt;</code> element of your modal at any time, but you might want to avoid
+                        using this method while the modal is animating. <b>Make sure your content is sanitized.</b></td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.update()</code></td>
+                      <td>This allows you to update the modal layout (handling overflowing/non-overflowing
+                        body and/or modal) after you have changed it's content or other layout changes occured.
+                        This would naturally follow the previous <code>.setContent()</code> method.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>The method that allows you to remove the modal functionality from a target element. 
+                        If the modal is shown, this method will close it first by calling the <code>.hide()</code>
+                        method before the removal of the functionality.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
             </section>
             <section id="modalEvents">
               <h3>Modal Events</h3>
               <p>All original events are triggered for the <code>&lt;div class="modal"></code> element and not the 
                 initialization target with its usual <code>data-bs-toggle="modal"</code> attribute.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -2047,21 +2125,25 @@ changeModal2.addEventListener('click', function(){
           <section id="componentPopover">
             <h2>Popover</h2>
             <p>The <b>Popover</b> component will initialize all elements with the <code>data-bs-toggle="popover"</code> attribute. 
-              Unlike the original jQuery plugin, this component does not require
-              the <b>Tooltip</b> component and works just about the same except that <b>Popover</b> has the ability
-              to work with trigger options.</p>
-          
+              Unlike the original plugin, this component does not require the <b>Tooltip</b> component and works just about the same except 
+              that <b>Popover</b> has the ability to work with trigger options.</p>
+            <p>Our implementation can automatically reposition your visible popovers when showing them to the user, as well as when 
+              a popover is visible and the <code>resize</code> and <code>scroll</code> events produce layout changes in the document.</p>
+            <p>A very special case is handled different with <code>&lt;img&gt;</code> or <code>&lt;svg&gt;</code> targets, the popover 
+              will follow the user cursor. The reason for this implementation is that in most cases images extend beyond the viewport 
+              or in other cases the media elements are partly transparent, so the popover will better follow the user's cursor.</p>
+
             <section id="popoverOptions">
               <h3>Popover Options</h3>
               <p>The component covers all needed options, including those for a template system:</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2075,11 +2157,18 @@ changeModal2.addEventListener('click', function(){
                         <code>.popover-body</code> element.<br><b>This option is JavaScript API only.</b></td>
                     </tr>
                     <tr>
+                      <td><code>sanitizeFn</code></td>
+                      <td><em>function</em></td>
+                      <td></td>
+                      <td>Option to set a function that will sanitize the title and content of the popover. Our library doesn't include any sanitization 
+                        function, you are free to use whatever solution suits your need.<br><b>This option is JavaScript API only.</b></td>
+                    </tr>                    
+                    <tr>
                       <td><code>content</code></td>
                       <td><em>string</em></td>
                       <td></td>
                       <td>Option to set the <b>content</b> of the popover via JavaScript or the <code>data-bs-content="CONTENT"</code> 
-                        attribute.</td>
+                        attribute. This option is <b>required</b> via DATA API initialization or JavaScript initialization in order to validate.</td>
                     </tr>
                     <tr>
                       <td><code>title</code></td>
@@ -2154,21 +2243,37 @@ changeModal2.addEventListener('click', function(){
               <h3>Popover Methods</h3>
               <p>For full control the <b>Popover</b> component exposes a couple of public methods to be used via JavaScript:</p>
 
-              <dl class="row">
-                <dt class="col-md-2">.show()</dt>
-                <dd class="col-md-10">The method shows an initialized popover. When the method is called, it will
-                  always <b>create</b> a new popover and append it into your designated container.<br>
-                  <b>This event can be default prevented.</b></dd>
-                <dt class="col-md-2">.hide()</dt>
-                <dd class="col-md-10">The method hides an initialized popover and remove it from its container and
-                  also from the memory, as if you would automatically <em>destroy</em> it.<br>
-                  <b>This event can be default prevented.</b></dd>
-                <dt class="col-md-2">.toggle()</dt>
-                <dd class="col-md-10">The method shows the popover if hidden and hides it otherwise, using the above
-                  two methods.</dd>
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the component from the target element.</dd>
-              </dl>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.show()</code></td>
+                      <td>The method shows an initialized popover. When the method is called, it will
+                        always <b>create</b> a new popover and append it into your designated container.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.hide()</code></td>
+                      <td>The method hides an initialized popover and remove it from its container and
+                        also from the memory, as if you would automatically <em>destroy</em> it.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.toggle()</code></td>
+                      <td>The method shows the popover if hidden and hides it otherwise, using the above
+                        two methods.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="popoverEvents">
@@ -2178,7 +2283,7 @@ changeModal2.addEventListener('click', function(){
               <p>The <code>event.target</code> of the original events is the the initialization target with the
               <code>data-bs-toggle="popover"</code> attribute.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -2318,31 +2423,31 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                 template system and different trigger options. The popover generated for the last two
                 examples can be dismissed on window resize or blur (focus out).</p>
               <p>
-                <button type="button" class="btn btn-dark" data-bs-toggle="popover" data-bs-placement="left" data-bs-content="Popover on left">
-                  Left
+                <button type="button" class="btn btn-success" data-bs-dismissible="true" data-bs-toggle="popover" data-bs-placement="left"
+                  data-bs-title="Dismissible Popover &lt;span class='badge bg-primary'>COOL&lt;/span>"
+                  data-bs-content="Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
+                  Dismissible
+                </button>
+                <button type="button" class="btn btn-dark" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Popover on RIGHT">
+                  Right
                 </button>
                 <button id="popoverWithEvents" type="button" class="btn btn-secondary" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Popover on top">
-                  Top with Events
+                 Events
                 </button>
                 <button type="button" class="btn btn-primary" data-bs-toggle="popover" data-bs-placement="bottom"
                   data-bs-content="Popover on bottom&lt;br> Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
                   Bottom
                 </button>
-                <button type="button" class="btn btn-success" data-bs-dismissible="true" data-bs-toggle="popover"
-                  data-bs-title="Dismissible Popover &lt;span class='badge bg-primary'>COOL&lt;/span>" data-bs-placement="right"
-                  data-bs-content="Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
-                  Right Dismissible
+                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template" placeholder="Focus" data-bs-toggle="popover">
+                <button type="button" id="popover-via-click" class="btn btn-warning" data-bs-title="Popover on CLICK" data-bs-content="You clicked the button and as a result, this message box simply.. popped.&lt;br>Now simply click anywhere to dismiss.">
+                  Click
                 </button>
-                <input style="max-width: 180px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template" placeholder="Focus me" data-bs-toggle="popover">
-                <button type="button" id="popover-via-click" class="btn btn-warning" data-bs-content="You clicked the button and as a result, this message box simply.. popped.&lt;br>Now simply click anywhere to dismiss.">
-                  Click to open
-                </button>
-                <svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg">
-                  <rect data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
-                    data-bs-content="This is a demo popover for SVG elements." fill="#fff" stroke="#ccc" stroke-width="1"
-                    width="100%" height="100%" rx="5"></rect>
+                <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
+                  data-bs-content="This is a demo content for a popover initialized on an &lt;code&gt;&amp;lt;svg&amp;gt;&lt;/code&gt; element.">
+                  <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
+                <img data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
               </p>
             </section>
           </section>
@@ -2360,13 +2465,13 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
             <section id="scrollspyOptions">
               <h3>ScrollSpy Options</h3>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2393,13 +2498,27 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
 
             <section id="scrollspyMethods">
               <h3>ScrollSpy Methods</h3>
-              <dl class="row">
-                <dt class="col-md-2">.refresh()</dt>
-                <dd class="col-md-10">When DOM layout changes occured without triggering a resize of your element, you
-                will have this option to immediately update the status of your menu items.</dd>
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the ScrollSpy functionality from the element target.</dd>
-              </dl>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.refresh()</code></td>
+                      <td>When DOM layout changes occured without triggering a resize of your element, you
+                        will have this option to immediately update the status of your menu items.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="scrollspyEvents">
@@ -2408,7 +2527,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                 <code>data-bs-spy="scroll"</code> attribute. The newly activated menu item is the <code>event.relatedTarget</code>
                 of the event object.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -2637,20 +2756,110 @@ myScrollSpyInit.dispose();
           
                 <h5 id="three">three</h5>
                 <p>Ad leggings keytar, brunch id art party dolor labore. Pitchfork yr enim lo-fi before they sold out qui. Tumblr
-                  farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan. Velit seitan mcsweeney's photo booth 3
-                  wolf moon irure. Cosby sweater lomo jean shorts, williamsburg hoodie minim qui you probably haven't heard of
-                  them et cardigan trust fund culpa biodiesel wes anderson aesthetic. Nihil tattooed accusamus, cred irony
-                  biodiesel keffiyeh artisan ullamco consequat.</p>
-                <p>Keytar twee blog, culpa messenger bag marfa whatever delectus food truck. Sapiente synth id assumenda. Locavore
-                  sed helvetica cliche irony, thundercats you probably haven't heard of them consequat hoodie gluten-free lo-fi
-                  fap aliquip. Labore elit placeat before they sold out, terry richardson proident brunch nesciunt quis cosby
-                  sweater pariatur keffiyeh ut helvetica artisan. Cardigan craft beer seitan readymade velit. VHS chambray laboris
-                  tempor veniam. Anim mollit minim commodo ullamco thundercats.</p>
-              </div>
+                  farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan.</p>
+              </div>      
           
               <p>For this example the overflowing element itself is the target of the <code>scroll</code> event, and above it the
                 <code>.nav</code> component as it's target, while for the other example in this page, the side navigation on the
-                right side, the <code>window</code> is the target of the <code>scroll</code> event.</p>
+                right side, the <code>window</code> is the target of the <code>scroll</code> event.</p> 
+
+              <div class="card mb-3">
+                <div class="card-header d-flex flex-row align-items-center justify-content-between">
+                  <h4>Bonus Example</h4>
+                  <button class="btn btn-outline-danger" onclick="toggleScrollSpy.call(this)">Dispose</button>
+                  <script>
+                    function toggleScrollSpy(){
+                      const disposableSpy = document.getElementById('disposableSpy')
+
+                      if ( disposableSpy.ScrollSpy ){
+                        disposableSpy.ScrollSpy.dispose()
+                        this.innerHTML = 'Init'
+                        this.classList.remove( 'btn-outline-danger' )
+                        this.classList.add( 'btn-outline-primary' )
+                      } else {
+                        new BSN.ScrollSpy(disposableSpy)
+                        this.innerHTML = 'Dispose'
+                        this.classList.remove( 'btn-outline-primary' )                        
+                        this.classList.add( 'btn-outline-danger' )
+                      }
+                    }
+                  </script>
+                </div>
+                <div class="card-body p-0">
+                  <div class="row">
+                    <div class="col-4">
+                      <nav id="navbar-example3" class="navbar navbar-light bg-light flex-column">
+                        <a class="navbar-brand active" href="#">Navbar</a>
+                        <nav class="nav nav-pills flex-column w-100 px-2">
+                          <a class="nav-link" href="#item-1">Item 1</a>
+                          <nav class="nav nav-pills flex-column">
+                            <a class="nav-link ms-3 my-1" href="#item-1-1">Item 1-1</a>
+                            <a class="nav-link ms-3 my-1" href="#item-1-2">Item 1-2</a>
+                          </nav>
+                          <a class="nav-link" href="#item-2">Item 2</a>
+                          <a class="nav-link active" href="#item-3">Item 3</a>
+                          <nav class="nav nav-pills flex-column">
+                            <a class="nav-link ms-3 my-1" href="#item-3-1">Item 3-1</a>
+                            <a class="nav-link ms-3 my-1" href="#item-3-2">Item 3-2</a>
+                          </nav>
+                        </nav>
+                      </nav>
+                    </div>
+                    <div class="col-8">
+                      <div id="disposableSpy" data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-offset="0" tabindex="0" 
+                        style="position: relative; height: 370px; overflow: auto; outline:none">
+                        <h4 class="pt-3" id="item-1">Item 1</h4>
+                        <p>Ex consequat commodo adipisicing exercitation aute excepteur occaecat ullamco duis aliqua id magna ullamco eu. 
+                          Do aute ipsum ipsum ullamco cillum consectetur ut et aute consectetur labore. Fugiat laborum incididunt tempor 
+                          eu consequat enim dolore proident. Qui laborum do non excepteur nulla magna eiusmod consectetur in. Aliqua 
+                          et aliqua officia quis et incididunt voluptate non anim reprehenderit adipisicing dolore ut consequat deserunt 
+                          mollit dolore. Aliquip nulla enim veniam non fugiat id cupidatat nulla elit cupidatat commodo velit ut 
+                          eiusmod cupidatat elit dolore.</p>
+                        <h5 id="item-1-1">Item 1-1</h5>
+                        <p>Amet tempor mollit aliquip pariatur excepteur commodo do ea cillum commodo Lorem et occaecat elit qui et. 
+                          Aliquip labore ex ex esse voluptate occaecat Lorem ullamco deserunt. Aliqua cillum excepteur irure consequat 
+                          id quis ea. Sit proident ullamco aute magna pariatur nostrud labore. Reprehenderit aliqua commodo eiusmod 
+                          aliquip est do duis amet proident magna consectetur consequat eu commodo fugiat non quis. Enim aliquip 
+                          exercitation ullamco adipisicing voluptate excepteur minim exercitation minim minim commodo adipisicing 
+                          exercitation officia nisi adipisicing. Anim id duis qui consequat labore adipisicing sint dolor elit 
+                          cillum anim et fugiat.</p>
+                        <h5 id="item-1-2">Item 1-2</h5>
+                        <p>Cillum nisi deserunt magna eiusmod qui eiusmod velit voluptate pariatur laborum sunt enim. Irure laboris mollit 
+                          consequat incididunt sint et culpa culpa incididunt adipisicing magna magna occaecat. Nulla ipsum cillum eiusmod 
+                          sint elit excepteur ea labore enim consectetur in labore anim. Proident ullamco ipsum esse elit ut Lorem eiusmod 
+                          dolor et eiusmod. Anim occaecat nulla in non consequat eiusmod velit incididunt.</p>
+                        <h4 id="item-2">Item 2</h4>
+                        <p>Quis magna Lorem anim amet ipsum do mollit sit cillum voluptate ex nulla tempor. Laborum consequat non elit enim 
+                          exercitation cillum aliqua consequat id aliqua. Esse ex consectetur mollit voluptate est in duis laboris ad sit 
+                          ipsum anim Lorem. Incididunt veniam velit elit elit veniam Lorem aliqua quis ullamco deserunt sit enim elit 
+                          aliqua esse irure. Laborum nisi sit est tempor laborum mollit labore officia laborum excepteur commodo non 
+                          commodo dolor excepteur commodo. Ipsum fugiat ex est consectetur ipsum commodo tempor sunt in proident.</p>
+                        <h4 id="item-3">Item 3</h4>
+                        <p>Quis anim sit do amet fugiat dolor velit sit ea ea do reprehenderit culpa duis. Nostrud aliqua ipsum fugiat minim 
+                          proident occaecat excepteur aliquip culpa aute tempor reprehenderit. Deserunt tempor mollit elit ex pariatur dolore 
+                          velit fugiat mollit culpa irure ullamco est ex ullamco excepteur.</p>
+                        <h5 id="item-3-1">Item 3-1</h5>
+                        <p>Deserunt quis elit Lorem eiusmod amet enim enim amet minim Lorem proident nostrud. Ea id dolore anim exercitation 
+                          aute fugiat labore voluptate cillum do laboris labore. Ex velit exercitation nisi enim labore reprehenderit labore 
+                          nostrud ut ut. Esse officia sunt duis aliquip ullamco tempor eiusmod deserunt irure nostrud irure. Ullamco proident 
+                          veniam laboris ea consectetur magna sunt ex exercitation aliquip minim enim culpa occaecat exercitation. Est tempor 
+                          excepteur aliquip laborum consequat do deserunt laborum esse eiusmod irure proident ipsum esse qui.</p>
+                        <h5 id="item-3-2">Item 3-2</h5>
+                        <p>Labore sit culpa commodo elit adipisicing sit aliquip elit proident voluptate minim mollit nostrud aute reprehenderit 
+                          do. Mollit excepteur eu Lorem ipsum anim commodo sint labore Lorem in exercitation velit incididunt. Occaecat 
+                          consectetur nisi in occaecat proident minim enim sunt reprehenderit exercitation cupidatat et do officia. Aliquip 
+                          consequat ad labore labore mollit ut amet. Sit pariatur tempor proident in veniam culpa aliqua excepteur elit magna 
+                          fugiat eiusmod amet officia.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p>If the initialization element is hidden or its height is 0, the <b>ScrollSpy</b> component will attach the <code>scroll</code> 
+                listener to the window, basically an invalid instance. Be sure to check the 
+                <a href="https://getbootstrap.com/docs/5.0/components/scrollspy/">original plugin</a> for other guides or to compare 
+                implementations.</p>
+
             </section>
           </section>
           
@@ -2664,46 +2873,36 @@ myScrollSpyInit.dispose();
           
             <section id="tabOptions">
               <h3>Tab Options</h3>
-              <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>height</code></td>
-                      <td><em>boolean</em></td>
-                      <td><em>true</em></td>
-                      <td>Option to enable animation of the height of the <code>.tab-content</code> tabs container. Can be set via
-                        JavaScript or the <code>data-bs-height="true"</code> attribute.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <p>When you set the option to <code>true</code>, this enables a custom functionality that assumes you are using the
-                styling of the <b>Collapse</b> component, and the <a rel="noreferrer"
-                  href="https://github.com/twbs/bootstrap/blob/v4-dev/scss/_transitions.scss" target="_blank">transitions</a> styling.</p>
-              <p><b>Please note</b> that in certain layouts you may need to use the <code>clearfix</code> class for your
-                <code>&lt;div class="tab-content"&gt;</code> element to avoid inconsistent transitions. The option has no effect
-                on legacy browsers.</p>
+
+              <p>To optimize the component and simplify the script, the previously featured initialization option 
+                <code>height</code> has been deprecated. The component will always create a height transition for the 
+                <code>&lt;div class="tab-content"&gt;</code> element.</p>
             </section>
           
             <section id="tabMethods">
               <h3>Tab Methods</h3>
-              <dl class="row">
-                <dt class="col-md-2">.show()</dt>
-                <dd class="col-md-10">The public method to switch to a certain tab of your choice via JavaScript. If that tab is already 
-                  visible / active or the method is called while animation is running, the call has no effect.</dd>
-              </dl>
-              <dl class="row">
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the component from the target element.</dd>
-              </dl>
+
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.show()</code></td>
+                      <td>The public method to switch to a certain tab of your choice via JavaScript. If that tab is already 
+                        visible / active or the method is called while animation is running, the call has no effect.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="tabEvents">
@@ -2712,7 +2911,7 @@ myScrollSpyInit.dispose();
                 to be activated, depending on the specific event, as explained below. The events will fire in the exact order shown
                 in table below:</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -2914,13 +3113,13 @@ myLastTab.addEventListener('show.bs.tab', function(event){
             <section id="toastOptions">
               <h3>Toast Options</h3>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2955,16 +3154,33 @@ myLastTab.addEventListener('show.bs.tab', function(event){
             <section id="toastMethods">
               <h3>Toast Methods</h3>
               <p>The <b>Toast</b> component exposes two public methods to be used via JavaScript:</p>
-              <dl class="row">
-                <dt class="col-md-2">.show()</dt>
-                <dd class="col-md-10">The method shows an initialized toast.</dd>
-                <dt class="col-md-2">.hide()</dt>
-                <dd class="col-md-10">The method hides an initialized toast, but doesn't remove
-                  the toast from the DOM.</dd>
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the component from target element without calling any of the 
-                  above methods.</dd>
-              </dl>
+
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.show()</code></td>
+                      <td>The method shows an initialized toast.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.hide()</code></td>
+                      <td>The method hides an initialized toast, but doesn't remove
+                        the toast from the DOM.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from target element without calling any of the 
+                        above methods. Also the toast is not removed from the DOM.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="toastEvents">
@@ -2973,7 +3189,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                 <code>class="toast"</code> attribute, which is also the parent of the initialization target, usually the
                 element having the <code>data-bs-toggle="toast"</code> attribute.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -3105,10 +3321,13 @@ myToastInit.dispose();
           
           <section id="componentTooltip">
             <h2>Tooltip</h2>
-            <p>Unlike the original jQuery plugin, our <b>Tooltip</b> component will initialize right away all elements with the
-              <code>data-bs-toggle="tooltip"</code> attribute. Additionally the component can do automatic placement without any
-              options required. At half the size of the original plugin, our component covers essential options, methods
-              and original events.</p>
+            <p>Unlike the original plugin, our <b>Tooltip</b> component will initialize right away all elements with the
+              <code>data-bs-toggle="tooltip"</code> attribute. Additionally, the component can do automatic placement without any
+              options required or third party dependency and covers essential options, methods and original events.</p>
+            <p>Our implementation can automatically reposition your visible tooltips when showing them to the user, as well as when 
+              a tooltip is visible and the <code>resize</code> and <code>scroll</code> events produce layout changes in the document.</p>
+            <p>Just like the <b>Popover</b> component, your tooltips will also follow the user's cursor for <code>&lt;img&gt;</code> 
+              or <code>&lt;svg&gt;</code> targets.</p>              
           
             <section id="tooltipOptions">
               <h3>Tooltip Options</h3>
@@ -3116,13 +3335,13 @@ myToastInit.dispose();
                 options featured in the original jQuery plugin such as a <code>selector</code> option for auto-initialization, 
                 or a <code>trigger</code> option. The component works different but has it's own advantages.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped js-options-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>type</th>
-                      <th>default</th>
-                      <th>description</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -3133,7 +3352,14 @@ myToastInit.dispose();
                       <td>Allows you to set a custom template for your tooltips and is not set by default. The 
                         <code>title=""</code> or <code>data-bs-title=""</code> attribute will fill in for the 
                         <code>.tooltip-inner</code> element.<br><b>This option is JavaScript API only.</b></td>
-                    </tr>                    
+                    </tr>
+                    <tr>
+                      <td><code>sanitizeFn</code></td>
+                      <td><em>function</em></td>
+                      <td></td>
+                      <td>Option to set a function that will sanitize the title and content of the tooltip. Our library doesn't include any sanitization 
+                        function, you are free to use whatever solution suits your need.<br><b>This option is JavaScript API only.</b></td>
+                    </tr>
                     <tr>
                       <td><code>animation</code></td>
                       <td><em>string</em></td>
@@ -3168,8 +3394,8 @@ myToastInit.dispose();
                 </table>
               </div>
               <p>If your tooltip is a child element of a modal, a <code>&lt;nav class="navbar fixed-top"&gt;</code> or a
-                <code>&lt;nav class="navbar fixed-bottom"&gt;</code>, the <code>container</code> option is set automatically to
-                target that specific parent.</p>
+                <code>&lt;nav class="navbar fixed-bottom"&gt;</code>, the <code>container</code> option is set automatically
+                to target that specific parent.</p>
               <p>The component also provides automatic repositioning, which means it will try to make sure the
                 tooltips are always in the viewport, somewhat similar to the
                   <a rel="noreferrer" href="https://popper.js.org/" target="_blank">Popper.js</a> functionality, check 
@@ -3182,19 +3408,37 @@ myToastInit.dispose();
               <h3>Tooltip Methods</h3>
               <p>For full control the <b>Tooltip</b> component exposes a couple of public methods to be used via JavaScript:</p>
 
-              <dl class="row">
-                <dt class="col-md-2">.show()</dt>
-                <dd class="col-md-10">The method shows an initialized tooltip. When the method is executed, it will
-                  always <b>create</b> a new tooltip and append it into your desired container.</dd>
-                <dt class="col-md-2">.hide()</dt>
-                <dd class="col-md-10">The method hides an initialized tooltip and remove it from it's container and
-                  also from the memory, as if you would automatically <em>destroy</em> it.</dd>
-                <dt class="col-md-2">.toggle()</dt>
-                <dd class="col-md-10">The method shows the tooltip if hidden and hides it otherwise, using the above
-                  two methods.</dd>
-                <dt class="col-md-2">.dispose()</dt>
-                <dd class="col-md-10">Removes the component from the target element.</dd>
-              </dl>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.show()</code></td>
+                      <td>The method shows an initialized tooltip. When the method is executed, it will
+                        always <b>create</b> a new tooltip and append it into your desired container.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.hide()</code></td>
+                      <td>The method hides an initialized tooltip and remove it from it's container and
+                        also from the memory, as if you would automatically <em>destroy</em> it.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.toggle()</code></td>
+                      <td>The method shows the tooltip if hidden and hides it otherwise, using the above
+                        two methods.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>Removes the component from the target element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
           
             <section id="tooltipEvents">
@@ -3205,7 +3449,7 @@ myToastInit.dispose();
               <p>The <code>event.target</code> of the original events is the target element of component, likelly your 
                 element with the <code>data-bs-toggle="tooltip"</code> attribute.</p>
               <div class="table-responsive">
-                <table class="table table-bordered table-striped bs-events-table">
+                <table class="table">
                   <thead>
                     <tr>
                       <th>Event Type</th>
@@ -3330,8 +3574,7 @@ new BSN.Tooltip('#selector',options).show();
                 <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="left"
                   title="&lt;b&gt;Tooltip on left&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
                 <button id="tooltipWithEvents" type="button" class="btn btn-dark" data-bs-toggle="tooltip" data-bs-placement="top"
-                  title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Top With
-                  Events</button>
+                  title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Events</button>
                 <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom"
                   title="&lt;b&gt;Tooltip on bottom&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
                 <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="right"
@@ -3345,11 +3588,14 @@ new BSN.Tooltip('#selector',options).show();
                 <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="right"
                   title="&lt;b&gt;Tooltip on right&lt;/b&gt; &lt;span class='badge bg-info'&gt;FYI&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
           
-                <svg viewBox="0 0 80 34" width="80" height="34" xmlns="http://www.w3.org/2000/svg">
-                  <rect data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Demo Title for SVG" fill="#fff" stroke="#ccc"
-                    stroke-width="1" width="100%" height="100%" rx="5"></rect>
+                <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" 
+                  data-bs-toggle="tooltip" data-bs-placement="top" 
+                  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
+                  <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
+                <img data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+
               </p>
             </section>
           </section>

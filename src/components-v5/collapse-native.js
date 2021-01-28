@@ -1,138 +1,201 @@
 
 /* Native JavaScript for Bootstrap 5 | Collapse
 ----------------------------------------------- */
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
+import queryElement from 'shorter-js/src/misc/queryElement.js'
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
+import privateProperties from '../util/privateProperties.js'
+import getTargetElement from '../util/getTargetElement.js'
+import getUID from '../util/getUID.js'
+
+
+// COLLAPSE GC
+// ===========
+const collapseString = 'collapse',
+      collapseComponent = 'Collapse',
+      collapseSelector = '[data-bs-toggle="collapse"]',
+      collapseIDKey = `${collapseString}UID`
+
+
+// COLLAPSE CUSTOM EVENTS
+// ======================
+const showCollapseEvent = bootstrapCustomEvent( `show.bs.${collapseString}` ),
+      showsCollapseEvent = bootstrapCustomEvent( `shown.bs.${collapseString}` ),
+      hideCollapseEvent = bootstrapCustomEvent( `hide.bs.${collapseString}` ),
+      hiddenCollapseEvent = bootstrapCustomEvent( `hidden.bs.${collapseString}` )
+
+
+// COLLAPSE PRIVATE METHODS
+// ========================
+function openAction( vars ) {
+  const { collapse, element, accordion } = vars
+
+  collapse.dispatchEvent( showCollapseEvent )
+  if ( showCollapseEvent.defaultPrevented ) return
+
+  collapse.isAnimating = true
+  accordion && ( accordion.isAnimating = true )
+
+  collapse.classList.add( 'collapsing' )
+  collapse.classList.remove( 'collapse' )
+  collapse.style.height = `${collapse.scrollHeight}px`
+  
+  emulateTransitionEnd( collapse, () => {
+    collapse.isAnimating = false
+    accordion && ( accordion.isAnimating = false )
+
+    collapse.setAttribute( 'aria-expanded', 'true' )
+    element.setAttribute( 'aria-expanded', 'true' )
+    collapse.classList.remove( 'collapsing' )
+    collapse.classList.add( 'collapse' )
+    collapse.classList.add( 'show' )
+    collapse.style.height = ''
+    collapse.dispatchEvent( showsCollapseEvent )
+  })
+}
+
+function closeAction( vars ) {
+  const { collapse, element, accordion } = vars
+          
+  collapse.dispatchEvent( hideCollapseEvent )
+  if ( hideCollapseEvent.defaultPrevented ) return
+
+  collapse.isAnimating = true
+  accordion && ( accordion.isAnimating = true )
+
+  collapse.style.height = `${collapse.scrollHeight}px` // set height first
+  collapse.classList.remove( 'collapse' )
+  collapse.classList.remove( 'show' )
+  collapse.classList.add( 'collapsing' )
+  collapse.offsetWidth // force reflow
+  collapse.style.height = '0px'
+  
+  emulateTransitionEnd( collapse, () => {
+    collapse.isAnimating = false
+    accordion && ( accordion.isAnimating = false )
+
+    collapse.setAttribute( 'aria-expanded', 'false' )
+    element.setAttribute( 'aria-expanded', 'false' )
+    collapse.classList.remove( 'collapsing' )
+    collapse.classList.add( 'collapse' )
+    collapse.style.height = ''
+    collapse.dispatchEvent( hiddenCollapseEvent )
+  })
+}
+
+
+// COLLAPSE EVENT HANDLER
+// ======================
+function collapseClickHandler(e){
+  const eventTarget = e.target,
+        element = this,
+        self = element[collapseComponent]
+
+  self.toggle()
+  // event target is anchor link with collapse DATA API #398
+  if ( e && eventTarget.tagName === 'A' && eventTarget.getAttribute( 'data-bs-toggle' ) === 'collapse' 
+    || element.tagName === 'A' ) // OR our init element is anchor link
+  {
+    e.preventDefault() 
+  }
+}
+
 
 // COLLAPSE DEFINITION
 // ===================
-
-export default function Collapse(element,options) {
-
-  // set options
-  options = options || {}
-
-  // bind
-  let self = this
-
-  // target practice
-  let accordion = null,
-      collapse = null,
-      activeCollapse,
-      activeElement,
-      accordionData,
-      // custom events
-      showCustomEvent,
-      shownCustomEvent,
-      hideCustomEvent,
-      hiddenCustomEvent;
-
-  // private methods
-  function openAction(collapseElement, toggle) {
-    dispatchCustomEvent.call(collapseElement, showCustomEvent);
-    if ( showCustomEvent.defaultPrevented ) return;
-    collapseElement.isAnimating = true;
-    collapseElement.classList.add('collapsing');
-    collapseElement.classList.remove('collapse');
-    collapseElement.style.height = `${collapseElement.scrollHeight}px`;
+export default class Collapse {
+  constructor( element, options ) {
     
-    emulateTransitionEnd(collapseElement, () => {
-      collapseElement.isAnimating = false;
-      collapseElement.setAttribute('aria-expanded','true');
-      toggle.setAttribute('aria-expanded','true');
-      collapseElement.classList.remove('collapsing');
-      collapseElement.classList.add('collapse');
-      collapseElement.classList.add('show');
-      collapseElement.style.height = '';
-      dispatchCustomEvent.call(collapseElement, shownCustomEvent);
-    });
-  }
-  function closeAction(collapseElement, toggle) {
-    dispatchCustomEvent.call(collapseElement, hideCustomEvent);
-    if ( hideCustomEvent.defaultPrevented ) return;
-    collapseElement.isAnimating = true;
-    collapseElement.style.height = `${collapseElement.scrollHeight}px`; // set height first
-    collapseElement.classList.remove('collapse');
-    collapseElement.classList.remove('show');
-    collapseElement.classList.add('collapsing');
-    collapseElement.offsetWidth; // force reflow to enable transition
-    collapseElement.style.height = '0px';
-    
-    emulateTransitionEnd(collapseElement, () => {
-      collapseElement.isAnimating = false;
-      collapseElement.setAttribute('aria-expanded','false');
-      toggle.setAttribute('aria-expanded','false');
-      collapseElement.classList.remove('collapsing');
-      collapseElement.classList.add('collapse');
-      collapseElement.style.height = '';
-      dispatchCustomEvent.call(collapseElement, hiddenCustomEvent);
-    });
-  }
+    // set options
+    options = options || {}
 
-  // public methods
-  self.toggle = e => {
-    if (e && e.target.tagName === 'A' || element.tagName === 'A') {e.preventDefault();}
-    if (element.contains(e.target) || e.target === element) {
-      if (!collapse.classList.contains('show')) { self.show(); } 
-      else { self.hide(); }
-    }
-  }
-  self.hide = () => {
-    if ( collapse.isAnimating ) return;    
-    closeAction(collapse,element);
-    element.classList.add('collapsed');
-  }
-  self.show = () => {
-    if ( accordion ) {
-      activeCollapse = accordion.getElementsByClassName(`collapse show`)[0];
-      activeElement = activeCollapse && (queryElement(`[data-bs-target="#${activeCollapse.id}"]`,accordion)
-                    || queryElement(`[href="#${activeCollapse.id}"]`,accordion) );
-    }
-
-    if ( !collapse.isAnimating ) {
-      if ( activeElement && activeCollapse !== collapse ) {
-        closeAction(activeCollapse,activeElement); 
-        activeElement.classList.add('collapsed');
-      }
-      openAction(collapse,element);
-      element.classList.remove('collapsed');
-    }
-  }
-  self.dispose = () => {
-    element.removeEventListener('click',self.toggle,false);
-    delete element.Collapse;
-  }
-
-  // init
-  
     // initialization element
-    element = queryElement(element);
+    element = queryElement(element)
 
     // reset on re-init
-    element.Collapse && element.Collapse.dispose();
-
-    // custom events
-    showCustomEvent = bootstrapCustomEvent('show', 'collapse')
-    shownCustomEvent = bootstrapCustomEvent('shown', 'collapse')
-    hideCustomEvent = bootstrapCustomEvent('hide', 'collapse')
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse')
+    element[collapseComponent] && element[collapseComponent].dispose()
 
     // determine targets
-    collapse = queryElement(options.target || element.getAttribute('data-bs-target') || element.getAttribute('href'))
-    accordionData = collapse.getAttribute('data-bs-parent')
+    const collapse =  queryElement( options.target ) || getTargetElement( element ),
+          accordion = element.closest( options.parent || collapse.getAttribute( 'data-bs-parent' ) )
 
-    collapse.isAnimating = false
-    accordion = element.closest(options.parent || accordionData)
-  
+    collapse && ( collapse.isAnimating = false )
+    accordion && ( accordion.isAnimating = false )
+
     // prevent adding event handlers twice
-    if ( !element.Collapse ) { 
-      element.addEventListener('click',self.toggle,false)
+    element.addEventListener( 'click', collapseClickHandler )
+
+    // set private properties unique ID key
+    const elementID = getUID( element, collapseIDKey )
+
+    // after validation set
+    this[collapseIDKey] = elementID
+    privateProperties[elementID] = {
+      element: element,
+      collapse: collapse,
+      accordion: accordion
     }
-  
+
     // associate target to init object
-    element.Collapse = self
+    element.Collapse = this
+  }
+
+  // COLLAPSE PUBLIC METHODS
+  // =======================
+  toggle() {
+    const { collapse } = privateProperties[ this[collapseIDKey] ]
+
+    if ( !collapse.classList.contains( 'show' ) ) { this.show() } 
+    else { this.hide() }
+  }
+
+  hide() {
+    const vars = privateProperties[ this[collapseIDKey] ],
+        { collapse, element } = vars
+    
+    if ( collapse.isAnimating ) return
+
+    closeAction( vars )
+    element.classList.add( 'collapsed' )
+  }
+  show() {
+    const vars = privateProperties[ this[collapseIDKey] ],
+      { collapse, element, accordion } = vars
+
+    let activeElement, activeCollapse
+
+    if ( accordion ) {
+      activeCollapse = accordion.getElementsByClassName( 'collapse show' )[0]
+      activeElement = Array.from( accordion.querySelectorAll( collapseSelector ) )
+                           .find( c => !c.classList.contains( 'collapsed' ) )
+    }
+
+    if ( ( !accordion || accordion && !accordion.isAnimating ) && !collapse.isAnimating ) {
+      if ( activeElement && activeCollapse !== collapse ) {
+        closeAction( { collapse: activeCollapse, element: activeElement, accordion: accordion } )
+        activeElement.classList.add( 'collapsed' )
+      }
+      openAction( vars )
+      element.classList.remove( 'collapsed' )
+    }
+  }
+  dispose() {
+    const uid = this[collapseIDKey],
+        {element} = privateProperties[uid]
+          
+    element.removeEventListener( 'click', collapseClickHandler )
+
+    delete element[collapseComponent]
+    delete element[collapseIDKey]
+    delete this[collapseIDKey]
+    delete privateProperties[uid]
+  }
+}
+
+export const collapseInit = {
+  component: collapseComponent,
+  selector: collapseSelector,
+  constructor: Collapse
 }
 
