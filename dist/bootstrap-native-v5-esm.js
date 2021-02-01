@@ -502,7 +502,7 @@ function Carousel( carouselElement, carouselOptions ){
         orientation = direction === 'left' ? 'next' : 'prev',
         directionClass = direction === 'left' ? 'start' : 'end';
 
-    if ( element[carouselComponent] ){
+    if ( isAnimating && element[carouselComponent] ){
       isAnimating = false;
 
       addClass( slides[next], activeClass );
@@ -562,8 +562,6 @@ function Carousel( carouselElement, carouselOptions ){
 
     var eventTarget = e.currentTarget || e.srcElement;
 
-    if ( isAnimating ) { return }
-
     if ( controls[1] && eventTarget === controls[1] ) {
       self.next();
     } else if ( controls[1] && eventTarget === controls[0] ) {
@@ -575,7 +573,7 @@ function Carousel( carouselElement, carouselOptions ){
     var which = ref.which;
 
 
-    if ( isAnimating || !isElementInScrollRange( element ) ) { return }
+    if ( !isElementInScrollRange( element ) ) { return }
 
     switch ( which ) {
       case 39:
@@ -747,11 +745,11 @@ function Carousel( carouselElement, carouselOptions ){
   };
 
   CarouselProto.next = function() {
-    index++, self.to( index );
+    !isAnimating && index++, self.to( index );
   };
 
   CarouselProto.prev = function() {
-    index--, self.to( index );
+    !isAnimating && index--, self.to( index );
   };
 
   CarouselProto.to = function( next ) {
