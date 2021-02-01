@@ -3,104 +3,115 @@
 -------------------------------------------- */
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
 import queryElement from 'shorter-js/src/misc/queryElement.js'
+// import addClass from 'shorter-js/src/class/addClass.js'
+import hasClass from 'shorter-js/src/class/hasClass.js'
+import removeClass from 'shorter-js/src/class/removeClass.js'
+
+import fadeClass from '../strings/fadeClass.js'
+import showClass from '../strings/showClass.js'
+import addEventListener from '../strings/addEventListener.js'
+import removeEventListener from '../strings/removeEventListener.js'
+import dataBsDismiss from '../strings/dataBsDismiss.js'
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
-import privateProperties from '../util/privateProperties.js'
-import getUID from '../util/getUID.js'
 
 
 // ALERT PRIVATE GC
 // ================
 const alertString = 'alert',
-      alertComponent = 'Alert',
-      alertSelector = '[data-bs-dismiss="alert"]',
-      alertIDKey = `${alertString}UID`
+    alertComponent = 'Alert',
+    alertSelector = `[${dataBsDismiss}="${alertString}"]`
 
 
-// ALERT CUSTOM EVENTS
-// ===================
-const closeAlertEvent = bootstrapCustomEvent( `close.bs.${alertString}` ), // 'type.bs.component'
+// ALERT SCOPE
+// ===========
+export default function Alert( alertTarget ) {
+
+  let self, element, alert
+
+  // ALERT CUSTOM EVENTS
+  // ===================
+  const closeAlertEvent = bootstrapCustomEvent( `close.bs.${alertString}` ), // 'type.bs.component'
       closedAlertEvent = bootstrapCustomEvent( `closed.bs.${alertString}` )
 
 
-// ALERT EVENT HANDLERS
-// ====================
-function alertTransitionEndHandler( alert ) {
-  const element = queryElement( alertSelector, alert )
+  // ALERT EVENT HANDLERS
+  // ====================
+  function alertTransitionEnd() {
 
-  element.removeEventListener( 'click', alertClickHandler )
-  alert.dispatchEvent( closedAlertEvent )
+    toggleAlertHandler()
+    alert.dispatchEvent( closedAlertEvent )
 
-  alert.parentNode.removeChild( alert )
-}
-
-function alertClickHandler(e) {
-  const eventTarget = e.target,
-        element = this,
-        alert = eventTarget && eventTarget.closest( '.alert' ) // go around and check
-
-  alert && ( element === eventTarget || element.contains( eventTarget ) )
-    && element[alertComponent].close()
-}
-
-
-// ALERT DEFINITION
-// ================
-export default class Alert {
-  constructor( element ){
-
-    // initialization element
-    element = queryElement( element )
-    
-    // reset on re-init
-    element[alertComponent] && element[alertComponent].dispose()
-
-    // set private properties unique ID key
-    const elementID = getUID( element, alertIDKey )
-
-    this[alertIDKey] = elementID
-    privateProperties[elementID] = {
-      element: element,
-      alert: element.closest( '.alert' )
-    }
-
-    // add event listener
-    element.addEventListener( 'click', alertClickHandler )
-
-    // store init object within target element 
-    element[alertComponent] = this
+    alert.parentNode.removeChild( alert )
   }
+
+  function alertClickHandler(e) {
+    const eventTarget = e.target
+
+    alert && ( element === eventTarget || element.contains( eventTarget ) )
+      && self.close()
+  }
+
+
+  // ALERT PRIVATE METHOD
+  // ====================
+  function toggleAlertHandler( action ) {
+    action = action ? addEventListener : removeEventListener
+    element[action]( 'click', alertClickHandler )
+  }
+
+
+  // ALERT DEFINITION
+  // ================
+  class Alert {
+    constructor( target ){
+
+      // bind 
+      self = this
+
+      // initialization element
+      element = queryElement( target )
+      
+      // reset previous instance
+      element[alertComponent] && element[alertComponent].dispose()
+
+      alert = element.closest( `.${alertString}` )
+
+      // add event listener
+      toggleAlertHandler( 1 )
+
+      // store init 
+      element[alertComponent] = this
+    }
+  }
+
 
   // ALERT PUBLIC METHODS
   // ====================
-  close(){
-    const { alert } = privateProperties[ this[alertIDKey] ]
+  const AlertProto = Alert.prototype
 
-    if ( alert && alert.classList.contains( 'show' ) ) {
+  AlertProto.close = function() {
+    if ( alert && hasClass( alert, showClass) ) {
+
       alert.dispatchEvent( closeAlertEvent )
       if ( closeAlertEvent.defaultPrevented ) return
 
-      alert.classList.remove( 'show' )
+      removeClass( alert, showClass )
 
-      alert.classList.contains( 'fade' )
-        ? emulateTransitionEnd( alert, function endWrap() { alertTransitionEndHandler( alert ) } ) 
-        : alertTransitionEndHandler( alert )
+      hasClass( alert, fadeClass )
+        ? emulateTransitionEnd( alert, alertTransitionEnd ) 
+        : alertTransitionEnd()
 
       this.dispose()
     }
   }
 
-  dispose() {
-    const uid = this[alertIDKey],
-    { element } = privateProperties[ uid ]
-
-    element.removeEventListener( 'click', alertClickHandler )
-
+  AlertProto.dispose = function() {
+    toggleAlertHandler()
     delete element[alertComponent]
-    delete element[alertIDKey]
-    delete this[alertIDKey]
-    delete privateProperties[uid]
   }
+
+  return new Alert( alertTarget )
 }
 
 export const alertInit = {

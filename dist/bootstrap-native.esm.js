@@ -13,21 +13,33 @@ var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTran
 
 function getElementTransitionDuration(element) {
   var computedStyle = getComputedStyle(element),
-      property = computedStyle[transitionProperty],
-      duration = supportTransition && property && property !== 'none' 
-               ? parseFloat(computedStyle[transitionDuration]) : 0;
+      propertyValue = computedStyle[transitionProperty],
+      durationValue = computedStyle[transitionDuration],
+      durationScale = durationValue.indexOf('ms') > -1 ? 1 : 1000,
+      duration = supportTransition && propertyValue && propertyValue !== 'none' 
+               ? parseFloat( durationValue ) * durationScale : 0;
 
-  return !isNaN(duration) ? duration * 1000 : 0;
+  return !isNaN(duration) ? duration : 0
 }
 
 // emulateTransitionEnd
 function emulateTransitionEnd(element,handler){ 
-  var called = 0, duration = getElementTransitionDuration(element);
-  duration ? element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){ 
-              !called && handler(e), called = 1; 
-              element.removeEventListener( transitionEndEvent, transitionEndWrapper);
-            })
-           : setTimeout(function() { !called && handler(), called = 1; }, 17);
+  var called = 0, 
+      endEvent = new Event( transitionEndEvent ),
+      duration = getElementTransitionDuration(element);
+
+  if ( duration ) {
+    element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){ 
+      if ( e.target === element ) {
+        handler.apply( element, [e] );
+        element.removeEventListener( transitionEndEvent, transitionEndWrapper);
+        called = 1;
+      }
+    });
+    setTimeout(function() { 
+      !called && element.dispatchEvent( endEvent );
+    }, duration + 17 );
+  } else { handler.apply( element, [endEvent]); }
 }
 
 function queryElement(selector, parent) {

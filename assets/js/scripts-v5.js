@@ -64,7 +64,6 @@ myModal.addEventListener('hidden.bs.modal', function (e) {
 	e.relatedTarget && console.log('event.relatedTarget is ' + e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.'));
 }, false);
 
-
 // Modal initialized with JavaScript
 var myModalJS = document.getElementById('myModalJS'); // we need a blank modal to fill up and target our object function
 var btnModal = document.getElementById('openModalViaJS');
@@ -259,16 +258,17 @@ var tooltipTemplateExample = new BSN.Tooltip('#tooltipTemplateExample', {
 })
 
 // Popover 
-var popover1 = new BSN.Popover('#popover-via-click', { trigger: 'click'} );
+var popover1 = new BSN.Popover('#popover-via-click', { 	trigger: 'click' } );
 
 // demo popover, using template
-var someTitleFromOtherCode = 'Popover via JavaScript <span class="label label-primary">FOCUS</span>';
-var someContentFromOuterSpace = '<p>Some sample message from outer space wrapped in &lt;p&gt; tags. You can add your own functions to combine with Popover template as you wish.</p>';
+var someTitleFromOtherCode = 'Popover via JavaScript <span class="label label-primary">Template</span>';
+var someContentFromOuterSpace = '<p>This Popover is using FOCUS event option. Some sample message from outer space wrapped in &lt;p&gt; tags.</p>';
+
 var popover2 = new BSN.Popover('.popover-via-template', {
 	trigger: 'focus',
 	title: someTitleFromOtherCode,
 	content: someContentFromOuterSpace,
-	template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
+	template: '<div class="popover border-dark" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header bg-dark border-secondary text-white"></h3><div class="popover-body bg-secondary text-light"></div></div>'
 });
 
 var popoverEvents = document.getElementById('popoverWithEvents');
@@ -296,5 +296,22 @@ toastBTN.closest('.toast').addEventListener('hidden.bs.toast',function(e){
 },false)
 
 showToastBTN.addEventListener('click',function(){
-	toastBTN.Toast.show();
+	toastBTN.Toast ? toastBTN.Toast.show() : console.log( 'DISPOSED!' )
 },false)
+
+// ScrollSpy
+function toggleScrollSpy(){
+	const disposableSpy = document.getElementById('disposableSpy')
+
+	if ( disposableSpy.ScrollSpy ){
+		disposableSpy.ScrollSpy.dispose()
+		this.innerHTML = 'Init'
+		this.classList.remove( 'btn-outline-danger' )
+		this.classList.add( 'btn-outline-primary' )
+	} else {
+		new BSN.ScrollSpy(disposableSpy)
+		this.innerHTML = 'Dispose'
+		this.classList.remove( 'btn-outline-primary' )                        
+		this.classList.add( 'btn-outline-danger' )
+	}
+}

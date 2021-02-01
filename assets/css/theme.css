@@ -141,3 +141,20 @@ pre[class*="language-"] {margin: 0 0 1rem}
 .bs-tooltip-bottom.custom-class .tooltip-arrow::before {
   border-bottom-color: #0e3763
 }
+
+/* popover custom template */
+.bs-popover-top.border-dark >.popover-arrow::after,
+.bs-popover-top.border-dark >.popover-arrow::before {
+  border-bottom-color: #6c757d;
+  border-top-color: #6c757d
+}
+
+.bs-popover-bottom.border-dark >.popover-arrow::after,
+.bs-popover-bottom.border-dark >.popover-arrow::before {
+  border-bottom-color: #212529;
+  border-top-color: #212529
+}
+
+.bs-popover-bottom .popover-header::before {
+  border-color: transparent
+}

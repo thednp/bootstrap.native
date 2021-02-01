@@ -81,7 +81,7 @@
       </nav>
     </header>
 
-    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover">
+    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-keyboard="true" data-bs-interval="7000" data-bs-pause="hover">
       <ol class="carousel-indicators">
         <li data-bs-toggle="tooltip" data-bs-title="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
         <li data-bs-toggle="tooltip" data-bs-title="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
@@ -502,7 +502,7 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                       <td><em>number</em></td>
                       <td><em>5000</em></td>
                       <td>Sets the component's delay between transitions in miliseconds. Can be set via JavaScript or the
-                        <code>data-interval="INTERVAL"</code> attribute. If you want to disable the automatic transition, you can
+                        <code>data-bs-interval="INTERVAL"</code> attribute. If you want to disable the automatic transition, you can
                         set this option to <em>false</em>. The component will not automatically slide if the element is 
                         not visible in the viewport.</td>
                     </tr>
@@ -528,9 +528,19 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                         running will produce no effect.</td>
                     </tr>
                     <tr>
-                      <td><code>instance.slideTo()</code></td>
+                      <td><code>instance.to()</code></td>
                       <td>The method will allow you to jump to the index of a certain item. Using the
                         method while the animation is running will produce no effect.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.next()</code></td>
+                      <td>The method will allow you to jump to the <b>next</b> item. This uses the above 
+                        <code>.to()</code> method.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.prev()</code></td>
+                      <td>The method will allow you to jump to the <b>previous</b> item. This uses the above 
+                        <code>.to()</code> method.</td>
                     </tr>
                     <tr>
                       <td><code>instance.getActiveIndex()</code></td>
@@ -785,27 +795,27 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
 
               <div class="btn-group my-3">
                 <button class="btn btn-outline-secondary"
-                        onclick="carouselGenericExample.Carousel.slideTo(0)">START</button>
+                        onclick="carouselGenericExample.Carousel.to(0)">START</button>
                 <button class="btn btn-outline-secondary"
-                        onclick="carouselGenericExample.Carousel.slideTo(carouselGenericExample.Carousel.getActiveIndex() - 1 )">PREV</button>
+                        onclick="carouselGenericExample.Carousel.prev()">PREV</button>
                 <button class="btn btn-outline-secondary"
-                        onclick="carouselGenericExample.Carousel.slideTo(carouselGenericExample.Carousel.getActiveIndex() + 1 )">NEXT</button>
+                        onclick="carouselGenericExample.Carousel.next()">NEXT</button>
               </div>
               <p>These three independent buttons use some inline JavaScript to control the carousel:</p>
 <pre><code class="language-markup">&lt;button class="btn btn-secondary" 
-  onclick="myCarousel.Carousel.slideTo(0)">
+  onclick="myCarousel.Carousel.to(0)">
   START
 &lt/button>
 
 &ltbutton 
   class="btn btn-secondary"
-  onclick="myCarousel.Carousel.slideTo(myCarousel.Carousel.getActiveIndex() - 1 )">
+  onclick="myCarousel.Carousel.prev()">
   PREV
 &lt/button>
 
 &ltbutton 
   class="btn btn-secondary"
-  onclick="myCarousel.Carousel.slideTo(myCarousel.Carousel.getActiveIndex() + 1 )">
+  onclick="myCarousel.Carousel.next()">
   NEXT
 &lt/button>
 </code></pre>
@@ -850,7 +860,8 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
                       <td></td>
                       <td>Option to reference a parent to be used as an accordion. When a parent is set and found, it will enable
                         the functionality described in the <code>show()</code> method below. Can be set
-                        via JavaScript or the <code>data-bs-parent="SELECTOR"</code> attribute.</td>
+                        via JavaScript or the <code>data-bs-parent="SELECTOR"</code> attribute when used for 
+                        the <code>&lt;div class="collapse"&gt;</code> element.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1836,7 +1847,7 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
               <p>The first example is a modal with static content initialized via DATA API, exactly as described in the above <a
                   href="#modalDATA">Use via DATA API</a> section, and showcasing the
                 ability to show another modal from a modal currently visible.</p>
-              <p><button type="button" class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#myModal">
+              <p><button id="myModalButton" type="button" class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#myModal">
                 <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                   <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                 </svg>
@@ -1861,13 +1872,18 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                           data-bs-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.
                       </p>
                       <h4>Open modal from modal</h4>
-                      <p>Click <a data-bs-toggle="modal" href="#anotherModal">here</a> to open another modal.</p>
+                      <p>Click <a onclick="anotherModalButton.Modal && anotherModalButton.Modal.show()" href="#anotherModal">here</a> to open another modal.</p>
+                      <h4>Dismissing the modal is prevented!</h4>
+                      <p>Try selecting this text then click outside the modal dialog, the modal dismissal will be prevented.</p>
                       <hr>
                       <h4>Overflowing text to show scroll behavior</h4>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
                         quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+                      <h4>Testing Popover transitionEnd</h4>
+                      <p><input type="text" placeholder="Focus me" class="form-control" data-bs-toggle="popover" data-bs-trigger="focus" 
+                        data-bs-content="Now if you click outside the modal dialog, the modal will not be dismissed"></p>
                       <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
-                        laoreet rutrum faucibus dolor auctor.</p>
+                        laoreet rutrum faucibus dolor auctor.</p>  
                       <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
@@ -1884,7 +1900,7 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#anotherModal">Next</button>
+                      <button id="anotherModalButton" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#anotherModal">Next</button>
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                           <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
@@ -1913,7 +1929,7 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                     </div>
                     <div class="modal-footer">
-                      <button data-bs-toggle="modal" data-bs-target="#myModal" type="button" class="btn btn-primary">Back</button>
+                      <button onclick="myModalButton.Modal && myModalButton.Modal.show()" type="button" class="btn btn-primary">Back</button>
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                   </div>
@@ -2148,22 +2164,6 @@ changeModal2.addEventListener('click', function(){
                   </thead>
                   <tbody>
                     <tr>
-                      <td><code>template</code></td>
-                      <td><em>string</em></td>
-                      <td></td>
-                      <td>Option to use a custom HTML template for your popover initialization. The contents from the 
-                        <code>title</code> or <code>data-bs-title</code> will fill the template's <code>.popover-header</code>
-                        element, while the contents of the <code>data-bs-content</code> attribute will fill in the 
-                        <code>.popover-body</code> element.<br><b>This option is JavaScript API only.</b></td>
-                    </tr>
-                    <tr>
-                      <td><code>sanitizeFn</code></td>
-                      <td><em>function</em></td>
-                      <td></td>
-                      <td>Option to set a function that will sanitize the title and content of the popover. Our library doesn't include any sanitization 
-                        function, you are free to use whatever solution suits your need.<br><b>This option is JavaScript API only.</b></td>
-                    </tr>                    
-                    <tr>
                       <td><code>content</code></td>
                       <td><em>string</em></td>
                       <td></td>
@@ -2177,6 +2177,29 @@ changeModal2.addEventListener('click', function(){
                       <td>Option to set the <b>title</b> of the popover via JavaScript or the <code>data-bs-title="TITLE"</code>
                         attribute.</td>
                     </tr>
+                    <tr>
+                      <td><code>template</code></td>
+                      <td><em>string</em></td>
+                      <td><em>markup</em> (see description)</td>
+                      <td>Option to use a custom HTML template for your popover initialization. The following markup is the 
+                        default template:<br>
+<code>'&lt;div class="popover" role="tooltip"&gt;<br>
+&nbsp;  &lt;div class="popover-arrow">&lt;/div&gt;<br>
+&nbsp;  &lt;h3 class="popover-header">&lt;/h3&gt;<br>
+&nbsp;  &lt;div class="popover-body">&lt;/div&gt;<br>
+&lt;/div&gt;'</code><br>
+                        The contents from the <code>title</code> option or the <code>data-bs-title</code> attribute will fill in the template's 
+                        <code>.popover-header</code> element, while the contents of the <code>data-bs-content</code> attribute will fill in 
+                        the <code>.popover-body</code> element.<br>
+                        <b>This option is JavaScript API only.</b></td>
+                    </tr>
+                    <tr>
+                      <td><code>sanitizeFn</code></td>
+                      <td><em>function</em></td>
+                      <td></td>
+                      <td>Option to set a function that will sanitize the title and content of the popover. Our library doesn't include any sanitization 
+                        function, you are free to use whatever solution suits your need.<br><b>This option is JavaScript API only.</b></td>
+                    </tr>                    
                     <tr>
                       <td><code>dismissible</code></td>
                       <td><em>boolean</em></td>
@@ -2266,6 +2289,18 @@ changeModal2.addEventListener('click', function(){
                       <td><code>instance.toggle()</code></td>
                       <td>The method shows the popover if hidden and hides it otherwise, using the above
                         two methods.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.enable()</code></td>
+                      <td>Starts showing the popover again to the user. Popovers are <b>enabled by default</b>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.disable()</code></td>
+                      <td>Stops showing the popover to the user.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.toggleEnabled()</code></td>
+                      <td>Toggles the enabled state by calling one of the two methods above.</td>
                     </tr>
                     <tr>
                       <td><code>instance.dispose()</code></td>
@@ -2767,23 +2802,6 @@ myScrollSpyInit.dispose();
                 <div class="card-header d-flex flex-row align-items-center justify-content-between">
                   <h4>Bonus Example</h4>
                   <button class="btn btn-outline-danger" onclick="toggleScrollSpy.call(this)">Dispose</button>
-                  <script>
-                    function toggleScrollSpy(){
-                      const disposableSpy = document.getElementById('disposableSpy')
-
-                      if ( disposableSpy.ScrollSpy ){
-                        disposableSpy.ScrollSpy.dispose()
-                        this.innerHTML = 'Init'
-                        this.classList.remove( 'btn-outline-danger' )
-                        this.classList.add( 'btn-outline-primary' )
-                      } else {
-                        new BSN.ScrollSpy(disposableSpy)
-                        this.innerHTML = 'Dispose'
-                        this.classList.remove( 'btn-outline-primary' )                        
-                        this.classList.add( 'btn-outline-danger' )
-                      }
-                    }
-                  </script>
                 </div>
                 <div class="card-body p-0">
                   <div class="row">
@@ -3346,11 +3364,27 @@ myToastInit.dispose();
                   </thead>
                   <tbody>
                     <tr>
-                      <td><code>template</code></td>
+                      <td><code>title</code></td>
                       <td><em>string</em></td>
                       <td></td>
-                      <td>Allows you to set a custom template for your tooltips and is not set by default. The 
-                        <code>title=""</code> or <code>data-bs-title=""</code> attribute will fill in for the 
+                      <td>Allows you to set a custom title to be used for your tooltip; when used via JavaScript
+                        API, it will override both the <code>title=""</code> and <code>data-bs-title=""</code> 
+                        attributes.</td>
+                    </tr>
+                    <tr>
+                      <td><code>template</code></td>
+                      <td><em>string</em>(see description)</td>
+                      <td></td>
+                      <td>Allows you to set a custom template for your tooltips and overrides the default one. 
+                        The following markup is the default template for tooltips:<br>
+<code>
+'&lt;div class="tooltip" role="tooltip"&gt;<br>
+&nbsp;  &lt;div class="tooltip-arrow">&lt;/div&gt;<br>
+&nbsp;  &lt;div class="tooltip-inner">&lt;/div&gt;<br>
+&lt;/div&gt;'<br>
+</code>
+                        
+                        The <code>title=""</code> or <code>data-bs-title=""</code> attribute will fill in for the 
                         <code>.tooltip-inner</code> element.<br><b>This option is JavaScript API only.</b></td>
                     </tr>
                     <tr>
@@ -3432,6 +3466,18 @@ myToastInit.dispose();
                       <td>The method shows the tooltip if hidden and hides it otherwise, using the above
                         two methods.</td>
                     </tr>
+                    <tr>
+                      <td><code>instance.enable()</code></td>
+                      <td>Starts showing the tooltip again to the user. Tooltips are <b>enabled by default</b>.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.disable()</code></td>
+                      <td>Stops showing the tooltip to the user.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.toggleEnabled()</code></td>
+                      <td>Toggles the enabled state by calling one of the two methods above.</td>
+                    </tr>                    
                     <tr>
                       <td><code>instance.dispose()</code></td>
                       <td>Removes the component from the target element.</td>
@@ -3572,21 +3618,21 @@ new BSN.Tooltip('#selector',options).show();
               <p>
           
                 <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="left"
-                  title="&lt;b&gt;Tooltip on left&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
+                  data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
                 <button id="tooltipWithEvents" type="button" class="btn btn-dark" data-bs-toggle="tooltip" data-bs-placement="top"
-                  title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Events</button>
+                  data-bs-title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Events</button>
                 <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                  title="&lt;b&gt;Tooltip on bottom&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
+                  data-bs-title="&lt;b&gt;Tooltip on bottom&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
                 <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="right"
-                  title="&lt;b&gt;Tooltip on right&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+                  data-bs-title="&lt;b&gt;Tooltip on right&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
                 <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="left"
-                  title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
+                  data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
                 <button id="tooltipTemplateExample" type="button" class="btn btn-danger"
-                  title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
+                  data-bs-title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
                 <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                  title="&lt;b&gt;Tooltip on bottom&lt;/b&gt; &lt;span class='badge bg-warning'&gt;COOL&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
+                  data-bs-title="&lt;b&gt;Tooltip on bottom&lt;/b&gt; &lt;span class='badge bg-warning'&gt;COOL&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
                 <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="right"
-                  title="&lt;b&gt;Tooltip on right&lt;/b&gt; &lt;span class='badge bg-info'&gt;FYI&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
+                  data-bs-title="&lt;b&gt;Tooltip on right&lt;/b&gt; &lt;span class='badge bg-info'&gt;FYI&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
           
                 <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" 
                   data-bs-toggle="tooltip" data-bs-placement="top" 

@@ -7,7 +7,9 @@ var mouseHoverEvents = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleav
 
 var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
 
+// determine support for passive events
 var supportPassive = (function () {
+  // Test via a getter in the options object to see if the passive property is accessed
   var result = false;
   try {
     var opts = Object.defineProperty({}, 'passive', {
@@ -19,8 +21,11 @@ var supportPassive = (function () {
       document.removeEventListener('DOMContentLoaded', wrap, opts);
     }, opts);
   } catch (e) {}
+
   return result;
 })();
+
+// general event options
 
 var passiveHandler = supportPassive ? { passive: true } : false;
 
@@ -34,19 +39,33 @@ var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTran
 
 function getElementTransitionDuration(element) {
   var computedStyle = getComputedStyle(element),
-      property = computedStyle[transitionProperty],
-      duration = supportTransition && property && property !== 'none'
-               ? parseFloat(computedStyle[transitionDuration]) : 0;
-  return !isNaN(duration) ? duration * 1000 : 0;
+      propertyValue = computedStyle[transitionProperty],
+      durationValue = computedStyle[transitionDuration],
+      durationScale = durationValue.indexOf('ms') > -1 ? 1 : 1000,
+      duration = supportTransition && propertyValue && propertyValue !== 'none' 
+               ? parseFloat( durationValue ) * durationScale : 0;
+
+  return !isNaN(duration) ? duration : 0
 }
 
-function emulateTransitionEnd(element,handler){
-  var called = 0, duration = getElementTransitionDuration(element);
-  duration ? element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){
-              !called && handler(e), called = 1;
-              element.removeEventListener( transitionEndEvent, transitionEndWrapper);
-            })
-           : setTimeout(function() { !called && handler(), called = 1; }, 17);
+// emulateTransitionEnd
+function emulateTransitionEnd(element,handler){ 
+  var called = 0, 
+      endEvent = new Event( transitionEndEvent ),
+      duration = getElementTransitionDuration(element);
+
+  if ( duration ) {
+    element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){ 
+      if ( e.target === element ) {
+        handler.apply( element, [e] );
+        element.removeEventListener( transitionEndEvent, transitionEndWrapper);
+        called = 1;
+      }
+    });
+    setTimeout(function() { 
+      !called && element.dispatchEvent( endEvent );
+    }, duration + 17 );
+  } else { handler.apply( element, [endEvent]); }
 }
 
 function queryElement(selector, parent) {
@@ -56,6 +75,7 @@ function queryElement(selector, parent) {
 
 function bootstrapCustomEvent( eventType, componentName, eventProperties ) {
   var OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } );
+
   if ( typeof eventProperties !== 'undefined' ) {
     Object.keys( eventProperties ).forEach( function (key) {
       Object.defineProperty( OriginalCustomEvent, key, {
@@ -70,14 +90,15 @@ function dispatchCustomEvent(customEvent){
   this && this.dispatchEvent(customEvent);
 }
 
-function getScroll() {
+// Popover, Tooltip & ScrollSpy
+function getScroll() { 
   return {
     y : window.pageYOffset || document.documentElement.scrollTop,
     x : window.pageXOffset || document.documentElement.scrollLeft
   }
 }
 
-function styleTip(link,element,position,parent) {
+function styleTip(link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
   var tipPositions = /\b(top|bottom|left|right)+/,
       elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
       windowWidth = (document.documentElement.clientWidth || document.body.clientWidth),
@@ -86,7 +107,9 @@ function styleTip(link,element,position,parent) {
       scroll = parent === document.body ? getScroll() : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
       linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
       isPopover = element.classList.contains('popover'),
+
       arrow = element.getElementsByClassName('arrow')[0],
+
       halfTopExceed = rect.top + linkDimensions.h/2 - elementDimensions.h/2 < 0,
       halfLeftExceed = rect.left + linkDimensions.w/2 - elementDimensions.w/2 < 0,
       halfRightExceed = rect.left + elementDimensions.w/2 + linkDimensions.w/2 >= windowWidth,
@@ -95,25 +118,36 @@ function styleTip(link,element,position,parent) {
       leftExceed = rect.left - elementDimensions.w < 0,
       bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight,
       rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth;
-  position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position;
+
+  // recompute position
+  position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position; // first, when both left and right limits are exceeded, we fall back to top|bottom
   position = position === 'top' && topExceed ? 'bottom' : position;
   position = position === 'bottom' && bottomExceed ? 'top' : position;
   position = position === 'left' && leftExceed ? 'right' : position;
   position = position === 'right' && rightExceed ? 'left' : position;
+
   var topPosition,
     leftPosition,
     arrowTop,
     arrowLeft,
     arrowWidth,
     arrowHeight;
+
+  // update tooltip/popover class
   element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipPositions,position));
+
+  // we check the computed width & height and update here
   arrowWidth = arrow.offsetWidth; arrowHeight = arrow.offsetHeight;
-  if ( position === 'left' || position === 'right' ) {
-    if ( position === 'left' ) {
+
+  // apply styling to tooltip or popover
+  if ( position === 'left' || position === 'right' ) { // secondary|side positions
+    if ( position === 'left' ) { // LEFT
       leftPosition = rect.left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 );
-    } else {
+    } else { // RIGHT
       leftPosition = rect.left + scroll.x + linkDimensions.w;
     }
+
+    // adjust top and arrow
     if (halfTopExceed) {
       topPosition = rect.top + scroll.y;
       arrowTop = linkDimensions.h/2 - arrowWidth;
@@ -124,12 +158,13 @@ function styleTip(link,element,position,parent) {
       topPosition = rect.top + scroll.y - elementDimensions.h/2 + linkDimensions.h/2;
       arrowTop = elementDimensions.h/2 - (isPopover ? arrowHeight*0.9 : arrowHeight/2);
     }
-  } else if ( position === 'top' || position === 'bottom' ) {
-    if ( position === 'top') {
+  } else if ( position === 'top' || position === 'bottom' ) { // primary|vertical positions
+    if ( position === 'top') { // TOP
       topPosition =  rect.top + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 );
-    } else {
+    } else { // BOTTOM
       topPosition = rect.top + scroll.y + linkDimensions.h;
     }
+    // adjust left | right and also the arrow
     if (halfLeftExceed) {
       leftPosition = 0;
       arrowLeft = rect.left + linkDimensions.w/2 - arrowWidth;
@@ -141,31 +176,55 @@ function styleTip(link,element,position,parent) {
       arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth : arrowWidth/2 );
     }
   }
+
+  // apply style to tooltip/popover and its arrow
   element.style.top = topPosition + 'px';
   element.style.left = leftPosition + 'px';
+
   arrowTop && (arrow.style.top = arrowTop + 'px');
   arrowLeft && (arrow.style.left = arrowLeft + 'px');
 }
 
+// TOOLTIP DEFINITION
+// ==================
+
 function Tooltip(element,options) {
+
+  // set options
   options = options || {};
+
+  // bind
   var self = this,
+
+      // tooltip, timer, and title
       tooltip = null, timer = 0, titleString,
+
+      // DATA API
       animationData,
       placementData,
       delayData,
       containerData,
+
+      // custom events
       showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
       hiddenCustomEvent,
+
+      // check container
       containerElement,
       containerDataElement,
+
+      // maybe the element is inside a modal
       modal,
+
+      // maybe the element is inside a fixed navbar
       navbarFixedTop,
       navbarFixedBottom,
       placementClass,
       ops = {};
+
+  // private methods
   function getTitle() {
     return element.getAttribute('title')
         || element.getAttribute('data-title')
@@ -176,30 +235,40 @@ function Tooltip(element,options) {
     tooltip = null; timer = null;
   }
   function createToolTip() {
-    titleString = getTitle();
-    if ( titleString ) {
+    titleString = getTitle(); // read the title again
+    if ( titleString ) { // invalidate, maybe markup changed
+      // create tooltip
       tooltip = document.createElement('div');
+
+      // set markup
       if (ops.template) {
         var tooltipMarkup = document.createElement('div');
         tooltipMarkup.innerHTML = ops.template.trim();
+
         tooltip.className = tooltipMarkup.firstChild.className;
         tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
+
         queryElement('.tooltip-inner',tooltip).innerHTML = titleString.trim();
       } else {
+        // tooltip arrow
         var tooltipArrow = document.createElement('div');
         tooltipArrow.classList.add('arrow');
         tooltip.appendChild(tooltipArrow);
+        // tooltip inner
         var tooltipInner = document.createElement('div');
         tooltipInner.classList.add('tooltip-inner');
         tooltip.appendChild(tooltipInner);
         tooltipInner.innerHTML = titleString;
       }
+      // reset position
       tooltip.style.left = '0';
       tooltip.style.top = '0';
+      // set class and role attribute
       tooltip.setAttribute('role','tooltip');
       !tooltip.classList.contains('tooltip') && tooltip.classList.add('tooltip');
       !tooltip.classList.contains(ops.animation) && tooltip.classList.add(ops.animation);
       !tooltip.classList.contains(placementClass) && tooltip.classList.add(placementClass);
+      // append to container
       ops.container.appendChild(tooltip);
     }
   }
@@ -214,6 +283,7 @@ function Tooltip(element,options) {
       self.hide();
     }
   }
+  // triggers
   function toggleAction(action){
     action = action ? 'addEventListener' : 'removeEventListener';
     document[action]( 'touchstart', touchHandler, passiveHandler );
@@ -234,12 +304,15 @@ function Tooltip(element,options) {
     element[action](mouseHoverEvents[0], self.show,false);
     element[action](mouseHoverEvents[1], self.hide,false);
   }
+
+  // public methods
   self.show = function () {
     clearTimeout(timer);
     timer = setTimeout( function () {
       if (tooltip === null) {
         dispatchCustomEvent.call(element, showCustomEvent);
         if (showCustomEvent.defaultPrevented) { return; }
+        // if(createToolTip() == false) return;
         if(createToolTip() !== false) {
           updateTooltip();
           showTooltip();
@@ -270,39 +343,67 @@ function Tooltip(element,options) {
     element.removeAttribute('data-original-title');
     delete element.Tooltip;
   };
+
+  // init
+  // initialization element
   element = queryElement(element);
+
+  // reset on re-init
   element.Tooltip && element.Tooltip.dispose();
+
+  // DATA API
   animationData = element.getAttribute('data-animation');
   placementData = element.getAttribute('data-placement');
   delayData = element.getAttribute('data-delay');
   containerData = element.getAttribute('data-container');
+
+  // custom events
   showCustomEvent = bootstrapCustomEvent('show', 'tooltip');
   shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip');
   hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip');
   hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip');
+
+  // check container
   containerElement = queryElement(options.container);
   containerDataElement = queryElement(containerData);
+
+  // maybe the element is inside a modal
   modal = element.closest('.modal');
+
+  // maybe the element is inside a fixed navbar
   navbarFixedTop = element.closest('.fixed-top');
   navbarFixedBottom = element.closest('.fixed-bottom');
+
+  // set instance options
   ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
   ops.placement = options.placement ? options.placement : placementData || 'top';
-  ops.template = options.template ? options.template : null;
+  ops.template = options.template ? options.template : null; // JavaScript only
   ops.delay = parseInt(options.delay || delayData) || 200;
   ops.container = containerElement ? containerElement
                           : containerDataElement ? containerDataElement
                           : navbarFixedTop ? navbarFixedTop
                           : navbarFixedBottom ? navbarFixedBottom
                           : modal ? modal : document.body;
+
+  // set placement class
   placementClass = "bs-tooltip-" + (ops.placement);
+
+  // set tooltip content
   titleString = getTitle();
+
+  // invalidate
   if ( !titleString ) { return; }
+
+  // prevent adding event handlers twice
   if (!element.Tooltip) {
     element.setAttribute('data-original-title',titleString);
     element.removeAttribute('title');
     toggleEvents(1);
   }
+
+  // associate target to init object
   element.Tooltip = self;
+
 }
 
 export default Tooltip;

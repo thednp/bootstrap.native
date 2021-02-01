@@ -13,19 +13,33 @@ var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTran
 
 function getElementTransitionDuration(element) {
   var computedStyle = getComputedStyle(element),
-      property = computedStyle[transitionProperty],
-      duration = supportTransition && property && property !== 'none'
-               ? parseFloat(computedStyle[transitionDuration]) : 0;
-  return !isNaN(duration) ? duration * 1000 : 0;
+      propertyValue = computedStyle[transitionProperty],
+      durationValue = computedStyle[transitionDuration],
+      durationScale = durationValue.indexOf('ms') > -1 ? 1 : 1000,
+      duration = supportTransition && propertyValue && propertyValue !== 'none' 
+               ? parseFloat( durationValue ) * durationScale : 0;
+
+  return !isNaN(duration) ? duration : 0
 }
 
-function emulateTransitionEnd(element,handler){
-  var called = 0, duration = getElementTransitionDuration(element);
-  duration ? element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){
-              !called && handler(e), called = 1;
-              element.removeEventListener( transitionEndEvent, transitionEndWrapper);
-            })
-           : setTimeout(function() { !called && handler(), called = 1; }, 17);
+// emulateTransitionEnd
+function emulateTransitionEnd(element,handler){ 
+  var called = 0, 
+      endEvent = new Event( transitionEndEvent ),
+      duration = getElementTransitionDuration(element);
+
+  if ( duration ) {
+    element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){ 
+      if ( e.target === element ) {
+        handler.apply( element, [e] );
+        element.removeEventListener( transitionEndEvent, transitionEndWrapper);
+        called = 1;
+      }
+    });
+    setTimeout(function() { 
+      !called && element.dispatchEvent( endEvent );
+    }, duration + 17 );
+  } else { handler.apply( element, [endEvent]); }
 }
 
 function queryElement(selector, parent) {
@@ -35,6 +49,7 @@ function queryElement(selector, parent) {
 
 function bootstrapCustomEvent( eventType, componentName, eventProperties ) {
   var OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } );
+
   if ( typeof eventProperties !== 'undefined' ) {
     Object.keys( eventProperties ).forEach( function (key) {
       Object.defineProperty( OriginalCustomEvent, key, {
@@ -49,17 +64,29 @@ function dispatchCustomEvent(customEvent){
   this && this.dispatchEvent(customEvent);
 }
 
+// COLLAPSE DEFINITION
+// ===================
+
 function Collapse(element,options) {
+
+  // set options
   options = options || {};
+
+  // bind
   var self = this;
+
+  // target practice
   var accordion = null,
       collapse = null,
       activeCollapse,
       activeElement,
+      // custom events
       showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
       hiddenCustomEvent;
+
+  // private methods
   function openAction(collapseElement, toggle) {
     dispatchCustomEvent.call(collapseElement, showCustomEvent);
     if ( showCustomEvent.defaultPrevented ) { return; }
@@ -67,6 +94,7 @@ function Collapse(element,options) {
     collapseElement.classList.add('collapsing');
     collapseElement.classList.remove('collapse');
     collapseElement.style.height = (collapseElement.scrollHeight) + "px";
+    
     emulateTransitionEnd(collapseElement, function () {
       collapseElement.isAnimating = false;
       collapseElement.setAttribute('aria-expanded','true');
@@ -82,12 +110,13 @@ function Collapse(element,options) {
     dispatchCustomEvent.call(collapseElement, hideCustomEvent);
     if ( hideCustomEvent.defaultPrevented ) { return; }
     collapseElement.isAnimating = true;
-    collapseElement.style.height = (collapseElement.scrollHeight) + "px";
+    collapseElement.style.height = (collapseElement.scrollHeight) + "px"; // set height first
     collapseElement.classList.remove('collapse');
     collapseElement.classList.remove('show');
     collapseElement.classList.add('collapsing');
-    collapseElement.offsetWidth;
+    collapseElement.offsetWidth; // force reflow to enable transition
     collapseElement.style.height = '0px';
+    
     emulateTransitionEnd(collapseElement, function () {
       collapseElement.isAnimating = false;
       collapseElement.setAttribute('aria-expanded','false');
@@ -98,15 +127,17 @@ function Collapse(element,options) {
       dispatchCustomEvent.call(collapseElement, hiddenCustomEvent);
     });
   }
+
+  // public methods
   self.toggle = function (e) {
     if (e && e.target.tagName === 'A' || element.tagName === 'A') {e.preventDefault();}
     if (element.contains(e.target) || e.target === element) {
-      if (!collapse.classList.contains('show')) { self.show(); }
+      if (!collapse.classList.contains('show')) { self.show(); } 
       else { self.hide(); }
     }
   };
   self.hide = function () {
-    if ( collapse.isAnimating ) { return; }
+    if ( collapse.isAnimating ) { return; }    
     closeAction(collapse,element);
     element.classList.add('collapsed');
   };
@@ -116,9 +147,10 @@ function Collapse(element,options) {
       activeElement = activeCollapse && (queryElement(("[data-target=\"#" + (activeCollapse.id) + "\"]"),accordion)
                     || queryElement(("[href=\"#" + (activeCollapse.id) + "\"]"),accordion) );
     }
+
     if ( !collapse.isAnimating ) {
       if ( activeElement && activeCollapse !== collapse ) {
-        closeAction(activeCollapse,activeElement);
+        closeAction(activeCollapse,activeElement); 
         activeElement.classList.add('collapsed');
       }
       openAction(collapse,element);
@@ -129,19 +161,36 @@ function Collapse(element,options) {
     element.removeEventListener('click',self.toggle,false);
     delete element.Collapse;
   };
+
+  // init
+  
+    // initialization element
     element = queryElement(element);
+
+    // reset on re-init
     element.Collapse && element.Collapse.dispose();
+
+    // DATA API
     var accordionData = element.getAttribute('data-parent');
+
+    // custom events
     showCustomEvent = bootstrapCustomEvent('show', 'collapse');
     shownCustomEvent = bootstrapCustomEvent('shown', 'collapse');
     hideCustomEvent = bootstrapCustomEvent('hide', 'collapse');
     hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse');
+
+    // determine targets
     collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
-    collapse !== null && (collapse.isAnimating = false);
+    
+    collapse !== null && (collapse.isAnimating = false);  
     accordion = element.closest(options.parent || accordionData);
-    if ( !element.Collapse ) {
+  
+    // prevent adding event handlers twice
+    if ( !element.Collapse ) { 
       element.addEventListener('click',self.toggle,false);
     }
+  
+    // associate target to init object
     element.Collapse = self;
 }
 

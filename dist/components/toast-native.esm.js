@@ -13,19 +13,33 @@ var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTran
 
 function getElementTransitionDuration(element) {
   var computedStyle = getComputedStyle(element),
-      property = computedStyle[transitionProperty],
-      duration = supportTransition && property && property !== 'none'
-               ? parseFloat(computedStyle[transitionDuration]) : 0;
-  return !isNaN(duration) ? duration * 1000 : 0;
+      propertyValue = computedStyle[transitionProperty],
+      durationValue = computedStyle[transitionDuration],
+      durationScale = durationValue.indexOf('ms') > -1 ? 1 : 1000,
+      duration = supportTransition && propertyValue && propertyValue !== 'none' 
+               ? parseFloat( durationValue ) * durationScale : 0;
+
+  return !isNaN(duration) ? duration : 0
 }
 
-function emulateTransitionEnd(element,handler){
-  var called = 0, duration = getElementTransitionDuration(element);
-  duration ? element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){
-              !called && handler(e), called = 1;
-              element.removeEventListener( transitionEndEvent, transitionEndWrapper);
-            })
-           : setTimeout(function() { !called && handler(), called = 1; }, 17);
+// emulateTransitionEnd
+function emulateTransitionEnd(element,handler){ 
+  var called = 0, 
+      endEvent = new Event( transitionEndEvent ),
+      duration = getElementTransitionDuration(element);
+
+  if ( duration ) {
+    element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){ 
+      if ( e.target === element ) {
+        handler.apply( element, [e] );
+        element.removeEventListener( transitionEndEvent, transitionEndWrapper);
+        called = 1;
+      }
+    });
+    setTimeout(function() { 
+      !called && element.dispatchEvent( endEvent );
+    }, duration + 17 );
+  } else { handler.apply( element, [endEvent]); }
 }
 
 function queryElement(selector, parent) {
@@ -35,6 +49,7 @@ function queryElement(selector, parent) {
 
 function bootstrapCustomEvent( eventType, componentName, eventProperties ) {
   var OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } );
+
   if ( typeof eventProperties !== 'undefined' ) {
     Object.keys( eventProperties ).forEach( function (key) {
       Object.defineProperty( OriginalCustomEvent, key, {
@@ -49,18 +64,33 @@ function dispatchCustomEvent(customEvent){
   this && this.dispatchEvent(customEvent);
 }
 
+// TOAST DEFINITION
+// ==================
+
 function Toast(element,options) {
+
+  // set options
   options = options || {};
+
+  // bind
   var self = this,
+
+      // toast, timer
       toast, timer = 0,
+
+      // DATA API
       animationData,
       autohideData,
       delayData,
+
+      // custom events
       showCustomEvent,
       hideCustomEvent,
       shownCustomEvent,
       hiddenCustomEvent,
       ops = {};
+
+  // private methods
   function showComplete() {
     toast.classList.remove( 'showing' );
     toast.classList.add( 'show' );
@@ -78,16 +108,20 @@ function Toast(element,options) {
   function disposeComplete() {
     clearTimeout(timer);
     element.removeEventListener('click',self.hide,false);
+
     delete element.Toast;
   }
+
+  // public methods
   self.show = function () {
     if (toast && !toast.classList.contains('show')) {
       dispatchCustomEvent.call(toast,showCustomEvent);
       if (showCustomEvent.defaultPrevented) { return; }
       ops.animation && toast.classList.add( 'fade' );
       toast.classList.remove('hide' );
-      toast.offsetWidth;
+      toast.offsetWidth; // force reflow
       toast.classList.add('showing' );
+
       ops.animation ? emulateTransitionEnd(toast, showComplete) : showComplete();
     }
   };
@@ -95,28 +129,46 @@ function Toast(element,options) {
     if (toast && toast.classList.contains('show')) {
       dispatchCustomEvent.call(toast,hideCustomEvent);
       if(hideCustomEvent.defaultPrevented) { return; }
+
       noTimer ? close() : (timer = setTimeout( close, ops.delay));
     }
   };
   self.dispose = function () {
     ops.animation ? emulateTransitionEnd(toast, disposeComplete) : disposeComplete();
   };
+
+  // init
+
+  // initialization element
   element = queryElement(element);
+
+  // reset on re-init
   element.Toast && element.Toast.dispose();
+
+  // toast, timer
   toast = element.closest('.toast');
+
+  // DATA API
   animationData = element.getAttribute('data-animation');
   autohideData = element.getAttribute('data-autohide');
   delayData = element.getAttribute('data-delay');
+
+  // custom events
   showCustomEvent = bootstrapCustomEvent('show', 'toast');
   hideCustomEvent = bootstrapCustomEvent('hide', 'toast');
   shownCustomEvent = bootstrapCustomEvent('shown', 'toast');
   hiddenCustomEvent = bootstrapCustomEvent('hidden', 'toast');
-  ops.animation = options.animation === false || animationData === 'false' ? 0 : 1;
-  ops.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1;
-  ops.delay = parseInt(options.delay || delayData) || 500;
-  if ( !element.Toast ) {
+
+  // set instance options
+  ops.animation = options.animation === false || animationData === 'false' ? 0 : 1; // true by default
+  ops.autohide = options.autohide === false || autohideData === 'false' ? 0 : 1; // true by default
+  ops.delay = parseInt(options.delay || delayData) || 500; // 500ms default    
+  
+  if ( !element.Toast ) { // prevent adding event handlers twice
     element.addEventListener('click',self.hide,false);
   }
+
+  // associate targets to init object
   element.Toast = self;
 }
 

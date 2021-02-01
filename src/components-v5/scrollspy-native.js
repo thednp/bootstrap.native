@@ -3,237 +3,247 @@
 ------------------------------------------------ */
 import passiveHandler from 'shorter-js/src/misc/passiveHandler.js'
 import queryElement from 'shorter-js/src/misc/queryElement.js'
+import addClass from 'shorter-js/src/class/addClass.js'
+import hasClass from 'shorter-js/src/class/hasClass.js'
+import removeClass from 'shorter-js/src/class/removeClass.js'
+
+import activeClass from '../strings/activeClass.js'
+import addEventListener from '../strings/addEventListener.js'
+import removeEventListener from '../strings/removeEventListener.js'
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
-import privateProperties from '../util/privateProperties.js'
+import getTargetElement from '../util/getTargetElement.js'
 import getUID from '../util/getUID.js'
 
 
 // SCROLLSPY PRIVATE GC
 // ====================
 const scrollspyString = 'scrollspy',
-      scrollspyComponent = 'ScrollSpy',
-      scrollspySelector = '[data-bs-spy="scroll"]',
-      scrollspyIDKey = `${scrollspyString}UID`
+    scrollspyComponent = 'ScrollSpy',
+    scrollspySelector = '[data-bs-spy="scroll"]'
 
 
-// SCROLLSPY CUSTOM EVENT
-// ======================
-const activateScrollSpy = bootstrapCustomEvent( `activate.bs.${scrollspyString}` )
+// SCROLLSPY SCOPE
+// ===============
+export default function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
 
 
-// SCROLLSPY PRIVATE METHODS
-// =========================
-function updateSpyTargets( vars ){
-  const links = vars.spyTarget.getElementsByTagName( 'A' ),
-        { scrollTarget, length, isWindow, offset } = vars
+  // SCROLLSPY CUSTOM EVENT
+  // ======================
+  const activateScrollSpy = bootstrapCustomEvent( `activate.bs.${scrollspyString}` )
 
-  vars.scrollTop = isWindow ? scrollTarget.pageYOffset : scrollTarget.scrollTop
+  let elementID,
+      self,
+      element,
+      offset,
+      itemsLength = 0,
+      items = [],
+      offsets = [],
+      scrollTarget,
+      spyTarget,
+      isWindow,
+      activeItem,
+      scrollHeight,
+      maxScroll,
+      scrollTop
 
-  // only update vars once or with each mutation
-  if ( length !== links.length || getScrollHeight( scrollTarget ) !== vars.scrollHeight ) {
-    let href, targetItem, rect
 
-    // reset arrays & update 
-    vars.items = []
-    vars.offsets = []
-    vars.scrollHeight = getScrollHeight( scrollTarget )
-    vars.maxScroll = vars.scrollHeight - getOffsetHeight( vars )
+  // SCROLLSPY PRIVATE METHODS
+  // =========================
+  function updateSpyTargets(){
+    const links = spyTarget.getElementsByTagName( 'A' )
 
-    Array.from( links ).map( link => {
-      href = link.getAttribute( 'href' )
-      targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement( href )
+    scrollTop = isWindow ? scrollTarget.pageYOffset : scrollTarget.scrollTop
 
-      if ( targetItem ) {
-        vars.items.push( link )
-        rect = targetItem.getBoundingClientRect()        
-        vars.offsets.push( ( isWindow ? rect.top + vars.scrollTop : targetItem.offsetTop ) - offset )
-      }
-    })
-    vars.length = vars.items.length
-  }
-}
+    // only update items/offsets once or with each mutation
+    if ( itemsLength !== links.length || getScrollHeight( scrollTarget ) !== scrollHeight ) {
+      let href, targetItem, rect
 
-function getScrollHeight( scrollTarget ){
-  return scrollTarget.scrollHeight || Math.max( 
-    document.body.scrollHeight, 
-    document.documentElement.scrollHeight)
-}
+      // reset arrays & update 
+      items = []
+      offsets = []
+      scrollHeight = getScrollHeight( scrollTarget )
+      maxScroll = scrollHeight - getOffsetHeight()
 
-function getOffsetHeight({isWindow,element}){
-  return !isWindow ? element.getBoundingClientRect().height : window.innerHeight
-}
+      Array.from( links ).map( link => {
+        href = link.getAttribute( 'href' )
+        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement( href )
+        // targetItem = getTargetElement( link )
 
-function clear( spyTarget ){
-  Array.from( spyTarget.getElementsByTagName( 'A' ) ).map( item => 
-    item.classList.contains( 'active' ) 
-    && item.classList.remove( 'active' ) )
-}
-
-function activate( item, vars ){
-  const { element, spyTarget } = vars
-
-  clear( spyTarget )
-  vars.activeItem = item
-  item.classList.add( 'active' )
-
-  // activate all parents
-  let parents = []
-  while (item.parentNode !== document.body) {
-    item = item.parentNode
-    ;[ 'dropdown-menu', 'nav' ].some( c => item.classList.contains( c ) ) && parents.push(item)
+        if ( targetItem ) {
+          items.push( link )
+          rect = targetItem.getBoundingClientRect()        
+          offsets.push( ( isWindow ? rect.top + scrollTop : targetItem.offsetTop ) - offset )
+        }
+      })
+      itemsLength = items.length
+    }
   }
 
-  parents.map( menuItem => {
-    const parentLink = menuItem.previousElementSibling
-
-    if ( parentLink && !parentLink.classList.contains( 'active' ) ) {
-      parentLink.classList.add( 'active' )
-    }      
-  })
-
-  // update relatedTarget and dispatch
-  activateScrollSpy.relatedTarget = item
-  element.dispatchEvent( activateScrollSpy )
-}
-
-function toggleSpyEvents( plus, uid, self ) {
-  const action = plus ? 'addEventListener' : 'removeEventListener',
-        scrollIdx = scrollHandlerQueue.indexOf( scrollHandlerQueue.find( s => s.id===uid ) ),
-        resizeIdx = resizeHandlerQueue.indexOf( resizeHandlerQueue.find( r => r.id===uid ) ),
-        { scrollTarget, isWindow } = privateProperties[uid],
-        listener = { id: uid, self: self }
-
-  // window should always have a single scroll/resize listener
-  if ( !plus ) {
-    scrollIdx > -1 && scrollHandlerQueue.splice( scrollIdx, 1 )
-    resizeIdx > -1 && resizeHandlerQueue.splice( resizeIdx, 1 )
+  function getScrollHeight( scrollTarget ){
+    return scrollTarget.scrollHeight || Math.max( 
+      document.body.scrollHeight, 
+      document.documentElement.scrollHeight)
   }
 
-  // scroll handling
-  if ( !isWindow || plus && !scrollHandlerQueue.length || !plus ) {
-    scrollTarget[action]( 'scroll', scrollUpdateHandler, passiveHandler )
+  function getOffsetHeight(){
+    return !isWindow ? element.getBoundingClientRect().height : window.innerHeight
   }
 
-  // resize handling
-  if ( plus && !resizeHandlerQueue.length || !plus && !resizeHandlerQueue.length ) {
-    window[action]( 'resize', resizeUpdateHandler, passiveHandler )
+  function clear( spyTarget ){
+    Array.from( spyTarget.getElementsByTagName( 'A' ) ).map( item => 
+      hasClass( item, activeClass ) 
+      && removeClass( item, activeClass ) )
   }
 
-  if ( plus ) {
-    scrollHandlerQueue.push( listener )
-    resizeHandlerQueue.push( listener )
-  }
-}
+  function activate( item ){
 
+    clear( spyTarget )
+    activeItem = item
+    addClass( item, activeClass )
 
-// SCROLLSPY EVENT HANDLER
-// ========================
-let scrollHandlerQueue = []
-function scrollUpdateHandler(){
-  scrollHandlerQueue.map( i => i.self.refresh() )
-}
-
-let resizeHandlerQueue = []
-function resizeUpdateHandler(){
-  resizeHandlerQueue.map( i => i.self.refresh() )
-}
-
-
-// SCROLLSPY DEFINITION
-// ====================
-export default class ScrollSpy {
-  constructor( element, options ){
-
-    // set options
-    options = options || {}
-
-    // initialization element, the element we spy on
-    element = queryElement(element)
-
-    // reset on re-init
-    element[scrollspyComponent] && element[scrollspyComponent].dispose()
-
-    // event targets, constants   
-    // DATA API
-    const spyTarget = queryElement( options.target || element.getAttribute( 'data-bs-target' ) ),
-          // determine which is the real scrollTarget
-          scrollTarget = element.clientHeight < element.scrollHeight ? element : window
-
-    if ( !spyTarget ) return
-    
-    // set private properties unique ID key
-    const elementID = getUID( element, scrollspyIDKey )
-    
-    this[scrollspyIDKey] = elementID
-    element[scrollspyIDKey] = elementID
-    
-    privateProperties[elementID] = {
-      element: element,
-      offset: +(options.offset || element.getAttribute( 'data-bs-offset' )) || 10,
-      length: 0,
-      items: [],
-      offsets: [],
-      scrollTarget: scrollTarget,
-      spyTarget: spyTarget,
-      isWindow: scrollTarget === window,
-      activeItem: null,
-      scrollHeight: 0,
-      maxScroll: 0
+    // activate all parents
+    let parents = []
+    while (item.parentNode !== document.body) {
+      item = item.parentNode
+      ;[ 'dropdown-menu', 'nav' ].some( c => hasClass( item, c ) ) && parents.push(item)
     }
 
-    // prevent adding event handlers multiple times
-    toggleSpyEvents( 1, elementID, this )
+    parents.map( menuItem => {
+      const parentLink = menuItem.previousElementSibling
 
-    this.refresh()
+      if ( parentLink && !hasClass( parentLink, activeClass ) ) {
+        addClass( parentLink, activeClass )
+      }      
+    })
 
-    // associate target with init object
-    element[scrollspyComponent] = this
+    // update relatedTarget and dispatch
+    activateScrollSpy.relatedTarget = item
+    element.dispatchEvent( activateScrollSpy )
   }
+
+  function toggleSpyHandlers( plus ) {
+    const action = plus ? addEventListener : removeEventListener,
+        scrollIdx = scrollHandlerQueue.indexOf( scrollHandlerQueue.find( s => s.id===elementID ) ),
+        resizeIdx = resizeHandlerQueue.indexOf( resizeHandlerQueue.find( r => r.id===elementID ) ),
+        listener = { id: elementID, self: self }
+
+    // window should always have a single scroll/resize listener
+    if ( !plus ) {
+      scrollIdx > -1 && scrollHandlerQueue.splice( scrollIdx, 1 )
+      resizeIdx > -1 && resizeHandlerQueue.splice( resizeIdx, 1 )
+    }
+
+    // scroll handling
+    if ( !isWindow || plus && !scrollHandlerQueue.length || !plus ) {
+      scrollTarget[action]( 'scroll', scrollUpdateHandler, passiveHandler )
+    }
+
+    // resize handling
+    if ( plus && !resizeHandlerQueue.length || !plus && !resizeHandlerQueue.length ) {
+      window[action]( 'resize', resizeUpdateHandler, passiveHandler )
+    }
+
+    if ( plus ) {
+      scrollHandlerQueue.push( listener )
+      resizeHandlerQueue.push( listener )
+    }
+  }
+
+
+  // SCROLLSPY EVENT HANDLERS
+  // ========================
+  let scrollHandlerQueue = []
+  function scrollUpdateHandler(){
+    scrollHandlerQueue.map( i => i.self.refresh() )
+  }
+
+  let resizeHandlerQueue = []
+  function resizeUpdateHandler(){
+    resizeHandlerQueue.map( i => i.self.refresh() )
+  }
+
+
+  // SCROLLSPY DEFINITION
+  // ====================
+  class ScrollSpy {
+    constructor( target, options ){
+
+      // bind
+      self = this
+
+      // set options
+      options = options || {}
+
+      // initialization element, the element we spy on
+      element = queryElement( target )
+
+      // reset previous instance
+      element[scrollspyComponent] && element[scrollspyComponent].dispose()
+
+      // event targets, constants   
+      // JavaScript API options > DATA API
+      spyTarget = queryElement( options.target ) || getTargetElement( element )
+      // determine which is the real scrollTarget
+      scrollTarget = element.clientHeight < element.scrollHeight ? element : window
+
+      if ( !spyTarget ) return
+      
+      offset = +(options.offset || element.getAttribute( 'data-bs-offset' )) || 10
+      isWindow = scrollTarget === window
+      elementID = getUID( element )
+
+      // prevent adding event handlers multiple times
+      toggleSpyHandlers( 1 )
+
+      self.refresh()
+
+      // associate target with init object
+      element[scrollspyComponent] = self
+    }
+  }
+
 
   // SCROLLSPY PUBLIC METHODS
   // ========================
-  refresh() {
-    const vars = privateProperties[ this[scrollspyIDKey] ],
-          { activeItem, spyTarget } = vars
+  const ScrollSpyProto = ScrollSpy.prototype
 
-    updateSpyTargets( vars )
+  ScrollSpyProto.refresh = function() {
+
+    updateSpyTargets()
     
-    if ( vars.scrollTop >= vars.maxScroll ) {
-      const newActiveItem = vars.items[vars.length - 1]
+    if ( scrollTop >= maxScroll ) {
+      const newActiveItem = items[itemsLength - 1]
 
       if ( activeItem !== newActiveItem ) {
-        activate( newActiveItem, vars )
+        activate( newActiveItem )
       }
       return
     }
 
-    if ( activeItem && vars.scrollTop < vars.offsets[0] && vars.offsets[0] > 0 ) {
-      vars.activeItem = null
+    if ( activeItem && scrollTop < offsets[0] && offsets[0] > 0 ) {
+      activeItem = null
       clear( spyTarget )
       return
     }
 
-    vars.items.map( ( item, i ) => {
-      if ( vars.activeItem !== item && vars.scrollTop >= vars.offsets[i] 
-        && ( typeof vars.offsets[i + 1] === 'undefined' || vars.scrollTop < vars.offsets[i + 1] ) )
+    items.map( ( item, i ) => {
+      if ( activeItem !== item && scrollTop >= offsets[i] 
+        && ( typeof offsets[i + 1] === 'undefined' || scrollTop < offsets[i + 1] ) )
       {
-        activate( item, vars )
+        activate( item )
       }
     })
   }
 
-  dispose() {
-    const uid = this[scrollspyIDKey],
-          { element } = privateProperties[uid]
-
-    toggleSpyEvents( 0, uid, this )
+  ScrollSpyProto.dispose = function() {
+    toggleSpyHandlers()
     delete element[scrollspyComponent]
-    delete element[scrollspyIDKey]
-    delete this[scrollspyIDKey]
-    delete privateProperties[uid]
   }
+
+  return new ScrollSpy( scrollSpyElement, scrollSpyOptions )
 }
+
 
 export const scrollSpyInit = {
   component: scrollspyComponent,

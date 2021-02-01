@@ -3,7 +3,7 @@ import buble from '@rollup/plugin-buble'
 import node from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import {terser} from 'rollup-plugin-terser'
-import cleanup from 'rollup-plugin-cleanup'
+// import cleanup from 'rollup-plugin-cleanup'
 import * as pkg from "./package.json";
 
 // set headers
@@ -35,7 +35,7 @@ const PLUGINS = [
   node({mainFields: ['jsnext', 'module']}),
   json(),
   buble(),
-  cleanup()
+  // cleanup()
 ]
 
 if (MIN){

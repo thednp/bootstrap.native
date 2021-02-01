@@ -19,19 +19,33 @@
 
   function getElementTransitionDuration(element) {
     var computedStyle = getComputedStyle(element),
-        property = computedStyle[transitionProperty],
-        duration = supportTransition && property && property !== 'none'
-                 ? parseFloat(computedStyle[transitionDuration]) : 0;
-    return !isNaN(duration) ? duration * 1000 : 0;
+        propertyValue = computedStyle[transitionProperty],
+        durationValue = computedStyle[transitionDuration],
+        durationScale = durationValue.indexOf('ms') > -1 ? 1 : 1000,
+        duration = supportTransition && propertyValue && propertyValue !== 'none' 
+                 ? parseFloat( durationValue ) * durationScale : 0;
+
+    return !isNaN(duration) ? duration : 0
   }
 
-  function emulateTransitionEnd(element,handler){
-    var called = 0, duration = getElementTransitionDuration(element);
-    duration ? element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){
-                !called && handler(e), called = 1;
-                element.removeEventListener( transitionEndEvent, transitionEndWrapper);
-              })
-             : setTimeout(function() { !called && handler(), called = 1; }, 17);
+  // emulateTransitionEnd
+  function emulateTransitionEnd(element,handler){ 
+    var called = 0, 
+        endEvent = new Event( transitionEndEvent ),
+        duration = getElementTransitionDuration(element);
+
+    if ( duration ) {
+      element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){ 
+        if ( e.target === element ) {
+          handler.apply( element, [e] );
+          element.removeEventListener( transitionEndEvent, transitionEndWrapper);
+          called = 1;
+        }
+      });
+      setTimeout(function() { 
+        !called && element.dispatchEvent( endEvent );
+      }, duration + 17 );
+    } else { handler.apply( element, [endEvent]); }
   }
 
   function queryElement(selector, parent) {
@@ -41,6 +55,7 @@
 
   function bootstrapCustomEvent( eventType, componentName, eventProperties ) {
     var OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } );
+
     if ( typeof eventProperties !== 'undefined' ) {
       Object.keys( eventProperties ).forEach( function (key) {
         Object.defineProperty( OriginalCustomEvent, key, {
@@ -55,15 +70,29 @@
     this && this.dispatchEvent(customEvent);
   }
 
+  // TAB DEFINITION
+  // ==============
+
   function Tab(element,options) {
+
+    // set options
     options = options || {};
+
+    // bind
     var self = this,
+
+      // DATA API
       heightData,
+      // event targets
       tabs, dropdown,
+
+      // custom events
       showCustomEvent,
       shownCustomEvent,
       hideCustomEvent,
       hiddenCustomEvent,
+
+      // more GC material
       next,
       tabsContentContainer = false,
       activeTab,
@@ -73,24 +102,26 @@
       equalContents,
       nextHeight,
       animateHeight;
+
+    // triggers
     function triggerEnd() {
       tabsContentContainer.style.height = '';
       tabsContentContainer.classList.remove('collapsing');
       tabs.isAnimating = false;
     }
     function triggerShow() {
-      if (tabsContentContainer) {
+      if (tabsContentContainer) { // height animation
         if ( equalContents ) {
           triggerEnd();
         } else {
-          setTimeout(function () {
-            tabsContentContainer.style.height = nextHeight + "px";
+          setTimeout(function () { // enables height animation
+            tabsContentContainer.style.height = nextHeight + "px"; // height animation
             tabsContentContainer.offsetWidth;
             emulateTransitionEnd(tabsContentContainer, triggerEnd);
           },50);
         }
       } else {
-        tabs.isAnimating = false;
+        tabs.isAnimating = false; 
       }
       shownCustomEvent = bootstrapCustomEvent('shown', 'tab', { relatedTarget: activeTab });
       dispatchCustomEvent.call(next, shownCustomEvent);
@@ -98,32 +129,40 @@
     function triggerHide() {
       if (tabsContentContainer) {
         activeContent.style.float = 'left';
-        nextContent.style.float = 'left';
+        nextContent.style.float = 'left';        
         containerHeight = activeContent.scrollHeight;
       }
+
       showCustomEvent = bootstrapCustomEvent('show', 'tab', { relatedTarget: activeTab });
       hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', { relatedTarget: next });
+
       dispatchCustomEvent.call(next, showCustomEvent);
       if ( showCustomEvent.defaultPrevented ) { return; }
+        
       nextContent.classList.add('active');
+
       activeContent.classList.remove('active');
+
       if (tabsContentContainer) {
         nextHeight = nextContent.scrollHeight;
         equalContents = nextHeight === containerHeight;
         tabsContentContainer.classList.add('collapsing');
-        tabsContentContainer.style.height = containerHeight + "px";
+        tabsContentContainer.style.height = containerHeight + "px"; // height animation
         tabsContentContainer.offsetHeight;
         activeContent.style.float = '';
         nextContent.style.float = '';
       }
+
       if ( nextContent.classList.contains('fade') ) {
         setTimeout(function () {
           nextContent.classList.add('show');
           emulateTransitionEnd(nextContent,triggerShow);
         },20);
       } else { triggerShow(); }
+
       dispatchCustomEvent.call(activeTab, hiddenCustomEvent);
     }
+    // private methods
     function getActiveTab() {
       var activeTabs = tabs.getElementsByClassName('active'), activeTab;
       if ( activeTabs.length === 1 && !activeTabs[0].parentNode.classList.contains('dropdown') ) {
@@ -134,25 +173,33 @@
       return activeTab;
     }
     function getActiveContent() { return queryElement(getActiveTab().getAttribute('href')) }
+    // handler 
     function clickHandler(e) {
       e.preventDefault();
       next = e.currentTarget;
       !tabs.isAnimating && self.show();
     }
-    self.show = function () {
+
+    // public method
+    self.show = function () { // the tab we clicked is now the next tab
       next = next || element;
+
       if (!next.classList.contains('active')) {
-        nextContent = queryElement(next.getAttribute('href'));
-        activeTab = getActiveTab();
+        nextContent = queryElement(next.getAttribute('href')); // this is the actual object, the next tab content to activate
+        activeTab = getActiveTab(); 
         activeContent = getActiveContent();
+    
         hideCustomEvent = bootstrapCustomEvent( 'hide', 'tab', { relatedTarget: next });
         dispatchCustomEvent.call(activeTab, hideCustomEvent);
         if (hideCustomEvent.defaultPrevented) { return; }
+    
+    
         tabs.isAnimating = true;
         activeTab.classList.remove('active');
         activeTab.setAttribute('aria-selected','false');
         next.classList.add('active');
-        next.setAttribute('aria-selected','true');
+        next.setAttribute('aria-selected','true');    
+    
         if ( dropdown ) {
           if ( !element.parentNode.classList.contains('dropdown-menu') ) {
             if (dropdown.classList.contains('active')) { dropdown.classList.remove('active'); }
@@ -160,6 +207,7 @@
             if (!dropdown.classList.contains('active')) { dropdown.classList.add('active'); }
           }
         }
+    
         if (activeContent.classList.contains('fade')) {
           activeContent.classList.remove('show');
           emulateTransitionEnd(activeContent, triggerHide);
@@ -170,18 +218,36 @@
       element.removeEventListener('click',clickHandler,false);
       delete element.Tab;
     };
+
+    // INIT
+    // initialization element
     element = queryElement(element);
+
+    // reset on re-init
     element.Tab && element.Tab.dispose();
+
+    // DATA API
     heightData = element.getAttribute('data-height');
+    // event targets
     tabs = element.closest('.nav');
     dropdown = tabs && queryElement('.dropdown-toggle',tabs);
+
+    // instance options
     animateHeight = !supportTransition || (options.height === false || heightData === 'false') ? false : true;
+
+    // set default animation state
     tabs.isAnimating = false;
-    if ( !element.Tab ) {
+
+    // init
+    if ( !element.Tab ) { // prevent adding event handlers twice
       element.addEventListener('click',clickHandler,false);
     }
+
     if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
+
+    // associate target with init object
     element.Tab = self;
+
   }
 
   return Tab;

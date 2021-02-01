@@ -27,11 +27,24 @@ const componentsInit = {
 function initializeDataAPI( konstructor, collection ){
   Array.from( collection ).map( x => new konstructor(x) )
 }
-function removeElementDataAPI( konstructor, collection, action ){
+function removeElementDataAPI( konstructor, collection ){
   Array.from(collection).map( x => x[konstructor].dispose() )
 }
+
+/* 
+ * Usage Example
+ * // init all components with valid markup in the #main element
+ * BSN.Callback(document.getElementById('main'),true)
+ * // remove all components with valid markup in the #main element
+ * BSN.Callback(document.getElementById('main'),false)
+ * // this rquivalent to this
+ * BSN.Callback(document.getElementById('main'))
+ * // remove all components in the document
+ * BSN.Callback()
+ * 
+*/
 export function Callback( lookUp, action ){
-  lookUp = lookUp || document
+  lookUp = lookUp instanceof Element ? lookup : document
   action = action ? initializeDataAPI : removeElementDataAPI
 
   for (const component in componentsInit) {

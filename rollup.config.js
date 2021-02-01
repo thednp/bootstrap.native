@@ -38,7 +38,6 @@ if (MIN){
   PLUGINS.push(terser({output: {preamble: miniBanner}}));
 } else {
   OUTPUT.banner = banner;
-  // PLUGINS.push(cleanup());
 }
 
 if (FORMAT!=='esm') {
