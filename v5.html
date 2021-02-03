@@ -93,8 +93,8 @@
           <div class="container d-flex align-items-end h-100">
             <div class="position-relative text-dark text-left mb-5">
               <h1>A better way to Bootstrap 5</h1>
-              <p>The faster, lighter and more secure set of JavaScript components for Bootstrap, developed on modern ES6+ standards.<br> The <b>bootstrap.native</b> 
-                library comes packed with build tools and well documented.</p>
+              <p>The faster, lighter and more secure set of JavaScript components for Bootstrap, developed on modern ES6+ standards.<br> The <b>10kb gZip</b> 
+                library that does most of Bootstrap & Popper combined.</p>
               <p><a class="btn btn-lg btn-primary" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
             </div>
           </div>
@@ -233,6 +233,7 @@ var myWarningAlertInit = new BSN.Alert('#myButtonAlert');
           
 <pre><code class="language-javascript">// close.bs.alert
 myButtonAlert.closest('.alert').addEventListener('close.bs.alert', function(event){
+  // this event can be default prevented 
   // do something cool
   // event.target is &lt;div class="alert"&gt;
 }, false);
@@ -283,18 +284,15 @@ myAlertInit.dispose();
 
           <section id="componentButton">
             <h2>Button</h2>
-            <p>The <b>Button</b> component provides toggle functionality for checkboxes and radio buttons and a custom event 
-              for the button groups' toggling, not covered by the original jQuery plugin.</p>
-            <p><b>Button</b> doesn't cover the <a rel="noreferrer" href="http://getbootstrap.com/javascript/#buttons-single-toggle"
-                target="_blank">single toggle</a> functionality The supported toggle feature could very much fill the same purpose.
-                The component covers accessibility features instead:</p>
-            <ul>
-              <li>Users can toggle checkbox inputs via keyboard <kbd>Space</kbd> key, a must have feature for real world form application. 
-                <a href="#buttonExamples">Examples</a> will showcase this feature.</li>
-              <li>Keyboard navigation for checkbox inputs can be done via the <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> keys, 
-                while for radio inputs is done via <kbd>&lt;</kbd> and <kbd>&gt;</kbd> arrow keys.</li>
-            </ul>
-          
+            <p>The <b>Button</b> component provides <a rel="noreferrer" href="https://getbootstrap.com/docs/5.0/components/buttons/"
+              target="_blank">state toggle</a> functionality identical to the original plugin. Our previously featured component 
+              has been completely deprecated, just like the original plugin. The functionality of the previous component has been
+              replaced by a new HTML markup and CSS style that requires no scripting.</p>
+
+            <p>The component state toggle functionality is very simple: when the user clicks the button and adds or removes the 
+              <code>active</code> class name as well as changing its <code>aria-pressed</code> attribute to true / false.
+              However if the button is disabled, the state toggling is prevented.</p>
+
             <section id="buttonMethods">
               <h3>Button Methods</h3>
               <div class="table-responsive">
@@ -307,32 +305,12 @@ myAlertInit.dispose();
                   </thead>
                   <tbody>
                     <tr>
+                      <td><code>instance.toggle()</code></td>
+                      <td>Toggles the state of a button. When pushed it changes the appearence of the button.</td>
+                    </tr>
+                    <tr>
                       <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          
-            <section id="buttonEvents">
-              <h3>Button Events</h3>
-              <p>Unlike the original jQuery Plugin, the <b>Button</b> component comes with an original event, consistent in all
-                supported browsers. The <code>event.target</code> can be the element with the <code>data-bs-toggle="buttons"</code>
-                attribute and the button that just changed it's active state.</p>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Event Type</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>change.bs.button</code></td>
-                      <td>The event is fired for a <code>.btn-group</code> and each child <code>.btn</code> that changed it's
-                        <code>checked</code> state.<br><b>This event can be default prevented.</b></td>
+                      <td>Removes the component from target element. Its toggle state is not changed.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -341,21 +319,19 @@ myAlertInit.dispose();
           
             <section id="buttonDATA">
               <h3>Button DATA API</h3>
-              <p>The component will initialize all <code>.btn-group</code> elements with the <code>data-bs-toggle="buttons"</code>
-                  and works with radio buttons and checkboxes that use this markup:</p>
+              <p>The component will initialize all elements with the <code>data-bs-toggle="button"</code> attribute on page load.
+                The basic markup looks like this:</p>
           
-<pre><code class="language-markup"> &lt;!-- the btn-group component --&gt;
-&lt;div id="myRadioButtonGroup" class="btn-group btn-group-toggle" data-bs-toggle="buttons"&gt;
-  &lt;label class="btn btn-secondary active"&gt;
-    &lt;input type="radio" class="btn-check" checked&gt; Checkbox 1 (pre-checked) &lt;!-- OR type="radio" --&gt;
-  &lt;/label&gt;
-  &lt;label class="btn btn-secondary"&gt;
-    &lt;input type="radio" class="btn-check"&gt; Checkbox 2 &lt;!-- OR type="radio" --&gt;
-  &lt;/label&gt;
-  &lt;label class="btn btn-secondary"&gt;
-    &lt;input type="radio" class="btn-check"&gt; Checkbox 3 &lt;!-- OR type="radio" --&gt;
-  &lt;/label&gt;
-&lt;/div&gt;
+<pre><code class="language-markup">&lt;!-- button tags --&gt;
+&lt;button type="button" class="btn btn-primary" data-bs-toggle="button" autocomplete="off"&gt;Toggle button&lt;/button&gt;
+&lt;button type="button" class="btn btn-primary active" data-bs-toggle="button" autocomplete="off" aria-pressed="true"&gt;Active toggle button&lt;/button&gt;
+&lt;button type="button" class="btn btn-primary" disabled data-bs-toggle="button" autocomplete="off"&gt;Disabled toggle button&lt;/button&gt;
+</code></pre>
+
+<pre><code class="language-markup">&lt;!-- anchor tags --&gt;
+&lt;a href="#" class="btn btn-primary" role="button" data-bs-toggle="button"&gt;Toggle link&lt;/a>
+&lt;a href="#" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"&gt;Active toggle link&lt;/a>
+&lt;a href="#" class="btn btn-primary disabled" tabindex="-1" aria-disabled="true" role="button" data-bs-toggle="button"&gt;Disabled toggle link&lt;/a>
 </code></pre>
 
             </section>
@@ -367,89 +343,94 @@ myAlertInit.dispose();
                 inserted later into the DOM, here's how to initialize it:</p>
           
 <pre><code class="language-javascript">// initialize
-var myRadioButtonGroupINIT = new BSN.Button('#myRadioButtonGroup');
+var myButtonINIT = new BSN.Button('#myButton');
 </code></pre>
           
-              <p>The <code>myRadioButtonGroup</code> element now stores store the initialization object, just like the other
+              <p>The <code>&lt;button id="myButton"&gt;</code> element now stores the initialization object, just like the other
                 components of the library:</p>
           
 <pre><code class="language-javascript">// reference the initialization, even for DATA API initialized btn-group elements
-var myRadioButtonGroupINIT = myRadioButtonGroup.Button;
+var myButtonINIT = myButton.Button;
 </code></pre>
-          
-              <p>The only thing left to do is to attach handlers to the original events:</p>
-          
-<pre><code class="language-javascript">//let's do some custom binding action
-myRadioButtonGroup.addEventListener('change.bs.button', function(event) {
-  // do something when anything inside the btn-group changes
-  // event.target is myRadioButtonGroup
-});
-myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.button',function(event) {
-  // do something only when THE FIRST input changes
-  // event.target is the first &lt;input type="radio"&gt; found in myRadioButtonGroup
-});
-</code></pre>
-          
-              <p>Since the native <code>change</code> event isn't consistent in most legacy browsers, with the help of polyfills and
-                the original <code>change.bs.button</code> event you can easily bind other
-                functions into the context of a <code>.btn-group</code> and / or it's child inputs.</p>
           
             </section>
           
             <section id="buttonExamples">
               <h3>Button Examples</h3>
-          
-              <p>You should open your console to test the handler functions bound by the <code>change.bs.button</code> event of
-                the following checkboxes and radio buttons. You should notice that the event isn't triggered twice.</p>
-              <p>First we'll toggle some checkboxes. </p>
+
+              <h4>State Toggle</h4>
+
               <p>
-                <span id="checkboxButtons" class="btn-group btn-group-toggle" data-bs-toggle="buttons">
-                  <label class="btn btn-outline-secondary active">
+                <button type="button" class="btn btn-primary" data-bs-toggle="button" autocomplete="off">Toggle button</button>
+                <button type="button" class="btn btn-primary active" data-bs-toggle="button" autocomplete="off" aria-pressed="true">Active toggle button</button>
+                <button type="button" class="btn btn-primary" disabled data-bs-toggle="button" autocomplete="off">Disabled toggle button</button>
+              </p>
+
+              <p>
+                <a href="#" class="btn btn-primary" role="button" data-bs-toggle="button">Toggle link</a>
+                <a href="#" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true">Active toggle link</a>
+                <a href="#" class="btn btn-primary disabled" tabindex="-1" aria-disabled="true" role="button" data-bs-toggle="button">Disabled toggle link</a>
+              </p>
+          
+              <h4>Checkboxes and Radio</h4>
+
+              <p>The following examples are purely for demo and only require the proper markup, no script is required.</p>
+              <p>
+                <span id="checkboxButtons" class="btn-group btn-group-toggle">
+                  <input id="check1" type="checkbox" class="btn-check" autocomplete="off" checked>
+                  <label for="check1" class="btn btn-outline-secondary">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
-                    <input type="checkbox" class="btn-check" checked> Checkbox 1 (pre-checked)
+                    Checkbox 1 (pre-checked)
                   </label>
-                  <label class="btn btn-outline-secondary">
-                    <input class="btn-check" type="checkbox"> Checkbox 2
+                  <input id="check2" class="btn-check" autocomplete="off" type="checkbox"> 
+                  <label for ="check2"class="btn btn-outline-secondary">
+                    Checkbox 2
                   </label>
-                  <label class="btn btn-outline-secondary">
-                    <input class="btn-check" type="checkbox"> Checkbox 3
+                  <input id="check3" class="btn-check" autocomplete="off" type="checkbox">
+                  <label for="check3" class="btn btn-outline-secondary">
+                    Checkbox 3
                   </label>
                 </span>
               </p>
-              <p>Finally we toggle radio buttons.</p>
+
               <p>
-                <span id="radioButtons" class="btn-group btn-group-toggle" data-bs-toggle="buttons"> 
-                  <label class="btn btn-outline-secondary">
+                <span id="radioButtons" class="btn-group btn-group-toggle"> 
+                  <input id="radio1" type="radio" class="btn-check" autocomplete="off" name="optionz" checked>
+                  <label for="radio1" class="btn btn-outline-dark">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
-                    <input type="radio" class="btn-check" name="optionz" id="optionz1" checked> Radio 1 (preselected)
+                    Radio 1 (preselected)
                   </label>
-                  <label class="btn btn-outline-secondary active">
-                    <input type="radio" class="btn-check" name="optionz" id="optionz2"> Radio 2
+                  <input id="radio2" type="radio" class="btn-check" autocomplete="off" name="optionz">
+                  <label for="radio2" class="btn btn-outline-dark">
+                    Radio 2
                   </label>
-                  <label class="btn btn-outline-secondary">
-                    <input type="radio" class="btn-check" name="optionz" id="optionz3"> Radio 3
+                  <input id="radio3" type="radio" class="btn-check" autocomplete="off" name="optionz">
+                  <label for="radio3" class="btn btn-outline-dark">
+                    Radio 3
                   </label>
                 </span>
               </p>
           
-              <p>In addition, the component will also work outside the <code>&lt;div class="btn-group"&gt;</code>.</p>
               <p>
-                <span class="btn-group-toggle" data-bs-toggle="buttons">
-                  <label class="btn btn-outline-secondary">
+                <span class="btn-group-toggle">
+                  <input id="radio21" type="radio" class="btn-check" autocomplete="off" name="features">
+                  <label for="radio21" class="btn btn-outline-primary">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
-                    <input type="radio" class="btn-check" name="features" id="feature1"> Radio 1
+                    Radio 1
                   </label>
-                  <label class="btn btn-outline-secondary active">
-                    <input type="radio" class="btn-check" name="features" id="feature2" checked> Radio 2 (preselected)
+                  <input id="radio22" type="radio" class="btn-check" autocomplete="off" name="features" checked>
+                  <label for="radio22" class="btn btn-outline-primary">
+                    Radio 2 (preselected)
                   </label>
-                  <label class="btn btn-outline-secondary">
-                    <input type="radio" class="btn-check" name="features" id="feature3"> Radio 3
+                  <input id="radio23" type="radio" class="btn-check" autocomplete="off" name="features">
+                  <label for="radio23" class="btn btn-outline-primary">
+                    Radio 3
                   </label>
                 </span>
               </p>
@@ -528,6 +509,12 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                         running will produce no effect.</td>
                     </tr>
                     <tr>
+                      <td><code>instance.pause()</code></td>
+                      <td>The method will pause the automatic cycle of the carousel. To resume, you can use
+                        the above <code>.cycle()</code> method.
+                      </td>
+                    </tr>
+                    <tr>
                       <td><code>instance.to()</code></td>
                       <td>The method will allow you to jump to the index of a certain item. Using the
                         method while the animation is running will produce no effect.</td>
@@ -543,16 +530,14 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                         <code>.to()</code> method.</td>
                     </tr>
                     <tr>
-                      <td><code>instance.getActiveIndex()</code></td>
-                      <td>The method returns the index of the current active item.</td>
-                    </tr>
-                    <tr>
                       <td><code>instance.dispose()</code></td>
                       <td>Removes the component from target element.</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
+              <p>The previously featured instance method <code>.getActiveIndex()</code> has been deprecated in favor of custom event properties
+              which provide much more information from the instance execution context.</p>
             </section>
           
             <section id="carouselEvents">
@@ -696,7 +681,8 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
                 let's go ahead and initialize it:</p>
           
 <pre><code class="language-javascript">// initialize with some options
-var myCarouselInit = new BSN.Carousel('#myCarousel', { // these options values will override the ones set via DATA API
+var myCarouselInit = new BSN.Carousel('#myCarousel', {
+  // these options values will override the ones set via DATA API
   interval: false,
   pause: false,
   keyboard: false
@@ -705,14 +691,19 @@ var myCarouselInit = new BSN.Carousel('#myCarousel', { // these options values w
           
               <p>And now we can play with the methods:</p>
           
-<pre><code class="language-javascript">// use getActiveIndex()
-var currentActiveItem = myCarouselInit.getActiveIndex();
+<pre><code class="language-javascript">// call next() to jump to the next item
+myCarouselInit.next();
 
-// jump to a certain item
-myCarouselInit.slideTo(2);
+// jump to the item with index 2
+myCarouselInit.to(2);
+
+// if the carousel was set with `interval: NUMBER`
+// call this method to pause the automatic cycle
+myCarouselInit.pause();
 
 // if the carousel was set with `interval: false`
 // we can do this to go to the next item
+// AND resume if `interval: NUMBER` is used
 myCarouselInit.cycle();
 
 // anytime you need to destroy
@@ -1070,10 +1061,13 @@ Array.from(myAccordionTriggers).map(
               <p>The component grants access to the initialization even for instances where the DATA API was used.</p>
           
 <pre><code class="language-javascript">// grab the collapse trigger initialized via DATA API
-var myCollapseTrigger = document.getElementById('myCollapseTrigger');
+var myCollapseBtn = document.getElementById('myCollapseBtn');
 
 // reference the initialization
-var myCollapseTriggerInit = myCollapseTrigger.Collapse;
+var myCollapseTriggerInit = myCollapseBtn.Collapse;
+
+// call any public method
+myCollapseTriggerInit.toggle();
 </code></pre>
           
             </section>
@@ -1168,7 +1162,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
             <ul>
               <li>on initialization, the component will store all class names of the target and its corresponding dropdown menu
                 to be used by other private methods;</li>
-              <li>when showing the dropdown menu to the user, the component will calculate all possible scenarios and update the CSS3
+              <li>when showing the dropdown menu to the user, the component will calculate all possible scenarios and update the CSS
                 classes of the target and its corresponding dropdown menu so that the dropdown-menu is displayed fully into the 
                 viewport;</li>
               <li>while the dropdown menu is visible to the user, event handlers will update the CSS classes with new position for 
@@ -1195,8 +1189,8 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
             <section id="dropdownOptions">
               <h3>Dropdown Options</h3>
               <p>The previously featured <code>persist</code> options has been deprecated. The <code>.dropdown-menu</code> can be or
-                contain a <code>&lt;form&gt;</code>, a case in which the component will not dismiss it and allow the user to interact
-                with it.</p>
+                contain a <code>&lt;form&gt;</code> element, in which case the component will not dismiss when clicking or focusing inside
+                and allows the user to interact with it.</p>
             </section>
 
             <section id="dropdownMethods">
@@ -1288,21 +1282,11 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
               <p>When you want full control or you need a way to handle dynamically generated dropdown-menus, you can do it via
                 JavaScript. Considering the above HTML was inserted into the DOM, let's initialize it real quick:</p>
           
-<pre><code class="language-javascript">// initialize component with it's 'persist' option
-var myDropdownInit = new BSN.Dropdown( '#myDropdown', true );
-
-// OR initialize component with no option
-// the option is optional
+<pre><code class="language-javascript">// initialize component
 var myDropdownInit = new BSN.Dropdown( '#myDropdown' );
-</code></pre>
 
-              <p>All right, now we have an initialization reference, we can get to work with the component's methods:</p>
-
-<pre><code class="language-javascript">// assuming the above, we can toggle
-myDropdownInit.toggle();
-
-// or we can simply re-initialize and toggle the dropdown right away
-var newDropdownInitialization = new BSN.Dropdown('#myDropdown').toggle();
+// OR initialize component and access public method right away
+var myDropdownInit = new BSN.Dropdown( '#myDropdown' ).toggle();
 </code></pre>
           
               <p>Also assuming the above HTML was used for your dropdown-menu, we can also attach the original events to the
@@ -1310,6 +1294,7 @@ var newDropdownInitialization = new BSN.Dropdown('#myDropdown').toggle();
           
 <pre><code class="language-javascript">// show.bs.dropdown
 myDropdown.parentNode.addEventListener('show.bs.dropdown', function(event){
+  // this event can be default prevented
   // do something when the event fires
   // event.target is the PARENT of the triggering element
   // event.relatedTarget is the triggering element
@@ -1324,12 +1309,13 @@ myDropdown.parentNode.addEventListener('shown.bs.dropdown', function(event){
 
 // hide.bs.dropdown
 myDropdown.parentNode.addEventListener('hide.bs.dropdown', function(event){
+  // this event can be default prevented
   // do something when the event fires
   // event.target is the PARENT of the triggering element
 }, false);
 
 // hidden.bs.dropdown
-myDropdown.parentNode.addEventListener('hide.bs.dropdown', function(event){
+myDropdown.parentNode.addEventListener('hidden.bs.dropdown', function(event){
   // do something when the event fires
   // event.target is the PARENT of the triggering element
 }, false);
@@ -1346,7 +1332,8 @@ var myDropdownInit = document.getElementById('myDropdown').Dropdown;
 
 // use the public Methods
 myDropdownInit.toggle();
-// or
+
+// or destroy
 myDropdownInit.dispose();
 </code></pre>
 
@@ -1373,60 +1360,10 @@ myDropdownInit.dispose();
                   </div>
                 </div>
               </div>
-              <p>Ok now let's insert a new dropdown-menu and initialize right after via JavaScript.</p>
 
-<pre><code class="language-javascript">// let's do it via a click handler to the following element
-var makeMeDropdown = document.getElementById('makeMeDropdown');
-
-// let's say we have a dropdown template as the above
-// you may also reference one that you created yourself
-var myDropdownTemplate = '&lt;div class="dropdown"&gt;a valid template&lt;/div&gt;';
-
-makeMeDropdown.addEventListener('click', function(e){
-  e.preventDefault();
-
-  // don't do this again
-  if ( !/\bdisabled/.test(makeMeDropdown.className) ){
-
-    // invalidate the makeMeDropdown
-    this.setAttribute('disabled',true);
-    this.className = 'btn btn-default disabled';
-    this.innerHTML = 'All done';
-
-    // we inject the dropdown
-    this.parentNode.innerHTML += myDropdownTemplate;
-    // or use appendChild when myDropdownTemplate is an Element instance
-    // this.parentNode.appendChild( myDropdownTemplate );
-
-    // get a reference to the new dropdown
-    var formDropdown = document.getElementById('formDropdown');
-
-    // initiate with option
-    var DropdownInit = new BSN.Dropdown(formDropdown, true);
-
-    // also attach Dropdown original events
-    formDropdown.parentNode.addEventListener('show.bs.dropdown', function(e){
-      console.log('Do something when the event fires');
-    }, false);
-    formDropdown.parentNode.addEventListener('shown.bs.dropdown', function(e){
-      console.log('Do something when the event fires');
-    }, false);
-    formDropdown.parentNode.addEventListener('hide.bs.dropdown', function(e){
-      console.log('Do something when the event fires');
-    }, false);
-    formDropdown.parentNode.addEventListener('hidden.bs.dropdown', function(e){
-      console.log('Do something when the event fires');
-    }, false);
-  }
-}, false);
-</code></pre>
-          
-              <p>That's all there is to do with <b>Dropdown</b> initialization, let's check a quick demo.</p>
-              <div class="btn-group" style="margin-bottom:10px">
-                <button id="makeMeDropdown" class="btn btn-success">Make me a Dropdown</button>
-              </div>
-              <p>A quick last example is with nested dropdown-menus, as the component will look for the child elements and will
-                prevent itself from closing if the click target is a child item with <code>data-bs-toggle</code> attribute.</p>
+              <p>If you resize or scroll the window pushing the opened dropdown menus outside the viewport, the new automatic positioning kicks in. 
+                Notice it doesn't apply any CSS styling, the component will only use the right CSS classes to display the dropdown menu in the 
+                viewport, then revert to its original class if closed. The feature doesn't require Popper.js.</p>
 
               <div class="btn-toolbar mb-3">
                 <div class="btn-group dropdown me-2">
@@ -1489,11 +1426,8 @@ makeMeDropdown.addEventListener('click', function(e){
                     <a class="dropdown-item" href="#">Third action</a>
                   </div>
                 </div>
-              
               </div>
-              <p>If you resize or scroll the window pushing the opened dropdown menus outside the viewport, the new automatic positioning kicks in. 
-                Notice it doesn't apply any CSS styling, the component will only use the right CSS classes to display the dropdown menu in the 
-                viewport, then revert to its original class if closed. The feature doesn't require Popper.js.</p>
+
               <p>The original plugin doesn't support nesting nor recommend using it, and due to the implementation of automatic repositioning
                 we decided to deprecate nesting functionality from our component.</p>
               <p>Be sure to check the markup of the above examples and the original plugin <a href="https://getbootstrap.com/docs/5.0/components/dropdowns/">
@@ -1540,19 +1474,14 @@ makeMeDropdown.addEventListener('click', function(e){
                       <td><em>true</em></td>
                       <td>Option to dismiss the current modal via <kbd>Esc</kbd> key.</td>
                     </tr>
-                    <tr>
-                      <td><code>content</code></td>
-                      <td><em>markup</em></td>
-                      <td></td>
-                      <td>The <b>Modal</b> component comes with a template system. This option can be used with JavaScript only.</td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
-              <p>The default options' values are same as their jQuery plugin equivalents so you can expect same behavior.</p>
-              <p>When your modal title and/or content is in fact an HTML markup string, please make sure you 
-                <a href="https://www.npmjs.com/package/sanitizer">sanitize the content</a> of that markup string.</p>
+              <p>The previously featured <code>content</code> option has been deprecated. We decided to allow you to use 
+                what ever manipulation method and / or sanitization you consider fit for your projects.</p>
+              <p>The default options' values are same as their vanilla equivalents so you can expect the same behavior.</p>
             </section>
+
             <section id="modalMethods">
               <h3>Modal Methods</h3>
               <p>For full control the <b>Modal</b> component exposes a couple of public methods to be used via JavaScript :</p>
@@ -1582,16 +1511,9 @@ makeMeDropdown.addEventListener('click', function(e){
                         the above two methods.</td>
                     </tr>
                     <tr>
-                      <td><code>instance.setContent()</code></td>
-                      <td>The method to enable you to set/overwrite the content of
-                        <code>&lt;div class="modal-content"&gt;</code> element of your modal at any time, but you might want to avoid
-                        using this method while the modal is animating. <b>Make sure your content is sanitized.</b></td>
-                    </tr>
-                    <tr>
                       <td><code>instance.update()</code></td>
                       <td>This allows you to update the modal layout (handling overflowing/non-overflowing
-                        body and/or modal) after you have changed it's content or other layout changes occured.
-                        This would naturally follow the previous <code>.setContent()</code> method.</td>
+                        body and/or modal) after you have changed it's content or other layout changes occured.</td>
                     </tr>
                     <tr>
                       <td><code>instance.dispose()</code></td>
@@ -1602,7 +1524,7 @@ makeMeDropdown.addEventListener('click', function(e){
                   </tbody>
                 </table>
               </div>
-
+              <p>The previously featured <code>.setContent()</code> method has been deprecated.</p>
             </section>
             <section id="modalEvents">
               <h3>Modal Events</h3>
@@ -1688,7 +1610,7 @@ makeMeDropdown.addEventListener('click', function(e){
               </p>
               <ul>
                 <li><code>data-bs-target="#modalId"</code> which is suitable for <code>&lt;button></code> elements;</li>
-                <li><code>href="#modalId"</code> which is specific for <code>&lt;a></code> anchor link elements.</li>
+                <li><code>href="#modalId"</code> which is specific for <code>&lt;a&gt;</code> anchor link elements.</li>
               </ul>
 
               <p>The JavaScript API covers the <b>only</b> way to deal with dynamic content, the later added modals. Let's create a very 
@@ -1698,7 +1620,9 @@ makeMeDropdown.addEventListener('click', function(e){
 &lt;div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"&gt;
   &lt;div class="modal-dialog"&gt;
     &lt;div class="modal-content"&gt;
-      &lt;!-- the .setContent() method will update this element's HTML --&gt;
+      &lt;div class="modal-header"&gt;Add your header here&lt;/div&gt;
+      &lt;div class="modal-body"&gt;Add your body content here here&lt;/div&gt;
+      &lt;div class="modal-footer"&gt;Add your footer content here here&lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;
@@ -1711,9 +1635,8 @@ makeMeDropdown.addEventListener('click', function(e){
 var myModalInstance = new BSN.Modal(
   '#myModal', // target selector
   { // options object
-    content: '&lt;div class="modal-body"&gt;Some content to be set on init&lt;/div&gt;', // sets modal content
     backdrop: 'static', // we don't want to dismiss Modal when Modal or backdrop is the click event target
-    keyboard: false // we don't want to dismiss Modal on pressing Esc key
+    keyboard: false // we don't want to dismiss Modal on pressing [Esc] key
   }
 );
 </code></pre>
@@ -1748,7 +1671,6 @@ var myNewModalInstance = new BSN.Modal('#myModal', { backdrop: true }).show();
 <pre><code class="language-javascript">// initiate Modal on a triggering element
 var myModalInstance = new BSN.Modal('#myButton',
 { // options object
-  content: '&lt;div class="modal-body"&gt;Some content to be set on init&lt;/div&gt;', // sets modal content
   keyboard: false // we don't want to dismiss Modal on pressing Esc key
 });
 </code></pre>
@@ -1765,9 +1687,6 @@ myModalInstance.hide();
 // toggle the modal (show/hide)
 myModalInstance.toggle();
 
-// change the modal content
-myModalInstance.setContent('&lt;div class="modal-body"&gt;Some different content&lt;/div&gt;');
-
 // if the above method is used while modal was shown, you can then ask for a layout update
 myModalInstance.update();
 
@@ -1780,12 +1699,6 @@ myModalInstance.dispose();
 <pre><code class="language-javascript">// GET THE EVENT TARGET, THE MODAL
 // when we are certain which modal ID to work with
 var myModal = document.getElementById('modalID');
-
-// also button trigger related (especially when modals are targeted by multiple triggering elements)
-// a triggering element is a link
-var myModal = document.getElementById(myModalTriggerButton.getAttribute('href').replace('#',''));
-// OR triggering element is not a link
-var myModal = document.getElementById(myModalTriggerButton.getAttribute('data-bs-target').replace('#',''));
 
 // ATTACH HANDLERS
 // show.bs.modal event
@@ -1819,7 +1732,7 @@ myModal.addEventListener('hidden.bs.modal', function(event){
                 execution, hopefully would help you as well. For instance, when a modal is referenced by one or more triggering
                 elements, it will know which one was clicked last time to execute the <code>.show()</code> instance method.</p>
           
-<pre><code class="language-javascript">// for modals with multiple triggering elements, the value changes every time the triggering element was clicked
+<pre><code class="language-javascript">// modal can know which element is its triggering element
 var lastModalTrigger = myModal.modalTrigger;
 
 // for modals targeted directly by the component with no triggering element
@@ -1832,6 +1745,12 @@ var myModalInit = myModal.Modal;
 <pre><code class="language-javascript">// when a modal was initialized via DATA API
 // OR a triggering element is the target of the Modal constructor
 var myModalInstance === document.getElementById('myModalTrigger').Modal;
+</code></pre>
+
+              <p>If you like you can also do inline JavaScript:</p>
+              
+<pre><code class="language-markup">&lt;!-- simple things make me happy --&gt;
+&lt;button onclick="myModal.Modal && myModal.Modal.show()"&gt;
 </code></pre>
           
               <p>These references are used internally to hide currently visible modals when showing another one. When the
@@ -1936,10 +1855,8 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                 </div>
               </div>
           
-              <h4>Modal Initialized and Manipulated via JavaScript API</h4>
-              <p>The following examples are focused on everything the <b>Modal</b> component offers for JavaScript initialization
-                and usage. Given a modal template and some buttons to open the modal on click,
-                let's initialize it first:</p>
+              <h4>Modal Initialized via JavaScript API</h4>
+              <p>The following example is focused on initialization via JavaScript, without a triggering button:</p>
           
 <pre><code class="language-javascript">// we grab a modal by ID
 var myModal = document.getElementById('myModal');
@@ -1948,21 +1865,9 @@ var myModal = document.getElementById('myModal');
 var btnModal = document.getElementById('openModalViaJS');
 // this button IS NOT a triggering element, as it has no reference to the above modal
 
-// set a custom content
-var firstModalContent = '&lt;div class="modal-header"&gt;'
-  +'&lt;h4 class="modal-title" id="myModalJSLabel"&gt;Modal title&lt;/h4&gt;'
-  +'&lt;button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"&gt;&lt;/button&gt;'
-  +'&lt;/div&gt;'
-  +'&lt;div class="modal-body"&gt;'
-    +'&lt;p&gt;This is where you fill up content you know, etc.&lt;/p&gt;'
-  +'&lt;/div&gt;'
-  +'&lt;div class="modal-footer"&gt;'
-    +'&lt;button type="button" class="btn btn-secondary" data-bs-dismiss="modal"&gt;Close&lt;/button&gt;'
-  +'&lt;/div&gt;';
 
 // initialize Modal for this triggering element
 var modalInitJS = new BSN.Modal(myModal, {
-  content: firstModalContent,
   backdrop: 'static'
 });
 
@@ -1981,156 +1886,26 @@ btnModal.addEventListener('click', function(e){
 var findModalInitJS = myModal.Modal;
 </code></pre>
           
-              <p>Here is what the above code does:</p>
               <p><button id="openModalViaJS" type="button" class="btn btn-secondary btn-lg">Open Modal</button></p>
-          
-              <p>Next we will initialize another triggering button, and attach a handler to it to change content of the modal when
-                clicked.</p>
-          
-<pre><code class="language-javascript">// the triggering element
-var btnModal2 = document.getElementById('openModalViaJS2');
+              <p>As explained in the sample code above, this modal will store the initialization object and is completely independent 
+                from a triggering button which would usually have the <code>data-bs-toggle="modal"</code> and 
+                <code>data-target="#myModal"</code> attributes necesary to enable automatic initialization via DATA API.</p>
 
-// set some custom content or get if from external sources
-var externalModalContent = {
-  title: 'A modal title',
-  content: 'Modal content to fill the modal-body.',
-};
-
-// set a custom modal-content template
-var secondModalContent =
-'&lt;div class="modal-header"&gt;'
-  +'&lt;h4 class="modal-title" id="gridModalLabel"&gt;' + externalModalContent.title + '&lt;/h4&gt;'
-  +'&lt;button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"&gt;&lt;/button&gt;'
-+'&lt;/div&gt;'
-+'&lt;div class="modal-body"&gt;'
-  +'&lt;p&gt;' + externalModalContent.content + '&lt;/p&gt;'
-+'&lt;/div&gt;'
-+'&lt;div class="modal-footer"&gt;'
-  +'&lt;button type="button" class="btn btn-secondary" data-bs-dismiss="modal"&gt;Close&lt;/button&gt;'
-+'&lt;/div&gt;';
-
-// initialize Modal for this triggering element
-var modalInitJS2 = new BSN.Modal(btnModal2, { backdrop: 'static' });
-
-// because we initialized the component for this button
-// this becomes the triggering element to hold the initialization object
-var modalInitJSInit2 = btnModal2.Modal;
-
-// now when we click this modal triggering element, we change the modal content
-btnModal2.addEventListener('click', function() {
-  modalInitJS2.setContent(secondModalContent);
-}, false);
-</code></pre>
-          
-              <p>By changing the <code>innerHTML</code> of the <code>modal-header</code>, <code>modal-body</code> or
-                <code>modal-footer</code> with variables, you can achieve exactly the same as the
-                <a href="http://getbootstrap.com/javascript/#modals-related-target" rel="noreferrer" target="_blank">other
-                  examples</a> from the demo of the original plugin. So we use same modal, but with different content:</p>
-              <p><a id="openModalViaJS2" href="#anotherModal" class="btn btn-secondary btn-lg">Open Modal</a></p>
-          
-              <p>Now if you go back to the previous triggering button and click it, you will notice that the modal is still like
-                it was set by the second triggering button. Let's reset the modal content:</p>
-        
-<pre><code class="language-javascript">// we grab the button by ID
-var btnModalNotTrigger = document.getElementById('modalNotTriggerJS');
-
-// simply attach a click handler to it
-btnModalNotTrigger.addEventListener('click', function() {
-  modalInitJS.setContent(firstModalContent);  // revert modal content back to previous
-  modalInitJS.show(); // also show the modal
-}, false);
-</code></pre>
-
-              <p>Back to the previous modal content:</p>
-              <p><a id="modalNotTriggerJS" class="btn btn-secondary btn-lg" href="#">Reset</a></p>
           
               <div id="myModalJS" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalJSLabel"
                 aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
-          
-                  </div>
-                </div>
-              </div>
-          
-              <p>Another example is using the <code>.update()</code> method. Let's say we have a modal initialized via DATA API,
-                you might think we cannot access this instance's methods. Remember the trigger button
-                stores the initialization?</p>
-          
-<pre><code class="language-javascript">var modalUpdate = document.getElementById('modalUpdate'), // the trigger
-anotherStaticModal = document.getElementById('anotherStaticModal'), // the modal
-currentStaticModalBody = anotherStaticModal.querySelector('.modal-body'), // the body of the current modal
-currentStaticModalBodyContent = currentStaticModalBody.innerHTML, // we cache the content of the body
-modalUpdateInit = modalUpdate.Modal, // the initialization
-changeModal1 = document.getElementById('changeModal1'), // the change buttons
-changeModal2 = document.getElementById('changeModal2');
-
-changeModal1.addEventListener('click', function(){
-  currentStaticModalBody.innerHTML = currentStaticModalBodyContent;
-  modalUpdateInit.update();
-}, false);
-
-changeModal2.addEventListener('click', function(){
-  currentStaticModalBody.innerHTML  = '&lt;h4&gt;This modal changed via JavaScript&lt;/h4&gt;';
-  currentStaticModalBody.innerHTML += '&lt;p&gt;Something you would want to be displayed in the body.&lt;/p&gt;';
-  modalUpdateInit.update();
-}, false);
-</code></pre>
-          
-              <p>A quick demo to showcase the above script:</p>
-              <p><a id="modalUpdate" class="btn btn-secondary btn-lg" data-bs-toggle="modal" href="#anotherStaticModal">Show modal</a></p>
-          
-              <div id="anotherStaticModal" class="modal fade" tabindex="-1" role="dialog"
-                aria-labelledby="anotherStaticModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header"> 
-                      <h4 class="modal-title" id="anotherStaticModalLabel">Some Modal Title</h4>
+                    <div class="modal-header">
+                      <h4 class="modal-title" id="myModalJSLabel">Static modal initialized via JavaScript</h4>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <h4>This modal is initialized via DATA API</h4>
-                      <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
-                        quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
-                        laoreet rutrum faucibus dolor auctor.</p>
-                      <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
-                        quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
-                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-                      <p class="text-info lead">Scroll down.</p>
-                      <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
-                        quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
-                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
-                        laoreet rutrum faucibus dolor auctor.</p>
-                      <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
-                        quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
-                        laoreet rutrum faucibus dolor auctor.</p>
-                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
-                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-                      <p class="text-info lead">Scroll some more.</p>
-                      <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
-                        quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
-                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
-                        laoreet rutrum faucibus dolor auctor.</p>
-                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
-                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+                      <p>This is a damn awesome modal content template configured via Javascript, using the specific modal events like <code>show.bs.modal</code>, so please open your console and check the log entries.</p>
                     </div>
                     <div class="modal-footer">
-                      <button id="changeModal1" type="button" class="btn btn-primary hidden">Set content 1</button>
-                      <button id="changeModal2" type="button" class="btn btn-primary">Set content 2</button>
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-                          <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
-                        </svg>
-                        Close
-                      </button>
-                    </div>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
                   </div>
                 </div>
               </div>
@@ -2197,7 +1972,8 @@ changeModal2.addEventListener('click', function(){
                       <td><code>sanitizeFn</code></td>
                       <td><em>function</em></td>
                       <td></td>
-                      <td>Option to set a function that will sanitize the title and content of the popover. Our library doesn't include any sanitization 
+                      <td>Option to set a function that will sanitize the <code>title</code>, <code>content</code>, <code>template</code> and 
+                        the dismissing <code>&lt;div class=btn-close"&gt;</code> element of the popover. Our library doesn't include any sanitization 
                         function, you are free to use whatever solution suits your need.<br><b>This option is JavaScript API only.</b></td>
                     </tr>                    
                     <tr>
@@ -2218,11 +1994,18 @@ changeModal2.addEventListener('click', function(){
                     </tr>
                     <tr>
                       <td><code>animation</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>true</em></td>
+                      <td>Option to enable/disable the popover animation. If you disable the animation, you can do that via the
+                        <code>data-bs-animation="false"</code> attribute. When enabled, this option will add an additional CSS class <code>'fade'</code>
+                        to the popover to enable the transition.</td>
+                    </tr>
+                    <tr>
+                      <td><code>customClass</code></td>
                       <td><em>string</em></td>
-                      <td><em>fade</em></td>
-                      <td>Option to customize the component animation. If you are using a different animation other than
-                        <code>fade</code>, you can specify that via the <code>data-bs-animation="ANIMATION"</code>
-                        attribute. This will add an additional CSS class to the popover to enable a custom transition.</td>
+                      <td><em>true</em></td>
+                      <td>Option to customize the popover by adding a custom CSS class. You can set this option via the 
+                        <code>data-bs-custom-class="my-class"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>placement</code></td>
@@ -2376,8 +2159,9 @@ var popoverTargets = document.querySelectorAll('[data-bs-content]'); // also a c
 // initialize Popover for each element
 Array.from(popoverTargets).map(
   popTarget => new BSN.Popover( popTarget, {
-    placement: 'top', //string
-    animation: 'slideNfade', // CSS class
+    placement: 'top', // string
+    animation: true, // boolean
+    customClass: 'my-special-class', // string
     delay: 100, // integer
     dismissible: true, // boolean
   })
@@ -2430,17 +2214,16 @@ myLinkWithPopover.addEventListener('hidden.bs.popover', function(event){
           
               <p>To use the template system, you can do the following:</p>
           
-<pre><code class="language-javascript">//define some variables or get their values from other scripts
-var someTitleFromOtherCode = 'Sample title';
-var someContentFromOuterSpace = '&lt;p&gt;Some sample message.&lt;/p&gt;';
-
-//initiate Popover with the template
+<pre><code class="language-javascript">// initialize Popover with a custom template
 var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-template is the text input
-  trigger: 'focus',
-  template: '&lt;div class="popover" role="tooltip"&gt;'
+  title: 'Sample title', // string
+  content: '&lt;p&gt;Some sample message.&lt;/p&gt;', // string
+  trigger: 'focus', // string
+  sanitizeFn: yourUtilityOfChoice, // function
+  template: '&lt;div class="popover custom-class" role="tooltip"&gt;'
   + '&lt;div class="arrow"&gt;&lt;/div&gt;'
-  + '&lt;h3 class="popover-header"&gt;'+someTitleFromOtherCode+'&lt;/h3&gt;'
-  + '&lt;div class="popover-body"&gt;'+someContentFromOuterSpace+'&lt;/div&gt;'
+  + '&lt;h3 class="popover-header"&gt;&lt;/h3&gt;'
+  + '&lt;div class="popover-body"&gt;&lt;/div&gt;'
   + '&lt;/div&gt;'
 });
 </code></pre>
@@ -2463,7 +2246,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                   data-bs-content="Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                   Dismissible
                 </button>
-                <button type="button" class="btn btn-dark" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Popover on RIGHT">
+                <button type="button" class="btn btn-dark" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="customClass" data-bs-title="Popover on RIGHT" data-bs-content="Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
                   Right
                 </button>
                 <button id="popoverWithEvents" type="button" class="btn btn-secondary" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Popover on top">
@@ -3391,16 +3174,24 @@ myToastInit.dispose();
                       <td><code>sanitizeFn</code></td>
                       <td><em>function</em></td>
                       <td></td>
-                      <td>Option to set a function that will sanitize the title and content of the tooltip. Our library doesn't include any sanitization 
-                        function, you are free to use whatever solution suits your need.<br><b>This option is JavaScript API only.</b></td>
+                      <td>Option to set a function that will sanitize the title and <code>content</code> and the <code>template</code> of the tooltip. 
+                        Our library doesn't include any sanitization function, you are free to use whatever solution suits your need.<br>
+                        <b>This option is JavaScript API only.</b></td>
                     </tr>
                     <tr>
                       <td><code>animation</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>true</em></td>
+                      <td>Option to enable/disable the tooltip animation. If you disable the animation, you can do that via the
+                        <code>data-bs-animation="false"</code> attribute. When enabled, this option will add an additional CSS class <code>'fade'</code>
+                        to the tooltip to enable the transition.</td>
+                    </tr>
+                    <tr>
+                      <td><code>customClass</code></td>
                       <td><em>string</em></td>
-                      <td><em>fade</em></td>
-                      <td>Option to customize the component animation. If you are using a different animation other than
-                        <code>fade</code>, you can specify that via the <code>data-bs-animation="ANIMATION"</code> attribute.
-                        This will add an additional CSS class to the tooltip to enable a custom transition.</td>
+                      <td><em>true</em></td>
+                      <td>Option to customize the tooltip by adding a custom CSS class. You can set this option via the 
+                        <code>data-bs-custom-class="my-class"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>placement</code></td>
@@ -3555,8 +3346,9 @@ var elementsTooltip = document.querySelectorAll('[title]');
 // attach a tooltip for each
 Array.from(elementsTooltip).map(
   tip => new BSN.Tooltip( tip, {
-    placement: 'top', //string
-    animation: 'slideNfade', // CSS class
+    placement: 'top', // string
+    animation: true, // boolean
+    customClass: 'my-rocket-tooltips', // string
     delay: 150, // integer
   })
 )
@@ -3599,7 +3391,7 @@ myLinkWithTooltip.addEventListener('hidden.bs.tooltip', function(event){
 }, false);
 </code></pre>
 
-              <p>Just because you can, you can re-initialize any element on the fly, to change options or to just call the
+              <p>Just because you can, you can re-initialize any element on the fly, to change options and / or content, or to just call the
                 <code>.show()</code> method.</p>
 
 <pre><code class="language-javascript">// re-initialize Tooltip and call .show()
@@ -3662,7 +3454,6 @@ new BSN.Tooltip('#selector',options).show();
               <a rel="nofollow" class="nav-link" href="#componentButton">Button</a>
               <ul class="nav">
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonMethods">Methods</a></li>
-                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonEvents">Events</a></li>
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonDATA">DATA API</a></li>
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonJS">JavaScript API</a></li>
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#buttonExamples">Examples</a></li>

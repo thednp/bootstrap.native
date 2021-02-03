@@ -2,8 +2,6 @@
 /* Native JavaScript for Bootstrap 5 | Tooltip
 ---------------------------------------------- */
 import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js'
-import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents.js'
-import mouseClickEvents from 'shorter-js/src/strings/mouseClickEvents.js'
 import passiveHandler from 'shorter-js/src/misc/passiveHandler.js'
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
 import queryElement from 'shorter-js/src/misc/queryElement.js'
@@ -29,9 +27,11 @@ import fixedBottomClass from '../strings/fixedBottomClass.js'
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
 import tipClassPositions from '../util/tipClassPositions.js'
 import styleTip from '../util/styleTip-v5.js'
+import isVisibleTip from '../util/isVisibleTip.js'
 import isMedia from '../util/isMedia.js'
 import getUID from '../util/getUID.js'
 import normalizeOptions from '../util/normalizeOptions.js'
+
 
 // TOOLTIP PRIVATE GC
 // ==================
@@ -51,7 +51,8 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
         title: null,
         template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
         placement: 'top',
-        animation: fadeClass,
+        animation: true,
+        customClass: null,
         delay: 200,
         sanitizeFn: null
       },
@@ -78,15 +79,17 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
   function removeTooltip() {  
     element.removeAttribute( ariaDescribedBy )
     ops.container.removeChild( tooltip )
-    tooltip = null
     timer = null
   }
   
   function createTooltip() {  
     let titleString = ops.title.trim() // read the title again
   
-    // sanitize title
-    titleString = ops.sanitizeFn ? ops.sanitizeFn( titleString ) : titleString
+    // sanitize stuff
+    if ( ops.sanitizeFn ) {
+      titleString = ops.sanitizeFn( titleString )
+      ops.template = ops.sanitizeFn( ops.template )
+    }
   
     if ( !titleString ) return // invalidate, maybe markup changed
   
@@ -106,21 +109,20 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
 
     queryElement( `.${tooltipInnerClass}`, tooltip ).innerHTML = titleString
 
-    // reset position
-    tooltip.style.left = '0'
-    tooltip.style.top = '0'
     // set class and role attribute
     tooltip.setAttribute('role', tooltipString )
+    // set classes
     !hasClass( tooltip, tooltipString ) && addClass( tooltip, tooltipString )
-    !hasClass( tooltip, ops.animation ) && addClass( tooltip, ops.animation )
+    ops.animation && !hasClass( tooltip, fadeClass ) && addClass( tooltip, fadeClass )
+    ops.customClass && !hasClass( tooltip, ops.customClass ) && addClass( tooltip, ops.customClass )
     !hasClass( tooltip, placementClass ) && addClass( tooltip, placementClass )
   
-    // append to container
-    ops.container.appendChild( tooltip )
   }
   
+  // TOOLTIP EVENT HANDLERS
+  // ======================
   function updateTooltip(e) { 
-    tooltip && styleTip( element, tooltip, ops.placement, ops.container, e )
+    styleTip( element, tooltip, ops.placement, ops.container, e )
   }
   
   function showTooltip() {
@@ -130,7 +132,7 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
   function tooltipTouchHandler(e){
     const eventTarget = e.target
   
-    if ( tooltip && tooltip.contains( eventTarget ) || eventTarget === element || element.contains( eventTarget ) ) {
+    if ( tooltip.contains( eventTarget ) || eventTarget === element || element.contains( eventTarget ) ) {
       // smile
     } else {
       self.hide()
@@ -143,6 +145,12 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
   
   function closeTooltipHandler(){
     self.hide()
+  }
+
+  function disposeComplete(){
+    toggleTooltipHandlers()
+    element.hasAttribute( dataOriginalTitle ) && toggleTooltipTitle()
+    delete element[tooltipComponent]
   }
   
   function toggleTooltipAction( action ){
@@ -171,9 +179,9 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
     action = action ? addEventListener : removeEventListener
   
     isMedia(element) && element[action]( 'mousemove', updateTooltip, passiveHandler )
-    element[action]( mouseClickEvents.down, openTooltipHandler )
-    element[action]( mouseHoverEvents[0], openTooltipHandler )
-    element[action]( mouseHoverEvents[1], closeTooltipHandler )
+    element[action]( 'mousedown', openTooltipHandler )
+    element[action]( 'mouseenter', openTooltipHandler )
+    element[action]( 'mouseleave', closeTooltipHandler )
   }
   
   function toggleTooltipTitle( content ){
@@ -219,12 +227,16 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
       // invalidate
       if ( !ops.title ) return
 
-      tooltipID = `${tooltipString}-${element.id || getUID( element )}`
+      tooltipID = `${tooltipString}-${getUID( element )}`
       placementClass = `bs-${tooltipString}-${tipClassPositions[ops.placement]}`
     
       // set title attributes and add event listeners
       element.hasAttribute( titleAttr ) && toggleTooltipTitle( ops.title );
-  
+
+      // create tooltip here
+      createTooltip()
+
+      // attach events
       toggleTooltipHandlers( 1 )
     
       // associate target to init object
@@ -241,16 +253,18 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
   
     clearTimeout( timer )
     timer = setTimeout( () => {
-      if ( tooltip === null ) {
+      if ( !isVisibleTip( tooltip, ops.container ) ) {
         element.dispatchEvent( showTooltipEvent)
         if ( showTooltipEvent.defaultPrevented ) return
-  
-        if ( createTooltip() !== false ) {
-          updateTooltip()
-          showTooltip()
-          ops.animation ? emulateTransitionEnd( tooltip, tooltipShownAction ) 
-            : tooltipShownAction()
-        }
+
+        // append to container
+        ops.container.appendChild( tooltip )
+
+        updateTooltip()
+        showTooltip()
+        ops.animation 
+          ? emulateTransitionEnd( tooltip, tooltipShownAction ) 
+          : tooltipShownAction()
       }
     }, 20 )
   }
@@ -259,19 +273,20 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
   
     clearTimeout( timer )
     timer = setTimeout( () => {
-      if (tooltip && hasClass( tooltip, showClass )) {
+      if ( isVisibleTip( tooltip, ops.container ) ) {
         element.dispatchEvent( hideTooltipEvent )
         if ( hideTooltipEvent.defaultPrevented ) return
   
         removeClass( tooltip, showClass )
-        !!ops.animation ? emulateTransitionEnd( tooltip, tooltipHiddenAction ) 
+        ops.animation 
+          ? emulateTransitionEnd( tooltip, tooltipHiddenAction ) 
           : tooltipHiddenAction()
       }
     }, ops.delay )
   }
   
   TooltipProto.toggle = function() {
-    tooltip === null ? self.show() : self.hide()
+    !isVisibleTip( tooltip, ops.container ) ? self.show() : self.hide()
   }
 
   TooltipProto.enable = function() {
@@ -283,7 +298,7 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
 
   TooltipProto.disable = function() {
     if ( enabled ) {
-      if ( tooltip !== null && ops.animation ) {
+      if ( !isVisibleTip( tooltip, ops.container ) && ops.animation ) {
         self.hide()
 
         setTimeout(
@@ -301,13 +316,14 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
     !enabled ? self.enable() : self.disable()
   }  
   
-  TooltipProto.dispose = function() { 
-    this.hide()
-    toggleTooltipHandlers()
-  
-    element.hasAttribute( dataOriginalTitle ) && toggleTooltipTitle()
-  
-    delete element[tooltipComponent]
+  TooltipProto.dispose = function() {
+    if ( ops.animation && isVisibleTip( tooltip, ops.container ) ){
+      ops.delay = 0 // reset delay
+      self.hide()
+      emulateTransitionEnd( tooltip, disposeComplete )
+    } else {
+      disposeComplete()
+    }
   }
 
   return new Tooltip( tooltipElement, tooltipOptions )

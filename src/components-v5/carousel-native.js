@@ -1,7 +1,6 @@
 
 /* Native JavaScript for Bootstrap 5 | Carousel
 ----------------------------------------------- */
-import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents.js'
 import passiveHandler from 'shorter-js/src/misc/passiveHandler.js'
 import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js'
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
@@ -56,9 +55,10 @@ export default function Carousel( carouselElement, carouselOptions ){
       indicators,
       controls,
       direction = 'left',
+      isPaused = false,
+      isAnimating = false,
       index = 0,
       timer = null,
-      isAnimating = false,
       isTouch = false,
       startX = 0,
       currentX = 0,
@@ -69,9 +69,7 @@ export default function Carousel( carouselElement, carouselOptions ){
   // =======================
   function carouselTransitionEndHandler(){
     const next = index,
-        // timeout = e.target !== slides[next] ? e.elapsedTime*1000+50 : 20,
-        // timeout = getElementTransitionDuration(slides[next]) ||  20,
-        activeItem = self.getActiveIndex(),
+        activeItem = getActiveIndex(),
         orientation = direction === 'left' ? 'next' : 'prev',
         directionClass = direction === 'left' ? 'start' : 'end'
 
@@ -104,7 +102,7 @@ export default function Carousel( carouselElement, carouselOptions ){
   }
 
   function carouselResumeHandler() {
-    if ( hasClass( element, pausedClass ) ) {
+    if ( !isPaused && hasClass( element, pausedClass ) ) {
 
       removeClass( element, pausedClass )
 
@@ -229,8 +227,8 @@ export default function Carousel( carouselElement, carouselOptions ){
     action = action ? addEventListener : removeEventListener
 
     if ( ops.pause && ops.interval ) {
-      element[action]( mouseHoverEvents[0], carouselPauseHandler )
-      element[action]( mouseHoverEvents[1], carouselResumeHandler )
+      element[action]( 'mouseenter', carouselPauseHandler )
+      element[action]( 'mouseleave', carouselResumeHandler )
       element[action]( 'touchstart', carouselPauseHandler, passiveHandler )
       element[action]( 'touchend', carouselResumeHandler, passiveHandler )
     }
@@ -243,6 +241,11 @@ export default function Carousel( carouselElement, carouselOptions ){
 
     indicator && indicator[action]( 'click', carouselIndicatorHandler )
     ops.keyboard && window[action]( 'keydown', carouselKeyHandler )
+  }
+
+  function getActiveIndex() {
+    return Array.from( slides )
+      .indexOf( element.getElementsByClassName( `${carouselItem} ${activeClass}` )[0] ) || 0
   }
 
 
@@ -261,6 +264,7 @@ export default function Carousel( carouselElement, carouselOptions ){
       element = queryElement( target )
 
       // carousel elements
+      // a LIVE collection is prefferable
       slides = element.getElementsByClassName( carouselItem )
 
       // reset previous instance
@@ -271,21 +275,22 @@ export default function Carousel( carouselElement, carouselOptions ){
       if ( slides.length < 2 ) { return }
 
       controls = [
-        element.getElementsByClassName( `${carouselControl}-prev` )[0],
-        element.getElementsByClassName( `${carouselControl}-next` )[0]
+        queryElement( `.${carouselControl}-prev`, element ),
+        queryElement( `.${carouselControl}-next`, element )
       ]
 
-      indicator = element.getElementsByClassName( 'carousel-indicators' )[0]
+      // a LIVE collection is prefferable
+      indicator = queryElement( '.carousel-indicators', element )
       indicators = indicator && indicator.getElementsByTagName( 'LI' ) || []
 
       // set JavaScript and DATA API options
       ops = normalizeOptions( element, defaultCarouselOptions, options )
-      // don't use 0 as interval
+      // don't use TRUE as interval, it's actually 0, use the default 5000ms better
       ops.interval = ops.interval === true
                    ? defaultCarouselOptions.interval : ops.interval
 
       // set first slide active if none
-      if ( this.getActiveIndex() < 0 ) {
+      if ( getActiveIndex() < 0 ) {
         slides.length && addClass( slides[0], activeClass )
         indicators.length && activateCarouselIndicator( 0 )
       }
@@ -294,10 +299,10 @@ export default function Carousel( carouselElement, carouselOptions ){
       toggleCarouselHandlers( 1 )
 
       // start to cycle if interval is set
-      ops.interval && this.cycle()
+      ops.interval && self.cycle()
 
       // associate init object to target
-      element[carouselComponent] = this
+      element[carouselComponent] = self
     }
   }
 
@@ -312,9 +317,23 @@ export default function Carousel( carouselElement, carouselOptions ){
       timer = null
     }
 
+    if ( isPaused ) {
+      removeClass( element, pausedClass )
+      isPaused = !isPaused
+    }
+    
     timer = setInterval( () => {
       isElementInScrollRange( element ) && ( index++, self.to( index ) )
     }, ops.interval )
+  }
+
+  CarouselProto.pause = function() {
+    if ( ops.interval && !isPaused ) {
+      clearInterval( timer )
+      timer = null
+      addClass( element, pausedClass )
+      isPaused = !isPaused
+    }
   }
 
   CarouselProto.next = function() {
@@ -326,13 +345,13 @@ export default function Carousel( carouselElement, carouselOptions ){
   }
 
   CarouselProto.to = function( next ) {
-    const activeItem = self.getActiveIndex()
+    const activeItem = getActiveIndex()
 
     // when controled via methods, make sure to check again
     // first return if we're on the same item #227
     if ( isAnimating || activeItem === next ) return
 
-    // // or determine slide direction
+    // determine transition direction
     if ( ( activeItem < next ) || ( activeItem === 0 && next === slides.length -1 ) ) {
       direction = 'left' // next
     } else if ( ( activeItem > next ) || ( activeItem === slides.length - 1 && next === 0 ) ) {
@@ -361,9 +380,10 @@ export default function Carousel( carouselElement, carouselOptions ){
     // update index
     index = next
 
-    isAnimating = true
     clearInterval( timer )
     timer = null
+
+    isAnimating = true
     activateCarouselIndicator( next )
 
     if ( getElementTransitionDuration( slides[next] ) && hasClass( element, 'slide' ) ) {
@@ -384,18 +404,13 @@ export default function Carousel( carouselElement, carouselOptions ){
         isAnimating = false
 
         // check for element, might have been disposed
-        if ( ops.interval && element && !hasClass( element, pausedClass ) ) {
+        if ( element && ops.interval && !hasClass( element, pausedClass ) ) {
           self.cycle()
         }
 
         element.dispatchEvent( carouselSlidEvent )
       }, 100 )
     }
-  }
-
-  CarouselProto.getActiveIndex = function() {
-    return Array.from( slides )
-      .indexOf( element.getElementsByClassName( `${carouselItem} ${activeClass}` )[0] ) || 0
   }
 
   CarouselProto.dispose = function() {

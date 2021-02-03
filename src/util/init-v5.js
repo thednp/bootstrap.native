@@ -1,3 +1,5 @@
+import queryElement from 'shorter-js/src/misc/queryElement.js'
+
 import { alertInit } from '../components-v5/alert-native.js'
 import { buttonInit } from '../components-v5/button-native.js'
 import { carouselInit } from '../components-v5/carousel-native.js'
@@ -27,28 +29,29 @@ const componentsInit = {
 function initializeDataAPI( konstructor, collection ){
   Array.from( collection ).map( x => new konstructor(x) )
 }
-function removeElementDataAPI( konstructor, collection ){
-  Array.from(collection).map( x => x[konstructor].dispose() )
+function removeElementDataAPI( component, collection ){
+  Array.from( collection ).map( x => x[component] && x[component].dispose() )
 }
 
 /* 
- * Usage Example
+ * Callback Usage Examples
+ *
  * // init all components with valid markup in the #main element
- * BSN.Callback(document.getElementById('main'),true)
+ * BSN.Callback('#main',true)
  * // remove all components with valid markup in the #main element
- * BSN.Callback(document.getElementById('main'),false)
- * // this rquivalent to this
- * BSN.Callback(document.getElementById('main'))
+ * BSN.Callback('#main',false)
+ * // equivalent to the following
+ * BSN.Callback('#main')
  * // remove all components in the document
  * BSN.Callback()
  * 
 */
-export function Callback( lookUp, action ){
-  lookUp = lookUp instanceof Element ? lookup : document
-  action = action ? initializeDataAPI : removeElementDataAPI
+export function Callback( lookUp = 0, init = 0 ){
+  const action = init ? initializeDataAPI : removeElementDataAPI
+  lookUp = lookUp instanceof Element ? lookUp : document
 
   for (const component in componentsInit) {
-    action( componentsInit[component].constructor, 
+    action( init ? componentsInit[component].constructor : component,
       lookUp.querySelectorAll( componentsInit[component].selector ) )
   }
 }

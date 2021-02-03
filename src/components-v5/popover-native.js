@@ -1,10 +1,9 @@
 
 /* Native JavaScript for Bootstrap 5 | Popover
 ---------------------------------------------- */
-import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents.js'
-import mouseClickEvents from 'shorter-js/src/strings/mouseClickEvents.js'
 import passiveHandler from 'shorter-js/src/misc/passiveHandler.js'
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
+import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js'
 import queryElement from 'shorter-js/src/misc/queryElement.js'
 import addClass from 'shorter-js/src/class/addClass.js'
 import hasClass from 'shorter-js/src/class/hasClass.js'
@@ -27,11 +26,11 @@ import fixedBottomClass from '../strings/fixedBottomClass.js'
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
 import tipClassPositions from '../util/tipClassPositions.js'
+import isVisibleTip from '../util/isVisibleTip.js'
 import styleTip from '../util/styleTip-v5.js'
 import isMedia from '../util/isMedia.js'
 import getUID from '../util/getUID.js'
 import normalizeOptions from '../util/normalizeOptions.js'
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js'
 
 
 // POPOVER PRIVATE GC
@@ -40,15 +39,16 @@ const popoverString = 'popover',
     popoverComponent = 'Popover',
     popoverSelector = `[${dataBsToggle}="${popoverString}"],[data-tip="${popoverString}"]`,
     popoverDefaultOptions = {
-      template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-      title: null,
-      content: null,
-      sanitizeFn: null,
-      dismissible: false,
-      trigger: 'hover',
-      animation: fadeClass,
-      placement: 'top',
-      delay: 200
+      template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>', // string
+      title: null, // string
+      content: null, // string
+      sanitizeFn: null, // function
+      customClass: null, // string
+      dismissible: false, // boolean
+      animation: true, // boolean
+      trigger: 'hover', // string
+      placement: 'top', // string
+      delay: 200 // number
     }
 
 
@@ -59,9 +59,7 @@ export default function Popover( popoverElement, popoverOptions ){
   // POPOVER PRIVATE GC
   // ==================
   const isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
-      // close btn for dissmissible popover
-      popoverCloseButton = '<button type="button" class="btn-close"></button>',
-      popoverArrowClass = `${popoverString}-arrow`,
+      // popoverArrowClass = `${popoverString}-arrow`,
       popoverHeaderClass = `${popoverString}-header`,
       popoverBodyClass = `${popoverString}-body`,
 
@@ -80,31 +78,33 @@ export default function Popover( popoverElement, popoverOptions ){
       popover = null,
       ops = {},
       enabled = true,
-      timer=  null
+      timer=  null,
+      // close btn for dissmissible popover
+      popoverCloseButton = '<button type="button" class="btn-close"></button>'
 
 
   // POPOVER EVENT HANDLERS
   // ======================
   function dismissiblePopoverHandler(e) {
-    if ( popover !== null && e.target === queryElement( '.btn-close', popover ) ) {
+    if ( e.target === queryElement( '.btn-close', popover ) ) {
       self.hide()
     }
   }
 
   function updatePopover(e) {
-    popover && styleTip( element, popover, ops.placement, ops.container, e )
+    styleTip( element, popover, ops.placement, ops.container, e )
   }
 
   function popoverForceFocus() {
-    popover === null && element.focus()
+    element.focus()
   }
 
   function popoverShowHandler() {
-    popover === null && self.show()
+    self.show()
   }
 
   function popoverHideHandler() {
-    popover !== null && self.hide()
+    self.hide()
   }
 
   function popoverClickHandler() {
@@ -124,6 +124,11 @@ export default function Popover( popoverElement, popoverOptions ){
     }
   }
 
+  function disposeComplete() {
+    togglePopoverHandlers()
+    delete element[popoverComponent]
+  }
+
 
   // POPOVER PRIVATE METHODS
   // =======================
@@ -131,7 +136,6 @@ export default function Popover( popoverElement, popoverOptions ){
     element.removeAttribute( ariaDescribedBy )
     ops.container.removeChild( popover )
     timer = null
-    popover = null
   }
 
   function createPopover() {
@@ -146,6 +150,8 @@ export default function Popover( popoverElement, popoverOptions ){
     if ( ops.sanitizeFn ) {
       titleString = titleString ? ops.sanitizeFn( titleString ) : null
       contentString = contentString ? ops.sanitizeFn( contentString ) : null
+      ops.template = ops.template ? ops.sanitizeFn( ops.template ) : null
+      popoverCloseButton = ops.sanitizeFn( popoverCloseButton )
     }    
 
     popover = document.createElement( 'div' )
@@ -164,20 +170,21 @@ export default function Popover( popoverElement, popoverOptions ){
         popoverBody = queryElement( `.${popoverBodyClass}`, popover )
 
     // set dismissible button
-    titleString = ops.dismissible && titleString ? titleString + popoverCloseButton : titleString
-    contentString = ops.dismissible && titleString === null ? + popoverCloseButton : contentString
+    if ( ops.dismissible ) {
+      titleString = titleString ? titleString + popoverCloseButton : titleString
+      contentString = titleString === null ? + popoverCloseButton : contentString
+    }
 
     // fill the template with content from data attributes
     titleString && popoverHeader && ( popoverHeader.innerHTML = titleString.trim() )
     contentString && popoverBody && ( popoverBody.innerHTML = contentString.trim() )
 
-    //append to the container
-    ops.container.appendChild( popover )
-    popover.style.display = 'block'
     // set popover animation and placement 
     !hasClass( popover, popoverString ) && addClass( popover, popoverString )
-    !hasClass( popover, ops.animation ) && addClass( popover, ops.animation )
+    ops.animation && !hasClass( popover, fadeClass ) && addClass( popover, fadeClass )
+    ops.customClass && !hasClass( popover, ops.customClass ) && addClass( popover, ops.customClass )
     !hasClass( popover, placementClass ) && addClass( popover, placementClass )
+
   }
 
   function showPopover() {
@@ -188,10 +195,10 @@ export default function Popover( popoverElement, popoverOptions ){
     action = action ? addEventListener : removeEventListener
 
     if ( 'hover' === ops.trigger ) {
-      element[action]( mouseClickEvents.down, popoverShowHandler )
-      element[action]( mouseHoverEvents[0], popoverShowHandler )
+      element[action]( 'mousedown', popoverShowHandler )
+      element[action]( 'mouseenter', popoverShowHandler )
       isMedia(element) && element[action]( 'mousemove', updatePopover, passiveHandler )
-      !ops.dismissible && element[action]( mouseHoverEvents[1], popoverHideHandler ) // mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
+      !ops.dismissible && element[action]( 'mouseleave', popoverHideHandler ) // mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
     } else if ( 'click' === ops.trigger ) {
       element[action]( ops.trigger, popoverClickHandler )
     } else if ( 'focus' === ops.trigger ) {
@@ -220,6 +227,7 @@ export default function Popover( popoverElement, popoverOptions ){
     dismissHandlerToggle( 1 )
     element.dispatchEvent( shownPopoverEvent )
   }
+
   function popoverHideTrigger(e) {
     dismissHandlerToggle()
     removePopover()
@@ -262,8 +270,12 @@ export default function Popover( popoverElement, popoverOptions ){
 
       // set default popover class
       placementClass = `bs-${popoverString}-${tipClassPositions[ops.placement]}`
+
       // set unique ID for aria-describedby
-      popoverID = `${popoverString}-${element.id || getUID( element )}`
+      popoverID = `${popoverString}-${getUID( element )}`
+
+      // crate popover
+      createPopover()
 
       // attach event listeners
       togglePopoverHandlers( 1 )
@@ -279,22 +291,26 @@ export default function Popover( popoverElement, popoverOptions ){
   const PopoverProto = Popover.prototype
 
   PopoverProto.toggle = function() {
-    popover === null ? self.show() : self.hide()
+    !isVisibleTip( popover, ops.container ) ? self.show() : self.hide()
   }
 
   PopoverProto.show = function() {
     clearTimeout( timer )
 
     timer = setTimeout( () => {
-      if ( popover === null ) {
+      if ( !isVisibleTip( popover, ops.container ) ) {
+        
         element.dispatchEvent( showPopoverEvent )
         if ( showPopoverEvent.defaultPrevented ) return
 
-        createPopover()
+        //append to the container
+        ops.container.appendChild( popover )
+
         updatePopover()
         showPopover()
 
-        ops.animation ? emulateTransitionEnd( popover, popoverShowTrigger )
+        ops.animation 
+          ? emulateTransitionEnd( popover, popoverShowTrigger )
           : popoverShowTrigger()
       }
     }, 17 )
@@ -304,13 +320,14 @@ export default function Popover( popoverElement, popoverOptions ){
     clearTimeout( timer )
 
     timer = setTimeout( () => {
-      if (popover && popover !== null && hasClass( popover, showClass )) {
+      if ( isVisibleTip( popover, ops.container ) && hasClass( popover, showClass ) ) {
         element.dispatchEvent( hidePopoverEvent )
         if ( hidePopoverEvent.defaultPrevented ) return
 
         removeClass( popover, showClass )
 
-        ops.animation ? emulateTransitionEnd( popover, popoverHideTrigger  ) 
+        ops.animation 
+          ? emulateTransitionEnd( popover, popoverHideTrigger  ) 
           : popoverHideTrigger()
       }
     }, ops.delay + 50 )
@@ -325,7 +342,7 @@ export default function Popover( popoverElement, popoverOptions ){
 
   PopoverProto.disable = function() {
     if ( enabled ) {
-      if ( popover !== null && ops.animation ) {
+      if ( isVisibleTip( popover, ops.container ) && ops.animation ) {
         self.hide()
 
         setTimeout(
@@ -343,11 +360,13 @@ export default function Popover( popoverElement, popoverOptions ){
   }
 
   PopoverProto.dispose = function() {
-    self.hide()
-
-    togglePopoverHandlers()
-
-    delete element[popoverComponent]
+    if ( ops.animation && isVisibleTip( popover, ops.container ) ){
+      ops.delay = 0 // reset delay
+      self.hide()
+      emulateTransitionEnd( popover, disposeComplete )
+    } else {
+      disposeComplete()
+    }
   }
 
   return new Popover( popoverElement, popoverOptions )

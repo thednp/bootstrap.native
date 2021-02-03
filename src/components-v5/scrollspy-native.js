@@ -22,6 +22,8 @@ const scrollspyString = 'scrollspy',
     scrollspyComponent = 'ScrollSpy',
     scrollspySelector = '[data-bs-spy="scroll"]'
 
+let scrollHandlerQueue = []
+
 
 // SCROLLSPY SCOPE
 // ===============
@@ -68,7 +70,6 @@ export default function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
       Array.from( links ).map( link => {
         href = link.getAttribute( 'href' )
         targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement( href )
-        // targetItem = getTargetElement( link )
 
         if ( targetItem ) {
           items.push( link )
@@ -124,45 +125,25 @@ export default function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
 
   function toggleSpyHandlers( plus ) {
     const action = plus ? addEventListener : removeEventListener,
-        scrollIdx = scrollHandlerQueue.indexOf( scrollHandlerQueue.find( s => s.id===elementID ) ),
-        resizeIdx = resizeHandlerQueue.indexOf( resizeHandlerQueue.find( r => r.id===elementID ) ),
+        scrollIdx = scrollHandlerQueue.indexOf( scrollHandlerQueue.find( s => s.id === elementID ) ),
         listener = { id: elementID, self: self }
 
-    // window should always have a single scroll/resize listener
-    if ( !plus ) {
-      scrollIdx > -1 && scrollHandlerQueue.splice( scrollIdx, 1 )
-      resizeIdx > -1 && resizeHandlerQueue.splice( resizeIdx, 1 )
-    }
-
-    // scroll handling
+    !plus && scrollIdx > -1 && scrollHandlerQueue.splice( scrollIdx, 1 )
+        
+    // window should always have a single scroll listener
     if ( !isWindow || plus && !scrollHandlerQueue.length || !plus ) {
       scrollTarget[action]( 'scroll', scrollUpdateHandler, passiveHandler )
     }
-
-    // resize handling
-    if ( plus && !resizeHandlerQueue.length || !plus && !resizeHandlerQueue.length ) {
-      window[action]( 'resize', resizeUpdateHandler, passiveHandler )
-    }
-
-    if ( plus ) {
-      scrollHandlerQueue.push( listener )
-      resizeHandlerQueue.push( listener )
-    }
+    
+    plus && scrollHandlerQueue.push( listener )
   }
 
 
   // SCROLLSPY EVENT HANDLERS
   // ========================
-  let scrollHandlerQueue = []
   function scrollUpdateHandler(){
     scrollHandlerQueue.map( i => i.self.refresh() )
   }
-
-  let resizeHandlerQueue = []
-  function resizeUpdateHandler(){
-    resizeHandlerQueue.map( i => i.self.refresh() )
-  }
-
 
   // SCROLLSPY DEFINITION
   // ====================

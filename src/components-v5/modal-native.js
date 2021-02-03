@@ -131,6 +131,7 @@ export default function Modal( modalElement, modalOptions ){
     if ( overlay && !document.getElementsByClassName( `${modalString} ${showClass}` )[0] ) {
       document.body.removeChild(overlay); overlay = null     
     }
+    
     isAnimating = false
 
     overlay === null && ( removeClass( document.body, modalOpenClass), resetModalScrollbar() )
@@ -283,10 +284,7 @@ export default function Modal( modalElement, modalOptions ){
 
       // set options
       ops = normalizeOptions( modal, modalDefaultOptions, options )
-      
-      // JavaScript only
-      ops.content = options.content 
-      
+
       // additional internal options
       isStatic = ops.backdrop === 'static'
       hasFade = hasClass( modal, fadeClass )
@@ -301,9 +299,6 @@ export default function Modal( modalElement, modalOptions ){
       } else { 
         modal[modalComponent] = self
       }
-
-      // set content from option
-      ops.content && self.setContent( ops.content.trim() )
     }
   }
 
@@ -363,10 +358,6 @@ export default function Modal( modalElement, modalOptions ){
     hasFade && force !== 1 // modal should fade AND not forced to hide
       ? emulateTransitionEnd( modal, function hideWrap() { triggerModalHide() } ) // then wait for overlay to fade then triggerModalHide
       : triggerModalHide( force ) // OR triggerModalHide on force or no fade class present
-  }
-
-  ModalProto.setContent = function( content ) {
-    queryElement( '.modal-content', modal ).innerHTML = content.trim()
   }
 
   ModalProto.update = function() {

@@ -16,7 +16,6 @@ import removeEventListener from '../strings/removeEventListener.js'
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
 import getTargetElement from '../util/getTargetElement.js'
-// import normalizeOptions from '../util/normalizeOptions.js'
 
 
 // COLLAPSE GC
@@ -32,7 +31,7 @@ export default function Collapse( collapseElement, collapseOptions ) {
 
   // COLLAPSE INTERNALS
   // ==================
-  let self, element, collapse, accordion, collapseAnimating
+  let self, element, collapse, accordion
 
 
   // COLLAPSE CUSTOM EVENTS
@@ -50,7 +49,7 @@ export default function Collapse( collapseElement, collapseOptions ) {
     collapse.dispatchEvent( showCollapseEvent )
     if ( showCollapseEvent.defaultPrevented ) return
 
-    collapseAnimating = true
+    collapse.isAnimating = true
     accordion && ( accordion.isAnimating = true )
 
     addClass( collapse, collapsingClass )
@@ -59,7 +58,7 @@ export default function Collapse( collapseElement, collapseOptions ) {
     collapse.style.height = `${collapse.scrollHeight}px`
     
     emulateTransitionEnd( collapse, () => {
-      collapseAnimating = false
+      collapse.isAnimating = false
       accordion && ( accordion.isAnimating = false )
 
       collapse.setAttribute( ariaExpanded, 'true' )
@@ -78,7 +77,7 @@ export default function Collapse( collapseElement, collapseOptions ) {
     collapse.dispatchEvent( hideCollapseEvent )
     if ( hideCollapseEvent.defaultPrevented ) return
 
-    collapseAnimating = true
+    collapse.isAnimating = true
     accordion && ( accordion.isAnimating = true )
 
     collapse.style.height = `${collapse.scrollHeight}px`
@@ -91,7 +90,7 @@ export default function Collapse( collapseElement, collapseOptions ) {
     collapse.style.height = '0px'
 
     emulateTransitionEnd( collapse, () => {
-      collapseAnimating = false
+      collapse.isAnimating = false
       accordion && ( accordion.isAnimating = false )
 
       collapse.setAttribute( ariaExpanded, 'false' )
@@ -148,7 +147,7 @@ export default function Collapse( collapseElement, collapseOptions ) {
       collapse =  queryElement( options.target ) || getTargetElement( element )
       accordion = element.closest( options.parent ) || getTargetElement( collapse )
 
-      collapse && ( collapseAnimating = false )
+      collapse && ( collapse.isAnimating = false )
       accordion && ( accordion.isAnimating = false )
 
       // add event listeners
@@ -170,7 +169,7 @@ export default function Collapse( collapseElement, collapseOptions ) {
   }
 
   CollapseProto.hide = function() {   
-    if ( collapseAnimating ) return
+    if ( collapse.isAnimating ) return
 
     collapseContent({ collapse, element })
     addClass( element, `${collapseString}d` )
@@ -185,7 +184,7 @@ export default function Collapse( collapseElement, collapseOptions ) {
                             .find( c => !hasClass( c, `${collapseString}d` ) )
     }
 
-    if ( ( !accordion || accordion && !accordion.isAnimating ) && !collapseAnimating ) {
+    if ( ( !accordion || accordion && !accordion.isAnimating ) && !collapse.isAnimating ) {
       if ( activeElement && activeCollapse !== collapse ) {
         collapseContent({ collapse: activeCollapse, element: activeElement })
         addClass( activeElement, `${collapseString}d` )
@@ -196,10 +195,10 @@ export default function Collapse( collapseElement, collapseOptions ) {
   }
 
   CollapseProto.dispose = function() {
-
     toggleCollapseHandler()
 
     accordion && ( delete accordion.isAnimating )
+    delete collapse.isAnimating
     delete element[collapseComponent]
   }
 

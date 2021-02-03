@@ -192,154 +192,69 @@ var dataBsToggle = 'data-bs-toggle';
 // =================
 var buttonString = 'button',
     buttonComponent = 'Button',
-    buttonSelector = "[" + dataBsToggle + "=\"" + buttonString + "s\"]";
+    buttonSelector = "[" + dataBsToggle + "=\"" + buttonString + "\"]",
+    ariaPressed = 'aria-pressed';
 
 
 // BUTTON SCOPE
 // ============
 function Button( buttonTarget ){
 
-  var element, buttons, checkedAttr = 'checked';
+  var self, element, isActive;
 
-  // BUTTON CUSTOM EVENT
-  // ===================
-  var changeButtonEvent = bootstrapCustomEvent( ("change.bs." + buttonString) );
-
-
-  // BUTTON PRIVATE METHODS
-  // ======================
-  function toggleButtonHandlers( action ) {
-    action = action ? addEventListener : removeEventListener;
-
-    element[action]( 'click', toggleButtonAction );
-    element[action]( 'keyup', buttonKeyHandler );
-    element[action]( 'keydown', buttonPreventScroll );
-    element[action]( 'focusin', buttonFocusHandler );
-    element[action]( 'focusout', buttonFocusHandler );
-  }
-
-
-  // BUTTON EVENT HANDLERS
+  // BUTTON PRIVATE METHOD
   // =====================
-  function toggleButtonAction(e) {
-    var eventTarget = e.target,
-        label = eventTarget.tagName === 'LABEL' ? eventTarget // the .btn label 
-              : eventTarget.closest( 'LABEL' ),
-        input = label && label.getElementsByTagName( 'INPUT' )[0];
-
-    // invalidate if no input
-    if ( !input ) { return }
-
-    element.dispatchEvent( changeButtonEvent ); // trigger the change for the btn-group
-    if ( changeButtonEvent.defaultPrevented ) { return } // discontinue when defaultPrevented is true
-
-    // manage the dom manipulation
-    if ( input.type === 'checkbox' ) { //checkboxes
-
-      if ( !input[checkedAttr] ) {
-        addClass( label, activeClass );
-        input.getAttribute( checkedAttr );
-        input.setAttribute( checkedAttr, checkedAttr );
-        input[checkedAttr] = true;
-      } else {
-        removeClass( label, activeClass );
-        input.getAttribute( checkedAttr );
-        input.removeAttribute( checkedAttr );
-        input[checkedAttr] = false;
-      }
-
-      if ( !element.toggled ) { // prevent triggering the event twice
-        element.toggled = true;
-      }
-    }
-
-    if ( input.type === 'radio' && !element.toggled ) { // radio buttons
-      // if ( changeButtonEvent.defaultPrevented ) return
-      // don't trigger if already active (the OR condition is a hack to check 
-      // if the buttons were selected with key press and NOT mouse click)
-      if ( !input[checkedAttr] || (e.screenX === 0 && e.screenY == 0) ) {
-
-        addClass( label, activeClass );
-        addClass( label, 'focus' );
-
-        input.setAttribute( checkedAttr, checkedAttr );
-        input[checkedAttr] = true;
-        element.toggled = true;
-
-        Array.from( buttons ).map( function (otherLabel) {
-          var otherInput = otherLabel.getElementsByTagName( 'INPUT' )[0];
-
-          if ( otherLabel !== label && hasClass( otherLabel, activeClass ) )  {
-            otherInput.dispatchEvent( changeButtonEvent ); // trigger the change
-            removeClass( otherLabel, activeClass );
-            otherInput.removeAttribute( checkedAttr );
-            otherInput[checkedAttr] = false;
-          }
-        });
-      }
-    }
-    setTimeout( function () { element.toggled = false; }, 10 );
-  }
-
-  function buttonKeyHandler(e) {
-    e.which === 32 && e.target === document.activeElement && toggleButtonAction(e);
-  }
-
-  function buttonPreventScroll(e) { 
-    e.which === 32 && e.preventDefault();
-  }
-
-  function buttonFocusHandler(e) {
-    var eventTarget = e.target, 
-        action = e.type === 'focusin' ? addClass : removeClass;
-
-    eventTarget.tagName === 'INPUT' &&
-      action( eventTarget.closest( '.btn' ), 'focus' );
-  }
-
+  function toggleButtonHandler(action) {
+    action = action ? addEventListener : removeEventListener;
+    element[action]( 'click', function handleButtonToggle(e) {
+      self.toggle.apply( element, [e] ); 
+    });
+  }  
 
   // BUTTON DEFINITION
   // =================
   var Button = function Button( target ){
 
+    self = this;
+      
     // initialization element
     element = queryElement( target );
 
     // reset previous instance
     element[buttonComponent] && element[buttonComponent].dispose();
 
-    // store all possible targets
-    buttons = element.getElementsByClassName( 'btn' );
-      
-    // invalidate
-    if (!buttons.length) { return }
-      
-    // set initial toggled state
-    // toggled makes sure to prevent triggering twice the change.bs.button events
-    element.toggled = false;
+    // add event listener
+    toggleButtonHandler( 1 );
 
-    // activate items on init
-    Array.from( buttons ).map( function (btn) {
-      !hasClass( btn, activeClass )
-        && queryElement( ("input:" + checkedAttr), btn )
-        && addClass( btn, activeClass );
-      hasClass( btn, activeClass )
-        && !queryElement( ("input:" + checkedAttr), btn )
-        && removeClass( btn, activeClass );
-    });
+    // set initial state
+    isActive = hasClass( element, activeClass );
+    element.setAttribute( ariaPressed, isActive ? true : 'false' );
 
-    // add event listeners
-    toggleButtonHandlers( 1 );
     // attach instance to element
-    element[buttonComponent] = this;
+    element[buttonComponent] = self;
   };
 
+  
+  // BUTTON PUBLIC METHODS
+  // =====================
+  var ButtonProto = Button.prototype;
 
-  // BUTTON PUBLIC METHOD
-  // ====================
-  Button.prototype.dispose = function() {
-    toggleButtonHandlers();
-    delete element.toggled;
+  ButtonProto.toggle = function(e) {
+    e.preventDefault();
+
+    if ( hasClass( element, 'disabled' ) ) { return } 
+
+    isActive = hasClass( element, activeClass );
+    
+    var action = isActive ? removeClass : addClass,
+          ariaValue = isActive ? 'false' : 'true';
+
+    action( element, activeClass );
+    element.setAttribute( ariaPressed, ariaValue );
+  };
+
+  ButtonProto.dispose = function() {
+    toggleButtonHandler();
     delete element[buttonComponent];
   };
 
@@ -352,8 +267,6 @@ var buttonInit = {
   selector: buttonSelector,
   constructor: Button
 };
-
-var mouseHoverEvents = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
 
 // determine support for passive events
 var supportPassive = (function () {
@@ -417,12 +330,15 @@ function normalizeValue( value ) {
 }
 
 function normalizeOptions( element, defaultOptions, inputOptions ) {
-  var normalOptions = {}, dataOptions = {}, data = element.dataset,
+  var normalOptions = {}, dataOptions = {}, 
+      data = Object.assign( {}, element.dataset ),
       targetOps = [ 'target', 'parent', 'container' ];
 
   Object.keys( data )
     .map( function (k) {
-      var key = k.replace('bs','').toLowerCase();
+      var key = k.replace('bs','')
+                 .replace(/[A-Z]/, function (match) { return match.toLowerCase(); } );
+
       dataOptions[key] = targetOps.includes(key) ? getTargetElement( element )
                        : normalizeValue( data[k] );
     });
@@ -483,9 +399,10 @@ function Carousel( carouselElement, carouselOptions ){
       indicators,
       controls,
       direction = 'left',
+      isPaused = false,
+      isAnimating = false,
       index = 0,
       timer = null,
-      isAnimating = false,
       isTouch = false,
       startX = 0,
       currentX = 0,
@@ -496,9 +413,7 @@ function Carousel( carouselElement, carouselOptions ){
   // =======================
   function carouselTransitionEndHandler(){
     var next = index,
-        // timeout = e.target !== slides[next] ? e.elapsedTime*1000+50 : 20,
-        // timeout = getElementTransitionDuration(slides[next]) ||  20,
-        activeItem = self.getActiveIndex(),
+        activeItem = getActiveIndex(),
         orientation = direction === 'left' ? 'next' : 'prev',
         directionClass = direction === 'left' ? 'start' : 'end';
 
@@ -531,7 +446,7 @@ function Carousel( carouselElement, carouselOptions ){
   }
 
   function carouselResumeHandler() {
-    if ( hasClass( element, pausedClass ) ) {
+    if ( !isPaused && hasClass( element, pausedClass ) ) {
 
       removeClass( element, pausedClass );
 
@@ -658,8 +573,8 @@ function Carousel( carouselElement, carouselOptions ){
     action = action ? addEventListener : removeEventListener;
 
     if ( ops.pause && ops.interval ) {
-      element[action]( mouseHoverEvents[0], carouselPauseHandler );
-      element[action]( mouseHoverEvents[1], carouselResumeHandler );
+      element[action]( 'mouseenter', carouselPauseHandler );
+      element[action]( 'mouseleave', carouselResumeHandler );
       element[action]( 'touchstart', carouselPauseHandler, passiveHandler );
       element[action]( 'touchend', carouselResumeHandler, passiveHandler );
     }
@@ -672,6 +587,11 @@ function Carousel( carouselElement, carouselOptions ){
 
     indicator && indicator[action]( 'click', carouselIndicatorHandler );
     ops.keyboard && window[action]( 'keydown', carouselKeyHandler );
+  }
+
+  function getActiveIndex() {
+    return Array.from( slides )
+      .indexOf( element.getElementsByClassName( (carouselItem + " " + activeClass) )[0] ) || 0
   }
 
 
@@ -689,6 +609,7 @@ function Carousel( carouselElement, carouselOptions ){
     element = queryElement( target );
 
     // carousel elements
+    // a LIVE collection is prefferable
     slides = element.getElementsByClassName( carouselItem );
 
     // reset previous instance
@@ -699,21 +620,22 @@ function Carousel( carouselElement, carouselOptions ){
     if ( slides.length < 2 ) { return }
 
     controls = [
-      element.getElementsByClassName( (carouselControl + "-prev") )[0],
-      element.getElementsByClassName( (carouselControl + "-next") )[0]
+      queryElement( ("." + carouselControl + "-prev"), element ),
+      queryElement( ("." + carouselControl + "-next"), element )
     ];
 
-    indicator = element.getElementsByClassName( 'carousel-indicators' )[0];
+    // a LIVE collection is prefferable
+    indicator = queryElement( '.carousel-indicators', element );
     indicators = indicator && indicator.getElementsByTagName( 'LI' ) || [];
 
     // set JavaScript and DATA API options
     ops = normalizeOptions( element, defaultCarouselOptions, options );
-    // don't use 0 as interval
+    // don't use TRUE as interval, it's actually 0, use the default 5000ms better
     ops.interval = ops.interval === true
                  ? defaultCarouselOptions.interval : ops.interval;
 
     // set first slide active if none
-    if ( this.getActiveIndex() < 0 ) {
+    if ( getActiveIndex() < 0 ) {
       slides.length && addClass( slides[0], activeClass );
       indicators.length && activateCarouselIndicator( 0 );
     }
@@ -722,10 +644,10 @@ function Carousel( carouselElement, carouselOptions ){
     toggleCarouselHandlers( 1 );
 
     // start to cycle if interval is set
-    ops.interval && this.cycle();
+    ops.interval && self.cycle();
 
     // associate init object to target
-    element[carouselComponent] = this;
+    element[carouselComponent] = self;
   };
 
 
@@ -739,9 +661,23 @@ function Carousel( carouselElement, carouselOptions ){
       timer = null;
     }
 
+    if ( isPaused ) {
+      removeClass( element, pausedClass );
+      isPaused = !isPaused;
+    }
+    
     timer = setInterval( function () {
       isElementInScrollRange( element ) && ( index++, self.to( index ) );
     }, ops.interval );
+  };
+
+  CarouselProto.pause = function() {
+    if ( ops.interval && !isPaused ) {
+      clearInterval( timer );
+      timer = null;
+      addClass( element, pausedClass );
+      isPaused = !isPaused;
+    }
   };
 
   CarouselProto.next = function() {
@@ -753,13 +689,13 @@ function Carousel( carouselElement, carouselOptions ){
   };
 
   CarouselProto.to = function( next ) {
-    var activeItem = self.getActiveIndex();
+    var activeItem = getActiveIndex();
 
     // when controled via methods, make sure to check again
     // first return if we're on the same item #227
     if ( isAnimating || activeItem === next ) { return }
 
-    // // or determine slide direction
+    // determine transition direction
     if ( ( activeItem < next ) || ( activeItem === 0 && next === slides.length -1 ) ) {
       direction = 'left'; // next
     } else if ( ( activeItem > next ) || ( activeItem === slides.length - 1 && next === 0 ) ) {
@@ -788,9 +724,10 @@ function Carousel( carouselElement, carouselOptions ){
     // update index
     index = next;
 
-    isAnimating = true;
     clearInterval( timer );
     timer = null;
+
+    isAnimating = true;
     activateCarouselIndicator( next );
 
     if ( getElementTransitionDuration( slides[next] ) && hasClass( element, 'slide' ) ) {
@@ -811,18 +748,13 @@ function Carousel( carouselElement, carouselOptions ){
         isAnimating = false;
 
         // check for element, might have been disposed
-        if ( ops.interval && element && !hasClass( element, pausedClass ) ) {
+        if ( element && ops.interval && !hasClass( element, pausedClass ) ) {
           self.cycle();
         }
 
         element.dispatchEvent( carouselSlidEvent );
       }, 100 );
     }
-  };
-
-  CarouselProto.getActiveIndex = function() {
-    return Array.from( slides )
-      .indexOf( element.getElementsByClassName( (carouselItem + " " + activeClass) )[0] ) || 0
   };
 
   CarouselProto.dispose = function() {
@@ -853,9 +785,6 @@ var ariaExpanded = 'aria-expanded';
 
 var collapsingClass = 'collapsing'; // collapse / tab
 
-// import normalizeOptions from '../util/normalizeOptions.js'
-
-
 // COLLAPSE GC
 // ===========
 var collapseString = 'collapse',
@@ -869,7 +798,7 @@ function Collapse( collapseElement, collapseOptions ) {
 
   // COLLAPSE INTERNALS
   // ==================
-  var self, element, collapse, accordion, collapseAnimating;
+  var self, element, collapse, accordion;
 
 
   // COLLAPSE CUSTOM EVENTS
@@ -887,7 +816,7 @@ function Collapse( collapseElement, collapseOptions ) {
     collapse.dispatchEvent( showCollapseEvent );
     if ( showCollapseEvent.defaultPrevented ) { return }
 
-    collapseAnimating = true;
+    collapse.isAnimating = true;
     accordion && ( accordion.isAnimating = true );
 
     addClass( collapse, collapsingClass );
@@ -896,7 +825,7 @@ function Collapse( collapseElement, collapseOptions ) {
     collapse.style.height = (collapse.scrollHeight) + "px";
     
     emulateTransitionEnd( collapse, function () {
-      collapseAnimating = false;
+      collapse.isAnimating = false;
       accordion && ( accordion.isAnimating = false );
 
       collapse.setAttribute( ariaExpanded, 'true' );
@@ -918,7 +847,7 @@ function Collapse( collapseElement, collapseOptions ) {
     collapse.dispatchEvent( hideCollapseEvent );
     if ( hideCollapseEvent.defaultPrevented ) { return }
 
-    collapseAnimating = true;
+    collapse.isAnimating = true;
     accordion && ( accordion.isAnimating = true );
 
     collapse.style.height = (collapse.scrollHeight) + "px";
@@ -931,7 +860,7 @@ function Collapse( collapseElement, collapseOptions ) {
     collapse.style.height = '0px';
 
     emulateTransitionEnd( collapse, function () {
-      collapseAnimating = false;
+      collapse.isAnimating = false;
       accordion && ( accordion.isAnimating = false );
 
       collapse.setAttribute( ariaExpanded, 'false' );
@@ -987,7 +916,7 @@ function Collapse( collapseElement, collapseOptions ) {
     collapse =queryElement( options.target ) || getTargetElement( element );
     accordion = element.closest( options.parent ) || getTargetElement( collapse );
 
-    collapse && ( collapseAnimating = false );
+    collapse && ( collapse.isAnimating = false );
     accordion && ( accordion.isAnimating = false );
 
     // add event listeners
@@ -1008,7 +937,7 @@ function Collapse( collapseElement, collapseOptions ) {
   };
 
   CollapseProto.hide = function() {   
-    if ( collapseAnimating ) { return }
+    if ( collapse.isAnimating ) { return }
 
     collapseContent({ collapse: collapse, element: element });
     addClass( element, (collapseString + "d") );
@@ -1023,7 +952,7 @@ function Collapse( collapseElement, collapseOptions ) {
                             .find( function (c) { return !hasClass( c, (collapseString + "d") ); } );
     }
 
-    if ( ( !accordion || accordion && !accordion.isAnimating ) && !collapseAnimating ) {
+    if ( ( !accordion || accordion && !accordion.isAnimating ) && !collapse.isAnimating ) {
       if ( activeElement && activeCollapse !== collapse ) {
         collapseContent({ collapse: activeCollapse, element: activeElement });
         addClass( activeElement, (collapseString + "d") );
@@ -1034,10 +963,10 @@ function Collapse( collapseElement, collapseOptions ) {
   };
 
   CollapseProto.dispose = function() {
-
     toggleCollapseHandler();
 
     accordion && ( delete accordion.isAnimating );
+    delete collapse.isAnimating;
     delete element[collapseComponent];
   };
 
@@ -1492,6 +1421,7 @@ function Modal( modalElement, modalOptions ){
     if ( overlay && !document.getElementsByClassName( (modalString + " " + showClass) )[0] ) {
       document.body.removeChild(overlay); overlay = null;     
     }
+    
     isAnimating = false;
 
     overlay === null && ( removeClass( document.body, modalOpenClass), resetModalScrollbar() );
@@ -1644,10 +1574,7 @@ function Modal( modalElement, modalOptions ){
 
     // set options
     ops = normalizeOptions( modal, modalDefaultOptions, options );
-      
-    // JavaScript only
-    ops.content = options.content; 
-      
+
     // additional internal options
     isStatic = ops.backdrop === 'static';
     hasFade = hasClass( modal, fadeClass );
@@ -1662,9 +1589,6 @@ function Modal( modalElement, modalOptions ){
     } else { 
       modal[modalComponent] = self;
     }
-
-    // set content from option
-    ops.content && self.setContent( ops.content.trim() );
   };
 
 
@@ -1725,10 +1649,6 @@ function Modal( modalElement, modalOptions ){
       : triggerModalHide( force ); // OR triggerModalHide on force or no fade class present
   };
 
-  ModalProto.setContent = function( content ) {
-    queryElement( '.modal-content', modal ).innerHTML = content.trim();
-  };
-
   ModalProto.update = function() {
     hasClass( modal, showClass ) && setModalScrollbar();
   };
@@ -1755,11 +1675,13 @@ var modalInit = {
   constructor: Modal
 };
 
-var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
-
 var ariaDescribedBy = 'aria-describedby';
 
 var tipClassPositions = {top:'top', bottom:'bottom', left:'start', right:'end'};
+
+function isVisibleTip( tip, container ){
+  return container.contains( tip )
+}
 
 function isMedia(element){
   return [SVGElement,HTMLImageElement,HTMLVideoElement]
@@ -1900,15 +1822,16 @@ var popoverString = 'popover',
     popoverComponent = 'Popover',
     popoverSelector = "[" + dataBsToggle + "=\"" + popoverString + "\"],[data-tip=\"" + popoverString + "\"]",
     popoverDefaultOptions = {
-      template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-      title: null,
-      content: null,
-      sanitizeFn: null,
-      dismissible: false,
-      trigger: 'hover',
-      animation: fadeClass,
-      placement: 'top',
-      delay: 200
+      template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>', // string
+      title: null, // string
+      content: null, // string
+      sanitizeFn: null, // function
+      customClass: null, // string
+      dismissible: false, // boolean
+      animation: true, // boolean
+      trigger: 'hover', // string
+      placement: 'top', // string
+      delay: 200 // number
     };
 
 
@@ -1919,8 +1842,7 @@ function Popover( popoverElement, popoverOptions ){
   // POPOVER PRIVATE GC
   // ==================
   var isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
-      // close btn for dissmissible popover
-      popoverCloseButton = '<button type="button" class="btn-close"></button>',
+      // popoverArrowClass = `${popoverString}-arrow`,
       popoverHeaderClass = popoverString + "-header",
       popoverBodyClass = popoverString + "-body",
 
@@ -1939,31 +1861,33 @@ function Popover( popoverElement, popoverOptions ){
       popover = null,
       ops = {},
       enabled = true,
-      timer=  null;
+      timer=  null,
+      // close btn for dissmissible popover
+      popoverCloseButton = '<button type="button" class="btn-close"></button>';
 
 
   // POPOVER EVENT HANDLERS
   // ======================
   function dismissiblePopoverHandler(e) {
-    if ( popover !== null && e.target === queryElement( '.btn-close', popover ) ) {
+    if ( e.target === queryElement( '.btn-close', popover ) ) {
       self.hide();
     }
   }
 
   function updatePopover(e) {
-    popover && styleTip( element, popover, ops.placement, ops.container, e );
+    styleTip( element, popover, ops.placement, ops.container, e );
   }
 
   function popoverForceFocus() {
-    popover === null && element.focus();
+    element.focus();
   }
 
   function popoverShowHandler() {
-    popover === null && self.show();
+    self.show();
   }
 
   function popoverHideHandler() {
-    popover !== null && self.hide();
+    self.hide();
   }
 
   function popoverClickHandler() {
@@ -1981,6 +1905,11 @@ function Popover( popoverElement, popoverOptions ){
     }
   }
 
+  function disposeComplete() {
+    togglePopoverHandlers();
+    delete element[popoverComponent];
+  }
+
 
   // POPOVER PRIVATE METHODS
   // =======================
@@ -1988,7 +1917,6 @@ function Popover( popoverElement, popoverOptions ){
     element.removeAttribute( ariaDescribedBy );
     ops.container.removeChild( popover );
     timer = null;
-    popover = null;
   }
 
   function createPopover() {
@@ -2003,6 +1931,8 @@ function Popover( popoverElement, popoverOptions ){
     if ( ops.sanitizeFn ) {
       titleString = titleString ? ops.sanitizeFn( titleString ) : null;
       contentString = contentString ? ops.sanitizeFn( contentString ) : null;
+      ops.template = ops.template ? ops.sanitizeFn( ops.template ) : null;
+      popoverCloseButton = ops.sanitizeFn( popoverCloseButton );
     }    
 
     popover = document.createElement( 'div' );
@@ -2021,20 +1951,21 @@ function Popover( popoverElement, popoverOptions ){
         popoverBody = queryElement( ("." + popoverBodyClass), popover );
 
     // set dismissible button
-    titleString = ops.dismissible && titleString ? titleString + popoverCloseButton : titleString;
-    contentString = ops.dismissible && titleString === null ? + popoverCloseButton : contentString;
+    if ( ops.dismissible ) {
+      titleString = titleString ? titleString + popoverCloseButton : titleString;
+      contentString = titleString === null ? + popoverCloseButton : contentString;
+    }
 
     // fill the template with content from data attributes
     titleString && popoverHeader && ( popoverHeader.innerHTML = titleString.trim() );
     contentString && popoverBody && ( popoverBody.innerHTML = contentString.trim() );
 
-    //append to the container
-    ops.container.appendChild( popover );
-    popover.style.display = 'block';
     // set popover animation and placement 
     !hasClass( popover, popoverString ) && addClass( popover, popoverString );
-    !hasClass( popover, ops.animation ) && addClass( popover, ops.animation );
+    ops.animation && !hasClass( popover, fadeClass ) && addClass( popover, fadeClass );
+    ops.customClass && !hasClass( popover, ops.customClass ) && addClass( popover, ops.customClass );
     !hasClass( popover, placementClass ) && addClass( popover, placementClass );
+
   }
 
   function showPopover() {
@@ -2045,10 +1976,10 @@ function Popover( popoverElement, popoverOptions ){
     action = action ? addEventListener : removeEventListener;
 
     if ( 'hover' === ops.trigger ) {
-      element[action]( mouseClickEvents.down, popoverShowHandler );
-      element[action]( mouseHoverEvents[0], popoverShowHandler );
+      element[action]( 'mousedown', popoverShowHandler );
+      element[action]( 'mouseenter', popoverShowHandler );
       isMedia(element) && element[action]( 'mousemove', updatePopover, passiveHandler );
-      !ops.dismissible && element[action]( mouseHoverEvents[1], popoverHideHandler ); // mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
+      !ops.dismissible && element[action]( 'mouseleave', popoverHideHandler ); // mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
     } else if ( 'click' === ops.trigger ) {
       element[action]( ops.trigger, popoverClickHandler );
     } else if ( 'focus' === ops.trigger ) {
@@ -2077,6 +2008,7 @@ function Popover( popoverElement, popoverOptions ){
     dismissHandlerToggle( 1 );
     element.dispatchEvent( shownPopoverEvent );
   }
+
   function popoverHideTrigger(e) {
     dismissHandlerToggle();
     removePopover();
@@ -2118,8 +2050,12 @@ function Popover( popoverElement, popoverOptions ){
 
     // set default popover class
     placementClass = "bs-" + popoverString + "-" + (tipClassPositions[ops.placement]);
+
     // set unique ID for aria-describedby
-    popoverID = popoverString + "-" + (element.id || getUID( element ));
+    popoverID = popoverString + "-" + (getUID( element ));
+
+    // crate popover
+    createPopover();
 
     // attach event listeners
     togglePopoverHandlers( 1 );
@@ -2134,22 +2070,26 @@ function Popover( popoverElement, popoverOptions ){
   var PopoverProto = Popover.prototype;
 
   PopoverProto.toggle = function() {
-    popover === null ? self.show() : self.hide();
+    !isVisibleTip( popover, ops.container ) ? self.show() : self.hide();
   };
 
   PopoverProto.show = function() {
     clearTimeout( timer );
 
     timer = setTimeout( function () {
-      if ( popover === null ) {
+      if ( !isVisibleTip( popover, ops.container ) ) {
+        
         element.dispatchEvent( showPopoverEvent );
         if ( showPopoverEvent.defaultPrevented ) { return }
 
-        createPopover();
+        //append to the container
+        ops.container.appendChild( popover );
+
         updatePopover();
         showPopover();
 
-        ops.animation ? emulateTransitionEnd( popover, popoverShowTrigger )
+        ops.animation 
+          ? emulateTransitionEnd( popover, popoverShowTrigger )
           : popoverShowTrigger();
       }
     }, 17 );
@@ -2159,13 +2099,14 @@ function Popover( popoverElement, popoverOptions ){
     clearTimeout( timer );
 
     timer = setTimeout( function () {
-      if (popover && popover !== null && hasClass( popover, showClass )) {
+      if ( isVisibleTip( popover, ops.container ) && hasClass( popover, showClass ) ) {
         element.dispatchEvent( hidePopoverEvent );
         if ( hidePopoverEvent.defaultPrevented ) { return }
 
         removeClass( popover, showClass );
 
-        ops.animation ? emulateTransitionEnd( popover, popoverHideTrigger  ) 
+        ops.animation 
+          ? emulateTransitionEnd( popover, popoverHideTrigger  ) 
           : popoverHideTrigger();
       }
     }, ops.delay + 50 );
@@ -2180,7 +2121,7 @@ function Popover( popoverElement, popoverOptions ){
 
   PopoverProto.disable = function() {
     if ( enabled ) {
-      if ( popover !== null && ops.animation ) {
+      if ( isVisibleTip( popover, ops.container ) && ops.animation ) {
         self.hide();
 
         setTimeout(
@@ -2198,11 +2139,13 @@ function Popover( popoverElement, popoverOptions ){
   };
 
   PopoverProto.dispose = function() {
-    self.hide();
-
-    togglePopoverHandlers();
-
-    delete element[popoverComponent];
+    if ( ops.animation && isVisibleTip( popover, ops.container ) ){
+      ops.delay = 0; // reset delay
+      self.hide();
+      emulateTransitionEnd( popover, disposeComplete );
+    } else {
+      disposeComplete();
+    }
   };
 
   return new Popover( popoverElement, popoverOptions )
@@ -2220,6 +2163,8 @@ var popoverInit = {
 var scrollspyString = 'scrollspy',
     scrollspyComponent = 'ScrollSpy',
     scrollspySelector = '[data-bs-spy="scroll"]';
+
+var scrollHandlerQueue = [];
 
 
 // SCROLLSPY SCOPE
@@ -2267,7 +2212,6 @@ function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
       Array.from( links ).map( function (link) {
         href = link.getAttribute( 'href' );
         targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement( href );
-        // targetItem = getTargetElement( link )
 
         if ( targetItem ) {
           items.push( link );
@@ -2322,45 +2266,25 @@ function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
 
   function toggleSpyHandlers( plus ) {
     var action = plus ? addEventListener : removeEventListener,
-        scrollIdx = scrollHandlerQueue.indexOf( scrollHandlerQueue.find( function (s) { return s.id===elementID; } ) ),
-        resizeIdx = resizeHandlerQueue.indexOf( resizeHandlerQueue.find( function (r) { return r.id===elementID; } ) ),
+        scrollIdx = scrollHandlerQueue.indexOf( scrollHandlerQueue.find( function (s) { return s.id === elementID; } ) ),
         listener = { id: elementID, self: self };
 
-    // window should always have a single scroll/resize listener
-    if ( !plus ) {
-      scrollIdx > -1 && scrollHandlerQueue.splice( scrollIdx, 1 );
-      resizeIdx > -1 && resizeHandlerQueue.splice( resizeIdx, 1 );
-    }
-
-    // scroll handling
+    !plus && scrollIdx > -1 && scrollHandlerQueue.splice( scrollIdx, 1 );
+        
+    // window should always have a single scroll listener
     if ( !isWindow || plus && !scrollHandlerQueue.length || !plus ) {
       scrollTarget[action]( 'scroll', scrollUpdateHandler, passiveHandler );
     }
-
-    // resize handling
-    if ( plus && !resizeHandlerQueue.length || !plus && !resizeHandlerQueue.length ) {
-      window[action]( 'resize', resizeUpdateHandler, passiveHandler );
-    }
-
-    if ( plus ) {
-      scrollHandlerQueue.push( listener );
-      resizeHandlerQueue.push( listener );
-    }
+    
+    plus && scrollHandlerQueue.push( listener );
   }
 
 
   // SCROLLSPY EVENT HANDLERS
   // ========================
-  var scrollHandlerQueue = [];
   function scrollUpdateHandler(){
     scrollHandlerQueue.map( function (i) { return i.self.refresh(); } );
   }
-
-  var resizeHandlerQueue = [];
-  function resizeUpdateHandler(){
-    resizeHandlerQueue.map( function (i) { return i.self.refresh(); } );
-  }
-
 
   // SCROLLSPY DEFINITION
   // ====================
@@ -2743,10 +2667,16 @@ function Toast( toastElement, toastOptions ){
   }
   
   
-  // TOAST EVENT HANDLER
-  // ===================
+  // TOAST EVENT HANDLERS
+  // ====================
   function toastClickHandler(){
     self.hide();
+  }
+
+  function completeDispose() {
+    clearTimeout( timer );
+    toggleToastHandler();
+    delete element[toastComponent];
   }
   
   
@@ -2808,16 +2738,10 @@ function Toast( toastElement, toastOptions ){
   
   ToastProto.dispose = function() {
   
-    var completeDispose = function () {
-      clearTimeout( timer );
-      toggleToastHandler();
-      delete element[toastComponent];
-    };
-  
     self.hide();
   
     ops.animation 
-      ? emulateTransitionEnd( toast, completeDispose) 
+      ? emulateTransitionEnd( toast, completeDispose ) 
       : completeDispose();
   };
 
@@ -2851,7 +2775,8 @@ function Tooltip( tooltipElement, tooltipOptions ){
         title: null,
         template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
         placement: 'top',
-        animation: fadeClass,
+        animation: true,
+        customClass: null,
         delay: 200,
         sanitizeFn: null
       },
@@ -2878,15 +2803,17 @@ function Tooltip( tooltipElement, tooltipOptions ){
   function removeTooltip() {  
     element.removeAttribute( ariaDescribedBy );
     ops.container.removeChild( tooltip );
-    tooltip = null;
     timer = null;
   }
   
   function createTooltip() {  
     var titleString = ops.title.trim(); // read the title again
   
-    // sanitize title
-    titleString = ops.sanitizeFn ? ops.sanitizeFn( titleString ) : titleString;
+    // sanitize stuff
+    if ( ops.sanitizeFn ) {
+      titleString = ops.sanitizeFn( titleString );
+      ops.template = ops.sanitizeFn( ops.template );
+    }
   
     if ( !titleString ) { return } // invalidate, maybe markup changed
   
@@ -2906,21 +2833,20 @@ function Tooltip( tooltipElement, tooltipOptions ){
 
     queryElement( ("." + tooltipInnerClass), tooltip ).innerHTML = titleString;
 
-    // reset position
-    tooltip.style.left = '0';
-    tooltip.style.top = '0';
     // set class and role attribute
     tooltip.setAttribute('role', tooltipString );
+    // set classes
     !hasClass( tooltip, tooltipString ) && addClass( tooltip, tooltipString );
-    !hasClass( tooltip, ops.animation ) && addClass( tooltip, ops.animation );
+    ops.animation && !hasClass( tooltip, fadeClass ) && addClass( tooltip, fadeClass );
+    ops.customClass && !hasClass( tooltip, ops.customClass ) && addClass( tooltip, ops.customClass );
     !hasClass( tooltip, placementClass ) && addClass( tooltip, placementClass );
   
-    // append to container
-    ops.container.appendChild( tooltip );
   }
   
+  // TOOLTIP EVENT HANDLERS
+  // ======================
   function updateTooltip(e) { 
-    tooltip && styleTip( element, tooltip, ops.placement, ops.container, e );
+    styleTip( element, tooltip, ops.placement, ops.container, e );
   }
   
   function showTooltip() {
@@ -2930,7 +2856,7 @@ function Tooltip( tooltipElement, tooltipOptions ){
   function tooltipTouchHandler(e){
     var eventTarget = e.target;
   
-    if ( tooltip && tooltip.contains( eventTarget ) || eventTarget === element || element.contains( eventTarget ) ) ; else {
+    if ( tooltip.contains( eventTarget ) || eventTarget === element || element.contains( eventTarget ) ) ; else {
       self.hide();
     }
   }
@@ -2941,6 +2867,12 @@ function Tooltip( tooltipElement, tooltipOptions ){
   
   function closeTooltipHandler(){
     self.hide();
+  }
+
+  function disposeComplete(){
+    toggleTooltipHandlers();
+    element.hasAttribute( dataOriginalTitle ) && toggleTooltipTitle();
+    delete element[tooltipComponent];
   }
   
   function toggleTooltipAction( action ){
@@ -2969,9 +2901,9 @@ function Tooltip( tooltipElement, tooltipOptions ){
     action = action ? addEventListener : removeEventListener;
   
     isMedia(element) && element[action]( 'mousemove', updateTooltip, passiveHandler );
-    element[action]( mouseClickEvents.down, openTooltipHandler );
-    element[action]( mouseHoverEvents[0], openTooltipHandler );
-    element[action]( mouseHoverEvents[1], closeTooltipHandler );
+    element[action]( 'mousedown', openTooltipHandler );
+    element[action]( 'mouseenter', openTooltipHandler );
+    element[action]( 'mouseleave', closeTooltipHandler );
   }
   
   function toggleTooltipTitle( content ){
@@ -3016,12 +2948,16 @@ function Tooltip( tooltipElement, tooltipOptions ){
     // invalidate
     if ( !ops.title ) { return }
 
-    tooltipID = tooltipString + "-" + (element.id || getUID( element ));
+    tooltipID = tooltipString + "-" + (getUID( element ));
     placementClass = "bs-" + tooltipString + "-" + (tipClassPositions[ops.placement]);
     
     // set title attributes and add event listeners
     element.hasAttribute( titleAttr ) && toggleTooltipTitle( ops.title );
-  
+
+    // create tooltip here
+    createTooltip();
+
+    // attach events
     toggleTooltipHandlers( 1 );
     
     // associate target to init object
@@ -3037,16 +2973,18 @@ function Tooltip( tooltipElement, tooltipOptions ){
   
     clearTimeout( timer );
     timer = setTimeout( function () {
-      if ( tooltip === null ) {
+      if ( !isVisibleTip( tooltip, ops.container ) ) {
         element.dispatchEvent( showTooltipEvent);
         if ( showTooltipEvent.defaultPrevented ) { return }
-  
-        if ( createTooltip() !== false ) {
-          updateTooltip();
-          showTooltip();
-          ops.animation ? emulateTransitionEnd( tooltip, tooltipShownAction ) 
-            : tooltipShownAction();
-        }
+
+        // append to container
+        ops.container.appendChild( tooltip );
+
+        updateTooltip();
+        showTooltip();
+        ops.animation 
+          ? emulateTransitionEnd( tooltip, tooltipShownAction ) 
+          : tooltipShownAction();
       }
     }, 20 );
   };
@@ -3055,19 +2993,20 @@ function Tooltip( tooltipElement, tooltipOptions ){
   
     clearTimeout( timer );
     timer = setTimeout( function () {
-      if (tooltip && hasClass( tooltip, showClass )) {
+      if ( isVisibleTip( tooltip, ops.container ) ) {
         element.dispatchEvent( hideTooltipEvent );
         if ( hideTooltipEvent.defaultPrevented ) { return }
   
         removeClass( tooltip, showClass );
-        !!ops.animation ? emulateTransitionEnd( tooltip, tooltipHiddenAction ) 
+        ops.animation 
+          ? emulateTransitionEnd( tooltip, tooltipHiddenAction ) 
           : tooltipHiddenAction();
       }
     }, ops.delay );
   };
   
   TooltipProto.toggle = function() {
-    tooltip === null ? self.show() : self.hide();
+    !isVisibleTip( tooltip, ops.container ) ? self.show() : self.hide();
   };
 
   TooltipProto.enable = function() {
@@ -3079,7 +3018,7 @@ function Tooltip( tooltipElement, tooltipOptions ){
 
   TooltipProto.disable = function() {
     if ( enabled ) {
-      if ( tooltip !== null && ops.animation ) {
+      if ( !isVisibleTip( tooltip, ops.container ) && ops.animation ) {
         self.hide();
 
         setTimeout(
@@ -3097,13 +3036,14 @@ function Tooltip( tooltipElement, tooltipOptions ){
     !enabled ? self.enable() : self.disable();
   };  
   
-  TooltipProto.dispose = function() { 
-    this.hide();
-    toggleTooltipHandlers();
-  
-    element.hasAttribute( dataOriginalTitle ) && toggleTooltipTitle();
-  
-    delete element[tooltipComponent];
+  TooltipProto.dispose = function() {
+    if ( ops.animation && isVisibleTip( tooltip, ops.container ) ){
+      ops.delay = 0; // reset delay
+      self.hide();
+      emulateTransitionEnd( tooltip, disposeComplete );
+    } else {
+      disposeComplete();
+    }
   };
 
   return new Tooltip( tooltipElement, tooltipOptions )
@@ -3135,28 +3075,32 @@ var componentsInit = {
 function initializeDataAPI( konstructor, collection ){
   Array.from( collection ).map( function (x) { return new konstructor(x); } );
 }
-function removeElementDataAPI( konstructor, collection ){
-  Array.from(collection).map( function (x) { return x[konstructor].dispose(); } );
+function removeElementDataAPI( component, collection ){
+  Array.from( collection ).map( function (x) { return x[component] && x[component].dispose(); } );
 }
 
 /* 
- * Usage Example
+ * Callback Usage Examples
+ *
  * // init all components with valid markup in the #main element
- * BSN.Callback(document.getElementById('main'),true)
+ * BSN.Callback('#main',true)
  * // remove all components with valid markup in the #main element
- * BSN.Callback(document.getElementById('main'),false)
- * // this rquivalent to this
- * BSN.Callback(document.getElementById('main'))
+ * BSN.Callback('#main',false)
+ * // equivalent to the following
+ * BSN.Callback('#main')
  * // remove all components in the document
  * BSN.Callback()
  * 
 */
-function Callback( lookUp, action ){
-  lookUp = lookUp instanceof Element ? lookup : document;
-  action = action ? initializeDataAPI : removeElementDataAPI;
+function Callback( lookUp, init ){
+  if ( lookUp === void 0 ) lookUp = 0;
+  if ( init === void 0 ) init = 0;
+
+  var action = init ? initializeDataAPI : removeElementDataAPI;
+  lookUp = lookUp instanceof Element ? lookUp : document;
 
   for (var component in componentsInit) {
-    action( componentsInit[component].constructor, 
+    action( init ? componentsInit[component].constructor : component,
       lookUp.querySelectorAll( componentsInit[component].selector ) );
   }
 }

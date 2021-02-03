@@ -96,10 +96,16 @@ export default function Toast( toastElement, toastOptions ){
   }
   
   
-  // TOAST EVENT HANDLER
-  // ===================
+  // TOAST EVENT HANDLERS
+  // ====================
   function toastClickHandler(){
     self.hide()
+  }
+
+  function completeDispose() {
+    clearTimeout( timer )
+    toggleToastHandler()
+    delete element[toastComponent]
   }
   
   
@@ -163,16 +169,10 @@ export default function Toast( toastElement, toastOptions ){
   
   ToastProto.dispose = function() {
   
-    const completeDispose = () => {
-      clearTimeout( timer )
-      toggleToastHandler()
-      delete element[toastComponent]
-    }
-  
     self.hide()
   
     ops.animation 
-      ? emulateTransitionEnd( toast, completeDispose) 
+      ? emulateTransitionEnd( toast, completeDispose ) 
       : completeDispose()
   }
 

@@ -23,12 +23,15 @@ function normalizeValue( value ) {
 }
 
 export default function( element, defaultOptions, inputOptions ) {
-  const normalOptions = {}, dataOptions = {}, data = element.dataset,
+  const normalOptions = {}, dataOptions = {}, 
+      data = Object.assign( {}, element.dataset ),
       targetOps = [ 'target', 'parent', 'container' ]
 
   Object.keys( data )
     .map( k => {
-      const key = k.replace('bs','').toLowerCase()
+      let key = k.replace('bs','')
+                 .replace(/[A-Z]/, (match) => match.toLowerCase() )
+
       dataOptions[key] = targetOps.includes(key) ? getTargetElement( element )
                        : normalizeValue( data[k] )
     })

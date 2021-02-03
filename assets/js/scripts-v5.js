@@ -7,12 +7,12 @@ var offCanvasCollapse = document.getElementsByClassName('offcanvas-collapse')[0]
 		// scrollTarget = /(EDGE|Mac)/i.test(navigator.userAgent) ? document.body : document.documentElement;
 		scrollTarget = document.documentElement;
 
-sideLinks.map((x,i) => x.addEventListener('click', (e) => { 
+sideLinks.map( function(x,i) {x.addEventListener('click', function(e){ 
 	var target = document.getElementById(x.getAttribute('href').replace('#', ''));
 	e.preventDefault();
 	scrollTarget.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) -  70;
 	topNav.contains(x) && offCanvasCollapse.classList.toggle('open')
-})) 
+})}) 
 // offcanvas
 document.querySelector('[data-toggle="offcanvas"]').addEventListener('click', function () {
 	offCanvasCollapse.classList.toggle('open')
@@ -39,12 +39,6 @@ dangerAlert.addEventListener('closed.bs.alert', function(e) {
 document.getElementById('alertDemo').addEventListener('close.bs.alert', function(e) {	console.log( 'The "close.bs.alert" event fired for #' + e.target.id ); });
 document.getElementById('alertDemo').addEventListener('closed.bs.alert', function(e) {	console.log( 'The "closed.bs.alert" event fired for #' + e.target.id ); });
 
-// BUTTON
-// var buttonTarget = document.querySelector('[data-bs-toggle="buttons"]')
-// buttonTarget.addEventListener('change.bs.button', function(e){
-// 	console.log('Button triggered "change.bs.button" event for '+ e.target.tagName + '.' + e.target.className.replace(/\s/g, '.'))
-// })
-
 // MODAL
 var myModal = document.getElementById('myModal'); // we need a blank modal to fill up and target our object function
 myModal.addEventListener('show.bs.modal', function (e) {
@@ -65,23 +59,10 @@ myModal.addEventListener('hidden.bs.modal', function (e) {
 }, false);
 
 // Modal initialized with JavaScript
-var myModalJS = document.getElementById('myModalJS'); // we need a blank modal to fill up and target our object function
 var btnModal = document.getElementById('openModalViaJS');
-var firstModalContent = '<div class="modal-header">'
-	+ '<h4 class="modal-title" id="myModalJSLabel">Modal title</h4>'
-	+ '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
-	+ '</div>'
-	+ '<div class="modal-body">'
-	+ '<p>This is a damn awesome modal content template configured via Javascript, using the specific modal events like <code>show.bs.modal</code>, so please open your console and check the log entries.</p>'
-	+ '</div>'
-	+ '<div class="modal-footer">'
-	+ '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>'
-	+ '<button type="button" class="btn btn-primary">Save changes</button>'
-	+ '</div>';
+var myModalJS = document.getElementById('myModalJS');
 
-// init the modal
 var modalInitJS = new BSN.Modal(myModalJS, {
-	content: firstModalContent,
 	backdrop: 'static'
 });
 
@@ -89,152 +70,6 @@ btnModal.addEventListener('click', function (e) {
 	modalInitJS.show();
 }, false);
 
-// another button
-var btnModal2 = document.getElementById('openModalViaJS2');
-var externalModalContent = {
-	title: 'Title from a custom variable',
-	content: 'This example also uses the specific modal events like <code>show.bs.modal</code>, so please open your console and check the logs. This is also a variable here, efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas. Dramatically maintain clicks-and-mortar solutions without functional solutions.',
-};
-
-// set new content for the modal and show it
-btnModal2.addEventListener('click', function () {
-	//template content for modal example 2
-	modalInitJS.setContent('<div class="modal-header">'
-		+ '<h4 class="modal-title" id="myModalJSLabel">' + externalModalContent.title + '</h4>'
-		+ '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
-		+ '</div>'
-		+ '<div class="modal-body">'
-		+ '<p>' + externalModalContent.content + '</p>'
-		+ '</div>'
-		+ '<div class="modal-footer">'
-		+ '<button type="button" class="btn btn-danger">Delete</button>'
-		+ '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>'
-		+ '</div>');
-	modalInitJS.show();
-}, false);
-
-// another button to be used to reset modal content
-var btnModalNotTrigger = document.getElementById('modalNotTriggerJS');
-btnModalNotTrigger.addEventListener('click', function (e) {
-	e.preventDefault();
-	modalInitJS.setContent(firstModalContent);
-	modalInitJS.show();
-}, false);
-
-// NEW added events to Modal
-myModalJS.addEventListener('show.bs.modal', function (e) {
-	var related = ', relatedTarget: ' + (e.relatedTarget ? e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.') : 'null');
-	console.log('The "show.bs.modal" event fired for #' + e.target.id + related);
-}, false);
-myModalJS.addEventListener('shown.bs.modal', function (e) {
-	var related = ', relatedTarget: ' + (e.relatedTarget ? e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.') : 'null');
-	console.log('The "shown.bs.modal" event fired for #' + e.target.id + related);
-}, false);
-myModalJS.addEventListener('hide.bs.modal', function (e) { console.log('The "hide.bs.modal" event fired for #' + e.target.id); }, false);
-myModalJS.addEventListener('hidden.bs.modal', function (e) { console.log('The "hidden.bs.modal" event fired for #' + e.target.id); }, false);
-
-// updating modal while visible
-var modalUpdate = document.getElementById('modalUpdate'), // the trigger
-	anotherStaticModal = document.getElementById('anotherStaticModal'), // the modal
-	currentStaticModalBody = anotherStaticModal.querySelector('.modal-body'), // the body of the current modal
-	currentStaticModalBodyContent = currentStaticModalBody.innerHTML, // we cache the content of the body
-	modalUpdateInit = modalUpdate.Modal, // the initialization
-	changeModal1 = document.getElementById('changeModal1'), // the change buttons
-	changeModal2 = document.getElementById('changeModal2');
-
-changeModal1.addEventListener('click', function () {
-	if (!/scroll/i.test(currentStaticModalBody.innerHTML)) {
-		changeModal1.className += ' hidden';
-		changeModal2.className = changeModal2.className.replace(new RegExp('(\\s|^)hidden(\\s|$)', 'g'), '');
-		currentStaticModalBody.innerHTML = currentStaticModalBodyContent; // set
-		modalUpdateInit.update(); // trigger the update
-	}
-}, false);
-
-changeModal2.addEventListener('click', function () {
-	if (/scroll/i.test(currentStaticModalBody.innerHTML)) {
-		changeModal2.className += ' hidden';
-		changeModal1.className = changeModal1.className.replace(new RegExp('(\\s|^)hidden(\\s|$)', 'g'), ' ');
-		currentStaticModalBody.innerHTML = '<h4>This modal changed via JavaScript</h4><p>OK now this is a different content.</p>';
-		modalUpdateInit.update();
-	}
-}, false);
-
-// Dropdown init via JS
-var makeMeDropdown = document.getElementById('makeMeDropdown');
-var myDropdownTemplate = '<div class="dropdown btn-group">'
-	+ '<button id="formDropdown" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false" tabindex="0">Login <span class="caret"></span></button>'
-	+ '<form class="form-vertical dropdown-menu px-3">'
-	+ '<div class="mb-3">'
-	+ '<label for="inputEmail3" class="control-label">Email</label>'
-	+ '<div class="">'
-	+ '<input type="email" class="form-control" id="inputEmail3" placeholder="Email">'
-	+ '</div>'
-	+ '</div>'
-	+ '<div class="mb-3">'
-	+ '<label for="inputPassword3" class="control-label">Password</label>'
-	+ '<div class="">'
-	+ '<input type="password" class="form-control" id="inputPassword3" placeholder="Password">'
-	+ '</div>'
-	+ '</div>'
-	+ '<div class="mb-3">'
-	+ '<div class="">'
-	+ '<div class="checkbox">'
-	+ '<label>'
-	+ '<input type="checkbox"> Remember me'
-	+ '</label>'
-	+ '</div>'
-	+ '</div>'
-	+ '</div>'
-	+ '<div class="mb-3">'
-	+ '<div class="">'
-	+ '<button type="submit" class="btn btn-secondary">Sign in</button>'
-	+ '</div>'
-	+ '</div>'
-	+ '</form>'
-	+ '</div>';
-
-makeMeDropdown.addEventListener('click', function (e) {
-	e.preventDefault();
-
-	if (!/\bdisabled/.test(makeMeDropdown.className)) {
-
-		// invalidate the makeMeDropdown
-		this.setAttribute('disabled', true);
-		this.className = 'btn btn-secondary disabled';
-		this.innerHTML = 'All done';
-
-		this.parentNode.innerHTML += myDropdownTemplate;
-
-		//get the new dropdown
-		var formDropdown = document.getElementById('formDropdown');
-
-		// initiate with option
-		var DropdownInit = new BSN.Dropdown(formDropdown, true);
-
-		// NEW: attach Dropdown original events
-		formDropdown.parentNode.addEventListener('show.bs.dropdown', function (e) {
-			var related = null;
-			related = ', relatedTarget: ' + (e.relatedTarget ? e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.') : 'null');
-			console.log('The show.bs.dropdown event fired for parent of #' + formDropdown.id + related);
-		}, false);
-		formDropdown.parentNode.addEventListener('shown.bs.dropdown', function (e) {
-			var related = null;
-			related = ', relatedTarget: ' + (e.relatedTarget ? e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.') : 'null');
-			console.log('The shown.bs.dropdown event fired for parent of #' + formDropdown.id + related);
-		}, false);
-		formDropdown.parentNode.addEventListener('hide.bs.dropdown', function (e) {
-			var related = null;
-			related = ', relatedTarget: ' + (e.relatedTarget ? e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.') : 'null');
-			console.log('The hide.bs.dropdown event fired for parent of #' + formDropdown.id + related);
-		}, false);
-		formDropdown.parentNode.addEventListener('hidden.bs.dropdown', function (e) {
-			var related = null;
-			related = ', relatedTarget: ' + (e.relatedTarget ? e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.') : 'null');
-			console.log('The hidden.bs.dropdown event fired for parent of #' + formDropdown.id + related);
-		}, false);
-	}
-}, false);
 
 // Tab events
 var tabEventsExample = document.getElementById('tabEventsExample'),
@@ -301,7 +136,7 @@ showToastBTN.addEventListener('click',function(){
 
 // ScrollSpy
 function toggleScrollSpy(){
-	const disposableSpy = document.getElementById('disposableSpy')
+	var disposableSpy = document.getElementById('disposableSpy')
 
 	if ( disposableSpy.ScrollSpy ){
 		disposableSpy.ScrollSpy.dispose()
