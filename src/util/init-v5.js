@@ -1,5 +1,3 @@
-import queryElement from 'shorter-js/src/misc/queryElement.js'
-
 import { alertInit } from '../components-v5/alert-native.js'
 import { buttonInit } from '../components-v5/button-native.js'
 import { carouselInit } from '../components-v5/carousel-native.js'

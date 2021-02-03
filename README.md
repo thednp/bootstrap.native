@@ -1,5 +1,5 @@
 # BSN stands for Native JavaScript for Bootstrap
-The faster, lighter and more secure set of JavaScript components for **Bootstrap 4**, developed on modern ES6/ES7 standards.
+The faster, lighter and more secure set of JavaScript components for **Bootstrap 5** and **Bootstrap 4**, developed on modern ES6+ standards.
 The **bootstrap.native** library is available on npm, CDN and comes packed with build tools and lots of guides.
 
 [![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg?style=flat-square)](https://www.npmjs.com/package/bootstrap.native)

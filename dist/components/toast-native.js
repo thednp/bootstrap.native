@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Toast v3.0.15 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Toast v3.0.14a (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
