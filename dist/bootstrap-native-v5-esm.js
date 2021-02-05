@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.14a (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.14b (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -174,6 +174,7 @@ function Alert( alertTarget ) {
   return new Alert( alertTarget )
 }
 
+
 var alertInit = {
   component: alertComponent,
   selector: alertSelector,
@@ -204,11 +205,15 @@ function Button( buttonTarget ){
 
   // BUTTON PRIVATE METHOD
   // =====================
+  function handleButtonToggle( e ) {
+    self.toggle.apply( element, [e] ); 
+  }
+
+  // BUTTON PRIVATE METHOD
+  // =====================
   function toggleButtonHandler(action) {
     action = action ? addEventListener : removeEventListener;
-    element[action]( 'click', function handleButtonToggle(e) {
-      self.toggle.apply( element, [e] ); 
-    });
+    element[action]( 'click', handleButtonToggle );
   }  
 
   // BUTTON DEFINITION
@@ -222,13 +227,13 @@ function Button( buttonTarget ){
 
     // reset previous instance
     element[buttonComponent] && element[buttonComponent].dispose();
-
-    // add event listener
-    toggleButtonHandler( 1 );
-
+      
     // set initial state
     isActive = hasClass( element, activeClass );
     element.setAttribute( ariaPressed, isActive ? true : 'false' );
+
+    // add event listener
+    toggleButtonHandler( 1 );
 
     // attach instance to element
     element[buttonComponent] = self;
@@ -516,7 +521,6 @@ function Carousel( carouselElement, carouselOptions ){
   }
 
   function carouselTouchMoveHandler(e) {
-    
     if ( !isTouch ) { return }
 
     currentX = e.changedTouches[0].pageX;
@@ -630,9 +634,11 @@ function Carousel( carouselElement, carouselOptions ){
 
     // set JavaScript and DATA API options
     ops = normalizeOptions( element, defaultCarouselOptions, options );
+
     // don't use TRUE as interval, it's actually 0, use the default 5000ms better
     ops.interval = ops.interval === true
-                 ? defaultCarouselOptions.interval : ops.interval;
+        ? defaultCarouselOptions.interval 
+        : ops.interval;
 
     // set first slide active if none
     if ( getActiveIndex() < 0 ) {
@@ -3056,7 +3062,7 @@ var tooltipInit = {
   constructor: Tooltip
 };
 
-var version = "3.0.14a";
+var version = "3.0.14b";
 
 var componentsInit = {
   Alert: alertInit,

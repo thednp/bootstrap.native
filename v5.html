@@ -289,9 +289,10 @@ myAlertInit.dispose();
               has been completely deprecated, just like the original plugin. The functionality of the previous component has been
               replaced by a new HTML markup and CSS style that requires no scripting.</p>
 
-            <p>The component state toggle functionality is very simple: when the user clicks the button and adds or removes the 
-              <code>active</code> class name as well as changing its <code>aria-pressed</code> attribute to true / false.
-              However if the button is disabled, the state toggling is prevented.</p>
+            <p>The component state toggle functionality is very simple: when the user clicks the button, the component adds / removes 
+              the <code>active</code> class name as well as change its <code>aria-pressed</code> attribute to <code>true</code> 
+              / <code>false</code>, both actions signalling the state and appearence of that particular button. However if the button 
+              is disabled, the state toggling is prevented.</p>
 
             <section id="buttonMethods">
               <h3>Button Methods</h3>
@@ -339,8 +340,8 @@ myAlertInit.dispose();
             <section id="buttonJS">
               <h3>Button JavaScript API</h3>
 
-              <p>If the above markup is present in the DOM when the library is loaded, it will initialize via DATA API, if
-                inserted later into the DOM, here's how to initialize it:</p>
+              <p>If the above markup is present in the DOM when the library is loaded, the component will initialize all targets via DATA API,
+                however if inserted later into the DOM, here's how to initialize it:</p>
           
 <pre><code class="language-javascript">// initialize
 var myButtonINIT = new BSN.Button('#myButton');

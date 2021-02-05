@@ -28,11 +28,15 @@ export default function Button( buttonTarget ){
 
   // BUTTON PRIVATE METHOD
   // =====================
+  function handleButtonToggle( e ) {
+    self.toggle.apply( element, [e] ) 
+  }
+
+  // BUTTON PRIVATE METHOD
+  // =====================
   function toggleButtonHandler(action) {
     action = action ? addEventListener : removeEventListener
-    element[action]( 'click', function handleButtonToggle(e) {
-      self.toggle.apply( element, [e] ) 
-    })
+    element[action]( 'click', handleButtonToggle )
   }  
 
   // BUTTON DEFINITION
@@ -47,13 +51,13 @@ export default function Button( buttonTarget ){
 
       // reset previous instance
       element[buttonComponent] && element[buttonComponent].dispose()
-
-      // add event listener
-      toggleButtonHandler( 1 )
-
+      
       // set initial state
       isActive = hasClass( element, activeClass )
       element.setAttribute( ariaPressed, isActive ? true : 'false' )
+
+      // add event listener
+      toggleButtonHandler( 1 )
 
       // attach instance to element
       element[buttonComponent] = self

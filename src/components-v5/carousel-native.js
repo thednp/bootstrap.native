@@ -170,7 +170,6 @@ export default function Carousel( carouselElement, carouselOptions ){
   }
 
   function carouselTouchMoveHandler(e) {
-    
     if ( !isTouch ) return
 
     currentX = e.changedTouches[0].pageX
@@ -285,9 +284,11 @@ export default function Carousel( carouselElement, carouselOptions ){
 
       // set JavaScript and DATA API options
       ops = normalizeOptions( element, defaultCarouselOptions, options )
+
       // don't use TRUE as interval, it's actually 0, use the default 5000ms better
       ops.interval = ops.interval === true
-                   ? defaultCarouselOptions.interval : ops.interval
+          ? defaultCarouselOptions.interval 
+          : ops.interval
 
       // set first slide active if none
       if ( getActiveIndex() < 0 ) {

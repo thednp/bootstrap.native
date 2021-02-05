@@ -114,8 +114,10 @@ export default function Alert( alertTarget ) {
   return new Alert( alertTarget )
 }
 
+
 export const alertInit = {
   component: alertComponent,
   selector: alertSelector,
   constructor: Alert
 }
+
