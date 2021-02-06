@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.14b (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.14c (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -2302,7 +2302,7 @@
     }  
   }
 
-  var version = "3.0.14b";
+  var version = "3.0.14c";
 
   var index = {
     Alert: Alert,

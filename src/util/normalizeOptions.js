@@ -1,26 +1,6 @@
 import queryElement from 'shorter-js/src/misc/queryElement.js'
+import normalizeValue from 'shorter-js/src/misc/normalizeValue.js'
 import getTargetElement from './getTargetElement.js'
-
-function normalizeValue( value ) {
-  if ( value === 'true' ) {
-    return true
-  }
-
-  if ( value === 'false' ) {
-    return false
-  }
-
-  if ( !isNaN(value) ) {
-    return +value
-  }
-
-  if ( value === '' || value === 'null' ) {
-    return null
-  }
-
-  // string / function / Element / Object
-  return value
-}
 
 export default function( element, defaultOptions, inputOptions ) {
   const normalOptions = {}, dataOptions = {}, 

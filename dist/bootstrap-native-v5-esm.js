@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.14b (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.14c (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -301,18 +301,6 @@ function isElementInScrollRange(element) {
   return bcr.top <= viewportHeight && bcr.bottom >= 0; // bottom && top
 }
 
-var dataBsTarget = 'data-bs-target';
-
-var dataBsParent = 'data-bs-parent';
-
-var dataBsContainer = 'data-bs-container';
-
-function getTargetElement( element ){
-  return queryElement( element.getAttribute( dataBsTarget ) || element.getAttribute( 'href' ) ) 
-        || element.closest( element.getAttribute( dataBsParent ) )
-        || queryElement( element.getAttribute( dataBsContainer ) )
-}
-
 function normalizeValue( value ) {
   if ( value === 'true' ) {
     return true
@@ -332,6 +320,18 @@ function normalizeValue( value ) {
 
   // string / function / Element / Object
   return value
+}
+
+var dataBsTarget = 'data-bs-target';
+
+var dataBsParent = 'data-bs-parent';
+
+var dataBsContainer = 'data-bs-container';
+
+function getTargetElement( element ){
+  return queryElement( element.getAttribute( dataBsTarget ) || element.getAttribute( 'href' ) ) 
+        || element.closest( element.getAttribute( dataBsParent ) )
+        || queryElement( element.getAttribute( dataBsContainer ) )
 }
 
 function normalizeOptions( element, defaultOptions, inputOptions ) {
@@ -3062,7 +3062,7 @@ var tooltipInit = {
   constructor: Tooltip
 };
 
-var version = "3.0.14b";
+var version = "3.0.14c";
 
 var componentsInit = {
   Alert: alertInit,
@@ -3081,39 +3081,21 @@ var componentsInit = {
 function initializeDataAPI( konstructor, collection ){
   Array.from( collection ).map( function (x) { return new konstructor(x); } );
 }
-function removeElementDataAPI( component, collection ){
-  Array.from( collection ).map( function (x) { return x[component] && x[component].dispose(); } );
-}
 
-/* 
- * Callback Usage Examples
- *
- * // init all components with valid markup in the #main element
- * BSN.Callback('#main',true)
- * // remove all components with valid markup in the #main element
- * BSN.Callback('#main',false)
- * // equivalent to the following
- * BSN.Callback('#main')
- * // remove all components in the document
- * BSN.Callback()
- * 
-*/
-function Callback( lookUp, init ){
-  if ( lookUp === void 0 ) lookUp = 0;
-  if ( init === void 0 ) init = 0;
-
-  var action = init ? initializeDataAPI : removeElementDataAPI;
+function initCallback( lookUp ){
   lookUp = lookUp instanceof Element ? lookUp : document;
 
-  for (var component in componentsInit) {
-    action( init ? componentsInit[component].constructor : component,
-      lookUp.querySelectorAll( componentsInit[component].selector ) );
+  for (var comp in componentsInit) {
+    var ref = componentsInit[comp];
+    var constructor = ref.constructor;
+    var selector = ref.selector;
+    initializeDataAPI( constructor, lookUp.querySelectorAll( selector ) );
   }
 }
 
 // bulk initialize all components
-document.body ? Callback(0,1) : 
-document.addEventListener( 'DOMContentLoaded', function () { return Callback(0,1); }, { once: true });
+document.body ? initCallback() : 
+document.addEventListener( 'DOMContentLoaded', function () { return initCallback(); }, { once: true });
 
 var indexV5 = {
   Alert: Alert,
@@ -3128,7 +3110,7 @@ var indexV5 = {
   Toast: Toast,
   Tooltip: Tooltip,
 
-  Callback: Callback,
+  initCallback: initCallback,
   Version: version
 };
 

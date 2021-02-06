@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Tab v3.0.14b (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Tab v3.0.14c (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */

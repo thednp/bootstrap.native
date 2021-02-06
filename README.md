@@ -7,7 +7,7 @@ The **bootstrap.native** library is available on npm, CDN and comes packed with 
 [![jsDeliver](https://data.jsdelivr.com/v1/package/npm/bootstrap.native/badge)](https://www.jsdelivr.com/package/npm/bootstrap.native)
 [![CDNJS](https://img.shields.io/cdnjs/v/bootstrap.native.svg?style=flat-square)](https://cdnjs.com/libraries/bootstrap.native)
 
- The library is around ***25Kb*** minified and ***7.5Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">the demo</a> for components guidelines and examples, or the [Wiki/How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) on how to use the library or create custom builds.
+ The library is around ***30Kb*** minified and ***10Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">the demo</a> for components guidelines and examples, or the [Wiki/How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) on how to use the library or create custom builds.
 
 # BSN Wiki
 Please check the `bootstrap.native` Wiki pages, they're updated with almost every new commit:
@@ -16,7 +16,7 @@ Please check the `bootstrap.native` Wiki pages, they're updated with almost ever
   * [CDN Links](https://github.com/thednp/bootstrap.native/wiki/How-to-use#load-from-cdn) - use CDN links available on [jsdelivr](https://www.jsdelivr.com/package/npm/bootstrap.native) and [cdnjs](https://cdnjs.com/libraries/bootstrap.native)
   * [Locally Hosted](https://github.com/thednp/bootstrap.native/wiki/How-to-use#working-locally) - download and copy in your project `assets/js` folder, then use proper markup to enable BSN on your pages
   * [ES5 Example](https://github.com/thednp/bootstrap.native/wiki/How-to-use#es5-basic-example) - basic component initialization with JavaScript ES5
-  * [ES6/ES7 Example](https://github.com/thednp/bootstrap.native/wiki/How-to-use#es6es7-basic-example) - modern application would like you to `import BSN from "bootstrap.native"`
+  * [ES6+ Example](https://github.com/thednp/bootstrap.native/wiki/How-to-use#es6es7-basic-example) - modern application would like you to `import BSN from "bootstrap.native"`
   * [NPM Installation](https://github.com/thednp/bootstrap.native/wiki/How-to-use#npm) - just execute `npm install bootstrap.native` or mark it as dependency and take it from there
   * [Custom Builds](https://github.com/thednp/bootstrap.native/wiki/How-to-use#custom-builds) - use rollup build scripts to create your own custom builds, only with the components you need
   * [Dynamic Content](https://github.com/thednp/bootstrap.native/wiki/How-to-use#dynamic-content) - use the library callbacks with your `turbolinks:load`, `mount`, `load` and similar events

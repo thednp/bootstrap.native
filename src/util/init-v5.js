@@ -31,29 +31,24 @@ function removeElementDataAPI( component, collection ){
   Array.from( collection ).map( x => x[component] && x[component].dispose() )
 }
 
-/* 
- * Callback Usage Examples
- *
- * // init all components with valid markup in the #main element
- * BSN.Callback('#main',true)
- * // remove all components with valid markup in the #main element
- * BSN.Callback('#main',false)
- * // equivalent to the following
- * BSN.Callback('#main')
- * // remove all components in the document
- * BSN.Callback()
- * 
-*/
-export function Callback( lookUp = 0, init = 0 ){
-  const action = init ? initializeDataAPI : removeElementDataAPI
+export function initCallback( lookUp ){
   lookUp = lookUp instanceof Element ? lookUp : document
 
-  for (const component in componentsInit) {
-    action( init ? componentsInit[component].constructor : component,
-      lookUp.querySelectorAll( componentsInit[component].selector ) )
+  for (const comp in componentsInit) {
+    const { constructor, selector } = componentsInit[comp]
+    initializeDataAPI( constructor, lookUp.querySelectorAll( selector ) )
+  }
+}
+
+export function removeDataAPI( lookUp ){
+  lookUp = lookUp instanceof Element ? lookUp : document
+
+  for (const comp in componentsInit) {
+    const { component, selector } = componentsInit[comp]
+    removeElementDataAPI( component, lookUp.querySelectorAll( selector ) )
   }
 }
 
 // bulk initialize all components
-document.body ? Callback(0,1) : 
-document.addEventListener( 'DOMContentLoaded', () => Callback(0,1), { once: true })
+document.body ? initCallback() : 
+document.addEventListener( 'DOMContentLoaded', () => initCallback(), { once: true })

@@ -11,7 +11,7 @@ import Toast from './components-v5/toast-native.js'
 import Tooltip from './components-v5/tooltip-native.js'
 
 import {version as Version} from '../package.json'
-import {Callback} from './util/init-v5.js'
+import {initCallback} from './util/init-v5.js'
 import './util/init-v5.js'
 
 export default {
@@ -27,6 +27,6 @@ export default {
   Toast,
   Tooltip,
 
-  Callback,
+  initCallback,
   Version
 }
