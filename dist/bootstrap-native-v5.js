@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.14c (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.14d (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -328,49 +328,32 @@
     return value
   }
 
-  var dataBsTarget = 'data-bs-target';
-
-  var dataBsParent = 'data-bs-parent';
-
-  var dataBsContainer = 'data-bs-container';
-
-  function getTargetElement( element ){
-    return queryElement( element.getAttribute( dataBsTarget ) || element.getAttribute( 'href' ) ) 
-          || element.closest( element.getAttribute( dataBsParent ) )
-          || queryElement( element.getAttribute( dataBsContainer ) )
-  }
-
-  function normalizeOptions( element, defaultOptions, inputOptions ) {
-    var normalOptions = {}, dataOptions = {}, 
-        data = Object.assign( {}, element.dataset ),
-        targetOps = [ 'target', 'parent', 'container' ];
+  function normalizeOptions( element, defaultOps, inputOps, ns ){
+    var normalOps = {}, dataOps = {}, 
+      data = Object.assign( {}, element.dataset );
 
     Object.keys( data )
       .map( function (k) {
-        var key = k.replace('bs','')
-                   .replace(/[A-Z]/, function (match) { return match.toLowerCase(); } );
+        var key = k.includes( ns ) 
+          ? k.replace( ns, '' ) .replace(/[A-Z]/, function (match) { return match.toLowerCase(); } ) 
+          : k;
 
-        dataOptions[key] = targetOps.includes(key) ? getTargetElement( element )
-                         : normalizeValue( data[k] );
+        dataOps[key] =  normalizeValue( data[k] );
       });
 
-    Object.keys( inputOptions )
+    Object.keys( inputOps )
       .map( function (k) {
-        inputOptions[k] = targetOps.includes(k) 
-          ? ( inputOptions[k] instanceof Element ? inputOptions[k] 
-              : k === 'parent' ? element.closest( inputOptions[k] ) 
-              : queryElement( inputOptions[k] ) )
-          : normalizeValue( inputOptions[k] );
+        inputOps[k] = normalizeValue( inputOps[k] );
       });
 
-    Object.keys( defaultOptions )
+    Object.keys( defaultOps )
       .map( function (k) {
-        normalOptions[k] = k in inputOptions ? inputOptions[k]
-                         : k in dataOptions ? dataOptions[k]
-                         : defaultOptions[k];
+        normalOps[k] = k in inputOps ? inputOps[k]
+          : k in dataOps ? dataOps[k]
+          : defaultOps[k];
       });
 
-    return normalOptions
+    return normalOps
   }
 
   // CAROUSEL PRIVATE GC
@@ -639,7 +622,7 @@
       indicators = indicator && indicator.getElementsByTagName( 'LI' ) || [];
 
       // set JavaScript and DATA API options
-      ops = normalizeOptions( element, defaultCarouselOptions, options );
+      ops = normalizeOptions( element, defaultCarouselOptions, options, 'bs' );
 
       // don't use TRUE as interval, it's actually 0, use the default 5000ms better
       ops.interval = ops.interval === true
@@ -796,6 +779,18 @@
   var ariaExpanded = 'aria-expanded';
 
   var collapsingClass = 'collapsing'; // collapse / tab
+
+  var dataBsTarget = 'data-bs-target';
+
+  var dataBsParent = 'data-bs-parent';
+
+  var dataBsContainer = 'data-bs-container';
+
+  function getTargetElement( element ){
+    return queryElement( element.getAttribute( dataBsTarget ) || element.getAttribute( 'href' ) ) 
+          || element.closest( element.getAttribute( dataBsParent ) )
+          || queryElement( element.getAttribute( dataBsContainer ) )
+  }
 
   // COLLAPSE GC
   // ===========
@@ -1585,7 +1580,7 @@
       (element||modal)[modalComponent] && (element||modal)[modalComponent].dispose();
 
       // set options
-      ops = normalizeOptions( modal, modalDefaultOptions, options );
+      ops = normalizeOptions( modal, modalDefaultOptions, options, 'bs' );
 
       // additional internal options
       isStatic = ops.backdrop === 'static';
@@ -2055,7 +2050,8 @@
       popoverDefaultOptions.container = modal || navbarFixed || document.body;
 
       // set instance options
-      ops = normalizeOptions( element, popoverDefaultOptions, options );
+      ops = normalizeOptions( element, popoverDefaultOptions, options, 'bs' );
+      ops.container = queryElement( ops.container );
 
       // invalidate when no content is set
       if ( !ops.content ) { return }
@@ -2710,7 +2706,7 @@
       element[toastComponent] && element[toastComponent].dispose();
 
       // set options
-      ops = normalizeOptions( element, toastDefaultOptions, options );
+      ops = normalizeOptions( element, toastDefaultOptions, options, 'bs' );
         
       // add event listener
       toggleToastHandler( 1 );
@@ -2955,7 +2951,8 @@
       tooltipDefaultOptions.container = modal || navbarFixed || document.body;
 
       // set instance options
-      ops = normalizeOptions( element, tooltipDefaultOptions, options );
+      ops = normalizeOptions( element, tooltipDefaultOptions, options, 'bs' );
+      ops.container = queryElement( ops.container );
 
       // invalidate
       if ( !ops.title ) { return }
@@ -3068,7 +3065,7 @@
     constructor: Tooltip
   };
 
-  var version = "3.0.14c";
+  var version = "3.0.14d";
 
   var componentsInit = {
     Alert: alertInit,

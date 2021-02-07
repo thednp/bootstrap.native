@@ -9,13 +9,13 @@ import queryElement from 'shorter-js/src/misc/queryElement.js'
 import addClass from 'shorter-js/src/class/addClass.js'
 import hasClass from 'shorter-js/src/class/hasClass.js'
 import removeClass from 'shorter-js/src/class/removeClass.js'
+import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js'
 
 import activeClass from '../strings/activeClass.js'
 import addEventListener from '../strings/addEventListener.js'
 import removeEventListener from '../strings/removeEventListener.js'
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
-import normalizeOptions from '../util/normalizeOptions.js'
 
 
 // CAROUSEL PRIVATE GC
@@ -283,7 +283,7 @@ export default function Carousel( carouselElement, carouselOptions ){
       indicators = indicator && indicator.getElementsByTagName( 'LI' ) || []
 
       // set JavaScript and DATA API options
-      ops = normalizeOptions( element, defaultCarouselOptions, options )
+      ops = normalizeOptions( element, defaultCarouselOptions, options, 'bs' )
 
       // don't use TRUE as interval, it's actually 0, use the default 5000ms better
       ops.interval = ops.interval === true

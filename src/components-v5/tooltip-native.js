@@ -8,13 +8,9 @@ import queryElement from 'shorter-js/src/misc/queryElement.js'
 import addClass from 'shorter-js/src/class/addClass.js'
 import hasClass from 'shorter-js/src/class/hasClass.js'
 import removeClass from 'shorter-js/src/class/removeClass.js'
+import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js'
 
 import ariaDescribedBy from '../strings/ariaDescribedBy.js'
-// import dataBsAnimation from '../strings/dataBsAnimation.js'
-// import dataBsContainer from '../strings/dataBsContainer.js'
-// import dataBsDelay from '../strings/dataBsDelay.js'
-// import dataBsPlacement from '../strings/dataBsPlacement.js'
-// import dataBsTitle from '../strings/dataBsTitle.js'
 import dataBsToggle from '../strings/dataBsToggle.js'
 import dataOriginalTitle from '../strings/dataOriginalTitle.js'
 import fadeClass from '../strings/fadeClass.js'
@@ -30,7 +26,6 @@ import styleTip from '../util/styleTip-v5.js'
 import isVisibleTip from '../util/isVisibleTip.js'
 import isMedia from '../util/isMedia.js'
 import getUID from '../util/getUID.js'
-import normalizeOptions from '../util/normalizeOptions.js'
 
 
 // TOOLTIP PRIVATE GC
@@ -222,7 +217,8 @@ export default function Tooltip( tooltipElement, tooltipOptions ){
       tooltipDefaultOptions.container = modal || navbarFixed || document.body
 
       // set instance options
-      ops = normalizeOptions( element, tooltipDefaultOptions, options )
+      ops = normalizeOptions( element, tooltipDefaultOptions, options, 'bs' )
+      ops.container = queryElement( ops.container )
 
       // invalidate
       if ( !ops.title ) return

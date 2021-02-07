@@ -8,17 +8,12 @@ import queryElement from 'shorter-js/src/misc/queryElement.js'
 import addClass from 'shorter-js/src/class/addClass.js'
 import hasClass from 'shorter-js/src/class/hasClass.js'
 import removeClass from 'shorter-js/src/class/removeClass.js'
+import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js'
 
 import ariaDescribedBy from '../strings/ariaDescribedBy.js'
 import showClass from '../strings/showClass.js'
 import fadeClass from '../strings/fadeClass.js'
 import dataBsToggle from '../strings/dataBsToggle.js'
-// import dataBsContainer from '../strings/dataBsContainer.js'
-// import dataBsContent from '../strings/dataBsContent.js'
-// import dataBsPlacement from '../strings/dataBsPlacement.js'
-// import dataBsTitle from '../strings/dataBsTitle.js'
-// import dataBsAnimation from '../strings/dataBsAnimation.js'
-// import dataBsDelay from '../strings/dataBsDelay.js'
 import addEventListener from '../strings/addEventListener.js'
 import removeEventListener from '../strings/removeEventListener.js'
 import fixedTopClass from '../strings/fixedTopClass.js'
@@ -30,7 +25,6 @@ import isVisibleTip from '../util/isVisibleTip.js'
 import styleTip from '../util/styleTip-v5.js'
 import isMedia from '../util/isMedia.js'
 import getUID from '../util/getUID.js'
-import normalizeOptions from '../util/normalizeOptions.js'
 
 
 // POPOVER PRIVATE GC
@@ -263,7 +257,8 @@ export default function Popover( popoverElement, popoverOptions ){
       popoverDefaultOptions.container = modal || navbarFixed || document.body
 
       // set instance options
-      ops = normalizeOptions( element, popoverDefaultOptions, options )
+      ops = normalizeOptions( element, popoverDefaultOptions, options, 'bs' )
+      ops.container = queryElement( ops.container )
 
       // invalidate when no content is set
       if ( !ops.content ) return

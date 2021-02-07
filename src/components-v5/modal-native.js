@@ -8,6 +8,7 @@ import queryElement from 'shorter-js/src/misc/queryElement.js'
 import addClass from 'shorter-js/src/class/addClass.js'
 import hasClass from 'shorter-js/src/class/hasClass.js'
 import removeClass from 'shorter-js/src/class/removeClass.js'
+import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js'
 
 import ariaHidden from '../strings/ariaHidden.js'
 import dataBsToggle from '../strings/dataBsToggle.js'
@@ -22,7 +23,6 @@ import fixedBottomClass from '../strings/fixedBottomClass.js'
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
 import getTargetElement from '../util/getTargetElement.js'
 import setFocus from '../util/setFocus.js'
-import normalizeOptions from '../util/normalizeOptions.js'
 
 
 // MODAL PRIVATE GC
@@ -283,7 +283,7 @@ export default function Modal( modalElement, modalOptions ){
       (element||modal)[modalComponent] && (element||modal)[modalComponent].dispose()
 
       // set options
-      ops = normalizeOptions( modal, modalDefaultOptions, options )
+      ops = normalizeOptions( modal, modalDefaultOptions, options, 'bs' )
 
       // additional internal options
       isStatic = ops.backdrop === 'static'
