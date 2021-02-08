@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "3.0.14d",
+  "version": "3.0.14e",
   "description": "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.",
   "main": "dist/bootstrap-native.min.js",
   "types": "src/index.d.ts",
@@ -77,7 +77,7 @@
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
     "minifill": "^0.0.14",
-    "shorter-js": "^0.1.10a"
+    "shorter-js": "^0.1.10b"
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",

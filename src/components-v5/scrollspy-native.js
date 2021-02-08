@@ -6,10 +6,10 @@ import queryElement from 'shorter-js/src/misc/queryElement.js'
 import addClass from 'shorter-js/src/class/addClass.js'
 import hasClass from 'shorter-js/src/class/hasClass.js'
 import removeClass from 'shorter-js/src/class/removeClass.js'
+import addEventListener from 'shorter-js/src/strings/addEventListener.js'
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js'
 
 import activeClass from '../strings/activeClass.js'
-import addEventListener from '../strings/addEventListener.js'
-import removeEventListener from '../strings/removeEventListener.js'
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
 import getTargetElement from '../util/getTargetElement.js'

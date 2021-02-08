@@ -1,6 +1,8 @@
 
 /* Native JavaScript for Bootstrap 5 | Carousel
 ----------------------------------------------- */
+import addEventListener from 'shorter-js/src/strings/addEventListener.js'
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js'
 import passiveHandler from 'shorter-js/src/misc/passiveHandler.js'
 import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js'
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
@@ -11,11 +13,8 @@ import hasClass from 'shorter-js/src/class/hasClass.js'
 import removeClass from 'shorter-js/src/class/removeClass.js'
 import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js'
 
-import activeClass from '../strings/activeClass.js'
-import addEventListener from '../strings/addEventListener.js'
-import removeEventListener from '../strings/removeEventListener.js'
-
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
+import activeClass from '../strings/activeClass.js'
 
 
 // CAROUSEL PRIVATE GC

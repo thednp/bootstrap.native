@@ -7,11 +7,11 @@ import addClass from 'shorter-js/src/class/addClass.js'
 import hasClass from 'shorter-js/src/class/hasClass.js'
 import removeClass from 'shorter-js/src/class/removeClass.js'
 import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js'
+import addEventListener from 'shorter-js/src/strings/addEventListener.js'
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js'
 
 import fadeClass from '../strings/fadeClass.js'
 import showClass from '../strings/showClass.js'
-import addEventListener from '../strings/addEventListener.js'
-import removeEventListener from '../strings/removeEventListener.js'
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
 

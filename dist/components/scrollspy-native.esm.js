@@ -1,11 +1,13 @@
 /*!
-  * Native JavaScript for Bootstrap ScrollSpy v3.0.14d (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap ScrollSpy v3.0.14e (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
-// determine support for passive events
+var addEventListener = 'addEventListener';
+
+var removeEventListener = 'removeEventListener';
+
 var supportPassive = (function () {
-  // Test via a getter in the options object to see if the passive property is accessed
   var result = false;
   try {
     var opts = Object.defineProperty({}, 'passive', {
@@ -13,8 +15,8 @@ var supportPassive = (function () {
         result = true;
       }
     });
-    document.addEventListener('DOMContentLoaded', function wrap(){
-      document.removeEventListener('DOMContentLoaded', wrap, opts);
+    document[addEventListener]('DOMContentLoaded', function wrap(){
+      document[removeEventListener]('DOMContentLoaded', wrap, opts);
     }, opts);
   } catch (e) {}
 

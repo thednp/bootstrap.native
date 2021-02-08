@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.14d (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.14e (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -21,14 +21,13 @@
     var computedStyle = getComputedStyle(element),
         propertyValue = computedStyle[transitionProperty],
         durationValue = computedStyle[transitionDuration],
-        durationScale = durationValue.indexOf('ms') > -1 ? 1 : 1000,
+        durationScale = durationValue.includes('ms') ? 1 : 1000,
         duration = supportTransition && propertyValue && propertyValue !== 'none' 
                  ? parseFloat( durationValue ) * durationScale : 0;
 
     return !isNaN(duration) ? duration : 0
   }
 
-  // emulateTransitionEnd
   function emulateTransitionEnd(element,handler){ 
     var called = 0, 
         endEvent = new Event( transitionEndEvent ),
@@ -61,13 +60,13 @@
     element.classList.remove(classNAME);
   }
 
-  var fadeClass = 'fade';
-
-  var showClass = 'show';
-
   var addEventListener = 'addEventListener';
 
   var removeEventListener = 'removeEventListener';
+
+  var fadeClass = 'fade';
+
+  var showClass = 'show';
 
   var dataBsDismiss = 'data-bs-dismiss';
 
@@ -279,9 +278,7 @@
     constructor: Button
   };
 
-  // determine support for passive events
   var supportPassive = (function () {
-    // Test via a getter in the options object to see if the passive property is accessed
     var result = false;
     try {
       var opts = Object.defineProperty({}, 'passive', {
@@ -289,8 +286,8 @@
           result = true;
         }
       });
-      document.addEventListener('DOMContentLoaded', function wrap(){
-        document.removeEventListener('DOMContentLoaded', wrap, opts);
+      document[addEventListener]('DOMContentLoaded', function wrap(){
+        document[removeEventListener]('DOMContentLoaded', wrap, opts);
       }, opts);
     } catch (e) {}
 
@@ -3065,7 +3062,7 @@
     constructor: Tooltip
   };
 
-  var version = "3.0.14d";
+  var version = "3.0.14e";
 
   var componentsInit = {
     Alert: alertInit,

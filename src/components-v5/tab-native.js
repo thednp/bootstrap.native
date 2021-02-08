@@ -7,6 +7,8 @@ import queryElement from 'shorter-js/src/misc/queryElement.js'
 import addClass from 'shorter-js/src/class/addClass.js'
 import hasClass from 'shorter-js/src/class/hasClass.js'
 import removeClass from 'shorter-js/src/class/removeClass.js'
+import addEventListener from 'shorter-js/src/strings/addEventListener.js'
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js'
 
 import ariaSelected from '../strings/ariaSelected.js'
 import collapsingClass from '../strings/collapsingClass.js'
@@ -16,8 +18,6 @@ import showClass from '../strings/showClass.js'
 import dropdownClasses from '../strings/dropdownClasses.js'
 import dropdownMenuClass from '../strings/dropdownMenuClass.js'
 import dataBsToggle from '../strings/dataBsToggle.js'
-import addEventListener from '../strings/addEventListener.js'
-import removeEventListener from '../strings/removeEventListener.js'
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
 
