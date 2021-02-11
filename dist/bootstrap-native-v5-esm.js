@@ -1691,16 +1691,15 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
       elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
       windowWidth = ( document.documentElement.clientWidth || document.body.clientWidth ),
       windowHeight = ( document.documentElement.clientHeight || document.body.clientHeight ),
-      relativeParent = getComputedStyle(parent).position === 'relative',
-      rect = link.getBoundingClientRect();
-      parent.getBoundingClientRect();
-      var scroll = relativeParent ? { x: 0, y: 0 } :
+      nonStaticParent = getComputedStyle(parent).position !== 'static',
+      rect = link.getBoundingClientRect(),
+      scroll = nonStaticParent ? { x: 0, y: 0 } :
               parent === document.body
               ? { x: window.pageXOffset, y: window.pageYOffset } 
               : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
       linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
-      top = relativeParent ? link.offsetTop : rect.top,
-      left = relativeParent ? link.offsetLeft : rect.left,
+      top = nonStaticParent ? link.offsetTop : rect.top,
+      left = nonStaticParent ? link.offsetLeft : rect.left,
       isPopover = element.classList.contains( 'popover' ),
       arrow = element.getElementsByClassName( ((isPopover?'popover':'tooltip') + "-arrow") )[0],
       topPosition, leftPosition,
@@ -1757,8 +1756,8 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
   } else if ( position === 'top' || position === 'bottom' ) {
 
     if ( e && isMedia(link) ) {
-      var eX = relativeParent ? e.layerX : e.pageX,
-          eY = relativeParent ? e.layerY : e.pageY;
+      var eX = nonStaticParent ? e.layerX : e.pageX,
+          eY = nonStaticParent ? e.layerY : e.pageY;
 
       if ( position === 'top' ) {
         topPosition = eY - elementDimensions.h - ( isPopover ? arrowWidth : arrowHeight );
