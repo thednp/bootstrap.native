@@ -81,7 +81,7 @@
       </nav>
     </header>
 
-    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-keyboard="true" data-bs-interval="7000" data-bs-pause="hover">
+    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover">
       <ol class="carousel-indicators">
         <li data-bs-toggle="tooltip" data-bs-title="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
         <li data-bs-toggle="tooltip" data-bs-title="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
@@ -2231,7 +2231,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
           
             </section>
           
-            <section id="popoverExamples">
+            <section id="popoverExamples" class="position-relative">
               <h3>Popover Examples</h3>
               <p>First let's test all the placement positions, we start with inline links having the <a href="#"
                   data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Testing bottom placement">bottom</a>
@@ -2258,7 +2258,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                   Bottom
                 </button>
                 <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template" placeholder="Focus" data-bs-toggle="popover">
-                <button type="button" id="popover-via-click" class="btn btn-warning" data-bs-title="Popover on CLICK" data-bs-content="You clicked the button and as a result, this message box simply.. popped.&lt;br>Now simply click anywhere to dismiss.">
+                <button type="button" id="popover-via-click" class="btn btn-warning" data-bs-title="Popover on CLICK" data-bs-content="This popover is added to a position: relative container. &lt;br>Now simply click again to dismiss.">
                   Click
                 </button>
                 <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
@@ -3401,7 +3401,7 @@ new BSN.Tooltip('#selector',options).show();
           
             </section>
           
-            <section id="tooltipExamples">
+            <section id="tooltipExamples" class="position-relative">
               <h3>Tooltip Examples</h3>
               <p>Now let's test all the other placement positions, we start with inline links having the <a href="#"
                   title="Testing bottom placement" data-bs-toggle="tooltip" data-bs-placement="bottom">bottom</a> placement,
@@ -3419,9 +3419,9 @@ new BSN.Tooltip('#selector',options).show();
                 <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="right"
                   data-bs-title="&lt;b&gt;Tooltip on right&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
                 <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="left"
-                  data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
+                  data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt; This tooltip will be added to a position: relative container. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
                 <button id="tooltipTemplateExample" type="button" class="btn btn-danger"
-                  data-bs-title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
+                  data-bs-title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;This tooltip will be added to a position: relative container. Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
                 <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="bottom"
                   data-bs-title="&lt;b&gt;Tooltip on bottom&lt;/b&gt; &lt;span class='badge bg-warning'&gt;COOL&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
                 <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="right"
@@ -3433,7 +3433,7 @@ new BSN.Tooltip('#selector',options).show();
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
-                <img data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+                <img data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
 
               </p>
             </section>

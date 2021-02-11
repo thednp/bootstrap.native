@@ -89,11 +89,12 @@ tooltipEvents.addEventListener('hidden.bs.tooltip', function(){ console.log('The
 // Tooltip template example
 var tooltipTemplateExample = new BSN.Tooltip('#tooltipTemplateExample', {
 	template: '<div class="tooltip custom-class" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-	position: top
+	position: top,
+	container: '#tooltipExamples'
 })
 
 // Popover 
-var popover1 = new BSN.Popover('#popover-via-click', { 	trigger: 'click' } );
+var popover1 = new BSN.Popover('#popover-via-click', { container: '#popoverExamples',	trigger: 'click' } );
 
 // demo popover, using template
 var someTitleFromOtherCode = 'Popover via JavaScript <span class="label label-primary">Template</span>';

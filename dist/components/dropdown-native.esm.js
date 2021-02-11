@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Dropdown v3.0.14e (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Dropdown v3.0.14f (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */

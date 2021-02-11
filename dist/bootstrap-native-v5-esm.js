@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v3.0.14e (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v3.0.14f (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -1691,11 +1691,16 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
       elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
       windowWidth = ( document.documentElement.clientWidth || document.body.clientWidth ),
       windowHeight = ( document.documentElement.clientHeight || document.body.clientHeight ),
-      rect = link.getBoundingClientRect(),
-      scroll = parent === document.body 
+      relativeParent = getComputedStyle(parent).position === 'relative',
+      rect = link.getBoundingClientRect();
+      parent.getBoundingClientRect();
+      var scroll = relativeParent ? { x: 0, y: 0 } :
+              parent === document.body
               ? { x: window.pageXOffset, y: window.pageYOffset } 
               : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
       linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
+      top = relativeParent ? link.offsetTop : rect.top,
+      left = relativeParent ? link.offsetLeft : rect.left,
       isPopover = element.classList.contains( 'popover' ),
       arrow = element.getElementsByClassName( ((isPopover?'popover':'tooltip') + "-arrow") )[0],
       topPosition, leftPosition,
@@ -1731,20 +1736,20 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
   // apply styling to tooltip / popover
   if ( position === 'left' || position === 'right' ) { // secondary|side positions
     if ( position === 'left' ) { // LEFT
-      leftPosition = rect.left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 );
+      leftPosition = left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 );
     } else { // RIGHT
-      leftPosition = rect.left + scroll.x + linkDimensions.w;
+      leftPosition = left + scroll.x + linkDimensions.w;
     }
 
     // adjust top and arrow
     if ( halfTopExceed ) {
-      topPosition = rect.top + scroll.y;
+      topPosition = top + scroll.y;
       arrowTop = linkDimensions.h/2 - arrowWidth;
     } else if ( halfBottomExceed ) {
-      topPosition = rect.top + scroll.y - elementDimensions.h + linkDimensions.h;
+      topPosition = top + scroll.y - elementDimensions.h + linkDimensions.h;
       arrowTop = elementDimensions.h - linkDimensions.h/2 - arrowWidth;
     } else {
-      topPosition = rect.top + scroll.y - elementDimensions.h/2 + linkDimensions.h/2;
+      topPosition = top + scroll.y - elementDimensions.h/2 + linkDimensions.h/2;
       arrowTop = elementDimensions.h/2 - ( isPopover ? arrowHeight*0.9 : arrowHeight/2 );
     }
     arrowLeft = null;
@@ -1752,45 +1757,44 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
   } else if ( position === 'top' || position === 'bottom' ) {
 
     if ( e && isMedia(link) ) {
+      var eX = relativeParent ? e.layerX : e.pageX,
+          eY = relativeParent ? e.layerY : e.pageY;
 
       if ( position === 'top' ) {
-        topPosition = e.pageY - elementDimensions.h - ( isPopover ? arrowWidth : arrowHeight );
+        topPosition = eY - elementDimensions.h - ( isPopover ? arrowWidth : arrowHeight );
       } else {
-        topPosition = e.pageY + arrowHeight;
+        topPosition = eY + arrowHeight;
       }
 
       // adjust left | right and also the arrow
-      if (e.clientX - elementDimensions.w/2 < 0) {
+      if (e.clientX - elementDimensions.w/2 < 0) { // when exceeds left
         leftPosition = 0;
-        // arrowLeft = e.pageX - arrowWidth/2
-        arrowLeft = e.pageX - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
-      } else if (e.clientX + elementDimensions.w * 0.51 > windowWidth) {
+        arrowLeft = eX - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
+      } else if (e.clientX + elementDimensions.w * 0.51 > windowWidth) {  // when exceeds right
         leftPosition = windowWidth - elementDimensions.w * 1.009;
-        // arrowLeft = elementDimensions.w - (windowWidth - e.pageX) - arrowWidth/2
-        arrowLeft = elementDimensions.w - (windowWidth - e.pageX) - arrowAdjust;
-      } else {
-        leftPosition = e.pageX - elementDimensions.w/2;
+        arrowLeft = elementDimensions.w - (windowWidth - eX) - arrowAdjust;
+      } else { // normal top/bottom
+        leftPosition = eX - elementDimensions.w/2;
         arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
-        // arrowLeft = elementDimensions.w/2 - arrowWidth/2
       }
 
     } else {
 
       if ( position === 'top' ) {
-        topPosition =  rect.top + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 );
+        topPosition =  top + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 );
       } else { // BOTTOM
-        topPosition = rect.top + scroll.y + linkDimensions.h;
+        topPosition = top + scroll.y + linkDimensions.h;
       }
 
       // adjust left | right and also the arrow
       if ( halfLeftExceed ) {
         leftPosition = 0;
-        arrowLeft = rect.left + linkDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
+        arrowLeft = left + linkDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
       } else if ( halfRightExceed ) {
         leftPosition = windowWidth - elementDimensions.w;
-        arrowLeft = elementDimensions.w - ( windowWidth - rect.left ) + linkDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
+        arrowLeft = elementDimensions.w - ( windowWidth - left ) + linkDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
       } else {
-        leftPosition = rect.left + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
+        leftPosition = left + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
         arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
       }
     }
@@ -2098,7 +2102,7 @@ function Popover( popoverElement, popoverOptions ){
     clearTimeout( timer );
 
     timer = setTimeout( function () {
-      if ( isVisibleTip( popover, ops.container ) && hasClass( popover, showClass ) ) {
+      if ( isVisibleTip( popover, ops.container ) ) {
         element.dispatchEvent( hidePopoverEvent );
         if ( hidePopoverEvent.defaultPrevented ) { return }
 
@@ -2108,7 +2112,7 @@ function Popover( popoverElement, popoverOptions ){
           ? emulateTransitionEnd( popover, popoverHideTrigger  ) 
           : popoverHideTrigger();
       }
-    }, ops.delay + 50 );
+    }, ops.delay + 17 );
   };
 
   PopoverProto.enable = function() {
@@ -2163,7 +2167,7 @@ var scrollspyString = 'scrollspy',
     scrollspyComponent = 'ScrollSpy',
     scrollspySelector = '[data-bs-spy="scroll"]';
 
-var scrollHandlerQueue = [];
+// let scrollHandlerQueue = []
 
 
 // SCROLLSPY SCOPE
@@ -2175,8 +2179,7 @@ function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
   // ======================
   var activateScrollSpy = bootstrapCustomEvent( ("activate.bs." + scrollspyString) );
 
-  var elementID,
-      self,
+  var self,
       element,
       offset,
       itemsLength = 0,
@@ -2263,27 +2266,18 @@ function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
     element.dispatchEvent( activateScrollSpy );
   }
 
-  function toggleSpyHandlers( plus ) {
-    var action = plus ? addEventListener : removeEventListener,
-        scrollIdx = scrollHandlerQueue.indexOf( scrollHandlerQueue.find( function (s) { return s.id === elementID; } ) ),
-        listener = { id: elementID, self: self };
-
-    !plus && scrollIdx > -1 && scrollHandlerQueue.splice( scrollIdx, 1 );
-        
-    // window should always have a single scroll listener
-    if ( !isWindow || plus && !scrollHandlerQueue.length || !plus ) {
-      scrollTarget[action]( 'scroll', scrollUpdateHandler, passiveHandler );
-    }
-    
-    plus && scrollHandlerQueue.push( listener );
+  function toggleSpyHandlers( action ) {
+    action = action ? addEventListener : removeEventListener;
+    scrollTarget[action]( 'scroll', scrollUpdateHandler, passiveHandler );
   }
 
 
-  // SCROLLSPY EVENT HANDLERS
-  // ========================
+  // SCROLLSPY EVENT HANDLER
+  // =======================
   function scrollUpdateHandler(){
-    scrollHandlerQueue.map( function (i) { return i.self.refresh(); } );
+    self.refresh();
   }
+
 
   // SCROLLSPY DEFINITION
   // ====================
@@ -2311,7 +2305,7 @@ function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
       
     offset = +(options.offset || element.getAttribute( 'data-bs-offset' )) || 10;
     isWindow = scrollTarget === window;
-    elementID = getUID( element );
+    getUID( element );
 
     // prevent adding event handlers multiple times
     toggleSpyHandlers( 1 );
@@ -3056,7 +3050,7 @@ var tooltipInit = {
   constructor: Tooltip
 };
 
-var version = "3.0.14e";
+var version = "3.0.14f";
 
 var componentsInit = {
   Alert: alertInit,

@@ -6,11 +6,16 @@ export default function(link,element,position,parent,e) { // both popovers and t
       elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
       windowWidth = ( document.documentElement.clientWidth || document.body.clientWidth ),
       windowHeight = ( document.documentElement.clientHeight || document.body.clientHeight ),
+      relativeParent = getComputedStyle(parent).position === 'relative',
       rect = link.getBoundingClientRect(),
-      scroll = parent === document.body 
+      parentRect = parent.getBoundingClientRect(),
+      scroll = relativeParent ? { x: 0, y: 0 } :
+              parent === document.body
               ? { x: window.pageXOffset, y: window.pageYOffset } 
               : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
       linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
+      top = relativeParent ? link.offsetTop : rect.top,
+      left = relativeParent ? link.offsetLeft : rect.left,
       isPopover = element.classList.contains( 'popover' ),
       arrow = element.getElementsByClassName( `${isPopover?'popover':'tooltip'}-arrow` )[0],
       topPosition, leftPosition,
@@ -46,20 +51,20 @@ export default function(link,element,position,parent,e) { // both popovers and t
   // apply styling to tooltip / popover
   if ( position === 'left' || position === 'right' ) { // secondary|side positions
     if ( position === 'left' ) { // LEFT
-      leftPosition = rect.left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 )
+      leftPosition = left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 )
     } else { // RIGHT
-      leftPosition = rect.left + scroll.x + linkDimensions.w
+      leftPosition = left + scroll.x + linkDimensions.w
     }
 
     // adjust top and arrow
     if ( halfTopExceed ) {
-      topPosition = rect.top + scroll.y
+      topPosition = top + scroll.y
       arrowTop = linkDimensions.h/2 - arrowWidth
     } else if ( halfBottomExceed ) {
-      topPosition = rect.top + scroll.y - elementDimensions.h + linkDimensions.h
+      topPosition = top + scroll.y - elementDimensions.h + linkDimensions.h
       arrowTop = elementDimensions.h - linkDimensions.h/2 - arrowWidth
     } else {
-      topPosition = rect.top + scroll.y - elementDimensions.h/2 + linkDimensions.h/2
+      topPosition = top + scroll.y - elementDimensions.h/2 + linkDimensions.h/2
       arrowTop = elementDimensions.h/2 - ( isPopover ? arrowHeight*0.9 : arrowHeight/2 )
     }
     arrowLeft = null
@@ -67,45 +72,44 @@ export default function(link,element,position,parent,e) { // both popovers and t
   } else if ( position === 'top' || position === 'bottom' ) {
 
     if ( e && isMedia(link) ) {
+      const eX = relativeParent ? e.layerX : e.pageX,
+          eY = relativeParent ? e.layerY : e.pageY
 
       if ( position === 'top' ) {
-        topPosition = e.pageY - elementDimensions.h - ( isPopover ? arrowWidth : arrowHeight )
+        topPosition = eY - elementDimensions.h - ( isPopover ? arrowWidth : arrowHeight )
       } else {
-        topPosition = e.pageY + arrowHeight
+        topPosition = eY + arrowHeight
       }
 
       // adjust left | right and also the arrow
-      if (e.clientX - elementDimensions.w/2 < 0) {
+      if (e.clientX - elementDimensions.w/2 < 0) { // when exceeds left
         leftPosition = 0
-        // arrowLeft = e.pageX - arrowWidth/2
-        arrowLeft = e.pageX - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 )
-      } else if (e.clientX + elementDimensions.w * 0.51 > windowWidth) {
+        arrowLeft = eX - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 )
+      } else if (e.clientX + elementDimensions.w * 0.51 > windowWidth) {  // when exceeds right
         leftPosition = windowWidth - elementDimensions.w * 1.009
-        // arrowLeft = elementDimensions.w - (windowWidth - e.pageX) - arrowWidth/2
-        arrowLeft = elementDimensions.w - (windowWidth - e.pageX) - arrowAdjust
-      } else {
-        leftPosition = e.pageX - elementDimensions.w/2
+        arrowLeft = elementDimensions.w - (windowWidth - eX) - arrowAdjust
+      } else { // normal top/bottom
+        leftPosition = eX - elementDimensions.w/2
         arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 )
-        // arrowLeft = elementDimensions.w/2 - arrowWidth/2
       }
 
     } else {
 
       if ( position === 'top' ) {
-        topPosition =  rect.top + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 )
+        topPosition =  top + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 )
       } else { // BOTTOM
-        topPosition = rect.top + scroll.y + linkDimensions.h
+        topPosition = top + scroll.y + linkDimensions.h
       }
 
       // adjust left | right and also the arrow
       if ( halfLeftExceed ) {
         leftPosition = 0
-        arrowLeft = rect.left + linkDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 )
+        arrowLeft = left + linkDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 )
       } else if ( halfRightExceed ) {
         leftPosition = windowWidth - elementDimensions.w
-        arrowLeft = elementDimensions.w - ( windowWidth - rect.left ) + linkDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 )
+        arrowLeft = elementDimensions.w - ( windowWidth - left ) + linkDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 )
       } else {
-        leftPosition = rect.left + scroll.x - elementDimensions.w/2 + linkDimensions.w/2
+        leftPosition = left + scroll.x - elementDimensions.w/2 + linkDimensions.w/2
         arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 )
       }
     }

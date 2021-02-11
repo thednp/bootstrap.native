@@ -22,7 +22,7 @@ const scrollspyString = 'scrollspy',
     scrollspyComponent = 'ScrollSpy',
     scrollspySelector = '[data-bs-spy="scroll"]'
 
-let scrollHandlerQueue = []
+// let scrollHandlerQueue = []
 
 
 // SCROLLSPY SCOPE
@@ -123,27 +123,18 @@ export default function ScrollSpy( scrollSpyElement, scrollSpyOptions ){
     element.dispatchEvent( activateScrollSpy )
   }
 
-  function toggleSpyHandlers( plus ) {
-    const action = plus ? addEventListener : removeEventListener,
-        scrollIdx = scrollHandlerQueue.indexOf( scrollHandlerQueue.find( s => s.id === elementID ) ),
-        listener = { id: elementID, self: self }
-
-    !plus && scrollIdx > -1 && scrollHandlerQueue.splice( scrollIdx, 1 )
-        
-    // window should always have a single scroll listener
-    if ( !isWindow || plus && !scrollHandlerQueue.length || !plus ) {
-      scrollTarget[action]( 'scroll', scrollUpdateHandler, passiveHandler )
-    }
-    
-    plus && scrollHandlerQueue.push( listener )
+  function toggleSpyHandlers( action ) {
+    action = action ? addEventListener : removeEventListener
+    scrollTarget[action]( 'scroll', scrollUpdateHandler, passiveHandler )
   }
 
 
-  // SCROLLSPY EVENT HANDLERS
-  // ========================
+  // SCROLLSPY EVENT HANDLER
+  // =======================
   function scrollUpdateHandler(){
-    scrollHandlerQueue.map( i => i.self.refresh() )
+    self.refresh()
   }
+
 
   // SCROLLSPY DEFINITION
   // ====================

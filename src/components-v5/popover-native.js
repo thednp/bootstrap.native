@@ -315,7 +315,7 @@ export default function Popover( popoverElement, popoverOptions ){
     clearTimeout( timer )
 
     timer = setTimeout( () => {
-      if ( isVisibleTip( popover, ops.container ) && hasClass( popover, showClass ) ) {
+      if ( isVisibleTip( popover, ops.container ) ) {
         element.dispatchEvent( hidePopoverEvent )
         if ( hidePopoverEvent.defaultPrevented ) return
 
@@ -325,7 +325,7 @@ export default function Popover( popoverElement, popoverOptions ){
           ? emulateTransitionEnd( popover, popoverHideTrigger  ) 
           : popoverHideTrigger()
       }
-    }, ops.delay + 50 )
+    }, ops.delay + 17 )
   }
 
   PopoverProto.enable = function() {
