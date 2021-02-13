@@ -1686,33 +1686,38 @@ function isMedia(element){
   .some( function (mediaType) { return element instanceof mediaType; } )
 }
 
-function styleTip(link,element,position,parent,e) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
+function styleTip( target, tip, position, parent, e ) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
   var tipClasses = /\b(top|bottom|start|end)+/,
-      elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
+      elementDimensions = { w : tip.offsetWidth, h: tip.offsetHeight },
       windowWidth = ( document.documentElement.clientWidth || document.body.clientWidth ),
       windowHeight = ( document.documentElement.clientHeight || document.body.clientHeight ),
-      nonStaticParent = getComputedStyle(parent).position !== 'static',
-      rect = link.getBoundingClientRect(),
-      scroll = nonStaticParent ? { x: 0, y: 0 } :
-              parent === document.body
+      parentIsBody = parent === document.body,
+      targetPosition = getComputedStyle(target).position,
+      parentPosition = getComputedStyle(parent).position,
+      staticParent = !parentIsBody && parentPosition === 'static',
+      relativeParent = !parentIsBody && parentPosition === 'relative',
+      // absoluteParent = !parentIsBody && parentPosition === 'absolute', // this case should not be possible
+      absoluteTarget = targetPosition === 'absolute', // this case requires a container with position: relative
+      targetRect = target.getBoundingClientRect(),
+      scroll = parentIsBody 
               ? { x: window.pageXOffset, y: window.pageYOffset } 
-              : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
-      linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
-      top = nonStaticParent ? link.offsetTop : rect.top,
-      left = nonStaticParent ? link.offsetLeft : rect.left,
-      isPopover = element.classList.contains( 'popover' ),
-      arrow = element.getElementsByClassName( ((isPopover?'popover':'tooltip') + "-arrow") )[0],
+              : { x: parent.scrollLeft, y: parent.scrollTop },
+      linkDimensions = { w: targetRect.right - targetRect.left, h: targetRect.bottom - targetRect.top },
+      top = relativeParent || staticParent ? target.offsetTop : targetRect.top,
+      left = relativeParent || staticParent ? target.offsetLeft : targetRect.left,
+      isPopover = tip.classList.contains( 'popover' ),
+      arrow = tip.getElementsByClassName( ((isPopover?'popover':'tooltip') + "-arrow") )[0],
       topPosition, leftPosition,
       arrowTop, arrowLeft, arrowWidth, arrowHeight,
       // check position
-      halfTopExceed = rect.top + linkDimensions.h/2 - elementDimensions.h/2 < 0,
-      halfLeftExceed = rect.left + linkDimensions.w/2 - elementDimensions.w/2 < 0,
-      halfRightExceed = rect.left + elementDimensions.w/2 + linkDimensions.w/2 >= windowWidth,
-      halfBottomExceed = rect.top + elementDimensions.h/2 + linkDimensions.h/2 >= windowHeight,
-      topExceed = rect.top - elementDimensions.h < 0,
-      leftExceed = rect.left - elementDimensions.w < 0,
-      bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight,
-      rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth,
+      halfTopExceed = targetRect.top + linkDimensions.h/2 - elementDimensions.h/2 < 0,
+      halfLeftExceed = targetRect.left + linkDimensions.w/2 - elementDimensions.w/2 < 0,
+      halfRightExceed = targetRect.left + elementDimensions.w/2 + linkDimensions.w/2 >= windowWidth,
+      halfBottomExceed = targetRect.top + elementDimensions.h/2 + linkDimensions.h/2 >= windowHeight,
+      topExceed = targetRect.top - elementDimensions.h < 0,
+      leftExceed = targetRect.left - elementDimensions.w < 0,
+      bottomExceed = targetRect.top + elementDimensions.h + linkDimensions.h >= windowHeight,
+      rightExceed = targetRect.left + elementDimensions.w + linkDimensions.w >= windowWidth,
       arrowAdjust = 0;
 
   // recompute position
@@ -1724,8 +1729,8 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
   position = position === 'right' && rightExceed ? 'left' : position;
 
   // update tooltip/popover class
-  element.className.indexOf(position) === -1 
-    && ( element.className = element.className.replace( tipClasses, tipClassPositions[position] ) );
+  tip.className.indexOf(position) === -1 
+    && ( tip.className = tip.className.replace( tipClasses, tipClassPositions[position] ) );
 
   // we check the computed width & height and update here
   arrowWidth = arrow ? arrow.offsetWidth : 0;
@@ -1755,9 +1760,9 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
 
   } else if ( position === 'top' || position === 'bottom' ) {
 
-    if ( e && isMedia(link) ) {
-      var eX = nonStaticParent ? e.layerX : e.pageX,
-          eY = nonStaticParent ? e.layerY : e.pageY;
+    if ( e && isMedia(target) ) {
+      var eX = !relativeParent ? e.pageX : e.layerX + ( absoluteTarget ? target.offsetLeft : 0 ),
+          eY = !relativeParent ? e.pageY : e.layerY + ( absoluteTarget ? target.offsetTop : 0 );
 
       if ( position === 'top' ) {
         topPosition = eY - elementDimensions.h - ( isPopover ? arrowWidth : arrowHeight );
@@ -1768,7 +1773,7 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
       // adjust left | right and also the arrow
       if (e.clientX - elementDimensions.w/2 < 0) { // when exceeds left
         leftPosition = 0;
-        arrowLeft = eX - ( isPopover ? arrowWidth*0.8 : arrowWidth/2 );
+        arrowLeft = eX - ( isPopover ? arrowWidth * 0.8 : arrowWidth/2 );
       } else if (e.clientX + elementDimensions.w * 0.51 > windowWidth) {  // when exceeds right
         leftPosition = windowWidth - elementDimensions.w * 1.009;
         arrowLeft = elementDimensions.w - (windowWidth - eX) - arrowAdjust;
@@ -1802,8 +1807,8 @@ function styleTip(link,element,position,parent,e) { // both popovers and tooltip
   }
 
   // apply style to tooltip/popover and its arrow
-  element.style.top = topPosition + 'px';
-  element.style.left = leftPosition + 'px';
+  tip.style.top = topPosition + 'px';
+  tip.style.left = leftPosition + 'px';
 
   // update arrow position or clear side
   arrowTop !== null ? (arrow.style.top = arrowTop + 'px') : (arrow.style.top = '');

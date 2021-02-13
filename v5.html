@@ -2241,33 +2241,37 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
               <p>Now we are going to test buttons with a popover with large contents. The last two examples below are using the
                 template system and different trigger options. The popover generated for the last two
                 examples can be dismissed on window resize or blur (focus out).</p>
-              <p>
-                <button type="button" class="btn btn-success" data-bs-dismissible="true" data-bs-toggle="popover" data-bs-placement="left"
+
+              <div class="btn-toolbar mb-3">
+                <button type="button" class="btn btn-success me-1" data-bs-dismissible="true" data-bs-toggle="popover" data-bs-placement="left"
                   data-bs-title="Dismissible Popover &lt;span class='badge bg-primary'>COOL&lt;/span>"
                   data-bs-content="Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                   Dismissible
                 </button>
-                <button type="button" class="btn btn-dark" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="customClass" data-bs-title="Popover on RIGHT" data-bs-content="Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
+                <button type="button" class="btn btn-dark me-1" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="customClass" data-bs-title="Popover on RIGHT" data-bs-content="Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
                   Right
                 </button>
-                <button id="popoverWithEvents" type="button" class="btn btn-secondary" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Popover on top">
+                <button id="popoverWithEvents" type="button" class="btn btn-secondary me-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Popover on top">
                  Events
                 </button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="popover" data-bs-placement="bottom"
-                  data-bs-content="Popover on bottom&lt;br> Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
-                  Bottom
-                </button>
-                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template" placeholder="Focus" data-bs-toggle="popover">
-                <button type="button" id="popover-via-click" class="btn btn-warning" data-bs-title="Popover on CLICK" data-bs-content="This popover is added to a position: relative container. &lt;br>Now simply click again to dismiss.">
+                <div class="position-static me-1" id="staticContainer1">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="popover" data-bs-container="#staticContainer1"
+                    data-bs-title="Popover in static container" data-bs-content="This popover is added to a position: static container. This requires a parent with position : relative for the container.">Static</button>
+                </div>                
+                <button type="button" class="btn btn-outline-secondary position-absolute" style="top:0; right: 0;" data-bs-toggle="popover" data-bs-placement="left" data-container="#popoverExamples"
+                  data-bs-title="Popover on absolute position" data-bs-content="This button is rendered in position: absolute and this requires a position: relative container.">Absolute</button>
+
+                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template me-1" placeholder="Focus" data-bs-toggle="popover">
+                <button type="button" id="popover-via-click" class="btn btn-warning me-1" data-bs-title="Popover on CLICK" data-bs-content="This popover is added to a position: relative container. &lt;br>Now simply click again to dismiss.">
                   Click
                 </button>
-                <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
+                <svg class="me-1" viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
                   data-bs-content="This is a demo content for a popover initialized on an &lt;code&gt;&amp;lt;svg&amp;gt;&lt;/code&gt; element.">
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
-                <img data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
-              </p>
+                <img class="me-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+              </div>
             </section>
           </section>
 
@@ -3408,34 +3412,36 @@ new BSN.Tooltip('#selector',options).show();
                 then <a href="#" title="Testing left placement" data-bs-toggle="tooltip" data-bs-placement="left">left</a>, and <a
                   href="#" title="Testing right placement" data-bs-toggle="tooltip" data-bs-placement="right">right</a>.
                 Let's put it to the test! Some heavy testing on the automatic repositioning with very very long tooltips.</p>
-              <p>
-          
-                <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="left"
+
+              <div class="btn-toolbar mb-3">          
+                <button type="button" class="btn btn-primary me-1" data-bs-toggle="tooltip" data-bs-placement="left"
                   data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
-                <button id="tooltipWithEvents" type="button" class="btn btn-dark" data-bs-toggle="tooltip" data-bs-placement="top"
+                <button id="tooltipWithEvents" type="button" class="btn btn-dark me-1" data-bs-toggle="tooltip" data-bs-placement="top"
                   data-bs-title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Events</button>
-                <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                <button type="button" class="btn btn-secondary me-1" data-bs-toggle="tooltip" data-bs-placement="bottom"
                   data-bs-title="&lt;b&gt;Tooltip on bottom&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
-                <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="right"
+                <button type="button" class="btn btn-success me-1" data-bs-toggle="tooltip" data-bs-placement="right"
                   data-bs-title="&lt;b&gt;Tooltip on right&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
-                <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="left"
-                  data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt; This tooltip will be added to a position: relative container. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
-                <button id="tooltipTemplateExample" type="button" class="btn btn-danger"
+                <button type="button" class="btn btn-warning me-1" data-bs-toggle="tooltip" data-bs-placement="left"
+                  data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
+                <button id="tooltipTemplateExample" type="button" class="btn btn-danger me-1"
                   data-bs-title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;This tooltip will be added to a position: relative container. Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
-                <button type="button" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                  data-bs-title="&lt;b&gt;Tooltip on bottom&lt;/b&gt; &lt;span class='badge bg-warning'&gt;COOL&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
-                <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="right"
-                  data-bs-title="&lt;b&gt;Tooltip on right&lt;/b&gt; &lt;span class='badge bg-info'&gt;FYI&lt;/span&gt;&lt;br&gt; Here we add more content for testing. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
-          
-                <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" 
+                <button type="button" class="btn btn-outline-secondary position-absolute me-1" style="top:0; right: 0;" data-bs-toggle="tooltip" data-bs-placement="left" data-container="#tooltipExamples"
+                  data-bs-title="Tooltip on absolute position element. This requires a position: relative container.">Absolute</button>
+                <div class="position-static me-1" id="staticContainer">
+                  <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-container="#staticContainer"
+                    data-bs-title="&lt;b&gt;Tooltip in static container&lt;/b&gt;&lt;br&gt;This tooltip is added to a position: static container. This requires a parent with position:relative for the container.">Static</button>
+                </div>
+                <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" class="me-1"
                   data-bs-toggle="tooltip" data-bs-placement="top" 
                   data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
-                <img data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+                <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
 
-              </p>
+              </div>
+
             </section>
           </section>
         </div>
