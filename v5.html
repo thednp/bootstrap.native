@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="The faster, lighter and more secure version of the Bootstrap JavaScript components.">
+    <meta name="description" content="The faster, lighter and more compact version of the Bootstrap JavaScript components.">
     <meta name="keywords" content="JavaScript,Native JavaScript,native,Bootstrap,plugins,jQuery">
     <meta name="author" content="thednp">
 
@@ -13,7 +13,7 @@
     <title>Native JavaScript for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/css/offcanvas.css">
 
     <!-- Prism: Code Highlight -->
@@ -22,18 +22,13 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="./assets/css/theme.css">
 
-		<!-- <script src="./dist/polyfill.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
-    <script src="./dist/bootstrap-native.js"></script>     -->
-
     <!-- <script src="./dist/bootstrap-native-v5.js"></script> -->
-
   </head>
   <body>
-    <header class="navbar navbar-expand-md navbar-dark fixed-top bg-purple">
+    <header class="navbar navbar-expand-md navbar-dark sticky-top bg-purple">
       <nav class="container-fluid">
         <a data-bs-toggle="tooltip" data-bs-placement="bottom" class="navbar-brand me-0 me-md-2" title="&lt;b&gt;Native JavaScript for Bootstrap&lt;/b&gt;&lt;br&gt;The sweetest Vanilla JavaScript library for everyone" href="https://github.com/thednp/bootstrap.native/">
-          <svg class="d-inline-block align-top" width="40" height="32" viewBox="0 0 118 94" xmlns="http://www.w3.org/2000/svg" focusable="false"><title>Bootstrap</title>
+          <svg class="d-inline-block align-top" width="40" height="32" viewBox="0 0 118 94" xmlns="http://www.w3.org/2000/svg" focusable="false">
             <path fill="currentColor" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
           </svg>
           <span class="ms-1 hidden-xs">Native JavaScript for Bootstrap</span>
@@ -71,6 +66,7 @@
             <li class="nav-item"><a class="nav-link" href="#componentCollapse">Collapse</a></li>
             <li class="nav-item"><a class="nav-link" href="#componentDropdown">Dropdown</a></li>            
             <li class="nav-item"><a class="nav-link" href="#componentModal">Modal</a></li>
+            <li class="nav-item"><a class="nav-link" href="#componentOffcanvas">Offcanvas</a></li>
             <li class="nav-item"><a class="nav-link" href="#componentPopover">Popover</a></li>
             <li class="nav-item"><a class="nav-link" href="#componentScrollspy">ScrollSpy</a></li>
             <li class="nav-item"><a class="nav-link" href="#componentTab">Tab</a></li>
@@ -81,7 +77,7 @@
       </nav>
     </header>
 
-    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover">
+    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover" data-bs-keyboard="true">
       <ol class="carousel-indicators">
         <li data-bs-toggle="tooltip" data-bs-title="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
         <li data-bs-toggle="tooltip" data-bs-title="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
@@ -93,7 +89,7 @@
           <div class="container d-flex align-items-end h-100">
             <div class="position-relative text-dark text-left mb-5">
               <h1>A better way to Bootstrap 5</h1>
-              <p>The faster, lighter and more secure set of JavaScript components for Bootstrap, developed on modern ES6+ standards.<br> The <b>10kb gZip</b> 
+              <p>The faster, lighter and more compact set of JavaScript components for Bootstrap, developed on modern ES6+ standards.<br> The <b>10kb gZip</b> 
                 library that does most of Bootstrap & Popper combined.</p>
               <p><a class="btn btn-lg btn-primary" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
             </div>
@@ -140,7 +136,7 @@
         <h2>Read First</h2>
         <p>Welcome to the demo page! Before you do anything, please make sure to check the <a href="https://github.com/thednp/bootstrap.native/wiki">Wiki pages</a>, 
           as they give you quick start with using the library and also provide a good set of valuable guides on how to get the best out of it.</p>
-        <p>The components on this page have been developed with ES6+ JavaScript and are subject to change. The last check was with Bootstrap 5.0.0 beta1 and we expect
+        <p>The components on this page have been developed with ES6+ JavaScript and are subject to change. The last check was with Bootstrap 5.0.0 beta3 and we expect
           future changes. Be sure to check <a href="https://github.com/thednp/bootstrap.native/issues/400">the pulse on the development</a>.</p>
       </section>
       <div class="row">
@@ -148,9 +144,10 @@
 
           <section id="componentAlert">
             <h2>Alert</h2>
-            <p>The <b>Alert</b> component covers the specific original events and public methods, but does not provide any option.
-              The component covers most essential JavaScript and DATA API, and does not require the class <code>alert-dismissible</code>
-              for the initialization to work.</p>
+            <p>The <b>Alert</b> component covers the specific original events and public methods, but just like the original plugin, does not provide any
+              initialization option.</p>
+            <p>The component covers most essential JavaScript and DATA API, and does not require the class <code>alert-dismissible</code>
+              for the initialization to work, however the <code>show</code> class must be present in order for its main method to work.</p>
           
             <section id="alertMethods">
               <h3>Alert Methods</h3>
@@ -166,7 +163,7 @@
                   <tbody>
                     <tr>
                       <td><code>instance.close()</code></td>
-                      <td>The method hides an initialized alert and remove it from DOM.</td>
+                      <td>The method hides an initialized alert and removes the <code>&lt;div class="alert"&gt;</code> element from the DOM.</td>
                     </tr>
                     <tr>
                       <td><code>instance.dispose()</code></td>
@@ -227,20 +224,20 @@
                 you can do the following:</p>
           
 <pre><code class="language-javascript">// initialize
-var myWarningAlertInit = new BSN.Alert('#myButtonAlert');
+var myWarningAlertInit = new BSN.Alert('.alert');
 </code></pre>
           
               <p>Also attach handlers to the original events:</p>
           
 <pre><code class="language-javascript">// close.bs.alert
-myButtonAlert.closest('.alert').addEventListener('close.bs.alert', function(event){
+myAlert.addEventListener('close.bs.alert', function(event){
   // this event can be default prevented 
   // do something cool
   // event.target is &lt;div class="alert"&gt;
 }, false);
 
 // closed.bs.alert
-myButtonAlert.closest('.alert').addEventListener('closed.bs.alert', function(event){
+myAlert.addEventListener('closed.bs.alert', function(event){
   // do something cool
   // event.target is &lt;div class="alert"&gt;
 }, false);
@@ -250,10 +247,10 @@ myButtonAlert.closest('.alert').addEventListener('closed.bs.alert', function(eve
               </p>
           
 <pre><code class="language-javascript">// find an element initialized via DATA API
-var myAlertButton = document.getElementById('myAlertButton');
+var myAlert = document.querySelector('.alert');
 
 // reference the initialization object
-var myAlertInit = myAlertButton.Alert;
+var myAlertInit = myAlert.Alert;
 
 // apply the public methods
 myAlertInit.close();
@@ -463,15 +460,15 @@ var myButtonINIT = myButton.Button;
                       <td><code>keyboard</code></td>
                       <td><em>boolean</em></td>
                       <td><em>true</em></td>
-                      <td>Option that allows yout to navigate the carousel with left and right arrows. If you want to
+                      <td>Option that allows the user to navigate the carousel with left and right arrow keys. If you want to
                         disable this feature, do that via JavaScript or the <code>data-bs-keyboard="false"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>pause</code></td>
                       <td><em>boolean</em><br>or<br> the text <em>'hover'</em></td>
                       <td><em>'hover'</em></td>
-                      <td>Option that makes possible to pause the carousel transition on mouse hover and touchdown. If you want to
-                        disable pause on hover, do that via JavaScript or the <code>data-bs-pause="false"</code> attribute.</td>
+                      <td>Option that makes possible to pause the carousel transition on mouse hover and touchdown. You can
+                        disable this via JavaScript or the <code>data-bs-pause="false"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>touch</code></td>
@@ -650,7 +647,7 @@ var myButtonINIT = myButton.Button;
                 <li><code>id="myCarousel"</code> is <b>not</b> required for any of the component's functionality, except 
                   cases when you need to interact with it and attach additional functionality;</li>
                 <li><code>data-bs-ride="carousel"</code> is the attribute required if you want the <b>Carousel</b> component
-                  to initialize your element on page load;</li>
+                  to initialize your element automatically;</li>
                 <li><code>data-bs-keyboard="false"</code> (not shown in the sample markup) is the attribute that enables carousel 
                   navigation via keyboard left and right arrow keys;</li>
                 <li><code>data-bs-interval="5000"</code> sets the automatic slide interval; the <code>false</code> value will 
@@ -1009,8 +1006,8 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
               <p>If the above single collapse template have been inserted into the DOM, you need to initialize it via JavaScript.
               </p>
 
-<pre><code class="language-javascript">// initialize the component for collapse trigger
-var myCollapseInit = new BSN.Collapse('#collapseLink')
+<pre><code class="language-javascript">// initialize the component for collapse
+var myCollapseInit = new BSN.Collapse('.collapse')
 </code></pre>
           
               <p>This now enables you to work with the public methods.</p>
@@ -1030,11 +1027,11 @@ myCollapseInit.dispose();
           
               <p>Also we can attach some handlers to the original events:</p>
           
-<pre><code class="language-javascript">// first, we need to reference the collapsible element
-var myCollapseExample = document.getElementById(collapseLink.getAttribute('href').replace('#',''));
+<pre><code class="language-javascript">// first, we need to reference the collapse element
+var myCollapseExample = document.getElementById('#myCollapseExample');
 
 // attach a handler to the `show.bs.collapse` original event
-myCollapseExample.addEventListener('show.bs.collapse', function(event){
+myCollapseExample.addEventListener('show.bs.collapse', (event) => {
   // do something cool when .show() method is called
   // event.target is myCollapseExample
 }, false);
@@ -1046,13 +1043,13 @@ myCollapseExample.addEventListener('show.bs.collapse', function(event){
 <pre><code class="language-javascript">// grab the accordion by its ID
 var myAccordion = document.getElementById('myAccordion');
 
-// grab the collapsible triggers for this accordion
-var myAccordionTriggers = myAccordion.querySelectorAll('[data-bs-toggle="collapse"]');
+// grab the collapse elements of this accordion
+var myAccordionCollapses = myAccordion.querySelectorAll('.collapse');
 
 // initialize the component for each collapse trigger
-Array.from(myAccordionTriggers).map(
-  collapseTrigger => new BSN.Collapse(
-    collapseTrigger,
+Array.from(myAccordionCollapses).forEach((collapse) => 
+  new BSN.Collapse(
+    collapse,
     {
       parent: myAccordion
     }
@@ -1060,16 +1057,16 @@ Array.from(myAccordionTriggers).map(
 )
 </code></pre>
           
-              <p>The component grants access to the initialization even for instances where the DATA API was used.</p>
+              <p>The component grants access to the initialization object.</p>
           
-<pre><code class="language-javascript">// grab the collapse trigger initialized via DATA API
-var myCollapseBtn = document.getElementById('myCollapseBtn');
+<pre><code class="language-javascript">// grab the collapse initialized via DATA API
+var myCollapse = document.getElementById('myCollapse');
 
 // reference the initialization
-var myCollapseTriggerInit = myCollapseBtn.Collapse;
+var myCollapseInit = myCollapse.Collapse;
 
 // call any public method
-myCollapseTriggerInit.toggle();
+myCollapseInit.toggle();
 </code></pre>
           
             </section>
@@ -1093,7 +1090,7 @@ myCollapseTriggerInit.toggle();
                       aria-expanded="true" aria-controls="collapseExample">data-bs-target</button>
                   </span>
                 </p>
-                <div class="collapse" id="collapseExample" aria-expanded="false" >
+                <div class="collapse" id="collapseExample">
                   <div class="card card-body mb-3">
                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim
                     keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
@@ -1102,9 +1099,8 @@ myCollapseTriggerInit.toggle();
               </div>
           
               <h4>Accordion / Multiple Collapsible Elements</h4>
-              <p>Here's an <b>Accordion</b> example, built with a set of <b>Panel</b>s wrapped in a
-                <code>&lt;div class="panel-group"&gt;</code> element. When the toggle links are clicked, our <b>Collapse</b>
-                component will look for the closest <code>&lt;div class="accordion-className"&gt;</code> or
+              <p>Here's an <b>Accordion</b> example, built with a dedicated markup from the original plugin. When the toggle links are
+                clicked, our <b>Collapse</b> component will look for the closest <code>&lt;div class="accordion-className"&gt;</code> or
                 <code>&lt;div id="accordion-id"&gt;</code> via <code>data-bs-parent="selector"</code> and will hide any visible
                 collapsible element.</p>
 
@@ -1157,9 +1153,11 @@ myCollapseTriggerInit.toggle();
             <h2>Dropdown</h2>
             <p>The <b>Dropdown</b> component covers most of the functionality from the original plugin in terms of original events,
               instance methods and options, but also offers some additional functionality without using any third party library.</p>
-            <p>To get on par with the original plugin, our component now sports automatic repositioning without the use of Popper.js. 
-              This functionality is made possible thanks to the excelent CSS classes provided by Bootstrap 5: <code>dropup</code>, 
-              <code>dropstart</code>, <code>dropend</code>, <code>dropdown-menu-end</code> and others.</p>
+            <p>To get on par with the original plugin, our component now sports automatic repositioning without the use of Popper.js.
+              However for instances of <code>dropup</code>, <code>dropstart</code>, <code>dropend</code>, <code>dropdown-menu-end</code>,
+              our component only requires some additional CSS (deprecated in the original plugin). Check 
+              <a title="BSN Wiki" href="https://github.com/thednp/bootstrap.native/wiki/Acknowledgements#additional-styling">the wiki</a>
+              for more information.</p>
             <p>Here's how it works:</p>
             <ul>
               <li>on initialization, the component will store all class names of the target and its corresponding dropdown menu
@@ -1190,9 +1188,40 @@ myCollapseTriggerInit.toggle();
 
             <section id="dropdownOptions">
               <h3>Dropdown Options</h3>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>display</code></td>
+                      <td><em>string</em></td>
+                      <td><em>dynamic</em></td>
+                      <td>Option to enable automatic positioning of the <code>.dropdown-menu</code> element. When shown to the user, 
+                        the <code>.dropdown-menu</code> element can be re-positioned on resize / scroll in a way that it must be visible
+                        where it has the most available space.
+                        <br>To disable this option, you can set the "static" value for this option.
+                        <br>This option does not affect the re-positioning that happens on show.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><code>offset</code></td>
+                      <td><em>number</em></td>
+                      <td><em>5</em></td>
+                      <td>Option to set the spacing required for the <code>.dropdown-menu</code> relative to the toggle button.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <p>The previously featured <code>persist</code> options has been deprecated. The <code>.dropdown-menu</code> can be or
                 contain a <code>&lt;form&gt;</code> element, in which case the component will not dismiss when clicking or focusing inside
-                and allows the user to interact with it.</p>
+                and enables the user to interact with it.</p>
             </section>
 
             <section id="dropdownMethods">
@@ -1207,9 +1236,17 @@ myCollapseTriggerInit.toggle();
                   </thead>
                   <tbody>
                     <tr>
+                      <td><code>instance.show()</code></td>
+                      <td>Shows the dropdown-menu.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.hide()</code></td>
+                      <td>Hides the dropdown-menu.</td>
+                    </tr>
+                    <tr>
                       <td><code>instance.toggle()</code></td>
                       <td>For a given initialization the method shows the dropdown-menu if hidden or hides
-                        it otherwise.</td>
+                        it otherwise using the above two methods.</td>
                     </tr>
                     <tr>
                       <td><code>instance.dispose()</code></td>
@@ -1222,12 +1259,12 @@ myCollapseTriggerInit.toggle();
           
             <section id="dropdownEvents">
               <h3>Dropdown Events</h3>
-              <p>The <b>Dropdown</b> component covers original events. The target of all events is the 
-                <code>&lt;div class="dropdown"&gt;</code> element, while the <code>event.relatedTarget</code> can be either the 
-                triggering element with the specific <code>data-bs-toggle="dropdown"</code> attribute or a child element 
-                of the <code>&lt;div class="dropdown-menu"></code> element, depending on which one you click.</p>
-              <p>If you dismiss the dropdown via JavaScript, the <kbd>Esc</kbd> key 
-                or by clicking outside the triggering button, the <code>event.relatedTarget</code> is <em>null</em>.</p>              
+              <p>The <b>Dropdown</b> component covers the original events and the target of all events is the 
+                <code>&lt;div class="dropdown"&gt;</code> element.</p>
+              <p>If clicked, the triggering element with the specific <code>data-bs-toggle="dropdown"</code> 
+                attribute will be the <code>event.relatedTarget</code>. However, if you dismiss the dropdown via
+                JavaScript, the <kbd>Esc</kbd> key or by clicking outside the triggering button, the
+                <code>event.relatedTarget</code> is <em>null</em>.</p>              
               <div class="table-responsive">
                 <table class="table">
                   <thead>
@@ -1406,7 +1443,7 @@ myDropdownInit.dispose();
                     <a class="dropdown-item" href="#">Something else here</a>
                   </div>
                 </div>
-                <div class="btn-group dropstart dropleft me-2">
+                <div class="btn-group dropstart me-2">
                   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">                    
                     Left
@@ -1417,7 +1454,7 @@ myDropdownInit.dispose();
                     <a class="dropdown-item" href="#">Something else here</a>
                   </div>
                 </div>
-                <div class="btn-group dropend dropright">
+                <div class="btn-group dropend">
                   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     Right
@@ -1441,8 +1478,7 @@ myDropdownInit.dispose();
           <section id="componentModal">
             <h2>Modal</h2>
             <p>The <b>Modal</b> component comes with small changes to options, events and public methods when compared to 
-              the original plugin. It provides an initialization option and a public method to write directly into your modal
-              content.</p>
+              the original plugin. This version is also different from our V4 version as we will explore later on.</p>
             <p>In addition to adjusting the spacing (padding) of the <code>&lt;body&gt;</code>, elements like
               <code>&lt;nav class="navbar fixed-top"&gt;</code> are also adjusted in the same manner to get the smoothest possible
               transition. Like all components of the library, the component grants access to the initialization object even if 
@@ -1450,8 +1486,6 @@ myDropdownInit.dispose();
 
             <section id="modalOptions">
               <h3>Modal Options</h3>
-              <p>With native JavaScript we don't need the <code>show</code> option because we can immediatelly access the component's 
-                public methods right after initialiation, we'll have a look at an example in a minute.</p>
               <div class="table-responsive">
                 <table class="table">
                   <thead>
@@ -1515,7 +1549,7 @@ myDropdownInit.dispose();
                     <tr>
                       <td><code>instance.update()</code></td>
                       <td>This allows you to update the modal layout (handling overflowing/non-overflowing
-                        body and/or modal) after you have changed it's content or other layout changes occured.</td>
+                        body and/or modal) after layout changes have occured.</td>
                     </tr>
                     <tr>
                       <td><code>instance.dispose()</code></td>
@@ -1566,19 +1600,19 @@ myDropdownInit.dispose();
                 </table>
               </div>
               <p>If modal is opened via JavaScript methods, or by clicking on another element that is not a modal triggering 
-                element, the <code>relatedTarget</code> is <em>null</em>.</p>
+                element, the <code>event.relatedTarget</code> is <em>null</em>.</p>
             </section>
             <section id="modalDATA">
               <h3 id="modalDataAPI">Modal DATA API</h3>
-              <p>You can initialize <b>Modal</b> without writing any code as long as you have a modal and a trigger with
-                <code>data-bs-target</code> or a link with <code>href</code> referencing that modal. The component
-                will initialize for all elements with <code>data-bs-toggle="modal"</code> found in the DOM.</p>
+              <p>You can initialize <b>Modal</b> without writing any code as long as you have a modal and a trigger button with
+                the <code>data-bs-target</code> attribute or a link with <code>href</code> attribute referencing that modal.
+                The component will initialize all <code>&lt;div class="modal"&gt;</code> elements found in the DOM.</p>
           
 <pre><code class="language-markup">&lt;!-- provide a trigger button --&gt;
-&lt;button id="myModalTrigger" type="button" data-bs-toggle="modal" data-bs-target="#myModal"&gt;Launch modal&lt;/button&gt;
+&lt;button data-bs-toggle="modal" data-bs-target="#myModal" type="button"&gt;Launch modal&lt;/button&gt;
 
 &lt;!-- Alternatively provide a link --&gt;
-&lt;a id="myModalTrigger" data-bs-toggle="modal" href="#myModal"&gt;Launch modal&lt;/a&gt;
+&lt;a data-bs-toggle="modal" href="#myModal"&gt;Launch modal&lt;/a&gt;
 
 &lt;!-- also the modal itself --&gt;
 &lt;div id="myModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"&gt;
@@ -1599,24 +1633,17 @@ myDropdownInit.dispose();
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
-          
-              <p>The DATA API is best suited for static content dialogs.</p>
+
+              <p>As shown in the above sample markup, <b>Modal</b> can work with multiple triggering elements as well as
+                multiple dismiss elements, with minimal effort and no events overhead on the global object.</p>
             </section>
           
             <section id="modalJS">
               <h3>Modal JavaScript API</h3>
-              <p>Generally you can initialize <b>Modal</b> for any instance of <code>&lt;div class="modal"&gt;</code> and immediately 
-                get access to methods. Alternativelly you can initialize on a triggering element, similar to how the DATA API works, 
-                in this case the <code>data-bs-toggle="modal"</code> is not required, but you need to specify a modal reference via a specific
-                attribute:
-              </p>
-              <ul>
-                <li><code>data-bs-target="#modalId"</code> which is suitable for <code>&lt;button></code> elements;</li>
-                <li><code>href="#modalId"</code> which is specific for <code>&lt;a&gt;</code> anchor link elements.</li>
-              </ul>
+              <p>Generally you can initialize <b>Modal</b> for any instance of <code>&lt;div class="modal"&gt;</code> and
+                immediately get access to methods.</p>
 
-              <p>The JavaScript API covers the <b>only</b> way to deal with dynamic content, the later added modals. Let's create a very 
-                basic modal template for this guide.</p>
+              <p>Let's create a very basic modal template for this guide.</p>
           
 <pre><code class="language-markup">&lt;!-- blank modal template --&gt;
 &lt;div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"&gt;
@@ -1653,32 +1680,11 @@ var myNewModalInstance = new BSN.Modal('#myModal', { backdrop: true }).show();
 
               <p>Keep in mind that re-initializing will make use of the <code>.dispose()</code> method to clear memory
                 allocated for previous initialization, which involves two things: reseting the other options' values to the 
-                DATA API specified, or default values if not specified on re-initialization AND lastly, if the modal
-                is open, on re-initialization the modal will be hidden via <code>.hide()</code>, but you can still access the
-                <code>.show()</code> method right away.</p>
+                DATA API specified, or default values AND lastly, if the modal is open, on re-initialization the modal will
+                be hidden via <code>.hide()</code>, you can instantly call the <code>.show()</code> method as written above.</p>
           
-              <p>In other cases you can designate one or multiple triggering elements to open your modal, they will be the target
-                of the constructor initialization and allow you to use same modal as a template to handle contents pushed by the
-                triggering elements.</p>
-          
-<pre><code class="language-markup">&lt;!-- &lt;button&gt; referencing the modal --&gt;
-&lt;button type="button" id="buttonID" class="btn btn-primary" data-bs-target="#modalID"&gt;My Button&lt;/button&gt;
-
-&lt;!-- &lt;a&gt; referencing the modal --&gt;
-&lt;a id="anchorID" class="btn btn-primary" href="#modalID"&gt;My Link&lt;/a&gt;
-</code></pre>
-          
-              <p>Now let's initialize one of them right away:</p>
-          
-<pre><code class="language-javascript">// initiate Modal on a triggering element
-var myModalInstance = new BSN.Modal('#myButton',
-{ // options object
-  keyboard: false // we don't want to dismiss Modal on pressing Esc key
-});
-</code></pre>
-          
-              <p>Now we have an initialization reference in <code>myModalInstance</code>, regardless of which element is the
-                target of our constructor, we can start applying the component's public methods.</p>
+              <p>Now we have an initialization reference in <code>myModalInstance</code>, we can start applying the
+                component's public methods:</p>
           
 <pre><code class="language-javascript">// show the modal at any time
 myModalInstance.show();
@@ -1730,35 +1736,12 @@ myModal.addEventListener('hidden.bs.modal', function(event){
 }, false);
 </code></pre>
           
-              <p>Additionally the component will store in the modal OR its triggering elements some references, for the internal
-                execution, hopefully would help you as well. For instance, when a modal is referenced by one or more triggering
-                elements, it will know which one was clicked last time to execute the <code>.show()</code> instance method.</p>
+              <p>Additionally the component will store the initialization object in the modal, for the internal
+                execution, hopefully would help you as well.</p>
           
-<pre><code class="language-javascript">// modal can know which element is its triggering element
-var lastModalTrigger = myModal.modalTrigger;
-
-// for modals targeted directly by the component with no triggering element
-// you can access the initialization object from the modal itself
+<pre><code class="language-javascript">// you can access the initialization object from the modal itself
 var myModalInit = myModal.Modal;
 </code></pre>
-          
-              <p>Also each triggering element holds the initialization of the <b>Modal</b> component:</p>
-          
-<pre><code class="language-javascript">// when a modal was initialized via DATA API
-// OR a triggering element is the target of the Modal constructor
-var myModalInstance === document.getElementById('myModalTrigger').Modal;
-</code></pre>
-
-              <p>If you like you can also do inline JavaScript:</p>
-              
-<pre><code class="language-markup">&lt;!-- simple things make me happy --&gt;
-&lt;button onclick="myModal.Modal && myModal.Modal.show()"&gt;
-</code></pre>
-          
-              <p>These references are used internally to hide currently visible modals when showing another one. When the
-                component is used via JavaScript only without a triggering element, you need to manually hide (via
-                <code>.hide()</code> instance method) any visible modal before showing another modal (via the <code>.show()</code>
-                instance method).</p>
             </section>
           
             <section id="modalExamples">
@@ -1793,16 +1776,13 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                           data-bs-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.
                       </p>
                       <h4>Open modal from modal</h4>
-                      <p>Click <a onclick="anotherModalButton.Modal && anotherModalButton.Modal.show()" href="#anotherModal">here</a> to open another modal.</p>
+                      <p>Click <a data-bs-toggle="modal" href="#anotherModal">here</a> to open another modal.</p>
                       <h4>Dismissing the modal is prevented!</h4>
                       <p>Try selecting this text then click outside the modal dialog, the modal dismissal will be prevented.</p>
                       <hr>
                       <h4>Overflowing text to show scroll behavior</h4>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
                         quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                      <h4>Testing Popover transitionEnd</h4>
-                      <p><input type="text" placeholder="Focus me" class="form-control" data-bs-toggle="popover" data-bs-trigger="focus" 
-                        data-bs-content="Now if you click outside the modal dialog, the modal will not be dismissed"></p>
                       <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
                         laoreet rutrum faucibus dolor auctor.</p>  
                       <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
@@ -1850,7 +1830,7 @@ var myModalInstance === document.getElementById('myModalTrigger').Modal;
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                     </div>
                     <div class="modal-footer">
-                      <button onclick="myModalButton.Modal && myModalButton.Modal.show()" type="button" class="btn btn-primary">Back</button>
+                      <button data-bs-toggle="modal" data-bs-target="#myModal" type="button" class="btn btn-primary">Back</button>
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                   </div>
@@ -1865,8 +1845,7 @@ var myModal = document.getElementById('myModal');
 
 // we grab some button by ID, we will use it later
 var btnModal = document.getElementById('openModalViaJS');
-// this button IS NOT a triggering element, as it has no reference to the above modal
-
+// this button IS NOT a triggering element, it has no reference to the above modal
 
 // initialize Modal for this triggering element
 var modalInitJS = new BSN.Modal(myModal, {
@@ -1889,10 +1868,9 @@ var findModalInitJS = myModal.Modal;
 </code></pre>
           
               <p><button id="openModalViaJS" type="button" class="btn btn-secondary btn-lg">Open Modal</button></p>
-              <p>As explained in the sample code above, this modal will store the initialization object and is completely independent 
-                from a triggering button which would usually have the <code>data-bs-toggle="modal"</code> and 
-                <code>data-target="#myModal"</code> attributes necesary to enable automatic initialization via DATA API.</p>
-
+              <p>As explained in the sample code above, this modal is completely independent from a triggering button which would
+                usually have the <code>data-bs-toggle="modal"</code> and <code>data-bs-target="#myModal"</code> attributes
+                necesary to connect with our modal via DATA API.</p>
           
               <div id="myModalJS" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalJSLabel"
                 aria-hidden="true">
@@ -1908,7 +1886,325 @@ var findModalInitJS = myModal.Modal;
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                       <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
                   </div>
+                </div>
+              </div>
+            </section>
+          </section>
+
+
+          <section id="componentOffcanvas">
+            <h2>Offcanvas</h2>
+            <p>The <b>Offcanvas</b> component is our newest addition and comes packed with options, events and public methods.</p>
+            <p>Similar to our <b>Modal</b>, this component can also adjust the spacing (padding) of the <code>&lt;body&gt;</code>,
+              and all elements like <code>&lt;nav class="navbar fixed-top"&gt;</code> to get the smoothest possible transition.</p>
+
+            <section id="offcanvasOptions">
+              <h3>Offcanvas Options</h3>
+
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>backdrop</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>true</em></td>
+                      <td>Option to add a backdrop on the body when offcanvas element is shown.</td>
+                    </tr>
+                    <tr>
+                      <td><code>keyboard</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>true</em></td>
+                      <td>Option to dismiss the current modal via <kbd>Esc</kbd> key.</td>
+                    </tr>
+                    <tr>
+                      <td><code>scroll</code></td>
+                      <td><em>boolean</em></td>
+                      <td><em>false</em></td>
+                      <td>Option to allow body scrolling while offcanvas is open.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section id="offcanvasMethods">
+              <h3>Offcanvas Methods</h3>
+              <p>For full control the <b>Offcanvas</b> component exposes a couple of public methods to be used via JavaScript :</p>
+
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Method Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>instance.show()</code></td>
+                      <td>The method that shows an initialized offcanvas. When called, it will also hide any
+                        other visible offcanvas before showing the one requested, making sure to keep track on
+                        the backdrop for each offcanvas instance.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.hide()</code></td>
+                      <td>This hides an initialized offcanvas. Additionally it will also remove (if enabled)
+                        the backdrop.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.toggle()</code></td>
+                      <td>When called it shows the offcanvas if hidden and hides it otherwise, using one of
+                        the above two methods.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.update()</code></td>
+                      <td>This allows you to update the offcanvas layout (handling overflowing/non-overflowing
+                        body and/or offcanvas) after you have changed it's content or other layout changes occured.</td>
+                    </tr>
+                    <tr>
+                      <td><code>instance.dispose()</code></td>
+                      <td>The method that allows you to remove the offcanvas functionality from a target element. 
+                        If the offcanvas is shown, this method will close it first by calling the <code>.hide()</code>
+                        method before the removal of the functionality.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section id="offcanvasEvents">
+              <h3>Offcanvas Events</h3>
+              <p>All original events are triggered for the <code>&lt;div class="offcanvas"></code> element.</p>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>show.bs.offcanvas</code></td>
+                      <td>This event fires immediately when the <code>.show()</code> method is called. If the call
+                        came via click and the click target is an offcanvas trigger element, that element
+                        is then assigned as the <code>event.relatedTarget</code> property of the event object.<br>
+                        <b>This event can be default prevented.</b></td>
+                    </tr>
+                    <tr>
+                      <td><code>shown.bs.offcanvas</code></td>
+                      <td>This event is fired when the offcanvas has been made visible to the user. The
+                        <code>event.relatedTarget</code> is same as for the above.</td>
+                    </tr>
+                    <tr>
+                      <td><code>hide.bs.offcanvas</code></td>
+                      <td>This event is fired immediately when the <code>.hide()</code> instance method has been called.
+                        If the method is call came via click and the <br>
+                        <b>This event can be default prevented.</b></td>
+                    </tr>
+                    <tr>
+                      <td><code>hidden.bs.offcanvas</code></td>
+                      <td>This event is fired when the offcanvas has finished being hidden from the user.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>If the offcanvas is opened/closed via JavaScript methods, or is dismissed by clicking on another element
+                outside the offcanvas, the <code>event.relatedTarget</code> is <em>null</em>.</p>
+            </section>
+            <section id="offcanvasDATA">
+              <h3 id="offcanvasDataAPI">Offcanvas DATA API</h3>
+              <p>You can initialize <b>Offcanvas</b> without writing any code as long as you have an offcanvas and a trigger button
+                with the <code>data-bs-target</code> attribute or a link with <code>href</code> referencing that offcanvas.
+                The component will initialize all elements with <code>&lt;div class="offcanvas"&gt;</code> found in the DOM.</p>
+          
+<pre><code class="language-markup">&lt;!-- provide a trigger button --&gt;
+&lt;button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+  Button with data-bs-target
+&lt;/button&gt;
+
+&lt;!-- or an anchor link --&gt;
+&lt;a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"&gt;
+  Link with href
+&lt;/a&gt;
+
+&lt;!-- also the offcanvas itself --&gt;
+&lt;div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel"&gt;
+  &lt;div class="offcanvas-header"&gt;
+    &lt;h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas&lt;/h5&gt;
+    &lt;button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close">&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="offcanvas-body"&gt;
+    &lt;p>Some text here should work.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+          
+            </section>
+          
+            <section id="offcanvasJS">
+              <h3>Offcanvas JavaScript API</h3>
+              <p>Generally you can initialize <b>Offcanvas</b> for any instance of <code>&lt;div class="offcanvas"&gt;</code> and
+                immediately get access to methods. Similar to our <b>Modal</b>, this component can also work with multiple
+                triggering button elements having the <code>data-bs-toggle="offcanvas"</code> attribute.</p>
+          
+              <p>Considering the sample markup showcased in the above section, we can now initialize this offcanvas and get
+                access to public methods right away:</p>
+          
+<pre><code class="language-javascript">// initialize on a &lt;div class="offcanvas"&gt; with all options
+var myOffcanvasInstance = new BSN.Offcanvas(
+  '#myOffcanvas', // target selector
+  { // options object
+    backdrop: false, // we don't want to use the backdrop
+    keyboard: false, // we don't want to dismiss Offcanvas on pressing [Esc] key
+    scroll: true // we allow the user to scroll the page
+  }
+);
+</code></pre>
+          
+              <p>Now we have an initialization reference in <code>myOffcanvasInstance</code>, we can start calling
+                the component's public methods:</p>
+          
+<pre><code class="language-javascript">// show the offcanvas at any time
+myOffcanvasInstance.show();
+
+// hide the offcanvas
+myOffcanvasInstance.hide();
+
+// toggle the offcanvas (show/hide)
+myOffcanvasInstance.toggle();
+
+// if the above method is used while offcanvas was shown, you can then ask for a layout update
+myOffcanvasInstance.update();
+
+// when initialization is no longer needed, you can destroy it
+myOffcanvasInstance.dispose();
+</code></pre>
+          
+              <p>Any element initialized via DATA API or JavaScript, automatically grants access to the component's original events.</p>
+          
+<pre><code class="language-javascript">// GET THE EVENT TARGET
+// when we are certain which modal ID to work with
+var myOffcanvas = document.getElementById('offcanvasID');
+
+// ATTACH HANDLERS
+// show.bs.offcanvas event
+myOffcanvas.addEventListener('show.bs.offcanvas', function(event){
+  // do something when this event triggers
+  // event.target is the offcanvas referenced in myOffcanvas
+  // event.relatedTarget can be the triggering button or NULL
+}, false);
+
+// shown.bs.offcanvas event
+myOffcanvas.addEventListener('shown.bs.offcanvas', function(event){
+  // do something when this event triggers
+  // event.target is the modal referenced in myOffcanvas
+  // event.relatedTarget can be the triggering button or NULL
+}, false);
+
+// hide.bs.offcanvas event
+myOffcanvas.addEventListener('hide.bs.offcanvas', function(event){
+  // do something when this event triggers
+  // event.target is the offcanvas referenced in myOffcanvas
+  // event.relatedTarget can be the triggering/dismiss button or NULL
+}, false);
+
+// hidden.bs.offcanvas event
+myOffcanvas.addEventListener('hidden.bs.offcanvas', function(event){
+  // do something when this event triggers
+  // event.target is the offcanvas referenced in myOffcanvas
+  // event.relatedTarget can be the triggering/dismiss button or NULL
+}, false);
+</code></pre>
+          
+              <p>Additionally the component will store the initialization object in the offcanvas, for the internal
+                execution, hopefully would help you as well.</p>
+          
+<pre><code class="language-javascript">// you can access the initialization object from the offcanvas itself
+var myOffcanvasInit = myModal.Offcanvas;
+</code></pre>
+
+            </section>
+          
+            <section id="offcanvasExamples">
+              <h3>Offcanvas Examples</h3>
+
+              <p>These examples are all initialized via DATA API, exactly as described in the above <a href="#offcanvasDATA">Use via DATA API</a> 
+                section, and showcasing the ability to show another offcanvas from an offcanvas currently visible.</p>
+
+              <div class="btn-toolbar mb-3">
+                <a class="btn btn-primary me-1" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                  <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                    <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                  </svg>
+                  Link with href
+                </a>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                  Button with data-bs-target
+                </button>
+              </div>
+              
+              <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <p>Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.</p>
+                  <p>This Offcanvas instance has its specific events attached. Check the console for logs.</p>
+
+                  <button class="btn btn-primary mt-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">
+                    Open another
+                  </button>
+                </div>
+              </div>
+
+              <div class="btn-toolbar mb-3">
+                <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                  <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                    <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                  </svg>
+                  Enable body scrolling
+                </button>
+                <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">Enable backdrop (default)</button>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Enable both scrolling & backdrop</button>
+              </div>
+
+              <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with scrolling</h5>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <p>Try scrolling the rest of the page to see this option in action.</p>
+                </div>
+              </div>
+              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasWithBackdrop" aria-labelledby="offcanvasWithBackdropLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasWithBackdropLabel">Offcanvas with backdrop</h5>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <p>.....</p>
+                </div>
+              </div>
+              <div class="offcanvas offcanvas-bottom" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Backdroped with scrolling</h5>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <p>Try scrolling the rest of the page to see this option in action.</p>
                 </div>
               </div>
             </section>
@@ -2088,6 +2384,10 @@ var findModalInitJS = myModal.Modal;
                       <td>Toggles the enabled state by calling one of the two methods above.</td>
                     </tr>
                     <tr>
+                      <td><code>instance.update()</code></td>
+                      <td>Updates the position of the popover.</td>
+                    </tr>
+                    <tr>
                       <td><code>instance.dispose()</code></td>
                       <td>Removes the component from target element.</td>
                     </tr>
@@ -2244,22 +2544,22 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                 examples can be dismissed on window resize or blur (focus out).</p>
 
               <div class="btn-toolbar mb-3">
-                <button type="button" class="btn btn-success me-1" data-bs-dismissible="true" data-bs-toggle="popover" data-bs-placement="left"
+                <button type="button" class="btn btn-success me-1" data-bs-toggle="popover" data-bs-placement="left" data-bs-dismissible="true"
                   data-bs-title="Dismissible Popover &lt;span class='badge bg-primary'>COOL&lt;/span>"
-                  data-bs-content="Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
+                  data-bs-content='Here we add more content for testing. <code>data-bs-dismissible="true"</code> Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'>
                   Dismissible
                 </button>
                 <button type="button" class="btn btn-dark me-1" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="customClass" data-bs-title="Popover on RIGHT" data-bs-content="Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
                   Right
                 </button>
-                <button id="popoverWithEvents" type="button" class="btn btn-secondary me-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Popover on top">
+                <button id="popoverWithEvents" type="button" class="btn btn-secondary me-1" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Popover on Bottom">
                  Events
                 </button>
                 <div class="position-static me-1" id="staticContainer1">
                   <button type="button" class="btn btn-primary" data-bs-toggle="popover" data-bs-container="#staticContainer1"
                     data-bs-title="Popover in static container" data-bs-content="This popover is added to a position: static container. This requires a parent with position : relative for the container.">Static</button>
                 </div>                
-                <button type="button" class="btn btn-outline-secondary position-absolute" style="top:0; right: 0;" data-bs-toggle="popover" data-bs-placement="left" data-container="#popoverExamples"
+                <button type="button" class="btn btn-outline-secondary position-absolute" style="top:0; right: 0;" data-bs-toggle="popover" data-bs-placement="top" data-container="#popoverExamples"
                   data-bs-title="Popover on absolute position" data-bs-content="This button is rendered in position: absolute and this requires a position: relative container.">Absolute</button>
 
                 <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template me-1" placeholder="Focus" data-bs-toggle="popover">
@@ -2273,6 +2573,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                 </svg>
                 <img class="me-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
               </div>
+
             </section>
           </section>
 
@@ -2838,7 +3139,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                 depends very much on your needs.</p>
           
             </section>
-          
+
             <section id="tabExamples" style="position: relative">
               <h3>Tab Examples</h3>
               <p>OK now we're ready to put this component to the test. We'll use all Bootstrap <code>.nav</code> components in the
@@ -2854,18 +3155,18 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                     Home</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link d-flex flex-row align-items-center" href="#profile" role="tab" id="profile-tab" data-height="true" data-bs-toggle="tab" aria-controls="profile">
+                  <a class="nav-link d-flex flex-row align-items-center" href="#profile" role="tab" id="profile-tab" data-bs-toggle="tab" aria-controls="profile">
                     Profile
                   </a>
                 </li>
                 <li class="nav-item dropdown">
-                  <a class="nav-link" href="#" id="myTabDrop1" class="dropdown-toggle" data-bs-toggle="dropdown" data-persist="true"
+                  <a class="nav-link dropdown-toggle" href="#" id="myTabDrop1" class="dropdown-toggle" data-bs-toggle="dropdown" data-persist="true"
                     aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span>
                   </a>
                   <div class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
-                    <a class="dropdown-item" href="#dropdown1" role="tab" id="dropdown1-tab" data-bs-toggle="tab" data-height="true"
+                    <a class="dropdown-item" href="#dropdown1" role="tab" id="dropdown1-tab" data-bs-toggle="tab"
                         aria-controls="dropdown1" aria-expanded="false">Some tab</a>
-                    <a class="dropdown-item" id="tabEventsExample" href="#dropdown2" role="tab" data-height="true" aria-controls="dropdown2"
+                    <a class="dropdown-item" id="tabEventsExample" href="#dropdown2" role="tab" aria-controls="dropdown2"
                         aria-expanded="false">Events</a>
                   </div>
                 </li>
@@ -2899,6 +3200,69 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="dropdown2" aria-labelledby="tabEventsExample">
                   <p><b>This tab has all events attached.</b> Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art
+                    party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack
+                    portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia
+                    PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater.</p>
+                  <p>Wolf viral, mustache readymade thundercats keffiyeh craft beer marfa ethical. Wolf salvia freegan, sartorial
+                    keffiyeh echo park vegan.</p>
+                </div>
+              </div>
+
+              <ul id="myTab1" class="nav nav-pills mb-2" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#home1" id="home1-tab" role="tab"
+                    data-bs-toggle="tab" aria-controls="home1" aria-expanded="true">
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                      <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                    </svg>
+                    Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link d-flex flex-row align-items-center" href="#profile1" role="tab"
+                    id="profile1-tab" data-bs-toggle="tab" aria-controls="profile1">Profile
+                  </a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="myTabDrop2" class="dropdown-toggle" data-bs-toggle="dropdown" data-persist="true"
+                    aria-controls="myTabDrop2-contents" aria-expanded="false">Dropdown
+                  </a>
+                  <div class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop2-contents">
+                    <a class="dropdown-item" href="#dropdown3" role="tab" id="dropdown3-tab" data-bs-toggle="tab"
+                      aria-controls="dropdown4" aria-expanded="false">Some tab</a>
+                    <a class="dropdown-item" id="dropdown4-tab" href="#dropdown4" role="tab" aria-controls="dropdown4"
+                      data-bs-toggle="tab" aria-expanded="false">Last Tab</a>
+                  </div>
+                </li>
+              </ul>
+              <div id="myTabContent1" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade active show" id="home1" aria-labelledby="home1-tab">
+                  <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
+                    master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica.</p>
+                  <p>Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson
+                    ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
+                    voluptate nisi qui.</p>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="profile1" aria-labelledby="profile1-tab">
+                  <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
+                    labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer
+                    twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum
+                    PBR.</p>
+                  <p>Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero
+                    magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean
+                    shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher
+                    vero sint qui sapiente accusamus tattooed echo park.</p>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="dropdown3" aria-labelledby="dropdown3-tab">
+                  <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny
+                    pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard
+                    locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit
+                    cred pitchfork.</p>
+                  <p>Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog.
+                    Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu
+                    synth chambray yr.</p>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="dropdown4" aria-labelledby="dropdown4-tab">
+                  <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art
                     party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack
                     portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia
                     PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater.</p>
@@ -3107,14 +3471,14 @@ myToastInit.dispose();
               <p>This toast has some handlers attached to all its original events, so check your console.</p>
 
               <div class="toast-container">
-                <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
                   <div class="toast-header">
                     <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                       <rect fill="#007aff" width="100%" height="100%"></rect>
                     </svg>
                     <strong class="me-auto">Bootstrap</strong>
                     <small>11 mins ago</small>
-                    <button id="myTastyToastBTN" type="button" class="btn-close" data-bs-dismiss="toast" data-bs-autohide="false" aria-label="Close"></button>
+                    <button id="myTastyToastBTN" type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                   </div>
                   <div class="toast-body">
                     Hello, world! This is a toast message.
@@ -3274,7 +3638,11 @@ myToastInit.dispose();
                     <tr>
                       <td><code>instance.toggleEnabled()</code></td>
                       <td>Toggles the enabled state by calling one of the two methods above.</td>
-                    </tr>                    
+                    </tr>
+                    <tr>
+                      <td><code>instance.update()</code></td>
+                      <td>Updates the position of the popover.</td>
+                    </tr>
                     <tr>
                       <td><code>instance.dispose()</code></td>
                       <td>Removes the component from the target element.</td>
@@ -3439,7 +3807,7 @@ new BSN.Tooltip('#selector',options).show();
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
-                <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+                <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-container="#tooltipExamples" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
 
               </div>
 
@@ -3509,6 +3877,17 @@ new BSN.Tooltip('#selector',options).show();
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalDATA">DATA API</a></li>
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalJS">JavaScript API</a></li>
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#modalExamples">Examples</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a rel="nofollow" class="nav-link" href="#componentOffcanvas">Offcanvas</a>
+              <ul class="nav">
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#offcanvasOptions">Options</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#offcanvasMethods">Methods</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#offcanvasEvents">Events</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#offcanvasDATA">DATA API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#offcanvasJS">JavaScript API</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#offcanvasExamples">Examples</a></li>
               </ul>
             </li>
             <li class="nav-item">

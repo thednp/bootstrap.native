@@ -1,1 +1,2 @@
-export default 'data-bs-keyboard'
+const dataBsKeyboard = 'data-bs-keyboard';
+export default dataBsKeyboard;

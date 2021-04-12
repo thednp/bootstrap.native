@@ -1,100 +1,74 @@
-
 /* Native JavaScript for Bootstrap 5 | Button
 ---------------------------------------------*/
-import queryElement from 'shorter-js/src/misc/queryElement.js'
-import addClass from 'shorter-js/src/class/addClass.js'
-import hasClass from 'shorter-js/src/class/hasClass.js'
-import removeClass from 'shorter-js/src/class/removeClass.js'
-import addEventListener from 'shorter-js/src/strings/addEventListener.js'
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js'
+import addClass from 'shorter-js/src/class/addClass.js';
+import hasClass from 'shorter-js/src/class/hasClass.js';
+import removeClass from 'shorter-js/src/class/removeClass.js';
+import addEventListener from 'shorter-js/src/strings/addEventListener.js';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
 
-import activeClass from '../strings/activeClass.js'
-import dataBsToggle from '../strings/dataBsToggle.js'
-
+import activeClass from '../strings/activeClass.js';
+import dataBsToggle from '../strings/dataBsToggle.js';
+import BaseComponent from './base-component.js';
 
 // BUTTON PRIVATE GC
 // =================
-const buttonString = 'button',
-    buttonComponent = 'Button',
-    buttonSelector = `[${dataBsToggle}="${buttonString}"]`,
-    ariaPressed = 'aria-pressed'
+const buttonString = 'button';
+const buttonComponent = 'Button';
+const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
+const ariaPressed = 'aria-pressed';
 
-
-// BUTTON SCOPE
-// ============
-export default function Button( buttonTarget ){
-
-  let self, element, isActive
-
-  // BUTTON PRIVATE METHOD
-  // =====================
-  function handleButtonToggle( e ) {
-    self.toggle.apply( element, [e] ) 
-  }
-
-  // BUTTON PRIVATE METHOD
-  // =====================
-  function toggleButtonHandler(action) {
-    action = action ? addEventListener : removeEventListener
-    element[action]( 'click', handleButtonToggle )
-  }  
-
-  // BUTTON DEFINITION
-  // =================
-  class Button {
-    constructor( target ){
-
-      self = this
-      
-      // initialization element
-      element = queryElement( target )
-
-      // reset previous instance
-      element[buttonComponent] && element[buttonComponent].dispose()
-      
-      // set initial state
-      isActive = hasClass( element, activeClass )
-      element.setAttribute( ariaPressed, isActive ? true : 'false' )
-
-      // add event listener
-      toggleButtonHandler( 1 )
-
-      // attach instance to element
-      element[buttonComponent] = self
-    }
-  }
-
-  
-  // BUTTON PUBLIC METHODS
-  // =====================
-  const ButtonProto = Button.prototype
-
-  ButtonProto.toggle = function(e) {
-    e.preventDefault()
-
-    if ( hasClass( element, 'disabled' ) ) return 
-
-    isActive = hasClass( element, activeClass )
-    
-    const action = isActive ? removeClass : addClass,
-          ariaValue = isActive ? 'false' : 'true'
-
-    action( element, activeClass )
-    element.setAttribute( ariaPressed, ariaValue )
-  }
-
-  ButtonProto.dispose = function() {
-    toggleButtonHandler()
-    delete element[buttonComponent]
-  }
-
-  return new Button( buttonTarget )
+// BUTTON PRIVATE METHOD
+// =====================
+function toggleButtonHandler(self, add) {
+  const action = add ? addEventListener : removeEventListener;
+  self.element[action]('click', self.toggle);
 }
 
+// BUTTON DEFINITION
+// =================
+export default class Button extends BaseComponent {
+  constructor(target) {
+    super(buttonComponent, target);
+    const self = this;
+
+    // initialization element
+    const { element } = self;
+
+    // set initial state
+    self.isActive = hasClass(element, activeClass);
+    element.setAttribute(ariaPressed, !!self.isActive);
+
+    // add event listener
+    toggleButtonHandler(self, 1);
+  }
+
+  // BUTTON PUBLIC METHODS
+  // =====================
+  toggle(e) {
+    if (e) e.preventDefault();
+    const self = e ? this[buttonComponent] : this;
+    const { element } = self;
+
+    if (hasClass(element, 'disabled')) return;
+
+    self.isActive = hasClass(element, activeClass);
+    const { isActive } = self;
+
+    const action = isActive ? removeClass : addClass;
+    const ariaValue = isActive ? 'false' : 'true';
+
+    action(element, activeClass);
+    element.setAttribute(ariaPressed, ariaValue);
+  }
+
+  dispose() {
+    toggleButtonHandler(this);
+    super.dispose(buttonComponent);
+  }
+}
 
 export const buttonInit = {
   component: buttonComponent,
   selector: buttonSelector,
-  constructor: Button
-}
-
+  constructor: Button,
+};

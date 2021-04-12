@@ -1,1 +1,2 @@
-export default 'aria-hidden'
+const ariaHidden = 'aria-hidden';
+export default ariaHidden;

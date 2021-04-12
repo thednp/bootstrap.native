@@ -1,1 +1,2 @@
-export default 'active'
+const activeClass = 'active';
+export default activeClass;

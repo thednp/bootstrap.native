@@ -1,439 +1,452 @@
-
 /* Native JavaScript for Bootstrap 5 | Carousel
 ----------------------------------------------- */
-import addEventListener from 'shorter-js/src/strings/addEventListener.js'
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js'
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js'
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js'
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
-import isElementInScrollRange from 'shorter-js/src/misc/isElementInScrollRange.js'
-import queryElement from 'shorter-js/src/misc/queryElement.js'
-import addClass from 'shorter-js/src/class/addClass.js'
-import hasClass from 'shorter-js/src/class/hasClass.js'
-import removeClass from 'shorter-js/src/class/removeClass.js'
-import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js'
+import addEventListener from 'shorter-js/src/strings/addEventListener.js';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
+import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js';
+import reflow from 'shorter-js/src/misc/reflow.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import isElementInScrollRange from 'shorter-js/src/misc/isElementInScrollRange.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
+import addClass from 'shorter-js/src/class/addClass.js';
+import hasClass from 'shorter-js/src/class/hasClass.js';
+import removeClass from 'shorter-js/src/class/removeClass.js';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
-import activeClass from '../strings/activeClass.js'
-
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js';
+import activeClass from '../strings/activeClass.js';
+import BaseComponent from './base-component.js';
 
 // CAROUSEL PRIVATE GC
 // ===================
-const carouselString = 'carousel',
-    carouselComponent = 'Carousel',
-    carouselSelector = `[data-bs-ride="${carouselString}"]`
+const carouselString = 'carousel';
+const carouselComponent = 'Carousel';
+const carouselSelector = `[data-bs-ride="${carouselString}"]`;
+const carouselControl = `${carouselString}-control`;
+const carouselItem = `${carouselString}-item`;
+const dataBsSlideTo = 'data-bs-slide-to';
+const pausedClass = 'paused';
+const defaultCarouselOptions = {
+  pause: 'hover', // 'boolean|string'
+  keyboard: false, // 'boolean'
+  touch: true, // 'boolean'
+  interval: 5000, // 'boolean|number'
+};
+let startX = 0;
+let currentX = 0;
+let endX = 0;
 
+// CAROUSEL CUSTOM EVENTS
+// ======================
+const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`);
+const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`);
 
-// CAROUSEL SCOPE
-// ==============
-export default function Carousel( carouselElement, carouselOptions ){
-  
-  // CAROUSEL PRIVATE GC
-  // ===================
-  const carouselControl = `${carouselString}-control`,
-      carouselItem = `${carouselString}-item`,
-      dataBsSlideTo = 'data-bs-slide-to',
-      pausedClass = 'paused',
-      defaultCarouselOptions = {
-        pause: 'hover', // 'boolean|string'
-        keyboard: false, // 'boolean'
-        touch: true, // 'boolean'
-        interval: 5000 // 'boolean|number'
-      },
+// CAROUSEL EVENT HANDLERS
+// =======================
+function carouselTransitionEndHandler(self) {
+  const {
+    index, direction, element, slides, options, isAnimating,
+  } = self;
 
-      // CAROUSEL CUSTOM EVENTS
-      // ======================
-      carouselSlideEvent = bootstrapCustomEvent(  `slide.bs.${carouselString}` ),
-      carouselSlidEvent = bootstrapCustomEvent( `slid.bs.${carouselString}` )
+  // discontinue disposed instances
+  if (isAnimating && element[carouselComponent]) {
+    const activeItem = getActiveIndex(self);
+    const orientation = direction === 'left' ? 'next' : 'prev';
+    const directionClass = direction === 'left' ? 'start' : 'end';
+    self.isAnimating = false;
 
-  let element,
-      self, 
-      ops = {},
-      slides,
-      indicator,
-      indicators,
-      controls,
-      direction = 'left',
-      isPaused = false,
-      isAnimating = false,
-      index = 0,
-      timer = null,
-      isTouch = false,
-      startX = 0,
-      currentX = 0,
-      endX = 0
+    addClass(slides[index], activeClass);
+    removeClass(slides[activeItem], activeClass);
 
+    removeClass(slides[index], `${carouselItem}-${orientation}`);
+    removeClass(slides[index], `${carouselItem}-${directionClass}`);
+    removeClass(slides[activeItem], `${carouselItem}-${directionClass}`);
 
-  // CAROUSEL EVENT HANDLERS
-  // =======================
-  function carouselTransitionEndHandler(){
-    const next = index,
-        activeItem = getActiveIndex(),
-        orientation = direction === 'left' ? 'next' : 'prev',
-        directionClass = direction === 'left' ? 'start' : 'end'
+    element.dispatchEvent(carouselSlidEvent);
 
-    if ( isAnimating && element[carouselComponent] ){
-      isAnimating = false
-
-      addClass( slides[next], activeClass )
-      removeClass( slides[activeItem], activeClass )
-
-      removeClass( slides[next], `${carouselItem}-${orientation}` )
-      removeClass( slides[next], `${carouselItem}-${directionClass}` )
-      removeClass( slides[activeItem], `${carouselItem}-${directionClass}` )
-
-      element.dispatchEvent( carouselSlidEvent )
-
-      // check for element, might have been disposed
-      if ( !document.hidden && ops.interval 
-        && !hasClass( element, pausedClass ) ) 
-      {
-        self.cycle()
-      }
+    // check for element, might have been disposed
+    if (!document.hidden && options.interval
+      && !hasClass(element, pausedClass)) {
+      self.cycle();
     }
   }
+}
 
-  function carouselPauseHandler() {
-    if ( !hasClass( element, pausedClass ) ) {
-      addClass( element, pausedClass )
-      !isAnimating && ( clearInterval( timer ), timer = null )
+function carouselPauseHandler(e) {
+  const eventTarget = e.target;
+  const self = eventTarget.closest(carouselSelector)[carouselComponent];
+  const { element, isAnimating } = self;
+
+  if (!hasClass(element, pausedClass)) {
+    addClass(element, pausedClass);
+    if (!isAnimating) {
+      clearInterval(self.timer);
+      self.timer = null;
     }
   }
+}
 
-  function carouselResumeHandler() {
-    if ( !isPaused && hasClass( element, pausedClass ) ) {
+function carouselResumeHandler(e) {
+  const eventTarget = e.target;
+  const self = eventTarget.closest(carouselSelector)[carouselComponent];
+  const { isPaused, isAnimating, element } = self;
 
-      removeClass( element, pausedClass )
+  if (!isPaused && hasClass(element, pausedClass)) {
+    removeClass(element, pausedClass);
 
-      if ( !isAnimating ) {
-        clearInterval( timer )
-        timer = null 
-        self.cycle()
-      } 
+    if (!isAnimating) {
+      clearInterval(self.timer);
+      self.timer = null;
+      self.cycle();
     }
   }
+}
 
-  function carouselIndicatorHandler(e) {
-    e.preventDefault()
+function carouselIndicatorHandler(e) {
+  e.preventDefault();
+  const eventTarget = e.target; // event target | the current active item
+  const self = eventTarget.closest(carouselSelector)[carouselComponent];
+  const newIndex = eventTarget.getAttribute(dataBsSlideTo);
 
-    const eventTarget = e.target // event target | the current active item
+  if (self.isAnimating) return;
 
-    if ( isAnimating ) return
-
-    if ( eventTarget && !hasClass( eventTarget, activeClass ) // event target is not active
-      && eventTarget.getAttribute( dataBsSlideTo ) ) // AND has the specific attribute
-    {
-      self.to( +eventTarget.getAttribute( dataBsSlideTo ) ) // do the slide
-    }
+  if (eventTarget && !hasClass(eventTarget, activeClass) // event target is not active
+    && newIndex) { // AND has the specific attribute
+    self.to(+newIndex); // do the slide
   }
+}
 
-  function carouselControlsHandler(e) {
-    e.preventDefault()
+function carouselControlsHandler(e) {
+  const eventTarget = e.currentTarget || e.srcElement;
+  const self = eventTarget.closest(carouselSelector)[carouselComponent];
+  const { controls } = self;
+  e.preventDefault();
 
-    const eventTarget = e.currentTarget || e.srcElement
-
-    if ( controls[1] && eventTarget === controls[1] ) {
-      self.next()
-    } else if ( controls[1] && eventTarget === controls[0] ) {
-      self.prev()
-    }
+  if (controls[1] && eventTarget === controls[1]) {
+    self.next();
+  } else if (controls[1] && eventTarget === controls[0]) {
+    self.prev();
   }
+}
 
-  function carouselKeyHandler({ which }) {
+function carouselKeyHandler({ which }) {
+  const [element] = Array.from(document.querySelectorAll(carouselSelector))
+    .filter((x) => isElementInScrollRange(x));
 
-    if ( !isElementInScrollRange( element ) ) return
+  if (!element) return;
+  const self = element[carouselComponent];
 
-    switch ( which ) {
-      case 39:
-        self.next()
-        break
-      case 37:
-        self.prev()
-        break
-      default: return
-    }
+  switch (which) {
+    case 39:
+      self.next();
+      break;
+    case 37:
+      self.prev();
+      break;
+    default:
   }
+}
 
+// CAROUSEL TOUCH HANDLERS
+// =======================
+function carouselTouchDownHandler(e) {
+  const element = this;
+  const self = element[carouselComponent];
 
-  // CAROUSEL TOUCH HANDLERS
-  // =======================
-  function carouselTouchDownHandler(e) {
-    if ( isTouch ) { return } 
+  if (!self || self.isTouch) { return; }
 
-    startX = e.changedTouches[0].pageX
+  startX = e.changedTouches[0].pageX;
 
-    if ( element.contains(e.target) ) {
-      isTouch = true
-      toggleCarouselTouchHandlers( 1 )
-    }
+  if (element.contains(e.target)) {
+    self.isTouch = true;
+    toggleCarouselTouchHandlers(self, 1);
   }
+}
 
-  function carouselTouchMoveHandler(e) {
-    if ( !isTouch ) return
+function carouselTouchMoveHandler(e) {
+  const self = this[carouselComponent];
 
-    currentX = e.changedTouches[0].pageX
-    
-    // cancel touch if more than one changedTouches detected
-    if ( e.type === 'touchmove' && e.changedTouches.length > 1 ) {
-      e.preventDefault()
-      return false
-    }
+  if (!self || !self.isTouch) { return; }
+
+  currentX = e.changedTouches[0].pageX;
+
+  // cancel touch if more than one changedTouches detected
+  if (e.type === 'touchmove' && e.changedTouches.length > 1) {
+    e.preventDefault();
   }
+}
 
-  function carouselTouchEndHandler (e) {
+function carouselTouchEndHandler(e) {
+  const element = this;
+  const self = element[carouselComponent];
 
-    if ( !isTouch || isAnimating ) return
-    
-    endX = currentX || e.changedTouches[0].pageX
+  if (!self || !self.isTouch) { return; }
 
-    if ( isTouch ) {
+  endX = currentX || e.changedTouches[0].pageX;
 
-      if ( ( !element.contains( e.target ) || !element.contains( e.relatedTarget ) ) // the event target is outside the carousel OR carousel doens't include the related target
-          && Math.abs( startX - endX) < 75 ) // AND swipe distance is less than 75px
-      { // when the above conditions are satisfied, no need to continue
-        return false
-      } else { // OR determine next index to slide to
-        if ( currentX < startX ) {
-          index++
-        } else if ( currentX > startX ) {
-          index--
-        }
-
-        isTouch = false
-        self.to( index ) // do the slide
-      }
-
-      toggleCarouselTouchHandlers() // remove touch events handlers
-    }
-  }
-
-
-  // CAROUSEL PRIVATE METHODS
-  // ========================
-  function activateCarouselIndicator( pageIndex ) { // indicators    
-    Array.from( indicators ).map( x => removeClass( x, activeClass ) )
-    indicators[pageIndex] && addClass( indicators[pageIndex], activeClass )
-  }
-
-  function toggleCarouselTouchHandlers( action ) {
-    action = action ? addEventListener : removeEventListener
-    element[action]( 'touchmove', carouselTouchMoveHandler, passiveHandler )
-    element[action]( 'touchend', carouselTouchEndHandler, passiveHandler )
-  }
-
-  function toggleCarouselHandlers( action ) {
-    action = action ? addEventListener : removeEventListener
-
-    if ( ops.pause && ops.interval ) {
-      element[action]( 'mouseenter', carouselPauseHandler )
-      element[action]( 'mouseleave', carouselResumeHandler )
-      element[action]( 'touchstart', carouselPauseHandler, passiveHandler )
-      element[action]( 'touchend', carouselResumeHandler, passiveHandler )
+  if (self.isTouch) {
+    // the event target is outside the carousel OR carousel doens't include the related target
+    if ((!element.contains(e.target) || !element.contains(e.relatedTarget))
+      && Math.abs(startX - endX) < 75) { // AND swipe distance is less than 75px
+      // when the above conditions are satisfied, no need to continue
+      return;
+    } // OR determine next index to slide to
+    if (currentX < startX) {
+      self.index += 1;
+    } else if (currentX > startX) {
+      self.index -= 1;
     }
 
-    ops.touch && slides.length > 1 
-      && element[action]( 'touchstart', carouselTouchDownHandler, passiveHandler )
+    self.isTouch = false;
+    self.to(self.index); // do the slide
 
-    controls.map( arrow => arrow 
-      && arrow[action]( 'click', carouselControlsHandler ) )
+    toggleCarouselTouchHandlers(self); // remove touch events handlers
+  }
+}
 
-    indicator && indicator[action]( 'click', carouselIndicatorHandler )
-    ops.keyboard && window[action]( 'keydown', carouselKeyHandler )
+// CAROUSEL PRIVATE METHODS
+// ========================
+function activateCarouselIndicator(self, pageIndex) { // indicators
+  const { indicators } = self;
+  Array.from(indicators).forEach((x) => removeClass(x, activeClass));
+  if (self.indicators[pageIndex]) addClass(indicators[pageIndex], activeClass);
+}
+
+function toggleCarouselTouchHandlers(self, add) {
+  const { element } = self;
+  const action = add ? addEventListener : removeEventListener;
+  element[action]('touchmove', carouselTouchMoveHandler, passiveHandler);
+  element[action]('touchend', carouselTouchEndHandler, passiveHandler);
+}
+
+function toggleCarouselHandlers(self, add) {
+  const {
+    element, options, slides, controls, indicator,
+  } = self;
+  const {
+    touch, pause, interval, keyboard,
+  } = options;
+  const action = add ? addEventListener : removeEventListener;
+
+  if (pause && interval) {
+    element[action]('mouseenter', carouselPauseHandler);
+    element[action]('mouseleave', carouselResumeHandler);
+    element[action]('touchstart', carouselPauseHandler, passiveHandler);
+    element[action]('touchend', carouselResumeHandler, passiveHandler);
   }
 
-  function getActiveIndex() {
-    return Array.from( slides )
-      .indexOf( element.getElementsByClassName( `${carouselItem} ${activeClass}` )[0] ) || 0
+  if (touch && slides.length > 1) {
+    element[action]('touchstart', carouselTouchDownHandler, passiveHandler);
   }
 
+  controls.forEach((arrow) => {
+    if (arrow) arrow[action]('click', carouselControlsHandler);
+  });
 
-  // CAROUSEL DEFINITION
-  // ===================
-  class Carousel {
-    constructor ( target, options ){
+  if (indicator) indicator[action]('click', carouselIndicatorHandler);
+  if (keyboard) window[action]('keydown', carouselKeyHandler);
+}
 
-      // bind
-      self = this
+function getActiveIndex(self) {
+  const { slides, element } = self;
+  return Array.from(slides)
+    .indexOf(element.getElementsByClassName(`${carouselItem} ${activeClass}`)[0]) || 0;
+}
 
-      // set options
-      options = options || {}
+// CAROUSEL DEFINITION
+// ===================
+export default class Carousel extends BaseComponent {
+  constructor(target, config) {
+    super(carouselComponent, target, defaultCarouselOptions, config);
+    // bind
+    const self = this;
 
-      // initialization element
-      element = queryElement( target )
+    // additional properties
+    self.timer = null;
+    self.direction = 'left';
+    self.isPaused = false;
+    self.isAnimating = false;
+    self.index = 0;
+    self.timer = null;
+    self.isTouch = false;
 
-      // carousel elements
-      // a LIVE collection is prefferable
-      slides = element.getElementsByClassName( carouselItem )
+    // initialization element
+    const { element } = self;
+    // carousel elements
+    // a LIVE collection is prefferable
+    self.slides = element.getElementsByClassName(carouselItem);
+    const { slides } = self;
 
-      // reset previous instance
-      element[carouselComponent] && element[carouselComponent].dispose()
+    // invalidate when not enough items
+    // no need to go further
+    if (slides.length < 2) { return; }
 
-      // invalidate when not enough items
-      // no need to go further
-      if ( slides.length < 2 ) { return }
+    self.controls = [
+      queryElement(`.${carouselControl}-prev`, element),
+      queryElement(`.${carouselControl}-next`, element),
+    ];
 
-      controls = [
-        queryElement( `.${carouselControl}-prev`, element ),
-        queryElement( `.${carouselControl}-next`, element )
-      ]
+    // a LIVE collection is prefferable
+    self.indicator = queryElement('.carousel-indicators', element);
+    self.indicators = (self.indicator && self.indicator.getElementsByTagName('LI')) || [];
 
-      // a LIVE collection is prefferable
-      indicator = queryElement( '.carousel-indicators', element )
-      indicators = indicator && indicator.getElementsByTagName( 'LI' ) || []
+    // set JavaScript and DATA API options
+    const { options } = self;
 
-      // set JavaScript and DATA API options
-      ops = normalizeOptions( element, defaultCarouselOptions, options, 'bs' )
+    // don't use TRUE as interval, it's actually 0, use the default 5000ms better
+    self.options.interval = options.interval === true
+      ? defaultCarouselOptions.interval
+      : options.interval;
 
-      // don't use TRUE as interval, it's actually 0, use the default 5000ms better
-      ops.interval = ops.interval === true
-          ? defaultCarouselOptions.interval 
-          : ops.interval
-
-      // set first slide active if none
-      if ( getActiveIndex() < 0 ) {
-        slides.length && addClass( slides[0], activeClass )
-        indicators.length && activateCarouselIndicator( 0 )
-      }
-
-      // attach event handlers
-      toggleCarouselHandlers( 1 )
-
-      // start to cycle if interval is set
-      ops.interval && self.cycle()
-
-      // associate init object to target
-      element[carouselComponent] = self
+    // set first slide active if none
+    if (getActiveIndex(self) < 0) {
+      if (slides.length) addClass(slides[0], activeClass);
+      if (self.indicators.length) activateCarouselIndicator(self, 0);
     }
-  }
 
+    // attach event handlers
+    toggleCarouselHandlers(self, 1);
+
+    // start to cycle if interval is set
+    if (options.interval) self.cycle();
+  }
 
   // CAROUSEL PUBLIC METHODS
   // =======================
-  const CarouselProto = Carousel.prototype
-
-  CarouselProto.cycle = function() {
-    if ( timer ) {
-      clearInterval( timer )
-      timer = null
+  cycle() {
+    const self = this;
+    const { isPaused, element, options } = self;
+    if (self.timer) {
+      clearInterval(self.timer);
+      self.timer = null;
     }
 
-    if ( isPaused ) {
-      removeClass( element, pausedClass )
-      isPaused = !isPaused
+    if (isPaused) {
+      removeClass(element, pausedClass);
+      self.isPaused = !isPaused;
     }
-    
-    timer = setInterval( () => {
-      isElementInScrollRange( element ) && ( index++, self.to( index ) )
-    }, ops.interval )
+
+    self.timer = setInterval(() => {
+      if (isElementInScrollRange(element)) {
+        self.index += 1;
+        self.to(self.index);
+      }
+    }, options.interval);
   }
 
-  CarouselProto.pause = function() {
-    if ( ops.interval && !isPaused ) {
-      clearInterval( timer )
-      timer = null
-      addClass( element, pausedClass )
-      isPaused = !isPaused
+  pause() {
+    const self = this;
+    const { element, options, isPaused } = self;
+    if (options.interval && !isPaused) {
+      clearInterval(self.timer);
+      self.timer = null;
+      addClass(element, pausedClass);
+      self.isPaused = !isPaused;
     }
   }
 
-  CarouselProto.next = function() {
-    !isAnimating && index++, self.to( index )
+  next() {
+    const self = this;
+    if (!self.isAnimating) { self.index += 1; self.to(self.index); }
   }
 
-  CarouselProto.prev = function() {
-    !isAnimating && index--, self.to( index )
+  prev() {
+    const self = this;
+    if (!self.isAnimating) { self.index -= 1; self.to(self.index); }
   }
 
-  CarouselProto.to = function( next ) {
-    const activeItem = getActiveIndex()
+  to(idx) {
+    const self = this;
+    const {
+      element, isAnimating, slides, options,
+    } = self;
+    const activeItem = getActiveIndex(self);
+    let next = idx;
 
     // when controled via methods, make sure to check again
     // first return if we're on the same item #227
-    if ( isAnimating || activeItem === next ) return
+    if (isAnimating || activeItem === next) return;
 
     // determine transition direction
-    if ( ( activeItem < next ) || ( activeItem === 0 && next === slides.length -1 ) ) {
-      direction = 'left' // next
-    } else if ( ( activeItem > next ) || ( activeItem === slides.length - 1 && next === 0 ) ) {
-      direction = 'right' // prev
+    if ((activeItem < next) || (activeItem === 0 && next === slides.length - 1)) {
+      self.direction = 'left'; // next
+    } else if ((activeItem > next) || (activeItem === slides.length - 1 && next === 0)) {
+      self.direction = 'right'; // prev
     }
+    const { direction } = self;
 
-    // find the right next index 
-    if ( next < 0 ) { next = slides.length - 1 } 
-    else if ( next >= slides.length ){ next = 0 }
+    // find the right next index
+    if (next < 0) { next = slides.length - 1; } else if (next >= slides.length) { next = 0; }
 
     // orientation, class name, eventProperties
-    const orientation = direction === 'left' ? 'next' : 'prev',
-        directionClass = direction === 'left' ? 'start' : 'end',
-        eventProperties = { relatedTarget: slides[next], direction: direction, from: activeItem, to: next }
+    const orientation = direction === 'left' ? 'next' : 'prev';
+    const directionClass = direction === 'left' ? 'start' : 'end';
+    const eventProperties = {
+      relatedTarget: slides[next], direction, from: activeItem, to: next,
+    };
 
     // update event properties
-    Object.keys( eventProperties ).map( k => {
-      carouselSlideEvent[k] = eventProperties[k]
-      carouselSlidEvent[k] = eventProperties[k]
-    })
+    Object.keys(eventProperties).forEach((k) => {
+      carouselSlideEvent[k] = eventProperties[k];
+      carouselSlidEvent[k] = eventProperties[k];
+    });
 
     // discontinue when prevented
-    element.dispatchEvent( carouselSlideEvent )
-    if ( carouselSlideEvent.defaultPrevented ) return 
+    element.dispatchEvent(carouselSlideEvent);
+    if (carouselSlideEvent.defaultPrevented) return;
 
     // update index
-    index = next
+    self.index = next;
 
-    clearInterval( timer )
-    timer = null
+    clearInterval(self.timer);
+    self.timer = null;
 
-    isAnimating = true
-    activateCarouselIndicator( next )
+    self.isAnimating = true;
+    activateCarouselIndicator(self, next);
 
-    if ( getElementTransitionDuration( slides[next] ) && hasClass( element, 'slide' ) ) {
+    if (getElementTransitionDuration(slides[next]) && hasClass(element, 'slide')) {
+      addClass(slides[next], `${carouselItem}-${orientation}`);
+      reflow(slides[next]);
+      addClass(slides[next], `${carouselItem}-${directionClass}`);
+      addClass(slides[activeItem], `${carouselItem}-${directionClass}`);
 
-      addClass( slides[next], `${carouselItem}-${orientation}` )
-      slides[next].offsetWidth
-      addClass( slides[next], `${carouselItem}-${directionClass}` )
-      addClass( slides[activeItem], `${carouselItem}-${directionClass}` )
-
-      emulateTransitionEnd( slides[next], carouselTransitionEndHandler )
-
+      emulateTransitionEnd(slides[next], () => carouselTransitionEndHandler(self));
     } else {
+      addClass(slides[next], activeClass);
+      removeClass(slides[activeItem], activeClass);
 
-      addClass( slides[next], activeClass )
-      removeClass( slides[activeItem], activeClass )
-
-      setTimeout( () => {
-        isAnimating = false
+      setTimeout(() => {
+        self.isAnimating = false;
 
         // check for element, might have been disposed
-        if ( element && ops.interval && !hasClass( element, pausedClass ) ) {
-          self.cycle()
+        if (element && options.interval && !hasClass(element, pausedClass)) {
+          self.cycle();
         }
 
-        element.dispatchEvent( carouselSlidEvent )
-      }, 100 )
+        element.dispatchEvent(carouselSlidEvent);
+      }, 100);
     }
   }
 
-  CarouselProto.dispose = function() {
-    const itemClasses = ['start','end','prev','next']
+  dispose() {
+    const self = this;
+    const { slides } = self;
+    const itemClasses = ['start', 'end', 'prev', 'next'];
 
-    Array.from( slides ).map( ( slide, idx ) => {
-      hasClass( slide, activeClass ) && activateCarouselIndicator( idx )
-      itemClasses.map( c => removeClass( slide, `${carouselItem}-${c}` ) )
-    })
+    Array.from(slides).forEach((slide, idx) => {
+      if (hasClass(slide, activeClass)) activateCarouselIndicator(self, idx);
+      itemClasses.forEach((c) => removeClass(slide, `${carouselItem}-${c}`));
+    });
 
-    toggleCarouselHandlers()
-    clearInterval( timer )
-
-    delete element[carouselComponent]
+    toggleCarouselHandlers(self);
+    clearInterval(self.timer);
+    // setTimeout(() =>
+    super.dispose(carouselComponent);
+    // , 17);
   }
-
-  return new Carousel( carouselElement, carouselOptions )
 }
-
 
 export const carouselInit = {
   component: carouselComponent,
   selector: carouselSelector,
-  constructor: Carousel
-}
-
+  constructor: Carousel,
+};

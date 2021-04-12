@@ -1,1 +1,2 @@
-export default 'data-bs-animation'
+const dataBsAnimation = 'data-bs-animation';
+export default dataBsAnimation;

@@ -1,6 +1,7 @@
-let bsnUID = 1
+let bsnUID = 1;
 
 // popover, tooltip, scrollspy need a unique id
-export default function( element, key ){
-  return element[key] || (bsnUID++)
+export default function getUID(element, key) {
+  bsnUID += 1;
+  return element[key] || bsnUID;
 }

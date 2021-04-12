@@ -1,3 +1,3 @@
-export default function (element){
-  element.focus ? element.focus() : element.setActive();
+export default function setFocus(element) {
+  element.focus();
 }

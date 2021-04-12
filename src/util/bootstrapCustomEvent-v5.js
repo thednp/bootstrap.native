@@ -1,12 +1,12 @@
-export default function( namespacedEventType, eventProperties ) {
-  let OriginalCustomEvent = new CustomEvent( namespacedEventType, { cancelable: true } )
+export default function bootstrapCustomEvent(namespacedEventType, eventProperties) {
+  const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
 
-  if ( eventProperties instanceof Object ) {
-    Object.keys( eventProperties ).forEach( key => {
-      Object.defineProperty( OriginalCustomEvent, key, {
-        value: eventProperties[key]
-      })
-    })
+  if (eventProperties instanceof Object) {
+    Object.keys(eventProperties).forEach((key) => {
+      Object.defineProperty(OriginalCustomEvent, key, {
+        value: eventProperties[key],
+      });
+    });
   }
-  return OriginalCustomEvent
+  return OriginalCustomEvent;
 }

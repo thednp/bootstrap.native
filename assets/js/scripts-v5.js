@@ -21,7 +21,7 @@ document.querySelector('[data-toggle="offcanvas"]').addEventListener('click', fu
 // COMPONENTS
 // ==========
 
-//demo alert fun
+// demo alert fun
 var dangerAlert = document.querySelector('.alert-danger'),
 	alertParent = dangerAlert.parentNode,
 	siblings = dangerAlert.parentNode.childNodes;
@@ -36,26 +36,32 @@ dangerAlert.addEventListener('closed.bs.alert', function(e) {
 });
 
 // Alert events
-document.getElementById('alertDemo').addEventListener('close.bs.alert', function(e) {	console.log( 'The "close.bs.alert" event fired for #' + e.target.id ); });
-document.getElementById('alertDemo').addEventListener('closed.bs.alert', function(e) {	console.log( 'The "closed.bs.alert" event fired for #' + e.target.id ); });
+document.getElementById('alertDemo').addEventListener('close.bs.alert', function(e) {	
+	console.log( 'The "close.bs.alert" event fired for #' + e.target.id );
+	console.log( 'The "event.relatedTarget" is ' + (e.relatedTarget ? (e.relatedTarget.tagName + '.' + e.relatedTarget.className) : null) );
+});
+document.getElementById('alertDemo').addEventListener('closed.bs.alert', function(e) {
+	console.log( 'The "closed.bs.alert" event fired for #' + e.target.id ); 
+	console.log( 'The "event.relatedTarget" is ' + (e.relatedTarget ? (e.relatedTarget.tagName + '.' + e.relatedTarget.className) : null) );
+});
 
 // MODAL
 var myModal = document.getElementById('myModal'); // we need a blank modal to fill up and target our object function
 myModal.addEventListener('show.bs.modal', function (e) {
 	e.target && console.log('show.bs.modal triggered for #' + e.target.id);
-	e.relatedTarget && console.log('event.relatedTarget is ' + e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.'));
+	console.log( 'The "event.relatedTarget" is ' + (e.relatedTarget ? (e.relatedTarget.tagName + '.' + e.relatedTarget.className) : null) );
 }, false);
 myModal.addEventListener('shown.bs.modal', function (e) {
 	e.target && console.log('shown.bs.modal triggered for #' + e.target.id);
-	e.relatedTarget && console.log('event.relatedTarget is ' + e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.'));
+	console.log( 'The "event.relatedTarget" is ' + (e.relatedTarget ? (e.relatedTarget.tagName + '.' + e.relatedTarget.className) : null) );
 }, false);
 myModal.addEventListener('hide.bs.modal', function (e) {
 	e.target && console.log('hide.bs.modal triggered for #' + e.target.id);
-	e.relatedTarget && console.log('event.relatedTarget is ' + e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.'));
+	console.log( 'The "event.relatedTarget" is ' + (e.relatedTarget ? (e.relatedTarget.tagName + '.' + e.relatedTarget.className) : null) );
 }, false);
 myModal.addEventListener('hidden.bs.modal', function (e) {
 	e.target && console.log('hidden.bs.modal triggered for #' + e.target.id);
-	e.relatedTarget && console.log('event.relatedTarget is ' + e.relatedTarget.tagName + '.' + e.relatedTarget.className.replace(/\s/g, '.'));
+	console.log( 'The "event.relatedTarget" is ' + (e.relatedTarget ? (e.relatedTarget.tagName + '.' + e.relatedTarget.className) : null) );
 }, false);
 
 // Modal initialized with JavaScript
@@ -73,7 +79,7 @@ btnModal.addEventListener('click', function (e) {
 
 // Tab events
 var tabEventsExample = document.getElementById('tabEventsExample'),
-	tabEventsExampleInit = new BSN.Tab(tabEventsExample, {preserve: true});
+		tabEventsExampleInit = new BSN.Tab(tabEventsExample, {preserve: true});
 tabEventsExample.addEventListener('show.bs.tab', function() { console.log('The show.bs.tab event fired for #' + tabEventsExample.id); }, false);
 tabEventsExample.addEventListener('shown.bs.tab', function() { console.log('The shown.bs.tab event fired for #' + tabEventsExample.id); }, false);
 tabEventsExample.addEventListener('hide.bs.tab', function() { console.log('The hide.bs.tab event fired for #' + tabEventsExample.id); }, false);
@@ -115,24 +121,25 @@ popoverEvents.addEventListener('hidden.bs.popover', function(){ console.log('The
 
 // TOAST
 var toastBTN = document.getElementById('myTastyToastBTN');
+var toastElement = toastBTN.closest('.toast');
 var showToastBTN = document.getElementById('showToastBTN');
-toastBTN.closest('.toast').addEventListener('show.bs.toast',function(e){
+toastElement.addEventListener('show.bs.toast',function(e){
 	console.log( 'The "show.bs.toast" event fired for #' + toastBTN.id );
 },false)
-toastBTN.closest('.toast').addEventListener('shown.bs.toast',function(e){
+toastElement.addEventListener('shown.bs.toast',function(e){
 	console.log( 'The "shown.bs.toast" event fired for #' + toastBTN.id );
 	showToastBTN.classList.add('d-none')
 },false)
-toastBTN.closest('.toast').addEventListener('hide.bs.toast',function(e){
+toastElement.addEventListener('hide.bs.toast',function(e){
 	console.log( 'The "hide.bs.toast" event fired for #' + toastBTN.id );
 },false)
-toastBTN.closest('.toast').addEventListener('hidden.bs.toast',function(e){
+toastElement.addEventListener('hidden.bs.toast',function(e){
 	console.log( 'The "hidden.bs.toast" event fired for #' + toastBTN.id );
 	showToastBTN.classList.remove('d-none')
 },false)
 
 showToastBTN.addEventListener('click',function(){
-	toastBTN.Toast ? toastBTN.Toast.show() : console.log( 'DISPOSED!' )
+	toastElement.Toast ? toastElement.Toast.show() : console.log( 'DISPOSED!' )
 },false)
 
 // ScrollSpy
@@ -151,3 +158,26 @@ function toggleScrollSpy(){
 		this.classList.add( 'btn-outline-danger' )
 	}
 }
+
+// offcanvas
+var offcanvasExample = document.getElementById('offcanvasExample');
+offcanvasExample.addEventListener('show.bs.offcanvas', function(e){
+	var related = e.relatedTarget;
+	var relatedTarget = '\nevent.relatedTarget is: ' +  (related ? related.tagName + '.' + related.className.replace(/\s/,'.') : 'null');
+	console.log('The show.bs.offcanvas event fired for #' + offcanvasExample.id + relatedTarget);
+}, false);
+offcanvasExample.addEventListener('shown.bs.offcanvas', function(e){
+	var related = e.relatedTarget;
+	var relatedTarget = '\nevent.relatedTarget is: ' +  (related ? related.tagName + '.' + related.className.replace(/\s/,'.') : 'null');
+	console.log('The shown.bs.offcanvas event fired for #' + offcanvasExample.id + relatedTarget);
+}, false);
+offcanvasExample.addEventListener('hide.bs.offcanvas', function(e){
+	var related = e.relatedTarget;
+	var relatedTarget = '\nevent.relatedTarget is: ' +  (related ? related.tagName + '.' + related.className.replace(/\s/,'.') : 'null');
+	console.log('The hide.bs.offcanvas event fired for #' + offcanvasExample.id + relatedTarget);
+}, false);
+offcanvasExample.addEventListener('hidden.bs.offcanvas', function(e){
+	var related = e.relatedTarget;
+	var relatedTarget = '\nevent.relatedTarget is: ' +  (related ? related.tagName + '.' + related.className.replace(/\s/,'.') : 'null');
+	console.log('The hidden.bs.offcanvas event fired for #' + offcanvasExample.id + relatedTarget);
+}, false);

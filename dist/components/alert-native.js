@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Alert v3.0.14f (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Alert v3.0.15-alpha1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -18,33 +18,35 @@
   var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
   function getElementTransitionDuration(element) {
-    var computedStyle = getComputedStyle(element),
-        propertyValue = computedStyle[transitionProperty],
-        durationValue = computedStyle[transitionDuration],
-        durationScale = durationValue.includes('ms') ? 1 : 1000,
-        duration = supportTransition && propertyValue && propertyValue !== 'none' 
-                 ? parseFloat( durationValue ) * durationScale : 0;
+    var computedStyle = getComputedStyle(element);
+    var propertyValue = computedStyle[transitionProperty];
+    var durationValue = computedStyle[transitionDuration];
+    var durationScale = durationValue.includes('ms') ? 1 : 1000;
+    var duration = supportTransition && propertyValue && propertyValue !== 'none'
+      ? parseFloat(durationValue) * durationScale : 0;
 
-    return !isNaN(duration) ? duration : 0
+    return !Number.isNaN(duration) ? duration : 0;
   }
 
-  function emulateTransitionEnd(element,handler){ 
-    var called = 0, 
-        endEvent = new Event( transitionEndEvent ),
-        duration = getElementTransitionDuration(element);
+  function emulateTransitionEnd(element, handler) {
+    var called = 0;
+    var endEvent = new Event(transitionEndEvent);
+    var duration = getElementTransitionDuration(element);
 
-    if ( duration ) {
-      element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){ 
-        if ( e.target === element ) {
-          handler.apply( element, [e] );
-          element.removeEventListener( transitionEndEvent, transitionEndWrapper);
+    if (duration) {
+      element.addEventListener(transitionEndEvent, function transitionEndWrapper(e) {
+        if (e.target === element) {
+          handler.apply(element, [e]);
+          element.removeEventListener(transitionEndEvent, transitionEndWrapper);
           called = 1;
         }
       });
-      setTimeout(function() { 
-        !called && element.dispatchEvent( endEvent );
-      }, duration + 17 );
-    } else { handler.apply( element, [endEvent]); }
+      setTimeout(function () {
+        if (!called) { element.dispatchEvent(endEvent); }
+      }, duration + 17);
+    } else {
+      handler.apply(element, [endEvent]);
+    }
   }
 
   function queryElement(selector, parent) {
@@ -52,94 +54,94 @@
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
-  function bootstrapCustomEvent( eventType, componentName, eventProperties ) {
-    var OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } );
+  function bootstrapCustomEvent(eventType, componentName, eventProperties) {
+    var OriginalCustomEvent = new CustomEvent((eventType + ".bs." + componentName), { cancelable: true });
 
-    if ( typeof eventProperties !== 'undefined' ) {
-      Object.keys( eventProperties ).forEach( function (key) {
-        Object.defineProperty( OriginalCustomEvent, key, {
-          value: eventProperties[key]
+    if (typeof eventProperties !== 'undefined') {
+      Object.keys(eventProperties).forEach(function (key) {
+        Object.defineProperty(OriginalCustomEvent, key, {
+          value: eventProperties[key],
         });
       });
     }
-    return OriginalCustomEvent
+    return OriginalCustomEvent;
   }
 
-  function dispatchCustomEvent(customEvent){
-    this && this.dispatchEvent(customEvent);
+  function dispatchCustomEvent(customEvent) {
+    if (this) { this.dispatchEvent(customEvent); }
   }
+
+  /* Native JavaScript for Bootstrap 4 | Alert
+  -------------------------------------------- */
 
   // ALERT DEFINITION
   // ================
 
-  function Alert(element) {
-    
-    // bind
-    var self = this,
-    
-      // the target alert 
-      alert,
+  function Alert(elem) {
+    var element;
 
-      // custom events
-      closeCustomEvent = bootstrapCustomEvent('close','alert'),
-      closedCustomEvent = bootstrapCustomEvent('closed','alert');
+    // bind
+    var self = this;
+
+    // the target alert
+    var alert;
+
+    // custom events
+    var closeCustomEvent = bootstrapCustomEvent('close', 'alert');
+    var closedCustomEvent = bootstrapCustomEvent('closed', 'alert');
 
     // private methods
     function triggerHandler() {
-      alert.classList.contains('fade') ? emulateTransitionEnd(alert,transitionEndHandler) : transitionEndHandler(); 
+      if (alert.classList.contains('fade')) { emulateTransitionEnd(alert, transitionEndHandler); }
+      else { transitionEndHandler(); }
     }
-    function toggleEvents(action){
-      action = action ? 'addEventListener' : 'removeEventListener';
-      element[action]('click',clickHandler,false);
+    function toggleEvents(add) {
+      var action = add ? 'addEventListener' : 'removeEventListener';
+      element[action]('click', clickHandler, false);
     }
 
     // event handlers
     function clickHandler(e) {
-      alert = e && e.target.closest(".alert");
-      element = queryElement('[data-dismiss="alert"]',alert);
-      element && alert && (element === e.target || element.contains(e.target)) && self.close();
+      alert = e && e.target.closest('.alert');
+      element = queryElement('[data-dismiss="alert"]', alert);
+      if (element && alert && (element === e.target || element.contains(e.target))) { self.close(); }
     }
     function transitionEndHandler() {
-      // off(element, 'click', clickHandler); // detach it's listener
       toggleEvents();
       alert.parentNode.removeChild(alert);
-      dispatchCustomEvent.call(alert,closedCustomEvent);
+      dispatchCustomEvent.call(alert, closedCustomEvent);
     }
 
     // PUBLIC METHODS
     self.close = function () {
-      if ( alert && element && alert.classList.contains('show') ) {
-        dispatchCustomEvent.call(alert,closeCustomEvent);
-        if ( closeCustomEvent.defaultPrevented ) { return; }
+      if (alert && element && alert.classList.contains('show')) {
+        dispatchCustomEvent.call(alert, closeCustomEvent);
+        if (closeCustomEvent.defaultPrevented) { return; }
         self.dispose();
         alert.classList.remove('show');
         triggerHandler();
       }
     };
 
-    self.dispose = function () {    
-      // off(element, 'click', clickHandler);
+    self.dispose = function () {
       toggleEvents();
       delete element.Alert;
     };
 
     // INIT
     // initialization element
-    element = queryElement(element);
-    
-    // find the target alert 
-    alert = element.closest('.alert');
-    
-    // reset on re-init
-    element.Alert && element.Alert.dispose();     
-    
-    // prevent adding event handlers twice 
-    if ( !element.Alert ) {
-      // on(element, 'click', clickHandler);
-      toggleEvents(1);
-    }
+    element = queryElement(elem);
 
-    // store init object within target element 
+    // find the target alert
+    alert = element.closest('.alert');
+
+    // reset on re-init
+    if (element.Alert) { element.Alert.dispose(); }
+
+    // prevent adding event handlers twice
+    if (!element.Alert) { toggleEvents(1); }
+
+    // store init object within target element
     self.element = element;
     element.Alert = self;
   }

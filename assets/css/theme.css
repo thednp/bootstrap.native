@@ -60,10 +60,6 @@ html {
 }
 
 /* misc */
-.dropright .dropdown-menu,
-.dropleft .dropdown-menu {
-  top: -1px;
-}
 .popover .close {line-height: 0.75;}
 .popover .btn-close {position: absolute; right:0.75em}
 
@@ -71,6 +67,7 @@ html {
 .bg-bootstrap { background-color: #563d7c }
 .bg-pink { background-color: #E91E63 }
 .bg-indigo { background-color: #9c27b0 }
+.bg-purple { background-color: #6f42c1; }
 
 ul.flex-column ul {
   flex-direction: column
@@ -158,3 +155,19 @@ pre[class*="language-"] {margin: 0 0 1rem}
 .bs-popover-bottom .popover-header::before {
   border-color: transparent
 }
+
+/* DROPDOWN */
+.dropdown-menu-end {
+  right: 0;
+  left: auto;
+}
+
+.dropup .dropdown-menu {
+  top: auto;
+  bottom: 100%;
+}
+
+/* .dropstart .dropdown-menu,
+.dropend .dropdown-menu {
+  top: -1px;
+} */

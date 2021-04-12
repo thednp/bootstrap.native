@@ -1,123 +1,103 @@
-
 /* Native JavaScript for Bootstrap 5 | Alert
 -------------------------------------------- */
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
-import queryElement from 'shorter-js/src/misc/queryElement.js'
-// import addClass from 'shorter-js/src/class/addClass.js'
-import hasClass from 'shorter-js/src/class/hasClass.js'
-import removeClass from 'shorter-js/src/class/removeClass.js'
-import addEventListener from 'shorter-js/src/strings/addEventListener.js'
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js'
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import queryElement from 'shorter-js/src/misc/queryElement.js';
+import hasClass from 'shorter-js/src/class/hasClass.js';
+import removeClass from 'shorter-js/src/class/removeClass.js';
+import addEventListener from 'shorter-js/src/strings/addEventListener.js';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
 
-import fadeClass from '../strings/fadeClass.js'
-import showClass from '../strings/showClass.js'
-import dataBsDismiss from '../strings/dataBsDismiss.js'
+import fadeClass from '../strings/fadeClass.js';
+import showClass from '../strings/showClass.js';
+import dataBsDismiss from '../strings/dataBsDismiss.js';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
-
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js';
+import BaseComponent from './base-component.js';
 
 // ALERT PRIVATE GC
 // ================
-const alertString = 'alert',
-    alertComponent = 'Alert',
-    alertSelector = `[${dataBsDismiss}="${alertString}"]`
+const alertString = 'alert';
+const alertComponent = 'Alert';
+const alertSelector = `.${alertString}`;
+const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
 
+// ALERT CUSTOM EVENTS
+// ===================
+const closeAlertEvent = bootstrapCustomEvent(`close.bs.${alertString}`);
+const closedAlertEvent = bootstrapCustomEvent(`closed.bs.${alertString}`);
 
-// ALERT SCOPE
-// ===========
-export default function Alert( alertTarget ) {
+// ALERT EVENT HANDLERS
+// ====================
+function alertTransitionEnd(self) {
+  const { element, relatedTarget } = self;
+  toggleAlertHandler(self);
 
-  let self, element, alert
+  if (relatedTarget) closedAlertEvent.relatedTarget = relatedTarget;
+  element.dispatchEvent(closedAlertEvent);
 
-  // ALERT CUSTOM EVENTS
-  // ===================
-  const closeAlertEvent = bootstrapCustomEvent( `close.bs.${alertString}` ), // 'type.bs.component'
-      closedAlertEvent = bootstrapCustomEvent( `closed.bs.${alertString}` )
+  self.dispose();
+  element.parentNode.removeChild(element);
+}
 
+// ALERT PRIVATE METHOD
+// ====================
+function toggleAlertHandler(self, add) {
+  const action = add ? addEventListener : removeEventListener;
+  if (self.dismiss) self.dismiss[action]('click', self.close);
+}
 
-  // ALERT EVENT HANDLERS
-  // ====================
-  function alertTransitionEnd() {
+// ALERT DEFINITION
+// ================
+export default class Alert extends BaseComponent {
+  constructor(target) {
+    super(alertComponent, target);
+    // bind
+    const self = this;
 
-    toggleAlertHandler()
-    alert.dispatchEvent( closedAlertEvent )
+    // initialization element
+    const { element } = self;
 
-    alert.parentNode.removeChild( alert )
+    // the dismiss button
+    self.dismiss = queryElement(alertDismissSelector, element);
+    self.relatedTarget = null;
+
+    // add event listener
+    toggleAlertHandler(self, 1);
   }
-
-  function alertClickHandler(e) {
-    const eventTarget = e.target
-
-    alert && ( element === eventTarget || element.contains( eventTarget ) )
-      && self.close()
-  }
-
-
-  // ALERT PRIVATE METHOD
-  // ====================
-  function toggleAlertHandler( action ) {
-    action = action ? addEventListener : removeEventListener
-    element[action]( 'click', alertClickHandler )
-  }
-
-
-  // ALERT DEFINITION
-  // ================
-  class Alert {
-    constructor( target ){
-
-      // bind 
-      self = this
-
-      // initialization element
-      element = queryElement( target )
-      
-      // reset previous instance
-      element[alertComponent] && element[alertComponent].dispose()
-
-      alert = element.closest( `.${alertString}` )
-
-      // add event listener
-      toggleAlertHandler( 1 )
-
-      // store init 
-      element[alertComponent] = this
-    }
-  }
-
 
   // ALERT PUBLIC METHODS
   // ====================
-  const AlertProto = Alert.prototype
+  close(e) {
+    const target = e ? e.target : null;
+    const self = e
+      ? e.target.closest(alertSelector)[alertComponent]
+      : this;
+    const { element } = self;
 
-  AlertProto.close = function() {
-    if ( alert && hasClass( alert, showClass) ) {
+    if (self && element && hasClass(element, showClass)) {
+      if (target) {
+        closeAlertEvent.relatedTarget = target;
+        self.relatedTarget = target;
+      }
+      element.dispatchEvent(closeAlertEvent);
+      if (closeAlertEvent.defaultPrevented) return;
 
-      alert.dispatchEvent( closeAlertEvent )
-      if ( closeAlertEvent.defaultPrevented ) return
+      removeClass(element, showClass);
 
-      removeClass( alert, showClass )
-
-      hasClass( alert, fadeClass )
-        ? emulateTransitionEnd( alert, alertTransitionEnd ) 
-        : alertTransitionEnd()
-
-      this.dispose()
+      if (hasClass(element, fadeClass)) {
+        emulateTransitionEnd(element, () => alertTransitionEnd(self));
+      } else alertTransitionEnd(self);
     }
   }
 
-  AlertProto.dispose = function() {
-    toggleAlertHandler()
-    delete element[alertComponent]
+  dispose() {
+    toggleAlertHandler(this);
+    super.dispose(alertComponent);
   }
-
-  return new Alert( alertTarget )
 }
-
 
 export const alertInit = {
   component: alertComponent,
   selector: alertSelector,
-  constructor: Alert
-}
-
+  constructor: Alert,
+};

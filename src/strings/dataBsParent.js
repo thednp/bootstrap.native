@@ -1,1 +1,2 @@
-export default 'data-bs-parent'
+const dataBsParent = 'data-bs-parent';
+export default dataBsParent;

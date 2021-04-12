@@ -1,1 +1,2 @@
-export default 'show'
+const showClass = 'show';
+export default showClass;

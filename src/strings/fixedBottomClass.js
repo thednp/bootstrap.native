@@ -1,1 +1,2 @@
-export default 'fixed-bottom'
+const fixedBottomClass = 'fixed-bottom';
+export default fixedBottomClass;

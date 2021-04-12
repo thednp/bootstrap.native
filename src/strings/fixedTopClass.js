@@ -1,1 +1,2 @@
-export default 'fixed-top'
+const fixedTopClass = 'fixed-top';
+export default fixedTopClass;

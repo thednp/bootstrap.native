@@ -1,1 +1,2 @@
-export default 'aria-describedby'
+const ariaDescribedBy = 'aria-describedby';
+export default ariaDescribedBy;

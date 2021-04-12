@@ -1,1 +1,2 @@
-export default 'aria-selected'
+const ariaSelected = 'aria-selected';
+export default ariaSelected;

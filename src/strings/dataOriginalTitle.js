@@ -1,1 +1,2 @@
-export default 'data-original-title'
+const dataOriginalTitle = 'data-original-title';
+export default dataOriginalTitle;

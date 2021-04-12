@@ -1,12 +1,12 @@
-export default function( eventType, componentName, eventProperties ) {
-  let OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } )
+export default function bootstrapCustomEvent(eventType, componentName, eventProperties) {
+  const OriginalCustomEvent = new CustomEvent(`${eventType}.bs.${componentName}`, { cancelable: true });
 
-  if ( typeof eventProperties !== 'undefined' ) {
-    Object.keys( eventProperties ).forEach( key => {
-      Object.defineProperty( OriginalCustomEvent, key, {
-        value: eventProperties[key]
-      })
-    })
+  if (typeof eventProperties !== 'undefined') {
+    Object.keys(eventProperties).forEach((key) => {
+      Object.defineProperty(OriginalCustomEvent, key, {
+        value: eventProperties[key],
+      });
+    });
   }
-  return OriginalCustomEvent
+  return OriginalCustomEvent;
 }

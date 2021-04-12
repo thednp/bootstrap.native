@@ -1,9 +1,9 @@
 /*!
-  * Native JavaScript for Bootstrap Popover v3.0.14f (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Popover v3.0.15-alpha1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
-var mouseHoverEvents = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ];
+var mouseHoverEvents = ('onmouseleave' in document) ? ['mouseenter', 'mouseleave'] : ['mouseover', 'mouseout'];
 
 var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
 
@@ -15,14 +15,17 @@ var supportPassive = (function () {
   var result = false;
   try {
     var opts = Object.defineProperty({}, 'passive', {
-      get: function() {
+      get: function get() {
         result = true;
-      }
+        return result;
+      },
     });
-    document[addEventListener]('DOMContentLoaded', function wrap(){
+    document[addEventListener]('DOMContentLoaded', function wrap() {
       document[removeEventListener]('DOMContentLoaded', wrap, opts);
     }, opts);
-  } catch (e) {}
+  } catch (e) {
+    throw Error('Passive events are not supported');
+  }
 
   return result;
 })();
@@ -40,33 +43,35 @@ var transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTran
 var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
 function getElementTransitionDuration(element) {
-  var computedStyle = getComputedStyle(element),
-      propertyValue = computedStyle[transitionProperty],
-      durationValue = computedStyle[transitionDuration],
-      durationScale = durationValue.includes('ms') ? 1 : 1000,
-      duration = supportTransition && propertyValue && propertyValue !== 'none' 
-               ? parseFloat( durationValue ) * durationScale : 0;
+  var computedStyle = getComputedStyle(element);
+  var propertyValue = computedStyle[transitionProperty];
+  var durationValue = computedStyle[transitionDuration];
+  var durationScale = durationValue.includes('ms') ? 1 : 1000;
+  var duration = supportTransition && propertyValue && propertyValue !== 'none'
+    ? parseFloat(durationValue) * durationScale : 0;
 
-  return !isNaN(duration) ? duration : 0
+  return !Number.isNaN(duration) ? duration : 0;
 }
 
-function emulateTransitionEnd(element,handler){ 
-  var called = 0, 
-      endEvent = new Event( transitionEndEvent ),
-      duration = getElementTransitionDuration(element);
+function emulateTransitionEnd(element, handler) {
+  var called = 0;
+  var endEvent = new Event(transitionEndEvent);
+  var duration = getElementTransitionDuration(element);
 
-  if ( duration ) {
-    element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){ 
-      if ( e.target === element ) {
-        handler.apply( element, [e] );
-        element.removeEventListener( transitionEndEvent, transitionEndWrapper);
+  if (duration) {
+    element.addEventListener(transitionEndEvent, function transitionEndWrapper(e) {
+      if (e.target === element) {
+        handler.apply(element, [e]);
+        element.removeEventListener(transitionEndEvent, transitionEndWrapper);
         called = 1;
       }
     });
-    setTimeout(function() { 
-      !called && element.dispatchEvent( endEvent );
-    }, duration + 17 );
-  } else { handler.apply( element, [endEvent]); }
+    setTimeout(function () {
+      if (!called) { element.dispatchEvent(endEvent); }
+    }, duration + 17);
+  } else {
+    handler.apply(element, [endEvent]);
+  }
 }
 
 function queryElement(selector, parent) {
@@ -74,76 +79,83 @@ function queryElement(selector, parent) {
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }
 
-function bootstrapCustomEvent( eventType, componentName, eventProperties ) {
-  var OriginalCustomEvent = new CustomEvent( eventType + '.bs.' + componentName, { cancelable: true } );
+function bootstrapCustomEvent(eventType, componentName, eventProperties) {
+  var OriginalCustomEvent = new CustomEvent((eventType + ".bs." + componentName), { cancelable: true });
 
-  if ( typeof eventProperties !== 'undefined' ) {
-    Object.keys( eventProperties ).forEach( function (key) {
-      Object.defineProperty( OriginalCustomEvent, key, {
-        value: eventProperties[key]
+  if (typeof eventProperties !== 'undefined') {
+    Object.keys(eventProperties).forEach(function (key) {
+      Object.defineProperty(OriginalCustomEvent, key, {
+        value: eventProperties[key],
       });
     });
   }
-  return OriginalCustomEvent
+  return OriginalCustomEvent;
 }
 
-function dispatchCustomEvent(customEvent){
-  this && this.dispatchEvent(customEvent);
+function dispatchCustomEvent(customEvent) {
+  if (this) { this.dispatchEvent(customEvent); }
 }
 
 // Popover, Tooltip & ScrollSpy
-function getScroll() { 
+function getScroll() {
   return {
-    y : window.pageYOffset || document.documentElement.scrollTop,
-    x : window.pageXOffset || document.documentElement.scrollLeft
-  }
+    y: window.pageYOffset || document.documentElement.scrollTop,
+    x: window.pageXOffset || document.documentElement.scrollLeft,
+  };
 }
 
-function styleTip(link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
-  var tipPositions = /\b(top|bottom|left|right)+/,
-      elementDimensions = { w : element.offsetWidth, h: element.offsetHeight },
-      windowWidth = (document.documentElement.clientWidth || document.body.clientWidth),
-      windowHeight = (document.documentElement.clientHeight || document.body.clientHeight),
-      rect = link.getBoundingClientRect(),
-      scroll = parent === document.body ? getScroll() : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop },
-      linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top },
-      isPopover = element.classList.contains('popover'),
-
-      arrow = element.getElementsByClassName('arrow')[0],
-
-      halfTopExceed = rect.top + linkDimensions.h/2 - elementDimensions.h/2 < 0,
-      halfLeftExceed = rect.left + linkDimensions.w/2 - elementDimensions.w/2 < 0,
-      halfRightExceed = rect.left + elementDimensions.w/2 + linkDimensions.w/2 >= windowWidth,
-      halfBottomExceed = rect.top + elementDimensions.h/2 + linkDimensions.h/2 >= windowHeight,
-      topExceed = rect.top - elementDimensions.h < 0,
-      leftExceed = rect.left - elementDimensions.w < 0,
-      bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight,
-      rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth;
+// both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
+function styleTip(link, element, originalPosition, parent) {
+  var tipPositions = /\b(top|bottom|left|right)+/;
+  var elementDimensions = { w: element.offsetWidth, h: element.offsetHeight };
+  var windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
+  var windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
+  var rect = link.getBoundingClientRect();
+  var scroll = parent === document.body
+    ? getScroll()
+    : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop };
+  var linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top };
+  var isPopover = element.classList.contains('popover');
+  var arrow = element.getElementsByClassName('arrow')[0];
+  var halfTopExceed = rect.top + linkDimensions.h / 2 - elementDimensions.h / 2 < 0;
+  var halfLeftExceed = rect.left + linkDimensions.w / 2 - elementDimensions.w / 2 < 0;
+  var halfRightExceed = rect.left + elementDimensions.w / 2
+    + linkDimensions.w / 2 >= windowWidth;
+  var halfBottomExceed = rect.top + elementDimensions.h / 2
+    + linkDimensions.h / 2 >= windowHeight;
+  var topExceed = rect.top - elementDimensions.h < 0;
+  var leftExceed = rect.left - elementDimensions.w < 0;
+  var bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight;
+  var rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth;
+  var position = originalPosition;
 
   // recompute position
-  position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position; // first, when both left and right limits are exceeded, we fall back to top|bottom
+  // first, when both left and right limits are exceeded, we fall back to top|bottom
+  position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position;
   position = position === 'top' && topExceed ? 'bottom' : position;
   position = position === 'bottom' && bottomExceed ? 'top' : position;
   position = position === 'left' && leftExceed ? 'right' : position;
   position = position === 'right' && rightExceed ? 'left' : position;
 
-  var topPosition,
-    leftPosition,
-    arrowTop,
-    arrowLeft,
-    arrowWidth,
-    arrowHeight;
+  var topPosition;
+  var leftPosition;
+  var arrowTop;
+  var arrowLeft;
 
   // update tooltip/popover class
-  element.className.indexOf(position) === -1 && (element.className = element.className.replace(tipPositions,position));
+  if (element.className.indexOf(position) === -1) {
+    element.className = element.className.replace(tipPositions, position);
+  }
 
   // we check the computed width & height and update here
-  arrowWidth = arrow.offsetWidth; arrowHeight = arrow.offsetHeight;
+  var arrowWidth = arrow.offsetWidth;
+  var arrowHeight = arrow.offsetHeight;
 
   // apply styling to tooltip or popover
-  if ( position === 'left' || position === 'right' ) { // secondary|side positions
-    if ( position === 'left' ) { // LEFT
-      leftPosition = rect.left + scroll.x - elementDimensions.w - ( isPopover ? arrowWidth : 0 );
+  // secondary|side positions
+  if (position === 'left' || position === 'right') {
+    if (position === 'left') { // LEFT
+      leftPosition = rect.left + scroll.x - elementDimensions.w - (isPopover ? arrowWidth : 0);
     } else { // RIGHT
       leftPosition = rect.left + scroll.x + linkDimensions.w;
     }
@@ -151,104 +163,92 @@ function styleTip(link,element,position,parent) { // both popovers and tooltips 
     // adjust top and arrow
     if (halfTopExceed) {
       topPosition = rect.top + scroll.y;
-      arrowTop = linkDimensions.h/2 - arrowWidth;
+      arrowTop = linkDimensions.h / 2 - arrowWidth;
     } else if (halfBottomExceed) {
       topPosition = rect.top + scroll.y - elementDimensions.h + linkDimensions.h;
-      arrowTop = elementDimensions.h - linkDimensions.h/2 - arrowWidth;
+      arrowTop = elementDimensions.h - linkDimensions.h / 2 - arrowWidth;
     } else {
-      topPosition = rect.top + scroll.y - elementDimensions.h/2 + linkDimensions.h/2;
-      arrowTop = elementDimensions.h/2 - (isPopover ? arrowHeight*0.9 : arrowHeight/2);
+      topPosition = rect.top + scroll.y - elementDimensions.h / 2 + linkDimensions.h / 2;
+      arrowTop = elementDimensions.h / 2 - (isPopover ? arrowHeight * 0.9 : arrowHeight / 2);
     }
-  } else if ( position === 'top' || position === 'bottom' ) { // primary|vertical positions
-    if ( position === 'top') { // TOP
-      topPosition =  rect.top + scroll.y - elementDimensions.h - ( isPopover ? arrowHeight : 0 );
+  // primary|vertical positions
+  } else if (position === 'top' || position === 'bottom') {
+    if (position === 'top') { // TOP
+      topPosition = rect.top + scroll.y - elementDimensions.h - (isPopover ? arrowHeight : 0);
     } else { // BOTTOM
       topPosition = rect.top + scroll.y + linkDimensions.h;
     }
     // adjust left | right and also the arrow
     if (halfLeftExceed) {
       leftPosition = 0;
-      arrowLeft = rect.left + linkDimensions.w/2 - arrowWidth;
+      arrowLeft = rect.left + linkDimensions.w / 2 - arrowWidth;
     } else if (halfRightExceed) {
-      leftPosition = windowWidth - elementDimensions.w*1.01;
-      arrowLeft = elementDimensions.w - ( windowWidth - rect.left ) + linkDimensions.w/2 - arrowWidth/2;
+      leftPosition = windowWidth - elementDimensions.w * 1.01;
+      arrowLeft = elementDimensions.w - (windowWidth - rect.left)
+        + linkDimensions.w / 2 - arrowWidth / 2;
     } else {
-      leftPosition = rect.left + scroll.x - elementDimensions.w/2 + linkDimensions.w/2;
-      arrowLeft = elementDimensions.w/2 - ( isPopover ? arrowWidth : arrowWidth/2 );
+      leftPosition = rect.left + scroll.x - elementDimensions.w / 2 + linkDimensions.w / 2;
+      arrowLeft = elementDimensions.w / 2 - (isPopover ? arrowWidth : arrowWidth / 2);
     }
   }
 
   // apply style to tooltip/popover and its arrow
-  element.style.top = topPosition + 'px';
-  element.style.left = leftPosition + 'px';
+  element.style.top = topPosition + "px";
+  element.style.left = leftPosition + "px";
 
-  arrowTop && (arrow.style.top = arrowTop + 'px');
-  arrowLeft && (arrow.style.left = arrowLeft + 'px');
+  if (arrowTop) { arrow.style.top = arrowTop + "px"; }
+  if (arrowLeft) { arrow.style.left = arrowLeft + "px"; }
 }
+
+/* Native JavaScript for Bootstrap 4 | Popover
+---------------------------------------------- */
 
 // POPOVER DEFINITION
 // ==================
 
-function Popover(element,options) {
+function Popover(elem, opsInput) {
+  var assign;
 
+  var element;
   // set instance options
-  options = options || {};
+  var options = opsInput || {};
 
   // bind
   var self = this;
 
   // popover and timer
-  var popover = null,
-      timer = 0,
-      isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent),
-      // title and content
-      titleString,
-      contentString,
-      // options
-      ops = {};
+  var popover = null;
+  var timer = 0;
+  var isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent);
+  // title and content
+  var titleString;
+  var contentString;
+  var placementClass;
 
-  // DATA API
-  var triggerData, // click / hover / focus
-      animationData, // true / false
+  // options
+  var ops = {};
 
-      placementData,
-      dismissibleData,
-      delayData,
-      containerData,
+  // close btn for dissmissible popover
+  var closeBtn;
 
-      // close btn for dissmissible popover
-      closeBtn,
-
-      // custom events
-      showCustomEvent,
-      shownCustomEvent,
-      hideCustomEvent,
-      hiddenCustomEvent,
-
-      // check container
-      containerElement,
-      containerDataElement,
-
-      // maybe the element is inside a modal
-      modal,
-
-      // maybe the element is inside a fixed navbar
-      navbarFixedTop,
-      navbarFixedBottom,
-      placementClass;
+  // custom events
+  var showCustomEvent;
+  var shownCustomEvent;
+  var hideCustomEvent;
+  var hiddenCustomEvent;
 
   // handlers
   function dismissibleHandler(e) {
-    if (popover !== null && e.target === queryElement('.close',popover)) {
+    if (popover !== null && e.target === queryElement('.close', popover)) {
       self.hide();
     }
   }
   // private methods
   function getContents() {
     return {
-      0 : options.title || element.getAttribute('data-title') || null,
-      1 : options.content || element.getAttribute('data-content') || null
-    }
+      0: options.title || element.getAttribute('data-title') || null,
+      1: options.content || element.getAttribute('data-content') || null,
+    };
   }
   function removePopover() {
     ops.container.removeChild(popover);
@@ -256,10 +256,11 @@ function Popover(element,options) {
   }
 
   function createPopover() {
-    titleString = getContents()[0] || null;
-    contentString = getContents()[1];
+    var assign;
+
+    (assign = getContents(), titleString = assign[0], contentString = assign[1]);
     // fixing https://github.com/thednp/bootstrap.native/issues/233
-    contentString = !!contentString ? contentString.trim() : null;
+    contentString = contentString ? contentString.trim() : null;
 
     popover = document.createElement('div');
 
@@ -268,9 +269,9 @@ function Popover(element,options) {
     popoverArrow.classList.add('arrow');
     popover.appendChild(popoverArrow);
 
-    if ( contentString !== null && ops.template === null ) { //create the popover from data attributes
-
-      popover.setAttribute('role','tooltip');
+    // create the popover from data attributes
+    if (contentString !== null && ops.template === null) {
+      popover.setAttribute('role', 'tooltip');
 
       if (titleString !== null) {
         var popoverTitle = document.createElement('h3');
@@ -279,70 +280,75 @@ function Popover(element,options) {
         popover.appendChild(popoverTitle);
       }
 
-      //set popover content
+      // set popover content
       var popoverBodyMarkup = document.createElement('div');
       popoverBodyMarkup.classList.add('popover-body');
-      popoverBodyMarkup.innerHTML = ops.dismissible && titleString === null ? contentString + closeBtn : contentString;
+      popoverBodyMarkup.innerHTML = ops.dismissible && titleString === null
+        ? contentString + closeBtn
+        : contentString;
       popover.appendChild(popoverBodyMarkup);
-
-    } else {  // or create the popover from template
+    } else { // or create the popover from template
       var popoverTemplate = document.createElement('div');
       popoverTemplate.innerHTML = ops.template.trim();
       popover.className = popoverTemplate.firstChild.className;
       popover.innerHTML = popoverTemplate.firstChild.innerHTML;
 
-      var popoverHeader = queryElement('.popover-header',popover),
-          popoverBody = queryElement('.popover-body',popover);
+      var popoverHeader = queryElement('.popover-header', popover);
+      var popoverBody = queryElement('.popover-body', popover);
 
       // fill the template with content from data attributes
-      titleString && popoverHeader && (popoverHeader.innerHTML = titleString.trim());
-      contentString && popoverBody && (popoverBody.innerHTML = contentString.trim());
+      if (titleString && popoverHeader) { popoverHeader.innerHTML = titleString.trim(); }
+      if (contentString && popoverBody) { popoverBody.innerHTML = contentString.trim(); }
     }
 
-    //append to the container
+    // append to the container
     ops.container.appendChild(popover);
     popover.style.display = 'block';
-    !popover.classList.contains( 'popover') && popover.classList.add('popover');
-    !popover.classList.contains( ops.animation) && popover.classList.add(ops.animation);
-    !popover.classList.contains( placementClass) && popover.classList.add(placementClass);
+    if (!popover.classList.contains('popover')) { popover.classList.add('popover'); }
+    if (!popover.classList.contains(ops.animation)) { popover.classList.add(ops.animation); }
+    if (!popover.classList.contains(placementClass)) { popover.classList.add(placementClass); }
   }
   function showPopover() {
-    !popover.classList.contains('show') && ( popover.classList.add('show') );
+    if (!popover.classList.contains('show')) { popover.classList.add('show'); }
   }
   function updatePopover() {
     styleTip(element, popover, ops.placement, ops.container);
   }
-  function forceFocus () {
+  function forceFocus() {
     if (popover === null) { element.focus(); }
   }
-  function toggleEvents(action) {
-    action = action ? 'addEventListener' : 'removeEventListener';
+  function toggleEvents(add) {
+    var action = add ? 'addEventListener' : 'removeEventListener';
     if (ops.trigger === 'hover') {
-      element[action]( mouseClickEvents.down, self.show );
-      element[action]( mouseHoverEvents[0], self.show );
-      if (!ops.dismissible) { element[action]( mouseHoverEvents[1], self.hide ); } // mouseHover = ('onmouseleave' in document) ? [ 'mouseenter', 'mouseleave'] : [ 'mouseover', 'mouseout' ]
-    } else if ('click' == ops.trigger) {
-      element[action]( ops.trigger, self.toggle );
-    } else if ('focus' == ops.trigger) {
-      isIphone && element[action]( 'click', forceFocus, false );
-      element[action]( ops.trigger, self.toggle );
+      element[action](mouseClickEvents.down, self.show);
+      element[action](mouseHoverEvents[0], self.show);
+      // mouseHover = ('onmouseleave' in document)
+      //   ? [ 'mouseenter', 'mouseleave']
+      //   : [ 'mouseover', 'mouseout' ]
+      if (!ops.dismissible) { element[action](mouseHoverEvents[1], self.hide); }
+    } else if (ops.trigger === 'click') {
+      element[action](ops.trigger, self.toggle);
+    } else if (ops.trigger === 'focus') {
+      if (isIphone) { element[action]('click', forceFocus, false); }
+      element[action](ops.trigger, self.toggle);
     }
   }
-  function touchHandler(e){
-    if ( popover && popover.contains(e.target) || e.target === element || element.contains(e.target)) ; else {
+  function touchHandler(e) {
+    if ((popover && popover.contains(e.target))
+      || e.target === element || element.contains(e.target)) ; else {
       self.hide();
     }
   }
   // event toggle
-  function dismissHandlerToggle(action) {
-    action = action ? 'addEventListener' : 'removeEventListener';
+  function dismissHandlerToggle(add) {
+    var action = add ? 'addEventListener' : 'removeEventListener';
     if (ops.dismissible) {
-      document[action]('click', dismissibleHandler, false );
+      document[action]('click', dismissibleHandler, false);
     } else {
-      'focus' == ops.trigger && element[action]( 'blur', self.hide );
-      'hover' == ops.trigger && document[action]( 'touchstart', touchHandler, passiveHandler );
+      if (ops.trigger === 'focus') { element[action]('blur', self.hide); }
+      if (ops.trigger === 'hover') { document[action]('touchstart', touchHandler, passiveHandler); }
     }
-    window[action]('resize', self.hide, passiveHandler );
+    window[action]('resize', self.hide, passiveHandler);
   }
   // triggers
   function showTrigger() {
@@ -362,28 +368,30 @@ function Popover(element,options) {
   };
   self.show = function () {
     clearTimeout(timer);
-    timer = setTimeout( function () {
+    timer = setTimeout(function () {
       if (popover === null) {
         dispatchCustomEvent.call(element, showCustomEvent);
-        if ( showCustomEvent.defaultPrevented ) { return; }
+        if (showCustomEvent.defaultPrevented) { return; }
 
         createPopover();
         updatePopover();
         showPopover();
-        !!ops.animation ? emulateTransitionEnd(popover, showTrigger) : showTrigger();
+        if (ops.animation) { emulateTransitionEnd(popover, showTrigger); }
+        else { showTrigger(); }
       }
-    }, 20 );
+    }, 20);
   };
   self.hide = function () {
     clearTimeout(timer);
-    timer = setTimeout( function () {
+    timer = setTimeout(function () {
       if (popover && popover !== null && popover.classList.contains('show')) {
         dispatchCustomEvent.call(element, hideCustomEvent);
-        if ( hideCustomEvent.defaultPrevented ) { return; }
+        if (hideCustomEvent.defaultPrevented) { return; }
         popover.classList.remove('show');
-        !!ops.animation ? emulateTransitionEnd(popover, hideTrigger) : hideTrigger();
+        if (ops.animation) { emulateTransitionEnd(popover, hideTrigger); }
+        else { hideTrigger(); }
       }
-    }, ops.delay );
+    }, ops.delay);
   };
   self.dispose = function () {
     self.hide();
@@ -393,19 +401,19 @@ function Popover(element,options) {
 
   // INIT
   // initialization element
-  element = queryElement(element);
+  element = queryElement(elem);
 
   // reset on re-init
-  element.Popover && element.Popover.dispose();
+  if (element.Popover) { element.Popover.dispose(); }
 
   // DATA API
-  triggerData = element.getAttribute('data-trigger'); // click / hover / focus
-  animationData = element.getAttribute('data-animation'); // true / false
+  var triggerData = element.getAttribute('data-trigger'); // click / hover / focus
+  var animationData = element.getAttribute('data-animation'); // true / false
 
-  placementData = element.getAttribute('data-placement');
-  dismissibleData = element.getAttribute('data-dismissible');
-  delayData = element.getAttribute('data-delay');
-  containerData = element.getAttribute('data-container');
+  var placementData = element.getAttribute('data-placement');
+  var dismissibleData = element.getAttribute('data-dismissible');
+  var delayData = element.getAttribute('data-delay');
+  var containerData = element.getAttribute('data-container');
 
   // close btn for dissmissible popover
   closeBtn = '<button type="button" class="close">×</button>';
@@ -417,47 +425,41 @@ function Popover(element,options) {
   hiddenCustomEvent = bootstrapCustomEvent('hidden', 'popover');
 
   // check container
-  containerElement = queryElement(options.container);
-  containerDataElement = queryElement(containerData);
+  var containerElement = queryElement(options.container);
+  var containerDataElement = queryElement(containerData);
 
   // maybe the element is inside a modal
-  modal = element.closest('.modal');
+  var modal = element.closest('.modal');
 
   // maybe the element is inside a fixed navbar
-  navbarFixedTop = element.closest('.fixed-top');
-  navbarFixedBottom = element.closest('.fixed-bottom');
+  var navbarFixedTop = element.closest('.fixed-top');
+  var navbarFixedBottom = element.closest('.fixed-bottom');
 
   // set instance options
   ops.template = options.template ? options.template : null; // JavaScript only
   ops.trigger = options.trigger ? options.trigger : triggerData || 'hover';
   ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
   ops.placement = options.placement ? options.placement : placementData || 'top';
-  ops.delay = parseInt(options.delay || delayData) || 200;
-  ops.dismissible = options.dismissible || dismissibleData === 'true' ? true : false;
-  ops.container = containerElement ? containerElement
-                          : containerDataElement ? containerDataElement
-                          : navbarFixedTop ? navbarFixedTop
-                          : navbarFixedBottom ? navbarFixedBottom
-                          : modal ? modal : document.body;
+  ops.delay = parseInt((options.delay || delayData), 10) || 200;
+  ops.dismissible = !!(options.dismissible || dismissibleData === 'true');
+  ops.container = containerElement
+    || (containerDataElement
+      || (navbarFixedTop || (navbarFixedBottom || (modal || document.body))));
 
   placementClass = "bs-popover-" + (ops.placement);
 
-
   // invalidate
-  var popoverContents = getContents();
-  titleString = popoverContents[0];
-  contentString = popoverContents[1];
+  (assign = getContents(), titleString = assign[0], contentString = assign[1]);
 
-  if ( !contentString && !ops.template ) { return; }
+  if (!contentString && !ops.template) { return; }
 
   // init
-  if ( !element.Popover ) { // prevent adding event handlers twice
+  if (!element.Popover) { // prevent adding event handlers twice
     toggleEvents(1);
   }
 
   // associate target to init object
   element.Popover = self;
-
 }
 
 export default Popover;

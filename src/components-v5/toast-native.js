@@ -1,186 +1,166 @@
-
 /* Native JavaScript for Bootstrap 5 | Toast
 -------------------------------------------- */
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js'
-import queryElement from 'shorter-js/src/misc/queryElement.js'
-import addClass from 'shorter-js/src/class/addClass.js'
-import hasClass from 'shorter-js/src/class/hasClass.js'
-import removeClass from 'shorter-js/src/class/removeClass.js'
-import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js'
-import addEventListener from 'shorter-js/src/strings/addEventListener.js'
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js'
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
+import addClass from 'shorter-js/src/class/addClass.js';
+import hasClass from 'shorter-js/src/class/hasClass.js';
+import removeClass from 'shorter-js/src/class/removeClass.js';
+import addEventListener from 'shorter-js/src/strings/addEventListener.js';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import reflow from 'shorter-js/src/misc/reflow.js';
 
-import fadeClass from '../strings/fadeClass.js'
-import showClass from '../strings/showClass.js'
+import fadeClass from '../strings/fadeClass.js';
+import showClass from '../strings/showClass.js';
+import dataBsDismiss from '../strings/dataBsDismiss.js';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js'
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js';
+import BaseComponent from './base-component.js';
 
 // TOAST PRIVATE GC
 // ================
-const toastString = 'toast',
-      toastComponent = 'Toast',
-      toastSelector = '[data-bs-dismiss="toast"]'
+const toastString = 'toast';
+const toastComponent = 'Toast';
+const toastSelector = `.${toastString}`;
+const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
+const showingClass = 'showing';
+const hideClass = 'hide';
+const toastDefaultOptions = {
+  animation: true,
+  autohide: true,
+  delay: 500,
+};
 
+// TOAST CUSTOM EVENTS
+// ===================
+const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
+const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
+const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
+const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 
-// TOAST SCOPE
-// ===========
-export default function Toast( toastElement, toastOptions ){
-
-
-  // TOAST PRIVATE GC
-  // ================
-  const showingClass = 'showing',
-      hideClass = 'hide',
-      toastDefaultOptions = {
-        animation: true,
-        autohide: true,
-        delay: 500
-      },
-
-      // TOAST CUSTOM EVENTS
-      // ===================
-      showToastEvent = bootstrapCustomEvent( `show.bs.${toastString}` ),
-      hideToastEvent = bootstrapCustomEvent( `hide.bs.${toastString}` ),
-      shownToastEvent = bootstrapCustomEvent( `shown.bs.${toastString}` ),
-      hiddenToastEvent = bootstrapCustomEvent( `hidden.bs.${toastString}` )
-
-
-  let self, element, toast, timer = null, ops = {}
-
-  // TOAST PRIVATE METHODS
-  // =====================
-  function showToastComplete() {
-    if ( !ops.animation ) {
-      removeClass( toast, showingClass )
-      addClass( toast, showClass )
-    }
-  
-    toast.dispatchEvent( shownToastEvent )
-    ops.autohide && self.hide()
-  }
-  
-  function hideToastComplete() {
-    addClass( toast, hideClass );
-    toast.dispatchEvent( hiddenToastEvent )
-  }
-  
-  function closeToast() {
-    removeClass( toast, showClass )
-    if ( ops.animation ) {
-      toast.offsetWidth // force reflow
-      emulateTransitionEnd( toast, hideToastComplete )
-    } else {
-      hideToastComplete()
-    }
-  }
-  
-  function openToast() {
-    removeClass( toast, hideClass )
-
-    if ( ops.animation ) {
-      toast.offsetWidth // force reflow
-      addClass( toast, showingClass )
-      addClass( toast, showClass )
-
-      emulateTransitionEnd( toast, showToastComplete)
-    } else {
-      showToastComplete()
-    }
-  }
-  
-  function toggleToastHandler( action ){
-    action = action ? addEventListener : removeEventListener
-    element[action]( 'click', toastClickHandler )
-  }
-  
-  
-  // TOAST EVENT HANDLERS
-  // ====================
-  function toastClickHandler(){
-    self.hide()
+// TOAST PRIVATE METHODS
+// =====================
+function showToastComplete(self) {
+  const { element, options } = self;
+  if (!options.animation) {
+    removeClass(element, showingClass);
+    addClass(element, showClass);
   }
 
-  function completeDispose() {
-    clearTimeout( timer )
-    toggleToastHandler()
-    delete element[toastComponent]
-  }
-  
-  
-  // TOAST DEFINITION
-  // ================
-  class Toast {
-    constructor( target, options ) {
-  
-      // bind
-      self = this
-
-      // set options
-      options = options || {}
-  
-      // initialization element
-      element = queryElement( target )
-      toast = element.closest( `.${toastString}` )
-  
-      // reset previous instance
-      element[toastComponent] && element[toastComponent].dispose()
-
-      // set options
-      ops = normalizeOptions( element, toastDefaultOptions, options, 'bs' )
-      
-      // add event listener
-      toggleToastHandler( 1 )
-  
-      // associate targets to init object
-      element[toastComponent] = self    
-    }
-  }
-  
-  
-  // TOAST PUBLIC METHODS
-  // ====================
-  const ToastProto = Toast.prototype
-  
-  ToastProto.show = function() {  
-    if ( toast && hasClass( toast, hideClass ) ) {
-      toast.dispatchEvent( showToastEvent )
-      if ( showToastEvent.defaultPrevented ) return
-  
-      addClass( toast, fadeClass )
-      clearTimeout( timer )
-      timer = setTimeout( () => openToast(), 10)
-    }
-  }
-  
-  ToastProto.hide = function( noTimer ) {
-  
-    if ( toast && hasClass( toast, showClass ) ) {
-      toast.dispatchEvent( hideToastEvent )
-      if ( hideToastEvent.defaultPrevented ) return
-  
-      clearTimeout( timer )
-      timer = setTimeout( 
-        closeToast, 
-        noTimer ? 10 : ops.delay )
-    }
-  }
-  
-  ToastProto.dispose = function() {
-  
-    self.hide()
-  
-    ops.animation 
-      ? emulateTransitionEnd( toast, completeDispose ) 
-      : completeDispose()
-  }
-
-  return new Toast( toastElement, toastOptions )
+  element.dispatchEvent(shownToastEvent);
+  if (options.autohide) self.hide();
 }
 
+function hideToastComplete(self) {
+  const { element } = self;
+  addClass(element, hideClass);
+  element.dispatchEvent(hiddenToastEvent);
+}
+
+function closeToast(self) {
+  const { element, options } = self;
+  removeClass(element, showClass);
+
+  if (options.animation) {
+    reflow(element);
+    emulateTransitionEnd(element, () => hideToastComplete(self));
+  } else {
+    hideToastComplete(self);
+  }
+}
+
+function openToast(self) {
+  const { element, options } = self;
+  removeClass(element, hideClass);
+
+  if (options.animation) {
+    reflow(element);
+    addClass(element, showingClass);
+    addClass(element, showClass);
+
+    emulateTransitionEnd(element, () => showToastComplete(self));
+  } else {
+    showToastComplete(self);
+  }
+}
+
+function toggleToastHandler(self, add) {
+  const action = add ? addEventListener : removeEventListener;
+  if (self.dismiss) {
+    self.dismiss[action]('click', self.hide);
+  }
+}
+
+// TOAST EVENT HANDLERS
+// ====================
+function completeDisposeToast(self) {
+  clearTimeout(self.timer);
+  toggleToastHandler(self);
+}
+
+// TOAST DEFINITION
+// ================
+export default class Toast extends BaseComponent {
+  constructor(target, config) {
+    super(toastComponent, target, toastDefaultOptions, config);
+    // bind
+    const self = this;
+
+    // dismiss button
+    self.dismiss = queryElement(toastDismissSelector, self.element);
+
+    // bind
+    self.show = self.show.bind(self);
+    self.hide = self.hide.bind(self);
+
+    // add event listener
+    toggleToastHandler(self, 1);
+  }
+
+  // TOAST PUBLIC METHODS
+  // ====================
+  show() {
+    const self = this;
+    const { element } = self;
+    if (element && hasClass(element, hideClass)) {
+      element.dispatchEvent(showToastEvent);
+      if (showToastEvent.defaultPrevented) return;
+
+      addClass(element, fadeClass);
+      clearTimeout(self.timer);
+      self.timer = setTimeout(() => openToast(self), 10);
+    }
+  }
+
+  hide(noTimer) {
+    const self = this;
+    const { element, options } = self;
+
+    if (element && hasClass(element, showClass)) {
+      element.dispatchEvent(hideToastEvent);
+      if (hideToastEvent.defaultPrevented) return;
+
+      clearTimeout(self.timer);
+      self.timer = setTimeout(
+        closeToast(self),
+        noTimer ? 10 : options.delay,
+      );
+    }
+  }
+
+  dispose() {
+    const self = this;
+    const { element, options } = self;
+    self.hide();
+
+    if (options.animation) emulateTransitionEnd(element, () => completeDisposeToast(self));
+    else completeDisposeToast(self);
+
+    super.dispose(toastComponent);
+  }
+}
 
 export const toastInit = {
   component: toastComponent,
   selector: toastSelector,
-  constructor: Toast
-}
-
+  constructor: Toast,
+};

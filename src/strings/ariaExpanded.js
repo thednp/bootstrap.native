@@ -1,1 +1,2 @@
-export default 'aria-expanded'
+const ariaExpanded = 'aria-expanded';
+export default ariaExpanded;

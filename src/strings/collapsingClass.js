@@ -1,1 +1,3 @@
-export default 'collapsing' // collapse / tab
+// collapse / tab
+const collapsingClass = 'collapsing';
+export default collapsingClass;

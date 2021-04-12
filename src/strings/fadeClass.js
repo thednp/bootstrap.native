@@ -1,1 +1,2 @@
-export default 'fade'
+const fadeClass = 'fade';
+export default fadeClass;

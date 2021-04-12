@@ -31,8 +31,11 @@ const OUTPUT = {
 const PLUGINS = [
   node({mainFields: ['jsnext','module'], dedupe: ['shorter-js']}) ,
   json(),
-  buble()
 ]
+
+if (!INPUTFILE.includes('v5')){
+  PLUGINS.push(buble({objectAssign: 'Object.assign'}));
+}
 
 if (MIN){
   PLUGINS.push(terser({output: {preamble: miniBanner}}));

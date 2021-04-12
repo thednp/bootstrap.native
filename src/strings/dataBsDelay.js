@@ -1,1 +1,2 @@
-export default 'data-bs-delay'
+const dataBsDelay = 'data-bs-delay';
+export default dataBsDelay;

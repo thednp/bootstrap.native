@@ -1,1 +1,2 @@
-export default 'data-bs-content'
+const dataBsContent = 'data-bs-content';
+export default dataBsContent;

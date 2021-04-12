@@ -1,1 +1,2 @@
-export default 'data-bs-title'
+const dataBsTitle = 'data-bs-title';
+export default dataBsTitle;
