@@ -1154,8 +1154,7 @@ myCollapseInit.toggle();
             <p>The <b>Dropdown</b> component covers most of the functionality from the original plugin in terms of original events,
               instance methods and options, but also offers some additional functionality without using any third party library.</p>
             <p>To get on par with the original plugin, our component now sports automatic repositioning without the use of Popper.js.
-              However for instances of <code>dropup</code>, <code>dropstart</code>, <code>dropend</code>, <code>dropdown-menu-end</code>,
-              our component only requires some additional CSS (deprecated in the original plugin). Check 
+              However for our implementation to work, this component might require some additional CSS. Check 
               <a title="BSN Wiki" href="https://github.com/thednp/bootstrap.native/wiki/Acknowledgements#additional-styling">the wiki</a>
               for more information.</p>
             <p>Here's how it works:</p>
@@ -2009,12 +2008,14 @@ var findModalInitJS = myModal.Modal;
                     <tr>
                       <td><code>hide.bs.offcanvas</code></td>
                       <td>This event is fired immediately when the <code>.hide()</code> instance method has been called.
-                        If the method is call came via click and the <br>
+                        If the method is call came via click and the click target is a dismiss element, that element is 
+                        then assignes as the <code>event.relatedTarget</code> of this event.<br>
                         <b>This event can be default prevented.</b></td>
                     </tr>
                     <tr>
                       <td><code>hidden.bs.offcanvas</code></td>
-                      <td>This event is fired when the offcanvas has finished being hidden from the user.</td>
+                      <td>This event is fired when the offcanvas has finished being hidden from the user. This event
+                        inherits the <code>event.relatedTarget</code> from the above event.</td>
                     </tr>
                   </tbody>
                 </table>
