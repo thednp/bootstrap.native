@@ -118,6 +118,9 @@ function createPopover(self) {
   const popoverHeader = queryElement(`.${popoverHeaderClass}`, popover);
   const popoverBody = queryElement(`.${popoverBodyClass}`, popover);
 
+  // set arrow
+  self.arrow = queryElement(`.${popoverString}-arrow`, popover);
+
   // set dismissible button
   if (dismissible) {
     title = title ? title + popoverCloseButton : title;
@@ -208,6 +211,7 @@ export default class Popover extends BaseComponent {
     // additional instance properties
     self.timer = null;
     self.popover = null;
+    self.arrow = null;
     self.enabled = false;
     // set unique ID for aria-describedby
     self.id = `${popoverString}-${getUID(element)}`;
@@ -267,7 +271,7 @@ export default class Popover extends BaseComponent {
         container.appendChild(popover);
         element.setAttribute(ariaDescribedBy, id);
 
-        self.update();
+        self.update(e);
         if (!hasClass(popover, showClass)) addClass(popover, showClass);
 
         if (options.animation) emulateTransitionEnd(popover, () => popoverShowTrigger(self));

@@ -14,7 +14,7 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/offcanvas.css">
+    <!-- <link rel="stylesheet" href="./assets/css/offcanvas.css"> -->
 
     <!-- Prism: Code Highlight -->
     <link rel="stylesheet" href="./assets/css/prism-coy.css">
@@ -25,19 +25,19 @@
     <!-- <script src="./dist/bootstrap-native-v5.js"></script> -->
   </head>
   <body>
-    <header class="navbar navbar-expand-md navbar-dark sticky-top bg-purple">
+    <header class="navbar navbar-expand-md navbar-dark bg-purple">
       <nav class="container-fluid">
-        <a data-bs-toggle="tooltip" data-bs-placement="bottom" class="navbar-brand me-0 me-md-2" title="&lt;b&gt;Native JavaScript for Bootstrap&lt;/b&gt;&lt;br&gt;The sweetest Vanilla JavaScript library for everyone" href="https://github.com/thednp/bootstrap.native/">
+        <a data-bs-toggle="tooltip" data-bs-placement="bottom" class="navbar-brand me-auto me-md-2" title="&lt;b&gt;Native JavaScript for Bootstrap&lt;/b&gt;&lt;br&gt;The sweetest Vanilla JavaScript library for everyone" href="https://github.com/thednp/bootstrap.native/">
           <svg class="d-inline-block align-top" width="40" height="32" viewBox="0 0 118 94" xmlns="http://www.w3.org/2000/svg" focusable="false">
             <path fill="currentColor" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
           </svg>
           <span class="ms-1 hidden-xs">Native JavaScript for Bootstrap</span>
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="offcanvas" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="offcanvas-collapse collapse show">
-          <ul class="navbar-nav d-none d-md-flex flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <div id="main-nav" class="navbar-collapse collapse">
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item">
               <a class="nav-link" href="index.html">V4</a>
             </li>
@@ -59,29 +59,15 @@
               </div>
             </li>
           </ul>
-          <ul id="top-nav" class="navbar-nav d-flex d-md-none flex-column">
-            <li class="nav-item"><a class="nav-link" href="#componentAlert">Alert</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentButton">Button</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentCarousel">Carousel</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentCollapse">Collapse</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentDropdown">Dropdown</a></li>            
-            <li class="nav-item"><a class="nav-link" href="#componentModal">Modal</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentOffcanvas">Offcanvas</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentPopover">Popover</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentScrollspy">ScrollSpy</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentTab">Tab</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentToast">Toast</a></li>
-            <li class="nav-item"><a class="nav-link" href="#componentTooltip">Tooltip</a></li>
-          </ul>        
         </div>
       </nav>
     </header>
 
-    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover" data-bs-keyboard="true">
+    <div id="myCarousel" class="carousel slide mb-0 mb-md-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover" data-bs-keyboard="true">
       <ol class="carousel-indicators">
-        <li data-bs-toggle="tooltip" data-bs-title="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
-        <li data-bs-toggle="tooltip" data-bs-title="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
-        <li data-bs-toggle="tooltip" data-bs-title="Why BSN?" data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
+        <li aria-label="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
+        <li aria-label="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
+        <li aria-label="Why BSN?" data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
       </ol>
       <div class="carousel-inner" role="listbox">
         <div class="carousel-item active">
@@ -131,6 +117,33 @@
       </a>
     </div>
 
+    <nav class="navbar navbar-light d-flex d-md-none bg-white sticky-top border-bottom">
+      <div class="container">
+        <span class="navbar-brand me-0 me-md-2">Components</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="mobileNav" class="offcanvas offcanvas-end" data-bs-backdrop="false" data-bs-scroll="true">
+          <div class="offcanvas-body">
+            <ul id="mobile-nav" class="navbar-nav flex-column">
+              <li class="nav-item"><a class="nav-link" href="#componentAlert">Alert</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentButton">Button</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentCarousel">Carousel</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentCollapse">Collapse</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentDropdown">Dropdown</a></li>            
+              <li class="nav-item"><a class="nav-link" href="#componentModal">Modal</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentOffcanvas">Offcanvas</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentPopover">Popover</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentScrollspy">ScrollSpy</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentTab">Tab</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentToast">Toast</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentTooltip">Tooltip</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
     <div class="container" id="container">
       <section id="use">
         <h2>Read First</h2>
@@ -140,7 +153,7 @@
           future changes. Be sure to check <a href="https://github.com/thednp/bootstrap.native/issues/400">the pulse on the development</a>.</p>
       </section>
       <div class="row">
-        <div class="col-md-9" data-bs-spy="scroll" data-bs-target="#side-nav" data-bs-offset="84">
+        <div class="col-md-9" data-bs-spy="scroll" data-bs-target="#side-nav">
 
           <section id="componentAlert">
             <h2>Alert</h2>
@@ -1813,20 +1826,37 @@ var myModalInit = myModal.Modal;
               </div>
               <div id="anotherModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="anotherModalLabel"
                 aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-scrollable">
                   <div class="modal-content">
                     <div class="modal-header"> 
-                      <h4 class="modal-title" id="anotherModalLabel">Another Modal Title</h4>
+                      <h4 class="modal-title" id="anotherModalLabel">Scrollable Modal</h4>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                       <h4>This modal was opened from another modal</h4>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
                         quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+                      <p>This modal uses <code>.modal-dialog-scrollable</code></p>
                       <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
                         laoreet rutrum faucibus dolor auctor.</p>
                       <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
+                        laoreet rutrum faucibus dolor auctor.</p>
+                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
+                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+                      <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
+                        quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
+                        laoreet rutrum faucibus dolor auctor.</p>
+                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
+                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+                      <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
+                        quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
+                        laoreet rutrum faucibus dolor auctor.</p>
+                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
+                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>                        
                     </div>
                     <div class="modal-footer">
                       <button data-bs-toggle="modal" data-bs-target="#myModal" type="button" class="btn btn-primary">Back</button>
@@ -2460,13 +2490,16 @@ var myOffcanvasInit = myModal.Offcanvas;
 var popoverTargets = document.querySelectorAll('[data-bs-content]'); // also a certain class would go fine
 
 // initialize Popover for each element
-Array.from(popoverTargets).map(
+Array.from(popoverTargets).forEach(
   popTarget => new BSN.Popover( popTarget, {
     placement: 'top', // string
     animation: true, // boolean
     customClass: 'my-special-class', // string
     delay: 100, // integer
     dismissible: true, // boolean
+    sanitizeFn: function(dirty){ // use sanitizer of your choice here
+      return DOMPurify.sanitize(dirty);
+    }    
   })
 );
 </code></pre>
@@ -3113,8 +3146,8 @@ var myTabs = document.getElementById('myTabs');
 var myTabsCollection = myTabs.getElementsByTagName('A');
 
 // initialize the component for all items in the collection
-Array.from(myTabsCollection).map(
-  tab => new BSN.Tab( tab, {height: true} )
+Array.from(myTabsCollection).forEach(
+  tab => new BSN.Tab( tab )
 );
 </code></pre>
           
@@ -3719,11 +3752,14 @@ myToastInit.dispose();
 var elementsTooltip = document.querySelectorAll('[title]');
 
 // attach a tooltip for each
-Array.from(elementsTooltip).map(
+Array.from(elementsTooltip).forEach(
   tip => new BSN.Tooltip( tip, {
     placement: 'top', // string
     animation: true, // boolean
     customClass: 'my-rocket-tooltips', // string
+    sanitizeFn: function(dirty){  // use sanitizer of your choice here
+      return DOMPurify.sanitize(dirty);
+    }
     delay: 150, // integer
   })
 )
@@ -3816,7 +3852,7 @@ new BSN.Tooltip('#selector',options).show();
           </section>
         </div>
         <div class="col-md-3" id="side-nav">
-          <ul id="nav-scrollspy" class="nav nav-stacked d-none d-md-flex flex-column">
+          <ul id="nav-scrollspy-v5" class="nav nav-stacked d-none d-md-flex flex-column">
             <li class="nav-item">
               <a rel="nofollow" class="nav-link" href="#componentAlert">Alert</a>
               <ul class="nav">
@@ -3960,8 +3996,6 @@ new BSN.Tooltip('#selector',options).show();
 
     </div><!-- /.container -->
 
-		<script src="./dist/polyfill.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
     <script src="./dist/bootstrap-native-v5.js"></script>
     <script src="./assets/js/scripts-v5.js"></script>
     <script src="./assets/js/prism.js"></script>

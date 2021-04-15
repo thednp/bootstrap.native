@@ -82,11 +82,20 @@ pre[class*="language-"] {margin: 0 0 1rem}
   position: sticky;
   top: calc(62px + 0.5rem)
 }
+#nav-scrollspy-v5 {
+  position: sticky;
+  top: 0.5rem
+}
 .nav-stacked ul {
   padding-left: 1rem;
   display: none
 }
 .nav-stacked li > a.active + ul { display: block }
+
+/* v5 nav */
+nav.border-bottom {
+  box-shadow: 0 0 1rem rgb(0 0 0 / 15%)
+}
 
 /* .nav-stacked li > a { background: #f6f6f6; color: #777 } */
 .nav-stacked li > a { color: #777 }

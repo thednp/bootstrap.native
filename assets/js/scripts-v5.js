@@ -1,22 +1,38 @@
 // MISC
 // scrollTo
-var offCanvasCollapse = document.getElementsByClassName('offcanvas-collapse')[0],
+var container = document.getElementById('container'),
 		sideNav = document.getElementById('side-nav'),
-		topNav = document.getElementById('top-nav'),
-		sideLinks = Array.from(sideNav.getElementsByTagName("A")).concat(Array.from(topNav.getElementsByTagName("A"))),
-		// scrollTarget = /(EDGE|Mac)/i.test(navigator.userAgent) ? document.body : document.documentElement;
+		mobileNav = document.getElementById('mobile-nav'),
+		sideLinks = Array.from(sideNav.getElementsByTagName("A"))
+			.concat(Array.from(mobileNav.getElementsByTagName("A"))),
+		mobileNavParent = mobileNav.closest('nav'),
+		mobileNavOffcanvas = mobileNav.closest('.offcanvas'),
 		scrollTarget = document.documentElement;
 
-sideLinks.map( function(x,i) {x.addEventListener('click', function(e){ 
+function setOffset() {
+	if (window.pageYOffset >= container.offsetTop) {
+		mobileNavOffcanvas.style.top = mobileNavParent.offsetHeight + 'px';
+	} else {
+		mobileNavOffcanvas.style.top = '';
+	}
+}
+mobileNavOffcanvas.addEventListener('show.bs.offcanvas', () => {
+	setOffset();
+	window.addEventListener('scroll', setOffset);
+});
+mobileNavOffcanvas.addEventListener('hidden.bs.offcanvas', () => {
+	mobileNavOffcanvas.style.top = '';
+	window.removeEventListener('scroll', setOffset)
+
+});
+
+sideLinks.forEach( function(x,i) {x.addEventListener('click', function(e){ 
 	var target = document.getElementById(x.getAttribute('href').replace('#', ''));
+	var offset =  document.body.offsetWidth <= 768 ? 70 : 0;
 	e.preventDefault();
-	scrollTarget.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) -  70;
-	topNav.contains(x) && offCanvasCollapse.classList.toggle('open')
+	scrollTarget.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - offset;
+	if (mobileNav.contains(e.target)) mobileNavOffcanvas.Offcanvas.hide();
 })}) 
-// offcanvas
-document.querySelector('[data-toggle="offcanvas"]').addEventListener('click', function () {
-	offCanvasCollapse.classList.toggle('open')
-})
 
 // COMPONENTS
 // ==========

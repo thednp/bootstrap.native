@@ -81,6 +81,9 @@ function createTooltip(self) {
 
   queryElement(`.${tooltipInnerClass}`, tooltip).innerHTML = titleString;
 
+  // set arrow
+  self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
+
   // set class and role attribute
   tooltip.setAttribute('role', tooltipString);
   // set classes
@@ -169,6 +172,7 @@ export default class Tooltip extends BaseComponent {
 
     // additional properties
     self.tooltip = null;
+    self.arrow = null;
     self.timer = null;
     self.enabled = false;
 
@@ -219,7 +223,7 @@ export default class Tooltip extends BaseComponent {
         options.container.appendChild(tooltip);
         element.setAttribute(ariaDescribedBy, id);
 
-        self.update();
+        self.update(e);
         if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
         if (options.animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
         else tooltipShownAction(self);
@@ -283,8 +287,9 @@ export default class Tooltip extends BaseComponent {
   }
 
   toggleEnabled() {
-    if (!this.enabled) this.enable();
-    else this.disable();
+    const self = this;
+    if (!self.enabled) self.enable();
+    else self.disable();
   }
 
   dispose() {

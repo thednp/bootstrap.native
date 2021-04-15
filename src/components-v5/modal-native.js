@@ -16,6 +16,7 @@ import dataBsToggle from '../strings/dataBsToggle.js';
 import dataBsDismiss from '../strings/dataBsDismiss.js';
 import fadeClass from '../strings/fadeClass.js';
 import showClass from '../strings/showClass.js';
+import ariaModal from '../strings/ariaModal.js';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js';
 import getTargetElement from '../util/getTargetElement.js';
@@ -38,7 +39,6 @@ const modalDefaultOptions = {
 const modalOpenClass = `${modalString}-open`;
 const modalBackdropClass = `${modalString}-backdrop`;
 const modalStaticClass = `${modalString}-static`;
-const ariaModal = `aria-${modalString}`;
 
 // MODAL CUSTOM EVENTS
 // ===================

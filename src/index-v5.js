@@ -4,7 +4,7 @@ import Carousel from './components-v5/carousel-native.js';
 import Collapse from './components-v5/collapse-native.js';
 import Dropdown from './components-v5/dropdown-native.js';
 import Modal from './components-v5/modal-native.js';
-import OffCanvas from './components-v5/offcanvas-native.js';
+import Offcanvas from './components-v5/offcanvas-native.js';
 import Popover from './components-v5/popover-native.js';
 import ScrollSpy from './components-v5/scrollspy-native.js';
 import Tab from './components-v5/tab-native.js';
@@ -21,7 +21,7 @@ export default {
   Collapse,
   Dropdown,
   Modal,
-  OffCanvas,
+  Offcanvas,
   Popover,
   ScrollSpy,
   Tab,

@@ -15,7 +15,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "rollup --help",
-    "build": "npm-run-all --parallel build-* && npm-run-all --parallel module-*",
+    "build": "npm run lint:js && npm-run-all --parallel build-* && npm-run-all --parallel module-*",
     "custom": "rollup -c --environment",
     "fix:js": "eslint src/ --config .eslintrc --fix",
     "lint:js": "eslint src/ --config .eslintrc",

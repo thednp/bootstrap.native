@@ -156,6 +156,11 @@ export default class ScrollSpy extends BaseComponent {
   // ========================
   refresh() {
     const self = this;
+    const { target } = self;
+
+    // check if target is visible and invalidate
+    if (target.offsetHeight === 0) return;
+
     updateSpyTargets(self);
 
     const {
@@ -171,7 +176,7 @@ export default class ScrollSpy extends BaseComponent {
       return;
     }
 
-    const { target, offsets } = self;
+    const { offsets } = self;
 
     if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
       self.activeItem = null;

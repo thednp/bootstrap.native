@@ -13,6 +13,9 @@ import getTargetElement from '../util/getTargetElement.js';
 import dataBsDismiss from '../strings/dataBsDismiss.js';
 import dataBsToggle from '../strings/dataBsToggle.js';
 import showClass from '../strings/showClass.js';
+import ariaHidden from '../strings/ariaHidden.js';
+import ariaModal from '../strings/ariaModal.js';
+import ariaExpanded from '../strings/ariaExpanded.js';
 import setFocus from '../util/setFocus.js';
 import { resetScrollbar, setScrollbar, measureScrollbar } from '../util/scrollbar.js';
 import BaseComponent from './base-component.js';
@@ -83,8 +86,16 @@ function offcanvasKeyDismissHandler({ which }) {
 }
 
 function showOffcanvasComplete(self, related) {
-  const { element } = self;
+  const { element, triggers } = self;
   removeClass(element, offcanvasTogglingClass);
+
+  element.removeAttribute(ariaHidden);
+  element.setAttribute(ariaModal, true);
+  element.setAttribute('role', 'dialog');
+
+  if (triggers.length) {
+    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, true));
+  }
 
   shownOffcanvasEvent.relatedTarget = related || null;
   element.dispatchEvent(shownOffcanvasEvent);
@@ -94,14 +105,17 @@ function showOffcanvasComplete(self, related) {
 
 function hideOffcanvasComplete(self, related) {
   const { element, options, triggers } = self;
-  element.setAttribute('aria-hidden', true);
-  element.removeAttribute('aria-modal');
+  element.setAttribute(ariaHidden, true);
+  element.removeAttribute(ariaModal);
   element.removeAttribute('role');
   element.style.visibility = 'hidden';
 
-  if (triggers.length) setFocus(triggers[0]);
-  hiddenOffcanvasEvent.relatedTarget = related || null;
+  if (triggers.length) {
+    setFocus(triggers[0]);
+    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, false));
+  }
 
+  hiddenOffcanvasEvent.relatedTarget = related || null;
   element.dispatchEvent(hiddenOffcanvasEvent);
   removeClass(element, offcanvasTogglingClass);
 
@@ -189,9 +203,6 @@ export default class Offcanvas extends BaseComponent {
     }
 
     addClass(element, offcanvasTogglingClass);
-    element.removeAttribute('aria-hidden');
-    element.setAttribute('aria-modal', true);
-    element.setAttribute('role', 'dialog');
     addClass(element, showClass);
 
     toggleOffCanvasDismiss(1);

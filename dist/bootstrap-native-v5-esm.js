@@ -1382,6 +1382,8 @@ const dropdownInit = {
 
 const ariaHidden = 'aria-hidden';
 
+const ariaModal = 'aria-modal';
+
 const fixedTopClass = 'fixed-top';
 
 const fixedBottomClass = 'fixed-bottom';
@@ -1457,7 +1459,6 @@ const modalDefaultOptions = {
 const modalOpenClass = `${modalString}-open`;
 const modalBackdropClass = `${modalString}-backdrop`;
 const modalStaticClass = `${modalString}-static`;
-const ariaModal = `aria-${modalString}`;
 
 // MODAL CUSTOM EVENTS
 // ===================
@@ -1833,8 +1834,16 @@ function offcanvasKeyDismissHandler({ which }) {
 }
 
 function showOffcanvasComplete(self, related) {
-  const { element } = self;
+  const { element, triggers } = self;
   removeClass(element, offcanvasTogglingClass);
+
+  element.removeAttribute(ariaHidden);
+  element.setAttribute(ariaModal, true);
+  element.setAttribute('role', 'dialog');
+
+  if (triggers.length) {
+    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, true));
+  }
 
   shownOffcanvasEvent.relatedTarget = related || null;
   element.dispatchEvent(shownOffcanvasEvent);
@@ -1844,14 +1853,17 @@ function showOffcanvasComplete(self, related) {
 
 function hideOffcanvasComplete(self, related) {
   const { element, options, triggers } = self;
-  element.setAttribute('aria-hidden', true);
-  element.removeAttribute('aria-modal');
+  element.setAttribute(ariaHidden, true);
+  element.removeAttribute(ariaModal);
   element.removeAttribute('role');
   element.style.visibility = 'hidden';
 
-  if (triggers.length) setFocus(triggers[0]);
-  hiddenOffcanvasEvent.relatedTarget = related || null;
+  if (triggers.length) {
+    setFocus(triggers[0]);
+    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, false));
+  }
 
+  hiddenOffcanvasEvent.relatedTarget = related || null;
   element.dispatchEvent(hiddenOffcanvasEvent);
   removeClass(element, offcanvasTogglingClass);
 
@@ -1939,9 +1951,6 @@ class Offcanvas extends BaseComponent {
     }
 
     addClass(element, offcanvasTogglingClass);
-    element.removeAttribute('aria-hidden');
-    element.setAttribute('aria-modal', true);
-    element.setAttribute('role', 'dialog');
     addClass(element, showClass);
 
     toggleOffCanvasDismiss(1);
@@ -2006,23 +2015,20 @@ function closestRelative(element) {
   return retval;
 }
 
-// both popovers and tooltips (target,tooltip,options,event)
-// export default function styleTip(target, tip, options, e) {
+// both popovers and tooltips (this, event)
 function styleTip(self, e) {
   const tipClasses = /\b(top|bottom|start|end)+/;
   const tip = self.tooltip || self.popover;
   // reset tip style
-  tip.style.top = 0;
-  tip.style.left = 0;
+  tip.style.top = '';
+  tip.style.left = '';
   tip.style.right = '';
-  // reflow tip to prevent incorrect position determination
-  reflow(tip);
   // continue with metrics
-  const isPopover = self.popover instanceof Element;
-  const tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
+  const isPopover = !!self.popover;
+  let tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
   const windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
   const windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
-  const { element, options } = self;
+  const { element, options, arrow } = self;
   let { container, placement } = options;
   let parentIsBody = container === document.body;
   const targetPosition = getComputedStyle(element).position;
@@ -2045,14 +2051,11 @@ function styleTip(self, e) {
   const scroll = parentIsBody
     ? { x: window.pageXOffset, y: window.pageYOffset }
     : { x: container.scrollLeft, y: container.scrollTop };
-  const elemDimensions = {
-    w: targetRect.right - targetRect.left,
-    h: targetRect.bottom - targetRect.top,
-  };
+  const elemDimensions = { w: element.offsetWidth, h: element.offsetHeight };
   const top = relativeParent ? element.offsetTop : targetRect.top;
   const left = relativeParent ? element.offsetLeft : targetRect.left;
-  const [arrow] = tip.getElementsByClassName(`${isPopover ? 'popover' : 'tooltip'}-arrow`);
   // reset arrow style
+  arrow.style.top = '';
   arrow.style.left = '';
   arrow.style.right = '';
   let topPosition;
@@ -2063,10 +2066,10 @@ function styleTip(self, e) {
   let arrowRight;
 
   // check placement
-  let topExceed = placement === 'top' && targetRect.top - tipDimensions.h < 0;
-  let bottomExceed = placement === 'bottom' && targetRect.top + tipDimensions.h + elemDimensions.h >= windowHeight;
-  let leftExceed = placement === 'left' && targetRect.left - tipDimensions.w < leftBoundry;
-  let rightExceed = placement === 'right' && targetRect.left + tipDimensions.w + elemDimensions.w >= rightBoundry;
+  let topExceed = targetRect.top - tipDimensions.h < 0;
+  let bottomExceed = targetRect.top + tipDimensions.h + elemDimensions.h >= windowHeight;
+  let leftExceed = targetRect.left - tipDimensions.w < leftBoundry;
+  let rightExceed = targetRect.left + tipDimensions.w + elemDimensions.w >= rightBoundry;
 
   topExceed = ['left', 'right'].includes(placement)
     ? targetRect.top + elemDimensions.h / 2 - tipDimensions.h / 2 < 0
@@ -2090,14 +2093,15 @@ function styleTip(self, e) {
   placement = placement === 'right' && rightExceed ? 'left' : placement;
 
   // update tooltip/popover class
-  if (tip.className.indexOf(placement) === -1) {
+  if (!tip.className.includes(placement)) {
     tip.className = tip.className.replace(tipClasses, tipClassPositions[placement]);
   }
+  // if position has changed, update tip dimensions
+  tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
 
   // we check the computed width & height and update here
-  const arrowWidth = arrow ? arrow.offsetWidth : 0;
-  const arrowHeight = arrow ? arrow.offsetHeight : 0;
-  // const arrowAdjust = (isPopover ? arrowWidth * 0.8 : arrowWidth / 2);
+  const arrowWidth = arrow.offsetWidth || 0;
+  const arrowHeight = arrow.offsetHeight || 0;
   const arrowAdjust = arrowWidth / 2;
 
   // compute tooltip / popover coordinates
@@ -2117,7 +2121,6 @@ function styleTip(self, e) {
       arrowTop = tipDimensions.h - elemDimensions.h / 2 - arrowWidth;
     } else {
       topPosition = top + scroll.y - tipDimensions.h / 2 + elemDimensions.h / 2;
-      // arrowTop = tipDimensions.h / 2 - (isPopover ? arrowHeight * 0.9 : arrowHeight / 2);
       arrowTop = tipDimensions.h / 2 - arrowHeight / 2;
     }
   } else if (['top', 'bottom'].includes(placement)) {
@@ -2169,7 +2172,6 @@ function styleTip(self, e) {
   tip.style.top = `${topPosition}px`;
   tip.style.left = leftPosition === 'auto' ? leftPosition : `${leftPosition}px`;
   tip.style.right = rightPosition !== undefined ? `${rightPosition}px` : '';
-  reflow(tip);
   // update arrow placement or clear side
   if (arrowTop !== undefined) {
     arrow.style.top = `${arrowTop}px`;
@@ -2295,6 +2297,9 @@ function createPopover(self) {
   const popoverHeader = queryElement(`.${popoverHeaderClass}`, popover);
   const popoverBody = queryElement(`.${popoverBodyClass}`, popover);
 
+  // set arrow
+  self.arrow = queryElement(`.${popoverString}-arrow`, popover);
+
   // set dismissible button
   if (dismissible) {
     title = title ? title + popoverCloseButton : title;
@@ -2385,6 +2390,7 @@ class Popover extends BaseComponent {
     // additional instance properties
     self.timer = null;
     self.popover = null;
+    self.arrow = null;
     self.enabled = false;
     // set unique ID for aria-describedby
     self.id = `${popoverString}-${getUID(element)}`;
@@ -2444,7 +2450,7 @@ class Popover extends BaseComponent {
         container.appendChild(popover);
         element.setAttribute(ariaDescribedBy, id);
 
-        self.update();
+        self.update(e);
         if (!hasClass(popover, showClass)) addClass(popover, showClass);
 
         if (options.animation) emulateTransitionEnd(popover, () => popoverShowTrigger(self));
@@ -2681,6 +2687,11 @@ class ScrollSpy extends BaseComponent {
   // ========================
   refresh() {
     const self = this;
+    const { target } = self;
+
+    // check if target is visible and invalidate
+    if (target.offsetHeight === 0) return;
+
     updateSpyTargets(self);
 
     const {
@@ -2696,7 +2707,7 @@ class ScrollSpy extends BaseComponent {
       return;
     }
 
-    const { target, offsets } = self;
+    const { offsets } = self;
 
     if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
       self.activeItem = null;
@@ -3136,6 +3147,9 @@ function createTooltip(self) {
 
   queryElement(`.${tooltipInnerClass}`, tooltip).innerHTML = titleString;
 
+  // set arrow
+  self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
+
   // set class and role attribute
   tooltip.setAttribute('role', tooltipString);
   // set classes
@@ -3222,6 +3236,7 @@ class Tooltip extends BaseComponent {
 
     // additional properties
     self.tooltip = null;
+    self.arrow = null;
     self.timer = null;
     self.enabled = false;
 
@@ -3272,7 +3287,7 @@ class Tooltip extends BaseComponent {
         options.container.appendChild(tooltip);
         element.setAttribute(ariaDescribedBy, id);
 
-        self.update();
+        self.update(e);
         if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
         if (options.animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
         else tooltipShownAction(self);
@@ -3336,8 +3351,9 @@ class Tooltip extends BaseComponent {
   }
 
   toggleEnabled() {
-    if (!this.enabled) this.enable();
-    else this.disable();
+    const self = this;
+    if (!self.enabled) self.enable();
+    else self.disable();
   }
 
   dispose() {
@@ -3404,7 +3420,7 @@ var indexV5 = {
   Collapse,
   Dropdown,
   Modal,
-  OffCanvas: Offcanvas,
+  Offcanvas,
   Popover,
   ScrollSpy,
   Tab,
