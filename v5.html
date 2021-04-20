@@ -64,11 +64,11 @@
     </header>
 
     <div id="myCarousel" class="carousel slide mb-0 mb-md-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover" data-bs-keyboard="true">
-      <ol class="carousel-indicators">
-        <li aria-label="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
-        <li aria-label="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
-        <li aria-label="Why BSN?" data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
-      </ol>
+      <div class="carousel-indicators">
+        <button aria-label="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></button>
+        <button aria-label="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></button>
+        <button aria-label="Why BSN?" data-bs-target="#myCarousel" data-bs-slide-to="2"></button>
+      </div>
       <div class="carousel-inner" role="listbox">
         <div class="carousel-item active">
           <div class="item-bg bg-warning"></div>
@@ -617,11 +617,11 @@ var myButtonINIT = myButton.Button;
 <pre><code class="language-markup">&lt;!-- the Carousel component --&gt;
 &lt;div id="myCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-touch="true" data-bs-pause="hover"&gt;
   &lt;!-- Indicators --&gt;
-  &lt;ol class="carousel-indicators"&gt;
-    &lt;li data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"&gt;&lt;/li&gt;
-    &lt;li data-bs-target="#myCarousel" data-bs-slide-to="1"&gt;&lt;/li&gt;
-    &lt;li data-bs-target="#myCarousel" data-bs-slide-to="2"&gt;&lt;/li&gt;
-  &lt;/ol&gt;
+  &lt;div class="carousel-indicators"&gt;
+    &lt;button data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"&gt;&lt;/button&gt;
+    &lt;button data-bs-target="#myCarousel" data-bs-slide-to="1"&gt;&lt;/button&gt;
+    &lt;button data-bs-target="#myCarousel" data-bs-slide-to="2"&gt;&lt;/button&gt;
+  &lt;/div&gt;
   &lt;!-- Wrapper for slides --&gt;
   &lt;div class="carousel-inner"&gt;
     &lt;div class="carousel-item active"&gt;
@@ -670,15 +670,13 @@ var myButtonINIT = myButton.Button;
                   this setting has no effect;</li>
                 <li><code>data-bs-touch="true"</code> is the attribute you can set to enable touch support for your carousel,
                   however, you must have at least 3 <code>.carousel-item</code> elements in order to work;</li>
-                <li><code>data-bs-slide-to="0"</code> is an attribute used by <code>.carousel-indicators</code> elements, BSN 
-                  does not require this attribute in order to work, it will simply look into elements of the 
-                  <code>.carousel-indicators</code>; when clicked will slide to the carousel item with the same index, 
-                  0 (zero) in this case;</li>
+                <li><code>data-bs-slide-to="0"</code> is an attribute used by <code>.carousel-indicators</code> elements; when
+                  clicked will slide to the carousel item with the same index, 0 (zero) in this case;</li>
                 <li><code>data-bs-slide="prev"</code> / <code>data-bs-slide="next"</code> when clicked, will slide to the next /
                   previous carousel item; these attributes are <b>optional</b>, but the class <code>carousel-control</code> is
                   <b>required</b>;</li>
-                <li><code>href="#myCarousel"</code> attribute is not required for the next and previous controls; we will see
-                  in the example below why now and how to do it with BSN;</li>
+                <li><code>href="#myCarousel"</code> / <code>data-bs-target="#myCarousel"</code> attributes are not required
+                  for any of the Carousel controls; we will see in the example below why and how to do it with BSN;</li>
                 <li><code>class="carousel-item active"</code> / <code>class="active"</code> when <em>active</em> class is 
                   present for a carousel item or indicator, that indicates which carousel item is currently shown to the user, 
                   the above <code>.getActiveIndex()</code> method will look for it when needed.</li>
@@ -757,11 +755,11 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
               <div class="thumbnail">
                 <div id="carouselGenericExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
                   <!-- Indicators -->
-                  <ol class="carousel-indicators">
-                    <li data-bs-target="#carouselGenericExample" data-bs-slide-to="0"></li>
-                    <li data-bs-target="#carouselGenericExample" data-bs-slide-to="1"></li>
-                    <li data-bs-target="#carouselGenericExample" data-bs-slide-to="2"></li>
-                  </ol>
+                  <div class="carousel-indicators">
+                    <button data-bs-target="#carouselGenericExample" data-bs-slide-to="0"></button>
+                    <button data-bs-target="#carouselGenericExample" data-bs-slide-to="1"></button>
+                    <button data-bs-target="#carouselGenericExample" data-bs-slide-to="2"></button>
+                  </div>
                   <!-- Wrapper for slides -->
                   <div class="carousel-inner" role="listbox">
                     <div class="carousel-item">

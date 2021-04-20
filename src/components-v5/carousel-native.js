@@ -103,27 +103,28 @@ function carouselResumeHandler(e) {
 
 function carouselIndicatorHandler(e) {
   e.preventDefault();
-  const eventTarget = e.target; // event target | the current active item
-  const self = eventTarget.closest(carouselSelector)[carouselComponent];
-  const newIndex = eventTarget.getAttribute(dataBsSlideTo);
+  const { target } = e;
+  const self = target.closest(carouselSelector)[carouselComponent];
 
   if (self.isAnimating) return;
 
-  if (eventTarget && !hasClass(eventTarget, activeClass) // event target is not active
+  const newIndex = target.getAttribute(dataBsSlideTo);
+
+  if (target && !hasClass(target, activeClass) // event target is not active
     && newIndex) { // AND has the specific attribute
     self.to(+newIndex); // do the slide
   }
 }
 
 function carouselControlsHandler(e) {
-  const eventTarget = e.currentTarget || e.srcElement;
-  const self = eventTarget.closest(carouselSelector)[carouselComponent];
-  const { controls } = self;
   e.preventDefault();
+  const that = this;
+  const self = that.closest(carouselSelector)[carouselComponent];
+  const { controls } = self;
 
-  if (controls[1] && eventTarget === controls[1]) {
+  if (controls[1] && that === controls[1]) {
     self.next();
-  } else if (controls[1] && eventTarget === controls[0]) {
+  } else if (controls[1] && that === controls[0]) {
     self.prev();
   }
 }
@@ -163,14 +164,15 @@ function carouselTouchDownHandler(e) {
 }
 
 function carouselTouchMoveHandler(e) {
+  const { changedTouches, type } = e;
   const self = this[carouselComponent];
 
   if (!self || !self.isTouch) { return; }
 
-  currentX = e.changedTouches[0].pageX;
+  currentX = changedTouches[0].pageX;
 
   // cancel touch if more than one changedTouches detected
-  if (e.type === 'touchmove' && e.changedTouches.length > 1) {
+  if (type === 'touchmove' && changedTouches.length > 1) {
     e.preventDefault();
   }
 }
@@ -287,7 +289,7 @@ export default class Carousel extends BaseComponent {
 
     // a LIVE collection is prefferable
     self.indicator = queryElement('.carousel-indicators', element);
-    self.indicators = (self.indicator && self.indicator.getElementsByTagName('LI')) || [];
+    self.indicators = (self.indicator && self.indicator.querySelectorAll(`[${dataBsSlideTo}]`)) || [];
 
     // set JavaScript and DATA API options
     const { options } = self;
