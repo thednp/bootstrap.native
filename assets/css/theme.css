@@ -176,6 +176,16 @@ nav.border-bottom {
   bottom: 100%;
 }
 
+.dropend .dropdown-menu {
+  left: 100%;
+  right: auto;
+}
+
+.dropstart .dropdown-menu {
+  left: auto;
+  right: 100%;
+}
+
 /* .dropstart .dropdown-menu,
 .dropend .dropdown-menu {
   top: -1px;
