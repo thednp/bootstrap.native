@@ -90,7 +90,7 @@ declare module "bootstrap.native/dist/components/collapse-native.esm.js" {
 
 declare module "bootstrap.native/src/components/dropdown-native.js" {
   export default class Dropdown {
-    constructor(element: SelectorOrReference, persist?: boolean);
+    constructor(element: SelectorOrReference, options?: DropdownOptions);
 
     show(): void;
 
@@ -100,6 +100,14 @@ declare module "bootstrap.native/src/components/dropdown-native.js" {
 
     dispose(): void;
   }
+
+  export interface DropdownOptions {
+    /** @default dynamic */
+    display?: string;
+
+    /** @default 5 */
+    offset?: number;
+  }  
 }
 
 declare module "bootstrap.native/dist/components/dropdown-native.esm.js" {

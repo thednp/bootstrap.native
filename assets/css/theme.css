@@ -166,9 +166,13 @@ nav.border-bottom {
 }
 
 /* DROPDOWN */
-.dropdown-menu-end {
+/* .dropdown-menu-end {
   right: 0;
   left: auto;
+} */
+
+/* .dropdown .dropdown-menu {
+  top: 100%;
 }
 
 .dropup .dropdown-menu {
@@ -184,7 +188,7 @@ nav.border-bottom {
 .dropstart .dropdown-menu {
   left: auto;
   right: 100%;
-}
+} */
 
 /* .dropstart .dropdown-menu,
 .dropend .dropdown-menu {

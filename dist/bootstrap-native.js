@@ -1069,8 +1069,10 @@
     } = self;
     const parent = element.parentElement;
 
-    // reset menu offset
-    menu.style.margin = '';
+    // reset menu offset and position
+    const resetProps = ['margin', 'top', 'bottom', 'left', 'right'];
+    resetProps.forEach((p) => { menu.style[p] = ''; });
+    removeClass(parent, 'position-static');
 
     if (!show) {
       parent.className = originalClass.join(' ');
@@ -1081,11 +1083,20 @@
 
     const { offset } = options;
     let positionClass = dropdownMenuClasses.find((c) => originalClass.includes(c));
-    let margin = {
+
+    let dropdownMargin = {
       dropdown: [offset, 0, 0],
       dropup: [0, 0, offset],
       dropstart: [-1, offset, 0],
       dropend: [-1, 0, 0, offset],
+    };
+
+    const dropdownPosition = {
+      dropdown: { top: '100%' },
+      dropup: { top: 'auto', bottom: '100%' },
+      dropstart: { left: 'auto', right: '100%' },
+      dropend: { left: '100%', right: 'auto' },
+      menuEnd: { right: 0, left: 'auto' },
     };
 
     // force showing the menu to calculate its size
@@ -1137,8 +1148,11 @@
     }
 
     // set spacing
-    margin = margin[positionClass];
-    menu.style.margin = `${margin.map((x) => (x ? `${x}px` : x)).join(' ')}`;
+    dropdownMargin = dropdownMargin[positionClass];
+    menu.style.margin = `${dropdownMargin.map((x) => (x ? `${x}px` : x)).join(' ')}`;
+    Object.keys(dropdownPosition[positionClass]).forEach((position) => {
+      menu.style[position] = dropdownPosition[positionClass][position];
+    });
 
     // update dropdown position class
     if (!hasClass(parent, positionClass)) {
@@ -1152,6 +1166,12 @@
 
       if (!btnGroup) menuEndAction(menu, dropdownMenuEndClass);
       else if (leftExceed) addClass(parent, 'position-static');
+
+      if (hasClass(menu, dropdownMenuEndClass)) {
+        Object.keys(dropdownPosition.menuEnd).forEach((p) => {
+          menu.style[p] = dropdownPosition.menuEnd[p];
+        });
+      }
     }
 
     // remove util classes from the menu, we have its size
