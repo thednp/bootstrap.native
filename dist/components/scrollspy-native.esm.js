@@ -1,17 +1,17 @@
 /*!
-  * Native JavaScript for Bootstrap ScrollSpy v3.0.15-alpha2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap ScrollSpy v3.0.15 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
-var addEventListener = 'addEventListener';
+const addEventListener = 'addEventListener';
 
-var removeEventListener = 'removeEventListener';
+const removeEventListener = 'removeEventListener';
 
-var supportPassive = (function () {
-  var result = false;
+const supportPassive = (() => {
+  let result = false;
   try {
-    var opts = Object.defineProperty({}, 'passive', {
-      get: function get() {
+    const opts = Object.defineProperty({}, 'passive', {
+      get() {
         result = true;
         return result;
       },
@@ -31,15 +31,29 @@ var supportPassive = (function () {
 var passiveHandler = supportPassive ? { passive: true } : false;
 
 function queryElement(selector, parent) {
-  var lookUp = parent && parent instanceof Element ? parent : document;
+  const lookUp = parent && parent instanceof Element ? parent : document;
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }
 
-function bootstrapCustomEvent(eventType, componentName, eventProperties) {
-  var OriginalCustomEvent = new CustomEvent((eventType + ".bs." + componentName), { cancelable: true });
+function addClass(element, classNAME) {
+  element.classList.add(classNAME);
+}
 
-  if (typeof eventProperties !== 'undefined') {
-    Object.keys(eventProperties).forEach(function (key) {
+function hasClass(element, classNAME) {
+  return element.classList.contains(classNAME);
+}
+
+function removeClass(element, classNAME) {
+  element.classList.remove(classNAME);
+}
+
+const activeClass = 'active';
+
+function bootstrapCustomEvent(namespacedEventType, eventProperties) {
+  const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+
+  if (eventProperties instanceof Object) {
+    Object.keys(eventProperties).forEach((key) => {
       Object.defineProperty(OriginalCustomEvent, key, {
         value: eventProperties[key],
       });
@@ -48,197 +62,276 @@ function bootstrapCustomEvent(eventType, componentName, eventProperties) {
   return OriginalCustomEvent;
 }
 
-function dispatchCustomEvent(customEvent) {
-  if (this) { this.dispatchEvent(customEvent); }
+function normalizeValue(value) {
+  if (value === 'true') {
+    return true;
+  }
+
+  if (value === 'false') {
+    return false;
+  }
+
+  if (!Number.isNaN(+value)) {
+    return +value;
+  }
+
+  if (value === '' || value === 'null') {
+    return null;
+  }
+
+  // string / function / Element / Object
+  return value;
 }
 
-// Popover, Tooltip & ScrollSpy
-function getScroll() {
-  return {
-    y: window.pageYOffset || document.documentElement.scrollTop,
-    x: window.pageXOffset || document.documentElement.scrollLeft,
-  };
+function normalizeOptions(element, defaultOps, inputOps, ns) {
+  const normalOps = {};
+  const dataOps = {};
+  const data = { ...element.dataset };
+
+  Object.keys(data)
+    .forEach((k) => {
+      const key = k.includes(ns)
+        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+        : k;
+
+      dataOps[key] = normalizeValue(data[k]);
+    });
+
+  Object.keys(inputOps)
+    .forEach((k) => {
+      inputOps[k] = normalizeValue(inputOps[k]);
+    });
+
+  Object.keys(defaultOps)
+    .forEach((k) => {
+      if (k in inputOps) {
+        normalOps[k] = inputOps[k];
+      } else if (k in dataOps) {
+        normalOps[k] = dataOps[k];
+      } else {
+        normalOps[k] = defaultOps[k];
+      }
+    });
+
+  return normalOps;
+}
+
+/* Native JavaScript for Bootstrap 5 | Base Component
+----------------------------------------------------- */
+
+class BaseComponent {
+  constructor(name, target, defaults, config) {
+    const self = this;
+    const element = queryElement(target);
+
+    if (element[name]) element[name].dispose();
+    self.element = element;
+
+    if (defaults && Object.keys(defaults).length) {
+      self.options = normalizeOptions(element, defaults, (config || {}), 'bs');
+    }
+    element[name] = self;
+  }
+
+  dispose(name) {
+    const self = this;
+    self.element[name] = null;
+    Object.keys(self).forEach((prop) => { self[prop] = null; });
+  }
 }
 
 /* Native JavaScript for Bootstrap 5 | ScrollSpy
 ------------------------------------------------ */
 
-// SCROLLSPY DEFINITION
+// SCROLLSPY PRIVATE GC
 // ====================
+const scrollspyString = 'scrollspy';
+const scrollspyComponent = 'ScrollSpy';
+const scrollspySelector = '[data-bs-spy="scroll"]';
+const scrollSpyDefaultOptions = {
+  offset: 10,
+  target: null,
+};
 
-function ScrollSpy(elem, opsInput) {
-  var element;
+// SCROLLSPY CUSTOM EVENT
+// ======================
+const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`);
 
-  // set options
-  var options = opsInput || {};
+// SCROLLSPY PRIVATE METHODS
+// =========================
+function updateSpyTargets(self) {
+  const {
+    target, scrollTarget, isWindow, options, itemsLength, scrollHeight,
+  } = self;
+  const { offset } = options;
+  const links = target.getElementsByTagName('A');
 
-  // bind
-  var self = this;
+  self.scrollTop = isWindow
+    ? scrollTarget.pageYOffset
+    : scrollTarget.scrollTop;
 
-  // GC internals
-  var vars;
-  var links;
+  // only update items/offsets once or with each mutation
+  if (itemsLength !== links.length || getScrollHeight(scrollTarget) !== scrollHeight) {
+    let href;
+    let targetItem;
+    let rect;
 
-  // targets
-  var spyTarget;
-  // determine which is the real scrollTarget
-  var scrollTarget;
-  // options
-  var ops = {};
+    // reset arrays & update
+    self.items = [];
+    self.offsets = [];
+    self.scrollHeight = getScrollHeight(scrollTarget);
+    self.maxScroll = self.scrollHeight - getOffsetHeight(self);
 
-  // private methods
-  // populate items and targets
-  function updateTargets() {
-    links = spyTarget.getElementsByTagName('A');
+    Array.from(links).forEach((link) => {
+      href = link.getAttribute('href');
+      targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
 
-    vars.scrollTop = vars.isWindow ? getScroll().y : element.scrollTop;
-
-    // only update vars once or with each mutation
-    if (vars.length !== links.length || getScrollHeight() !== vars.scrollHeight) {
-      var href;
-      var targetItem;
-      var rect;
-
-      // reset arrays & update
-      vars.items = [];
-      vars.offsets = [];
-      vars.scrollHeight = getScrollHeight();
-      vars.maxScroll = vars.scrollHeight - getOffsetHeight();
-
-      Array.from(links).forEach(function (link) {
-        href = link.getAttribute('href');
-        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
-
-        if (targetItem) {
-          vars.items.push(link);
-          rect = targetItem.getBoundingClientRect();
-          vars.offsets.push((vars.isWindow
-            ? rect.top + vars.scrollTop
-            : targetItem.offsetTop) - ops.offset);
-        }
-      });
-      vars.length = vars.items.length;
-    }
-  }
-  // item update
-  function toggleEvents(add) {
-    var action = add ? 'addEventListener' : 'removeEventListener';
-    scrollTarget[action]('scroll', self.refresh, passiveHandler);
-    window[action]('resize', self.refresh, passiveHandler);
-  }
-  function getScrollHeight() {
-    return scrollTarget.scrollHeight || Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight
-    );
-  }
-  function getOffsetHeight() {
-    return !vars.isWindow ? element.getBoundingClientRect().height : window.innerHeight;
-  }
-  function clear() {
-    Array.from(links).map(function (item) { return item.classList.contains('active') && item.classList.remove('active'); });
-  }
-  function activate(input) {
-    var item = input;
-    var itemClassList;
-    clear();
-    vars.activeItem = item;
-    item.classList.add('active');
-
-    // activate all parents
-    var parents = [];
-    while (item.parentNode !== document.body) {
-      item = item.parentNode;
-      itemClassList = item.classList;
-
-      if (itemClassList.contains('dropdown-menu') || itemClassList.contains('nav')) { parents.push(item); }
-    }
-
-    parents.forEach(function (menuItem) {
-      var parentLink = menuItem.previousElementSibling;
-
-      if (parentLink && !parentLink.classList.contains('active')) {
-        parentLink.classList.add('active');
+      if (targetItem) {
+        self.items.push(link);
+        rect = targetItem.getBoundingClientRect();
+        self.offsets.push((isWindow ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
       }
     });
+    self.itemsLength = self.items.length;
+  }
+}
 
-    dispatchCustomEvent.call(element, bootstrapCustomEvent('activate', 'scrollspy', { relatedTarget: vars.activeItem }));
+function getScrollHeight(scrollTarget) {
+  return scrollTarget.scrollHeight || Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+  );
+}
+
+function getOffsetHeight({ element, isWindow }) {
+  if (!isWindow) return element.getBoundingClientRect().height;
+  return window.innerHeight;
+}
+
+function clear(target) {
+  Array.from(target.getElementsByTagName('A')).forEach((item) => {
+    if (hasClass(item, activeClass)) removeClass(item, activeClass);
+  });
+}
+
+function activate(self, item) {
+  const { target, element } = self;
+  clear(target);
+  self.activeItem = item;
+  addClass(item, activeClass);
+
+  // activate all parents
+  const parents = [];
+  let parentItem = item;
+  while (parentItem !== document.body) {
+    parentItem = parentItem.parentNode;
+    if (hasClass(parentItem, 'nav') || hasClass(parentItem, 'dropdown-menu')) parents.push(parentItem);
   }
 
-  // public method
-  self.refresh = function () {
-    updateTargets();
+  parents.forEach((menuItem) => {
+    const parentLink = menuItem.previousElementSibling;
 
-    if (vars.scrollTop >= vars.maxScroll) {
-      var newActiveItem = vars.items[vars.length - 1];
-
-      if (vars.activeItem !== newActiveItem) {
-        activate(newActiveItem);
-      }
-
-      return;
+    if (parentLink && !hasClass(parentLink, activeClass)) {
+      addClass(parentLink, activeClass);
     }
+  });
 
-    if (vars.activeItem && vars.scrollTop < vars.offsets[0] && vars.offsets[0] > 0) {
-      vars.activeItem = null;
-      clear();
-      return;
-    }
-
-    var i = vars.length;
-    while (i > -1) {
-      if (vars.activeItem !== vars.items[i] && vars.scrollTop >= vars.offsets[i]
-        && (typeof vars.offsets[i + 1] === 'undefined' || vars.scrollTop < vars.offsets[i + 1])) {
-        activate(vars.items[i]);
-      }
-      i -= 1;
-    }
-  };
-  self.dispose = function () {
-    toggleEvents();
-    delete element.ScrollSpy;
-  };
-
-  // init
-  // initialization element, the element we spy on
-  element = queryElement(elem);
-
-  // reset on re-init
-  if (element.ScrollSpy) { element.ScrollSpy.dispose(); }
-
-  // event targets, constants
-  // DATA API
-  var targetData = element.getAttribute('data-target');
-  var offsetData = element.getAttribute('data-offset');
-
-  // targets
-  spyTarget = queryElement(options.target || targetData);
-
-  // determine which is the real scrollTarget
-  scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
-
-  if (!spyTarget) { return; }
-
-  // set instance option
-  ops.offset = +(options.offset || offsetData) || 10;
-
-  // set instance priority variables
-  vars = {};
-  vars.length = 0;
-  vars.items = [];
-  vars.offsets = [];
-  vars.isWindow = scrollTarget === window;
-  vars.activeItem = null;
-  vars.scrollHeight = 0;
-  vars.maxScroll = 0;
-
-  // prevent adding event handlers twice
-  if (!element.ScrollSpy) { toggleEvents(1); }
-
-  self.refresh();
-
-  // associate target with init object
-  element.ScrollSpy = self;
+  // update relatedTarget and dispatch
+  activateScrollSpy.relatedTarget = item;
+  element.dispatchEvent(activateScrollSpy);
 }
+
+function toggleSpyHandlers(self, add) {
+  const action = add ? addEventListener : removeEventListener;
+  self.scrollTarget[action]('scroll', self.refresh, passiveHandler);
+}
+
+// SCROLLSPY DEFINITION
+// ====================
+class ScrollSpy extends BaseComponent {
+  constructor(target, config) {
+    super(scrollspyComponent, target, scrollSpyDefaultOptions, config);
+    // bind
+    const self = this;
+
+    // initialization element & options
+    const { element, options } = self;
+
+    // additional properties
+    self.target = queryElement(options.target);
+
+    // invalidate
+    if (!self.target) return;
+
+    // set initial state
+    self.scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
+    self.isWindow = self.scrollTarget === window;
+    self.scrollTop = 0;
+    self.maxScroll = 0;
+    self.scrollHeight = 0;
+    self.activeItem = null;
+    self.items = [];
+    self.offsets = [];
+
+    // bind events
+    self.refresh = self.refresh.bind(self);
+
+    // add event handlers
+    toggleSpyHandlers(self, 1);
+
+    self.refresh();
+  }
+
+  // SCROLLSPY PUBLIC METHODS
+  // ========================
+  refresh() {
+    const self = this;
+    const { target } = self;
+
+    // check if target is visible and invalidate
+    if (target.offsetHeight === 0) return;
+
+    updateSpyTargets(self);
+
+    const {
+      scrollTop, maxScroll, itemsLength, items, activeItem,
+    } = self;
+
+    if (scrollTop >= maxScroll) {
+      const newActiveItem = items[itemsLength - 1];
+
+      if (activeItem !== newActiveItem) {
+        activate(self, newActiveItem);
+      }
+      return;
+    }
+
+    const { offsets } = self;
+
+    if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
+      self.activeItem = null;
+      clear(target);
+      return;
+    }
+
+    items.forEach((item, i) => {
+      if (activeItem !== item && scrollTop >= offsets[i]
+        && (typeof offsets[i + 1] === 'undefined' || scrollTop < offsets[i + 1])) {
+        activate(self, item);
+      }
+    });
+  }
+
+  dispose() {
+    toggleSpyHandlers(this);
+    super.dispose(scrollspyComponent);
+  }
+}
+
+ScrollSpy.init = {
+  component: scrollspyComponent,
+  selector: scrollspySelector,
+  constructor: ScrollSpy,
+};
 
 export default ScrollSpy;

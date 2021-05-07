@@ -2,185 +2,204 @@
 ------------------------------------------------ */
 import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
 import queryElement from 'shorter-js/src/misc/queryElement.js';
+import addClass from 'shorter-js/src/class/addClass.js';
+import hasClass from 'shorter-js/src/class/hasClass.js';
+import removeClass from 'shorter-js/src/class/removeClass.js';
+import addEventListener from 'shorter-js/src/strings/addEventListener.js';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+
+import activeClass from '../strings/activeClass.js';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
-import getScroll from '../util/getScroll.js';
+import BaseComponent from './base-component.js';
+
+// SCROLLSPY PRIVATE GC
+// ====================
+const scrollspyString = 'scrollspy';
+const scrollspyComponent = 'ScrollSpy';
+const scrollspySelector = '[data-bs-spy="scroll"]';
+const scrollSpyDefaultOptions = {
+  offset: 10,
+  target: null,
+};
+
+// SCROLLSPY CUSTOM EVENT
+// ======================
+const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`);
+
+// SCROLLSPY PRIVATE METHODS
+// =========================
+function updateSpyTargets(self) {
+  const {
+    target, scrollTarget, isWindow, options, itemsLength, scrollHeight,
+  } = self;
+  const { offset } = options;
+  const links = target.getElementsByTagName('A');
+
+  self.scrollTop = isWindow
+    ? scrollTarget.pageYOffset
+    : scrollTarget.scrollTop;
+
+  // only update items/offsets once or with each mutation
+  if (itemsLength !== links.length || getScrollHeight(scrollTarget) !== scrollHeight) {
+    let href;
+    let targetItem;
+    let rect;
+
+    // reset arrays & update
+    self.items = [];
+    self.offsets = [];
+    self.scrollHeight = getScrollHeight(scrollTarget);
+    self.maxScroll = self.scrollHeight - getOffsetHeight(self);
+
+    Array.from(links).forEach((link) => {
+      href = link.getAttribute('href');
+      targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
+
+      if (targetItem) {
+        self.items.push(link);
+        rect = targetItem.getBoundingClientRect();
+        self.offsets.push((isWindow ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
+      }
+    });
+    self.itemsLength = self.items.length;
+  }
+}
+
+function getScrollHeight(scrollTarget) {
+  return scrollTarget.scrollHeight || Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+  );
+}
+
+function getOffsetHeight({ element, isWindow }) {
+  if (!isWindow) return element.getBoundingClientRect().height;
+  return window.innerHeight;
+}
+
+function clear(target) {
+  Array.from(target.getElementsByTagName('A')).forEach((item) => {
+    if (hasClass(item, activeClass)) removeClass(item, activeClass);
+  });
+}
+
+function activate(self, item) {
+  const { target, element } = self;
+  clear(target);
+  self.activeItem = item;
+  addClass(item, activeClass);
+
+  // activate all parents
+  const parents = [];
+  let parentItem = item;
+  while (parentItem !== document.body) {
+    parentItem = parentItem.parentNode;
+    if (hasClass(parentItem, 'nav') || hasClass(parentItem, 'dropdown-menu')) parents.push(parentItem);
+  }
+
+  parents.forEach((menuItem) => {
+    const parentLink = menuItem.previousElementSibling;
+
+    if (parentLink && !hasClass(parentLink, activeClass)) {
+      addClass(parentLink, activeClass);
+    }
+  });
+
+  // update relatedTarget and dispatch
+  activateScrollSpy.relatedTarget = item;
+  element.dispatchEvent(activateScrollSpy);
+}
+
+function toggleSpyHandlers(self, add) {
+  const action = add ? addEventListener : removeEventListener;
+  self.scrollTarget[action]('scroll', self.refresh, passiveHandler);
+}
 
 // SCROLLSPY DEFINITION
 // ====================
+export default class ScrollSpy extends BaseComponent {
+  constructor(target, config) {
+    super(scrollspyComponent, target, scrollSpyDefaultOptions, config);
+    // bind
+    const self = this;
 
-export default function ScrollSpy(elem, opsInput) {
-  let element;
+    // initialization element & options
+    const { element, options } = self;
 
-  // set options
-  const options = opsInput || {};
+    // additional properties
+    self.target = queryElement(options.target);
 
-  // bind
-  const self = this;
+    // invalidate
+    if (!self.target) return;
 
-  // GC internals
-  let vars;
-  let links;
+    // set initial state
+    self.scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
+    self.isWindow = self.scrollTarget === window;
+    self.scrollTop = 0;
+    self.maxScroll = 0;
+    self.scrollHeight = 0;
+    self.activeItem = null;
+    self.items = [];
+    self.offsets = [];
 
-  // targets
-  let spyTarget;
-  // determine which is the real scrollTarget
-  let scrollTarget;
-  // options
-  const ops = {};
+    // bind events
+    self.refresh = self.refresh.bind(self);
 
-  // private methods
-  // populate items and targets
-  function updateTargets() {
-    links = spyTarget.getElementsByTagName('A');
+    // add event handlers
+    toggleSpyHandlers(self, 1);
 
-    vars.scrollTop = vars.isWindow ? getScroll().y : element.scrollTop;
-
-    // only update vars once or with each mutation
-    if (vars.length !== links.length || getScrollHeight() !== vars.scrollHeight) {
-      let href;
-      let targetItem;
-      let rect;
-
-      // reset arrays & update
-      vars.items = [];
-      vars.offsets = [];
-      vars.scrollHeight = getScrollHeight();
-      vars.maxScroll = vars.scrollHeight - getOffsetHeight();
-
-      Array.from(links).forEach((link) => {
-        href = link.getAttribute('href');
-        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
-
-        if (targetItem) {
-          vars.items.push(link);
-          rect = targetItem.getBoundingClientRect();
-          vars.offsets.push((vars.isWindow
-            ? rect.top + vars.scrollTop
-            : targetItem.offsetTop) - ops.offset);
-        }
-      });
-      vars.length = vars.items.length;
-    }
+    self.refresh();
   }
-  // item update
-  function toggleEvents(add) {
-    const action = add ? 'addEventListener' : 'removeEventListener';
-    scrollTarget[action]('scroll', self.refresh, passiveHandler);
-    window[action]('resize', self.refresh, passiveHandler);
-  }
-  function getScrollHeight() {
-    return scrollTarget.scrollHeight || Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-    );
-  }
-  function getOffsetHeight() {
-    return !vars.isWindow ? element.getBoundingClientRect().height : window.innerHeight;
-  }
-  function clear() {
-    Array.from(links).map((item) => item.classList.contains('active') && item.classList.remove('active'));
-  }
-  function activate(input) {
-    let item = input;
-    let itemClassList;
-    clear();
-    vars.activeItem = item;
-    item.classList.add('active');
 
-    // activate all parents
-    const parents = [];
-    while (item.parentNode !== document.body) {
-      item = item.parentNode;
-      itemClassList = item.classList;
+  // SCROLLSPY PUBLIC METHODS
+  // ========================
+  refresh() {
+    const self = this;
+    const { target } = self;
 
-      if (itemClassList.contains('dropdown-menu') || itemClassList.contains('nav')) parents.push(item);
+    // check if target is visible and invalidate
+    if (target.offsetHeight === 0) return;
+
+    updateSpyTargets(self);
+
+    const {
+      scrollTop, maxScroll, itemsLength, items, activeItem,
+    } = self;
+
+    if (scrollTop >= maxScroll) {
+      const newActiveItem = items[itemsLength - 1];
+
+      if (activeItem !== newActiveItem) {
+        activate(self, newActiveItem);
+      }
+      return;
     }
 
-    parents.forEach((menuItem) => {
-      const parentLink = menuItem.previousElementSibling;
+    const { offsets } = self;
 
-      if (parentLink && !parentLink.classList.contains('active')) {
-        parentLink.classList.add('active');
+    if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
+      self.activeItem = null;
+      clear(target);
+      return;
+    }
+
+    items.forEach((item, i) => {
+      if (activeItem !== item && scrollTop >= offsets[i]
+        && (typeof offsets[i + 1] === 'undefined' || scrollTop < offsets[i + 1])) {
+        activate(self, item);
       }
     });
-
-    dispatchCustomEvent.call(element, bootstrapCustomEvent('activate', 'scrollspy', { relatedTarget: vars.activeItem }));
   }
 
-  // public method
-  self.refresh = () => {
-    updateTargets();
-
-    if (vars.scrollTop >= vars.maxScroll) {
-      const newActiveItem = vars.items[vars.length - 1];
-
-      if (vars.activeItem !== newActiveItem) {
-        activate(newActiveItem);
-      }
-
-      return;
-    }
-
-    if (vars.activeItem && vars.scrollTop < vars.offsets[0] && vars.offsets[0] > 0) {
-      vars.activeItem = null;
-      clear();
-      return;
-    }
-
-    let i = vars.length;
-    while (i > -1) {
-      if (vars.activeItem !== vars.items[i] && vars.scrollTop >= vars.offsets[i]
-        && (typeof vars.offsets[i + 1] === 'undefined' || vars.scrollTop < vars.offsets[i + 1])) {
-        activate(vars.items[i]);
-      }
-      i -= 1;
-    }
-  };
-  self.dispose = () => {
-    toggleEvents();
-    delete element.ScrollSpy;
-  };
-
-  // init
-  // initialization element, the element we spy on
-  element = queryElement(elem);
-
-  // reset on re-init
-  if (element.ScrollSpy) element.ScrollSpy.dispose();
-
-  // event targets, constants
-  // DATA API
-  const targetData = element.getAttribute('data-target');
-  const offsetData = element.getAttribute('data-offset');
-
-  // targets
-  spyTarget = queryElement(options.target || targetData);
-
-  // determine which is the real scrollTarget
-  scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
-
-  if (!spyTarget) return;
-
-  // set instance option
-  ops.offset = +(options.offset || offsetData) || 10;
-
-  // set instance priority variables
-  vars = {};
-  vars.length = 0;
-  vars.items = [];
-  vars.offsets = [];
-  vars.isWindow = scrollTarget === window;
-  vars.activeItem = null;
-  vars.scrollHeight = 0;
-  vars.maxScroll = 0;
-
-  // prevent adding event handlers twice
-  if (!element.ScrollSpy) toggleEvents(1);
-
-  self.refresh();
-
-  // associate target with init object
-  element.ScrollSpy = self;
+  dispose() {
+    toggleSpyHandlers(this);
+    super.dispose(scrollspyComponent);
+  }
 }
+
+ScrollSpy.init = {
+  component: scrollspyComponent,
+  selector: scrollspySelector,
+  constructor: ScrollSpy,
+};

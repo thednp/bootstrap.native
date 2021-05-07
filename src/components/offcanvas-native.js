@@ -8,7 +8,7 @@ import addClass from 'shorter-js/src/class/addClass.js';
 import removeClass from 'shorter-js/src/class/removeClass.js';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v5.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
 import getTargetElement from '../util/getTargetElement.js';
 import dataBsDismiss from '../strings/dataBsDismiss.js';
 import dataBsToggle from '../strings/dataBsToggle.js';
@@ -233,7 +233,7 @@ export default class Offcanvas extends BaseComponent {
   }
 }
 
-export const offcanvasInit = {
+Offcanvas.init = {
   component: offcanvasComponent,
   selector: OffcanvasSelector,
   constructor: Offcanvas,

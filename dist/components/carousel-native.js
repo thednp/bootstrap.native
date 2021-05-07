@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Carousel v3.0.15-alpha2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Carousel v3.0.15 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -9,17 +9,15 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Carousel = factory());
 }(this, (function () { 'use strict';
 
-  var mouseHoverEvents = ('onmouseleave' in document) ? ['mouseenter', 'mouseleave'] : ['mouseover', 'mouseout'];
+  const addEventListener = 'addEventListener';
 
-  var addEventListener = 'addEventListener';
+  const removeEventListener = 'removeEventListener';
 
-  var removeEventListener = 'removeEventListener';
-
-  var supportPassive = (function () {
-    var result = false;
+  const supportPassive = (() => {
+    let result = false;
     try {
-      var opts = Object.defineProperty({}, 'passive', {
-        get: function get() {
+      const opts = Object.defineProperty({}, 'passive', {
+        get() {
           result = true;
           return result;
         },
@@ -38,29 +36,33 @@
 
   var passiveHandler = supportPassive ? { passive: true } : false;
 
-  var supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
+  const supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
 
-  var transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+  const transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
 
-  var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
+  const transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
   function getElementTransitionDuration(element) {
-    var computedStyle = getComputedStyle(element);
-    var propertyValue = computedStyle[transitionProperty];
-    var durationValue = computedStyle[transitionDuration];
-    var durationScale = durationValue.includes('ms') ? 1 : 1000;
-    var duration = supportTransition && propertyValue && propertyValue !== 'none'
+    const computedStyle = getComputedStyle(element);
+    const propertyValue = computedStyle[transitionProperty];
+    const durationValue = computedStyle[transitionDuration];
+    const durationScale = durationValue.includes('ms') ? 1 : 1000;
+    const duration = supportTransition && propertyValue && propertyValue !== 'none'
       ? parseFloat(durationValue) * durationScale : 0;
 
     return !Number.isNaN(duration) ? duration : 0;
   }
 
-  var transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
+  function reflow(element) {
+    return element.offsetHeight;
+  }
+
+  const transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
 
   function emulateTransitionEnd(element, handler) {
-    var called = 0;
-    var endEvent = new Event(transitionEndEvent);
-    var duration = getElementTransitionDuration(element);
+    let called = 0;
+    const endEvent = new Event(transitionEndEvent);
+    const duration = getElementTransitionDuration(element);
 
     if (duration) {
       element.addEventListener(transitionEndEvent, function transitionEndWrapper(e) {
@@ -70,8 +72,8 @@
           called = 1;
         }
       });
-      setTimeout(function () {
-        if (!called) { element.dispatchEvent(endEvent); }
+      setTimeout(() => {
+        if (!called) element.dispatchEvent(endEvent);
       }, duration + 17);
     } else {
       handler.apply(element, [endEvent]);
@@ -79,25 +81,33 @@
   }
 
   function isElementInScrollRange(element) {
-    var bcr = element.getBoundingClientRect();
-    var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const bcr = element.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
     return bcr.top <= viewportHeight && bcr.bottom >= 0; // bottom && top
   }
 
   function queryElement(selector, parent) {
-    var lookUp = parent && parent instanceof Element ? parent : document;
+    const lookUp = parent && parent instanceof Element ? parent : document;
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
-  function reflow(element) {
-    return element.offsetHeight;
+  function addClass(element, classNAME) {
+    element.classList.add(classNAME);
   }
 
-  function bootstrapCustomEvent(eventType, componentName, eventProperties) {
-    var OriginalCustomEvent = new CustomEvent((eventType + ".bs." + componentName), { cancelable: true });
+  function hasClass(element, classNAME) {
+    return element.classList.contains(classNAME);
+  }
 
-    if (typeof eventProperties !== 'undefined') {
-      Object.keys(eventProperties).forEach(function (key) {
+  function removeClass(element, classNAME) {
+    element.classList.remove(classNAME);
+  }
+
+  function bootstrapCustomEvent(namespacedEventType, eventProperties) {
+    const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+
+    if (eventProperties instanceof Object) {
+      Object.keys(eventProperties).forEach((key) => {
         Object.defineProperty(OriginalCustomEvent, key, {
           value: eventProperties[key],
         });
@@ -106,366 +116,522 @@
     return OriginalCustomEvent;
   }
 
-  function dispatchCustomEvent(customEvent) {
-    if (this) { this.dispatchEvent(customEvent); }
+  const activeClass = 'active';
+
+  function normalizeValue(value) {
+    if (value === 'true') {
+      return true;
+    }
+
+    if (value === 'false') {
+      return false;
+    }
+
+    if (!Number.isNaN(+value)) {
+      return +value;
+    }
+
+    if (value === '' || value === 'null') {
+      return null;
+    }
+
+    // string / function / Element / Object
+    return value;
   }
 
-  /* Native JavaScript for Bootstrap 4 | Carousel
+  function normalizeOptions(element, defaultOps, inputOps, ns) {
+    const normalOps = {};
+    const dataOps = {};
+    const data = { ...element.dataset };
+
+    Object.keys(data)
+      .forEach((k) => {
+        const key = k.includes(ns)
+          ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+          : k;
+
+        dataOps[key] = normalizeValue(data[k]);
+      });
+
+    Object.keys(inputOps)
+      .forEach((k) => {
+        inputOps[k] = normalizeValue(inputOps[k]);
+      });
+
+    Object.keys(defaultOps)
+      .forEach((k) => {
+        if (k in inputOps) {
+          normalOps[k] = inputOps[k];
+        } else if (k in dataOps) {
+          normalOps[k] = dataOps[k];
+        } else {
+          normalOps[k] = defaultOps[k];
+        }
+      });
+
+    return normalOps;
+  }
+
+  /* Native JavaScript for Bootstrap 5 | Base Component
+  ----------------------------------------------------- */
+
+  class BaseComponent {
+    constructor(name, target, defaults, config) {
+      const self = this;
+      const element = queryElement(target);
+
+      if (element[name]) element[name].dispose();
+      self.element = element;
+
+      if (defaults && Object.keys(defaults).length) {
+        self.options = normalizeOptions(element, defaults, (config || {}), 'bs');
+      }
+      element[name] = self;
+    }
+
+    dispose(name) {
+      const self = this;
+      self.element[name] = null;
+      Object.keys(self).forEach((prop) => { self[prop] = null; });
+    }
+  }
+
+  /* Native JavaScript for Bootstrap 5 | Carousel
   ----------------------------------------------- */
+
+  // CAROUSEL PRIVATE GC
+  // ===================
+  const carouselString = 'carousel';
+  const carouselComponent = 'Carousel';
+  const carouselSelector = `[data-bs-ride="${carouselString}"]`;
+  const carouselControl = `${carouselString}-control`;
+  const carouselItem = `${carouselString}-item`;
+  const dataBsSlideTo = 'data-bs-slide-to';
+  const pausedClass = 'paused';
+  const defaultCarouselOptions = {
+    pause: 'hover', // 'boolean|string'
+    keyboard: false, // 'boolean'
+    touch: true, // 'boolean'
+    interval: 5000, // 'boolean|number'
+  };
+  let startX = 0;
+  let currentX = 0;
+  let endX = 0;
+
+  // CAROUSEL CUSTOM EVENTS
+  // ======================
+  const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`);
+  const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`);
+
+  // CAROUSEL EVENT HANDLERS
+  // =======================
+  function carouselTransitionEndHandler(self) {
+    const {
+      index, direction, element, slides, options, isAnimating,
+    } = self;
+
+    // discontinue disposed instances
+    if (isAnimating && element[carouselComponent]) {
+      const activeItem = getActiveIndex(self);
+      const orientation = direction === 'left' ? 'next' : 'prev';
+      const directionClass = direction === 'left' ? 'start' : 'end';
+      self.isAnimating = false;
+
+      addClass(slides[index], activeClass);
+      removeClass(slides[activeItem], activeClass);
+
+      removeClass(slides[index], `${carouselItem}-${orientation}`);
+      removeClass(slides[index], `${carouselItem}-${directionClass}`);
+      removeClass(slides[activeItem], `${carouselItem}-${directionClass}`);
+
+      element.dispatchEvent(carouselSlidEvent);
+
+      // check for element, might have been disposed
+      if (!document.hidden && options.interval
+        && !hasClass(element, pausedClass)) {
+        self.cycle();
+      }
+    }
+  }
+
+  function carouselPauseHandler(e) {
+    const eventTarget = e.target;
+    const self = eventTarget.closest(carouselSelector)[carouselComponent];
+    const { element, isAnimating } = self;
+
+    if (!hasClass(element, pausedClass)) {
+      addClass(element, pausedClass);
+      if (!isAnimating) {
+        clearInterval(self.timer);
+        self.timer = null;
+      }
+    }
+  }
+
+  function carouselResumeHandler(e) {
+    const eventTarget = e.target;
+    const self = eventTarget.closest(carouselSelector)[carouselComponent];
+    const { isPaused, isAnimating, element } = self;
+
+    if (!isPaused && hasClass(element, pausedClass)) {
+      removeClass(element, pausedClass);
+
+      if (!isAnimating) {
+        clearInterval(self.timer);
+        self.timer = null;
+        self.cycle();
+      }
+    }
+  }
+
+  function carouselIndicatorHandler(e) {
+    e.preventDefault();
+    const { target } = e;
+    const self = target.closest(carouselSelector)[carouselComponent];
+
+    if (self.isAnimating) return;
+
+    const newIndex = target.getAttribute(dataBsSlideTo);
+
+    if (target && !hasClass(target, activeClass) // event target is not active
+      && newIndex) { // AND has the specific attribute
+      self.to(+newIndex); // do the slide
+    }
+  }
+
+  function carouselControlsHandler(e) {
+    e.preventDefault();
+    const that = this;
+    const self = that.closest(carouselSelector)[carouselComponent];
+    const { controls } = self;
+
+    if (controls[1] && that === controls[1]) {
+      self.next();
+    } else if (controls[1] && that === controls[0]) {
+      self.prev();
+    }
+  }
+
+  function carouselKeyHandler({ which }) {
+    const [element] = Array.from(document.querySelectorAll(carouselSelector))
+      .filter((x) => isElementInScrollRange(x));
+
+    if (!element) return;
+    const self = element[carouselComponent];
+
+    switch (which) {
+      case 39:
+        self.next();
+        break;
+      case 37:
+        self.prev();
+        break;
+    }
+  }
+
+  // CAROUSEL TOUCH HANDLERS
+  // =======================
+  function carouselTouchDownHandler(e) {
+    const element = this;
+    const self = element[carouselComponent];
+
+    if (!self || self.isTouch) { return; }
+
+    startX = e.changedTouches[0].pageX;
+
+    if (element.contains(e.target)) {
+      self.isTouch = true;
+      toggleCarouselTouchHandlers(self, 1);
+    }
+  }
+
+  function carouselTouchMoveHandler(e) {
+    const { changedTouches, type } = e;
+    const self = this[carouselComponent];
+
+    if (!self || !self.isTouch) { return; }
+
+    currentX = changedTouches[0].pageX;
+
+    // cancel touch if more than one changedTouches detected
+    if (type === 'touchmove' && changedTouches.length > 1) {
+      e.preventDefault();
+    }
+  }
+
+  function carouselTouchEndHandler(e) {
+    const element = this;
+    const self = element[carouselComponent];
+
+    if (!self || !self.isTouch) { return; }
+
+    endX = currentX || e.changedTouches[0].pageX;
+
+    if (self.isTouch) {
+      // the event target is outside the carousel OR carousel doens't include the related target
+      if ((!element.contains(e.target) || !element.contains(e.relatedTarget))
+        && Math.abs(startX - endX) < 75) { // AND swipe distance is less than 75px
+        // when the above conditions are satisfied, no need to continue
+        return;
+      } // OR determine next index to slide to
+      if (currentX < startX) {
+        self.index += 1;
+      } else if (currentX > startX) {
+        self.index -= 1;
+      }
+
+      self.isTouch = false;
+      self.to(self.index); // do the slide
+
+      toggleCarouselTouchHandlers(self); // remove touch events handlers
+    }
+  }
+
+  // CAROUSEL PRIVATE METHODS
+  // ========================
+  function activateCarouselIndicator(self, pageIndex) { // indicators
+    const { indicators } = self;
+    Array.from(indicators).forEach((x) => removeClass(x, activeClass));
+    if (self.indicators[pageIndex]) addClass(indicators[pageIndex], activeClass);
+  }
+
+  function toggleCarouselTouchHandlers(self, add) {
+    const { element } = self;
+    const action = add ? addEventListener : removeEventListener;
+    element[action]('touchmove', carouselTouchMoveHandler, passiveHandler);
+    element[action]('touchend', carouselTouchEndHandler, passiveHandler);
+  }
+
+  function toggleCarouselHandlers(self, add) {
+    const {
+      element, options, slides, controls, indicator,
+    } = self;
+    const {
+      touch, pause, interval, keyboard,
+    } = options;
+    const action = add ? addEventListener : removeEventListener;
+
+    if (pause && interval) {
+      element[action]('mouseenter', carouselPauseHandler);
+      element[action]('mouseleave', carouselResumeHandler);
+      element[action]('touchstart', carouselPauseHandler, passiveHandler);
+      element[action]('touchend', carouselResumeHandler, passiveHandler);
+    }
+
+    if (touch && slides.length > 1) {
+      element[action]('touchstart', carouselTouchDownHandler, passiveHandler);
+    }
+
+    controls.forEach((arrow) => {
+      if (arrow) arrow[action]('click', carouselControlsHandler);
+    });
+
+    if (indicator) indicator[action]('click', carouselIndicatorHandler);
+    if (keyboard) window[action]('keydown', carouselKeyHandler);
+  }
+
+  function getActiveIndex(self) {
+    const { slides, element } = self;
+    return Array.from(slides)
+      .indexOf(element.getElementsByClassName(`${carouselItem} ${activeClass}`)[0]) || 0;
+  }
 
   // CAROUSEL DEFINITION
   // ===================
+  class Carousel extends BaseComponent {
+    constructor(target, config) {
+      super(carouselComponent, target, defaultCarouselOptions, config);
+      // bind
+      const self = this;
 
-  function Carousel(elem, opsInput) {
-    var assign, assign$1, assign$2;
+      // additional properties
+      self.timer = null;
+      self.direction = 'left';
+      self.isPaused = false;
+      self.isAnimating = false;
+      self.index = 0;
+      self.timer = null;
+      self.isTouch = false;
 
-    var element;
+      // initialization element
+      const { element } = self;
+      // carousel elements
+      // a LIVE collection is prefferable
+      self.slides = element.getElementsByClassName(carouselItem);
+      const { slides } = self;
 
-    // set options
-    var options = opsInput || {};
+      // invalidate when not enough items
+      // no need to go further
+      if (slides.length < 2) { return; }
 
-    // bind
-    var self = this;
+      self.controls = [
+        queryElement(`.${carouselControl}-prev`, element),
+        queryElement(`.${carouselControl}-next`, element),
+      ];
 
-    // internal variables
-    var vars;
-    var ops;
+      // a LIVE collection is prefferable
+      self.indicator = queryElement('.carousel-indicators', element);
+      self.indicators = (self.indicator && self.indicator.querySelectorAll(`[${dataBsSlideTo}]`)) || [];
 
-    // custom events
-    var slideCustomEvent;
-    var slidCustomEvent;
+      // set JavaScript and DATA API options
+      const { options } = self;
 
-    // carousel elements
-    var slides;
-    var leftArrow;
-    var rightArrow;
-    var indicator;
-    var indicators;
+      // don't use TRUE as interval, it's actually 0, use the default 5000ms better
+      self.options.interval = options.interval === true
+        ? defaultCarouselOptions.interval
+        : options.interval;
 
-    // handlers
-    function pauseHandler() {
-      if (ops.interval !== false && !element.classList.contains('paused')) {
-        element.classList.add('paused');
-        if (!vars.isSliding) {
-          clearInterval(vars.timer);
-          vars.timer = null;
-        }
-      }
-    }
-    function resumeHandler() {
-      if (ops.interval !== false && element.classList.contains('paused')) {
-        element.classList.remove('paused');
-        if (!vars.isSliding) {
-          clearInterval(vars.timer);
-          vars.timer = null;
-          self.cycle();
-        }
-      }
-    }
-    function indicatorHandler(e) {
-      e.preventDefault();
-      if (vars.isSliding) { return; }
-
-      var eventTarget = e.target; // event target | the current active item
-
-      if (eventTarget && !eventTarget.classList.contains('active') && eventTarget.getAttribute('data-slide-to')) {
-        vars.index = +(eventTarget.getAttribute('data-slide-to'));
-      } else { return; }
-
-      self.slideTo(vars.index); // Do the slide
-    }
-    function controlsHandler(e) {
-      e.preventDefault();
-      if (vars.isSliding) { return; }
-
-      var eventTarget = e.currentTarget || e.srcElement;
-
-      if (eventTarget === rightArrow) {
-        vars.index += 1;
-      } else if (eventTarget === leftArrow) {
-        vars.index -= 1;
+      // set first slide active if none
+      if (getActiveIndex(self) < 0) {
+        if (slides.length) addClass(slides[0], activeClass);
+        if (self.indicators.length) activateCarouselIndicator(self, 0);
       }
 
-      self.slideTo(vars.index); // Do the slide
-    }
-    function keyHandler(ref) {
-      var which = ref.which;
+      // attach event handlers
+      toggleCarouselHandlers(self, 1);
 
-      if (vars.isSliding) { return; }
-      switch (which) {
-        case 39:
-          vars.index += 1;
-          break;
-        case 37:
-          vars.index -= 1;
-          break;
-        default: return;
-      }
-      self.slideTo(vars.index); // Do the slide
+      // start to cycle if interval is set
+      if (options.interval) self.cycle();
     }
-    function toggleEvents(add) {
-      var action = add ? 'addEventListener' : 'removeEventListener';
-      if (ops.pause && ops.interval) {
-        element[action](mouseHoverEvents[0], pauseHandler, false);
-        element[action](mouseHoverEvents[1], resumeHandler, false);
-        element[action]('touchstart', pauseHandler, passiveHandler);
-        element[action]('touchend', resumeHandler, passiveHandler);
+
+    // CAROUSEL PUBLIC METHODS
+    // =======================
+    cycle() {
+      const self = this;
+      const { isPaused, element, options } = self;
+      if (self.timer) {
+        clearInterval(self.timer);
+        self.timer = null;
       }
 
-      if (ops.touch && slides.length > 1) { element[action]('touchstart', touchDownHandler, passiveHandler); }
-
-      if (rightArrow) { rightArrow[action]('click', controlsHandler, false); }
-      if (leftArrow) { leftArrow[action]('click', controlsHandler, false); }
-
-      if (indicator) { indicator[action]('click', indicatorHandler, false); }
-      if (ops.keyboard) { window[action]('keydown', keyHandler, false); }
-    }
-    // touch events
-    function toggleTouchEvents(add) {
-      var action = add ? 'addEventListener' : 'removeEventListener';
-      element[action]('touchmove', touchMoveHandler, passiveHandler);
-      element[action]('touchend', touchEndHandler, passiveHandler);
-    }
-    function touchDownHandler(e) {
-      if (vars.isTouch) { return; }
-
-      vars.touchPosition.startX = e.changedTouches[0].pageX;
-
-      if (element.contains(e.target)) {
-        vars.isTouch = true;
-        toggleTouchEvents(1);
-      }
-    }
-    function touchMoveHandler(e) {
-      if (!vars.isTouch) { e.preventDefault(); return; }
-
-      vars.touchPosition.currentX = e.changedTouches[0].pageX;
-
-      // cancel touch if more than one changedTouches detected
-      if (e.type === 'touchmove' && e.changedTouches.length > 1) {
-        e.preventDefault();
-      }
-    }
-    function touchEndHandler(e) {
-      if (!vars.isTouch || vars.isSliding) { return; }
-
-      vars.touchPosition.endX = vars.touchPosition.currentX || e.changedTouches[0].pageX;
-
-      if (vars.isTouch) {
-        if ((!element.contains(e.target) || !element.contains(e.relatedTarget))
-            && Math.abs(vars.touchPosition.startX - vars.touchPosition.endX) < 75) {
-          return;
-        }
-        if (vars.touchPosition.currentX < vars.touchPosition.startX) {
-          vars.index += 1;
-        } else if (vars.touchPosition.currentX > vars.touchPosition.startX) {
-          vars.index -= 1;
-        }
-        vars.isTouch = false;
-        self.slideTo(vars.index);
-
-        toggleTouchEvents(); // remove
-      }
-    }
-    // private methods
-    function setActivePage(pageIndex) { // indicators
-      Array.from(indicators).forEach(function (x) { return x.classList.remove('active'); });
-      if (indicators[pageIndex]) { indicators[pageIndex].classList.add('active'); }
-    }
-    function transitionEndHandler(e) {
-      if (vars.touchPosition) {
-        var next = vars.index;
-        var timeout = e && e.target !== slides[next] ? e.elapsedTime * 1000 + 100 : 20;
-        var activeItem = self.getActiveIndex();
-        var orientation = vars.direction === 'left' ? 'next' : 'prev';
-
-        if (vars.isSliding) {
-          setTimeout(function () {
-            if (vars.touchPosition) {
-              vars.isSliding = false;
-
-              slides[next].classList.add('active');
-              slides[activeItem].classList.remove('active');
-
-              slides[next].classList.remove(("carousel-item-" + orientation));
-              slides[next].classList.remove(("carousel-item-" + (vars.direction)));
-              slides[activeItem].classList.remove(("carousel-item-" + (vars.direction)));
-
-              dispatchCustomEvent.call(element, slidCustomEvent);
-              // check for element, might have been disposed
-              if (!document.hidden && ops.interval && !element.classList.contains('paused')) {
-                self.cycle();
-              }
-            }
-          }, timeout);
-        }
-      }
-    }
-
-    // public methods
-    self.cycle = function () {
-      if (vars.timer) {
-        clearInterval(vars.timer);
-        vars.timer = null;
+      if (isPaused) {
+        removeClass(element, pausedClass);
+        self.isPaused = !isPaused;
       }
 
-      vars.timer = setInterval(function () {
-        var idx = vars.index || self.getActiveIndex();
+      self.timer = setInterval(() => {
         if (isElementInScrollRange(element)) {
-          idx += 1;
-          self.slideTo(idx);
+          self.index += 1;
+          self.to(self.index);
         }
-      }, ops.interval);
-    };
-    self.slideTo = function (idx) {
-      if (vars.isSliding) { return; } // when controled via methods, make sure to check again
+      }, options.interval);
+    }
 
-      // the current active, orientation, event eventProperties
-      var activeItem = self.getActiveIndex();
-      var next = idx;
-
-      // first return if we're on the same item #227
-      if (activeItem === next) {
-        return;
-      // or determine slide direction
-      } if ((activeItem < next) || (activeItem === 0 && next === slides.length - 1)) {
-        vars.direction = 'left'; // next
-      } else if ((activeItem > next) || (activeItem === slides.length - 1 && next === 0)) {
-        vars.direction = 'right'; // prev
+    pause() {
+      const self = this;
+      const { element, options, isPaused } = self;
+      if (options.interval && !isPaused) {
+        clearInterval(self.timer);
+        self.timer = null;
+        addClass(element, pausedClass);
+        self.isPaused = !isPaused;
       }
+    }
+
+    next() {
+      const self = this;
+      if (!self.isAnimating) { self.index += 1; self.to(self.index); }
+    }
+
+    prev() {
+      const self = this;
+      if (!self.isAnimating) { self.index -= 1; self.to(self.index); }
+    }
+
+    to(idx) {
+      const self = this;
+      const {
+        element, isAnimating, slides, options,
+      } = self;
+      const activeItem = getActiveIndex(self);
+      let next = idx;
+
+      // when controled via methods, make sure to check again
+      // first return if we're on the same item #227
+      if (isAnimating || activeItem === next) return;
+
+      // determine transition direction
+      if ((activeItem < next) || (activeItem === 0 && next === slides.length - 1)) {
+        self.direction = 'left'; // next
+      } else if ((activeItem > next) || (activeItem === slides.length - 1 && next === 0)) {
+        self.direction = 'right'; // prev
+      }
+      const { direction } = self;
 
       // find the right next index
-      if (next < 0) { next = slides.length - 1; }
-      else if (next >= slides.length) { next = 0; }
+      if (next < 0) { next = slides.length - 1; } else if (next >= slides.length) { next = 0; }
 
-      var orientation = vars.direction === 'left' ? 'next' : 'prev'; // determine type
-
-      var eventProperties = {
-        relatedTarget: slides[next], direction: vars.direction, from: activeItem, to: next,
+      // orientation, class name, eventProperties
+      const orientation = direction === 'left' ? 'next' : 'prev';
+      const directionClass = direction === 'left' ? 'start' : 'end';
+      const eventProperties = {
+        relatedTarget: slides[next], direction, from: activeItem, to: next,
       };
-      slideCustomEvent = bootstrapCustomEvent('slide', 'carousel', eventProperties);
-      slidCustomEvent = bootstrapCustomEvent('slid', 'carousel', eventProperties);
-      dispatchCustomEvent.call(element, slideCustomEvent); // here we go with the slide
-      if (slideCustomEvent.defaultPrevented) { return; } // discontinue when prevented
+
+      // update event properties
+      Object.keys(eventProperties).forEach((k) => {
+        carouselSlideEvent[k] = eventProperties[k];
+        carouselSlidEvent[k] = eventProperties[k];
+      });
+
+      // discontinue when prevented
+      element.dispatchEvent(carouselSlideEvent);
+      if (carouselSlideEvent.defaultPrevented) return;
 
       // update index
-      vars.index = next;
+      self.index = next;
 
-      vars.isSliding = true;
-      clearInterval(vars.timer);
-      vars.timer = null;
-      setActivePage(next);
+      clearInterval(self.timer);
+      self.timer = null;
 
-      if (getElementTransitionDuration(slides[next]) && element.classList.contains('slide')) {
-        slides[next].classList.add(("carousel-item-" + orientation));
+      self.isAnimating = true;
+      activateCarouselIndicator(self, next);
+
+      if (getElementTransitionDuration(slides[next]) && hasClass(element, 'slide')) {
+        addClass(slides[next], `${carouselItem}-${orientation}`);
         reflow(slides[next]);
-        slides[next].classList.add(("carousel-item-" + (vars.direction)));
-        slides[activeItem].classList.add(("carousel-item-" + (vars.direction)));
+        addClass(slides[next], `${carouselItem}-${directionClass}`);
+        addClass(slides[activeItem], `${carouselItem}-${directionClass}`);
 
-        emulateTransitionEnd(slides[next], transitionEndHandler);
+        emulateTransitionEnd(slides[next], () => carouselTransitionEndHandler(self));
       } else {
-        slides[next].classList.add('active');
-        reflow(slides[next]);
-        slides[activeItem].classList.remove('active');
-        setTimeout(function () {
-          vars.isSliding = false;
+        addClass(slides[next], activeClass);
+        removeClass(slides[activeItem], activeClass);
+
+        setTimeout(() => {
+          self.isAnimating = false;
+
           // check for element, might have been disposed
-          if (ops.interval && element && !element.classList.contains('paused')) {
+          if (element && options.interval && !hasClass(element, pausedClass)) {
             self.cycle();
           }
-          dispatchCustomEvent.call(element, slidCustomEvent);
+
+          element.dispatchEvent(carouselSlidEvent);
         }, 100);
       }
-    };
-
-    self.getActiveIndex = function () { return Array.from(slides).indexOf(element.getElementsByClassName('carousel-item active')[0]) || 0; };
-
-    self.dispose = function () {
-      var itemClasses = ['left', 'right', 'prev', 'next'];
-
-      Array.from(slides).forEach(function (slide, idx) {
-        if (slide.classList.contains('active')) { setActivePage(idx); }
-        itemClasses.forEach(function (cls) { return slide.classList.remove(("carousel-item-" + cls)); });
-      });
-      clearInterval(vars.timer);
-
-      toggleEvents();
-      vars = {};
-      ops = {};
-      delete element.Carousel;
-    };
-
-    // init
-
-    // initialization element
-    element = queryElement(elem);
-
-    // reset on re-init
-    if (element.Carousel) { element.Carousel.dispose(); }
-
-    // carousel elements
-    slides = element.getElementsByClassName('carousel-item');
-    (assign = element.getElementsByClassName('carousel-control-prev'), leftArrow = assign[0]);
-    (assign$1 = element.getElementsByClassName('carousel-control-next'), rightArrow = assign$1[0]);
-    (assign$2 = element.getElementsByClassName('carousel-indicators'), indicator = assign$2[0]);
-    indicators = (indicator && indicator.getElementsByTagName('LI')) || [];
-
-    // invalidate when not enough items
-    if (slides.length < 2) { return; }
-
-    // check options
-    // DATA API
-    var intervalAttribute = element.getAttribute('data-interval');
-    var intervalData = intervalAttribute === 'false' ? 0 : +(intervalAttribute);
-    var touchData = element.getAttribute('data-touch') === 'false' ? 0 : 1;
-    var pauseData = element.getAttribute('data-pause') === 'hover' || false;
-    var keyboardData = element.getAttribute('data-keyboard') === 'true' || false;
-
-    // JS options
-    var intervalOption = options.interval;
-    var touchOption = options.touch;
-
-    // set instance options
-    ops = {};
-    ops.keyboard = options.keyboard === true || keyboardData;
-    ops.pause = (options.pause === 'hover' || pauseData) ? 'hover' : false; // false / hover
-    ops.touch = touchOption || touchData;
-
-    ops.interval = 5000; // bootstrap carousel default interval
-
-    if (typeof intervalOption === 'number') { ops.interval = intervalOption; }
-    else if (intervalOption === false || intervalData === 0 || intervalData === false) {
-      ops.interval = 0;
-    } else if (!Number.isNaN(intervalData)) { ops.interval = intervalData; }
-
-    // set first slide active if none
-    if (self.getActiveIndex() < 0) {
-      if (slides.length) { slides[0].classList.add('active'); }
-      if (indicators.length) { setActivePage(0); }
     }
 
-    // set initial state
-    vars = {};
-    vars.direction = 'left';
-    vars.index = 0;
-    vars.timer = null;
-    vars.isSliding = false;
-    vars.isTouch = false;
-    vars.touchPosition = {
-      startX: 0,
-      currentX: 0,
-      endX: 0,
-    };
+    dispose() {
+      const self = this;
+      const { slides } = self;
+      const itemClasses = ['start', 'end', 'prev', 'next'];
 
-    // attach event handlers
-    toggleEvents(1);
+      Array.from(slides).forEach((slide, idx) => {
+        if (hasClass(slide, activeClass)) activateCarouselIndicator(self, idx);
+        itemClasses.forEach((c) => removeClass(slide, `${carouselItem}-${c}`));
+      });
 
-    // start to cycle if interval is set
-    if (ops.interval) { self.cycle(); }
-
-    // associate init object to target
-    element.Carousel = self;
+      toggleCarouselHandlers(self);
+      clearInterval(self.timer);
+      super.dispose(carouselComponent);
+    }
   }
+
+  Carousel.init = {
+    component: carouselComponent,
+    selector: carouselSelector,
+    constructor: Carousel,
+  };
 
   return Carousel;
 

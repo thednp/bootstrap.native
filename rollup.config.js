@@ -29,18 +29,18 @@ const OUTPUT = {
 }
 
 const PLUGINS = [
-  node({mainFields: ['jsnext','module'], dedupe: ['shorter-js']}) ,
   json(),
+  node({mainFields: ['jsnext','module'], dedupe: ['shorter-js']})
 ]
-
-if (!INPUTFILE.includes('v5')){
-  PLUGINS.push(buble({objectAssign: 'Object.assign'}));
-}
 
 if (MIN){
   PLUGINS.push(terser({output: {preamble: miniBanner}}));
 } else {
   OUTPUT.banner = banner;
+}
+
+if (INPUTFILE.includes('v4')){
+  PLUGINS.push(buble({objectAssign: 'Object.assign'}));
 }
 
 if (FORMAT!=='esm') {

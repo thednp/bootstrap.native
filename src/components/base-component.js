@@ -1,3 +1,6 @@
+/* Native JavaScript for Bootstrap 5 | Base Component
+----------------------------------------------------- */
+
 import queryElement from 'shorter-js/src/misc/queryElement.js';
 import normalizeOptions from 'shorter-js/src/misc/normalizeOptions.js';
 

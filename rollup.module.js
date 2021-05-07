@@ -1,5 +1,4 @@
 'use strict'
-import buble from '@rollup/plugin-buble'
 import node from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import {terser} from 'rollup-plugin-terser'
@@ -31,9 +30,8 @@ const OUTPUT = {
 }
 
 const PLUGINS = [
-  node({mainFields: ['jsnext', 'module']}),
   json(),
-  buble(),
+  node({mainFields: ['jsnext','module'], dedupe: ['shorter-js']})
 ]
 
 if (MIN){

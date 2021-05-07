@@ -1,297 +1,346 @@
-/* Native JavaScript for Bootstrap 4 | Modal
+/* Native JavaScript for Bootstrap 5 | Modal
 -------------------------------------------- */
 import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
 import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js';
 import queryElement from 'shorter-js/src/misc/queryElement.js';
+import addClass from 'shorter-js/src/class/addClass.js';
+import hasClass from 'shorter-js/src/class/hasClass.js';
+import removeClass from 'shorter-js/src/class/removeClass.js';
 import reflow from 'shorter-js/src/misc/reflow.js';
+import addEventListener from 'shorter-js/src/strings/addEventListener.js';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+
+import ariaHidden from '../strings/ariaHidden.js';
+import dataBsToggle from '../strings/dataBsToggle.js';
+import dataBsDismiss from '../strings/dataBsDismiss.js';
+import fadeClass from '../strings/fadeClass.js';
+import showClass from '../strings/showClass.js';
+import ariaModal from '../strings/ariaModal.js';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import getTargetElement from '../util/getTargetElement.js';
+import { setScrollbar, resetScrollbar, measureScrollbar } from '../util/scrollbar.js';
 import setFocus from '../util/setFocus.js';
+import BaseComponent from './base-component.js';
+
+// MODAL PRIVATE GC
+// ================
+const modalString = 'modal';
+const modalComponent = 'Modal';
+const modalSelector = `.${modalString}`;
+const modalActiveSelector = `.${modalString}.${showClass}`;
+const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
+const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
+const modalDefaultOptions = {
+  backdrop: true, // boolean|string
+  keyboard: true, // boolean
+};
+const modalOpenClass = `${modalString}-open`;
+const modalBackdropClass = `${modalString}-backdrop`;
+const modalStaticClass = `${modalString}-static`;
+
+// MODAL CUSTOM EVENTS
+// ===================
+const showModalEvent = bootstrapCustomEvent(`show.bs.${modalString}`);
+const shownModalEvent = bootstrapCustomEvent(`shown.bs.${modalString}`);
+const hideModalEvent = bootstrapCustomEvent(`hide.bs.${modalString}`);
+const hiddenModalEvent = bootstrapCustomEvent(`hidden.bs.${modalString}`);
+
+// MODAL PRIVATE METHODS
+// =====================
+function setModalScrollbar(self) {
+  const { element } = self;
+  const bd = document.body;
+  const html = document.documentElement;
+  const openModal = hasClass(bd, modalOpenClass);
+  const bodyOverflow = html.clientHeight !== html.scrollHeight
+                    || bd.clientHeight !== bd.scrollHeight;
+  const modalOverflow = element.clientHeight !== element.scrollHeight;
+  const scrollbarWidth = measureScrollbar();
+
+  if (!modalOverflow && scrollbarWidth) {
+    element.style.paddingRight = `${scrollbarWidth}px`;
+  }
+
+  setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow), openModal);
+}
+
+function createModalOverlay(self) {
+  let overlay = queryElement(`.${modalBackdropClass}`);
+
+  if (overlay === null) {
+    const newOverlay = document.createElement('div');
+    newOverlay.setAttribute('class', `${modalBackdropClass}${self.hasFade ? (` ${fadeClass}`) : ''}`);
+
+    overlay = newOverlay;
+    document.body.appendChild(overlay);
+  }
+
+  return overlay;
+}
+
+function removeModalOverlay(self) {
+  let overlay = queryElement(`.${modalBackdropClass}`);
+  const bd = document.body;
+  const currentOpen = queryElement(modalActiveSelector);
+
+  if (overlay && !currentOpen) {
+    bd.removeChild(overlay);
+    overlay = null;
+  }
+
+  self.isAnimating = false;
+
+  if (overlay === null) {
+    removeClass(bd, modalOpenClass);
+    self.element.style.paddingRight = '';
+    resetScrollbar();
+  }
+}
+
+function toggleModalDismiss(self, add) {
+  const action = add ? addEventListener : removeEventListener;
+  window[action]('resize', self.update, passiveHandler);
+  self.element[action]('click', modalDismissHandler);
+  document[action]('keydown', modalKeyHandler);
+}
+
+function toggleModalHandler(self, add) {
+  const action = add ? addEventListener : removeEventListener;
+
+  if (self.triggers && self.triggers.length) {
+    self.triggers.forEach((btn) => btn[action]('click', modalClickHandler));
+  }
+}
+
+function beforeShowModal(self) {
+  const { element, hasFade } = self;
+  element.style.display = 'block';
+
+  setModalScrollbar(self);
+  if (!queryElement(modalActiveSelector)) {
+    addClass(document.body, modalOpenClass);
+  }
+
+  addClass(element, showClass);
+  element.removeAttribute(ariaHidden);
+  element.setAttribute(ariaModal, true);
+
+  if (hasFade) emulateTransitionEnd(element, () => triggerModalShow(self));
+  else triggerModalShow(self);
+}
+
+function triggerModalShow(self) {
+  const { element, relatedTarget } = self;
+  setFocus(element);
+  self.isAnimating = false;
+
+  toggleModalDismiss(self, 1);
+
+  shownModalEvent.relatedTarget = relatedTarget;
+  element.dispatchEvent(shownModalEvent);
+}
+
+function triggerModalHide(self, force) {
+  const {
+    relatedTarget, hasFade, element, triggers,
+  } = self;
+  const overlay = queryElement(`.${modalBackdropClass}`);
+
+  element.style.display = '';
+  if (triggers.length) setFocus(triggers[0]);
+
+  // force can also be the transitionEvent object, we wanna make sure it's not
+  // call is not forced and overlay is visible
+  if (!force && overlay && hasFade && hasClass(overlay, showClass)
+    && !queryElement(`.${modalString}.${showClass}`)) { // AND no modal is visible
+    removeClass(overlay, showClass);
+    emulateTransitionEnd(overlay, () => removeModalOverlay(self));
+  } else {
+    removeModalOverlay(self);
+  }
+
+  toggleModalDismiss(self);
+
+  hiddenModalEvent.relatedTarget = relatedTarget;
+  element.dispatchEvent(hiddenModalEvent);
+}
+
+// MODAL EVENT HANDLERS
+// ====================
+function modalClickHandler(e) {
+  const { target } = e;
+  const trigger = target.closest(modalToggleSelector);
+  const element = getTargetElement(trigger);
+  const self = element && element[modalComponent];
+
+  if (trigger.tagName === 'A') e.preventDefault();
+
+  if (self.isAnimating) return;
+
+  self.relatedTarget = trigger;
+
+  self.toggle(trigger);
+}
+
+function modalKeyHandler({ which }) {
+  const element = queryElement(modalActiveSelector);
+  const self = element[modalComponent];
+  const { options, isAnimating } = self;
+  if (!isAnimating // modal has no animations running
+    && options.keyboard && which === 27 // the keyboard option is enabled and the key is 27
+    && hasClass(element, showClass)) { // the modal is not visible
+    self.relatedTarget = null;
+    self.hide();
+  }
+}
+
+function modalDismissHandler(e) { // mouseup on dismiss button or outside the .modal-dialog
+  const element = this;
+  const self = element[modalComponent];
+
+  if (self.isAnimating) return;
+
+  const { isStatic, modalDialog } = self;
+  const { target } = e;
+  const selectedText = document.getSelection().toString().length;
+  const targetInsideDialog = modalDialog.contains(target);
+  const dismiss = target.closest(modalDismissSelector);
+
+  if (isStatic && !targetInsideDialog) {
+    addClass(element, modalStaticClass);
+    self.isAnimating = true;
+    emulateTransitionEnd(modalDialog, () => staticTransitionEnd(self));
+  } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog)) {
+    self.relatedTarget = dismiss || null;
+    self.hide();
+    e.preventDefault();
+  }
+}
+
+function staticTransitionEnd(self) {
+  const duration = getElementTransitionDuration(self.modalDialog) + 17;
+  removeClass(self.element, modalStaticClass);
+  // user must wait for zoom out transition
+  setTimeout(() => { self.isAnimating = false; }, duration);
+}
 
 // MODAL DEFINITION
 // ================
+export default class Modal extends BaseComponent {
+  constructor(target, config) {
+    super(modalComponent, target, modalDefaultOptions, config);
 
-export default function Modal(elem, opsInput) { // element can be the modal/triggering button
-  let element;
+    // bind
+    const self = this;
 
-  // set options
-  const options = opsInput || {};
+    // the modal
+    const { element } = self;
 
-  // bind, modal
-  const self = this;
-  let modal;
+    // the modal-dialog
+    self.modalDialog = queryElement(`.${modalString}-dialog`, element);
 
-  // custom events
-  let showCustomEvent;
-  let shownCustomEvent;
-  let hideCustomEvent;
-  let hiddenCustomEvent;
-  // event targets and other
-  let relatedTarget = null;
-  let scrollBarWidth;
-  let overlay;
-  let overlayDelay;
+    // modal can have multiple triggering elements
+    self.triggers = Array.from(document.querySelectorAll(modalToggleSelector))
+      .filter((btn) => getTargetElement(btn) === element);
 
-  // also find fixed-top / fixed-bottom items
-  let fixedItems;
-  const ops = {};
+    // additional internals
+    self.isStatic = self.options.backdrop === 'static';
+    self.hasFade = hasClass(element, fadeClass);
+    self.isAnimating = false;
+    self.relatedTarget = null;
 
-  // private methods
-  function setScrollbar() {
-    const bodyClassList = document.body.classList;
-    const openModal = bodyClassList.contains('modal-open');
-    const bodyPad = parseInt(getComputedStyle(document.body).paddingRight, 10);
-    const docClientHeight = document.documentElement.clientHeight;
-    const docScrollHeight = document.documentElement.scrollHeight;
-    const bodyClientHeight = document.body.clientHeight;
-    const bodyScrollHeight = document.body.scrollHeight;
-    const bodyOverflow = docClientHeight !== docScrollHeight
-                    || bodyClientHeight !== bodyScrollHeight;
-    const modalOverflow = modal.clientHeight !== modal.scrollHeight;
+    // attach event listeners
+    toggleModalHandler(self, 1);
 
-    scrollBarWidth = measureScrollbar();
-
-    modal.style.paddingRight = !modalOverflow && scrollBarWidth ? `${scrollBarWidth}px` : '';
-    document.body.style.paddingRight = modalOverflow || bodyOverflow
-      ? `${bodyPad + (openModal ? 0 : scrollBarWidth)}px` : '';
-
-    if (fixedItems.length) {
-      fixedItems.forEach((fixed) => {
-        const itemPad = getComputedStyle(fixed).paddingRight;
-        fixed.style.paddingRight = modalOverflow || bodyOverflow
-          ? `${parseInt(itemPad, 10) + (openModal ? 0 : scrollBarWidth)}px`
-          : `${parseInt(itemPad, 10)}px`;
-      });
-    }
-  }
-  function resetScrollbar() {
-    document.body.style.paddingRight = '';
-    modal.style.paddingRight = '';
-    if (fixedItems.length) {
-      fixedItems.forEach((fixed) => {
-        fixed.style.paddingRight = '';
-      });
-    }
-  }
-  function measureScrollbar() {
-    const scrollDiv = document.createElement('div');
-    scrollDiv.className = 'modal-scrollbar-measure'; // this is here to stay
-    document.body.appendChild(scrollDiv);
-    const widthValue = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-    document.body.removeChild(scrollDiv);
-    return widthValue;
-  }
-  function createOverlay() {
-    const newOverlay = document.createElement('div');
-    overlay = queryElement('.modal-backdrop');
-
-    if (overlay === null) {
-      newOverlay.setAttribute('class', `modal-backdrop${ops.animation ? ' fade' : ''}`);
-      overlay = newOverlay;
-      document.body.appendChild(overlay);
-    }
-    return overlay;
-  }
-  function removeOverlay() {
-    overlay = queryElement('.modal-backdrop');
-    if (overlay && !document.getElementsByClassName('modal show')[0]) {
-      document.body.removeChild(overlay); overlay = null;
-    }
-    if (overlay === null) {
-      document.body.classList.remove('modal-open');
-      resetScrollbar();
-    }
-  }
-  function toggleEvents(add) {
-    const action = add ? 'addEventListener' : 'removeEventListener';
-    window[action]('resize', self.update, passiveHandler);
-    modal[action]('click', dismissHandler, false);
-    document[action]('keydown', keyHandler, false);
-  }
-  // triggers
-  function beforeShow() {
-    modal.style.display = 'block';
-
-    setScrollbar();
-    if (!document.getElementsByClassName('modal show')[0]) document.body.classList.add('modal-open');
-
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden', false);
-
-    if (modal.classList.contains('fade')) emulateTransitionEnd(modal, triggerShow);
-    else triggerShow();
-  }
-  function triggerShow() {
-    setFocus(modal);
-    modal.isAnimating = false;
-
-    toggleEvents(1);
-
-    shownCustomEvent = bootstrapCustomEvent('shown', 'modal', { relatedTarget });
-    dispatchCustomEvent.call(modal, shownCustomEvent);
-  }
-  function triggerHide(force) {
-    modal.style.display = '';
-    if (element) setFocus(element);
-
-    overlay = queryElement('.modal-backdrop');
-
-    // force can also be the transitionEvent object, we wanna make sure it's not
-    if (force !== 1 && overlay && overlay.classList.contains('show') && !document.getElementsByClassName('modal show')[0]) {
-      overlay.classList.remove('show');
-      emulateTransitionEnd(overlay, removeOverlay);
-    } else {
-      removeOverlay();
-    }
-
-    toggleEvents();
-
-    modal.isAnimating = false;
-
-    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'modal');
-    dispatchCustomEvent.call(modal, hiddenCustomEvent);
-  }
-  // handlers
-  function clickHandler(e) {
-    if (modal.isAnimating) return;
-    const clickTarget = e.target;
-    const modalID = `#${modal.getAttribute('id')}`;
-    const targetAttrValue = clickTarget.getAttribute('data-target') || clickTarget.getAttribute('href');
-    const elemAttrValue = element.getAttribute('data-target') || element.getAttribute('href');
-
-    if (!modal.classList.contains('show')
-        && ((clickTarget === element && targetAttrValue === modalID)
-        || (element.contains(clickTarget) && elemAttrValue === modalID))) {
-      modal.modalTrigger = element;
-      relatedTarget = element;
-      self.show();
-      e.preventDefault();
-    }
-  }
-  function keyHandler({ which }) {
-    if (!modal.isAnimating && ops.keyboard && which === 27 && modal.classList.contains('show')) {
-      self.hide();
-    }
-  }
-  function dismissHandler(e) {
-    if (modal.isAnimating) return;
-    const clickTarget = e.target;
-    const hasData = clickTarget.getAttribute('data-dismiss') === 'modal';
-    const parentWithData = clickTarget.closest('[data-dismiss="modal"]');
-
-    if (modal.classList.contains('show') && (parentWithData || hasData
-        || (clickTarget === modal && ops.backdrop !== 'static'))) {
-      self.hide(); relatedTarget = null;
-      e.preventDefault();
-    }
+    // bind
+    self.update = self.update.bind(self);
   }
 
-  // public methods
-  self.toggle = () => {
-    if (modal.classList.contains('show')) { self.hide(); } else { self.show(); }
-  };
-  self.show = () => {
-    if (modal.classList.contains('show') && !!modal.isAnimating) { return; }
+  // MODAL PUBLIC METHODS
+  // ====================
+  toggle(target) {
+    const self = this;
+    if (hasClass(self.element, showClass)) self.hide();
+    else self.show(target);
+  }
 
-    showCustomEvent = bootstrapCustomEvent('show', 'modal', { relatedTarget });
-    dispatchCustomEvent.call(modal, showCustomEvent);
+  show(related) {
+    const self = this;
+    const { element, isAnimating, options } = self;
+    if (hasClass(element, showClass) && !isAnimating) return;
 
-    if (showCustomEvent.defaultPrevented) return;
+    showModalEvent.relatedTarget = related;
+    element.dispatchEvent(showModalEvent);
+    if (showModalEvent.defaultPrevented) return;
 
-    modal.isAnimating = true;
+    self.isAnimating = true;
 
     // we elegantly hide any opened modal
-    const currentOpen = document.getElementsByClassName('modal show')[0];
-    if (currentOpen && currentOpen !== modal) {
-      if (currentOpen.modalTrigger) currentOpen.modalTrigger.Modal.hide();
-      if (currentOpen.Modal) currentOpen.Modal.hide();
+    const currentOpen = queryElement(modalActiveSelector);
+    const overlay = options.backdrop ? createModalOverlay(self) : null;
+
+    let overlayDelay = 0;
+
+    if (currentOpen && currentOpen !== element) {
+      if (currentOpen[modalComponent]) currentOpen[modalComponent].hide();
     }
 
-    if (ops.backdrop) overlay = createOverlay();
-
-    if (overlay && !currentOpen && !overlay.classList.contains('show')) {
-      reflow(overlay);
+    if (overlay // overlay exists
+      && !currentOpen // no open modal found
+      && !hasClass(overlay, showClass) // overlay not visible
+    ) {
+      reflow(overlay); // force reflow to enable trasition
       overlayDelay = getElementTransitionDuration(overlay);
-      overlay.classList.add('show');
+      addClass(overlay, showClass);
     }
 
-    if (!currentOpen) setTimeout(beforeShow, overlay && overlayDelay ? overlayDelay : 0);
-    else beforeShow();
-  };
-  self.hide = (force) => {
-    if (!modal.classList.contains('show')) { return; }
+    if (!currentOpen) {
+      setTimeout(() => beforeShowModal(self), overlay && overlayDelay ? overlayDelay : 0);
+    } else beforeShowModal(self);
+  }
 
-    hideCustomEvent = bootstrapCustomEvent('hide', 'modal');
-    dispatchCustomEvent.call(modal, hideCustomEvent);
-    if (hideCustomEvent.defaultPrevented) return;
+  hide(force) {
+    const self = this;
+    const {
+      element, isAnimating, hasFade, relatedTarget,
+    } = self;
+    if (!hasClass(element, showClass) && !isAnimating) return;
 
-    modal.isAnimating = true;
+    hideModalEvent.relatedTarget = relatedTarget;
+    element.dispatchEvent(hideModalEvent);
+    if (hideModalEvent.defaultPrevented) return;
 
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden', true);
+    self.isAnimating = true;
+    removeClass(element, showClass);
+    element.setAttribute(ariaHidden, true);
+    element.removeAttribute(ariaModal);
 
-    if (modal.classList.contains('fade') && force !== 1) emulateTransitionEnd(modal, triggerHide);
-    else triggerHide();
-  };
-  self.setContent = (content) => {
-    queryElement('.modal-content', modal).innerHTML = content;
-  };
-  self.update = () => {
-    if (modal.classList.contains('show')) {
-      setScrollbar();
+    if (hasFade && force !== 1) {
+      emulateTransitionEnd(element, () => { triggerModalHide(self); });
+    } else {
+      triggerModalHide(self, force);
     }
-  };
-  self.dispose = () => {
-    self.hide(1);
-    if (element) { element.removeEventListener('click', clickHandler, false); delete element.Modal; } else { delete modal.Modal; }
-  };
-
-  // init
-
-  // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
-  element = queryElement(elem);
-
-  // determine modal, triggering element
-  const checkModal = queryElement(element.getAttribute('data-target') || element.getAttribute('href'));
-  modal = element.classList.contains('modal') ? element : checkModal;
-
-  // set fixed items
-  fixedItems = Array.from(document.getElementsByClassName('fixed-top'))
-    .concat(Array.from(document.getElementsByClassName('fixed-bottom')));
-
-  if (element.classList.contains('modal')) { element = null; } // modal is now independent of it's triggering element
-
-  // reset on re-init
-  if (element && element.Modal) element.Modal.dispose();
-  if (modal && modal.Modal) modal.Modal.dispose();
-
-  // set options
-  ops.keyboard = !(options.keyboard === false || modal.getAttribute('data-keyboard') === 'false');
-  ops.backdrop = options.backdrop === 'static' || modal.getAttribute('data-backdrop') === 'static' ? 'static' : true;
-  ops.backdrop = options.backdrop === false || modal.getAttribute('data-backdrop') === 'false' ? false : ops.backdrop;
-  ops.animation = !!modal.classList.contains('fade');
-  ops.content = options.content; // JavaScript only
-
-  // set an initial state of the modal
-  modal.isAnimating = false;
-
-  // prevent adding event handlers over and over
-  // modal is independent of a triggering element
-  if (element && !element.Modal) {
-    element.addEventListener('click', clickHandler, false);
   }
 
-  if (ops.content) {
-    self.setContent(ops.content.trim());
+  update() {
+    const self = this;
+    if (hasClass(self.element, showClass)) setModalScrollbar(self);
   }
 
-  // set associations
-  if (element) {
-    modal.modalTrigger = element;
-    element.Modal = self;
-  } else {
-    modal.Modal = self;
+  dispose() {
+    const self = this;
+    self.hide(1); // forced call
+
+    toggleModalHandler(self);
+
+    super.dispose(modalComponent);
   }
 }
+
+Modal.init = {
+  component: modalComponent,
+  selector: modalSelector,
+  constructor: Modal,
+};
