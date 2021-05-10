@@ -7,7 +7,7 @@ import queryElement from 'shorter-js/src/misc/queryElement.js';
 import addClass from 'shorter-js/src/class/addClass.js';
 import hasClass from 'shorter-js/src/class/hasClass.js';
 import removeClass from 'shorter-js/src/class/removeClass.js';
-import reflow from 'shorter-js/src/misc/reflow.js';
+// import reflow from 'shorter-js/src/misc/reflow.js';
 import addEventListener from 'shorter-js/src/strings/addEventListener.js';
 import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
 
@@ -20,7 +20,18 @@ import ariaModal from '../strings/ariaModal.js';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
 import getTargetElement from '../util/getTargetElement.js';
-import { setScrollbar, resetScrollbar, measureScrollbar } from '../util/scrollbar.js';
+import { setScrollbar, measureScrollbar } from '../util/scrollbar.js';
+import {
+  overlay,
+  modalOpenClass,
+  modalBackdropClass,
+  modalActiveSelector,
+  appendOverlay,
+  showOverlay,
+  hideOverlay,
+  getCurrentOpen,
+  removeOverlay,
+} from '../util/backdrop.js';
 import setFocus from '../util/setFocus.js';
 import BaseComponent from './base-component.js';
 
@@ -29,16 +40,14 @@ import BaseComponent from './base-component.js';
 const modalString = 'modal';
 const modalComponent = 'Modal';
 const modalSelector = `.${modalString}`;
-const modalActiveSelector = `.${modalString}.${showClass}`;
+// const modalActiveSelector = `.${modalString}.${showClass}`;
 const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
 const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
+const modalStaticClass = `${modalString}-static`;
 const modalDefaultOptions = {
   backdrop: true, // boolean|string
   keyboard: true, // boolean
 };
-const modalOpenClass = `${modalString}-open`;
-const modalBackdropClass = `${modalString}-backdrop`;
-const modalStaticClass = `${modalString}-static`;
 
 // MODAL CUSTOM EVENTS
 // ===================
@@ -50,53 +59,24 @@ const hiddenModalEvent = bootstrapCustomEvent(`hidden.bs.${modalString}`);
 // MODAL PRIVATE METHODS
 // =====================
 function setModalScrollbar(self) {
-  const { element } = self;
+  const { element, scrollbarWidth } = self;
   const bd = document.body;
   const html = document.documentElement;
   const openModal = hasClass(bd, modalOpenClass);
   const bodyOverflow = html.clientHeight !== html.scrollHeight
                     || bd.clientHeight !== bd.scrollHeight;
   const modalOverflow = element.clientHeight !== element.scrollHeight;
-  const scrollbarWidth = measureScrollbar();
 
   if (!modalOverflow && scrollbarWidth) {
     element.style.paddingRight = `${scrollbarWidth}px`;
   }
-
   setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow), openModal);
 }
 
-function createModalOverlay(self) {
-  let overlay = queryElement(`.${modalBackdropClass}`);
-
-  if (overlay === null) {
-    const newOverlay = document.createElement('div');
-    newOverlay.setAttribute('class', `${modalBackdropClass}${self.hasFade ? (` ${fadeClass}`) : ''}`);
-
-    overlay = newOverlay;
-    document.body.appendChild(overlay);
-  }
-
-  return overlay;
-}
-
-function removeModalOverlay(self) {
-  let overlay = queryElement(`.${modalBackdropClass}`);
-  const bd = document.body;
-  const currentOpen = queryElement(modalActiveSelector);
-
-  if (overlay && !currentOpen) {
-    bd.removeChild(overlay);
-    overlay = null;
-  }
-
+function afterModalHide(self) {
+  removeOverlay();
+  self.element.style.paddingRight = '';
   self.isAnimating = false;
-
-  if (overlay === null) {
-    removeClass(bd, modalOpenClass);
-    self.element.style.paddingRight = '';
-    resetScrollbar();
-  }
 }
 
 function toggleModalDismiss(self, add) {
@@ -114,7 +94,7 @@ function toggleModalHandler(self, add) {
   }
 }
 
-function beforeShowModal(self) {
+function beforeModalShow(self) {
   const { element, hasFade } = self;
   element.style.display = 'block';
 
@@ -127,11 +107,11 @@ function beforeShowModal(self) {
   element.removeAttribute(ariaHidden);
   element.setAttribute(ariaModal, true);
 
-  if (hasFade) emulateTransitionEnd(element, () => triggerModalShow(self));
-  else triggerModalShow(self);
+  if (hasFade) emulateTransitionEnd(element, () => afterModalShow(self));
+  else afterModalShow(self);
 }
 
-function triggerModalShow(self) {
+function afterModalShow(self) {
   const { element, relatedTarget } = self;
   setFocus(element);
   self.isAnimating = false;
@@ -142,23 +122,25 @@ function triggerModalShow(self) {
   element.dispatchEvent(shownModalEvent);
 }
 
-function triggerModalHide(self, force) {
+function beforeModalHide(self, force) {
   const {
     relatedTarget, hasFade, element, triggers,
   } = self;
-  const overlay = queryElement(`.${modalBackdropClass}`);
+  // const overlay = queryElement(`.${modalBackdropClass}`);
+  const currentOpen = getCurrentOpen();
 
   element.style.display = '';
   if (triggers.length) setFocus(triggers[0]);
 
   // force can also be the transitionEvent object, we wanna make sure it's not
   // call is not forced and overlay is visible
-  if (!force && overlay && hasFade && hasClass(overlay, showClass)
-    && !queryElement(`.${modalString}.${showClass}`)) { // AND no modal is visible
-    removeClass(overlay, showClass);
-    emulateTransitionEnd(overlay, () => removeModalOverlay(self));
+  if (!force && hasFade && hasClass(overlay, showClass)
+    && !currentOpen) { // AND no modal is visible
+    // removeClass(overlay, showClass);
+    hideOverlay();
+    emulateTransitionEnd(overlay, () => afterModalHide(self));
   } else {
-    removeModalOverlay(self);
+    afterModalHide(self);
   }
 
   toggleModalDismiss(self);
@@ -249,6 +231,7 @@ export default class Modal extends BaseComponent {
     self.isStatic = self.options.backdrop === 'static';
     self.hasFade = hasClass(element, fadeClass);
     self.isAnimating = false;
+    self.scrollbarWidth = measureScrollbar();
     self.relatedTarget = null;
 
     // attach event listeners
@@ -268,7 +251,9 @@ export default class Modal extends BaseComponent {
 
   show(related) {
     const self = this;
-    const { element, isAnimating, options } = self;
+    const { element, isAnimating, hasFade } = self;
+    let overlayDelay = 0;
+
     if (hasClass(element, showClass) && !isAnimating) return;
 
     showModalEvent.relatedTarget = related;
@@ -277,28 +262,26 @@ export default class Modal extends BaseComponent {
 
     self.isAnimating = true;
 
-    // we elegantly hide any opened modal
-    const currentOpen = queryElement(modalActiveSelector);
-    const overlay = options.backdrop ? createModalOverlay(self) : null;
-
-    let overlayDelay = 0;
+    // we elegantly hide any opened modal/offcanvas
+    const currentOpen = getCurrentOpen();
 
     if (currentOpen && currentOpen !== element) {
       if (currentOpen[modalComponent]) currentOpen[modalComponent].hide();
+      if (currentOpen.Offcanvas) currentOpen.Offcanvas.hide();
     }
 
-    if (overlay // overlay exists
-      && !currentOpen // no open modal found
-      && !hasClass(overlay, showClass) // overlay not visible
-    ) {
-      reflow(overlay); // force reflow to enable trasition
-      overlayDelay = getElementTransitionDuration(overlay);
-      addClass(overlay, showClass);
+    if (!queryElement(`.${modalBackdropClass}`)) {
+      appendOverlay(hasFade);
+    }
+    overlayDelay = getElementTransitionDuration(overlay);
+
+    if (!currentOpen && !hasClass(overlay, showClass)) {
+      showOverlay();
     }
 
     if (!currentOpen) {
-      setTimeout(() => beforeShowModal(self), overlay && overlayDelay ? overlayDelay : 0);
-    } else beforeShowModal(self);
+      setTimeout(() => beforeModalShow(self), overlayDelay);
+    } else beforeModalShow(self);
   }
 
   hide(force) {
@@ -318,14 +301,15 @@ export default class Modal extends BaseComponent {
     element.removeAttribute(ariaModal);
 
     if (hasFade && force !== 1) {
-      emulateTransitionEnd(element, () => { triggerModalHide(self); });
+      emulateTransitionEnd(element, () => { beforeModalHide(self); });
     } else {
-      triggerModalHide(self, force);
+      beforeModalHide(self, force);
     }
   }
 
   update() {
     const self = this;
+
     if (hasClass(self.element, showClass)) setModalScrollbar(self);
   }
 

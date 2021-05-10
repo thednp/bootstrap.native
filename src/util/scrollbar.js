@@ -22,13 +22,8 @@ export function resetScrollbar() {
 }
 
 export function measureScrollbar() {
-  const scrollDiv = document.createElement('div');
-  const bd = document.body;
-  scrollDiv.className = 'modal-scrollbar-measure'; // this is here to stay
-  bd.appendChild(scrollDiv);
-  const widthValue = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-  bd.removeChild(scrollDiv);
-  return widthValue;
+  const windowWidth = document.documentElement.clientWidth;
+  return Math.abs(window.innerWidth - windowWidth);
 }
 
 export function setScrollbar(scrollbarWidth, overflow, isOpen) {
@@ -38,7 +33,7 @@ export function setScrollbar(scrollbarWidth, overflow, isOpen) {
 
   if (overflow) {
     bd.style.paddingRight = `${bodyPad + sbWidth}px`;
-    bd.style.overflow = 'hidden';
+    // bd.style.overflow = 'hidden';
 
     if (fixedItems.length) {
       fixedItems.forEach((fixed) => {

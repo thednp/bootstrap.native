@@ -136,13 +136,8 @@
   }
 
   function measureScrollbar() {
-    const scrollDiv = document.createElement('div');
-    const bd = document.body;
-    scrollDiv.className = 'modal-scrollbar-measure'; // this is here to stay
-    bd.appendChild(scrollDiv);
-    const widthValue = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-    bd.removeChild(scrollDiv);
-    return widthValue;
+    const windowWidth = document.documentElement.clientWidth;
+    return Math.abs(window.innerWidth - windowWidth);
   }
 
   function setScrollbar(scrollbarWidth, overflow, isOpen) {
@@ -152,7 +147,7 @@
 
     if (overflow) {
       bd.style.paddingRight = `${bodyPad + sbWidth}px`;
-      bd.style.overflow = 'hidden';
+      // bd.style.overflow = 'hidden';
 
       if (fixedItems.length) {
         fixedItems.forEach((fixed) => {
@@ -165,6 +160,50 @@
           }
         });
       }
+    }
+  }
+
+  function reflow(element) {
+    return element.offsetHeight;
+  }
+
+  const fadeClass = 'fade';
+
+  const modalOpenClass = 'modal-open';
+  const modalBackdropClass = 'modal-backdrop';
+  const modalActiveSelector = `.modal.${showClass}`;
+  const offcanvasActiveSelector = `.offcanvas.${showClass}`;
+
+  const overlay = document.createElement('div');
+  overlay.setAttribute('class', `${modalBackdropClass}`);
+
+  function getCurrentOpen() {
+    return queryElement(`${modalActiveSelector},${offcanvasActiveSelector}`);
+  }
+
+  function appendOverlay(hasFade) {
+    document.body.appendChild(overlay);
+    if (hasFade) addClass(overlay, fadeClass);
+  }
+
+  function showOverlay() {
+    addClass(overlay, showClass);
+    reflow(overlay);
+  }
+
+  function hideOverlay() {
+    removeClass(overlay, showClass);
+  }
+
+  function removeOverlay() {
+    const bd = document.body;
+    const currentOpen = getCurrentOpen();
+
+    if (!currentOpen) {
+      removeClass(overlay, fadeClass);
+      removeClass(bd, modalOpenClass);
+      bd.removeChild(overlay);
+      resetScrollbar();
     }
   }
 
@@ -256,8 +295,6 @@
   const OffcanvasSelector = `.${offcanvasString}`;
   const offcanvasToggleSelector = `[${dataBsToggle}="${offcanvasString}"]`;
   const offcanvasDismissSelector = `[${dataBsDismiss}="${offcanvasString}"]`;
-  const offcanvasActiveClass = `${OffcanvasSelector}.${showClass}`;
-  const offcanvasBackdropClass = `${offcanvasString}-backdrop`;
   const offcanvasTogglingClass = `${offcanvasString}-toggling`;
   const offcanvasDefaultOptions = {
     backdrop: true, // boolean
@@ -280,16 +317,11 @@
     const self = element && element[offcanvasComponent];
 
     if (trigger.tagName === 'A') e.preventDefault();
-
-    // prevent offcanvasDismissHandler from taking over
-    // also helps with proper order of operations
-    setTimeout(() => {
-      if (self) self.toggle(trigger);
-    }, 17);
+    if (self) self.toggle(trigger);
   }
 
   function offcanvasDismissHandler(e) {
-    const element = queryElement(offcanvasActiveClass);
+    const element = queryElement(offcanvasActiveSelector);
     const offCanvasDismiss = element && queryElement(offcanvasDismissSelector, element);
     const self = element && element[offcanvasComponent];
     const { open, triggers } = self;
@@ -306,7 +338,7 @@
   }
 
   function offcanvasKeyDismissHandler({ which }) {
-    const element = queryElement(offcanvasActiveClass);
+    const element = queryElement(offcanvasActiveSelector);
     const self = element && element[offcanvasComponent];
 
     if (self && self.options.keyboard && which === 27) {
@@ -329,6 +361,7 @@
     shownOffcanvasEvent.relatedTarget = related || null;
     element.dispatchEvent(shownOffcanvasEvent);
 
+    toggleOffCanvasDismiss(1);
     setFocus(element);
   }
 
@@ -349,9 +382,12 @@
     removeClass(element, offcanvasTogglingClass);
 
     // handle new offcanvas showing up
-    if (!queryElement(offcanvasActiveClass)) {
-      if (options.backdrop) removeClass(document.body, offcanvasBackdropClass);
-      if (!options.scroll) resetScrollbar();
+    if (!queryElement(offcanvasActiveSelector)) {
+      if (options.backdrop) removeOverlay();
+      if (!options.scroll) {
+        resetScrollbar();
+        removeClass(document.body, modalOpenClass);
+      }
     }
   }
 
@@ -370,13 +406,29 @@
     document[action]('click', offcanvasDismissHandler);
   }
 
-  function setOffCanvasScrollbar() {
+  function setOffCanvasScrollbar(self) {
     const bd = document.body;
     const html = document.documentElement;
-    const openOffCanvas = hasClass(bd, offcanvasBackdropClass);
+    const openOffCanvas = hasClass(bd, modalOpenClass);
     const bodyOverflow = html.clientHeight !== html.scrollHeight
                       || bd.clientHeight !== bd.scrollHeight;
-    setScrollbar(measureScrollbar(), bodyOverflow, openOffCanvas);
+    setScrollbar(self.scrollbarWidth, bodyOverflow, openOffCanvas);
+  }
+
+  function beforeOffcanvasShow(self, related) {
+    // const {element} = self;
+
+    emulateTransitionEnd(self.element, () => showOffcanvasComplete(self, related));
+  }
+
+  function beforeOffcanvasHide(self, related) {
+    const { element } = self;
+
+    element.blur();
+    self.open = false;
+    toggleOffCanvasDismiss();
+
+    emulateTransitionEnd(element, () => hideOffcanvasComplete(self, related));
   }
 
   // OFFCANVAS DEFINITION
@@ -395,6 +447,7 @@
 
       // additional instance property
       self.open = false;
+      self.scrollbarWidth = measureScrollbar();
 
       // attach event listeners
       toggleOffcanvasEvents(self, 1);
@@ -408,11 +461,18 @@
     }
 
     show(related) {
-      const currentOffcanvas = queryElement(offcanvasActiveClass);
-      if (currentOffcanvas) currentOffcanvas[offcanvasComponent].hide();
-
       const self = this[offcanvasComponent] ? this[offcanvasComponent] : this;
       const { element, options } = self;
+      const currentOpen = getCurrentOpen();
+      let overlayDelay = 0;
+
+      if (currentOpen && currentOpen !== element) {
+        const that = currentOpen.Modal
+          ? currentOpen.Modal
+          : currentOpen[offcanvasComponent];
+        that.hide();
+      }
+
       if (self.open) return;
 
       showOffcanvasEvent.relatedTarget = related || null;
@@ -421,26 +481,33 @@
       if (showOffcanvasEvent.defaultPrevented) return;
 
       self.open = true;
-      element.style.visibility = 'visible';
-
-      if (options.backdrop) {
-        addClass(document.body, offcanvasBackdropClass);
-      }
 
       if (!options.scroll) {
-        setOffCanvasScrollbar();
+        addClass(document.body, modalOpenClass);
+        setOffCanvasScrollbar(self);
       }
 
       addClass(element, offcanvasTogglingClass);
       addClass(element, showClass);
+      element.style.visibility = 'visible';
 
-      toggleOffCanvasDismiss(1);
-      emulateTransitionEnd(element, () => showOffcanvasComplete(self, related));
+      if (options.backdrop) {
+        if (!queryElement(`.${modalBackdropClass}`)) {
+          appendOverlay(1);
+        }
+
+        overlayDelay = getElementTransitionDuration(overlay);
+
+        if (!currentOpen && !hasClass(overlay, showClass)) showOverlay();
+        setTimeout(() => beforeOffcanvasShow(self, related), overlayDelay);
+      } else beforeOffcanvasShow(self, related);
     }
 
     hide(related) {
       const self = this;
-      const { element } = self;
+      const { element, options } = self;
+      const currentOpen = getCurrentOpen();
+
       if (!self.open) return;
 
       hideOffcanvasEvent.relatedTarget = related || null;
@@ -448,12 +515,12 @@
       if (hideOffcanvasEvent.defaultPrevented) return;
 
       addClass(element, offcanvasTogglingClass);
-      element.blur();
-      self.open = false;
       removeClass(element, showClass);
-      toggleOffCanvasDismiss();
 
-      emulateTransitionEnd(element, () => hideOffcanvasComplete(self, related));
+      if (!currentOpen && options.backdrop) {
+        hideOverlay();
+        emulateTransitionEnd(overlay, () => beforeOffcanvasHide(self, related));
+      } else beforeOffcanvasHide(self, related);
     }
 
     dispose() {
