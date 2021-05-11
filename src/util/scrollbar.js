@@ -33,7 +33,6 @@ export function setScrollbar(scrollbarWidth, overflow, isOpen) {
 
   if (overflow) {
     bd.style.paddingRight = `${bodyPad + sbWidth}px`;
-    // bd.style.overflow = 'hidden';
 
     if (fixedItems.length) {
       fixedItems.forEach((fixed) => {

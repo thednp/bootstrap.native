@@ -7,7 +7,6 @@ import queryElement from 'shorter-js/src/misc/queryElement.js';
 import addClass from 'shorter-js/src/class/addClass.js';
 import hasClass from 'shorter-js/src/class/hasClass.js';
 import removeClass from 'shorter-js/src/class/removeClass.js';
-// import reflow from 'shorter-js/src/misc/reflow.js';
 import addEventListener from 'shorter-js/src/strings/addEventListener.js';
 import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
 
@@ -33,6 +32,7 @@ import {
   removeOverlay,
 } from '../util/backdrop.js';
 import setFocus from '../util/setFocus.js';
+import isVisible from '../util/isVisible.js';
 import BaseComponent from './base-component.js';
 
 // MODAL PRIVATE GC
@@ -73,12 +73,6 @@ function setModalScrollbar(self) {
   setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow), openModal);
 }
 
-function afterModalHide(self) {
-  removeOverlay();
-  self.element.style.paddingRight = '';
-  self.isAnimating = false;
-}
-
 function toggleModalDismiss(self, add) {
   const action = add ? addEventListener : removeEventListener;
   window[action]('resize', self.update, passiveHandler);
@@ -88,10 +82,34 @@ function toggleModalDismiss(self, add) {
 
 function toggleModalHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  const { triggers } = self;
 
-  if (self.triggers && self.triggers.length) {
-    self.triggers.forEach((btn) => btn[action]('click', modalClickHandler));
+  if (triggers.length) {
+    triggers.forEach((btn) => btn[action]('click', modalClickHandler));
   }
+}
+
+function afterModalHide(self) {
+  const { triggers } = self;
+  removeOverlay();
+  self.element.style.paddingRight = '';
+  self.isAnimating = false;
+
+  if (triggers.length) {
+    const visibleTrigger = triggers.find((x) => isVisible(x));
+    if (visibleTrigger) setFocus(visibleTrigger);
+  }
+}
+
+function afterModalShow(self) {
+  const { element, relatedTarget } = self;
+  setFocus(element);
+  self.isAnimating = false;
+
+  toggleModalDismiss(self, 1);
+
+  shownModalEvent.relatedTarget = relatedTarget;
+  element.dispatchEvent(shownModalEvent);
 }
 
 function beforeModalShow(self) {
@@ -111,32 +129,18 @@ function beforeModalShow(self) {
   else afterModalShow(self);
 }
 
-function afterModalShow(self) {
-  const { element, relatedTarget } = self;
-  setFocus(element);
-  self.isAnimating = false;
-
-  toggleModalDismiss(self, 1);
-
-  shownModalEvent.relatedTarget = relatedTarget;
-  element.dispatchEvent(shownModalEvent);
-}
-
 function beforeModalHide(self, force) {
   const {
-    relatedTarget, hasFade, element, triggers,
+    element, relatedTarget, hasFade,
   } = self;
-  // const overlay = queryElement(`.${modalBackdropClass}`);
   const currentOpen = getCurrentOpen();
 
   element.style.display = '';
-  if (triggers.length) setFocus(triggers[0]);
 
   // force can also be the transitionEvent object, we wanna make sure it's not
   // call is not forced and overlay is visible
   if (!force && hasFade && hasClass(overlay, showClass)
     && !currentOpen) { // AND no modal is visible
-    // removeClass(overlay, showClass);
     hideOverlay();
     emulateTransitionEnd(overlay, () => afterModalHide(self));
   } else {
@@ -163,7 +167,7 @@ function modalClickHandler(e) {
 
   self.relatedTarget = trigger;
 
-  self.toggle(trigger);
+  self.toggle();
 }
 
 function modalKeyHandler({ which }) {
@@ -178,7 +182,7 @@ function modalKeyHandler({ which }) {
   }
 }
 
-function modalDismissHandler(e) { // mouseup on dismiss button or outside the .modal-dialog
+function modalDismissHandler(e) {
   const element = this;
   const self = element[modalComponent];
 
@@ -243,20 +247,22 @@ export default class Modal extends BaseComponent {
 
   // MODAL PUBLIC METHODS
   // ====================
-  toggle(target) {
+  toggle() {
     const self = this;
     if (hasClass(self.element, showClass)) self.hide();
-    else self.show(target);
+    else self.show();
   }
 
-  show(related) {
+  show() {
     const self = this;
-    const { element, isAnimating, hasFade } = self;
+    const {
+      element, isAnimating, hasFade, relatedTarget,
+    } = self;
     let overlayDelay = 0;
 
     if (hasClass(element, showClass) && !isAnimating) return;
 
-    showModalEvent.relatedTarget = related;
+    showModalEvent.relatedTarget = relatedTarget || null;
     element.dispatchEvent(showModalEvent);
     if (showModalEvent.defaultPrevented) return;
 
@@ -264,10 +270,11 @@ export default class Modal extends BaseComponent {
 
     // we elegantly hide any opened modal/offcanvas
     const currentOpen = getCurrentOpen();
-
     if (currentOpen && currentOpen !== element) {
-      if (currentOpen[modalComponent]) currentOpen[modalComponent].hide();
-      if (currentOpen.Offcanvas) currentOpen.Offcanvas.hide();
+      const that = currentOpen[modalComponent]
+        ? currentOpen[modalComponent]
+        : currentOpen.Offcanvas;
+      that.hide();
     }
 
     if (!queryElement(`.${modalBackdropClass}`)) {
@@ -275,7 +282,7 @@ export default class Modal extends BaseComponent {
     }
     overlayDelay = getElementTransitionDuration(overlay);
 
-    if (!currentOpen && !hasClass(overlay, showClass)) {
+    if (!hasClass(overlay, showClass)) {
       showOverlay();
     }
 
@@ -291,7 +298,7 @@ export default class Modal extends BaseComponent {
     } = self;
     if (!hasClass(element, showClass) && !isAnimating) return;
 
-    hideModalEvent.relatedTarget = relatedTarget;
+    hideModalEvent.relatedTarget = relatedTarget || null;
     element.dispatchEvent(hideModalEvent);
     if (hideModalEvent.defaultPrevented) return;
 
@@ -301,7 +308,7 @@ export default class Modal extends BaseComponent {
     element.removeAttribute(ariaModal);
 
     if (hasFade && force !== 1) {
-      emulateTransitionEnd(element, () => { beforeModalHide(self); });
+      emulateTransitionEnd(element, () => beforeModalHide(self));
     } else {
       beforeModalHide(self, force);
     }

@@ -1449,7 +1449,6 @@
 
     if (overflow) {
       bd.style.paddingRight = `${bodyPad + sbWidth}px`;
-      // bd.style.overflow = 'hidden';
 
       if (fixedItems.length) {
         fixedItems.forEach((fixed) => {
@@ -1503,6 +1502,11 @@
     }
   }
 
+  function isVisible(element) {
+    return getComputedStyle(element).visibility !== 'hidden'
+      && element.offsetParent !== null;
+  }
+
   /* Native JavaScript for Bootstrap 5 | Modal
   -------------------------------------------- */
 
@@ -1544,12 +1548,6 @@
     setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow), openModal);
   }
 
-  function afterModalHide(self) {
-    removeOverlay();
-    self.element.style.paddingRight = '';
-    self.isAnimating = false;
-  }
-
   function toggleModalDismiss(self, add) {
     const action = add ? addEventListener : removeEventListener;
     window[action]('resize', self.update, passiveHandler);
@@ -1559,10 +1557,34 @@
 
   function toggleModalHandler(self, add) {
     const action = add ? addEventListener : removeEventListener;
+    const { triggers } = self;
 
-    if (self.triggers && self.triggers.length) {
-      self.triggers.forEach((btn) => btn[action]('click', modalClickHandler));
+    if (triggers.length) {
+      triggers.forEach((btn) => btn[action]('click', modalClickHandler));
     }
+  }
+
+  function afterModalHide(self) {
+    const { triggers } = self;
+    removeOverlay();
+    self.element.style.paddingRight = '';
+    self.isAnimating = false;
+
+    if (triggers.length) {
+      const visibleTrigger = triggers.find((x) => isVisible(x));
+      if (visibleTrigger) setFocus(visibleTrigger);
+    }
+  }
+
+  function afterModalShow(self) {
+    const { element, relatedTarget } = self;
+    setFocus(element);
+    self.isAnimating = false;
+
+    toggleModalDismiss(self, 1);
+
+    shownModalEvent.relatedTarget = relatedTarget;
+    element.dispatchEvent(shownModalEvent);
   }
 
   function beforeModalShow(self) {
@@ -1582,32 +1604,18 @@
     else afterModalShow(self);
   }
 
-  function afterModalShow(self) {
-    const { element, relatedTarget } = self;
-    setFocus(element);
-    self.isAnimating = false;
-
-    toggleModalDismiss(self, 1);
-
-    shownModalEvent.relatedTarget = relatedTarget;
-    element.dispatchEvent(shownModalEvent);
-  }
-
   function beforeModalHide(self, force) {
     const {
-      relatedTarget, hasFade, element, triggers,
+      element, relatedTarget, hasFade,
     } = self;
-    // const overlay = queryElement(`.${modalBackdropClass}`);
     const currentOpen = getCurrentOpen();
 
     element.style.display = '';
-    if (triggers.length) setFocus(triggers[0]);
 
     // force can also be the transitionEvent object, we wanna make sure it's not
     // call is not forced and overlay is visible
     if (!force && hasFade && hasClass(overlay, showClass)
       && !currentOpen) { // AND no modal is visible
-      // removeClass(overlay, showClass);
       hideOverlay();
       emulateTransitionEnd(overlay, () => afterModalHide(self));
     } else {
@@ -1634,7 +1642,7 @@
 
     self.relatedTarget = trigger;
 
-    self.toggle(trigger);
+    self.toggle();
   }
 
   function modalKeyHandler({ which }) {
@@ -1649,7 +1657,7 @@
     }
   }
 
-  function modalDismissHandler(e) { // mouseup on dismiss button or outside the .modal-dialog
+  function modalDismissHandler(e) {
     const element = this;
     const self = element[modalComponent];
 
@@ -1714,20 +1722,22 @@
 
     // MODAL PUBLIC METHODS
     // ====================
-    toggle(target) {
+    toggle() {
       const self = this;
       if (hasClass(self.element, showClass)) self.hide();
-      else self.show(target);
+      else self.show();
     }
 
-    show(related) {
+    show() {
       const self = this;
-      const { element, isAnimating, hasFade } = self;
+      const {
+        element, isAnimating, hasFade, relatedTarget,
+      } = self;
       let overlayDelay = 0;
 
       if (hasClass(element, showClass) && !isAnimating) return;
 
-      showModalEvent.relatedTarget = related;
+      showModalEvent.relatedTarget = relatedTarget || null;
       element.dispatchEvent(showModalEvent);
       if (showModalEvent.defaultPrevented) return;
 
@@ -1735,10 +1745,11 @@
 
       // we elegantly hide any opened modal/offcanvas
       const currentOpen = getCurrentOpen();
-
       if (currentOpen && currentOpen !== element) {
-        if (currentOpen[modalComponent]) currentOpen[modalComponent].hide();
-        if (currentOpen.Offcanvas) currentOpen.Offcanvas.hide();
+        const that = currentOpen[modalComponent]
+          ? currentOpen[modalComponent]
+          : currentOpen.Offcanvas;
+        that.hide();
       }
 
       if (!queryElement(`.${modalBackdropClass}`)) {
@@ -1746,7 +1757,7 @@
       }
       overlayDelay = getElementTransitionDuration(overlay);
 
-      if (!currentOpen && !hasClass(overlay, showClass)) {
+      if (!hasClass(overlay, showClass)) {
         showOverlay();
       }
 
@@ -1762,7 +1773,7 @@
       } = self;
       if (!hasClass(element, showClass) && !isAnimating) return;
 
-      hideModalEvent.relatedTarget = relatedTarget;
+      hideModalEvent.relatedTarget = relatedTarget || null;
       element.dispatchEvent(hideModalEvent);
       if (hideModalEvent.defaultPrevented) return;
 
@@ -1772,7 +1783,7 @@
       element.removeAttribute(ariaModal);
 
       if (hasFade && force !== 1) {
-        emulateTransitionEnd(element, () => { beforeModalHide(self); });
+        emulateTransitionEnd(element, () => beforeModalHide(self));
       } else {
         beforeModalHide(self, force);
       }
@@ -1824,103 +1835,8 @@
   const hideOffcanvasEvent = bootstrapCustomEvent(`hide.bs.${offcanvasString}`);
   const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`);
 
-  // OFFCANVAS EVENT HANDLERS
-  // ========================
-  function offcanvasTriggerHandler(e) {
-    const trigger = this;
-    const element = getTargetElement(trigger);
-    const self = element && element[offcanvasComponent];
-
-    if (trigger.tagName === 'A') e.preventDefault();
-    if (self) self.toggle(trigger);
-  }
-
-  function offcanvasDismissHandler(e) {
-    const element = queryElement(offcanvasActiveSelector);
-    const offCanvasDismiss = element && queryElement(offcanvasDismissSelector, element);
-    const self = element && element[offcanvasComponent];
-    const { open, triggers } = self;
-    const { target } = e;
-    const trigger = target.closest(offcanvasToggleSelector);
-
-    if (trigger && trigger.tagName === 'A') e.preventDefault();
-
-    if (self && open && ((!element.contains(target) && element !== target
-      && (!trigger || (trigger && !triggers.includes(trigger))))
-      || target === offCanvasDismiss)) {
-      self.hide(target === offCanvasDismiss ? offCanvasDismiss : null);
-    }
-  }
-
-  function offcanvasKeyDismissHandler({ which }) {
-    const element = queryElement(offcanvasActiveSelector);
-    const self = element && element[offcanvasComponent];
-
-    if (self && self.options.keyboard && which === 27) {
-      self.hide();
-    }
-  }
-
-  function showOffcanvasComplete(self, related) {
-    const { element, triggers } = self;
-    removeClass(element, offcanvasTogglingClass);
-
-    element.removeAttribute(ariaHidden);
-    element.setAttribute(ariaModal, true);
-    element.setAttribute('role', 'dialog');
-
-    if (triggers.length) {
-      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, true));
-    }
-
-    shownOffcanvasEvent.relatedTarget = related || null;
-    element.dispatchEvent(shownOffcanvasEvent);
-
-    toggleOffCanvasDismiss(1);
-    setFocus(element);
-  }
-
-  function hideOffcanvasComplete(self, related) {
-    const { element, options, triggers } = self;
-    element.setAttribute(ariaHidden, true);
-    element.removeAttribute(ariaModal);
-    element.removeAttribute('role');
-    element.style.visibility = 'hidden';
-
-    if (triggers.length) {
-      setFocus(triggers[0]);
-      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, false));
-    }
-
-    hiddenOffcanvasEvent.relatedTarget = related || null;
-    element.dispatchEvent(hiddenOffcanvasEvent);
-    removeClass(element, offcanvasTogglingClass);
-
-    // handle new offcanvas showing up
-    if (!queryElement(offcanvasActiveSelector)) {
-      if (options.backdrop) removeOverlay();
-      if (!options.scroll) {
-        resetScrollbar();
-        removeClass(document.body, modalOpenClass);
-      }
-    }
-  }
-
   // OFFCANVAS PRIVATE METHODS
   // =========================
-  function toggleOffcanvasEvents(self, add) {
-    const { triggers } = self;
-    const action = add ? addEventListener : removeEventListener;
-
-    triggers.forEach((btn) => btn[action]('click', offcanvasTriggerHandler));
-  }
-
-  function toggleOffCanvasDismiss(add) {
-    const action = add ? addEventListener : removeEventListener;
-    document[action]('keydown', offcanvasKeyDismissHandler);
-    document[action]('click', offcanvasDismissHandler);
-  }
-
   function setOffCanvasScrollbar(self) {
     const bd = document.body;
     const html = document.documentElement;
@@ -1930,20 +1846,145 @@
     setScrollbar(self.scrollbarWidth, bodyOverflow, openOffCanvas);
   }
 
-  function beforeOffcanvasShow(self, related) {
-    // const {element} = self;
-
-    emulateTransitionEnd(self.element, () => showOffcanvasComplete(self, related));
+  function toggleOffcanvasEvents(self, add) {
+    const action = add ? addEventListener : removeEventListener;
+    self.triggers.forEach((btn) => btn[action]('click', offcanvasTriggerHandler));
   }
 
-  function beforeOffcanvasHide(self, related) {
-    const { element } = self;
+  function toggleOffCanvasDismiss(add) {
+    const action = add ? addEventListener : removeEventListener;
+    document[action]('keydown', offcanvasKeyDismissHandler);
+    document[action]('click', offcanvasDismissHandler);
+  }
+
+  function beforeOffcanvasShow(self) {
+    const { element, options } = self;
+
+    if (!options.scroll) {
+      addClass(document.body, modalOpenClass);
+      setOffCanvasScrollbar(self);
+    }
+
+    addClass(element, offcanvasTogglingClass);
+    addClass(element, showClass);
+    element.style.visibility = 'visible';
+
+    emulateTransitionEnd(element, () => showOffcanvasComplete(self));
+  }
+
+  function beforeOffcanvasHide(self) {
+    const { element, options } = self;
+    const currentOpen = getCurrentOpen();
 
     element.blur();
-    self.open = false;
-    toggleOffCanvasDismiss();
 
-    emulateTransitionEnd(element, () => hideOffcanvasComplete(self, related));
+    if (!currentOpen && options.backdrop && hasClass(overlay, showClass)) {
+      hideOverlay();
+      emulateTransitionEnd(overlay, () => hideOffcanvasComplete(self));
+    } else hideOffcanvasComplete(self);
+  }
+
+  // OFFCANVAS EVENT HANDLERS
+  // ========================
+  function offcanvasTriggerHandler(e) {
+    const trigger = this.closest(offcanvasToggleSelector);
+    const element = getTargetElement(trigger);
+    const self = element && element[offcanvasComponent];
+
+    if (trigger.tagName === 'A') e.preventDefault();
+    if (self) {
+      self.relatedTarget = trigger;
+      self.toggle();
+    }
+  }
+
+  function offcanvasDismissHandler(e) {
+    const element = queryElement(offcanvasActiveSelector);
+    if (!element) return;
+
+    const offCanvasDismiss = queryElement(offcanvasDismissSelector, element);
+    const self = element[offcanvasComponent];
+    if (!self) return;
+
+    const { options, open, triggers } = self;
+    const { target } = e;
+    const trigger = target.closest(offcanvasToggleSelector);
+
+    if (trigger && trigger.tagName === 'A') e.preventDefault();
+
+    if (open && ((!element.contains(target) && options.backdrop
+      && (!trigger || (trigger && !triggers.includes(trigger))))
+      || offCanvasDismiss.contains(target))) {
+      self.relatedTarget = target === offCanvasDismiss ? offCanvasDismiss : null;
+      self.hide();
+    }
+  }
+
+  function offcanvasKeyDismissHandler({ which }) {
+    const element = queryElement(offcanvasActiveSelector);
+    if (!element) return;
+
+    const self = element[offcanvasComponent];
+
+    if (self && self.options.keyboard && which === 27) {
+      self.relatedTarget = null;
+      self.hide();
+    }
+  }
+
+  function showOffcanvasComplete(self) {
+    const { element, triggers, relatedTarget } = self;
+    removeClass(element, offcanvasTogglingClass);
+
+    element.removeAttribute(ariaHidden);
+    element.setAttribute(ariaModal, true);
+    element.setAttribute('role', 'dialog');
+    self.isAnimating = false;
+
+    if (triggers.length) {
+      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, true));
+    }
+
+    shownOffcanvasEvent.relatedTarget = relatedTarget || null;
+    element.dispatchEvent(shownOffcanvasEvent);
+
+    toggleOffCanvasDismiss(1);
+    setFocus(element);
+  }
+
+  function hideOffcanvasComplete(self) {
+    const {
+      element, options, relatedTarget, triggers,
+    } = self;
+    const currentOpen = getCurrentOpen();
+
+    element.setAttribute(ariaHidden, true);
+    element.removeAttribute(ariaModal);
+    element.removeAttribute('role');
+    element.style.visibility = '';
+    self.open = false;
+    self.isAnimating = false;
+
+    if (triggers.length) {
+      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, false));
+      const visibleTrigger = triggers.find((x) => isVisible(x));
+      if (visibleTrigger) setFocus(visibleTrigger);
+    }
+
+    // handle new offcanvas showing up
+    if (!currentOpen) {
+      if (options.backdrop) removeOverlay();
+      if (!options.scroll) {
+        resetScrollbar();
+        removeClass(document.body, modalOpenClass);
+      }
+    }
+
+    hiddenOffcanvasEvent.relatedTarget = relatedTarget || null;
+    element.dispatchEvent(hiddenOffcanvasEvent);
+    removeClass(element, offcanvasTogglingClass);
+
+    toggleOffCanvasDismiss();
   }
 
   // OFFCANVAS DEFINITION
@@ -1962,6 +2003,7 @@
 
       // additional instance property
       self.open = false;
+      self.isAnimating = false;
       self.scrollbarWidth = measureScrollbar();
 
       // attach event listeners
@@ -1970,41 +2012,36 @@
 
     // OFFCANVAS PUBLIC METHODS
     // ========================
-    toggle(related) {
+    toggle() {
       const self = this;
-      return self.open ? self.hide(related) : self.show(related);
+      return self.open ? self.hide() : self.show();
     }
 
-    show(related) {
+    show() {
       const self = this[offcanvasComponent] ? this[offcanvasComponent] : this;
-      const { element, options } = self;
-      const currentOpen = getCurrentOpen();
+      const {
+        element, options, isAnimating, relatedTarget,
+      } = self;
       let overlayDelay = 0;
 
-      if (currentOpen && currentOpen !== element) {
-        const that = currentOpen.Modal
-          ? currentOpen.Modal
-          : currentOpen[offcanvasComponent];
-        that.hide();
-      }
+      if (self.open || isAnimating) return;
 
-      if (self.open) return;
-
-      showOffcanvasEvent.relatedTarget = related || null;
+      showOffcanvasEvent.relatedTarget = relatedTarget || null;
       element.dispatchEvent(showOffcanvasEvent);
 
       if (showOffcanvasEvent.defaultPrevented) return;
 
-      self.open = true;
-
-      if (!options.scroll) {
-        addClass(document.body, modalOpenClass);
-        setOffCanvasScrollbar(self);
+      // we elegantly hide any opened modal/offcanvas
+      const currentOpen = getCurrentOpen();
+      if (currentOpen && currentOpen !== element) {
+        const that = currentOpen[offcanvasComponent]
+          ? currentOpen[offcanvasComponent]
+          : currentOpen.Modal;
+        that.hide();
       }
 
-      addClass(element, offcanvasTogglingClass);
-      addClass(element, showClass);
-      element.style.visibility = 'visible';
+      self.open = true;
+      self.isAnimating = true;
 
       if (options.backdrop) {
         if (!queryElement(`.${modalBackdropClass}`)) {
@@ -2013,33 +2050,35 @@
 
         overlayDelay = getElementTransitionDuration(overlay);
 
-        if (!currentOpen && !hasClass(overlay, showClass)) showOverlay();
-        setTimeout(() => beforeOffcanvasShow(self, related), overlayDelay);
-      } else beforeOffcanvasShow(self, related);
+        if (!hasClass(overlay, showClass)) showOverlay();
+
+        setTimeout(() => beforeOffcanvasShow(self), overlayDelay);
+      } else beforeOffcanvasShow(self);
     }
 
-    hide(related) {
+    hide(force) {
       const self = this;
-      const { element, options } = self;
-      const currentOpen = getCurrentOpen();
+      const { element, isAnimating, relatedTarget } = self;
 
-      if (!self.open) return;
+      if (!self.open || isAnimating) return;
 
-      hideOffcanvasEvent.relatedTarget = related || null;
+      hideOffcanvasEvent.relatedTarget = relatedTarget || null;
       element.dispatchEvent(hideOffcanvasEvent);
       if (hideOffcanvasEvent.defaultPrevented) return;
 
+      self.isAnimating = true;
       addClass(element, offcanvasTogglingClass);
       removeClass(element, showClass);
 
-      if (!currentOpen && options.backdrop) {
-        hideOverlay();
-        emulateTransitionEnd(overlay, () => beforeOffcanvasHide(self, related));
-      } else beforeOffcanvasHide(self, related);
+      if (!force) {
+        emulateTransitionEnd(element, () => beforeOffcanvasHide(self));
+      } else beforeOffcanvasHide(self);
     }
 
     dispose() {
-      toggleOffcanvasEvents(this);
+      const self = this;
+      self.hide(1);
+      toggleOffcanvasEvents(self);
       super.dispose(offcanvasComponent);
     }
   }

@@ -1765,7 +1765,8 @@ var myModalInit = myModal.Modal;
                 <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                   <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                 </svg>
-                 Launch simple modal</button></p>
+                 Launch simple modal</button>
+              </p>
               <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -1831,7 +1832,8 @@ var myModalInit = myModal.Modal;
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <h4>This modal was opened from another modal</h4>
+                      <h4>Linked Modal</h4>
+                      <p class="lead">This modal was opened from another modal</p>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
                         quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
                       <p>This modal uses <code>.modal-dialog-scrollable</code></p>
@@ -1841,6 +1843,10 @@ var myModalInit = myModal.Modal;
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                       <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
                         laoreet rutrum faucibus dolor auctor.</p>
+                      <h4>Open an Offcanvas instance</h4>
+                      <p class="lead">The following button will close this modal and open an offcanvas instance.</p>
+
+                      <button data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" class="btn btn-primary">Open Offcanvas</button>
                       <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
@@ -1849,12 +1855,6 @@ var myModalInit = myModal.Modal;
                         laoreet rutrum faucibus dolor auctor.</p>
                       <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
                         consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-                      <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
-                        quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-                      <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
-                        laoreet rutrum faucibus dolor auctor.</p>
-                      <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
-                        consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>                        
                     </div>
                     <div class="modal-footer">
                       <button data-bs-toggle="modal" data-bs-target="#myModal" type="button" class="btn btn-primary">Back</button>
@@ -2189,11 +2189,11 @@ var myOffcanvasInit = myModal.Offcanvas;
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                  <p>Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.</p>
-                  <p>This Offcanvas instance has its specific events attached. Check the console for logs.</p>
+                  <p>This <b>Offcanvas</b> instance has its specific events attached. Check the console for logs.</p>
+                  <p>Opening another <b>Offcanvas</b> instance will close this <b>Offcanvas</b> instance.</p>
 
                   <button class="btn btn-primary mt-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">
-                    Open another
+                    Open Offcanvas
                   </button>
                 </div>
               </div>
@@ -2203,11 +2203,11 @@ var myOffcanvasInit = myModal.Offcanvas;
                   <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                     <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                   </svg>
-                  Enable scroll
+                  Scroll
                 </button>
-                <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">Enable backdrop (default)</button>
-                <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTopWithBackdrop" aria-controls="offcanvasTopWithBackdrop">Enable backdrop Top</button>
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Enable both scrolling & backdrop</button>
+                <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">Backdrop (default)</button>
+                <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTopWithBackdrop" aria-controls="offcanvasTopWithBackdrop">Backdrop Top</button>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Scrolling & backdrop</button>
               </div>
 
               <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
@@ -2230,11 +2230,12 @@ var myOffcanvasInit = myModal.Offcanvas;
               </div>
               <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasWithBackdrop" aria-labelledby="offcanvasWithBackdropLabel">
                 <div class="offcanvas-header">
-                  <h5 class="offcanvas-title" id="offcanvasWithBackdropLabel">Offcanvas with backdrop</h5>
+                  <h5 class="offcanvas-title" id="offcanvasWithBackdropLabel">Offcanvas with Modal</h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                  <p>.....</p>
+                  <p>Opening a <b>Modal</b> instance will close this <b>Offcanvas</b> instance.</p>
+                  <p><a class="btn btn-primary" href="#myModal" data-bs-toggle="modal">Open Modal</a></p>
                 </div>
               </div>
               <div class="offcanvas offcanvas-bottom" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
