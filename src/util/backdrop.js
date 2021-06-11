@@ -11,6 +11,7 @@ const modalOpenClass = 'modal-open';
 const modalBackdropClass = 'modal-backdrop';
 const modalActiveSelector = `.modal.${showClass}`;
 const offcanvasActiveSelector = `.offcanvas.${showClass}`;
+const bd = document.body;
 
 const overlay = document.createElement('div');
 overlay.setAttribute('class', `${modalBackdropClass}`);
@@ -20,7 +21,7 @@ function getCurrentOpen() {
 }
 
 function appendOverlay(hasFade) {
-  document.body.appendChild(overlay);
+  bd.appendChild(overlay);
   if (hasFade) addClass(overlay, fadeClass);
 }
 
@@ -34,7 +35,7 @@ function hideOverlay() {
 }
 
 function removeOverlay() {
-  const bd = document.body;
+  // const bd = document.body;
   const currentOpen = getCurrentOpen();
 
   if (!currentOpen) {

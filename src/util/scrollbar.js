@@ -26,12 +26,15 @@ export function measureScrollbar() {
   return Math.abs(window.innerWidth - windowWidth);
 }
 
-export function setScrollbar(scrollbarWidth, overflow, isOpen) {
+export function setScrollbar(scrollbarWidth, overflow) {
   const bd = document.body;
-  const bodyPad = parseInt(getComputedStyle(bd).paddingRight, 10);
+  const bdStyle = getComputedStyle(bd);
+  const bodyPad = parseInt(bdStyle.paddingRight, 10);
+  const isOpen = bdStyle.overflow === 'hidden';
   const sbWidth = isOpen && bodyPad ? 0 : scrollbarWidth;
 
   if (overflow) {
+    bd.style.overflow = 'hidden';
     bd.style.paddingRight = `${bodyPad + sbWidth}px`;
 
     if (fixedItems.length) {

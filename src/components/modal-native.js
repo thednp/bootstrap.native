@@ -62,7 +62,6 @@ function setModalScrollbar(self) {
   const { element, scrollbarWidth } = self;
   const bd = document.body;
   const html = document.documentElement;
-  const openModal = hasClass(bd, modalOpenClass);
   const bodyOverflow = html.clientHeight !== html.scrollHeight
                     || bd.clientHeight !== bd.scrollHeight;
   const modalOverflow = element.clientHeight !== element.scrollHeight;
@@ -70,7 +69,7 @@ function setModalScrollbar(self) {
   if (!modalOverflow && scrollbarWidth) {
     element.style.paddingRight = `${scrollbarWidth}px`;
   }
-  setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow), openModal);
+  setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow));
 }
 
 function toggleModalDismiss(self, add) {
@@ -118,6 +117,7 @@ function beforeModalShow(self) {
 
   setModalScrollbar(self);
   if (!queryElement(modalActiveSelector)) {
+    document.body.style.overflow = 'hidden';
     addClass(document.body, modalOpenClass);
   }
 

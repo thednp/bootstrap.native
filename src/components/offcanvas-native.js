@@ -59,10 +59,9 @@ const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`
 function setOffCanvasScrollbar(self) {
   const bd = document.body;
   const html = document.documentElement;
-  const openOffCanvas = hasClass(bd, modalOpenClass);
   const bodyOverflow = html.clientHeight !== html.scrollHeight
                     || bd.clientHeight !== bd.scrollHeight;
-  setScrollbar(self.scrollbarWidth, bodyOverflow, openOffCanvas);
+  setScrollbar(self.scrollbarWidth, bodyOverflow);
 }
 
 function toggleOffcanvasEvents(self, add) {
@@ -81,6 +80,7 @@ function beforeOffcanvasShow(self) {
 
   if (!options.scroll) {
     addClass(document.body, modalOpenClass);
+    document.body.style.overflow = 'hidden';
     setOffCanvasScrollbar(self);
   }
 

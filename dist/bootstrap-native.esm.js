@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.0 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.0.1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -1436,12 +1436,15 @@ function measureScrollbar() {
   return Math.abs(window.innerWidth - windowWidth);
 }
 
-function setScrollbar(scrollbarWidth, overflow, isOpen) {
+function setScrollbar(scrollbarWidth, overflow) {
   const bd = document.body;
-  const bodyPad = parseInt(getComputedStyle(bd).paddingRight, 10);
+  const bdStyle = getComputedStyle(bd);
+  const bodyPad = parseInt(bdStyle.paddingRight, 10);
+  const isOpen = bdStyle.overflow === 'hidden';
   const sbWidth = isOpen && bodyPad ? 0 : scrollbarWidth;
 
   if (overflow) {
+    bd.style.overflow = 'hidden';
     bd.style.paddingRight = `${bodyPad + sbWidth}px`;
 
     if (fixedItems.length) {
@@ -1462,6 +1465,7 @@ const modalOpenClass = 'modal-open';
 const modalBackdropClass = 'modal-backdrop';
 const modalActiveSelector = `.modal.${showClass}`;
 const offcanvasActiveSelector = `.offcanvas.${showClass}`;
+const bd = document.body;
 
 const overlay = document.createElement('div');
 overlay.setAttribute('class', `${modalBackdropClass}`);
@@ -1471,7 +1475,7 @@ function getCurrentOpen() {
 }
 
 function appendOverlay(hasFade) {
-  document.body.appendChild(overlay);
+  bd.appendChild(overlay);
   if (hasFade) addClass(overlay, fadeClass);
 }
 
@@ -1485,7 +1489,7 @@ function hideOverlay() {
 }
 
 function removeOverlay() {
-  const bd = document.body;
+  // const bd = document.body;
   const currentOpen = getCurrentOpen();
 
   if (!currentOpen) {
@@ -1531,7 +1535,6 @@ function setModalScrollbar(self) {
   const { element, scrollbarWidth } = self;
   const bd = document.body;
   const html = document.documentElement;
-  const openModal = hasClass(bd, modalOpenClass);
   const bodyOverflow = html.clientHeight !== html.scrollHeight
                     || bd.clientHeight !== bd.scrollHeight;
   const modalOverflow = element.clientHeight !== element.scrollHeight;
@@ -1539,7 +1542,7 @@ function setModalScrollbar(self) {
   if (!modalOverflow && scrollbarWidth) {
     element.style.paddingRight = `${scrollbarWidth}px`;
   }
-  setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow), openModal);
+  setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow));
 }
 
 function toggleModalDismiss(self, add) {
@@ -1587,6 +1590,7 @@ function beforeModalShow(self) {
 
   setModalScrollbar(self);
   if (!queryElement(modalActiveSelector)) {
+    document.body.style.overflow = 'hidden';
     addClass(document.body, modalOpenClass);
   }
 
@@ -1834,10 +1838,9 @@ const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`
 function setOffCanvasScrollbar(self) {
   const bd = document.body;
   const html = document.documentElement;
-  const openOffCanvas = hasClass(bd, modalOpenClass);
   const bodyOverflow = html.clientHeight !== html.scrollHeight
                     || bd.clientHeight !== bd.scrollHeight;
-  setScrollbar(self.scrollbarWidth, bodyOverflow, openOffCanvas);
+  setScrollbar(self.scrollbarWidth, bodyOverflow);
 }
 
 function toggleOffcanvasEvents(self, add) {
@@ -1856,6 +1859,7 @@ function beforeOffcanvasShow(self) {
 
   if (!options.scroll) {
     addClass(document.body, modalOpenClass);
+    document.body.style.overflow = 'hidden';
     setOffCanvasScrollbar(self);
   }
 
@@ -3473,7 +3477,7 @@ Tooltip.init = {
   constructor: Tooltip,
 };
 
-var version = "4.0.0";
+var version = "4.0.1";
 
 // import { alertInit } from '../components/alert-native.js';
 // import { buttonInit } from '../components/button-native.js';
