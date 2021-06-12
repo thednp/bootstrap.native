@@ -45,7 +45,10 @@ const popoverDefaultOptions = {
 
 // POPOVER PRIVATE GC
 // ==================
-const isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent);
+const appleBrands = /(iPhone|iPod|iPad)/;
+const isIphone = navigator.userAgentData
+  ? navigator.userAgentData.brands.some((x) => appleBrands.test(x.brand))
+  : appleBrands.test(navigator.userAgent);
 // popoverArrowClass = `${popoverString}-arrow`,
 const popoverHeaderClass = `${popoverString}-header`;
 const popoverBodyClass = `${popoverString}-body`;

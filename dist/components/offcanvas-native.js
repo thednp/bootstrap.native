@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Offcanvas v4.0.1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Offcanvas v4.0.2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -180,7 +180,6 @@
   const modalBackdropClass = 'modal-backdrop';
   const modalActiveSelector = `.modal.${showClass}`;
   const offcanvasActiveSelector = `.offcanvas.${showClass}`;
-  const bd = document.body;
 
   const overlay = document.createElement('div');
   overlay.setAttribute('class', `${modalBackdropClass}`);
@@ -190,7 +189,7 @@
   }
 
   function appendOverlay(hasFade) {
-    bd.appendChild(overlay);
+    document.body.appendChild(overlay);
     if (hasFade) addClass(overlay, fadeClass);
   }
 
@@ -204,7 +203,7 @@
   }
 
   function removeOverlay() {
-    // const bd = document.body;
+    const bd = document.body;
     const currentOpen = getCurrentOpen();
 
     if (!currentOpen) {

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Popover v4.0.1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Popover v4.0.2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -431,7 +431,10 @@ const popoverDefaultOptions = {
 
 // POPOVER PRIVATE GC
 // ==================
-const isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent);
+const appleBrands = /(iPhone|iPod|iPad)/;
+const isIphone = navigator.userAgentData
+  ? navigator.userAgentData.brands.some((x) => appleBrands.test(x.brand))
+  : appleBrands.test(navigator.userAgent);
 // popoverArrowClass = `${popoverString}-arrow`,
 const popoverHeaderClass = `${popoverString}-header`;
 const popoverBodyClass = `${popoverString}-body`;

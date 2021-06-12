@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.0.2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -1465,7 +1465,6 @@ const modalOpenClass = 'modal-open';
 const modalBackdropClass = 'modal-backdrop';
 const modalActiveSelector = `.modal.${showClass}`;
 const offcanvasActiveSelector = `.offcanvas.${showClass}`;
-const bd = document.body;
 
 const overlay = document.createElement('div');
 overlay.setAttribute('class', `${modalBackdropClass}`);
@@ -1475,7 +1474,7 @@ function getCurrentOpen() {
 }
 
 function appendOverlay(hasFade) {
-  bd.appendChild(overlay);
+  document.body.appendChild(overlay);
   if (hasFade) addClass(overlay, fadeClass);
 }
 
@@ -1489,7 +1488,7 @@ function hideOverlay() {
 }
 
 function removeOverlay() {
-  // const bd = document.body;
+  const bd = document.body;
   const currentOpen = getCurrentOpen();
 
   if (!currentOpen) {
@@ -2326,7 +2325,10 @@ const popoverDefaultOptions = {
 
 // POPOVER PRIVATE GC
 // ==================
-const isIphone = /(iPhone|iPod|iPad)/.test(navigator.userAgent);
+const appleBrands = /(iPhone|iPod|iPad)/;
+const isIphone = navigator.userAgentData
+  ? navigator.userAgentData.brands.some((x) => appleBrands.test(x.brand))
+  : appleBrands.test(navigator.userAgent);
 // popoverArrowClass = `${popoverString}-arrow`,
 const popoverHeaderClass = `${popoverString}-header`;
 const popoverBodyClass = `${popoverString}-body`;
@@ -3477,7 +3479,7 @@ Tooltip.init = {
   constructor: Tooltip,
 };
 
-var version = "4.0.1";
+var version = "4.0.2";
 
 // import { alertInit } from '../components/alert-native.js';
 // import { buttonInit } from '../components/button-native.js';
