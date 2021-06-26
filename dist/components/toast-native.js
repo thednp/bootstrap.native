@@ -298,10 +298,8 @@
         if (hideToastEvent.defaultPrevented) return;
 
         clearTimeout(self.timer);
-        self.timer = setTimeout(
-          closeToast(self),
-          noTimer ? 10 : options.delay,
-        );
+        self.timer = setTimeout(() => closeToast(self),
+          noTimer ? 10 : options.delay);
       }
     }
 

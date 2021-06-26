@@ -141,8 +141,7 @@ export default class Toast extends BaseComponent {
 
       clearTimeout(self.timer);
       self.timer = setTimeout(() => closeToast(self),
-        noTimer ? 10 : options.delay,
-      );
+        noTimer ? 10 : options.delay);
     }
   }
 
