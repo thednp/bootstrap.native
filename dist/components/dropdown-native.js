@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Dropdown v4.0.2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Dropdown v4.0.3 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -202,6 +202,7 @@
     const {
       element, menu, originalClass, menuEnd, options,
     } = self;
+    const { offset } = options;
     const parent = element.parentElement;
 
     // reset menu offset and position
@@ -210,14 +211,16 @@
     removeClass(parent, 'position-static');
 
     if (!show) {
+      const menuEndNow = hasClass(menu, dropdownMenuEndClass);
       parent.className = originalClass.join(' ');
-      const menuAction = menuEnd && !hasClass(menu, dropdownMenuEndClass) ? addClass : removeClass;
-      menuAction(menu, dropdownMenuEndClass);
+      if (menuEndNow && !menuEnd) removeClass(menu, dropdownMenuEndClass);
+      else if (!menuEndNow && menuEnd) addClass(menu, dropdownMenuEndClass);
       return;
     }
 
-    const { offset } = options;
-    let positionClass = dropdownMenuClasses.find((c) => originalClass.includes(c));
+    // set initial position class
+    // take into account .btn-group parent as .dropdown
+    let positionClass = dropdownMenuClasses.find((c) => originalClass.includes(c)) || dropdownString;
 
     let dropdownMargin = {
       dropdown: [offset, 0, 0],
@@ -260,8 +263,6 @@
     // dropup
     const topExceed = targetBCR.top - menuDimensions.h < 0;
 
-    const btnGroup = parent.parentNode.closest('.btn-group,.btn-group-vertical');
-
     // recompute position
     if (horizontalClass.includes(positionClass) && leftFullExceed && rightFullExceed) {
       positionClass = dropdownString;
@@ -297,10 +298,8 @@
     // update dropdown / dropup to handle parent btn-group element
     // as well as the dropdown-menu-end utility class
     if (verticalClass.includes(positionClass)) {
-      const menuEndAction = rightExceed ? addClass : removeClass;
-
-      if (!btnGroup) menuEndAction(menu, dropdownMenuEndClass);
-      else if (leftExceed) addClass(parent, 'position-static');
+      if (!menuEnd && rightExceed) addClass(menu, dropdownMenuEndClass);
+      else if (menuEnd && leftExceed) removeClass(menu, dropdownMenuEndClass);
 
       if (hasClass(menu, dropdownMenuEndClass)) {
         Object.keys(dropdownPosition.menuEnd).forEach((p) => {
@@ -320,6 +319,7 @@
     document[action]('focus', dropdownDismissHandler);
     document[action]('keydown', dropdownPreventScroll);
     document[action]('keyup', dropdownKeyHandler);
+
     if (self.options.display === 'dynamic') {
       window[action]('scroll', dropdownLayoutHandler, passiveHandler);
       window[action]('resize', dropdownLayoutHandler, passiveHandler);
@@ -332,7 +332,7 @@
   }
 
   function getCurrentOpenDropdown() {
-    const currentParent = dropdownMenuClasses
+    const currentParent = dropdownMenuClasses.concat('btn-group')
       .map((c) => document.getElementsByClassName(`${c} ${showClass}`))
       .find((x) => x.length);
 
@@ -468,7 +468,7 @@
 
     show(related) {
       const self = this;
-      const currentParent = queryElement(dropdownMenuClasses.map((c) => `.${c}.${showClass}`).join(','));
+      const currentParent = queryElement(dropdownMenuClasses.concat('btn-group').map((c) => `.${c}.${showClass}`).join(','));
       const currentElement = currentParent && queryElement(dropdownSelector, currentParent);
 
       if (currentElement) currentElement[dropdownComponent].hide();

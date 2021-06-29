@@ -52,6 +52,7 @@ function styleDropdown(self, show) {
   const {
     element, menu, originalClass, menuEnd, options,
   } = self;
+  const { offset } = options;
   const parent = element.parentElement;
 
   // reset menu offset and position
@@ -60,14 +61,16 @@ function styleDropdown(self, show) {
   removeClass(parent, 'position-static');
 
   if (!show) {
+    const menuEndNow = hasClass(menu, dropdownMenuEndClass);
     parent.className = originalClass.join(' ');
-    const menuAction = menuEnd && !hasClass(menu, dropdownMenuEndClass) ? addClass : removeClass;
-    menuAction(menu, dropdownMenuEndClass);
+    if (menuEndNow && !menuEnd) removeClass(menu, dropdownMenuEndClass);
+    else if (!menuEndNow && menuEnd) addClass(menu, dropdownMenuEndClass);
     return;
   }
 
-  const { offset } = options;
-  let positionClass = dropdownClasses.find((c) => originalClass.includes(c));
+  // set initial position class
+  // take into account .btn-group parent as .dropdown
+  let positionClass = dropdownClasses.find((c) => originalClass.includes(c)) || dropdownString;
 
   let dropdownMargin = {
     dropdown: [offset, 0, 0],
@@ -110,8 +113,6 @@ function styleDropdown(self, show) {
   // dropup
   const topExceed = targetBCR.top - menuDimensions.h < 0;
 
-  const btnGroup = parent.parentNode.closest('.btn-group,.btn-group-vertical');
-
   // recompute position
   if (horizontalClass.includes(positionClass) && leftFullExceed && rightFullExceed) {
     positionClass = dropdownString;
@@ -147,10 +148,8 @@ function styleDropdown(self, show) {
   // update dropdown / dropup to handle parent btn-group element
   // as well as the dropdown-menu-end utility class
   if (verticalClass.includes(positionClass)) {
-    const menuEndAction = rightExceed ? addClass : removeClass;
-
-    if (!btnGroup) menuEndAction(menu, dropdownMenuEndClass);
-    else if (leftExceed) addClass(parent, 'position-static');
+    if (!menuEnd && rightExceed) addClass(menu, dropdownMenuEndClass);
+    else if (menuEnd && leftExceed) removeClass(menu, dropdownMenuEndClass);
 
     if (hasClass(menu, dropdownMenuEndClass)) {
       Object.keys(dropdownPosition.menuEnd).forEach((p) => {
@@ -170,6 +169,7 @@ function toggleDropdownDismiss(self) {
   document[action]('focus', dropdownDismissHandler);
   document[action]('keydown', dropdownPreventScroll);
   document[action]('keyup', dropdownKeyHandler);
+
   if (self.options.display === 'dynamic') {
     window[action]('scroll', dropdownLayoutHandler, passiveHandler);
     window[action]('resize', dropdownLayoutHandler, passiveHandler);
@@ -182,7 +182,7 @@ function toggleDropdownHandler(self, add) {
 }
 
 function getCurrentOpenDropdown() {
-  const currentParent = dropdownClasses
+  const currentParent = dropdownClasses.concat('btn-group')
     .map((c) => document.getElementsByClassName(`${c} ${showClass}`))
     .find((x) => x.length);
 
@@ -320,7 +320,7 @@ export default class Dropdown extends BaseComponent {
 
   show(related) {
     const self = this;
-    const currentParent = queryElement(dropdownClasses.map((c) => `.${c}.${showClass}`).join(','));
+    const currentParent = queryElement(dropdownClasses.concat('btn-group').map((c) => `.${c}.${showClass}`).join(','));
     const currentElement = currentParent && queryElement(dropdownSelector, currentParent);
 
     if (currentElement) currentElement[dropdownComponent].hide();

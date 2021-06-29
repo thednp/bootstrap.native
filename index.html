@@ -1394,19 +1394,17 @@ myDropdownInit.dispose();
               <h3>Dropdown Examples</h3>
               <p>Right out of the box, the above dropdown template is initialized via DATA-API right away.</p>
               <div class="btn-group mb-3">
-                <div class="dropdown">
-                  <button class="btn btn-primary" id="myDropdown" type="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-                      <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
-                    </svg>
-                    Dropdown trigger
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="myDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
+                <button class="btn btn-primary dropdown-toggle" id="myDropdown" type="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                  <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                    <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
+                  </svg>
+                  Dropdown trigger
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="myDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
                 </div>
               </div>
 
