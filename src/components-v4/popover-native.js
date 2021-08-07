@@ -49,11 +49,14 @@ export default function Popover(elem, opsInput) {
     }
   }
   // private methods
-  function getContents() {
-    return {
-      0: options.title || element.getAttribute('data-title') || null,
-      1: options.content || element.getAttribute('data-content') || null,
-    };
+  function getAttr(att) {
+    return options[att] || element.dataset[att] || null;
+  }
+  function getTitle() {
+    return getAttr('title');
+  }
+  function getContent() {
+    return getAttr('content');
   }
   function removePopover() {
     ops.container.removeChild(popover);
@@ -61,7 +64,8 @@ export default function Popover(elem, opsInput) {
   }
 
   function createPopover() {
-    [titleString, contentString] = getContents();
+    titleString = getTitle();
+    contentString = getContent();
     // fixing https://github.com/thednp/bootstrap.native/issues/233
     contentString = contentString ? contentString.trim() : null;
 
@@ -254,7 +258,8 @@ export default function Popover(elem, opsInput) {
   placementClass = `bs-popover-${ops.placement}`;
 
   // invalidate
-  [titleString, contentString] = getContents();
+  titleString = getTitle();
+  contentString = getContent();
 
   if (!contentString && !ops.template) return;
 
