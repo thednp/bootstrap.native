@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.3 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.0.4 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -1399,8 +1399,6 @@ function styleTip(link, element, originalPosition, parent) {
 // ==================
 
 function Popover(elem, opsInput) {
-  var assign;
-
   var element;
   // set instance options
   var options = opsInput || {};
@@ -1436,11 +1434,14 @@ function Popover(elem, opsInput) {
     }
   }
   // private methods
-  function getContents() {
-    return {
-      0: options.title || element.getAttribute('data-title') || null,
-      1: options.content || element.getAttribute('data-content') || null,
-    };
+  function getAttr(att) {
+    return options[att] || element.dataset[att] || null;
+  }
+  function getTitle() {
+    return getAttr('title');
+  }
+  function getContent() {
+    return getAttr('content');
   }
   function removePopover() {
     ops.container.removeChild(popover);
@@ -1448,9 +1449,8 @@ function Popover(elem, opsInput) {
   }
 
   function createPopover() {
-    var assign;
-
-    (assign = getContents(), titleString = assign[0], contentString = assign[1]);
+    titleString = getTitle();
+    contentString = getContent();
     // fixing https://github.com/thednp/bootstrap.native/issues/233
     contentString = contentString ? contentString.trim() : null;
 
@@ -1641,7 +1641,8 @@ function Popover(elem, opsInput) {
   placementClass = "bs-popover-" + (ops.placement);
 
   // invalidate
-  (assign = getContents(), titleString = assign[0], contentString = assign[1]);
+  titleString = getTitle();
+  contentString = getContent();
 
   if (!contentString && !ops.template) { return; }
 
@@ -2385,7 +2386,7 @@ function removeDataAPI(context) {
   });
 }
 
-var version = "4.0.3";
+var version = "4.0.4";
 
 var indexV4 = {
   Alert: Alert,

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.3 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.0.4 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -3477,7 +3477,7 @@ Tooltip.init = {
   constructor: Tooltip,
 };
 
-var version = "4.0.3";
+var version = "4.0.4";
 
 // import { alertInit } from '../components/alert-native.js';
 // import { buttonInit } from '../components/button-native.js';
