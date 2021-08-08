@@ -927,14 +927,14 @@ class Collapse extends BaseComponent {
     const self = this;
 
     // initialization element
-    const { element } = self;
+    const { element, options } = self;
 
     // set triggering elements
     self.triggers = Array.from(document.querySelectorAll(collapseToggleSelector))
       .filter((btn) => getTargetElement(btn) === element);
 
     // set parent accordion
-    self.parent = queryElement(self.options.parent);
+    self.parent = queryElement(options.parent);
     const { parent } = self;
 
     // set initial state
