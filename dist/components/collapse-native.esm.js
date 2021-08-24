@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Collapse v4.0.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Collapse v4.0.5 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -380,4 +380,4 @@ Collapse.init = {
   constructor: Collapse,
 };
 
-export default Collapse;
+export { Collapse as default };

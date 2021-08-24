@@ -22,9 +22,10 @@ import isVisible from '../util/isVisible.js';
 import { resetScrollbar, setScrollbar, measureScrollbar } from '../util/scrollbar.js';
 import {
   overlay,
-  modalOpenClass,
+  offcanvasBackdropClass,
   modalBackdropClass,
   offcanvasActiveSelector,
+  toggleOverlayType,
   appendOverlay,
   showOverlay,
   hideOverlay,
@@ -79,7 +80,6 @@ function beforeOffcanvasShow(self) {
   const { element, options } = self;
 
   if (!options.scroll) {
-    addClass(document.body, modalOpenClass);
     document.body.style.overflow = 'hidden';
     setOffCanvasScrollbar(self);
   }
@@ -195,7 +195,6 @@ function hideOffcanvasComplete(self) {
     if (options.backdrop) removeOverlay();
     if (!options.scroll) {
       resetScrollbar();
-      removeClass(document.body, modalOpenClass);
     }
   }
 
@@ -263,8 +262,10 @@ export default class Offcanvas extends BaseComponent {
     self.isAnimating = true;
 
     if (options.backdrop) {
-      if (!queryElement(`.${modalBackdropClass}`)) {
+      if (!queryElement(`.${modalBackdropClass},.${offcanvasBackdropClass}`)) {
         appendOverlay(1);
+      } else {
+        toggleOverlayType();
       }
 
       overlayDelay = getElementTransitionDuration(overlay);

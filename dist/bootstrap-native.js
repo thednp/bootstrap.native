@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.0.5 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -1467,19 +1467,26 @@
     }
   }
 
-  const modalOpenClass = 'modal-open';
   const modalBackdropClass = 'modal-backdrop';
+  const offcanvasBackdropClass = 'offcanvas-backdrop';
   const modalActiveSelector = `.modal.${showClass}`;
   const offcanvasActiveSelector = `.offcanvas.${showClass}`;
-
   const overlay = document.createElement('div');
-  overlay.setAttribute('class', `${modalBackdropClass}`);
 
   function getCurrentOpen() {
     return queryElement(`${modalActiveSelector},${offcanvasActiveSelector}`);
   }
 
-  function appendOverlay(hasFade) {
+  function toggleOverlayType(isModal) {
+    const targetClass = isModal ? modalBackdropClass : offcanvasBackdropClass;
+    [modalBackdropClass, offcanvasBackdropClass].forEach((c) => {
+      removeClass(overlay, c);
+    });
+    addClass(overlay, targetClass);
+  }
+
+  function appendOverlay(hasFade, isModal) {
+    toggleOverlayType(isModal);
     document.body.appendChild(overlay);
     if (hasFade) addClass(overlay, fadeClass);
   }
@@ -1499,7 +1506,6 @@
 
     if (!currentOpen) {
       removeClass(overlay, fadeClass);
-      removeClass(bd, modalOpenClass);
       bd.removeChild(overlay);
       resetScrollbar();
     }
@@ -1596,7 +1602,6 @@
     setModalScrollbar(self);
     if (!queryElement(modalActiveSelector)) {
       document.body.style.overflow = 'hidden';
-      addClass(document.body, modalOpenClass);
     }
 
     addClass(element, showClass);
@@ -1755,8 +1760,10 @@
         that.hide();
       }
 
-      if (!queryElement(`.${modalBackdropClass}`)) {
-        appendOverlay(hasFade);
+      if (!queryElement(`.${modalBackdropClass},.${offcanvasBackdropClass}`)) {
+        appendOverlay(hasFade, 1);
+      } else {
+        toggleOverlayType(1);
       }
       overlayDelay = getElementTransitionDuration(overlay);
 
@@ -1863,7 +1870,6 @@
     const { element, options } = self;
 
     if (!options.scroll) {
-      addClass(document.body, modalOpenClass);
       document.body.style.overflow = 'hidden';
       setOffCanvasScrollbar(self);
     }
@@ -1979,7 +1985,6 @@
       if (options.backdrop) removeOverlay();
       if (!options.scroll) {
         resetScrollbar();
-        removeClass(document.body, modalOpenClass);
       }
     }
 
@@ -2047,8 +2052,10 @@
       self.isAnimating = true;
 
       if (options.backdrop) {
-        if (!queryElement(`.${modalBackdropClass}`)) {
+        if (!queryElement(`.${modalBackdropClass},.${offcanvasBackdropClass}`)) {
           appendOverlay(1);
+        } else {
+          toggleOverlayType();
         }
 
         overlayDelay = getElementTransitionDuration(overlay);
@@ -3483,7 +3490,7 @@
     constructor: Tooltip,
   };
 
-  var version = "4.0.4";
+  var version = "4.0.5";
 
   // import { alertInit } from '../components/alert-native.js';
   // import { buttonInit } from '../components/button-native.js';

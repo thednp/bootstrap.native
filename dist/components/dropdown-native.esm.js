@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Dropdown v4.0.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Dropdown v4.0.5 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -538,4 +538,4 @@ Dropdown.init = {
   constructor: Dropdown,
 };
 
-export default Dropdown;
+export { Dropdown as default };

@@ -7,19 +7,26 @@ import fadeClass from '../strings/fadeClass.js';
 import showClass from '../strings/showClass.js';
 import { resetScrollbar } from './scrollbar.js';
 
-const modalOpenClass = 'modal-open';
 const modalBackdropClass = 'modal-backdrop';
+const offcanvasBackdropClass = 'offcanvas-backdrop';
 const modalActiveSelector = `.modal.${showClass}`;
 const offcanvasActiveSelector = `.offcanvas.${showClass}`;
-
 const overlay = document.createElement('div');
-overlay.setAttribute('class', `${modalBackdropClass}`);
 
 function getCurrentOpen() {
   return queryElement(`${modalActiveSelector},${offcanvasActiveSelector}`);
 }
 
-function appendOverlay(hasFade) {
+function toggleOverlayType(isModal) {
+  const targetClass = isModal ? modalBackdropClass : offcanvasBackdropClass;
+  [modalBackdropClass, offcanvasBackdropClass].forEach((c) => {
+    removeClass(overlay, c);
+  });
+  addClass(overlay, targetClass);
+}
+
+function appendOverlay(hasFade, isModal) {
+  toggleOverlayType(isModal);
   document.body.appendChild(overlay);
   if (hasFade) addClass(overlay, fadeClass);
 }
@@ -39,7 +46,6 @@ function removeOverlay() {
 
   if (!currentOpen) {
     removeClass(overlay, fadeClass);
-    removeClass(bd, modalOpenClass);
     bd.removeChild(overlay);
     resetScrollbar();
   }
@@ -47,10 +53,11 @@ function removeOverlay() {
 
 export {
   overlay,
-  modalOpenClass,
+  offcanvasBackdropClass,
   modalBackdropClass,
   modalActiveSelector,
   offcanvasActiveSelector,
+  toggleOverlayType,
   appendOverlay,
   showOverlay,
   hideOverlay,

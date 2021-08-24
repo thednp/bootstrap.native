@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Toast v4.0.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Toast v4.0.5 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -315,4 +315,4 @@ Toast.init = {
   constructor: Toast,
 };
 
-export default Toast;
+export { Toast as default };

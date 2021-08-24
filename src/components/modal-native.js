@@ -22,9 +22,10 @@ import getTargetElement from '../util/getTargetElement.js';
 import { setScrollbar, measureScrollbar } from '../util/scrollbar.js';
 import {
   overlay,
-  modalOpenClass,
+  offcanvasBackdropClass,
   modalBackdropClass,
   modalActiveSelector,
+  toggleOverlayType,
   appendOverlay,
   showOverlay,
   hideOverlay,
@@ -118,7 +119,6 @@ function beforeModalShow(self) {
   setModalScrollbar(self);
   if (!queryElement(modalActiveSelector)) {
     document.body.style.overflow = 'hidden';
-    addClass(document.body, modalOpenClass);
   }
 
   addClass(element, showClass);
@@ -277,8 +277,10 @@ export default class Modal extends BaseComponent {
       that.hide();
     }
 
-    if (!queryElement(`.${modalBackdropClass}`)) {
-      appendOverlay(hasFade);
+    if (!queryElement(`.${modalBackdropClass},.${offcanvasBackdropClass}`)) {
+      appendOverlay(hasFade, 1);
+    } else {
+      toggleOverlayType(1);
     }
     overlayDelay = getElementTransitionDuration(overlay);
 
