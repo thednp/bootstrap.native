@@ -19,11 +19,9 @@ import ariaModal from '../strings/ariaModal.js';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
 import getTargetElement from '../util/getTargetElement.js';
-import { setScrollbar, measureScrollbar } from '../util/scrollbar.js';
+import { setScrollbar, measureScrollbar, resetScrollbar } from '../util/scrollbar.js';
 import {
   overlay,
-  offcanvasBackdropClass,
-  modalBackdropClass,
   modalActiveSelector,
   toggleOverlayType,
   appendOverlay,
@@ -41,7 +39,6 @@ import BaseComponent from './base-component.js';
 const modalString = 'modal';
 const modalComponent = 'Modal';
 const modalSelector = `.${modalString}`;
-// const modalActiveSelector = `.${modalString}.${showClass}`;
 const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
 const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
 const modalStaticClass = `${modalString}-static`;
@@ -90,8 +87,11 @@ function toggleModalHandler(self, add) {
 }
 
 function afterModalHide(self) {
-  const { triggers } = self;
-  removeOverlay();
+  const { triggers, options } = self;
+  if (!getCurrentOpen()) {
+    if (options.backdrop) removeOverlay();
+    resetScrollbar();
+  }
   self.element.style.paddingRight = '';
   self.isAnimating = false;
 
@@ -117,7 +117,7 @@ function beforeModalShow(self) {
   element.style.display = 'block';
 
   setModalScrollbar(self);
-  if (!queryElement(modalActiveSelector)) {
+  if (!getCurrentOpen()) {
     document.body.style.overflow = 'hidden';
   }
 
@@ -131,16 +131,15 @@ function beforeModalShow(self) {
 
 function beforeModalHide(self, force) {
   const {
-    element, relatedTarget, hasFade,
+    element, options, relatedTarget, hasFade,
   } = self;
-  const currentOpen = getCurrentOpen();
 
   element.style.display = '';
 
   // force can also be the transitionEvent object, we wanna make sure it's not
   // call is not forced and overlay is visible
-  if (!force && hasFade && hasClass(overlay, showClass)
-    && !currentOpen) { // AND no modal is visible
+  if (options.backdrop && !force && hasFade && hasClass(overlay, showClass)
+    && !getCurrentOpen()) { // AND no modal is visible
     hideOverlay();
     emulateTransitionEnd(overlay, () => afterModalHide(self));
   } else {
@@ -188,7 +187,8 @@ function modalDismissHandler(e) {
 
   if (self.isAnimating) return;
 
-  const { isStatic, modalDialog } = self;
+  const { options, isStatic, modalDialog } = self;
+  const { backdrop } = options;
   const { target } = e;
   const selectedText = document.getSelection().toString().length;
   const targetInsideDialog = modalDialog.contains(target);
@@ -198,7 +198,7 @@ function modalDismissHandler(e) {
     addClass(element, modalStaticClass);
     self.isAnimating = true;
     emulateTransitionEnd(modalDialog, () => staticTransitionEnd(self));
-  } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog)) {
+  } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)) {
     self.relatedTarget = dismiss || null;
     self.hide();
     e.preventDefault();
@@ -256,8 +256,9 @@ export default class Modal extends BaseComponent {
   show() {
     const self = this;
     const {
-      element, isAnimating, hasFade, relatedTarget,
+      element, options, isAnimating, hasFade, relatedTarget,
     } = self;
+    const { backdrop } = options;
     let overlayDelay = 0;
 
     if (hasClass(element, showClass) && !isAnimating) return;
@@ -265,8 +266,6 @@ export default class Modal extends BaseComponent {
     showModalEvent.relatedTarget = relatedTarget || null;
     element.dispatchEvent(showModalEvent);
     if (showModalEvent.defaultPrevented) return;
-
-    self.isAnimating = true;
 
     // we elegantly hide any opened modal/offcanvas
     const currentOpen = getCurrentOpen();
@@ -277,20 +276,24 @@ export default class Modal extends BaseComponent {
       that.hide();
     }
 
-    if (!queryElement(`.${modalBackdropClass},.${offcanvasBackdropClass}`)) {
-      appendOverlay(hasFade, 1);
-    } else {
-      toggleOverlayType(1);
-    }
-    overlayDelay = getElementTransitionDuration(overlay);
+    self.isAnimating = true;
 
-    if (!hasClass(overlay, showClass)) {
-      showOverlay();
-    }
+    if (backdrop) {
+      if (!currentOpen && !hasClass(overlay, showClass)) {
+        appendOverlay(hasFade, 1);
+      } else {
+        toggleOverlayType(1);
+      }
+      overlayDelay = getElementTransitionDuration(overlay);
 
-    if (!currentOpen) {
+      if (!hasClass(overlay, showClass)) showOverlay();
       setTimeout(() => beforeModalShow(self), overlayDelay);
-    } else beforeModalShow(self);
+    } else {
+      beforeModalShow(self);
+      if (currentOpen && hasClass(overlay, showClass)) {
+        hideOverlay();
+      }
+    }
   }
 
   hide(force) {

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Offcanvas v4.0.5 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Offcanvas v4.0.6 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -386,15 +386,15 @@ function offcanvasDismissHandler(e) {
   const self = element[offcanvasComponent];
   if (!self) return;
 
-  const { options, open, triggers } = self;
+  const { options, triggers } = self;
   const { target } = e;
   const trigger = target.closest(offcanvasToggleSelector);
 
   if (trigger && trigger.tagName === 'A') e.preventDefault();
 
-  if (open && ((!element.contains(target) && options.backdrop
+  if ((!element.contains(target) && options.backdrop
     && (!trigger || (trigger && !triggers.includes(trigger))))
-    || offCanvasDismiss.contains(target))) {
+    || offCanvasDismiss.contains(target)) {
     self.relatedTarget = target === offCanvasDismiss ? offCanvasDismiss : null;
     self.hide();
   }
@@ -442,7 +442,6 @@ function hideOffcanvasComplete(self) {
   element.removeAttribute(ariaModal);
   element.removeAttribute('role');
   element.style.visibility = '';
-  self.open = false;
   self.isAnimating = false;
 
   if (triggers.length) {
@@ -481,7 +480,6 @@ class Offcanvas extends BaseComponent {
       .filter((btn) => getTargetElement(btn) === element);
 
     // additional instance property
-    self.open = false;
     self.isAnimating = false;
     self.scrollbarWidth = measureScrollbar();
 
@@ -493,7 +491,8 @@ class Offcanvas extends BaseComponent {
   // ========================
   toggle() {
     const self = this;
-    return self.open ? self.hide() : self.show();
+    if (hasClass(self.element, showClass)) self.hide();
+    else self.show();
   }
 
   show() {
@@ -503,7 +502,7 @@ class Offcanvas extends BaseComponent {
     } = self;
     let overlayDelay = 0;
 
-    if (self.open || isAnimating) return;
+    if (hasClass(element, showClass) || isAnimating) return;
 
     showOffcanvasEvent.relatedTarget = relatedTarget || null;
     element.dispatchEvent(showOffcanvasEvent);
@@ -519,11 +518,10 @@ class Offcanvas extends BaseComponent {
       that.hide();
     }
 
-    self.open = true;
     self.isAnimating = true;
 
     if (options.backdrop) {
-      if (!queryElement(`.${modalBackdropClass},.${offcanvasBackdropClass}`)) {
+      if (!currentOpen) {
         appendOverlay(1);
       } else {
         toggleOverlayType();
@@ -534,14 +532,19 @@ class Offcanvas extends BaseComponent {
       if (!hasClass(overlay, showClass)) showOverlay();
 
       setTimeout(() => beforeOffcanvasShow(self), overlayDelay);
-    } else beforeOffcanvasShow(self);
+    } else {
+      beforeOffcanvasShow(self);
+      if (currentOpen && hasClass(overlay, showClass)) {
+        hideOverlay();
+      }
+    }
   }
 
   hide(force) {
     const self = this;
     const { element, isAnimating, relatedTarget } = self;
 
-    if (!self.open || isAnimating) return;
+    if (!hasClass(element, showClass) || isAnimating) return;
 
     hideOffcanvasEvent.relatedTarget = relatedTarget || null;
     element.dispatchEvent(hideOffcanvasEvent);

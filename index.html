@@ -1820,8 +1820,7 @@ var myModalInit = myModal.Modal;
                   </div>
                 </div>
               </div>
-              <div id="anotherModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="anotherModalLabel"
-                aria-hidden="true">
+              <div id="anotherModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="anotherModalLabel" aria-hidden="true" data-bs-backdrop="false">
                 <div class="modal-dialog modal-dialog-scrollable">
                   <div class="modal-content">
                     <div class="modal-header"> 
@@ -1831,6 +1830,7 @@ var myModalInit = myModal.Modal;
                     <div class="modal-body">
                       <h4>Linked Modal</h4>
                       <p class="lead">This modal was opened from another modal</p>
+                      <p>This <b>Modal</b> uses <code>data-bs-backdrop="false"</code> intentionally to test the option independently for each instance.</p>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
                         quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
                       <p>This modal uses <code>.modal-dialog-scrollable</code></p>
@@ -2188,7 +2188,7 @@ var myOffcanvasInit = myModal.Offcanvas;
                   <p>This <b>Offcanvas</b> instance has its specific events attached. Check the console for logs.</p>
                   <p>Opening another <b>Offcanvas</b> instance will close this <b>Offcanvas</b> instance.</p>
 
-                  <button class="btn btn-primary mt-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">
+                  <button class="btn btn-primary mt-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNoBackdrop" aria-controls="offcanvasNoBackdrop">
                     Open Offcanvas
                   </button>
                 </div>
@@ -2201,7 +2201,7 @@ var myOffcanvasInit = myModal.Offcanvas;
                   </svg>
                   Scroll
                 </button>
-                <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">Backdrop (default)</button>
+                <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNoBackdrop" aria-controls="offcanvasNoBackdrop">No Backdrop</button>
                 <button class="btn btn-primary me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTopWithBackdrop" aria-controls="offcanvasTopWithBackdrop">Backdrop Top</button>
                 <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Scrolling & backdrop</button>
               </div>
@@ -2224,13 +2224,14 @@ var myOffcanvasInit = myModal.Offcanvas;
                   <p>.....</p>
                 </div>
               </div>
-              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasWithBackdrop" aria-labelledby="offcanvasWithBackdropLabel">
+              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNoBackdrop" aria-labelledby="offcanvasNoBackdropLabel" data-bs-backdrop="false">
                 <div class="offcanvas-header">
-                  <h5 class="offcanvas-title" id="offcanvasWithBackdropLabel">Offcanvas with Modal</h5>
+                  <h5 class="offcanvas-title" id="offcanvasNoBackdropLabel">Offcanvas with Modal</h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                   <p>Opening a <b>Modal</b> instance will close this <b>Offcanvas</b> instance.</p>
+                  <p>This <b>Offcanvas</b> uses <code>data-bs-backdrop="false"</code> intentionally to test the option independently for each instance.</p>
                   <p><a class="btn btn-primary" href="#myModal" data-bs-toggle="modal">Open Modal</a></p>
                 </div>
               </div>
@@ -3991,7 +3992,6 @@ new BSN.Tooltip('#selector',options).show();
         </div>
       </div>
 
-      <!-- FOOTER -->
       <footer class="mt-3 pt-3 border-top">
         <div class="container">
           <p class="float-end"><a href="#myCarousel">Back to top</a></p>
@@ -3999,7 +3999,7 @@ new BSN.Tooltip('#selector',options).show();
         </div>
       </footer>
 
-    </div><!-- /.container -->
+    </div>
 
     <script src="./dist/bootstrap-native.js"></script>
     <script src="./assets/js/scripts.js"></script>
