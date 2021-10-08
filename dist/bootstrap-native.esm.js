@@ -3061,7 +3061,7 @@ const toastComponent = 'Toast';
 const toastSelector = `.${toastString}`;
 const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
 const showingClass = 'showing';
-const hideClass = 'hide';
+const hideClass = 'hide'; // marked as deprecated
 const toastDefaultOptions = {
   animation: true,
   autohide: true,
@@ -3079,10 +3079,7 @@ const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 // =====================
 function showToastComplete(self) {
   const { element, options } = self;
-  if (options.animation) {
-    removeClass(element, showingClass);
-    addClass(element, showClass);
-  }
+  removeClass(element, showingClass);
 
   element.dispatchEvent(shownToastEvent);
   if (options.autohide) self.hide();
@@ -3090,13 +3087,15 @@ function showToastComplete(self) {
 
 function hideToastComplete(self) {
   const { element } = self;
-  addClass(element, hideClass);
+  removeClass(element, showingClass);
+  removeClass(element, showClass);
+  addClass(element, hideClass); // B/C
   element.dispatchEvent(hiddenToastEvent);
 }
 
-function closeToast(self) {
+function hideToast(self) {
   const { element, options } = self;
-  removeClass(element, showClass);
+  addClass(element, showingClass);
 
   if (options.animation) {
     reflow(element);
@@ -3106,15 +3105,14 @@ function closeToast(self) {
   }
 }
 
-function openToast(self) {
+function showToast(self) {
   const { element, options } = self;
-  removeClass(element, hideClass);
+  removeClass(element, hideClass); // B/C
+  reflow(element);
+  addClass(element, showClass);
+  addClass(element, showingClass);
 
   if (options.animation) {
-    reflow(element);
-    addClass(element, showingClass);
-    addClass(element, showClass);
-
     emulateTransitionEnd(element, () => showToastComplete(self));
   } else {
     showToastComplete(self);
@@ -3142,9 +3140,13 @@ class Toast extends BaseComponent {
     super(toastComponent, target, toastDefaultOptions, config);
     // bind
     const self = this;
+    const { element, options } = self;
 
+    // set fadeClass, the options.animation will override the markup
+    if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
+    else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
     // dismiss button
-    self.dismiss = queryElement(toastDismissSelector, self.element);
+    self.dismiss = queryElement(toastDismissSelector, element);
 
     // bind
     self.show = self.show.bind(self);
@@ -3159,13 +3161,12 @@ class Toast extends BaseComponent {
   show() {
     const self = this;
     const { element } = self;
-    if (element && hasClass(element, hideClass)) {
+    if (element && !hasClass(element, showClass)) {
       element.dispatchEvent(showToastEvent);
       if (showToastEvent.defaultPrevented) return;
 
-      addClass(element, fadeClass);
       clearTimeout(self.timer);
-      self.timer = setTimeout(() => openToast(self), 10);
+      self.timer = setTimeout(() => showToast(self), 10);
     }
   }
 
@@ -3178,7 +3179,7 @@ class Toast extends BaseComponent {
       if (hideToastEvent.defaultPrevented) return;
 
       clearTimeout(self.timer);
-      self.timer = setTimeout(() => closeToast(self),
+      self.timer = setTimeout(() => hideToast(self),
         noTimer ? 10 : options.delay);
     }
   }
@@ -3186,7 +3187,7 @@ class Toast extends BaseComponent {
   dispose() {
     const self = this;
     const { element, options } = self;
-    self.hide();
+    self.hide(1);
 
     if (options.animation) emulateTransitionEnd(element, () => completeDisposeToast(self));
     else completeDisposeToast(self);
