@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.6 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.0.7 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -1922,7 +1922,7 @@ function offcanvasDismissHandler(e) {
 
   if ((!element.contains(target) && options.backdrop
     && (!trigger || (trigger && !triggers.includes(trigger))))
-    || offCanvasDismiss.contains(target)) {
+    || (offCanvasDismiss && offCanvasDismiss.contains(target))) {
     self.relatedTarget = target === offCanvasDismiss ? offCanvasDismiss : null;
     self.hide();
   }
@@ -3079,7 +3079,7 @@ const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 // =====================
 function showToastComplete(self) {
   const { element, options } = self;
-  if (!options.animation) {
+  if (options.animation) {
     removeClass(element, showingClass);
     addClass(element, showClass);
   }
@@ -3492,7 +3492,7 @@ Tooltip.init = {
   constructor: Tooltip,
 };
 
-var version = "4.0.6";
+var version = "4.0.7";
 
 // import { alertInit } from '../components/alert-native.js';
 // import { buttonInit } from '../components/button-native.js';

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Toast v4.0.6 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Toast v4.0.7 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -199,7 +199,7 @@
   // =====================
   function showToastComplete(self) {
     const { element, options } = self;
-    if (!options.animation) {
+    if (options.animation) {
       removeClass(element, showingClass);
       addClass(element, showClass);
     }

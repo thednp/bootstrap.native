@@ -131,7 +131,7 @@ function offcanvasDismissHandler(e) {
 
   if ((!element.contains(target) && options.backdrop
     && (!trigger || (trigger && !triggers.includes(trigger))))
-    || offCanvasDismiss.contains(target)) {
+    || (offCanvasDismiss && offCanvasDismiss.contains(target))) {
     self.relatedTarget = target === offCanvasDismiss ? offCanvasDismiss : null;
     self.hide();
   }
