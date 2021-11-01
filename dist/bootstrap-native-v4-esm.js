@@ -853,8 +853,9 @@ function Dropdown(elem, option) {
 
   // preventDefault on empty anchor links
   function preventEmptyAnchor(anchor) {
-    if ((anchor.href && anchor.href.slice(-1) === '#') || (anchor.parentNode && anchor.parentNode.href
-      && anchor.parentNode.href.slice(-1) === '#')) { this.preventDefault(); }
+    if ((anchor.hasAttribute('href') && anchor.href.slice(-1) === '#') || (anchor.parentNode
+        && anchor.parentNode.hasAttribute('href')
+        && anchor.parentNode.href.slice(-1) === '#')) { this.preventDefault(); }
   }
   // toggle dismissible events
   function toggleDismiss() {
