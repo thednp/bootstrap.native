@@ -119,19 +119,6 @@ function isMedia(element) {
     .some((mediaType) => element instanceof mediaType);
 }
 
-function closestRelative(element) {
-  let retval = null;
-  let el = element;
-  while (el !== document.body) {
-    el = el.parentElement;
-    if (getComputedStyle(el).position === 'relative') {
-      retval = el;
-      break;
-    }
-  }
-  return retval;
-}
-
 // both popovers and tooltips (this, event)
 function styleTip(self, e) {
   const tipClasses = /\b(top|bottom|start|end)+/;
@@ -145,32 +132,38 @@ function styleTip(self, e) {
   let tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
   const windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
   const windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
-  const { element, options, arrow } = self;
+  const {
+    element, options, arrow, positions,
+  } = self;
   let { container, placement } = options;
   let parentIsBody = container === document.body;
-  const targetPosition = getComputedStyle(element).position;
-  const parentPosition = getComputedStyle(container).position;
-  const staticParent = !parentIsBody && parentPosition === 'static';
-  let relativeParent = !parentIsBody && parentPosition === 'relative';
-  const relContainer = staticParent && closestRelative(container);
+  // self.positions = {
+  //   elementPosition,
+  //   relContainer,
+  //   containerIsRelative,
+  //   containerIsStatic
+  // };
+
+  const { elementPosition, containerIsStatic, relContainer } = positions;
+  let { containerIsRelative } = positions;
   // static containers should refer to another relative container or the body
   container = relContainer || container;
-  relativeParent = staticParent && relContainer ? 1 : relativeParent;
+  containerIsRelative = containerIsStatic && relContainer ? 1 : containerIsRelative;
   parentIsBody = container === document.body;
   const parentRect = container.getBoundingClientRect();
-  const leftBoundry = relativeParent ? parentRect.left : 0;
-  const rightBoundry = relativeParent ? parentRect.right : windowWidth;
+  const leftBoundry = containerIsRelative ? parentRect.left : 0;
+  const rightBoundry = containerIsRelative ? parentRect.right : windowWidth;
   // this case should not be possible
-  // absoluteParent = !parentIsBody && parentPosition === 'absolute',
-  // this case requires a container with placement: relative
-  const absoluteTarget = targetPosition === 'absolute';
+  // containerIsAbsolute = !parentIsBody && containerPosition === 'absolute',
+  // this case requires a container with position: relative
+  const absoluteTarget = elementPosition === 'absolute';
   const targetRect = element.getBoundingClientRect();
   const scroll = parentIsBody
     ? { x: window.pageXOffset, y: window.pageYOffset }
     : { x: container.scrollLeft, y: container.scrollTop };
   const elemDimensions = { w: element.offsetWidth, h: element.offsetHeight };
-  const top = relativeParent ? element.offsetTop : targetRect.top;
-  const left = relativeParent ? element.offsetLeft : targetRect.left;
+  const top = containerIsRelative ? element.offsetTop : targetRect.top;
+  const left = containerIsRelative ? element.offsetLeft : targetRect.left;
   // reset arrow style
   arrow.style.top = '';
   arrow.style.left = '';
@@ -242,8 +235,12 @@ function styleTip(self, e) {
     }
   } else if (['top', 'bottom'].includes(placement)) {
     if (e && isMedia(element)) {
-      const eX = !relativeParent ? e.pageX : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
-      const eY = !relativeParent ? e.pageY : e.layerY + (absoluteTarget ? element.offsetTop : 0);
+      const eX = !containerIsRelative
+        ? e.pageX
+        : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
+      const eY = !containerIsRelative
+        ? e.pageY
+        : e.layerY + (absoluteTarget ? element.offsetTop : 0);
 
       if (placement === 'top') {
         topPosition = eY - tipDimensions.h - (isPopover ? arrowWidth : arrowHeight);
@@ -326,6 +323,36 @@ function getTipContainer(element) {
 
   // set default container option appropriate for the context
   return modal || navbarFixed || document.body;
+}
+
+function closestRelative(element) {
+  let retval = null;
+  let el = element;
+  while (el !== document.body) {
+    el = el.parentElement;
+    if (getComputedStyle(el).position === 'relative') {
+      retval = el;
+      break;
+    }
+  }
+  return retval;
+}
+
+function setHtml(element, content, sanitizeFn) {
+  if (typeof content === 'string' && !content.length) return;
+
+  if (content instanceof Element) {
+    element.append(content);
+  } else {
+    let dirty = content.trim(); // fixing #233
+
+    if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
+
+    const domParser = new DOMParser();
+    const tempDocument = domParser.parseFromString(dirty, 'text/html');
+    const method = tempDocument.children.length ? 'innerHTML' : 'innerText';
+    element[method] = tempDocument.body[method];
+  }
 }
 
 function normalizeValue(value) {
@@ -418,13 +445,14 @@ const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${toolt
 const titleAttr = 'title';
 const tooltipInnerClass = `${tooltipString}-inner`;
 const tooltipDefaultOptions = {
-  title: null,
   template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-  placement: 'top',
-  animation: true,
-  customClass: null,
-  delay: 200,
-  sanitizeFn: null,
+  title: null, // string
+  customClass: null, // string | null
+  placement: 'top', // string
+  sanitizeFn: null, // function
+  animation: true, // bool
+  html: false, // bool
+  delay: 200, // number
 };
 
 // TOOLTIP CUSTOM EVENTS
@@ -438,16 +466,12 @@ const hiddenTooltipEvent = bootstrapCustomEvent(`hidden.bs.${tooltipString}`);
 // =======================
 function createTooltip(self) {
   const { options, id } = self;
-  const placementClass = `bs-${tooltipString}-${tipClassPositions[options.placement]}`;
-  let titleString = options.title.trim();
+  const {
+    title, template, customClass, animation, placement, sanitizeFn,
+  } = options;
+  const placementClass = `bs-${tooltipString}-${tipClassPositions[placement]}`;
 
-  // sanitize stuff
-  if (options.sanitizeFn) {
-    titleString = options.sanitizeFn(titleString);
-    options.template = options.sanitizeFn(options.template);
-  }
-
-  if (!titleString) return;
+  if (!title) return;
 
   // create tooltip
   self.tooltip = document.createElement('div');
@@ -455,34 +479,34 @@ function createTooltip(self) {
 
   // set aria
   tooltip.setAttribute('id', id);
+  // set role attribute
+  tooltip.setAttribute('role', tooltipString);
 
   // set markup
   const tooltipMarkup = document.createElement('div');
-  tooltipMarkup.innerHTML = options.template.trim();
+  tooltipMarkup.innerHTML = template.trim();
 
+  // fill content
   tooltip.className = tooltipMarkup.firstChild.className;
   tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
-
-  queryElement(`.${tooltipInnerClass}`, tooltip).innerHTML = titleString;
+  setHtml(queryElement(`.${tooltipInnerClass}`, tooltip), title, sanitizeFn);
 
   // set arrow
   self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
 
-  // set class and role attribute
-  tooltip.setAttribute('role', tooltipString);
   // set classes
   if (!hasClass(tooltip, tooltipString)) addClass(tooltip, tooltipString);
-  if (options.animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
-  if (options.customClass && !hasClass(tooltip, options.customClass)) {
-    addClass(tooltip, options.customClass);
+  if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
+  if (customClass && !hasClass(tooltip, customClass)) {
+    addClass(tooltip, customClass);
   }
   if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
 }
 
 function removeTooltip(self) {
-  const { element, options, tooltip } = self;
+  const { element, tooltip } = self;
   element.removeAttribute(ariaDescribedBy);
-  options.container.removeChild(tooltip);
+  tooltip.remove();
   self.timer = null;
 }
 
@@ -584,6 +608,21 @@ class Tooltip extends BaseComponent {
     self.id = `${tooltipString}-${getUID(element)}`;
     createTooltip(self);
 
+    // set positions
+    const { container } = self.options;
+    const elementPosition = getComputedStyle(element).position;
+    const containerPosition = getComputedStyle(container).position;
+    const parentIsBody = container === document.body;
+    const containerIsStatic = !parentIsBody && containerPosition === 'static';
+    const containerIsRelative = !parentIsBody && containerPosition === 'relative';
+    const relContainer = containerIsStatic && closestRelative(container);
+    self.positions = {
+      elementPosition,
+      containerIsRelative,
+      containerIsStatic,
+      relContainer,
+    };
+
     // attach events
     toggleTooltipHandlers(self, 1);
   }
@@ -595,22 +634,23 @@ class Tooltip extends BaseComponent {
     const {
       options, tooltip, element, id,
     } = self;
+    const {
+      container, animation,
+    } = options;
     clearTimeout(self.timer);
-    self.timer = setTimeout(() => {
-      if (!isVisibleTip(tooltip, options.container)) {
-        element.dispatchEvent(showTooltipEvent);
-        if (showTooltipEvent.defaultPrevented) return;
+    if (!isVisibleTip(tooltip, container)) {
+      element.dispatchEvent(showTooltipEvent);
+      if (showTooltipEvent.defaultPrevented) return;
 
-        // append to container
-        options.container.appendChild(tooltip);
-        element.setAttribute(ariaDescribedBy, id);
+      // append to container
+      container.append(tooltip);
+      element.setAttribute(ariaDescribedBy, id);
 
-        self.update(e);
-        if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
-        if (options.animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
-        else tooltipShownAction(self);
-      }
-    }, 20);
+      self.update(e);
+      if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
+      if (animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
+      else tooltipShownAction(self);
+    }
   }
 
   hide(e) {

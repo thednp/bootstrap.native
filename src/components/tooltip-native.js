@@ -23,6 +23,8 @@ import isVisibleTip from '../util/isVisibleTip.js';
 import isMedia from '../util/isMedia.js';
 import getUID from '../util/getUID.js';
 import getTipContainer from '../util/getTipContainer.js';
+import closestRelative from '../util/closestRelative.js';
+import setHtml from '../util/setHtml.js';
 import BaseComponent from './base-component.js';
 
 // TOOLTIP PRIVATE GC
@@ -34,13 +36,14 @@ const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${toolt
 const titleAttr = 'title';
 const tooltipInnerClass = `${tooltipString}-inner`;
 const tooltipDefaultOptions = {
-  title: null,
   template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-  placement: 'top',
-  animation: true,
-  customClass: null,
-  delay: 200,
-  sanitizeFn: null,
+  title: null, // string
+  customClass: null, // string | null
+  placement: 'top', // string
+  sanitizeFn: null, // function
+  animation: true, // bool
+  html: false, // bool
+  delay: 200, // number
 };
 
 // TOOLTIP CUSTOM EVENTS
@@ -54,16 +57,12 @@ const hiddenTooltipEvent = bootstrapCustomEvent(`hidden.bs.${tooltipString}`);
 // =======================
 function createTooltip(self) {
   const { options, id } = self;
-  const placementClass = `bs-${tooltipString}-${tipClassPositions[options.placement]}`;
-  let titleString = options.title.trim();
+  const {
+    title, template, customClass, animation, placement, sanitizeFn,
+  } = options;
+  const placementClass = `bs-${tooltipString}-${tipClassPositions[placement]}`;
 
-  // sanitize stuff
-  if (options.sanitizeFn) {
-    titleString = options.sanitizeFn(titleString);
-    options.template = options.sanitizeFn(options.template);
-  }
-
-  if (!titleString) return;
+  if (!title) return;
 
   // create tooltip
   self.tooltip = document.createElement('div');
@@ -71,34 +70,34 @@ function createTooltip(self) {
 
   // set aria
   tooltip.setAttribute('id', id);
+  // set role attribute
+  tooltip.setAttribute('role', tooltipString);
 
   // set markup
   const tooltipMarkup = document.createElement('div');
-  tooltipMarkup.innerHTML = options.template.trim();
+  tooltipMarkup.innerHTML = template.trim();
 
+  // fill content
   tooltip.className = tooltipMarkup.firstChild.className;
   tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
-
-  queryElement(`.${tooltipInnerClass}`, tooltip).innerHTML = titleString;
+  setHtml(queryElement(`.${tooltipInnerClass}`, tooltip), title, sanitizeFn);
 
   // set arrow
   self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
 
-  // set class and role attribute
-  tooltip.setAttribute('role', tooltipString);
   // set classes
   if (!hasClass(tooltip, tooltipString)) addClass(tooltip, tooltipString);
-  if (options.animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
-  if (options.customClass && !hasClass(tooltip, options.customClass)) {
-    addClass(tooltip, options.customClass);
+  if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
+  if (customClass && !hasClass(tooltip, customClass)) {
+    addClass(tooltip, customClass);
   }
   if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
 }
 
 function removeTooltip(self) {
-  const { element, options, tooltip } = self;
+  const { element, tooltip } = self;
   element.removeAttribute(ariaDescribedBy);
-  options.container.removeChild(tooltip);
+  tooltip.remove();
   self.timer = null;
 }
 
@@ -202,6 +201,21 @@ export default class Tooltip extends BaseComponent {
     self.id = `${tooltipString}-${getUID(element)}`;
     createTooltip(self);
 
+    // set positions
+    const { container } = self.options;
+    const elementPosition = getComputedStyle(element).position;
+    const containerPosition = getComputedStyle(container).position;
+    const parentIsBody = container === document.body;
+    const containerIsStatic = !parentIsBody && containerPosition === 'static';
+    const containerIsRelative = !parentIsBody && containerPosition === 'relative';
+    const relContainer = containerIsStatic && closestRelative(container);
+    self.positions = {
+      elementPosition,
+      containerIsRelative,
+      containerIsStatic,
+      relContainer,
+    };
+
     // attach events
     toggleTooltipHandlers(self, 1);
   }
@@ -213,22 +227,23 @@ export default class Tooltip extends BaseComponent {
     const {
       options, tooltip, element, id,
     } = self;
+    const {
+      container, animation,
+    } = options;
     clearTimeout(self.timer);
-    self.timer = setTimeout(() => {
-      if (!isVisibleTip(tooltip, options.container)) {
-        element.dispatchEvent(showTooltipEvent);
-        if (showTooltipEvent.defaultPrevented) return;
+    if (!isVisibleTip(tooltip, container)) {
+      element.dispatchEvent(showTooltipEvent);
+      if (showTooltipEvent.defaultPrevented) return;
 
-        // append to container
-        options.container.appendChild(tooltip);
-        element.setAttribute(ariaDescribedBy, id);
+      // append to container
+      container.append(tooltip);
+      element.setAttribute(ariaDescribedBy, id);
 
-        self.update(e);
-        if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
-        if (options.animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
-        else tooltipShownAction(self);
-      }
-    }, 20);
+      self.update(e);
+      if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
+      if (animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
+      else tooltipShownAction(self);
+    }
   }
 
   hide(e) {

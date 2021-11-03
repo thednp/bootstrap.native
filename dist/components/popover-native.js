@@ -95,11 +95,11 @@
 
   const ariaDescribedBy = 'aria-describedby';
 
+  const dataBsToggle = 'data-bs-toggle';
+
   const showClass = 'show';
 
   const fadeClass = 'fade';
-
-  const dataBsToggle = 'data-bs-toggle';
 
   function bootstrapCustomEvent(namespacedEventType, eventProperties) {
     const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
@@ -127,19 +127,6 @@
       .some((mediaType) => element instanceof mediaType);
   }
 
-  function closestRelative(element) {
-    let retval = null;
-    let el = element;
-    while (el !== document.body) {
-      el = el.parentElement;
-      if (getComputedStyle(el).position === 'relative') {
-        retval = el;
-        break;
-      }
-    }
-    return retval;
-  }
-
   // both popovers and tooltips (this, event)
   function styleTip(self, e) {
     const tipClasses = /\b(top|bottom|start|end)+/;
@@ -153,32 +140,38 @@
     let tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
     const windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
     const windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
-    const { element, options, arrow } = self;
+    const {
+      element, options, arrow, positions,
+    } = self;
     let { container, placement } = options;
     let parentIsBody = container === document.body;
-    const targetPosition = getComputedStyle(element).position;
-    const parentPosition = getComputedStyle(container).position;
-    const staticParent = !parentIsBody && parentPosition === 'static';
-    let relativeParent = !parentIsBody && parentPosition === 'relative';
-    const relContainer = staticParent && closestRelative(container);
+    // self.positions = {
+    //   elementPosition,
+    //   relContainer,
+    //   containerIsRelative,
+    //   containerIsStatic
+    // };
+
+    const { elementPosition, containerIsStatic, relContainer } = positions;
+    let { containerIsRelative } = positions;
     // static containers should refer to another relative container or the body
     container = relContainer || container;
-    relativeParent = staticParent && relContainer ? 1 : relativeParent;
+    containerIsRelative = containerIsStatic && relContainer ? 1 : containerIsRelative;
     parentIsBody = container === document.body;
     const parentRect = container.getBoundingClientRect();
-    const leftBoundry = relativeParent ? parentRect.left : 0;
-    const rightBoundry = relativeParent ? parentRect.right : windowWidth;
+    const leftBoundry = containerIsRelative ? parentRect.left : 0;
+    const rightBoundry = containerIsRelative ? parentRect.right : windowWidth;
     // this case should not be possible
-    // absoluteParent = !parentIsBody && parentPosition === 'absolute',
-    // this case requires a container with placement: relative
-    const absoluteTarget = targetPosition === 'absolute';
+    // containerIsAbsolute = !parentIsBody && containerPosition === 'absolute',
+    // this case requires a container with position: relative
+    const absoluteTarget = elementPosition === 'absolute';
     const targetRect = element.getBoundingClientRect();
     const scroll = parentIsBody
       ? { x: window.pageXOffset, y: window.pageYOffset }
       : { x: container.scrollLeft, y: container.scrollTop };
     const elemDimensions = { w: element.offsetWidth, h: element.offsetHeight };
-    const top = relativeParent ? element.offsetTop : targetRect.top;
-    const left = relativeParent ? element.offsetLeft : targetRect.left;
+    const top = containerIsRelative ? element.offsetTop : targetRect.top;
+    const left = containerIsRelative ? element.offsetLeft : targetRect.left;
     // reset arrow style
     arrow.style.top = '';
     arrow.style.left = '';
@@ -250,8 +243,12 @@
       }
     } else if (['top', 'bottom'].includes(placement)) {
       if (e && isMedia(element)) {
-        const eX = !relativeParent ? e.pageX : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
-        const eY = !relativeParent ? e.pageY : e.layerY + (absoluteTarget ? element.offsetTop : 0);
+        const eX = !containerIsRelative
+          ? e.pageX
+          : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
+        const eY = !containerIsRelative
+          ? e.pageY
+          : e.layerY + (absoluteTarget ? element.offsetTop : 0);
 
         if (placement === 'top') {
           topPosition = eY - tipDimensions.h - (isPopover ? arrowWidth : arrowHeight);
@@ -334,6 +331,36 @@
 
     // set default container option appropriate for the context
     return modal || navbarFixed || document.body;
+  }
+
+  function closestRelative(element) {
+    let retval = null;
+    let el = element;
+    while (el !== document.body) {
+      el = el.parentElement;
+      if (getComputedStyle(el).position === 'relative') {
+        retval = el;
+        break;
+      }
+    }
+    return retval;
+  }
+
+  function setHtml(element, content, sanitizeFn) {
+    if (typeof content === 'string' && !content.length) return;
+
+    if (content instanceof Element) {
+      element.append(content);
+    } else {
+      let dirty = content.trim(); // fixing #233
+
+      if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
+
+      const domParser = new DOMParser();
+      const tempDocument = domParser.parseFromString(dirty, 'text/html');
+      const method = tempDocument.children.length ? 'innerHTML' : 'innerText';
+      element[method] = tempDocument.body[method];
+    }
   }
 
   function normalizeValue(value) {
@@ -426,12 +453,13 @@
     template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>', // string
     title: null, // string
     content: null, // string
-    sanitizeFn: null, // function
     customClass: null, // string
-    dismissible: false, // boolean
-    animation: true, // boolean
     trigger: 'hover', // string
     placement: 'top', // string
+    btnClose: '<button class="btn-close" aria-label="Close"></button>', // string
+    sanitizeFn: null, // function
+    dismissible: false, // boolean
+    animation: true, // boolean
     delay: 200, // number
   };
 
@@ -441,11 +469,8 @@
   const isIphone = navigator.userAgentData
     ? navigator.userAgentData.brands.some((x) => appleBrands.test(x.brand))
     : appleBrands.test(navigator.userAgent);
-  // popoverArrowClass = `${popoverString}-arrow`,
   const popoverHeaderClass = `${popoverString}-header`;
   const popoverBodyClass = `${popoverString}-body`;
-  // close btn for dissmissible popover
-  let popoverCloseButton = '<button type="button" class="btn-close"></button>';
 
   // POPOVER CUSTOM EVENTS
   // =====================
@@ -478,22 +503,15 @@
     const {
       animation, customClass, sanitizeFn, placement, dismissible,
     } = options;
-    let { title, content, template } = options;
+    let {
+      title, content,
+    } = options;
+    const {
+      template, btnClose,
+    } = options;
 
     // set initial popover class
     const placementClass = `bs-${popoverString}-${tipClassPositions[placement]}`;
-
-    // fixing #233
-    title = title ? title.trim() : null;
-    content = content ? content.trim() : null;
-
-    // sanitize title && content
-    if (sanitizeFn) {
-      title = title ? sanitizeFn(title) : null;
-      content = content ? sanitizeFn(content) : null;
-      template = template ? sanitizeFn(template) : null;
-      popoverCloseButton = sanitizeFn(popoverCloseButton);
-    }
 
     self.popover = document.createElement('div');
     const { popover } = self;
@@ -511,18 +529,28 @@
     const popoverHeader = queryElement(`.${popoverHeaderClass}`, popover);
     const popoverBody = queryElement(`.${popoverBodyClass}`, popover);
 
-    // set arrow
+    // set arrow and enable access for styleTip
     self.arrow = queryElement(`.${popoverString}-arrow`, popover);
 
     // set dismissible button
     if (dismissible) {
-      title = title ? title + popoverCloseButton : title;
-      content = title === null ? +popoverCloseButton : content;
+      if (title) {
+        if (title instanceof Element) title.innerHTML += btnClose;
+        else title += btnClose;
+      } else {
+        if (popoverHeader) popoverHeader.remove();
+        if (content instanceof Element) content.innerHTML += btnClose;
+        else content += btnClose;
+      }
     }
 
-    // fill the template with content from data attributes
-    if (title && popoverHeader) popoverHeader.innerHTML = title.trim();
-    if (content && popoverBody) popoverBody.innerHTML = content.trim();
+    // fill the template with content from options / data attributes
+    // also sanitize title && content
+    if (title && popoverHeader) setHtml(popoverHeader, title, sanitizeFn);
+    if (content && popoverBody) setHtml(popoverBody, content, sanitizeFn);
+
+    // set btn and enable access for styleTip
+    [self.btn] = popover.getElementsByClassName('btn-close');
 
     // set popover animation and placement
     if (!hasClass(popover, popoverString)) addClass(popover, popoverString);
@@ -534,9 +562,9 @@
   }
 
   function removePopover(self) {
-    const { element, popover, options } = self;
+    const { element, popover } = self;
     element.removeAttribute(ariaDescribedBy);
-    options.container.removeChild(popover);
+    popover.remove();
     self.timer = null;
   }
 
@@ -561,12 +589,11 @@
 
   function dismissHandlerToggle(self, add) {
     const action = add ? addEventListener : removeEventListener;
-    const { options, element, popover } = self;
+    const { options, element, btn } = self;
     const { trigger, dismissible } = options;
 
     if (dismissible) {
-      const [btnClose] = popover.getElementsByClassName('btn-close');
-      if (btnClose) btnClose[action]('click', self.hide);
+      if (btn) btn[action]('click', self.hide);
     } else {
       if (trigger === 'focus') element[action]('focusout', self.hide);
       if (trigger === 'hover') document[action]('touchstart', popoverTouchHandler, passiveHandler);
@@ -579,12 +606,10 @@
   }
 
   function popoverShowTrigger(self) {
-    dismissHandlerToggle(self, 1);
     self.element.dispatchEvent(shownPopoverEvent);
   }
 
   function popoverHideTrigger(self) {
-    dismissHandlerToggle(self);
     removePopover(self);
     self.element.dispatchEvent(hiddenPopoverEvent);
   }
@@ -605,6 +630,7 @@
       self.timer = null;
       self.popover = null;
       self.arrow = null;
+      self.btn = null;
       self.enabled = false;
       // set unique ID for aria-describedby
       self.id = `${popoverString}-${getUID(element)}`;
@@ -625,6 +651,21 @@
 
       // crate popover
       createPopover(self);
+
+      // set positions
+      const { container } = self.options;
+      const elementPosition = getComputedStyle(element).position;
+      const containerPosition = getComputedStyle(container).position;
+      const parentIsBody = container === document.body;
+      const containerIsStatic = !parentIsBody && containerPosition === 'static';
+      const containerIsRelative = !parentIsBody && containerPosition === 'relative';
+      const relContainer = containerIsStatic && closestRelative(container);
+      self.positions = {
+        elementPosition,
+        containerIsRelative,
+        containerIsStatic,
+        relContainer,
+      };
 
       // bind
       self.update = self.update.bind(self);
@@ -654,23 +695,21 @@
       const { container } = options;
 
       clearTimeout(self.timer);
+      if (!isVisibleTip(popover, container)) {
+        element.dispatchEvent(showPopoverEvent);
+        if (showPopoverEvent.defaultPrevented) return;
 
-      self.timer = setTimeout(() => {
-        if (!isVisibleTip(popover, container)) {
-          element.dispatchEvent(showPopoverEvent);
-          if (showPopoverEvent.defaultPrevented) return;
+        // append to the container
+        container.append(popover);
+        element.setAttribute(ariaDescribedBy, id);
 
-          // append to the container
-          container.appendChild(popover);
-          element.setAttribute(ariaDescribedBy, id);
+        self.update(e);
+        if (!hasClass(popover, showClass)) addClass(popover, showClass);
+        dismissHandlerToggle(self, 1);
 
-          self.update(e);
-          if (!hasClass(popover, showClass)) addClass(popover, showClass);
-
-          if (options.animation) emulateTransitionEnd(popover, () => popoverShowTrigger(self));
-          else popoverShowTrigger(self);
-        }
-      }, 17);
+        if (options.animation) emulateTransitionEnd(popover, () => popoverShowTrigger(self));
+        else popoverShowTrigger(self);
+      }
     }
 
     hide(e) {
@@ -687,13 +726,13 @@
       const { element, popover, options } = self;
 
       clearTimeout(self.timer);
-
       self.timer = setTimeout(() => {
         if (isVisibleTip(popover, options.container)) {
           element.dispatchEvent(hidePopoverEvent);
           if (hidePopoverEvent.defaultPrevented) return;
 
           removeClass(popover, showClass);
+          dismissHandlerToggle(self);
 
           if (options.animation) emulateTransitionEnd(popover, () => popoverHideTrigger(self));
           else popoverHideTrigger(self);
@@ -739,7 +778,7 @@
       const { popover, options } = self;
       const { container, animation } = options;
       if (animation && isVisibleTip(popover, container)) {
-        options.delay = 0; // reset delay
+        self.options.delay = 0; // reset delay
         self.hide();
         emulateTransitionEnd(popover, () => togglePopoverHandlers(self));
       } else {

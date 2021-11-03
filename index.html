@@ -2310,15 +2310,24 @@ var myOffcanvasInit = myModal.Offcanvas;
                       <td>Option to set a function that will sanitize the <code>title</code>, <code>content</code>, <code>template</code> and 
                         the dismissing <code>&lt;div class=btn-close"&gt;</code> element of the popover. Our library doesn't include any sanitization 
                         function, you are free to use whatever solution suits your need.<br><b>This option is JavaScript API only.</b></td>
-                    </tr>                    
-                    <tr>
-                      <td><code>dismissible</code></td>
-                      <td><em>boolean</em></td>
-                      <td><em>false</em></td>
+                      </tr>                    
+                      <tr>
+                        <td><code>dismissible</code></td>
+                        <td><em>boolean</em></td>
+                        <td><em>false</em></td>
                       <td>Option to make the popover dismissible. When <code>true</code>, it will also add an <kbd>&times;</kbd> button at
                         the top-right of the popover. You can enable this option via JavaScript API or the <code>data-bs-dismissible="true"</code> 
                         attribute.</td>
-                    </tr>
+                      </tr>
+                      <tr>
+                        <td><code>btnClose</code></td>
+                        <td><em>string</em></td>
+                        <td><em>markup</em> (see description)</td>
+                        <td>Option to set a custom close button for dismissible popovers. This option is useful for labelling the button for WAI-ARIA
+                          compliant and multi-language applications as well as for using custom icons. The default button markup is:<br>
+                          <code>&lt;button class="btn-close" aria-label="Close"&gt;&lt;/button&gt;</code><br>
+                          <b>This option is JavaScript API only.</b></td>
+                      </tr>
                     <tr>
                       <td><code>trigger</code></td>
                       <td><em>string</em></td>
@@ -2334,7 +2343,7 @@ var myOffcanvasInit = myModal.Offcanvas;
                       <td>Option to enable/disable the popover animation. If you disable the animation, you can do that via the
                         <code>data-bs-animation="false"</code> attribute. When enabled, this option will add an additional CSS class <code>'fade'</code>
                         to the popover to enable the transition.</td>
-                    </tr>
+                    </tr>               
                     <tr>
                       <td><code>customClass</code></td>
                       <td><em>string</em></td>
@@ -2503,6 +2512,7 @@ Array.from(popoverTargets).forEach(
     customClass: 'my-special-class', // string
     delay: 100, // integer
     dismissible: true, // boolean
+    btnClose: '&lt;button class="btn-close" aria-label="Close"&gt;&lt;/button&gt;', // string
     sanitizeFn: function(dirty){ // use sanitizer of your choice here
       return DOMPurify.sanitize(dirty);
     }    
@@ -2585,25 +2595,24 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
 
               <div class="btn-toolbar mb-3">
                 <button type="button" class="btn btn-success me-1" data-bs-toggle="popover" data-bs-placement="left" data-bs-dismissible="true"
-                  data-bs-title="Dismissible Popover &lt;span class='badge bg-primary'>COOL&lt;/span>"
-                  data-bs-content='Here we add more content for testing. <code>data-bs-dismissible="true"</code> Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'>
+                  data-bs-title="Dismissible Popover"
+                  data-bs-content='Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'>
                   Dismissible
                 </button>
-                <button type="button" class="btn btn-dark me-1" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="customClass" data-bs-title="Popover on RIGHT" data-bs-content="Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
+                <button type="button" class="btn btn-dark me-1" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="customClass" data-bs-title="Popover on RIGHT &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;" data-bs-content="Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
                   Right
                 </button>
                 <button id="popoverWithEvents" type="button" class="btn btn-secondary me-1" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Popover on Bottom">
                  Events
                 </button>
                 <div class="position-static me-1" id="staticContainer1">
-                  <button type="button" class="btn btn-primary" data-bs-toggle="popover" data-bs-container="#staticContainer1"
+                  <button type="button" class="btn btn-primary" data-bs-toggle="popover" data-bs-container="#staticContainer1" 
                     data-bs-title="Popover in static container" data-bs-content="This popover is added to a position: static container. This requires a parent with position : relative for the container.">Static</button>
                 </div>                
-                <button type="button" class="btn btn-outline-secondary position-absolute" style="top:0; right: 0;" data-bs-toggle="popover" data-bs-placement="top" data-container="#popoverExamples"
+                <button type="button" class="btn btn-outline-secondary position-absolute" style="top:0; right: 0;" data-bs-toggle="popover" data-bs-placement="top"  data-container="#popoverExamples"
                   data-bs-title="Popover on absolute position" data-bs-content="This button is rendered in position: absolute and this requires a position: relative container.">Absolute</button>
-
-                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template me-1" placeholder="Focus" data-bs-toggle="popover">
-                <button type="button" id="popover-via-click" class="btn btn-warning me-1" data-bs-title="Popover on CLICK" data-bs-content="This popover is added to a position: relative container. &lt;br>Now simply click again to dismiss.">
+                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value=""  class="form-control popover-via-template me-1" placeholder="Focus me" data-bs-toggle="popover">
+                <button type="button" id="popover-via-click" class="btn btn-warning me-1"  data-bs-title="Popover on CLICK" data-bs-content="This popover is added to a position: relative container. Now simply click again to dismiss.">
                   Click
                 </button>
                 <svg class="me-1" viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
@@ -2611,7 +2620,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
-                <img class="me-1" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+                <img class="me-1" data-bs-toggle="popover" data-bs-placement="top"  data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
               </div>
 
             </section>
@@ -3828,29 +3837,29 @@ new BSN.Tooltip('#selector',options).show();
               <div class="btn-toolbar mb-3">          
                 <button type="button" class="btn btn-primary me-1" data-bs-toggle="tooltip" data-bs-placement="left"
                   data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
-                <button id="tooltipWithEvents" type="button" class="btn btn-dark me-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                <button id="tooltipWithEvents" type="button" class="btn btn-dark me-1" data-bs-toggle="tooltip" data-bs-placement="top" 
                   data-bs-title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Events</button>
-                <button type="button" class="btn btn-secondary me-1" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                <button type="button" class="btn btn-secondary me-1" data-bs-toggle="tooltip" data-bs-placement="bottom" 
                   data-bs-title="&lt;b&gt;Tooltip on bottom&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
-                <button type="button" class="btn btn-success me-1" data-bs-toggle="tooltip" data-bs-placement="right"
+                <button type="button" class="btn btn-success me-1" data-bs-toggle="tooltip" data-bs-placement="right" 
                   data-bs-title="&lt;b&gt;Tooltip on right&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
-                <button type="button" class="btn btn-warning me-1" data-bs-toggle="tooltip" data-bs-placement="left"
+                <button type="button" class="btn btn-warning me-1" data-bs-toggle="tooltip" data-bs-placement="left" 
                   data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
-                <button id="tooltipTemplateExample" type="button" class="btn btn-danger me-1"
+                <button id="tooltipTemplateExample" type="button" class="btn btn-danger me-1" 
                   data-bs-title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;This tooltip will be added to a position: relative container. Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
-                <button type="button" class="btn btn-outline-secondary position-absolute me-1" style="top:0; right: 0;" data-bs-toggle="tooltip" data-bs-placement="left" data-container="#tooltipExamples"
+                <button type="button" class="btn btn-outline-secondary position-absolute me-1" style="top:0; right: 0;" data-bs-toggle="tooltip" data-bs-placement="left"  data-container="#tooltipExamples"
                   data-bs-title="Tooltip on absolute position element. This requires a position: relative container.">Absolute</button>
                 <div class="position-static me-1" id="staticContainer">
-                  <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-container="#staticContainer"
+                  <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-container="#staticContainer" 
                     data-bs-title="&lt;b&gt;Tooltip in static container&lt;/b&gt;&lt;br&gt;This tooltip is added to a position: static container. This requires a parent with position:relative for the container.">Static</button>
                 </div>
                 <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" class="me-1"
-                  data-bs-toggle="tooltip" data-bs-placement="top" 
+                  data-bs-toggle="tooltip" data-bs-placement="top"
                   data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
-                <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-container="#tooltipExamples" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+                <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-container="#tooltipExamples"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
 
               </div>
 
@@ -4002,6 +4011,7 @@ new BSN.Tooltip('#selector',options).show();
     </div>
 
     <script src="./dist/bootstrap-native.js"></script>
+    <script src="https://cure53.de/purify.js"></script>
     <script src="./assets/js/scripts.js"></script>
     <script src="./assets/js/prism.js"></script>
   </body>

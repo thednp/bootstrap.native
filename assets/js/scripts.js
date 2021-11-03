@@ -113,22 +113,31 @@ tooltipEvents.addEventListener('hidden.bs.tooltip', function(){ console.log('The
 // Tooltip template example
 var tooltipTemplateExample = new BSN.Tooltip('#tooltipTemplateExample', {
 	template: '<div class="tooltip custom-class" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-	position: top,
-	container: '#tooltipExamples'
+	position: 'top',
+	container: '#tooltipExamples',
+	sanitizeFn: function(dirty){
+		return DOMPurify.sanitize( dirty );
+	}	
 })
 
 // Popover 
 var popover1 = new BSN.Popover('#popover-via-click', { container: '#popoverExamples',	trigger: 'click' } );
 
 // demo popover, using template
-var someTitleFromOtherCode = 'Popover via JavaScript <span class="label label-primary">Template</span>';
-var someContentFromOuterSpace = '<p>This Popover is using FOCUS event option. Some sample message from outer space wrapped in &lt;p&gt; tags.</p>';
+var someTitleFromOtherCode = 'Popover via JavaScript <span class="badge bg-primary">Template</span>';
+var someContentFromOuterSpace = document.createElement('p');
+someContentFromOuterSpace.innerHTML = 'This Popover is using FOCUS event option. Some sample message from outer space wrapped in &lt;p&gt; tags.';
+var samplePopoverTemplate = '<div class="popover border-dark" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header bg-dark border-secondary text-white"></h3><div class="popover-body bg-secondary text-light"></div></div>';
 
 var popover2 = new BSN.Popover('.popover-via-template', {
 	trigger: 'focus',
+	// trigger: 'click',
 	title: someTitleFromOtherCode,
 	content: someContentFromOuterSpace,
-	template: '<div class="popover border-dark" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header bg-dark border-secondary text-white"></h3><div class="popover-body bg-secondary text-light"></div></div>'
+	template: samplePopoverTemplate,
+	sanitizeFn: function(dirty){
+		return DOMPurify.sanitize( dirty );
+	}
 });
 
 var popoverEvents = document.getElementById('popoverWithEvents');

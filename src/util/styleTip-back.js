@@ -1,5 +1,6 @@
 import tipClassPositions from './tipClassPositions.js';
 import isMedia from './isMedia.js';
+import closestRelative from './closestRelative';
 
 // both popovers and tooltips (this, event)
 export default function styleTip(self, e) {
@@ -14,38 +15,32 @@ export default function styleTip(self, e) {
   let tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
   const windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
   const windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
-  const {
-    element, options, arrow, positions,
-  } = self;
+  const { element, options, arrow } = self;
   let { container, placement } = options;
   let parentIsBody = container === document.body;
-  // self.positions = {
-  //   elementPosition,
-  //   relContainer,
-  //   containerIsRelative,
-  //   containerIsStatic
-  // };
-
-  const { elementPosition, containerIsStatic, relContainer } = positions;
-  let { containerIsRelative } = positions;
+  const targetPosition = getComputedStyle(element).position;
+  const parentPosition = getComputedStyle(container).position;
+  const staticParent = !parentIsBody && parentPosition === 'static';
+  let relativeParent = !parentIsBody && parentPosition === 'relative';
+  const relContainer = staticParent && closestRelative(container);
   // static containers should refer to another relative container or the body
   container = relContainer || container;
-  containerIsRelative = containerIsStatic && relContainer ? 1 : containerIsRelative;
+  relativeParent = staticParent && relContainer ? 1 : relativeParent;
   parentIsBody = container === document.body;
   const parentRect = container.getBoundingClientRect();
-  const leftBoundry = containerIsRelative ? parentRect.left : 0;
-  const rightBoundry = containerIsRelative ? parentRect.right : windowWidth;
+  const leftBoundry = relativeParent ? parentRect.left : 0;
+  const rightBoundry = relativeParent ? parentRect.right : windowWidth;
   // this case should not be possible
-  // containerIsAbsolute = !parentIsBody && containerPosition === 'absolute',
-  // this case requires a container with position: relative
-  const absoluteTarget = elementPosition === 'absolute';
+  // absoluteParent = !parentIsBody && parentPosition === 'absolute',
+  // this case requires a container with placement: relative
+  const absoluteTarget = targetPosition === 'absolute';
   const targetRect = element.getBoundingClientRect();
   const scroll = parentIsBody
     ? { x: window.pageXOffset, y: window.pageYOffset }
     : { x: container.scrollLeft, y: container.scrollTop };
   const elemDimensions = { w: element.offsetWidth, h: element.offsetHeight };
-  const top = containerIsRelative ? element.offsetTop : targetRect.top;
-  const left = containerIsRelative ? element.offsetLeft : targetRect.left;
+  const top = relativeParent ? element.offsetTop : targetRect.top;
+  const left = relativeParent ? element.offsetLeft : targetRect.left;
   // reset arrow style
   arrow.style.top = '';
   arrow.style.left = '';
@@ -117,12 +112,8 @@ export default function styleTip(self, e) {
     }
   } else if (['top', 'bottom'].includes(placement)) {
     if (e && isMedia(element)) {
-      const eX = !containerIsRelative
-        ? e.pageX
-        : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
-      const eY = !containerIsRelative
-        ? e.pageY
-        : e.layerY + (absoluteTarget ? element.offsetTop : 0);
+      const eX = !relativeParent ? e.pageX : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
+      const eY = !relativeParent ? e.pageY : e.layerY + (absoluteTarget ? element.offsetTop : 0);
 
       if (placement === 'top') {
         topPosition = eY - tipDimensions.h - (isPopover ? arrowWidth : arrowHeight);
