@@ -121,11 +121,11 @@ function createPopover(self) {
   // set dismissible button
   if (dismissible) {
     if (title) {
-      if (title instanceof Element) title.innerHTML += btnClose;
+      if (title instanceof Element) setHtml(title, btnClose, sanitizeFn);
       else title += btnClose;
     } else {
       if (popoverHeader) popoverHeader.remove();
-      if (content instanceof Element) content.innerHTML += btnClose;
+      if (content instanceof Element) setHtml(content, btnClose, sanitizeFn);
       else content += btnClose;
     }
   }
