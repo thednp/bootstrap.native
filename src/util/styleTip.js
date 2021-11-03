@@ -19,12 +19,6 @@ export default function styleTip(self, e) {
   } = self;
   let { container, placement } = options;
   let parentIsBody = container === document.body;
-  // self.positions = {
-  //   elementPosition,
-  //   relContainer,
-  //   containerIsRelative,
-  //   containerIsStatic
-  // };
 
   const { elementPosition, containerIsStatic, relContainer } = positions;
   let { containerIsRelative } = positions;
