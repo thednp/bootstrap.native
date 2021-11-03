@@ -513,7 +513,7 @@ function createPopover(self) {
   setHtml(popoverTemplate, template, sanitizeFn);
   const htmlMarkup = popoverTemplate.firstChild;
   popover.className = htmlMarkup.className;
-  setHtml(popover, htmlMarkup.innerHTML, sanitizeFn);
+  setHtml(popover, htmlMarkup.innerHTML);
 
   const popoverHeader = queryElement(`.${popoverHeaderClass}`, popover);
   const popoverBody = queryElement(`.${popoverBodyClass}`, popover);
