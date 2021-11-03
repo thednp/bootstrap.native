@@ -145,12 +145,6 @@
     } = self;
     let { container, placement } = options;
     let parentIsBody = container === document.body;
-    // self.positions = {
-    //   elementPosition,
-    //   relContainer,
-    //   containerIsRelative,
-    //   containerIsStatic
-    // };
 
     const { elementPosition, containerIsStatic, relContainer } = positions;
     let { containerIsRelative } = positions;
@@ -516,15 +510,16 @@
     self.popover = document.createElement('div');
     const { popover } = self;
 
-    // set id and aria-describedby
+    // set id and role attributes
     popover.setAttribute('id', id);
     popover.setAttribute('role', 'tooltip');
 
     // load template
     const popoverTemplate = document.createElement('div');
-    popoverTemplate.innerHTML = template.trim();
-    popover.className = popoverTemplate.firstChild.className;
-    popover.innerHTML = popoverTemplate.firstChild.innerHTML;
+    setHtml(popoverTemplate, template, sanitizeFn);
+    const htmlMarkup = popoverTemplate.firstChild;
+    popover.className = htmlMarkup.className;
+    setHtml(popover, htmlMarkup.innerHTML, sanitizeFn);
 
     const popoverHeader = queryElement(`.${popoverHeaderClass}`, popover);
     const popoverBody = queryElement(`.${popoverBodyClass}`, popover);

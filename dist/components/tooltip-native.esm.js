@@ -137,12 +137,6 @@ function styleTip(self, e) {
   } = self;
   let { container, placement } = options;
   let parentIsBody = container === document.body;
-  // self.positions = {
-  //   elementPosition,
-  //   relContainer,
-  //   containerIsRelative,
-  //   containerIsStatic
-  // };
 
   const { elementPosition, containerIsStatic, relContainer } = positions;
   let { containerIsRelative } = positions;
@@ -477,19 +471,19 @@ function createTooltip(self) {
   self.tooltip = document.createElement('div');
   const { tooltip } = self;
 
-  // set aria
+  // set id & role attribute
   tooltip.setAttribute('id', id);
-  // set role attribute
   tooltip.setAttribute('role', tooltipString);
 
   // set markup
-  const tooltipMarkup = document.createElement('div');
-  tooltipMarkup.innerHTML = template.trim();
+  const tooltipTemplate = document.createElement('div');
+  setHtml(tooltipTemplate, template, sanitizeFn);
+  setHtml(queryElement(`.${tooltipInnerClass}`, tooltipTemplate), title, sanitizeFn);
+  const htmlMarkup = tooltipTemplate.firstChild;
 
   // fill content
-  tooltip.className = tooltipMarkup.firstChild.className;
-  tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
-  setHtml(queryElement(`.${tooltipInnerClass}`, tooltip), title, sanitizeFn);
+  tooltip.className = htmlMarkup.className;
+  setHtml(tooltip, htmlMarkup.innerHTML);
 
   // set arrow
   self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
