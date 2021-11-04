@@ -1,7 +1,7 @@
 export default function setHtml(element, content, sanitizeFn) {
   if (typeof content === 'string' && !content.length) return;
 
-  if (content instanceof Element) {
+  if (typeof content === 'object') {
     element.append(content);
   } else {
     let dirty = content.trim(); // fixing #233

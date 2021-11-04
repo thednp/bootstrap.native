@@ -2275,24 +2275,25 @@ var myOffcanvasInit = myModal.Offcanvas;
                   <tbody>
                     <tr>
                       <td><code>content</code></td>
-                      <td><em>string</em></td>
+                      <td><em>string</em> | <em>object</em></td>
                       <td></td>
                       <td>Option to set the <b>content</b> of the popover via JavaScript or the <code>data-bs-content="CONTENT"</code> 
-                        attribute. This option is <b>required</b> via DATA API initialization or JavaScript initialization in order to validate.</td>
+                        attribute. You can also specify a DOM node to serve as your popover content. This option is <b>required</b> via
+                        DATA API initialization or JavaScript initialization in order to validate.</td>
                     </tr>
                     <tr>
                       <td><code>title</code></td>
-                      <td><em>string</em></td>
+                      <td><em>string</em> | <em>object</em></td>
                       <td></td>
                       <td>Option to set the <b>title</b> of the popover via JavaScript or the <code>data-bs-title="TITLE"</code>
-                        attribute.</td>
+                        attribute. You can also specify a DOM node to serve as your popover title.</td>
                     </tr>
                     <tr>
                       <td><code>template</code></td>
                       <td><em>string</em></td>
                       <td><em>markup</em> (see description)</td>
-                      <td>Option to use a custom HTML template for your popover initialization. The following markup is the 
-                        default template:<br>
+                      <td>Option to use a custom HTML template for your popover initialization. You can also specify a DOM node to serve as your template.
+                        The following markup is the default template:<br>
 <code>'&lt;div class="popover" role="tooltip"&gt;<br>
 &nbsp;  &lt;div class="popover-arrow">&lt;/div&gt;<br>
 &nbsp;  &lt;h3 class="popover-header">&lt;/h3&gt;<br>
@@ -2308,7 +2309,7 @@ var myOffcanvasInit = myModal.Offcanvas;
                       <td><em>function</em></td>
                       <td></td>
                       <td>Option to set a function that will sanitize the <code>title</code>, <code>content</code>, <code>template</code> and 
-                        the dismissing <code>&lt;div class=btn-close"&gt;</code> element of the popover. Our library doesn't include any sanitization 
+                        the dismissing <code>&lt;button class=btn-close"&gt;</code> element. Our library doesn't include any sanitization 
                         function, you are free to use whatever solution suits your need.<br><b>This option is JavaScript API only.</b></td>
                       </tr>                    
                       <tr>
@@ -3567,17 +3568,18 @@ myToastInit.dispose();
                   <tbody>
                     <tr>
                       <td><code>title</code></td>
-                      <td><em>string</em></td>
+                      <td><em>string</em> | <em>object</em></td>
                       <td></td>
                       <td>Allows you to set a custom title to be used for your tooltip; when used via JavaScript
                         API, it will override both the <code>title=""</code> and <code>data-bs-title=""</code> 
-                        attributes.</td>
+                        attributes. You can also specify a DOM node to serve as your tooltip title.</td>
                     </tr>
                     <tr>
                       <td><code>template</code></td>
-                      <td><em>string</em>(see description)</td>
+                      <td><em>string</em>  | <em>object</em><br>(see description)</td>
                       <td></td>
                       <td>Allows you to set a custom template for your tooltips and overrides the default one. 
+                        You can also specify a DOM node to serve as your template.
                         The following markup is the default template for tooltips:<br>
 <code>
 '&lt;div class="tooltip" role="tooltip"&gt;<br>

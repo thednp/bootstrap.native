@@ -335,7 +335,7 @@ function closestRelative(element) {
 function setHtml(element, content, sanitizeFn) {
   if (typeof content === 'string' && !content.length) return;
 
-  if (content instanceof Element) {
+  if (typeof content === 'object') {
     element.append(content);
   } else {
     let dirty = content.trim(); // fixing #233
@@ -467,23 +467,24 @@ function createTooltip(self) {
 
   if (!title) return;
 
-  // create tooltip
-  self.tooltip = document.createElement('div');
-  const { tooltip } = self;
+  // load template
+  let tooltipTemplate;
+  if (typeof template === 'object') {
+    tooltipTemplate = template;
+  } else {
+    const htmlMarkup = document.createElement('div');
+    setHtml(htmlMarkup, template, sanitizeFn);
+    tooltipTemplate = htmlMarkup.firstChild;
+  }
 
+  // create tooltip
+  self.tooltip = tooltipTemplate.cloneNode(true);
+  const { tooltip } = self;
+  // set title
+  setHtml(queryElement(`.${tooltipInnerClass}`, tooltip), title, sanitizeFn);
   // set id & role attribute
   tooltip.setAttribute('id', id);
   tooltip.setAttribute('role', tooltipString);
-
-  // set markup
-  const tooltipTemplate = document.createElement('div');
-  setHtml(tooltipTemplate, template, sanitizeFn);
-  setHtml(queryElement(`.${tooltipInnerClass}`, tooltipTemplate), title, sanitizeFn);
-  const htmlMarkup = tooltipTemplate.firstChild;
-
-  // fill content
-  tooltip.className = htmlMarkup.className;
-  setHtml(tooltip, htmlMarkup.innerHTML);
 
   // set arrow
   self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
