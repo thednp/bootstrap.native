@@ -208,7 +208,7 @@
 
   function appendOverlay(hasFade, isModal) {
     toggleOverlayType(isModal);
-    document.body.appendChild(overlay);
+    document.body.append(overlay);
     if (hasFade) addClass(overlay, fadeClass);
   }
 
@@ -222,12 +222,11 @@
   }
 
   function removeOverlay() {
-    const bd = document.body;
     const currentOpen = getCurrentOpen();
 
     if (!currentOpen) {
       removeClass(overlay, fadeClass);
-      bd.removeChild(overlay);
+      overlay.remove();
       resetScrollbar();
     }
   }

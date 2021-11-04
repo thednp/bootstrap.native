@@ -36,7 +36,7 @@ function alertTransitionEnd(self) {
   element.dispatchEvent(closedAlertEvent);
 
   self.dispose();
-  element.parentNode.removeChild(element);
+  element.remove();
 }
 
 // ALERT PRIVATE METHOD
