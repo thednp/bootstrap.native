@@ -11,19 +11,6 @@ import Tab from '../components/tab-native.js';
 import Toast from '../components/toast-native.js';
 import Tooltip from '../components/tooltip-native.js';
 
-// import { alertInit } from '../components/alert-native.js';
-// import { buttonInit } from '../components/button-native.js';
-// import { carouselInit } from '../components/carousel-native.js';
-// import { collapseInit } from '../components/collapse-native.js';
-// import { dropdownInit } from '../components/dropdown-native.js';
-// import { modalInit } from '../components/modal-native.js';
-// import { offcanvasInit } from '../components/offcanvas-native.js';
-// import { popoverInit } from '../components/popover-native.js';
-// import { scrollSpyInit } from '../components/scrollspy-native.js';
-// import { tabInit } from '../components/tab-native.js';
-// import { toastInit } from '../components/toast-native.js';
-// import { tooltipInit } from '../components/tooltip-native.js';
-
 const componentsInit = {
   Alert: Alert.init,
   Button: Button.init,

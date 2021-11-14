@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Offcanvas v4.0.7 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Offcanvas v4.0.8 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -7,7 +7,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Offcanvas = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   function queryElement(selector, parent) {
     const lookUp = parent && parent instanceof Element ? parent : document;
@@ -580,4 +580,4 @@
 
   return Offcanvas;
 
-})));
+}));

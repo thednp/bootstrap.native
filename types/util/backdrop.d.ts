@@ -1,0 +1,11 @@
+export const overlay: HTMLDivElement;
+export const offcanvasBackdropClass: "offcanvas-backdrop";
+export const modalBackdropClass: "modal-backdrop";
+export const modalActiveSelector: string;
+export const offcanvasActiveSelector: string;
+export function toggleOverlayType(isModal: any): void;
+export function appendOverlay(hasFade: any, isModal: any): void;
+export function showOverlay(): void;
+export function hideOverlay(): void;
+export function getCurrentOpen(): any;
+export function removeOverlay(): void;

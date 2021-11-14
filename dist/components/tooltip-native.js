@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Tooltip v4.0.7 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Tooltip v4.0.8 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -7,7 +7,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Tooltip = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   const supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
 
@@ -738,4 +738,4 @@
 
   return Tooltip;
 
-})));
+}));

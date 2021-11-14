@@ -11,10 +11,10 @@ import Tab from './components/tab-native.js';
 import Toast from './components/toast-native.js';
 import Tooltip from './components/tooltip-native.js';
 
-import { version as Version } from '../package.json';
+import Version from './util/version.js';
 import { initCallback } from './util/init.js';
 
-export default {
+const BSN = {
   Alert,
   Button,
   Carousel,
@@ -31,3 +31,5 @@ export default {
   initCallback,
   Version,
 };
+
+export default BSN;

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    // "resolveJsonModule": true,
+    "emitDeclarationOnly": true,
+    "strict": true,
+    "allowJs": true,
+    "rootDir": "src",
+    "outDir": "types"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["assets", "dist", "types"]
+}

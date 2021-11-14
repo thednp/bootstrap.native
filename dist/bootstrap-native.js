@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.7 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.0.8 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -7,7 +7,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.BSN = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
   const transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
 
@@ -3550,20 +3550,9 @@
     constructor: Tooltip,
   };
 
-  var version = "4.0.7";
+  var version = "4.0.8";
 
-  // import { alertInit } from '../components/alert-native.js';
-  // import { buttonInit } from '../components/button-native.js';
-  // import { carouselInit } from '../components/carousel-native.js';
-  // import { collapseInit } from '../components/collapse-native.js';
-  // import { dropdownInit } from '../components/dropdown-native.js';
-  // import { modalInit } from '../components/modal-native.js';
-  // import { offcanvasInit } from '../components/offcanvas-native.js';
-  // import { popoverInit } from '../components/popover-native.js';
-  // import { scrollSpyInit } from '../components/scrollspy-native.js';
-  // import { tabInit } from '../components/tab-native.js';
-  // import { toastInit } from '../components/toast-native.js';
-  // import { tooltipInit } from '../components/tooltip-native.js';
+  const Version = version;
 
   const componentsInit = {
     Alert: Alert.init,
@@ -3599,7 +3588,7 @@
     document.addEventListener('DOMContentLoaded', () => initCallback(), { once: true });
   }
 
-  var index = {
+  const BSN = {
     Alert,
     Button,
     Carousel,
@@ -3614,9 +3603,9 @@
     Tooltip,
 
     initCallback,
-    Version: version,
+    Version,
   };
 
-  return index;
+  return BSN;
 
-})));
+}));
