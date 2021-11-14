@@ -1,4 +1,5 @@
-declare namespace _default {
+export default BSN;
+declare namespace BSN {
     export { Alert };
     export { Button };
     export { Carousel };
@@ -15,7 +16,6 @@ declare namespace _default {
     export { componentsInit };
     export { Version };
 }
-export default _default;
 import Alert from "./components-v4/alert-native.js";
 import Button from "./components-v4/button-native.js";
 import Carousel from "./components-v4/carousel-native.js";
@@ -30,3 +30,4 @@ import Tooltip from "./components-v4/tooltip-native.js";
 import initCallback from "./util/initCallback.js";
 import removeDataAPI from "./util/removeDataAPI.js";
 import componentsInit from "./util/componentsInit.js";
+import Version from "./util/version.js";

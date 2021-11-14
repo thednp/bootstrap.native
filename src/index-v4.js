@@ -14,9 +14,9 @@ import './util/init-v4.js';
 import initCallback from './util/initCallback.js';
 import removeDataAPI from './util/removeDataAPI.js';
 import componentsInit from './util/componentsInit.js';
-import { version as Version } from '../package.json';
+import Version from './util/version.js';
 
-export default {
+const BSN = {
   Alert,
   Button,
   Carousel,
@@ -34,3 +34,5 @@ export default {
   componentsInit,
   Version,
 };
+
+export default BSN;

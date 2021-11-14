@@ -2400,7 +2400,9 @@
 
   var version = "4.0.8";
 
-  var indexV4 = {
+  var Version = version;
+
+  var BSN = {
     Alert: Alert,
     Button: Button,
     Carousel: Carousel,
@@ -2416,9 +2418,9 @@
     initCallback: initCallback,
     removeDataAPI: removeDataAPI,
     componentsInit: componentsInit,
-    Version: version,
+    Version: Version,
   };
 
-  return indexV4;
+  return BSN;
 
 }));
