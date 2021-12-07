@@ -9,3 +9,4 @@ import 'minifill/src/Element.prototype.closest.js';
 import 'minifill/src/Multi.Event.js';
 import 'minifill/src/Multi.CustomEvent.js';
 import 'minifill/src/Node.prototype.contains.js';
+import 'minifill/src/Number.isNaN.js';
