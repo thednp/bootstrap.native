@@ -1,9 +1,14 @@
-import tipClassPositions from './tipClassPositions.js';
-import isMedia from './isMedia.js';
+import isMedia from 'shorter-js/src/misc/isMedia';
+import tipClassPositions from './tipClassPositions';
 
-// both popovers and tooltips (this, event)
+/**
+ * Style popovers and tooltips.
+ * @param {BSN.Tooltip | BSN.Popover} self the Popover / Tooltip instance
+ * @param {Event=} e event object
+ */
 export default function styleTip(self, e) {
   const tipClasses = /\b(top|bottom|start|end)+/;
+  // @ts-ignore
   const tip = self.tooltip || self.popover;
   // reset tip style
   tip.style.top = '';

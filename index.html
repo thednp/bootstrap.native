@@ -13,7 +13,7 @@
     <title>Native JavaScript for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
 
     <!-- Prism: Code Highlight -->
     <link rel="stylesheet" href="./assets/css/prism-coy.css">
@@ -372,15 +372,15 @@ var myButtonINIT = myButton.Button;
               <h4>State Toggle</h4>
 
               <p>
-                <button type="button" class="btn btn-primary" data-bs-toggle="button" autocomplete="off">Toggle button</button>
-                <button type="button" class="btn btn-primary active" data-bs-toggle="button" autocomplete="off" aria-pressed="true">Active toggle button</button>
-                <button type="button" class="btn btn-primary" disabled data-bs-toggle="button" autocomplete="off">Disabled toggle button</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="button">Toggle button</button>
+                <button type="button" class="btn btn-primary active" data-bs-toggle="button" aria-pressed="true">Active toggle button</button>
+                <button type="button" class="btn btn-primary" disabled data-bs-toggle="button">Disabled toggle button</button>
               </p>
 
               <p>
                 <a href="#" class="btn btn-primary" role="button" data-bs-toggle="button">Toggle link</a>
                 <a href="#" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true">Active toggle link</a>
-                <a href="#" class="btn btn-primary disabled" tabindex="-1" aria-disabled="true" role="button" data-bs-toggle="button">Disabled toggle link</a>
+                <a href="#" class="btn btn-primary disabled" tabindex="-1" role="button" data-bs-toggle="button">Disabled toggle link</a>
               </p>
           
               <h4>Checkboxes and Radio</h4>
@@ -388,18 +388,18 @@ var myButtonINIT = myButton.Button;
               <p>The following examples are purely for demo and only require the proper markup, no script is required.</p>
               <p>
                 <span id="checkboxButtons" class="btn-group btn-group-toggle">
-                  <input id="check1" type="checkbox" class="btn-check" autocomplete="off" checked>
+                  <input id="check1" type="checkbox" class="btn-check" checked>
                   <label for="check1" class="btn btn-outline-secondary">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
                     Checkbox 1 (pre-checked)
                   </label>
-                  <input id="check2" class="btn-check" autocomplete="off" type="checkbox"> 
-                  <label for ="check2"class="btn btn-outline-secondary">
+                  <input id="check2" class="btn-check" type="checkbox"> 
+                  <label for ="check2" class="btn btn-outline-secondary">
                     Checkbox 2
                   </label>
-                  <input id="check3" class="btn-check" autocomplete="off" type="checkbox">
+                  <input id="check3" class="btn-check" type="checkbox">
                   <label for="check3" class="btn btn-outline-secondary">
                     Checkbox 3
                   </label>
@@ -408,18 +408,18 @@ var myButtonINIT = myButton.Button;
 
               <p>
                 <span id="radioButtons" class="btn-group btn-group-toggle"> 
-                  <input id="radio1" type="radio" class="btn-check" autocomplete="off" name="optionz" checked>
+                  <input id="radio1" type="radio" class="btn-check" name="optionz" checked>
                   <label for="radio1" class="btn btn-outline-dark">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
                     Radio 1 (preselected)
                   </label>
-                  <input id="radio2" type="radio" class="btn-check" autocomplete="off" name="optionz">
+                  <input id="radio2" type="radio" class="btn-check" name="optionz">
                   <label for="radio2" class="btn btn-outline-dark">
                     Radio 2
                   </label>
-                  <input id="radio3" type="radio" class="btn-check" autocomplete="off" name="optionz">
+                  <input id="radio3" type="radio" class="btn-check" name="optionz">
                   <label for="radio3" class="btn btn-outline-dark">
                     Radio 3
                   </label>
@@ -428,18 +428,18 @@ var myButtonINIT = myButton.Button;
           
               <p>
                 <span class="btn-group-toggle">
-                  <input id="radio21" type="radio" class="btn-check" autocomplete="off" name="features">
+                  <input id="radio21" type="radio" class="btn-check" name="features">
                   <label for="radio21" class="btn btn-outline-primary">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
                     Radio 1
                   </label>
-                  <input id="radio22" type="radio" class="btn-check" autocomplete="off" name="features" checked>
+                  <input id="radio22" type="radio" class="btn-check" name="features" checked>
                   <label for="radio22" class="btn btn-outline-primary">
                     Radio 2 (preselected)
                   </label>
-                  <input id="radio23" type="radio" class="btn-check" autocomplete="off" name="features">
+                  <input id="radio23" type="radio" class="btn-check" name="features">
                   <label for="radio23" class="btn btn-outline-primary">
                     Radio 3
                   </label>
@@ -795,29 +795,29 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
 
               <div class="btn-group my-3">
                 <button class="btn btn-outline-secondary"
-                        onclick="carouselGenericExample.Carousel.to(0)">START</button>
+                        onclick="BSN.Carousel.getInstance(carouselGenericExample).to(0)">START</button>
                 <button class="btn btn-outline-secondary"
-                        onclick="carouselGenericExample.Carousel.prev()">PREV</button>
+                        onclick="BSN.Carousel.getInstance(carouselGenericExample).prev()">PREV</button>
                 <button class="btn btn-outline-secondary"
-                        onclick="carouselGenericExample.Carousel.next()">NEXT</button>
+                        onclick="BSN.Carousel.getInstance(carouselGenericExample).next()">NEXT</button>
               </div>
               <p>These three independent buttons use some inline JavaScript to control the carousel:</p>
 <pre><code class="language-markup">&lt;button class="btn btn-secondary" 
-  onclick="myCarousel.Carousel.to(0)">
+  onclick="BSN.Carousel.getInstance(carouselGenericExample).to(0)">
   START
-&lt/button>
+&lt;/button>
 
-&ltbutton 
+&lt;button 
   class="btn btn-secondary"
-  onclick="myCarousel.Carousel.prev()">
+  onclick="BSN.Carousel.getInstance(carouselGenericExample).prev()">
   PREV
-&lt/button>
+&lt;/button>
 
-&ltbutton 
+&lt;button 
   class="btn btn-secondary"
-  onclick="myCarousel.Carousel.next()">
+  onclick="BSN.Carousel.getInstance(carouselGenericExample).next()">
   NEXT
-&lt/button>
+&lt;/button>
 </code></pre>
 
               <p>This highlights the fact that we don't need to use <code>href="#myCarousel"</code> 
@@ -1476,6 +1476,19 @@ myDropdownInit.dispose();
 
               <p>The original plugin doesn't support nesting nor recommend using it, and due to the implementation of automatic repositioning
                 we decided to deprecate nesting functionality from our component.</p>
+
+              <div class="input-group mb-3 w-50">
+                <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Dropdown in input-group">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Separated link</a></li>
+                </ul>
+              </div>
+              <p>Input groups also work.</p>
               <p>Be sure to check the markup of the above examples and the original plugin <a href="https://getbootstrap.com/docs/5.0/components/dropdowns/">
                 documentation page</a>.</p>
             </section>
@@ -2889,14 +2902,14 @@ myScrollSpyInit.dispose();
                   <ul id="navbar-example" class="navbar-nav nav-pills">
                     <li class="nav-item"><a class="nav-link" href="#first">Tumblr farm</a></li>
                     <li class="nav-item"><a class="nav-link" href="#second">Carles aesthetic</a></li>
-                    <div class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">More Items <span class="caret"></span></a>
+                    <li class="nav-item dropdown">
+                      <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">More Items <span class="caret"></span></a>
                       <div class="dropdown-menu" role="menu">
                         <a class="dropdown-item" href="#one">one</a>
                         <a class="dropdown-item" href="#two">two</a>
                         <a class="dropdown-item" href="#three">three</a>
                       </div>
-                    </div>
+                    </li>
                   </ul>
                 </div>
               </nav>
@@ -3210,7 +3223,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                   </a>
                 </li>
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="myTabDrop1" class="dropdown-toggle" data-bs-toggle="dropdown" data-persist="true"
+                  <a class="nav-link dropdown-toggle" href="#" id="myTabDrop1" data-bs-toggle="dropdown" data-persist="true"
                     aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span>
                   </a>
                   <div class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents">
@@ -3273,7 +3286,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                   </a>
                 </li>
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="myTabDrop2" class="dropdown-toggle" data-bs-toggle="dropdown" data-persist="true"
+                  <a class="nav-link dropdown-toggle" href="#" id="myTabDrop2" data-bs-toggle="dropdown" data-persist="true"
                     aria-controls="myTabDrop2-contents" aria-expanded="false">Dropdown
                   </a>
                   <div class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="myTabDrop2-contents">
@@ -3861,7 +3874,7 @@ new BSN.Tooltip('#selector',options).show();
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text fill="#333" x="25" y="22" font-size="14">SVG</text>
                 </svg>
-                <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-container="#tooltipExamples"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+                <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-container="#tooltipExamples"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdodD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAgICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBkYXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUgZm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEgZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
 
               </div>
 

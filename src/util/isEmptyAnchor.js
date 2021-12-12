@@ -1,3 +1,10 @@
+/**
+ * Checks if an *event.target* or its parent has an `href="#"` value.
+ * We need to prevent jumping around onclick, don't we?
+ *
+ * @param {Element} elem the target element
+ * @returns {boolean} the query result
+ */
 export default function isEmptyAnchor(elem) {
   const parentAnchor = elem.closest('A');
   // anchor href starts with #

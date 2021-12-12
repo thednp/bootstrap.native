@@ -2,6 +2,7 @@
 .vscode/
 assets/
 node_modules/
+local/
 CONTRIBUTING.md
 package-lock.json
 index.html

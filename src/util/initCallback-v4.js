@@ -1,6 +1,6 @@
-import componentsInit from './componentsInit.js';
+import componentsInit from './componentsInit-v4';
 
-/* Native JavaScript for Bootstrap | Initialize Data API
+/* Native JavaScript for Bootstrap v4 | Initialize Data API
 -------------------------------------------------------- */
 function initializeDataAPI(Constructor, collection) {
   Array.from(collection).map((x) => new Constructor(x));

@@ -1,14 +1,14 @@
 /* Native JavaScript for Bootstrap 4 | Popover
 ---------------------------------------------- */
-import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents.js';
-import mouseClickEvents from 'shorter-js/src/strings/mouseClickEvents.js';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
+import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents';
+import mouseClickEvents from 'shorter-js/src/strings/mouseClickEvents';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import queryElement from 'shorter-js/src/misc/queryElement';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
-import styleTip from '../util/styleTip-v4.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
+import styleTip from '../util/styleTip-v4';
 
 // POPOVER DEFINITION
 // ==================

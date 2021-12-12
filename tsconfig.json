@@ -1,13 +1,18 @@
 {
   "compilerOptions": {
     "declaration": true,
-    // "resolveJsonModule": true,
+    "resolveJsonModule": true,
     "emitDeclarationOnly": true,
     "strict": true,
     "allowJs": true,
-    "rootDir": "src",
+    "checkJs": true,
+    "rootDir": "../",
+    "outFile": "types/bsn.d.ts", // comment after generate
     "outDir": "types"
   },
-  "include": ["src/**/*"],
-  "exclude": ["assets", "dist", "types"]
+  "files": [
+    "types/index.d.ts",
+    // "types/bsn.d.ts", // comment to generate, delete file
+    "types/more/bsn.ts",
+  ]
 }

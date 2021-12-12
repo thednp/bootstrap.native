@@ -1,9 +1,9 @@
 /* Native JavaScript for Bootstrap 4 | Button
 ---------------------------------------------*/
-import queryElement from 'shorter-js/src/misc/queryElement.js';
+import queryElement from 'shorter-js/src/misc/queryElement';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
 
 // BUTTON DEFINITION
 // =================

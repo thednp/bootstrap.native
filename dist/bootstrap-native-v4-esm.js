@@ -1,16 +1,63 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.8 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.0 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
+/**
+ * A global namespace for 'transitionend' string.
+ * @type {string}
+ */
 var transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
 
+/**
+ * A global namespace for CSS3 transition support.
+ * @type {boolean}
+ */
 var supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
 
-var transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+/**
+ * A global namespace for 'transitionDelay' string.
+ * @type {string}
+ */
+var transitionDelay = 'webkitTransition' in document.head.style ? 'webkitTransitionDelay' : 'transitionDelay';
 
+/**
+ * A global namespace for 'transitionProperty' string.
+ * @type {string}
+ */
 var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
+/**
+ * Utility to get the computed transitionDelay
+ * from Element in miliseconds.
+ *
+ * @param {Element} element target
+ * @return {number} the value in miliseconds
+ */
+function getElementTransitionDelay(element) {
+  var computedStyle = getComputedStyle(element);
+  var propertyValue = computedStyle[transitionProperty];
+  var delayValue = computedStyle[transitionDelay];
+  var delayScale = delayValue.includes('ms') ? 1 : 1000;
+  var duration = supportTransition && propertyValue && propertyValue !== 'none'
+    ? parseFloat(delayValue) * delayScale : 0;
+
+  return !Number.isNaN(duration) ? duration : 0;
+}
+
+/**
+ * A global namespace for 'transitionDuration' string.
+ * @type {string}
+ */
+var transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+
+/**
+ * Utility to get the computed transitionDuration
+ * from Element in miliseconds.
+ *
+ * @param {Element} element target
+ * @return {number} the value in miliseconds
+ */
 function getElementTransitionDuration(element) {
   var computedStyle = getComputedStyle(element);
   var propertyValue = computedStyle[transitionProperty];
@@ -22,32 +69,55 @@ function getElementTransitionDuration(element) {
   return !Number.isNaN(duration) ? duration : 0;
 }
 
+/**
+ * Utility to make sure callbacks are consistently
+ * called when transition ends.
+ *
+ * @param {Element} element target
+ * @param {function} handler `transitionend` callback
+ */
 function emulateTransitionEnd(element, handler) {
   var called = 0;
   var endEvent = new Event(transitionEndEvent);
   var duration = getElementTransitionDuration(element);
+  var delay = getElementTransitionDelay(element);
 
   if (duration) {
-    element.addEventListener(transitionEndEvent, function transitionEndWrapper(e) {
+    /**
+     * Wrap the handler in on -> off callback
+     * @param {Event} e Event object
+     * @callback
+     */
+    var transitionEndWrapper = function (e) {
       if (e.target === element) {
         handler.apply(element, [e]);
         element.removeEventListener(transitionEndEvent, transitionEndWrapper);
         called = 1;
       }
-    });
+    };
+    element.addEventListener(transitionEndEvent, transitionEndWrapper);
     setTimeout(function () {
       if (!called) { element.dispatchEvent(endEvent); }
-    }, duration + 17);
+    }, duration + delay + 17);
   } else {
     handler.apply(element, [endEvent]);
   }
 }
 
+/**
+ * Utility to check if target is typeof Element
+ * or find one that matches a selector.
+ *
+ * @param {Element | string} selector the input selector or target element
+ * @param {Element | null} parent optional Element to look into
+ * @return {Element | null} the Element or result of the querySelector
+ */
 function queryElement(selector, parent) {
   var lookUp = parent && parent instanceof Element ? parent : document;
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }
 
+/** BSN v4 custom event */
 function bootstrapCustomEvent(eventType, componentName, eventProperties) {
   var OriginalCustomEvent = new CustomEvent((eventType + ".bs." + componentName), { cancelable: true });
 
@@ -61,6 +131,10 @@ function bootstrapCustomEvent(eventType, componentName, eventProperties) {
   return OriginalCustomEvent;
 }
 
+/**
+ * A quick shortcut for `dispatchEvent` v4.
+ * @param {CustomEvent} customEvent the event object
+ */
 function dispatchCustomEvent(customEvent) {
   if (this) { this.dispatchEvent(customEvent); }
 }
@@ -288,12 +362,28 @@ function Button(elem) {
   });
 }
 
+/**
+ * A global namespace for mouse hover events.
+ * @type {[string, string]}
+ */
 var mouseHoverEvents = ('onmouseleave' in document) ? ['mouseenter', 'mouseleave'] : ['mouseover', 'mouseout'];
 
+/**
+ * A global namespace for 'addEventListener' string.
+ * @type {string}
+ */
 var addEventListener = 'addEventListener';
 
+/**
+ * A global namespace for 'removeEventListener' string.
+ * @type {string}
+ */
 var removeEventListener = 'removeEventListener';
 
+/**
+ * A global namespace for passive events support.
+ * @type {boolean}
+ */
 var supportPassive = (function () {
   var result = false;
   try {
@@ -315,15 +405,32 @@ var supportPassive = (function () {
 
 // general event options
 
+/**
+ * A global namespace for most scroll event listeners.
+ */
 var passiveHandler = supportPassive ? { passive: true } : false;
 
+/**
+ * Utility to determine if an `Element`
+ * is partially visible in viewport.
+ *
+ * @param {Element} element target
+ * @return {boolean} Boolean
+ */
 function isElementInScrollRange(element) {
   var bcr = element.getBoundingClientRect();
   var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
   return bcr.top <= viewportHeight && bcr.bottom >= 0; // bottom && top
 }
 
+/**
+ * Utility to force re-paint of an Element
+ *
+ * @param {Element | HTMLElement} element is the target
+ * @return {number} the Element.offsetHeight value
+ */
 function reflow(element) {
+  // @ts-ignore
   return element.offsetHeight;
 }
 
@@ -824,6 +931,10 @@ function Collapse(elem, opsInput) {
   element.Collapse = self;
 }
 
+/**
+ * Points the focus to a specific element.
+ * @param {Element} element target
+ */
 function setFocus(element) {
   element.focus();
 }
@@ -1292,9 +1403,18 @@ function Modal(elem, opsInput) { // element can be the modal/triggering button
   }
 }
 
+/**
+ * A global namespace for mouse click events.
+ * @type {{down: string, up: string}}
+ */
 var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
 
-// Popover, Tooltip & ScrollSpy
+/**
+ * Returns the `Window` / `HTML` scroll position.
+ * Popover, Tooltip & ScrollSpy need it.
+ *
+ * @returns {{x: number, y: number}} the scroll `{x,y}` values
+ */
 function getScroll() {
   return {
     y: window.pageYOffset || document.documentElement.scrollTop,
@@ -2344,9 +2464,10 @@ function Tooltip(elem, opsInput) {
   element.Tooltip = self;
 }
 
+/** BSN v4 componentsInit */
 var componentsInit = {};
 
-/* Native JavaScript for Bootstrap | Initialize Data API
+/* Native JavaScript for Bootstrap v4 | Initialize Data API
 -------------------------------------------------------- */
 function initializeDataAPI(Constructor, collection) {
   Array.from(collection).map(function (x) { return new Constructor(x); });
@@ -2380,7 +2501,7 @@ else {
   }, false);
 }
 
-/* Native JavaScript for Bootstrap | Remove Data API
+/* Native JavaScript for Bootstrap v4 | Remove Data API
 ---------------------------------------------------- */
 function removeElementDataAPI(ConstructorName, collection) {
   Array.from(collection).map(function (x) { return x[ConstructorName].dispose(); });
@@ -2392,7 +2513,7 @@ function removeDataAPI(context) {
   });
 }
 
-var version = "4.0.8";
+var version = "4.1.0";
 
 var Version = version;
 

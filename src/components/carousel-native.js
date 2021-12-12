@@ -1,20 +1,21 @@
 /* Native JavaScript for Bootstrap 5 | Carousel
 ----------------------------------------------- */
-import addEventListener from 'shorter-js/src/strings/addEventListener.js';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js';
-import reflow from 'shorter-js/src/misc/reflow.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import isElementInScrollRange from 'shorter-js/src/misc/isElementInScrollRange.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
-import addClass from 'shorter-js/src/class/addClass.js';
-import hasClass from 'shorter-js/src/class/hasClass.js';
-import removeClass from 'shorter-js/src/class/removeClass.js';
+import addEventListener from 'shorter-js/src/strings/addEventListener';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
+import reflow from 'shorter-js/src/misc/reflow';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import isElementInScrollRange from 'shorter-js/src/misc/isElementInScrollRange';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import { getInstance } from 'shorter-js/src/misc/data';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import activeClass from '../strings/activeClass.js';
-import BaseComponent from './base-component.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import activeClass from '../strings/activeClass';
+import BaseComponent from './base-component';
 
 // CAROUSEL PRIVATE GC
 // ===================
@@ -25,30 +26,57 @@ const carouselControl = `${carouselString}-control`;
 const carouselItem = `${carouselString}-item`;
 const dataBsSlideTo = 'data-bs-slide-to';
 const pausedClass = 'paused';
-const defaultCarouselOptions = {
-  pause: 'hover', // 'boolean|string'
-  keyboard: false, // 'boolean'
-  touch: true, // 'boolean'
-  interval: 5000, // 'boolean|number'
+
+const carouselDefaults = {
+  pause: 'hover',
+  keyboard: false,
+  touch: true,
+  interval: 5000,
 };
+
+const CarouselEventProperties = {
+  /** @type {Element} */
+  relatedTarget: null,
+  /** @type {string} */
+  direction: 'left' || 'right',
+  /** @type {number} */
+  from: 0,
+  /** @type {number} */
+  to: 1,
+};
+
+/**
+ * Static method which returns an existing `Carousel` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Carousel>}
+ */
+const getCarouselInstance = (element) => getInstance(element, carouselComponent);
+
 let startX = 0;
 let currentX = 0;
 let endX = 0;
 
 // CAROUSEL CUSTOM EVENTS
 // ======================
-const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`);
-const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`);
+/** @type {BSN.CarouselEvent.slide} */
+const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`, CarouselEventProperties);
+/** @type {BSN.CarouselEvent.slid} */
+const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`, CarouselEventProperties);
 
 // CAROUSEL EVENT HANDLERS
 // =======================
+/**
+ * The `transitionend` event listener of the `Carousel`.
+ * @param {Carousel} self the `Carousel` instance
+ */
 function carouselTransitionEndHandler(self) {
   const {
     index, direction, element, slides, options, isAnimating,
   } = self;
 
   // discontinue disposed instances
-  if (isAnimating && element[carouselComponent]) {
+  if (isAnimating && getCarouselInstance(element)) {
     const activeItem = getActiveIndex(self);
     const orientation = direction === 'left' ? 'next' : 'prev';
     const directionClass = direction === 'left' ? 'start' : 'end';
@@ -71,9 +99,15 @@ function carouselTransitionEndHandler(self) {
   }
 }
 
+/**
+ * Handles the `mouseenter` / `touchstart` events when *options.pause*
+ * is set to `hover`.
+ *
+ * @param {Event} e the `Event` object
+ */
 function carouselPauseHandler(e) {
   const eventTarget = e.target;
-  const self = eventTarget.closest(carouselSelector)[carouselComponent];
+  const self = getCarouselInstance(eventTarget.closest(carouselSelector));
   const { element, isAnimating } = self;
 
   if (!hasClass(element, pausedClass)) {
@@ -85,9 +119,15 @@ function carouselPauseHandler(e) {
   }
 }
 
+/**
+ * Handles the `mouseleave` / `touchsend` events when *options.pause*
+ * is set to `hover`.
+ *
+ * @param {Event} e the `Event` object
+ */
 function carouselResumeHandler(e) {
-  const eventTarget = e.target;
-  const self = eventTarget.closest(carouselSelector)[carouselComponent];
+  const { target } = e;
+  const self = getCarouselInstance(target.closest(carouselSelector));
   const { isPaused, isAnimating, element } = self;
 
   if (!isPaused && hasClass(element, pausedClass)) {
@@ -101,10 +141,15 @@ function carouselResumeHandler(e) {
   }
 }
 
+/**
+ * Handles the `click` event for the `Carousel` indicators.
+ *
+ * @param {Event} e the `Event` object
+ */
 function carouselIndicatorHandler(e) {
   e.preventDefault();
   const { target } = e;
-  const self = target.closest(carouselSelector)[carouselComponent];
+  const self = getCarouselInstance(target.closest(carouselSelector));
 
   if (self.isAnimating) return;
 
@@ -116,10 +161,16 @@ function carouselIndicatorHandler(e) {
   }
 }
 
+/**
+ * Handles the `click` event for the `Carousel` arrows.
+ *
+ * @param {Event} e the `Event` object
+ */
 function carouselControlsHandler(e) {
   e.preventDefault();
   const that = this;
-  const self = that.closest(carouselSelector)[carouselComponent];
+  const self = getCarouselInstance(that.closest(carouselSelector));
+
   const { controls } = self;
 
   if (controls[1] && that === controls[1]) {
@@ -129,12 +180,17 @@ function carouselControlsHandler(e) {
   }
 }
 
+/**
+ * Handles the keyboard `keydown` event for the visible `Carousel` elements.
+ *
+ * @param {Event} e the `Event` object
+ */
 function carouselKeyHandler({ which }) {
   const [element] = Array.from(document.querySelectorAll(carouselSelector))
     .filter((x) => isElementInScrollRange(x));
 
   if (!element) return;
-  const self = element[carouselComponent];
+  const self = getCarouselInstance(element);
 
   switch (which) {
     case 39:
@@ -149,9 +205,14 @@ function carouselKeyHandler({ which }) {
 
 // CAROUSEL TOUCH HANDLERS
 // =======================
+/**
+ * Handles the `touchdown` event for the `Carousel` element.
+ *
+ * @param {Event} e the `Event` object
+ */
 function carouselTouchDownHandler(e) {
   const element = this;
-  const self = element[carouselComponent];
+  const self = getCarouselInstance(element);
 
   if (!self || self.isTouch) { return; }
 
@@ -163,9 +224,14 @@ function carouselTouchDownHandler(e) {
   }
 }
 
+/**
+ * Handles the `touchmove` event for the `Carousel` element.
+ *
+ * @param {Event} e the `Event` object
+ */
 function carouselTouchMoveHandler(e) {
   const { changedTouches, type } = e;
-  const self = this[carouselComponent];
+  const self = getCarouselInstance(this);
 
   if (!self || !self.isTouch) { return; }
 
@@ -177,9 +243,14 @@ function carouselTouchMoveHandler(e) {
   }
 }
 
+/**
+ * Handles the `touchend` event for the `Carousel` element.
+ *
+ * @param {Event} e the `Event` object
+ */
 function carouselTouchEndHandler(e) {
   const element = this;
-  const self = element[carouselComponent];
+  const self = getCarouselInstance(element);
 
   if (!self || !self.isTouch) { return; }
 
@@ -207,12 +278,22 @@ function carouselTouchEndHandler(e) {
 
 // CAROUSEL PRIVATE METHODS
 // ========================
-function activateCarouselIndicator(self, pageIndex) { // indicators
+/**
+ * Sets active indicator for the `Carousel` instance.
+ * @param {Carousel} self the `Carousel` instance
+ * @param {number} pageIndex the index of the new active indicator
+ */
+function activateCarouselIndicator(self, pageIndex) {
   const { indicators } = self;
   Array.from(indicators).forEach((x) => removeClass(x, activeClass));
   if (self.indicators[pageIndex]) addClass(indicators[pageIndex], activeClass);
 }
 
+/**
+ * Toggles the touch event listeners for a given `Carousel` instance.
+ * @param {Carousel} self the `Carousel` instance
+ * @param {boolean | number} add when `TRUE` event listeners are added
+ */
 function toggleCarouselTouchHandlers(self, add) {
   const { element } = self;
   const action = add ? addEventListener : removeEventListener;
@@ -220,6 +301,11 @@ function toggleCarouselTouchHandlers(self, add) {
   element[action]('touchend', carouselTouchEndHandler, passiveHandler);
 }
 
+/**
+ * Toggles all event listeners for a given `Carousel` instance.
+ * @param {Carousel} self the `Carousel` instance
+ * @param {boolean | number} add when `TRUE` event listeners are added
+ */
 function toggleCarouselHandlers(self, add) {
   const {
     element, options, slides, controls, indicator,
@@ -248,6 +334,11 @@ function toggleCarouselHandlers(self, add) {
   if (keyboard) window[action]('keydown', carouselKeyHandler);
 }
 
+/**
+ * Returns the index of the current active item.
+ * @param {Carousel} self the `Carousel` instance
+ * @returns {number} the query result
+ */
 function getActiveIndex(self) {
   const { slides, element } = self;
   return Array.from(slides)
@@ -256,25 +347,39 @@ function getActiveIndex(self) {
 
 // CAROUSEL DEFINITION
 // ===================
+/**
+ * Returns a new `Carousel` instance.
+ */
 export default class Carousel extends BaseComponent {
+  /**
+   *
+   * @param {Element | string} target mostly a `.carousel` element
+   * @param {BSN.CarouselOptions?} config instance options
+   */
   constructor(target, config) {
-    super(carouselComponent, target, defaultCarouselOptions, config);
+    super(target, config);
     // bind
     const self = this;
 
     // additional properties
+    /** @private @type {number?} */
     self.timer = null;
+    /** @private @type {string} */
     self.direction = 'left';
+    /** @private @type {boolean} */
     self.isPaused = false;
+    /** @private @type {boolean} */
     self.isAnimating = false;
+    /** @private @type {number} */
     self.index = 0;
-    self.timer = null;
+    /** @private @type {boolean} */
     self.isTouch = false;
 
     // initialization element
     const { element } = self;
     // carousel elements
     // a LIVE collection is prefferable
+    /** @private @type {HTMLCollection} */
     self.slides = element.getElementsByClassName(carouselItem);
     const { slides } = self;
 
@@ -282,13 +387,16 @@ export default class Carousel extends BaseComponent {
     // no need to go further
     if (slides.length < 2) { return; }
 
+    /** @private @type {[?Element, ?Element]} */
     self.controls = [
       queryElement(`.${carouselControl}-prev`, element),
       queryElement(`.${carouselControl}-next`, element),
     ];
 
     // a LIVE collection is prefferable
+    /** @private @type {Element?} */
     self.indicator = queryElement('.carousel-indicators', element);
+    /** @private @type {NodeList | any[]} */
     self.indicators = (self.indicator && self.indicator.querySelectorAll(`[${dataBsSlideTo}]`)) || [];
 
     // set JavaScript and DATA API options
@@ -296,7 +404,7 @@ export default class Carousel extends BaseComponent {
 
     // don't use TRUE as interval, it's actually 0, use the default 5000ms better
     self.options.interval = options.interval === true
-      ? defaultCarouselOptions.interval
+      ? carouselDefaults.interval
       : options.interval;
 
     // set first slide active if none
@@ -312,8 +420,22 @@ export default class Carousel extends BaseComponent {
     if (options.interval) self.cycle();
   }
 
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */
+  get name() { return carouselComponent; }
+  /**
+   * Returns component default options.
+   * @readonly @static
+   */
+  get defaults() { return carouselDefaults; }
+  /* eslint-enable */
+
   // CAROUSEL PUBLIC METHODS
   // =======================
+  /** Slide automatically through items. */
   cycle() {
     const self = this;
     const { isPaused, element, options } = self;
@@ -335,6 +457,7 @@ export default class Carousel extends BaseComponent {
     }, options.interval);
   }
 
+  /** Pause the automatic cycle. */
   pause() {
     const self = this;
     const { element, options, isPaused } = self;
@@ -346,16 +469,22 @@ export default class Carousel extends BaseComponent {
     }
   }
 
+  /** Slide to the next item. */
   next() {
     const self = this;
     if (!self.isAnimating) { self.index += 1; self.to(self.index); }
   }
 
+  /** Slide to the previous item. */
   prev() {
     const self = this;
     if (!self.isAnimating) { self.index -= 1; self.to(self.index); }
   }
 
+  /**
+   * Jump to the item with the `idx` index.
+   * @param {number} idx the index of the item to jump to
+   */
   to(idx) {
     const self = this;
     const {
@@ -382,15 +511,17 @@ export default class Carousel extends BaseComponent {
     // orientation, class name, eventProperties
     const orientation = direction === 'left' ? 'next' : 'prev';
     const directionClass = direction === 'left' ? 'start' : 'end';
+
     const eventProperties = {
-      relatedTarget: slides[next], direction, from: activeItem, to: next,
+      relatedTarget: slides[next],
+      from: activeItem,
+      to: next,
+      direction,
     };
 
     // update event properties
-    Object.keys(eventProperties).forEach((k) => {
-      carouselSlideEvent[k] = eventProperties[k];
-      carouselSlidEvent[k] = eventProperties[k];
-    });
+    Object.assign(carouselSlideEvent, eventProperties);
+    Object.assign(carouselSlidEvent, eventProperties);
 
     // discontinue when prevented
     element.dispatchEvent(carouselSlideEvent);
@@ -425,10 +556,11 @@ export default class Carousel extends BaseComponent {
         }
 
         element.dispatchEvent(carouselSlidEvent);
-      }, 100);
+      }, 17);
     }
   }
 
+  /** Remove `Carousel` component from target. */
   dispose() {
     const self = this;
     const { slides } = self;
@@ -441,12 +573,16 @@ export default class Carousel extends BaseComponent {
 
     toggleCarouselHandlers(self);
     clearInterval(self.timer);
-    super.dispose(carouselComponent);
+    super.dispose();
   }
 }
 
-Carousel.init = {
-  component: carouselComponent,
+Object.assign(Carousel, {
   selector: carouselSelector,
-  constructor: Carousel,
-};
+  /**
+   * A `Carousel` initialization callback.
+   * @type {BSN.InitCallback<Carousel>}
+   */
+  callback: (element) => new Carousel(element),
+  getInstance: getCarouselInstance,
+});

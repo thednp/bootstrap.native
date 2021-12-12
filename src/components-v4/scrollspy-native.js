@@ -1,11 +1,11 @@
 /* Native JavaScript for Bootstrap 5 | ScrollSpy
 ------------------------------------------------ */
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import queryElement from 'shorter-js/src/misc/queryElement';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
-import getScroll from '../util/getScroll.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
+import getScroll from '../util/getScroll';
 
 // SCROLLSPY DEFINITION
 // ====================

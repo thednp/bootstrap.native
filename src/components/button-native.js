@@ -1,21 +1,30 @@
 /* Native JavaScript for Bootstrap 5 | Button
 ---------------------------------------------*/
-import addClass from 'shorter-js/src/class/addClass.js';
-import hasClass from 'shorter-js/src/class/hasClass.js';
-import removeClass from 'shorter-js/src/class/removeClass.js';
-import addEventListener from 'shorter-js/src/strings/addEventListener.js';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import addEventListener from 'shorter-js/src/strings/addEventListener';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import ariaPressed from 'shorter-js/src/strings/ariaPressed';
+import { getInstance } from 'shorter-js/src/misc/data';
 
-import activeClass from '../strings/activeClass.js';
-import dataBsToggle from '../strings/dataBsToggle.js';
-import BaseComponent from './base-component.js';
+import activeClass from '../strings/activeClass';
+import dataBsToggle from '../strings/dataBsToggle';
+import BaseComponent from './base-component';
 
 // BUTTON PRIVATE GC
 // =================
 const buttonString = 'button';
 const buttonComponent = 'Button';
 const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
-const ariaPressed = 'aria-pressed';
+
+/**
+ * Static method which returns an existing `Button` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Button>}
+ */
+const getButtonInstance = (element) => getInstance(element, buttonComponent);
 
 // BUTTON PRIVATE METHOD
 // =====================
@@ -26,15 +35,20 @@ function toggleButtonHandler(self, add) {
 
 // BUTTON DEFINITION
 // =================
+/** Creates a new `Button` instance. */
 export default class Button extends BaseComponent {
+  /**
+   * @param {Element | string} target usually a `.btn` element
+   */
   constructor(target) {
-    super(buttonComponent, target);
+    super(target);
     const self = this;
 
     // initialization element
     const { element } = self;
 
     // set initial state
+    /** @private @type {boolean} */
     self.isActive = hasClass(element, activeClass);
     element.setAttribute(ariaPressed, !!self.isActive);
 
@@ -42,11 +56,23 @@ export default class Button extends BaseComponent {
     toggleButtonHandler(self, 1);
   }
 
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */
+  get name() { return buttonComponent; }
+  /* eslint-enable */
+
   // BUTTON PUBLIC METHODS
   // =====================
+  /**
+   * Toggles the state of the target button.
+   * @param {Event} e usually `click` Event object
+   */
   toggle(e) {
     if (e) e.preventDefault();
-    const self = e ? this[buttonComponent] : this;
+    const self = e ? getButtonInstance(this) : this;
     const { element } = self;
 
     if (hasClass(element, 'disabled')) return;
@@ -61,14 +87,19 @@ export default class Button extends BaseComponent {
     element.setAttribute(ariaPressed, ariaValue);
   }
 
+  /** Removes the `Button` component from the target element. */
   dispose() {
     toggleButtonHandler(this);
     super.dispose(buttonComponent);
   }
 }
 
-Button.init = {
-  component: buttonComponent,
+Object.assign(Button, {
   selector: buttonSelector,
-  constructor: Button,
-};
+  /**
+   * A `Button` initialization callback.
+   * @type {BSN.InitCallback<Button>}
+   */
+  callback: (element) => new Button(element),
+  getInstance: getButtonInstance,
+});

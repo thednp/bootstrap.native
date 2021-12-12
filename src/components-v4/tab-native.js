@@ -1,12 +1,12 @@
 /* Native JavaScript for Bootstrap 4 | Tab
 ------------------------------------------ */
-import supportTransition from 'shorter-js/src/boolean/supportTransition.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
-import reflow from 'shorter-js/src/misc/reflow.js';
+import supportTransition from 'shorter-js/src/boolean/supportTransition';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import reflow from 'shorter-js/src/misc/reflow';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
 
 // TAB DEFINITION
 // ==============

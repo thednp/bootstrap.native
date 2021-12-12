@@ -1,6 +1,6 @@
-import componentsInit from './componentsInit.js';
+import componentsInit from './componentsInit-v4';
 
-/* Native JavaScript for Bootstrap | Remove Data API
+/* Native JavaScript for Bootstrap v4 | Remove Data API
 ---------------------------------------------------- */
 function removeElementDataAPI(ConstructorName, collection) {
   Array.from(collection).map((x) => x[ConstructorName].dispose());

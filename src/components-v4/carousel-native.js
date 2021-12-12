@@ -1,15 +1,15 @@
 /* Native JavaScript for Bootstrap 4 | Carousel
 ----------------------------------------------- */
-import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents.js';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import isElementInScrollRange from 'shorter-js/src/misc/isElementInScrollRange.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
-import reflow from 'shorter-js/src/misc/reflow.js';
+import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import isElementInScrollRange from 'shorter-js/src/misc/isElementInScrollRange';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import reflow from 'shorter-js/src/misc/reflow';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
 
 // CAROUSEL DEFINITION
 // ===================

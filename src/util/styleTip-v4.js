@@ -1,4 +1,4 @@
-import getScroll from './getScroll.js';
+import getScroll from './getScroll';
 
 // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
 export default function styleTip(link, element, originalPosition, parent) {

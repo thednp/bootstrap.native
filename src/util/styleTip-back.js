@@ -1,5 +1,5 @@
-import tipClassPositions from './tipClassPositions.js';
-import isMedia from './isMedia.js';
+import isMedia from 'shorter-js/src/misc/isMedia';
+import tipClassPositions from './tipClassPositions';
 import closestRelative from './closestRelative';
 
 // both popovers and tooltips (this, event)

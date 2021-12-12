@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "4.0.8",
+  "version": "4.1.0",
   "description": "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.",
   "main": "dist/bootstrap-native.min.js",
   "types": "src/index.d.ts",
@@ -29,7 +29,7 @@
     "build-esm-min": "rollup --environment FORMAT:esm,MIN:true -c",
     "build-umd": "rollup --environment FORMAT:umd,MIN:false -c",
     "build-umd-min": "rollup --environment FORMAT:umd,MIN:true -c",
-    "build-ts": "tsc -d",
+    "build:ts": "tsc -d",
     "modules": "npm-run-all --parallel module-*",
     "module-alert-esm": "rollup --environment MODULE:alert,FORMAT:esm,MIN:false -c rollup.module.js",
     "module-button-esm": "rollup --environment MODULE:button,FORMAT:esm,MIN:false -c rollup.module.js",
@@ -84,7 +84,7 @@
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
     "minifill": "^0.0.16",
-    "shorter-js": "^0.2.1"
+    "shorter-js": "^0.2.13"
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",
@@ -97,6 +97,6 @@
     "npm-run-all": "^4.1.5",
     "rollup": "^2.38.5",
     "rollup-plugin-terser": "^5.3.1",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.2"
   }
 }

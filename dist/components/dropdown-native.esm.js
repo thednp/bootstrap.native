@@ -1,17 +1,37 @@
 /*!
-  * Native JavaScript for Bootstrap Dropdown v4.0.8 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Dropdown v4.1.0 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
+/**
+ * Utility to check if target is typeof Element
+ * or find one that matches a selector.
+ *
+ * @param {Element | string} selector the input selector or target element
+ * @param {Element | null} parent optional Element to look into
+ * @return {Element | null} the Element or result of the querySelector
+ */
 function queryElement(selector, parent) {
   const lookUp = parent && parent instanceof Element ? parent : document;
   return selector instanceof Element ? selector : lookUp.querySelector(selector);
 }
 
+/**
+ * A global namespace for 'addEventListener' string.
+ * @type {string}
+ */
 const addEventListener = 'addEventListener';
 
+/**
+ * A global namespace for 'removeEventListener' string.
+ * @type {string}
+ */
 const removeEventListener = 'removeEventListener';
 
+/**
+ * A global namespace for passive events support.
+ * @type {boolean}
+ */
 const supportPassive = (() => {
   let result = false;
   try {
@@ -33,43 +53,161 @@ const supportPassive = (() => {
 
 // general event options
 
-var passiveHandler = supportPassive ? { passive: true } : false;
+/**
+ * A global namespace for most scroll event listeners.
+ */
+const passiveHandler = supportPassive ? { passive: true } : false;
 
+/**
+ * Add class to Element.classList
+ *
+ * @param {Element} element target
+ * @param {string} classNAME to add
+ */
 function addClass(element, classNAME) {
   element.classList.add(classNAME);
 }
 
+/**
+ * Check class in Element.classList
+ *
+ * @param {Element} element target
+ * @param {string} classNAME to check
+ * @return {boolean}
+ */
 function hasClass(element, classNAME) {
   return element.classList.contains(classNAME);
 }
 
+/**
+ * Remove class from Element.classList
+ *
+ * @param {Element} element target
+ * @param {string} classNAME to remove
+ */
 function removeClass(element, classNAME) {
   element.classList.remove(classNAME);
 }
 
+/**
+ * A global namespace for aria-expanded.
+ * @type {string}
+ */
 const ariaExpanded = 'aria-expanded';
 
+const componentData = new Map();
+/**
+ * An interface for web components background data.
+ * @see https://github.com/thednp/bootstrap.native/blob/master/src/components/base-component.js
+ */
+const Data = {
+  /**
+   * Sets web components data.
+   * @param {Element} element target element
+   * @param {string} component the component's name or a unique key
+   * @param {any} instance the component instance
+   */
+  set: (element, component, instance) => {
+    if (!componentData.has(component)) {
+      componentData.set(component, new Map());
+    }
+
+    const instanceMap = componentData.get(component);
+    instanceMap.set(element, instance);
+  },
+
+  /**
+   * Returns all instances for specified component.
+   * @param {string} component the component's name or a unique key
+   * @returns {?any} all the component instances
+   */
+  getAllFor: (component) => {
+    if (componentData.has(component)) {
+      return componentData.get(component) || null;
+    }
+    return null;
+  },
+
+  /**
+   * Returns the instance associated with the target.
+   * @param {Element} element target element
+   * @param {string} component the component's name or a unique key
+   * @returns {?any} the instance
+   */
+  get: (element, component) => {
+    const allForC = Data.getAllFor(component);
+    if (allForC && allForC.has(element)) {
+      return allForC.get(element) || null;
+    }
+    return null;
+  },
+
+  /**
+   * Removes web components data.
+   * @param {Element} element target element
+   * @param {string} component the component's name or a unique key
+   * @param {any} instance the component instance
+   */
+  remove: (element, component) => {
+    if (!componentData.has(component)) return;
+
+    const instanceMap = componentData.get(component);
+    instanceMap.delete(element);
+
+    if (instanceMap.size === 0) {
+      componentData.delete(component);
+    }
+  },
+};
+
+/**
+ * Shortcut for `Data.get(a, b)` to setup usable component static method.
+ * @type {SHORTER.getInstance<SHORTER.Component, string>}
+ */
+const getInstance = (element, component) => Data.get(element, component);
+
+/**
+ * Global namespace for most components `show` class.
+ */
 const showClass = 'show';
 
+/**
+ * Global namespace for most components `toggle` option.
+ */
 const dataBsToggle = 'data-bs-toggle';
 
+/**
+ * Global namespace for `Dropdown` types / classes.
+ */
 const dropdownMenuClasses = ['dropdown', 'dropup', 'dropstart', 'dropend'];
 
+/**
+ * Global namespace for `.dropdown-menu`.
+ */
 const dropdownMenuClass = 'dropdown-menu';
 
+/**
+ * Returns a namespaced `CustomEvent` specific to each component.
+ * @param {string} namespacedEventType Event.type
+ * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
+ * @returns {CustomEvent} a new namespaced event
+ */
 function bootstrapCustomEvent(namespacedEventType, eventProperties) {
   const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
 
   if (eventProperties instanceof Object) {
-    Object.keys(eventProperties).forEach((key) => {
-      Object.defineProperty(OriginalCustomEvent, key, {
-        value: eventProperties[key],
-      });
-    });
+    Object.assign(OriginalCustomEvent, eventProperties);
   }
   return OriginalCustomEvent;
 }
 
+/**
+ * Checks if an *event.target* or its parent has an `href="#"` value.
+ * We need to prevent jumping around onclick, don't we?
+ *
+ * @param {Element} elem the target element
+ * @returns {boolean} the query result
+ */
 function isEmptyAnchor(elem) {
   const parentAnchor = elem.closest('A');
   // anchor href starts with #
@@ -78,35 +216,61 @@ function isEmptyAnchor(elem) {
     || (parentAnchor && parentAnchor.hasAttribute('href') && parentAnchor.href.slice(-1) === '#'));
 }
 
+/**
+ * Points the focus to a specific element.
+ * @param {Element} element target
+ */
 function setFocus(element) {
   element.focus();
 }
 
+/**
+ * The raw value or a given component option.
+ *
+ * @typedef {string | Element | Function | number | boolean | null} niceValue
+ */
+
+/**
+ * Utility to normalize component options
+ *
+ * @param {any} value the input value
+ * @return {niceValue} the normalized value
+ */
 function normalizeValue(value) {
-  if (value === 'true') {
+  if (value === 'true') { // boolean
     return true;
   }
 
-  if (value === 'false') {
+  if (value === 'false') { // boolean
     return false;
   }
 
-  if (!Number.isNaN(+value)) {
+  if (!Number.isNaN(+value)) { // number
     return +value;
   }
 
-  if (value === '' || value === 'null') {
+  if (value === '' || value === 'null') { // null
     return null;
   }
 
-  // string / function / Element / Object
+  // string / function / Element / object
   return value;
 }
 
+/**
+ * Utility to normalize component options
+ *
+ * @param {Element} element target
+ * @param {object} defaultOps component default options
+ * @param {object} inputOps component instance options
+ * @param {string} ns component namespace
+ * @return {object} normalized component options object
+ */
 function normalizeOptions(element, defaultOps, inputOps, ns) {
+  // @ts-ignore
+  const data = { ...element.dataset };
   const normalOps = {};
   const dataOps = {};
-  const data = { ...element.dataset };
 
   Object.keys(data)
     .forEach((k) => {
@@ -136,26 +300,58 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
+var version = "4.1.0";
+
+const Version = version;
+
 /* Native JavaScript for Bootstrap 5 | Base Component
 ----------------------------------------------------- */
 
+/**
+ * Returns a new `BaseComponent` instance.
+ */
 class BaseComponent {
-  constructor(name, target, defaults, config) {
+  /**
+   * @param {Element | string} target Element or selector string
+   * @param {BSN.ComponentOptions?} config
+   */
+  constructor(target, config) {
     const self = this;
     const element = queryElement(target);
 
-    if (element[name]) element[name].dispose();
+    if (!element) return;
+
+    const prevInstance = getInstance(element, self.name);
+    if (prevInstance) prevInstance.dispose();
+
+    /** @private */
     self.element = element;
 
-    if (defaults && Object.keys(defaults).length) {
-      self.options = normalizeOptions(element, defaults, (config || {}), 'bs');
+    if (self.defaults && Object.keys(self.defaults).length) {
+      /** @private */
+      self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
-    element[name] = self;
+
+    Data.set(element, self.name, self);
   }
 
-  dispose(name) {
+  /* eslint-disable */
+  /** @static */
+  get version() { return Version; }
+  /* eslint-enable */
+
+  /** @static */
+  get name() { return this.constructor.name; }
+
+  /** @static */
+  get defaults() { return this.constructor.defaults; }
+
+  /**
+   * Removes component from target element;
+   */
+  dispose() {
     const self = this;
-    self.element[name] = null;
+    Data.remove(self.element, self.name);
     Object.keys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -169,6 +365,14 @@ const [dropdownString] = dropdownMenuClasses;
 const dropdownComponent = 'Dropdown';
 const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
 
+/**
+ * Static method which returns an existing `Dropdown` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Dropdown>}
+ */
+const getDropdownInstance = (element) => getInstance(element, dropdownComponent);
+
 // DROPDOWN PRIVATE GC
 // ===================
 const dropupString = dropdownMenuClasses[1];
@@ -178,20 +382,32 @@ const dropdownMenuEndClass = `${dropdownMenuClass}-end`;
 const hideMenuClass = ['d-block', 'invisible'];
 const verticalClass = [dropdownString, dropupString];
 const horizontalClass = [dropstartString, dropendString];
-const defaultDropdownOptions = {
+
+const dropdownDefaults = {
   offset: 5, // [number] 5(px)
   display: 'dynamic', // [dynamic|static]
 };
 
 // DROPDOWN CUSTOM EVENTS
 // ========================
+/** @type {BSN.DropdownEvent.show} */
 const showDropdownEvent = bootstrapCustomEvent(`show.bs.${dropdownString}`);
+/** @type {BSN.DropdownEvent.shown} */
 const shownDropdownEvent = bootstrapCustomEvent(`shown.bs.${dropdownString}`);
+/** @type {BSN.DropdownEvent.hide} */
 const hideDropdownEvent = bootstrapCustomEvent(`hide.bs.${dropdownString}`);
+/** @type {BSN.DropdownEvent.hidden} */
 const hiddenDropdownEvent = bootstrapCustomEvent(`hidden.bs.${dropdownString}`);
 
 // DROPDOWN PRIVATE METHODS
 // ========================
+/**
+ * Apply specific style or class names to a `.dropdown-menu` to automatically
+ * accomodate the layout and the page scroll.
+ *
+ * @param {Dropdown} self the `Dropdown` instance
+ * @param {boolean | number} show when `true` will have a different effect
+ */
 function styleDropdown(self, show) {
   const {
     element, menu, originalClass, menuEnd, options,
@@ -306,6 +522,12 @@ function styleDropdown(self, show) {
   hideMenuClass.forEach((c) => removeClass(menu, c));
 }
 
+/**
+ * Toggles on/off the listeners for the events that close the dropdown
+ * as well as event that request a new position for the dropdown.
+ *
+ * @param {Dropdown} self the `Dropdown` instance
+ */
 function toggleDropdownDismiss(self) {
   const action = self.open ? addEventListener : removeEventListener;
 
@@ -320,13 +542,24 @@ function toggleDropdownDismiss(self) {
   }
 }
 
+/**
+ * Toggles on/off the `click` event listener of the `Dropdown`.
+ *
+ * @param {Dropdown} self the `Dropdown` instance
+ * @param {*} add when `true`, it will add the event listener
+ */
 function toggleDropdownHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
   self.element[action]('click', dropdownClickHandler);
 }
 
+/**
+ * Returns the currently open `.dropdown` element.
+ *
+ * @returns {Element?} the query result
+ */
 function getCurrentOpenDropdown() {
-  const currentParent = dropdownMenuClasses.concat('btn-group')
+  const currentParent = [...dropdownMenuClasses, 'btn-group', 'input-group']
     .map((c) => document.getElementsByClassName(`${c} ${showClass}`))
     .find((x) => x.length);
 
@@ -338,13 +571,20 @@ function getCurrentOpenDropdown() {
 
 // DROPDOWN EVENT HANDLERS
 // =======================
+/**
+ * Handles the `click` event for the `Dropdown` instance.
+ *
+ * @param {Event} e event object
+ */
 function dropdownDismissHandler(e) {
   const { target, type } = e;
   if (!target.closest) return; // some weird FF bug #409
 
   const element = getCurrentOpenDropdown();
-  const parent = element && element.parentNode;
-  const self = element && element[dropdownComponent];
+  if (!element) return;
+
+  const self = getDropdownInstance(element);
+  const parent = element.parentNode;
   const menu = self && self.menu;
 
   const hasData = target.closest(dropdownSelector) !== null;
@@ -364,21 +604,36 @@ function dropdownDismissHandler(e) {
   }
 }
 
+/**
+ *
+ * @param {EventListener} e event object
+ * @returns {void}
+ */
 function dropdownClickHandler(e) {
   const element = this;
-  const self = element[dropdownComponent];
+  const self = getDropdownInstance(element);
   self.toggle(element);
 
   if (isEmptyAnchor(e.target)) e.preventDefault();
 }
 
+/**
+ *
+ * @param {EventListener} e event object
+ * @returns {void}
+ */
 function dropdownPreventScroll(e) {
   if (e.which === 38 || e.which === 40) e.preventDefault();
 }
 
+/**
+ *
+ * @param {{which: number}} which keyboard key
+ * @returns {void}
+ */
 function dropdownKeyHandler({ which }) {
   const element = getCurrentOpenDropdown();
-  const self = element[dropdownComponent];
+  const self = getDropdownInstance(element);
   const { menu, menuItems, open } = self;
   const activeItem = document.activeElement;
   const isSameElement = activeItem === element;
@@ -408,18 +663,29 @@ function dropdownKeyHandler({ which }) {
   }
 }
 
+/**
+ * @returns {void}
+ */
 function dropdownLayoutHandler() {
   const element = getCurrentOpenDropdown();
-  const self = element && element[dropdownComponent];
+  const self = element && getDropdownInstance(element);
 
   if (self && self.open) styleDropdown(self, 1);
 }
 
 // DROPDOWN DEFINITION
 // ===================
+/**
+ * Returns a new Dropdown instance.
+ * @implements {BaseComponent}
+ */
 class Dropdown extends BaseComponent {
+  /**
+   * @param {Element | string} target Element or string selector
+   * @param {BSN.DropdownOptions?} config the instance options
+   */
   constructor(target, config) {
-    super(dropdownComponent, target, defaultDropdownOptions, config);
+    super(target, config);
     // bind
     const self = this;
 
@@ -427,15 +693,19 @@ class Dropdown extends BaseComponent {
     const { element } = self;
 
     // set targets
-    const parent = element.parentElement;
-    self.menu = queryElement(`.${dropdownMenuClass}`, parent);
+    const { parentElement } = element;
+    /** @private @type {Element} */
+    self.menu = queryElement(`.${dropdownMenuClass}`, parentElement);
     const { menu } = self;
 
-    self.originalClass = Array.from(parent.classList);
+    /** @private @type {string} */
+    self.originalClass = Array.from(parentElement.classList);
 
     // set original position
+    /** @private @type {boolean} */
     self.menuEnd = hasClass(menu, dropdownMenuEndClass);
 
+    /** @private @type {Element[]} */
     self.menuItems = [];
 
     Array.from(menu.children).forEach((child) => {
@@ -444,34 +714,49 @@ class Dropdown extends BaseComponent {
     });
 
     // set initial state to closed
+    /** @private @type {boolean} */
     self.open = false;
 
     // add event listener
     toggleDropdownHandler(self, 1);
   }
 
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */
+  get name() { return dropdownComponent; }
+  /**
+   * Returns component default options.
+   * @readonly @static
+   */
+  get defaults() { return dropdownDefaults; }
+  /* eslint-enable */
+
   // DROPDOWN PUBLIC METHODS
   // =======================
-  toggle(related) {
+  /** Shows/hides the dropdown menu to the user. */
+  toggle() {
     const self = this;
     const { open } = self;
 
-    if (open) self.hide(related);
-    else self.show(related);
+    if (open) self.hide();
+    else self.show();
   }
 
-  show(related) {
+  /** Shows the dropdown menu to the user. */
+  show() {
     const self = this;
-    const currentParent = queryElement(dropdownMenuClasses.concat('btn-group').map((c) => `.${c}.${showClass}`).join(','));
+    const currentParent = queryElement(dropdownMenuClasses.concat('btn-group', 'input-group').map((c) => `.${c}.${showClass}`).join(','));
     const currentElement = currentParent && queryElement(dropdownSelector, currentParent);
 
-    if (currentElement) currentElement[dropdownComponent].hide();
+    if (currentElement) getDropdownInstance(currentElement).hide();
 
     const { element, menu, open } = self;
     const parent = element.parentNode;
 
     // update relatedTarget and dispatch
-    showDropdownEvent.relatedTarget = related || null;
     parent.dispatchEvent(showDropdownEvent);
     if (showDropdownEvent.defaultPrevented) return;
 
@@ -485,19 +770,18 @@ class Dropdown extends BaseComponent {
     self.open = !open;
 
     setTimeout(() => {
-      setFocus(menu.getElementsByTagName('INPUT')[0] || element); // focus the first input item | element
+      setFocus(element); // focus the element
       toggleDropdownDismiss(self);
 
-      shownDropdownEvent.relatedTarget = related || null;
       parent.dispatchEvent(shownDropdownEvent);
     }, 1);
   }
 
-  hide(related) {
+  /** Hides the dropdown menu from the user. */
+  hide() {
     const self = this;
     const { element, menu, open } = self;
     const parent = element.parentNode;
-    hideDropdownEvent.relatedTarget = related || null;
     parent.dispatchEvent(hideDropdownEvent);
     if (hideDropdownEvent.defaultPrevented) return;
 
@@ -510,16 +794,13 @@ class Dropdown extends BaseComponent {
     element.setAttribute(ariaExpanded, false);
     self.open = !open;
 
-    setFocus(element);
-
     // only re-attach handler if the instance is not disposed
     setTimeout(() => toggleDropdownDismiss(self), 1);
 
-    // update relatedTarget and dispatch
-    hiddenDropdownEvent.relatedTarget = related || null;
     parent.dispatchEvent(hiddenDropdownEvent);
   }
 
+  /** Removes the `Dropdown` component from the target element. */
   dispose() {
     const self = this;
     const { element } = self;
@@ -528,14 +809,18 @@ class Dropdown extends BaseComponent {
 
     toggleDropdownHandler(self);
 
-    super.dispose(dropdownComponent);
+    super.dispose();
   }
 }
 
-Dropdown.init = {
-  component: dropdownComponent,
+Object.assign(Dropdown, {
   selector: dropdownSelector,
-  constructor: Dropdown,
-};
+  /**
+   * A `Dropdown` initialization callback.
+   * @type {BSN.InitCallback<Dropdown>}
+   */
+  callback: (element) => new Dropdown(element),
+  getInstance: getDropdownInstance,
+});
 
 export { Dropdown as default };

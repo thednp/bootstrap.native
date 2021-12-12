@@ -1,20 +1,21 @@
 /* Native JavaScript for Bootstrap 5 | Toast
 -------------------------------------------- */
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import addClass from 'shorter-js/src/class/addClass.js';
-import hasClass from 'shorter-js/src/class/hasClass.js';
-import removeClass from 'shorter-js/src/class/removeClass.js';
-import addEventListener from 'shorter-js/src/strings/addEventListener.js';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import addEventListener from 'shorter-js/src/strings/addEventListener';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener';
 import queryElement from 'shorter-js/src/misc/queryElement';
-import reflow from 'shorter-js/src/misc/reflow.js';
+import reflow from 'shorter-js/src/misc/reflow';
+import { getInstance } from 'shorter-js/src/misc/data';
 
-import fadeClass from '../strings/fadeClass.js';
-import showClass from '../strings/showClass.js';
-import dataBsDismiss from '../strings/dataBsDismiss.js';
+import fadeClass from '../strings/fadeClass';
+import showClass from '../strings/showClass';
+import dataBsDismiss from '../strings/dataBsDismiss';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import BaseComponent from './base-component.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import BaseComponent from './base-component';
 
 // TOAST PRIVATE GC
 // ================
@@ -23,22 +24,40 @@ const toastComponent = 'Toast';
 const toastSelector = `.${toastString}`;
 const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
 const showingClass = 'showing';
-const hideClass = 'hide'; // marked as deprecated
-const toastDefaultOptions = {
+/** @deprecated */
+const hideClass = 'hide';
+
+const toastDefaults = {
   animation: true,
   autohide: true,
   delay: 500,
 };
 
+/**
+ * Static method which returns an existing `Toast` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Toast>}
+ */
+const getToastInstance = (element) => getInstance(element, toastComponent);
+
 // TOAST CUSTOM EVENTS
 // ===================
+/** @type {BSN.ToastEvent.show} */
 const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
+/** @type {BSN.ToastEvent.shown} */
 const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
+/** @type {BSN.ToastEvent.hide} */
 const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
+/** @type {BSN.ToastEvent.hidden} */
 const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 
 // TOAST PRIVATE METHODS
 // =====================
+/**
+ * Executes after the toast is shown to the user.
+ * @param {Toast} self the `Toast` instance
+ */
 function showToastComplete(self) {
   const { element, options } = self;
   removeClass(element, showingClass);
@@ -47,6 +66,10 @@ function showToastComplete(self) {
   if (options.autohide) self.hide();
 }
 
+/**
+ * Executes after the toast is hidden to the user.
+ * @param {Toast} self the `Toast` instance
+ */
 function hideToastComplete(self) {
   const { element } = self;
   removeClass(element, showingClass);
@@ -55,6 +78,10 @@ function hideToastComplete(self) {
   element.dispatchEvent(hiddenToastEvent);
 }
 
+/**
+ * Executes before hiding the toast.
+ * @param {Toast} self the `Toast` instance
+ */
 function hideToast(self) {
   const { element, options } = self;
   addClass(element, showingClass);
@@ -67,6 +94,10 @@ function hideToast(self) {
   }
 }
 
+/**
+ * Executes before showing the toast.
+ * @param {Toast} self the `Toast` instance
+ */
 function showToast(self) {
   const { element, options } = self;
   removeClass(element, hideClass); // B/C
@@ -81,6 +112,11 @@ function showToast(self) {
   }
 }
 
+/**
+ * Toggles on/off the `click` event listener.
+ * @param {Toast} self the `Toast` instance
+ * @param {boolean | number} add when `true`, it will add the listener
+ */
 function toggleToastHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
   if (self.dismiss) {
@@ -90,6 +126,10 @@ function toggleToastHandler(self, add) {
 
 // TOAST EVENT HANDLERS
 // ====================
+/**
+ * Executes after the instance has been disposed.
+ * @param {Toast} self the `Toast` instance
+ */
 function completeDisposeToast(self) {
   clearTimeout(self.timer);
   toggleToastHandler(self);
@@ -97,9 +137,14 @@ function completeDisposeToast(self) {
 
 // TOAST DEFINITION
 // ================
+/** Creates a new `Toast` instance. */
 export default class Toast extends BaseComponent {
+  /**
+   * @param {Element | string} target the target `.toast` element
+   * @param {BSN.ToastOptions?} config the instance options
+   */
   constructor(target, config) {
-    super(toastComponent, target, toastDefaultOptions, config);
+    super(target, config);
     // bind
     const self = this;
     const { element, options } = self;
@@ -108,6 +153,7 @@ export default class Toast extends BaseComponent {
     if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
     else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
     // dismiss button
+    /** @private @type {Element} */
     self.dismiss = queryElement(toastDismissSelector, element);
 
     // bind
@@ -118,8 +164,22 @@ export default class Toast extends BaseComponent {
     toggleToastHandler(self, 1);
   }
 
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */  
+  get name() { return toastComponent; }
+  /**
+   * Returns component default options.
+   * @readonly @static
+   */  
+  get defaults() { return toastDefaults; }
+  /* eslint-enable */
+
   // TOAST PUBLIC METHODS
   // ====================
+  /** Shows the toast. */
   show() {
     const self = this;
     const { element } = self;
@@ -132,6 +192,7 @@ export default class Toast extends BaseComponent {
     }
   }
 
+  /** Hides the toast. */
   hide(noTimer) {
     const self = this;
     const { element, options } = self;
@@ -146,20 +207,27 @@ export default class Toast extends BaseComponent {
     }
   }
 
+  /** Removes the `Toast` component from the target element. */
   dispose() {
     const self = this;
-    const { element, options } = self;
-    self.hide(1);
+    const { element } = self;
 
-    if (options.animation) emulateTransitionEnd(element, () => completeDisposeToast(self));
-    else completeDisposeToast(self);
+    if (hasClass(element, showClass)) {
+      removeClass(element, showClass);
+    }
 
-    super.dispose(toastComponent);
+    completeDisposeToast(self);
+
+    super.dispose();
   }
 }
 
-Toast.init = {
-  component: toastComponent,
+Object.assign(Toast, {
   selector: toastSelector,
-  constructor: Toast,
-};
+  /**
+   * A `Toast` initialization callback.
+   * @type {BSN.InitCallback<Toast>}
+   */
+  callback: (element) => new Toast(element),
+  getInstance: getToastInstance,
+});

@@ -1,26 +1,27 @@
 /* Native JavaScript for Bootstrap 5 | Tab
 ------------------------------------------ */
-import supportTransition from 'shorter-js/src/boolean/supportTransition.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import reflow from 'shorter-js/src/misc/reflow.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
-import addClass from 'shorter-js/src/class/addClass.js';
-import hasClass from 'shorter-js/src/class/hasClass.js';
-import removeClass from 'shorter-js/src/class/removeClass.js';
-import addEventListener from 'shorter-js/src/strings/addEventListener.js';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+import supportTransition from 'shorter-js/src/boolean/supportTransition';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import reflow from 'shorter-js/src/misc/reflow';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import addEventListener from 'shorter-js/src/strings/addEventListener';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import ariaSelected from 'shorter-js/src/strings/ariaSelected';
+import { getInstance } from 'shorter-js/src/misc/data';
 
-import ariaSelected from '../strings/ariaSelected.js';
-import collapsingClass from '../strings/collapsingClass.js';
-import activeClass from '../strings/activeClass.js';
-import fadeClass from '../strings/fadeClass.js';
-import showClass from '../strings/showClass.js';
-import dropdownClasses from '../strings/dropdownClasses.js';
-import dropdownMenuClass from '../strings/dropdownMenuClass.js';
-import dataBsToggle from '../strings/dataBsToggle.js';
+import collapsingClass from '../strings/collapsingClass';
+import activeClass from '../strings/activeClass';
+import fadeClass from '../strings/fadeClass';
+import showClass from '../strings/showClass';
+import dropdownClasses from '../strings/dropdownClasses';
+import dropdownMenuClass from '../strings/dropdownMenuClass';
+import dataBsToggle from '../strings/dataBsToggle';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import BaseComponent from './base-component.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import BaseComponent from './base-component';
 
 // TAB PRIVATE GC
 // ================
@@ -28,11 +29,23 @@ const tabString = 'tab';
 const tabComponent = 'Tab';
 const tabSelector = `[${dataBsToggle}="${tabString}"]`;
 
+/**
+ * Static method which returns an existing `Tab` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Tab>}
+ */
+const getTabInstance = (element) => getInstance(element, tabComponent);
+
 // TAB CUSTOM EVENTS
 // =================
+/** @type {BSN.TabEvent.show} */
 const showTabEvent = bootstrapCustomEvent(`show.bs.${tabString}`);
+/** @type {BSN.TabEvent.shown} */
 const shownTabEvent = bootstrapCustomEvent(`shown.bs.${tabString}`);
+/** @type {BSN.TabEvent.hide} */
 const hideTabEvent = bootstrapCustomEvent(`hide.bs.${tabString}`);
+/** @type {BSN.TabEvent.hidden} */
 const hiddenTabEvent = bootstrapCustomEvent(`hidden.bs.${tabString}`);
 
 let nextTab;
@@ -45,6 +58,10 @@ let tabEqualContents;
 
 // TAB PRIVATE METHODS
 // ===================
+/**
+ * Executes after tab transition has finished.
+ * @param {Tab} self the `Tab` instance
+ */
 function triggerTabEnd(self) {
   const { tabContent, nav } = self;
   tabContent.style.height = '';
@@ -52,6 +69,10 @@ function triggerTabEnd(self) {
   nav.isAnimating = false;
 }
 
+/**
+ * Executes before showing the tab content.
+ * @param {Tab} self the `Tab` instance
+ */
 function triggerTabShow(self) {
   const { tabContent, nav } = self;
 
@@ -72,6 +93,10 @@ function triggerTabShow(self) {
   nextTab.dispatchEvent(shownTabEvent);
 }
 
+/**
+ * Executes before hiding the tab.
+ * @param {Tab} self the `Tab` instance
+ */
 function triggerTabHide(self) {
   const { tabContent } = self;
   if (tabContent) {
@@ -111,6 +136,11 @@ function triggerTabHide(self) {
   activeTab.dispatchEvent(hiddenTabEvent);
 }
 
+/**
+ * Returns the current active tab.
+ * @param {Tab} self the `Tab` instance
+ * @returns {Element} the query result
+ */
 function getActiveTab({ nav }) {
   const activeTabs = nav.getElementsByClassName(activeClass);
 
@@ -123,10 +153,21 @@ function getActiveTab({ nav }) {
   return activeTab;
 }
 
+/**
+ * Returns the current active tab content.
+ * @param {Tab} self the `Tab` instance
+ * @returns {Element} the query result
+ */
 function getActiveTabContent(self) {
-  return queryElement(getActiveTab(self).getAttribute('href'));
+  return queryElement(getActiveTab(self).getAttribute('href')
+    || getActiveTab(self).getAttribute(dataBsToggle));
 }
 
+/**
+ * Toggles on/off the `click` event listener.
+ * @param {Tab} self the `Tab` instance
+ * @returns {Element} the query result
+ */
 function toggleTabHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
   self.element[action]('click', tabClickHandler);
@@ -134,17 +175,25 @@ function toggleTabHandler(self, add) {
 
 // TAB EVENT HANDLER
 // =================
+/**
+ * Handles the `click` event listener.
+ * @param {Event} e the `Event` object
+ */
 function tabClickHandler(e) {
-  const self = this[tabComponent];
+  const self = getTabInstance(this);
   e.preventDefault();
   if (!self.nav.isAnimating) self.show();
 }
 
 // TAB DEFINITION
 // ==============
+/** Creates a new `Tab` instance. */
 export default class Tab extends BaseComponent {
+  /**
+   * @param {Element | string} target the target element
+   */
   constructor(target) {
-    super(tabComponent, target);
+    super(target);
     // bind
     const self = this;
 
@@ -152,8 +201,10 @@ export default class Tab extends BaseComponent {
     const { element } = self;
 
     // event targets
+    /** @private @type {Element} */
     self.nav = element.closest('.nav');
     const { nav } = self;
+    /** @private @type {Element} */
     self.dropdown = nav && queryElement(`.${dropdownClasses[0]}-toggle`, nav);
     activeTabContent = getActiveTabContent(self);
     self.tabContent = supportTransition && activeTabContent.closest('.tab-content');
@@ -166,8 +217,17 @@ export default class Tab extends BaseComponent {
     toggleTabHandler(self, 1);
   }
 
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */  
+  get name() { return tabComponent; }
+  /* eslint-enable */
+
   // TAB PUBLIC METHODS
   // ==================
+  /** Shows the tab to the user. */
   show() { // the tab we clicked is now the nextTab tab
     const self = this;
     const { element, nav, dropdown } = self;
@@ -204,14 +264,19 @@ export default class Tab extends BaseComponent {
     }
   }
 
+  /** Removes the `Tab` component from the target element. */
   dispose() {
     toggleTabHandler(this);
-    super.dispose(tabComponent);
+    super.dispose();
   }
 }
 
-Tab.init = {
-  component: tabComponent,
+Object.assign(Tab, {
   selector: tabSelector,
-  constructor: Tab,
-};
+  /**
+   * A `Tab` initialization callback.
+   * @type {BSN.InitCallback<Tab>}
+   */
+  callback: (element) => new Tab(element),
+  getInstance: getTabInstance,
+});

@@ -1,3 +1,4 @@
+/** BSN v4 custom event */
 export default function bootstrapCustomEvent(eventType, componentName, eventProperties) {
   const OriginalCustomEvent = new CustomEvent(`${eventType}.bs.${componentName}`, { cancelable: true });
 

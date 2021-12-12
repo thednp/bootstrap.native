@@ -3,11 +3,11 @@ import {
   mouseClickEvents, mouseHoverEvents, getElementTransitionDuration,
   emulateTransitionEnd, passiveHandler, queryElement,
 } from 'shorter-js';
-import bootstrapCustomEvent from './bootstrapCustomEvent.js';
-import dispatchCustomEvent from './dispatchCustomEvent.js';
-import setFocus from './setFocus.js';
-import styleTip from './styleTip.js';
-import getScroll from './getScroll.js';
+import bootstrapCustomEvent from './bootstrapCustomEvent';
+import dispatchCustomEvent from './dispatchCustomEvent';
+import setFocus from './setFocus';
+import styleTip from './styleTip';
+import getScroll from './getScroll';
 
 // for faster execution
 // export this object to global

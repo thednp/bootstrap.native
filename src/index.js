@@ -1,18 +1,18 @@
-import Alert from './components/alert-native.js';
-import Button from './components/button-native.js';
-import Carousel from './components/carousel-native.js';
-import Collapse from './components/collapse-native.js';
-import Dropdown from './components/dropdown-native.js';
-import Modal from './components/modal-native.js';
-import Offcanvas from './components/offcanvas-native.js';
-import Popover from './components/popover-native.js';
-import ScrollSpy from './components/scrollspy-native.js';
-import Tab from './components/tab-native.js';
-import Toast from './components/toast-native.js';
-import Tooltip from './components/tooltip-native.js';
+import Alert from './components/alert-native';
+import Button from './components/button-native';
+import Carousel from './components/carousel-native';
+import Collapse from './components/collapse-native';
+import Dropdown from './components/dropdown-native';
+import Modal from './components/modal-native';
+import Offcanvas from './components/offcanvas-native';
+import Popover from './components/popover-native';
+import ScrollSpy from './components/scrollspy-native';
+import Tab from './components/tab-native';
+import Toast from './components/toast-native';
+import Tooltip from './components/tooltip-native';
 
-import Version from './util/version.js';
-import { initCallback } from './util/init.js';
+import Version from './version';
+import { initCallback, removeDataAPI } from './util/init';
 
 const BSN = {
   Alert,
@@ -29,6 +29,7 @@ const BSN = {
   Tooltip,
 
   initCallback,
+  removeDataAPI,
   Version,
 };
 

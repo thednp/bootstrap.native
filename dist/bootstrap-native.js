@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.0.8 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.0 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -9,14 +9,61 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.BSN = factory());
 })(this, (function () { 'use strict';
 
+  /**
+   * A global namespace for 'transitionend' string.
+   * @type {string}
+   */
   const transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
 
+  /**
+   * A global namespace for CSS3 transition support.
+   * @type {boolean}
+   */
   const supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
 
-  const transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+  /**
+   * A global namespace for 'transitionDelay' string.
+   * @type {string}
+   */
+  const transitionDelay = 'webkitTransition' in document.head.style ? 'webkitTransitionDelay' : 'transitionDelay';
 
+  /**
+   * A global namespace for 'transitionProperty' string.
+   * @type {string}
+   */
   const transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
+  /**
+   * Utility to get the computed transitionDelay
+   * from Element in miliseconds.
+   *
+   * @param {Element} element target
+   * @return {number} the value in miliseconds
+   */
+  function getElementTransitionDelay(element) {
+    const computedStyle = getComputedStyle(element);
+    const propertyValue = computedStyle[transitionProperty];
+    const delayValue = computedStyle[transitionDelay];
+    const delayScale = delayValue.includes('ms') ? 1 : 1000;
+    const duration = supportTransition && propertyValue && propertyValue !== 'none'
+      ? parseFloat(delayValue) * delayScale : 0;
+
+    return !Number.isNaN(duration) ? duration : 0;
+  }
+
+  /**
+   * A global namespace for 'transitionDuration' string.
+   * @type {string}
+   */
+  const transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+
+  /**
+   * Utility to get the computed transitionDuration
+   * from Element in miliseconds.
+   *
+   * @param {Element} element target
+   * @return {number} the value in miliseconds
+   */
   function getElementTransitionDuration(element) {
     const computedStyle = getComputedStyle(element);
     const propertyValue = computedStyle[transitionProperty];
@@ -28,88 +75,235 @@
     return !Number.isNaN(duration) ? duration : 0;
   }
 
+  /**
+   * Utility to make sure callbacks are consistently
+   * called when transition ends.
+   *
+   * @param {Element} element target
+   * @param {function} handler `transitionend` callback
+   */
   function emulateTransitionEnd(element, handler) {
     let called = 0;
     const endEvent = new Event(transitionEndEvent);
     const duration = getElementTransitionDuration(element);
+    const delay = getElementTransitionDelay(element);
 
     if (duration) {
-      element.addEventListener(transitionEndEvent, function transitionEndWrapper(e) {
+      /**
+       * Wrap the handler in on -> off callback
+       * @param {Event} e Event object
+       * @callback
+       */
+      const transitionEndWrapper = (e) => {
         if (e.target === element) {
           handler.apply(element, [e]);
           element.removeEventListener(transitionEndEvent, transitionEndWrapper);
           called = 1;
         }
-      });
+      };
+      element.addEventListener(transitionEndEvent, transitionEndWrapper);
       setTimeout(() => {
         if (!called) element.dispatchEvent(endEvent);
-      }, duration + 17);
+      }, duration + delay + 17);
     } else {
       handler.apply(element, [endEvent]);
     }
   }
 
+  /**
+   * Utility to check if target is typeof Element
+   * or find one that matches a selector.
+   *
+   * @param {Element | string} selector the input selector or target element
+   * @param {Element | null} parent optional Element to look into
+   * @return {Element | null} the Element or result of the querySelector
+   */
   function queryElement(selector, parent) {
     const lookUp = parent && parent instanceof Element ? parent : document;
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
+  /**
+   * Check class in Element.classList
+   *
+   * @param {Element} element target
+   * @param {string} classNAME to check
+   * @return {boolean}
+   */
   function hasClass(element, classNAME) {
     return element.classList.contains(classNAME);
   }
 
+  /**
+   * Remove class from Element.classList
+   *
+   * @param {Element} element target
+   * @param {string} classNAME to remove
+   */
   function removeClass(element, classNAME) {
     element.classList.remove(classNAME);
   }
 
+  /**
+   * A global namespace for 'addEventListener' string.
+   * @type {string}
+   */
   const addEventListener = 'addEventListener';
 
+  /**
+   * A global namespace for 'removeEventListener' string.
+   * @type {string}
+   */
   const removeEventListener = 'removeEventListener';
 
+  const componentData = new Map();
+  /**
+   * An interface for web components background data.
+   * @see https://github.com/thednp/bootstrap.native/blob/master/src/components/base-component.js
+   */
+  const Data = {
+    /**
+     * Sets web components data.
+     * @param {Element} element target element
+     * @param {string} component the component's name or a unique key
+     * @param {any} instance the component instance
+     */
+    set: (element, component, instance) => {
+      if (!componentData.has(component)) {
+        componentData.set(component, new Map());
+      }
+
+      const instanceMap = componentData.get(component);
+      instanceMap.set(element, instance);
+    },
+
+    /**
+     * Returns all instances for specified component.
+     * @param {string} component the component's name or a unique key
+     * @returns {?any} all the component instances
+     */
+    getAllFor: (component) => {
+      if (componentData.has(component)) {
+        return componentData.get(component) || null;
+      }
+      return null;
+    },
+
+    /**
+     * Returns the instance associated with the target.
+     * @param {Element} element target element
+     * @param {string} component the component's name or a unique key
+     * @returns {?any} the instance
+     */
+    get: (element, component) => {
+      const allForC = Data.getAllFor(component);
+      if (allForC && allForC.has(element)) {
+        return allForC.get(element) || null;
+      }
+      return null;
+    },
+
+    /**
+     * Removes web components data.
+     * @param {Element} element target element
+     * @param {string} component the component's name or a unique key
+     * @param {any} instance the component instance
+     */
+    remove: (element, component) => {
+      if (!componentData.has(component)) return;
+
+      const instanceMap = componentData.get(component);
+      instanceMap.delete(element);
+
+      if (instanceMap.size === 0) {
+        componentData.delete(component);
+      }
+    },
+  };
+
+  /**
+   * Shortcut for `Data.get(a, b)` to setup usable component static method.
+   * @type {SHORTER.getInstance<SHORTER.Component, string>}
+   */
+  const getInstance = (element, component) => Data.get(element, component);
+
+  /**
+   * Global namespace for most components `fade` class.
+   */
   const fadeClass = 'fade';
 
+  /**
+   * Global namespace for most components `show` class.
+   */
   const showClass = 'show';
 
+  /**
+   * Global namespace for most components `dismiss` option.
+   */
   const dataBsDismiss = 'data-bs-dismiss';
 
+  /**
+   * Returns a namespaced `CustomEvent` specific to each component.
+   * @param {string} namespacedEventType Event.type
+   * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
+   * @returns {CustomEvent} a new namespaced event
+   */
   function bootstrapCustomEvent(namespacedEventType, eventProperties) {
     const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
 
     if (eventProperties instanceof Object) {
-      Object.keys(eventProperties).forEach((key) => {
-        Object.defineProperty(OriginalCustomEvent, key, {
-          value: eventProperties[key],
-        });
-      });
+      Object.assign(OriginalCustomEvent, eventProperties);
     }
     return OriginalCustomEvent;
   }
 
+  /**
+   * The raw value or a given component option.
+   *
+   * @typedef {string | Element | Function | number | boolean | null} niceValue
+   */
+
+  /**
+   * Utility to normalize component options
+   *
+   * @param {any} value the input value
+   * @return {niceValue} the normalized value
+   */
   function normalizeValue(value) {
-    if (value === 'true') {
+    if (value === 'true') { // boolean
       return true;
     }
 
-    if (value === 'false') {
+    if (value === 'false') { // boolean
       return false;
     }
 
-    if (!Number.isNaN(+value)) {
+    if (!Number.isNaN(+value)) { // number
       return +value;
     }
 
-    if (value === '' || value === 'null') {
+    if (value === '' || value === 'null') { // null
       return null;
     }
 
-    // string / function / Element / Object
+    // string / function / Element / object
     return value;
   }
 
+  /**
+   * Utility to normalize component options
+   *
+   * @param {Element} element target
+   * @param {object} defaultOps component default options
+   * @param {object} inputOps component instance options
+   * @param {string} ns component namespace
+   * @return {object} normalized component options object
+   */
   function normalizeOptions(element, defaultOps, inputOps, ns) {
+    // @ts-ignore
+    const data = { ...element.dataset };
     const normalOps = {};
     const dataOps = {};
-    const data = { ...element.dataset };
 
     Object.keys(data)
       .forEach((k) => {
@@ -139,26 +333,58 @@
     return normalOps;
   }
 
+  var version = "4.1.0";
+
+  const Version = version;
+
   /* Native JavaScript for Bootstrap 5 | Base Component
   ----------------------------------------------------- */
 
+  /**
+   * Returns a new `BaseComponent` instance.
+   */
   class BaseComponent {
-    constructor(name, target, defaults, config) {
+    /**
+     * @param {Element | string} target Element or selector string
+     * @param {BSN.ComponentOptions?} config
+     */
+    constructor(target, config) {
       const self = this;
       const element = queryElement(target);
 
-      if (element[name]) element[name].dispose();
+      if (!element) return;
+
+      const prevInstance = getInstance(element, self.name);
+      if (prevInstance) prevInstance.dispose();
+
+      /** @private */
       self.element = element;
 
-      if (defaults && Object.keys(defaults).length) {
-        self.options = normalizeOptions(element, defaults, (config || {}), 'bs');
+      if (self.defaults && Object.keys(self.defaults).length) {
+        /** @private */
+        self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
-      element[name] = self;
+
+      Data.set(element, self.name, self);
     }
 
-    dispose(name) {
+    /* eslint-disable */
+    /** @static */
+    get version() { return Version; }
+    /* eslint-enable */
+
+    /** @static */
+    get name() { return this.constructor.name; }
+
+    /** @static */
+    get defaults() { return this.constructor.defaults; }
+
+    /**
+     * Removes component from target element;
+     */
+    dispose() {
       const self = this;
-      self.element[name] = null;
+      Data.remove(self.element, self.name);
       Object.keys(self).forEach((prop) => { self[prop] = null; });
     }
   }
@@ -173,13 +399,27 @@
   const alertSelector = `.${alertString}`;
   const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
 
+  /**
+   * Static method which returns an existing `Alert` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Alert>}
+   */
+  const getAlertInstance = (element) => getInstance(element, alertComponent);
+
   // ALERT CUSTOM EVENTS
   // ===================
+  /** @type {BSN.AlertEvent.close} */
   const closeAlertEvent = bootstrapCustomEvent(`close.bs.${alertString}`);
+  /** @type {BSN.AlertEvent.closed} */
   const closedAlertEvent = bootstrapCustomEvent(`closed.bs.${alertString}`);
 
-  // ALERT EVENT HANDLERS
-  // ====================
+  // ALERT EVENT HANDLER
+  // ===================
+  /**
+   * Alert `transitionend` callback.
+   * @param {Alert} self target Alert instance
+   */
   function alertTransitionEnd(self) {
     const { element, relatedTarget } = self;
     toggleAlertHandler(self);
@@ -193,6 +433,11 @@
 
   // ALERT PRIVATE METHOD
   // ====================
+  /**
+   * Toggle on / off the `click` event listener.
+   * @param {Alert} self the target alert instance
+   * @param {boolean | number} add
+   */
   function toggleAlertHandler(self, add) {
     const action = add ? addEventListener : removeEventListener;
     if (self.dismiss) self.dismiss[action]('click', self.close);
@@ -200,9 +445,11 @@
 
   // ALERT DEFINITION
   // ================
+  /** Creates a new Alert instance. */
   class Alert extends BaseComponent {
+    /** @param {Element | string} target element or selector */
     constructor(target) {
-      super(alertComponent, target);
+      super(target);
       // bind
       const self = this;
 
@@ -210,19 +457,38 @@
       const { element } = self;
 
       // the dismiss button
+      /** @private */
       self.dismiss = queryElement(alertDismissSelector, element);
+      /** @private */
       self.relatedTarget = null;
 
       // add event listener
       toggleAlertHandler(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return alertComponent; }
+    /* eslint-enable */
+
     // ALERT PUBLIC METHODS
     // ====================
+    /**
+     * Private method that:
+     * * Hides the `.alert` element from the user,
+     * * Destroy the instance once animation is complete,
+     * * Removes the element from the DOM.
+     *
+     * @param {Event} e most likely the `click` event
+     * @returns {void}
+     */
     close(e) {
       const target = e ? e.target : null;
       const self = e
-        ? e.target.closest(alertSelector)[alertComponent]
+        ? getAlertInstance(e.target.closest(alertSelector))
         : this;
       const { element } = self;
 
@@ -242,24 +508,47 @@
       }
     }
 
+    /** Remove the component from target element. */
     dispose() {
       toggleAlertHandler(this);
-      super.dispose(alertComponent);
+      super.dispose();
     }
   }
 
-  Alert.init = {
-    component: alertComponent,
+  Object.assign(Alert, {
     selector: alertSelector,
-    constructor: Alert,
-  };
+    /**
+     * An `Alert` initialization callback.
+     * @type {BSN.InitCallback<Alert>}
+     */
+    callback: (element) => new Alert(element),
+    getInstance: getAlertInstance,
+  });
 
+  /**
+   * Add class to Element.classList
+   *
+   * @param {Element} element target
+   * @param {string} classNAME to add
+   */
   function addClass(element, classNAME) {
     element.classList.add(classNAME);
   }
 
+  /**
+   * A global namespace for aria-pressed.
+   * @type {string}
+   */
+  const ariaPressed = 'aria-pressed';
+
+  /**
+   * Global namespace for most components active class.
+   */
   const activeClass = 'active';
 
+  /**
+   * Global namespace for most components `toggle` option.
+   */
   const dataBsToggle = 'data-bs-toggle';
 
   /* Native JavaScript for Bootstrap 5 | Button
@@ -270,7 +559,14 @@
   const buttonString = 'button';
   const buttonComponent = 'Button';
   const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
-  const ariaPressed = 'aria-pressed';
+
+  /**
+   * Static method which returns an existing `Button` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Button>}
+   */
+  const getButtonInstance = (element) => getInstance(element, buttonComponent);
 
   // BUTTON PRIVATE METHOD
   // =====================
@@ -281,15 +577,20 @@
 
   // BUTTON DEFINITION
   // =================
+  /** Creates a new `Button` instance. */
   class Button extends BaseComponent {
+    /**
+     * @param {Element | string} target usually a `.btn` element
+     */
     constructor(target) {
-      super(buttonComponent, target);
+      super(target);
       const self = this;
 
       // initialization element
       const { element } = self;
 
       // set initial state
+      /** @private @type {boolean} */
       self.isActive = hasClass(element, activeClass);
       element.setAttribute(ariaPressed, !!self.isActive);
 
@@ -297,11 +598,23 @@
       toggleButtonHandler(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return buttonComponent; }
+    /* eslint-enable */
+
     // BUTTON PUBLIC METHODS
     // =====================
+    /**
+     * Toggles the state of the target button.
+     * @param {Event} e usually `click` Event object
+     */
     toggle(e) {
       if (e) e.preventDefault();
-      const self = e ? this[buttonComponent] : this;
+      const self = e ? getButtonInstance(this) : this;
       const { element } = self;
 
       if (hasClass(element, 'disabled')) return;
@@ -316,18 +629,27 @@
       element.setAttribute(ariaPressed, ariaValue);
     }
 
+    /** Removes the `Button` component from the target element. */
     dispose() {
       toggleButtonHandler(this);
       super.dispose(buttonComponent);
     }
   }
 
-  Button.init = {
-    component: buttonComponent,
+  Object.assign(Button, {
     selector: buttonSelector,
-    constructor: Button,
-  };
+    /**
+     * A `Button` initialization callback.
+     * @type {BSN.InitCallback<Button>}
+     */
+    callback: (element) => new Button(element),
+    getInstance: getButtonInstance,
+  });
 
+  /**
+   * A global namespace for passive events support.
+   * @type {boolean}
+   */
   const supportPassive = (() => {
     let result = false;
     try {
@@ -349,12 +671,29 @@
 
   // general event options
 
-  var passiveHandler = supportPassive ? { passive: true } : false;
+  /**
+   * A global namespace for most scroll event listeners.
+   */
+  const passiveHandler = supportPassive ? { passive: true } : false;
 
+  /**
+   * Utility to force re-paint of an Element
+   *
+   * @param {Element | HTMLElement} element is the target
+   * @return {number} the Element.offsetHeight value
+   */
   function reflow(element) {
+    // @ts-ignore
     return element.offsetHeight;
   }
 
+  /**
+   * Utility to determine if an `Element`
+   * is partially visible in viewport.
+   *
+   * @param {Element} element target
+   * @return {boolean} Boolean
+   */
   function isElementInScrollRange(element) {
     const bcr = element.getBoundingClientRect();
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
@@ -373,30 +712,57 @@
   const carouselItem = `${carouselString}-item`;
   const dataBsSlideTo = 'data-bs-slide-to';
   const pausedClass = 'paused';
-  const defaultCarouselOptions = {
-    pause: 'hover', // 'boolean|string'
-    keyboard: false, // 'boolean'
-    touch: true, // 'boolean'
-    interval: 5000, // 'boolean|number'
+
+  const carouselDefaults = {
+    pause: 'hover',
+    keyboard: false,
+    touch: true,
+    interval: 5000,
   };
+
+  const CarouselEventProperties = {
+    /** @type {Element} */
+    relatedTarget: null,
+    /** @type {string} */
+    direction: 'left' ,
+    /** @type {number} */
+    from: 0,
+    /** @type {number} */
+    to: 1,
+  };
+
+  /**
+   * Static method which returns an existing `Carousel` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Carousel>}
+   */
+  const getCarouselInstance = (element) => getInstance(element, carouselComponent);
+
   let startX = 0;
   let currentX = 0;
   let endX = 0;
 
   // CAROUSEL CUSTOM EVENTS
   // ======================
-  const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`);
-  const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`);
+  /** @type {BSN.CarouselEvent.slide} */
+  const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`, CarouselEventProperties);
+  /** @type {BSN.CarouselEvent.slid} */
+  const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`, CarouselEventProperties);
 
   // CAROUSEL EVENT HANDLERS
   // =======================
+  /**
+   * The `transitionend` event listener of the `Carousel`.
+   * @param {Carousel} self the `Carousel` instance
+   */
   function carouselTransitionEndHandler(self) {
     const {
       index, direction, element, slides, options, isAnimating,
     } = self;
 
     // discontinue disposed instances
-    if (isAnimating && element[carouselComponent]) {
+    if (isAnimating && getCarouselInstance(element)) {
       const activeItem = getActiveIndex(self);
       const orientation = direction === 'left' ? 'next' : 'prev';
       const directionClass = direction === 'left' ? 'start' : 'end';
@@ -419,9 +785,15 @@
     }
   }
 
+  /**
+   * Handles the `mouseenter` / `touchstart` events when *options.pause*
+   * is set to `hover`.
+   *
+   * @param {Event} e the `Event` object
+   */
   function carouselPauseHandler(e) {
     const eventTarget = e.target;
-    const self = eventTarget.closest(carouselSelector)[carouselComponent];
+    const self = getCarouselInstance(eventTarget.closest(carouselSelector));
     const { element, isAnimating } = self;
 
     if (!hasClass(element, pausedClass)) {
@@ -433,9 +805,15 @@
     }
   }
 
+  /**
+   * Handles the `mouseleave` / `touchsend` events when *options.pause*
+   * is set to `hover`.
+   *
+   * @param {Event} e the `Event` object
+   */
   function carouselResumeHandler(e) {
-    const eventTarget = e.target;
-    const self = eventTarget.closest(carouselSelector)[carouselComponent];
+    const { target } = e;
+    const self = getCarouselInstance(target.closest(carouselSelector));
     const { isPaused, isAnimating, element } = self;
 
     if (!isPaused && hasClass(element, pausedClass)) {
@@ -449,10 +827,15 @@
     }
   }
 
+  /**
+   * Handles the `click` event for the `Carousel` indicators.
+   *
+   * @param {Event} e the `Event` object
+   */
   function carouselIndicatorHandler(e) {
     e.preventDefault();
     const { target } = e;
-    const self = target.closest(carouselSelector)[carouselComponent];
+    const self = getCarouselInstance(target.closest(carouselSelector));
 
     if (self.isAnimating) return;
 
@@ -464,10 +847,16 @@
     }
   }
 
+  /**
+   * Handles the `click` event for the `Carousel` arrows.
+   *
+   * @param {Event} e the `Event` object
+   */
   function carouselControlsHandler(e) {
     e.preventDefault();
     const that = this;
-    const self = that.closest(carouselSelector)[carouselComponent];
+    const self = getCarouselInstance(that.closest(carouselSelector));
+
     const { controls } = self;
 
     if (controls[1] && that === controls[1]) {
@@ -477,12 +866,17 @@
     }
   }
 
+  /**
+   * Handles the keyboard `keydown` event for the visible `Carousel` elements.
+   *
+   * @param {Event} e the `Event` object
+   */
   function carouselKeyHandler({ which }) {
     const [element] = Array.from(document.querySelectorAll(carouselSelector))
       .filter((x) => isElementInScrollRange(x));
 
     if (!element) return;
-    const self = element[carouselComponent];
+    const self = getCarouselInstance(element);
 
     switch (which) {
       case 39:
@@ -496,9 +890,14 @@
 
   // CAROUSEL TOUCH HANDLERS
   // =======================
+  /**
+   * Handles the `touchdown` event for the `Carousel` element.
+   *
+   * @param {Event} e the `Event` object
+   */
   function carouselTouchDownHandler(e) {
     const element = this;
-    const self = element[carouselComponent];
+    const self = getCarouselInstance(element);
 
     if (!self || self.isTouch) { return; }
 
@@ -510,9 +909,14 @@
     }
   }
 
+  /**
+   * Handles the `touchmove` event for the `Carousel` element.
+   *
+   * @param {Event} e the `Event` object
+   */
   function carouselTouchMoveHandler(e) {
     const { changedTouches, type } = e;
-    const self = this[carouselComponent];
+    const self = getCarouselInstance(this);
 
     if (!self || !self.isTouch) { return; }
 
@@ -524,9 +928,14 @@
     }
   }
 
+  /**
+   * Handles the `touchend` event for the `Carousel` element.
+   *
+   * @param {Event} e the `Event` object
+   */
   function carouselTouchEndHandler(e) {
     const element = this;
-    const self = element[carouselComponent];
+    const self = getCarouselInstance(element);
 
     if (!self || !self.isTouch) { return; }
 
@@ -554,12 +963,22 @@
 
   // CAROUSEL PRIVATE METHODS
   // ========================
-  function activateCarouselIndicator(self, pageIndex) { // indicators
+  /**
+   * Sets active indicator for the `Carousel` instance.
+   * @param {Carousel} self the `Carousel` instance
+   * @param {number} pageIndex the index of the new active indicator
+   */
+  function activateCarouselIndicator(self, pageIndex) {
     const { indicators } = self;
     Array.from(indicators).forEach((x) => removeClass(x, activeClass));
     if (self.indicators[pageIndex]) addClass(indicators[pageIndex], activeClass);
   }
 
+  /**
+   * Toggles the touch event listeners for a given `Carousel` instance.
+   * @param {Carousel} self the `Carousel` instance
+   * @param {boolean | number} add when `TRUE` event listeners are added
+   */
   function toggleCarouselTouchHandlers(self, add) {
     const { element } = self;
     const action = add ? addEventListener : removeEventListener;
@@ -567,6 +986,11 @@
     element[action]('touchend', carouselTouchEndHandler, passiveHandler);
   }
 
+  /**
+   * Toggles all event listeners for a given `Carousel` instance.
+   * @param {Carousel} self the `Carousel` instance
+   * @param {boolean | number} add when `TRUE` event listeners are added
+   */
   function toggleCarouselHandlers(self, add) {
     const {
       element, options, slides, controls, indicator,
@@ -595,6 +1019,11 @@
     if (keyboard) window[action]('keydown', carouselKeyHandler);
   }
 
+  /**
+   * Returns the index of the current active item.
+   * @param {Carousel} self the `Carousel` instance
+   * @returns {number} the query result
+   */
   function getActiveIndex(self) {
     const { slides, element } = self;
     return Array.from(slides)
@@ -603,25 +1032,39 @@
 
   // CAROUSEL DEFINITION
   // ===================
+  /**
+   * Returns a new `Carousel` instance.
+   */
   class Carousel extends BaseComponent {
+    /**
+     *
+     * @param {Element | string} target mostly a `.carousel` element
+     * @param {BSN.CarouselOptions?} config instance options
+     */
     constructor(target, config) {
-      super(carouselComponent, target, defaultCarouselOptions, config);
+      super(target, config);
       // bind
       const self = this;
 
       // additional properties
+      /** @private @type {number?} */
       self.timer = null;
+      /** @private @type {string} */
       self.direction = 'left';
+      /** @private @type {boolean} */
       self.isPaused = false;
+      /** @private @type {boolean} */
       self.isAnimating = false;
+      /** @private @type {number} */
       self.index = 0;
-      self.timer = null;
+      /** @private @type {boolean} */
       self.isTouch = false;
 
       // initialization element
       const { element } = self;
       // carousel elements
       // a LIVE collection is prefferable
+      /** @private @type {HTMLCollection} */
       self.slides = element.getElementsByClassName(carouselItem);
       const { slides } = self;
 
@@ -629,13 +1072,16 @@
       // no need to go further
       if (slides.length < 2) { return; }
 
+      /** @private @type {[?Element, ?Element]} */
       self.controls = [
         queryElement(`.${carouselControl}-prev`, element),
         queryElement(`.${carouselControl}-next`, element),
       ];
 
       // a LIVE collection is prefferable
+      /** @private @type {Element?} */
       self.indicator = queryElement('.carousel-indicators', element);
+      /** @private @type {NodeList | any[]} */
       self.indicators = (self.indicator && self.indicator.querySelectorAll(`[${dataBsSlideTo}]`)) || [];
 
       // set JavaScript and DATA API options
@@ -643,7 +1089,7 @@
 
       // don't use TRUE as interval, it's actually 0, use the default 5000ms better
       self.options.interval = options.interval === true
-        ? defaultCarouselOptions.interval
+        ? carouselDefaults.interval
         : options.interval;
 
       // set first slide active if none
@@ -659,8 +1105,22 @@
       if (options.interval) self.cycle();
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return carouselComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return carouselDefaults; }
+    /* eslint-enable */
+
     // CAROUSEL PUBLIC METHODS
     // =======================
+    /** Slide automatically through items. */
     cycle() {
       const self = this;
       const { isPaused, element, options } = self;
@@ -682,6 +1142,7 @@
       }, options.interval);
     }
 
+    /** Pause the automatic cycle. */
     pause() {
       const self = this;
       const { element, options, isPaused } = self;
@@ -693,16 +1154,22 @@
       }
     }
 
+    /** Slide to the next item. */
     next() {
       const self = this;
       if (!self.isAnimating) { self.index += 1; self.to(self.index); }
     }
 
+    /** Slide to the previous item. */
     prev() {
       const self = this;
       if (!self.isAnimating) { self.index -= 1; self.to(self.index); }
     }
 
+    /**
+     * Jump to the item with the `idx` index.
+     * @param {number} idx the index of the item to jump to
+     */
     to(idx) {
       const self = this;
       const {
@@ -729,15 +1196,17 @@
       // orientation, class name, eventProperties
       const orientation = direction === 'left' ? 'next' : 'prev';
       const directionClass = direction === 'left' ? 'start' : 'end';
+
       const eventProperties = {
-        relatedTarget: slides[next], direction, from: activeItem, to: next,
+        relatedTarget: slides[next],
+        from: activeItem,
+        to: next,
+        direction,
       };
 
       // update event properties
-      Object.keys(eventProperties).forEach((k) => {
-        carouselSlideEvent[k] = eventProperties[k];
-        carouselSlidEvent[k] = eventProperties[k];
-      });
+      Object.assign(carouselSlideEvent, eventProperties);
+      Object.assign(carouselSlidEvent, eventProperties);
 
       // discontinue when prevented
       element.dispatchEvent(carouselSlideEvent);
@@ -772,10 +1241,11 @@
           }
 
           element.dispatchEvent(carouselSlidEvent);
-        }, 100);
+        }, 17);
       }
     }
 
+    /** Remove `Carousel` component from target. */
     dispose() {
       const self = this;
       const { slides } = self;
@@ -788,27 +1258,54 @@
 
       toggleCarouselHandlers(self);
       clearInterval(self.timer);
-      super.dispose(carouselComponent);
+      super.dispose();
     }
   }
 
-  Carousel.init = {
-    component: carouselComponent,
+  Object.assign(Carousel, {
     selector: carouselSelector,
-    constructor: Carousel,
-  };
+    /**
+     * A `Carousel` initialization callback.
+     * @type {BSN.InitCallback<Carousel>}
+     */
+    callback: (element) => new Carousel(element),
+    getInstance: getCarouselInstance,
+  });
 
+  /**
+   * A global namespace for aria-expanded.
+   * @type {string}
+   */
   const ariaExpanded = 'aria-expanded';
 
-  // collapse / tab
+  /**
+   * Global namespace for most components `collapsing` class.
+   * As used by `Collapse` / `Tab`.
+   */
   const collapsingClass = 'collapsing';
 
+  /**
+   * Global namespace for most components `target` option.
+   */
   const dataBsTarget = 'data-bs-target';
 
+  /**
+   * Global namespace for most components `parent` option.
+   */
   const dataBsParent = 'data-bs-parent';
 
+  /**
+   * Global namespace for most components `container` option.
+   */
   const dataBsContainer = 'data-bs-container';
 
+  /**
+   * Returns the `Element` that THIS one targets
+   * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
+   *
+   * @param {Element} element the target element
+   * @returns {?Element} the query result
+   */
   function getTargetElement(element) {
     return queryElement(element.getAttribute(dataBsTarget) || element.getAttribute('href'))
           || element.closest(element.getAttribute(dataBsParent))
@@ -824,16 +1321,33 @@
   const collapseComponent = 'Collapse';
   const collapseSelector = `.${collapseString}`;
   const collapseToggleSelector = `[${dataBsToggle}="${collapseString}"]`;
+  const collapseDefaults = { parent: null };
+
+  /**
+   * Static method which returns an existing `Collapse` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Collapse>}
+   */
+  const getCollapseInstance = (element) => getInstance(element, collapseComponent);
 
   // COLLAPSE CUSTOM EVENTS
   // ======================
+  /** @type {BSN.CollapseEvent.show} */
   const showCollapseEvent = bootstrapCustomEvent(`show.bs.${collapseString}`);
+  /** @type {BSN.CollapseEvent.shown} */
   const shownCollapseEvent = bootstrapCustomEvent(`shown.bs.${collapseString}`);
+  /** @type {BSN.CollapseEvent.hide} */
   const hideCollapseEvent = bootstrapCustomEvent(`hide.bs.${collapseString}`);
+  /** @type {BSN.CollapseEvent.hidden} */
   const hiddenCollapseEvent = bootstrapCustomEvent(`hidden.bs.${collapseString}`);
 
   // COLLAPSE PRIVATE METHODS
   // ========================
+  /**
+   * Expand the designated `Element`.
+   * @param {Collapse} self the `Collapse` instance
+   */
   function expandCollapse(self) {
     const {
       element, parent, triggers,
@@ -866,6 +1380,10 @@
     });
   }
 
+  /**
+   * Collapse the designated `Element`.
+   * @param {Collapse} self the `Collapse` instance
+   */
   function collapseContent(self) {
     const {
       element, parent, triggers,
@@ -902,6 +1420,11 @@
     });
   }
 
+  /**
+   * Toggles on/off the event listener(s) of the `Collapse` instance.
+   * @param {Collapse} self the `Collapse` instance
+   * @param {boolean | number} add when `true`, the event listener is added
+   */
   function toggleCollapseHandler(self, add) {
     const action = add ? addEventListener : removeEventListener;
     const { triggers } = self;
@@ -913,12 +1436,16 @@
 
   // COLLAPSE EVENT HANDLER
   // ======================
+  /**
+   * Handles the `click` event for the `Collapse` instance.
+   * @param {Event} e the `Event` object
+   */
   function collapseClickHandler(e) {
     const { target } = e;
     const trigger = target.closest(collapseToggleSelector);
     const element = getTargetElement(trigger);
-    const self = element && element[collapseComponent];
-    if (self) self.toggle(target);
+    const self = element && getCollapseInstance(element);
+    if (self) self.toggle();
 
     // event target is anchor link #398
     if (trigger && trigger.tagName === 'A') e.preventDefault();
@@ -926,9 +1453,15 @@
 
   // COLLAPSE DEFINITION
   // ===================
+
+  /** Returns a new `Colapse` instance. */
   class Collapse extends BaseComponent {
+    /**
+     * @param {Element | string} target and `Element` that matches the selector
+     * @param {BSN.CollapseOptions?} config instance options
+     */
     constructor(target, config) {
-      super(collapseComponent, target, { parent: null }, config);
+      super(target, config);
       // bind
       const self = this;
 
@@ -936,14 +1469,17 @@
       const { element, options } = self;
 
       // set triggering elements
+      /** @private @type {Element[]} */
       self.triggers = Array.from(document.querySelectorAll(collapseToggleSelector))
         .filter((btn) => getTargetElement(btn) === element);
 
       // set parent accordion
+      /** @private @type {Element?} */
       self.parent = queryElement(options.parent);
       const { parent } = self;
 
       // set initial state
+      /** @private @type {boolean} */
       self.isAnimating = false;
       if (parent) parent.isAnimating = false;
 
@@ -951,14 +1487,29 @@
       toggleCollapseHandler(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return collapseComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return collapseDefaults; }
+    /* eslint-enable */
+
     // COLLAPSE PUBLIC METHODS
     // =======================
-    toggle(related) {
+    /** Toggles the visibility of the collapse. */
+    toggle() {
       const self = this;
-      if (!hasClass(self.element, showClass)) self.show(related);
-      else self.hide(related);
+      if (!hasClass(self.element, showClass)) self.show();
+      else self.hide();
     }
 
+    /** Hides the collapse. */
     hide() {
       const self = this;
       const { triggers, isAnimating } = self;
@@ -970,6 +1521,7 @@
       }
     }
 
+    /** Shows the collapse. */
     show() {
       const self = this;
       const {
@@ -980,8 +1532,8 @@
 
       if (parent) {
         activeCollapse = Array.from(parent.querySelectorAll(`.${collapseString}.${showClass}`))
-          .find((i) => i[collapseComponent]);
-        activeCollapseInstance = activeCollapse && activeCollapse[collapseComponent];
+          .find((i) => getCollapseInstance(i));
+        activeCollapseInstance = activeCollapse && getCollapseInstance(activeCollapse);
       }
 
       if ((!parent || (parent && !parent.isAnimating)) && !isAnimating) {
@@ -999,26 +1551,44 @@
       }
     }
 
+    /** Remove the `Collapse` component from the target `Element`. */
     dispose() {
       const self = this;
       const { parent } = self;
       toggleCollapseHandler(self);
 
       if (parent) delete parent.isAnimating;
-      super.dispose(collapseComponent);
+      super.dispose();
     }
   }
 
-  Collapse.init = {
-    component: collapseComponent,
+  Object.assign(Collapse, {
     selector: collapseSelector,
-    constructor: Collapse,
-  };
+    /**
+     * A `Collapse` initialization callback.
+     * @type {BSN.InitCallback<Collapse>}
+     */
+    callback: (element) => new Collapse(element),
+    getInstance: getCollapseInstance,
+  });
 
+  /**
+   * Global namespace for `Dropdown` types / classes.
+   */
   const dropdownMenuClasses = ['dropdown', 'dropup', 'dropstart', 'dropend'];
 
+  /**
+   * Global namespace for `.dropdown-menu`.
+   */
   const dropdownMenuClass = 'dropdown-menu';
 
+  /**
+   * Checks if an *event.target* or its parent has an `href="#"` value.
+   * We need to prevent jumping around onclick, don't we?
+   *
+   * @param {Element} elem the target element
+   * @returns {boolean} the query result
+   */
   function isEmptyAnchor(elem) {
     const parentAnchor = elem.closest('A');
     // anchor href starts with #
@@ -1027,6 +1597,10 @@
       || (parentAnchor && parentAnchor.hasAttribute('href') && parentAnchor.href.slice(-1) === '#'));
   }
 
+  /**
+   * Points the focus to a specific element.
+   * @param {Element} element target
+   */
   function setFocus(element) {
     element.focus();
   }
@@ -1040,6 +1614,14 @@
   const dropdownComponent = 'Dropdown';
   const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
 
+  /**
+   * Static method which returns an existing `Dropdown` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Dropdown>}
+   */
+  const getDropdownInstance = (element) => getInstance(element, dropdownComponent);
+
   // DROPDOWN PRIVATE GC
   // ===================
   const dropupString = dropdownMenuClasses[1];
@@ -1049,20 +1631,32 @@
   const hideMenuClass = ['d-block', 'invisible'];
   const verticalClass = [dropdownString, dropupString];
   const horizontalClass = [dropstartString, dropendString];
-  const defaultDropdownOptions = {
+
+  const dropdownDefaults = {
     offset: 5, // [number] 5(px)
     display: 'dynamic', // [dynamic|static]
   };
 
   // DROPDOWN CUSTOM EVENTS
   // ========================
+  /** @type {BSN.DropdownEvent.show} */
   const showDropdownEvent = bootstrapCustomEvent(`show.bs.${dropdownString}`);
+  /** @type {BSN.DropdownEvent.shown} */
   const shownDropdownEvent = bootstrapCustomEvent(`shown.bs.${dropdownString}`);
+  /** @type {BSN.DropdownEvent.hide} */
   const hideDropdownEvent = bootstrapCustomEvent(`hide.bs.${dropdownString}`);
+  /** @type {BSN.DropdownEvent.hidden} */
   const hiddenDropdownEvent = bootstrapCustomEvent(`hidden.bs.${dropdownString}`);
 
   // DROPDOWN PRIVATE METHODS
   // ========================
+  /**
+   * Apply specific style or class names to a `.dropdown-menu` to automatically
+   * accomodate the layout and the page scroll.
+   *
+   * @param {Dropdown} self the `Dropdown` instance
+   * @param {boolean | number} show when `true` will have a different effect
+   */
   function styleDropdown(self, show) {
     const {
       element, menu, originalClass, menuEnd, options,
@@ -1177,6 +1771,12 @@
     hideMenuClass.forEach((c) => removeClass(menu, c));
   }
 
+  /**
+   * Toggles on/off the listeners for the events that close the dropdown
+   * as well as event that request a new position for the dropdown.
+   *
+   * @param {Dropdown} self the `Dropdown` instance
+   */
   function toggleDropdownDismiss(self) {
     const action = self.open ? addEventListener : removeEventListener;
 
@@ -1191,13 +1791,24 @@
     }
   }
 
+  /**
+   * Toggles on/off the `click` event listener of the `Dropdown`.
+   *
+   * @param {Dropdown} self the `Dropdown` instance
+   * @param {*} add when `true`, it will add the event listener
+   */
   function toggleDropdownHandler(self, add) {
     const action = add ? addEventListener : removeEventListener;
     self.element[action]('click', dropdownClickHandler);
   }
 
+  /**
+   * Returns the currently open `.dropdown` element.
+   *
+   * @returns {Element?} the query result
+   */
   function getCurrentOpenDropdown() {
-    const currentParent = dropdownMenuClasses.concat('btn-group')
+    const currentParent = [...dropdownMenuClasses, 'btn-group', 'input-group']
       .map((c) => document.getElementsByClassName(`${c} ${showClass}`))
       .find((x) => x.length);
 
@@ -1209,13 +1820,20 @@
 
   // DROPDOWN EVENT HANDLERS
   // =======================
+  /**
+   * Handles the `click` event for the `Dropdown` instance.
+   *
+   * @param {Event} e event object
+   */
   function dropdownDismissHandler(e) {
     const { target, type } = e;
     if (!target.closest) return; // some weird FF bug #409
 
     const element = getCurrentOpenDropdown();
-    const parent = element && element.parentNode;
-    const self = element && element[dropdownComponent];
+    if (!element) return;
+
+    const self = getDropdownInstance(element);
+    const parent = element.parentNode;
     const menu = self && self.menu;
 
     const hasData = target.closest(dropdownSelector) !== null;
@@ -1235,21 +1853,36 @@
     }
   }
 
+  /**
+   *
+   * @param {EventListener} e event object
+   * @returns {void}
+   */
   function dropdownClickHandler(e) {
     const element = this;
-    const self = element[dropdownComponent];
+    const self = getDropdownInstance(element);
     self.toggle(element);
 
     if (isEmptyAnchor(e.target)) e.preventDefault();
   }
 
+  /**
+   *
+   * @param {EventListener} e event object
+   * @returns {void}
+   */
   function dropdownPreventScroll(e) {
     if (e.which === 38 || e.which === 40) e.preventDefault();
   }
 
+  /**
+   *
+   * @param {{which: number}} which keyboard key
+   * @returns {void}
+   */
   function dropdownKeyHandler({ which }) {
     const element = getCurrentOpenDropdown();
-    const self = element[dropdownComponent];
+    const self = getDropdownInstance(element);
     const { menu, menuItems, open } = self;
     const activeItem = document.activeElement;
     const isSameElement = activeItem === element;
@@ -1279,18 +1912,29 @@
     }
   }
 
+  /**
+   * @returns {void}
+   */
   function dropdownLayoutHandler() {
     const element = getCurrentOpenDropdown();
-    const self = element && element[dropdownComponent];
+    const self = element && getDropdownInstance(element);
 
     if (self && self.open) styleDropdown(self, 1);
   }
 
   // DROPDOWN DEFINITION
   // ===================
+  /**
+   * Returns a new Dropdown instance.
+   * @implements {BaseComponent}
+   */
   class Dropdown extends BaseComponent {
+    /**
+     * @param {Element | string} target Element or string selector
+     * @param {BSN.DropdownOptions?} config the instance options
+     */
     constructor(target, config) {
-      super(dropdownComponent, target, defaultDropdownOptions, config);
+      super(target, config);
       // bind
       const self = this;
 
@@ -1298,15 +1942,19 @@
       const { element } = self;
 
       // set targets
-      const parent = element.parentElement;
-      self.menu = queryElement(`.${dropdownMenuClass}`, parent);
+      const { parentElement } = element;
+      /** @private @type {Element} */
+      self.menu = queryElement(`.${dropdownMenuClass}`, parentElement);
       const { menu } = self;
 
-      self.originalClass = Array.from(parent.classList);
+      /** @private @type {string} */
+      self.originalClass = Array.from(parentElement.classList);
 
       // set original position
+      /** @private @type {boolean} */
       self.menuEnd = hasClass(menu, dropdownMenuEndClass);
 
+      /** @private @type {Element[]} */
       self.menuItems = [];
 
       Array.from(menu.children).forEach((child) => {
@@ -1315,34 +1963,49 @@
       });
 
       // set initial state to closed
+      /** @private @type {boolean} */
       self.open = false;
 
       // add event listener
       toggleDropdownHandler(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return dropdownComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return dropdownDefaults; }
+    /* eslint-enable */
+
     // DROPDOWN PUBLIC METHODS
     // =======================
-    toggle(related) {
+    /** Shows/hides the dropdown menu to the user. */
+    toggle() {
       const self = this;
       const { open } = self;
 
-      if (open) self.hide(related);
-      else self.show(related);
+      if (open) self.hide();
+      else self.show();
     }
 
-    show(related) {
+    /** Shows the dropdown menu to the user. */
+    show() {
       const self = this;
-      const currentParent = queryElement(dropdownMenuClasses.concat('btn-group').map((c) => `.${c}.${showClass}`).join(','));
+      const currentParent = queryElement(dropdownMenuClasses.concat('btn-group', 'input-group').map((c) => `.${c}.${showClass}`).join(','));
       const currentElement = currentParent && queryElement(dropdownSelector, currentParent);
 
-      if (currentElement) currentElement[dropdownComponent].hide();
+      if (currentElement) getDropdownInstance(currentElement).hide();
 
       const { element, menu, open } = self;
       const parent = element.parentNode;
 
       // update relatedTarget and dispatch
-      showDropdownEvent.relatedTarget = related || null;
       parent.dispatchEvent(showDropdownEvent);
       if (showDropdownEvent.defaultPrevented) return;
 
@@ -1356,19 +2019,18 @@
       self.open = !open;
 
       setTimeout(() => {
-        setFocus(menu.getElementsByTagName('INPUT')[0] || element); // focus the first input item | element
+        setFocus(element); // focus the element
         toggleDropdownDismiss(self);
 
-        shownDropdownEvent.relatedTarget = related || null;
         parent.dispatchEvent(shownDropdownEvent);
       }, 1);
     }
 
-    hide(related) {
+    /** Hides the dropdown menu from the user. */
+    hide() {
       const self = this;
       const { element, menu, open } = self;
       const parent = element.parentNode;
-      hideDropdownEvent.relatedTarget = related || null;
       parent.dispatchEvent(hideDropdownEvent);
       if (hideDropdownEvent.defaultPrevented) return;
 
@@ -1381,16 +2043,13 @@
       element.setAttribute(ariaExpanded, false);
       self.open = !open;
 
-      setFocus(element);
-
       // only re-attach handler if the instance is not disposed
       setTimeout(() => toggleDropdownDismiss(self), 1);
 
-      // update relatedTarget and dispatch
-      hiddenDropdownEvent.relatedTarget = related || null;
       parent.dispatchEvent(hiddenDropdownEvent);
     }
 
+    /** Removes the `Dropdown` component from the target element. */
     dispose() {
       const self = this;
       const { element } = self;
@@ -1399,31 +2058,58 @@
 
       toggleDropdownHandler(self);
 
-      super.dispose(dropdownComponent);
+      super.dispose();
     }
   }
 
-  Dropdown.init = {
-    component: dropdownComponent,
+  Object.assign(Dropdown, {
     selector: dropdownSelector,
-    constructor: Dropdown,
-  };
+    /**
+     * A `Dropdown` initialization callback.
+     * @type {BSN.InitCallback<Dropdown>}
+     */
+    callback: (element) => new Dropdown(element),
+    getInstance: getDropdownInstance,
+  });
 
+  /**
+   * A global namespace for aria-hidden.
+   * @type {string}
+   */
   const ariaHidden = 'aria-hidden';
 
+  /**
+   * A global namespace for aria-modal.
+   * @type {string}
+   */
   const ariaModal = 'aria-modal';
 
+  /**
+   * Global namespace for components `fixed-top` class.
+   */
   const fixedTopClass = 'fixed-top';
 
+  /**
+   * Global namespace for components `fixed-bottom` class.
+   */
   const fixedBottomClass = 'fixed-bottom';
 
+  /**
+   * Global namespace for components `sticky-top` class.
+   */
   const stickyTopClass = 'sticky-top';
 
-  const fixedItems = Array.from(document.getElementsByClassName(fixedTopClass))
-    .concat(Array.from(document.getElementsByClassName(fixedBottomClass)))
-    .concat(Array.from(document.getElementsByClassName(stickyTopClass)))
-    .concat(Array.from(document.getElementsByClassName('is-fixed')));
+  const fixedItems = [
+    ...document.getElementsByClassName(fixedTopClass),
+    ...document.getElementsByClassName(fixedBottomClass),
+    ...document.getElementsByClassName(stickyTopClass),
+    ...document.getElementsByClassName('is-fixed'),
+  ];
 
+  /**
+   * Removes *padding* and *overflow* from the `<body>`
+   * and all spacing from fixed items.
+   */
   function resetScrollbar() {
     const bd = document.body;
     bd.style.paddingRight = '';
@@ -1437,11 +2123,23 @@
     }
   }
 
+  /**
+   * Returns the scrollbar width if the body does overflow
+   * the window.
+   * @returns {number} the value
+   */
   function measureScrollbar() {
-    const windowWidth = document.documentElement.clientWidth;
-    return Math.abs(window.innerWidth - windowWidth);
+    const { clientWidth } = document.documentElement;
+    return Math.abs(window.innerWidth - clientWidth);
   }
 
+  /**
+   * Sets the `<body>` and fixed items style when modal / offcanvas
+   * is shown to the user.
+   *
+   * @param {number} scrollbarWidth the previously measured scrollbar width
+   * @param {boolean | number} overflow body does overflow or not
+   */
   function setScrollbar(scrollbarWidth, overflow) {
     const bd = document.body;
     const bdStyle = getComputedStyle(bd);
@@ -1473,10 +2171,18 @@
   const offcanvasActiveSelector = `.offcanvas.${showClass}`;
   const overlay = document.createElement('div');
 
+  /**
+   * Returns the current active modal / offcancas element.
+   * @returns {Element} the requested element
+   */
   function getCurrentOpen() {
     return queryElement(`${modalActiveSelector},${offcanvasActiveSelector}`);
   }
 
+  /**
+   * Toogles from a Modal overlay to an Offcanvas, or vice-versa.
+   * @param {boolean | number} isModal
+   */
   function toggleOverlayType(isModal) {
     const targetClass = isModal ? modalBackdropClass : offcanvasBackdropClass;
     [modalBackdropClass, offcanvasBackdropClass].forEach((c) => {
@@ -1485,25 +2191,37 @@
     addClass(overlay, targetClass);
   }
 
+  /**
+   * Append the overlay to DOM.
+   * @param {boolean | number} hasFade
+   * @param {boolean | number} isModal
+   */
   function appendOverlay(hasFade, isModal) {
     toggleOverlayType(isModal);
     document.body.append(overlay);
     if (hasFade) addClass(overlay, fadeClass);
   }
 
+  /**
+   * Shows the overlay to the user.
+   */
   function showOverlay() {
     addClass(overlay, showClass);
     reflow(overlay);
   }
 
+  /**
+   * Hides the overlay from the user.
+   */
   function hideOverlay() {
     removeClass(overlay, showClass);
   }
 
+  /**
+   * Removes the overlay from DOM.
+   */
   function removeOverlay() {
-    const currentOpen = getCurrentOpen();
-
-    if (!currentOpen) {
+    if (!getCurrentOpen()) {
       removeClass(overlay, fadeClass);
       overlay.remove();
       resetScrollbar();
@@ -1526,20 +2244,38 @@
   const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
   const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
   const modalStaticClass = `${modalString}-static`;
-  const modalDefaultOptions = {
+  /**
+   * Static method which returns an existing `Modal` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Modal>}
+   */
+  const getModalInstance = (element) => getInstance(element, modalComponent);
+
+  const modalDefaults = {
     backdrop: true, // boolean|string
     keyboard: true, // boolean
   };
 
   // MODAL CUSTOM EVENTS
   // ===================
+  /** @type {BSN.ModalEvent.show} */
   const showModalEvent = bootstrapCustomEvent(`show.bs.${modalString}`);
+  /** @type {BSN.ModalEvent.shown} */
   const shownModalEvent = bootstrapCustomEvent(`shown.bs.${modalString}`);
+  /** @type {BSN.ModalEvent.hide} */
   const hideModalEvent = bootstrapCustomEvent(`hide.bs.${modalString}`);
+  /** @type {BSN.ModalEvent.hidden} */
   const hiddenModalEvent = bootstrapCustomEvent(`hidden.bs.${modalString}`);
 
   // MODAL PRIVATE METHODS
   // =====================
+  /**
+   * Applies special style for the `<body>` and fixed elements
+   * when a modal instance is shown to the user.
+   *
+   * @param {Modal} self the `Modal` instance
+   */
   function setModalScrollbar(self) {
     const { element, scrollbarWidth } = self;
     const bd = document.body;
@@ -1554,6 +2290,12 @@
     setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow));
   }
 
+  /**
+   * Toggles on/off the listeners of events that close the modal.
+   *
+   * @param {Modal} self the `Modal` instance
+   * @param {boolean | number} add when `true`, event listeners are added
+   */
   function toggleModalDismiss(self, add) {
     const action = add ? addEventListener : removeEventListener;
     window[action]('resize', self.update, passiveHandler);
@@ -1561,6 +2303,11 @@
     document[action]('keydown', modalKeyHandler);
   }
 
+  /**
+   * Toggles on/off the `click` event listener of the `Modal` instance.
+   * @param {Modal} self the `Modal` instance
+   * @param {boolean | number} add when `true`, event listener is added
+   */
   function toggleModalHandler(self, add) {
     const action = add ? addEventListener : removeEventListener;
     const { triggers } = self;
@@ -1570,12 +2317,13 @@
     }
   }
 
+  /**
+   * Executes after a modal is hidden to the user.
+   * @param {Modal} self the `Modal` instance
+   */
   function afterModalHide(self) {
-    const { triggers, options } = self;
-    if (!getCurrentOpen()) {
-      if (options.backdrop) removeOverlay();
-      resetScrollbar();
-    }
+    const { triggers } = self;
+    removeOverlay();
     self.element.style.paddingRight = '';
     self.isAnimating = false;
 
@@ -1585,6 +2333,10 @@
     }
   }
 
+  /**
+   * Executes after a modal is shown to the user.
+   * @param {Modal} self the `Modal` instance
+   */
   function afterModalShow(self) {
     const { element, relatedTarget } = self;
     setFocus(element);
@@ -1596,6 +2348,10 @@
     element.dispatchEvent(shownModalEvent);
   }
 
+  /**
+   * Executes before a modal is shown to the user.
+   * @param {Modal} self the `Modal` instance
+   */
   function beforeModalShow(self) {
     const { element, hasFade } = self;
     element.style.display = 'block';
@@ -1613,6 +2369,10 @@
     else afterModalShow(self);
   }
 
+  /**
+   * Executes before a modal is hidden to the user.
+   * @param {Modal} self the `Modal` instance
+   */
   function beforeModalHide(self, force) {
     const {
       element, options, relatedTarget, hasFade,
@@ -1638,11 +2398,15 @@
 
   // MODAL EVENT HANDLERS
   // ====================
+  /**
+   * Handles the `click` event listener for modal.
+   * @param {Event} e the `Event` object
+   */
   function modalClickHandler(e) {
     const { target } = e;
     const trigger = target.closest(modalToggleSelector);
     const element = getTargetElement(trigger);
-    const self = element && element[modalComponent];
+    const self = element && getModalInstance(element);
 
     if (trigger.tagName === 'A') e.preventDefault();
 
@@ -1653,9 +2417,15 @@
     self.toggle();
   }
 
+  /**
+   * Handles the `keydown` event listener for modal
+   * to hide the modal when user type the `ESC` key.
+   *
+   * @param {Event} e the `Event` object
+   */
   function modalKeyHandler({ which }) {
     const element = queryElement(modalActiveSelector);
-    const self = element[modalComponent];
+    const self = getModalInstance(element);
     const { options, isAnimating } = self;
     if (!isAnimating // modal has no animations running
       && options.keyboard && which === 27 // the keyboard option is enabled and the key is 27
@@ -1665,9 +2435,14 @@
     }
   }
 
+  /**
+   * Handles the `click` event listeners that hide the modal.
+   *
+   * @param {Event} e the `Event` object
+   */
   function modalDismissHandler(e) {
     const element = this;
-    const self = element[modalComponent];
+    const self = getModalInstance(element);
 
     if (self.isAnimating) return;
 
@@ -1698,9 +2473,14 @@
 
   // MODAL DEFINITION
   // ================
+  /** Returns a new `Modal` instance. */
   class Modal extends BaseComponent {
+    /**
+     * @param {Element | string} target usually the `.modal` element
+     * @param {BSN.ModalOptions?} config instance options
+     */
     constructor(target, config) {
-      super(modalComponent, target, modalDefaultOptions, config);
+      super(target, config);
 
       // bind
       const self = this;
@@ -1709,17 +2489,24 @@
       const { element } = self;
 
       // the modal-dialog
+      /** @private @type {Element} */
       self.modalDialog = queryElement(`.${modalString}-dialog`, element);
 
       // modal can have multiple triggering elements
+      /** @private @type {Element[]} */
       self.triggers = Array.from(document.querySelectorAll(modalToggleSelector))
         .filter((btn) => getTargetElement(btn) === element);
 
       // additional internals
+      /** @private @type {boolean} */
       self.isStatic = self.options.backdrop === 'static';
+      /** @private @type {boolean} */
       self.hasFade = hasClass(element, fadeClass);
+      /** @private @type {boolean} */
       self.isAnimating = false;
+      /** @private @type {number} */
       self.scrollbarWidth = measureScrollbar();
+      /** @private @type {number} */
       self.relatedTarget = null;
 
       // attach event listeners
@@ -1729,14 +2516,29 @@
       self.update = self.update.bind(self);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return modalComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return modalDefaults; }
+    /* eslint-enable */
+
     // MODAL PUBLIC METHODS
     // ====================
+    /** Toggles the visibility of the modal. */
     toggle() {
       const self = this;
       if (hasClass(self.element, showClass)) self.hide();
       else self.show();
     }
 
+    /** Shows the modal to the user. */
     show() {
       const self = this;
       const {
@@ -1754,10 +2556,9 @@
       // we elegantly hide any opened modal/offcanvas
       const currentOpen = getCurrentOpen();
       if (currentOpen && currentOpen !== element) {
-        const that = currentOpen[modalComponent]
-          ? currentOpen[modalComponent]
-          : currentOpen.Offcanvas;
-        that.hide();
+        const this1 = getModalInstance(currentOpen);
+        const that1 = this1 || getInstance(currentOpen, 'Offcanvas');
+        that1.hide();
       }
 
       self.isAnimating = true;
@@ -1780,6 +2581,10 @@
       }
     }
 
+    /**
+     * Hide the modal from the user.
+     * @param {boolean | number} force when `true` it will skip animation
+     */
     hide(force) {
       const self = this;
       const {
@@ -1803,27 +2608,33 @@
       }
     }
 
+    /** Updates the modal layout. */
     update() {
       const self = this;
 
       if (hasClass(self.element, showClass)) setModalScrollbar(self);
     }
 
+    /** Removes the `Modal` component from target element. */
     dispose() {
       const self = this;
       self.hide(1); // forced call
 
       toggleModalHandler(self);
 
-      super.dispose(modalComponent);
+      super.dispose();
     }
   }
 
-  Modal.init = {
-    component: modalComponent,
+  Object.assign(Modal, {
     selector: modalSelector,
-    constructor: Modal,
-  };
+    /**
+     * A `Modal` initialization callback.
+     * @type {BSN.InitCallback<Modal>}
+     */
+    callback: (element) => new Modal(element),
+    getInstance: getModalInstance,
+  });
 
   /* Native JavaScript for Bootstrap 5 | OffCanvas
   ------------------------------------------------ */
@@ -1832,11 +2643,20 @@
   // ====================
   const offcanvasString = 'offcanvas';
   const offcanvasComponent = 'Offcanvas';
-  const OffcanvasSelector = `.${offcanvasString}`;
+  const offcanvasSelector = `.${offcanvasString}`;
   const offcanvasToggleSelector = `[${dataBsToggle}="${offcanvasString}"]`;
   const offcanvasDismissSelector = `[${dataBsDismiss}="${offcanvasString}"]`;
   const offcanvasTogglingClass = `${offcanvasString}-toggling`;
-  const offcanvasDefaultOptions = {
+
+  /**
+   * Static method which returns an existing `Offcanvas` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Offcanvas>}
+   */
+  const getOffcanvasInstance = (element) => getInstance(element, offcanvasComponent);
+
+  const offcanvasDefaults = {
     backdrop: true, // boolean
     keyboard: true, // boolean
     scroll: false, // boolean
@@ -1844,13 +2664,23 @@
 
   // OFFCANVAS CUSTOM EVENTS
   // =======================
+  /** @type {BSN.OffcanvasEvent.show} */
   const showOffcanvasEvent = bootstrapCustomEvent(`show.bs.${offcanvasString}`);
+  /** @type {BSN.OffcanvasEvent.shown} */
   const shownOffcanvasEvent = bootstrapCustomEvent(`shown.bs.${offcanvasString}`);
+  /** @type {BSN.OffcanvasEvent.hide} */
   const hideOffcanvasEvent = bootstrapCustomEvent(`hide.bs.${offcanvasString}`);
+  /** @type {BSN.OffcanvasEvent.hidden} */
   const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`);
 
   // OFFCANVAS PRIVATE METHODS
   // =========================
+  /**
+   * Sets additional style for the `<body>` and other elements
+   * when showing an offcanvas to the user.
+   *
+   * @param {Offcanvas} self the `Offcanvas` instance
+   */
   function setOffCanvasScrollbar(self) {
     const bd = document.body;
     const html = document.documentElement;
@@ -1859,17 +2689,33 @@
     setScrollbar(self.scrollbarWidth, bodyOverflow);
   }
 
+  /**
+   * Toggles on/off the `click` event listeners.
+   *
+   * @param {Offcanvas} self the `Offcanvas` instance
+   * @param {boolean | number} add when `true`, listeners are added
+   */
   function toggleOffcanvasEvents(self, add) {
     const action = add ? addEventListener : removeEventListener;
     self.triggers.forEach((btn) => btn[action]('click', offcanvasTriggerHandler));
   }
 
+  /**
+   * Toggles on/off the listeners of the events that close the offcanvas.
+   *
+   * @param {boolean | number} add the `Offcanvas` instance
+   */
   function toggleOffCanvasDismiss(add) {
     const action = add ? addEventListener : removeEventListener;
     document[action]('keydown', offcanvasKeyDismissHandler);
     document[action]('click', offcanvasDismissHandler);
   }
 
+  /**
+   * Executes before showing the offcanvas.
+   *
+   * @param {Offcanvas} self the `Offcanvas` instance
+   */
   function beforeOffcanvasShow(self) {
     const { element, options } = self;
 
@@ -1885,6 +2731,11 @@
     emulateTransitionEnd(element, () => showOffcanvasComplete(self));
   }
 
+  /**
+   * Executes before hiding the offcanvas.
+   *
+   * @param {Offcanvas} self the `Offcanvas` instance
+   */
   function beforeOffcanvasHide(self) {
     const { element, options } = self;
     const currentOpen = getCurrentOpen();
@@ -1899,24 +2750,33 @@
 
   // OFFCANVAS EVENT HANDLERS
   // ========================
+  /**
+   * Handles the `click` event listeners.
+   *
+   * @param {Event} e the `Event` object
+   */
   function offcanvasTriggerHandler(e) {
     const trigger = this.closest(offcanvasToggleSelector);
     const element = getTargetElement(trigger);
-    const self = element && element[offcanvasComponent];
+    const self = element && getOffcanvasInstance(element);
 
     if (trigger.tagName === 'A') e.preventDefault();
     if (self) {
-      self.relatedTarget = trigger;
       self.toggle();
     }
   }
 
+  /**
+   * Handles the event listeners that close the offcanvas.
+   *
+   * @param {Event} e the `Event` object
+   */
   function offcanvasDismissHandler(e) {
     const element = queryElement(offcanvasActiveSelector);
     if (!element) return;
 
     const offCanvasDismiss = queryElement(offcanvasDismissSelector, element);
-    const self = element[offcanvasComponent];
+    const self = getOffcanvasInstance(element);
     if (!self) return;
 
     const { options, triggers } = self;
@@ -1928,25 +2788,29 @@
     if ((!element.contains(target) && options.backdrop
       && (!trigger || (trigger && !triggers.includes(trigger))))
       || (offCanvasDismiss && offCanvasDismiss.contains(target))) {
-      self.relatedTarget = target === offCanvasDismiss ? offCanvasDismiss : null;
       self.hide();
     }
   }
 
+  /**
+   * Handles the `keydown` event listener for offcanvas
+   * to hide it when user type the `ESC` key.
+   *
+   * @param {Event} {which} the `Event` object
+   */
   function offcanvasKeyDismissHandler({ which }) {
     const element = queryElement(offcanvasActiveSelector);
     if (!element) return;
 
-    const self = element[offcanvasComponent];
+    const self = getOffcanvasInstance(element);
 
     if (self && self.options.keyboard && which === 27) {
-      self.relatedTarget = null;
       self.hide();
     }
   }
 
   function showOffcanvasComplete(self) {
-    const { element, triggers, relatedTarget } = self;
+    const { element, triggers } = self;
     removeClass(element, offcanvasTogglingClass);
 
     element.removeAttribute(ariaHidden);
@@ -1958,7 +2822,6 @@
       triggers.forEach((btn) => btn.setAttribute(ariaExpanded, true));
     }
 
-    shownOffcanvasEvent.relatedTarget = relatedTarget || null;
     element.dispatchEvent(shownOffcanvasEvent);
 
     toggleOffCanvasDismiss(1);
@@ -1967,9 +2830,8 @@
 
   function hideOffcanvasComplete(self) {
     const {
-      element, options, relatedTarget, triggers,
+      element, triggers,
     } = self;
-    const currentOpen = getCurrentOpen();
 
     element.setAttribute(ariaHidden, true);
     element.removeAttribute(ariaModal);
@@ -1983,15 +2845,8 @@
       if (visibleTrigger) setFocus(visibleTrigger);
     }
 
-    // handle new offcanvas showing up
-    if (!currentOpen) {
-      if (options.backdrop) removeOverlay();
-      if (!options.scroll) {
-        resetScrollbar();
-      }
-    }
+    removeOverlay();
 
-    hiddenOffcanvasEvent.relatedTarget = relatedTarget || null;
     element.dispatchEvent(hiddenOffcanvasEvent);
     removeClass(element, offcanvasTogglingClass);
 
@@ -2000,44 +2855,67 @@
 
   // OFFCANVAS DEFINITION
   // ====================
+  /** Returns a new `Offcanvas` instance. */
   class Offcanvas extends BaseComponent {
+    /**
+     * @param {Element | string} target usually an `.offcanvas` element
+     * @param {BSN.OffcanvasOptions?} config instance options
+     */
     constructor(target, config) {
-      super(offcanvasComponent, target, offcanvasDefaultOptions, config);
+      super(target, config);
       const self = this;
 
       // instance element
       const { element } = self;
 
       // all the triggering buttons
+      /** @private @type {Element[]} */
       self.triggers = Array.from(document.querySelectorAll(offcanvasToggleSelector))
         .filter((btn) => getTargetElement(btn) === element);
 
       // additional instance property
+      /** @private @type {boolean} */
       self.isAnimating = false;
+      /** @private @type {number} */
       self.scrollbarWidth = measureScrollbar();
 
       // attach event listeners
       toggleOffcanvasEvents(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return offcanvasComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return offcanvasDefaults; }
+    /* eslint-enable */
+
     // OFFCANVAS PUBLIC METHODS
     // ========================
+    /** Shows or hides the offcanvas from the user. */
     toggle() {
       const self = this;
       if (hasClass(self.element, showClass)) self.hide();
       else self.show();
     }
 
+    /** Shows the offcanvas to the user. */
     show() {
-      const self = this[offcanvasComponent] ? this[offcanvasComponent] : this;
+      const that = getOffcanvasInstance(this);
+      const self = that || this;
       const {
-        element, options, isAnimating, relatedTarget,
+        element, options, isAnimating,
       } = self;
       let overlayDelay = 0;
 
       if (hasClass(element, showClass) || isAnimating) return;
 
-      showOffcanvasEvent.relatedTarget = relatedTarget || null;
       element.dispatchEvent(showOffcanvasEvent);
 
       if (showOffcanvasEvent.defaultPrevented) return;
@@ -2045,10 +2923,9 @@
       // we elegantly hide any opened modal/offcanvas
       const currentOpen = getCurrentOpen();
       if (currentOpen && currentOpen !== element) {
-        const that = currentOpen[offcanvasComponent]
-          ? currentOpen[offcanvasComponent]
-          : currentOpen.Modal;
-        that.hide();
+        const this1 = getOffcanvasInstance(currentOpen);
+        const that1 = this1 || getInstance(currentOpen, 'Modal');
+        that1.hide();
       }
 
       self.isAnimating = true;
@@ -2073,13 +2950,16 @@
       }
     }
 
+    /**
+     * Hides the offcanvas from the user.
+     * @param {boolean | number} force when `true` it will skip animation
+     */
     hide(force) {
       const self = this;
-      const { element, isAnimating, relatedTarget } = self;
+      const { element, isAnimating } = self;
 
       if (!hasClass(element, showClass) || isAnimating) return;
 
-      hideOffcanvasEvent.relatedTarget = relatedTarget || null;
       element.dispatchEvent(hideOffcanvasEvent);
       if (hideOffcanvasEvent.defaultPrevented) return;
 
@@ -2092,21 +2972,41 @@
       } else beforeOffcanvasHide(self);
     }
 
+    /** Removes the `Offcanvas` from the target element. */
     dispose() {
       const self = this;
       self.hide(1);
       toggleOffcanvasEvents(self);
-      super.dispose(offcanvasComponent);
+      super.dispose();
     }
   }
 
-  Offcanvas.init = {
-    component: offcanvasComponent,
-    selector: OffcanvasSelector,
-    constructor: Offcanvas,
-  };
+  Object.assign(Offcanvas, {
+    selector: offcanvasSelector,
+    /**
+     * An `Offcanvas` initialization callback.
+     * @type {BSN.InitCallback<Offcanvas>}
+     */
+    callback: (element) => new Offcanvas(element),
+    getInstance: getOffcanvasInstance,
+  });
 
+  /**
+   * A global namespace for aria-describedby.
+   * @type {string}
+   */
   const ariaDescribedBy = 'aria-describedby';
+
+  /**
+   * Checks if an element is an `<svg>`, `<img>` or `<video>`.
+   * *Tooltip* / *Popover* works different with media elements.
+   * @param {Element} element the target element
+   * @returns {boolean} the query result
+   */
+  function isMedia(element) {
+    return [SVGElement, HTMLImageElement, HTMLVideoElement]
+      .some((mediaType) => element instanceof mediaType);
+  }
 
   var tipClassPositions = {
     top: 'top', bottom: 'bottom', left: 'start', right: 'end',
@@ -2116,14 +3016,14 @@
     return container.contains(tip);
   }
 
-  function isMedia(element) {
-    return [SVGElement, HTMLImageElement, HTMLVideoElement]
-      .some((mediaType) => element instanceof mediaType);
-  }
-
-  // both popovers and tooltips (this, event)
+  /**
+   * Style popovers and tooltips.
+   * @param {BSN.Tooltip | BSN.Popover} self the Popover / Tooltip instance
+   * @param {Event=} e event object
+   */
   function styleTip(self, e) {
     const tipClasses = /\b(top|bottom|start|end)+/;
+    // @ts-ignore
     const tip = self.tooltip || self.popover;
     // reset tip style
     tip.style.top = '';
@@ -2296,12 +3196,26 @@
 
   let bsnUID = 1;
 
-  // popover, tooltip, scrollspy need a unique id
+  /**
+   * Returns a unique identifier for popover, tooltip, scrollspy.
+   *
+   * @param {Element} element target element
+   * @param {number} key predefined key
+   * @returns {number} an existing or new unique key
+   */
   function getUID(element, key) {
     bsnUID += 1;
     return element[key] || bsnUID;
   }
 
+  /**
+   * Returns an `Element` to be used as *options.container*
+   * for `Tooltip` / `Popover` components when the target is included inside
+   * a modal or a fixed navbar.
+   *
+   * @param {Element} element the target
+   * @returns {Element} the query result
+   */
   function getTipContainer(element) {
     // maybe the element is inside a modal
     const modal = element.closest('.modal');
@@ -2313,6 +3227,11 @@
     return modal || navbarFixed || document.body;
   }
 
+  /**
+   * Returns the closest parentElement with `position: relative`.
+   * @param {Element} element target element
+   * @returns {?Element} the closest match
+   */
   function closestRelative(element) {
     let retval = null;
     let el = element;
@@ -2326,10 +3245,18 @@
     return retval;
   }
 
+  /**
+   * Append an existing `Element` to Popover / Tooltip component or HTML
+   * markup string to be parsed & sanitized to be used as popover / tooltip content.
+   *
+   * @param {Element} element target
+   * @param {Element | string} content the `Element` to append / string
+   * @param {function} sanitizeFn a function to sanitize string content
+   */
   function setHtml(element, content, sanitizeFn) {
     if (typeof content === 'string' && !content.length) return;
 
-    if (typeof content === 'object') {
+    if (content instanceof Element) {
       element.append(content);
     } else {
       let dirty = content.trim(); // fixing #233
@@ -2338,8 +3265,9 @@
 
       const domParser = new DOMParser();
       const tempDocument = domParser.parseFromString(dirty, 'text/html');
-      const method = tempDocument.children.length ? 'innerHTML' : 'innerText';
-      element[method] = tempDocument.body[method];
+      const { body } = tempDocument;
+      const method = body.children.length ? 'innerHTML' : 'innerText';
+      element[method] = body[method];
     }
   }
 
@@ -2351,7 +3279,16 @@
   const popoverString = 'popover';
   const popoverComponent = 'Popover';
   const popoverSelector = `[${dataBsToggle}="${popoverString}"],[data-tip="${popoverString}"]`;
-  const popoverDefaultOptions = {
+
+  /**
+   * Static method which returns an existing `Popover` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Popover>}
+   */
+  const getPopoverInstance = (element) => getInstance(element, popoverComponent);
+
+  const popoverDefaults = {
     template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>', // string
     title: null, // string
     content: null, // string
@@ -2363,6 +3300,7 @@
     dismissible: false, // boolean
     animation: true, // boolean
     delay: 200, // number
+    container: null,
   };
 
   // POPOVER PRIVATE GC
@@ -2376,17 +3314,21 @@
 
   // POPOVER CUSTOM EVENTS
   // =====================
+  /** @type {BSN.PopoverEvent.show} */
   const showPopoverEvent = bootstrapCustomEvent(`show.bs.${popoverString}`);
+  /** @type {BSN.PopoverEvent.shown} */
   const shownPopoverEvent = bootstrapCustomEvent(`shown.bs.${popoverString}`);
+  /** @type {BSN.PopoverEvent.hide} */
   const hidePopoverEvent = bootstrapCustomEvent(`hide.bs.${popoverString}`);
+  /** @type {BSN.PopoverEvent.hidden} */
   const hiddenPopoverEvent = bootstrapCustomEvent(`hidden.bs.${popoverString}`);
 
   // POPOVER EVENT HANDLERS
   // ======================
-  function popoverForceFocus() {
-    setFocus(this);
-  }
-
+  /**
+   * Handles the `touchstart` event listener for `Popover`
+   * @param {Event} e the `Event` object
+   */
   function popoverTouchHandler({ target }) {
     const self = this;
     const { popover, element } = self;
@@ -2400,6 +3342,11 @@
 
   // POPOVER PRIVATE METHODS
   // =======================
+  /**
+   * Creates a new popover.
+   *
+   * @param {Popover} self the `Popover` instance
+   */
   function createPopover(self) {
     const { id, options } = self;
     const {
@@ -2468,6 +3415,11 @@
     if (!hasClass(popover, placementClass)) addClass(popover, placementClass);
   }
 
+  /**
+   * Removes the popover from the DOM.
+   *
+   * @param {Popover} self the `Popover` instance
+   */
   function removePopover(self) {
     const { element, popover } = self;
     element.removeAttribute(ariaDescribedBy);
@@ -2475,6 +3427,12 @@
     self.timer = null;
   }
 
+  /**
+   * Toggles on/off the `Popover` event listeners.
+   *
+   * @param {Popover} self the `Popover` instance
+   * @param {boolean | number} add when `true`, event listeners are added
+   */
   function togglePopoverHandlers(self, add) {
     const action = add ? addEventListener : removeEventListener;
     const { element, options } = self;
@@ -2489,11 +3447,17 @@
     } else if (trigger === 'click') {
       element[action](trigger, self.toggle);
     } else if (trigger === 'focus') {
-      if (isIphone) element[action]('click', popoverForceFocus);
+      if (isIphone) element[action]('click', () => setFocus(element));
       element[action]('focusin', self.show);
     }
   }
 
+  /**
+   * Toggles on/off the `Popover` event listeners that close popover.
+   *
+   * @param {Popover} self the `Popover` instance
+   * @param {boolean | number} add when `true`, event listeners are added
+   */
   function dismissHandlerToggle(self, add) {
     const action = add ? addEventListener : removeEventListener;
     const { options, element, btn } = self;
@@ -2512,34 +3476,54 @@
     }
   }
 
-  function popoverShowTrigger(self) {
+  /**
+   * Executes after popover was shown to the user.
+   *
+   * @param {Popover} self the `Popover` instance
+   */
+  function popoverShowComplete(self) {
     self.element.dispatchEvent(shownPopoverEvent);
   }
 
-  function popoverHideTrigger(self) {
+  /**
+   * Executes after popover was been hidden from the user.
+   *
+   * @param {Popover} self the `Popover` instance
+   */
+  function popoverHideComplete(self) {
     removePopover(self);
     self.element.dispatchEvent(hiddenPopoverEvent);
   }
 
   // POPOVER DEFINITION
   // ==================
+  /** Returns a new `Popover` instance. */
   class Popover extends BaseComponent {
+    /**
+     * @param {Element | string} target usualy an element with `data-bs-toggle` attribute
+     * @param {BSN.PopoverOptions?} config instance options
+     */
     constructor(target, config) {
-      popoverDefaultOptions.container = getTipContainer(queryElement(target));
-      super(popoverComponent, target, popoverDefaultOptions, config);
+      const element = queryElement(target);
+      popoverDefaults.container = getTipContainer(element);
+      super(target, config);
 
       // bind
       const self = this;
 
-      // initialization element
-      const { element } = self;
       // additional instance properties
+      /** @private @type {number} */
       self.timer = null;
+      /** @private @type {Element} */
       self.popover = null;
+      /** @private @type {Element} */
       self.arrow = null;
+      /** @private @type {Element} */
       self.btn = null;
+      /** @private @type {boolean} */
       self.enabled = false;
       // set unique ID for aria-describedby
+      /** @private @type {string} */
       self.id = `${popoverString}-${getUID(element)}`;
 
       // set instance options
@@ -2547,11 +3531,11 @@
 
       // media elements only work with body as a container
       self.options.container = isMedia(element)
-        ? popoverDefaultOptions.container
+        ? popoverDefaults.container
         : queryElement(options.container);
 
       // reset default container
-      popoverDefaultOptions.container = null;
+      popoverDefaults.container = null;
 
       // invalidate when no content is set
       if (!options.content) return;
@@ -2567,6 +3551,7 @@
       const containerIsStatic = !parentIsBody && containerPosition === 'static';
       const containerIsRelative = !parentIsBody && containerPosition === 'relative';
       const relContainer = containerIsStatic && closestRelative(container);
+      /** @private @type {Record<string, any>} */
       self.positions = {
         elementPosition,
         containerIsRelative,
@@ -2581,21 +3566,49 @@
       togglePopoverHandlers(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */ 
+    get name() { return popoverComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return popoverDefaults; }
+    /* eslint-enable */
+
+    /**
+     * Updates the position of the popover.
+     *
+     * @param {Event?} e the `Event` object
+     */
     update(e) {
       styleTip(this, e);
     }
 
     // POPOVER PUBLIC METHODS
     // ======================
+    /**
+     * Toggles visibility of the popover.
+     *
+     * @param {Event?} e the `Event` object
+     */
     toggle(e) {
-      const self = e ? this[popoverComponent] : this;
+      const self = e ? getPopoverInstance(this) : this;
       const { popover, options } = self;
       if (!isVisibleTip(popover, options.container)) self.show();
       else self.hide();
     }
 
+    /**
+     * Shows the popover.
+     *
+     * @param {Event?} e the `Event` object
+     */
     show(e) {
-      const self = e ? this[popoverComponent] : this;
+      const self = e ? getPopoverInstance(this) : this;
       const {
         element, popover, options, id,
       } = self;
@@ -2614,19 +3627,25 @@
         if (!hasClass(popover, showClass)) addClass(popover, showClass);
         dismissHandlerToggle(self, 1);
 
-        if (options.animation) emulateTransitionEnd(popover, () => popoverShowTrigger(self));
-        else popoverShowTrigger(self);
+        if (options.animation) emulateTransitionEnd(popover, () => popoverShowComplete(self));
+        else popoverShowComplete(self);
       }
     }
 
+    /**
+     * Hides the popover.
+     *
+     * @param {Event?} e the `Event` object
+     */
     hide(e) {
       let self;
-      if (e && this[popoverComponent]) {
-        self = this[popoverComponent];
-      } else if (e) { // dismissible popover
-        const dPopover = this.closest(`.${popoverString}`);
-        const dEl = dPopover && queryElement(`[${ariaDescribedBy}="${dPopover.id}"]`);
-        self = dEl[popoverComponent];
+      if (e) {
+        self = getPopoverInstance(this);
+        if (!self) { // dismissible popover
+          const dPopover = this.closest(`.${popoverString}`);
+          const dEl = dPopover && queryElement(`[${ariaDescribedBy}="${dPopover.id}"]`);
+          self = getPopoverInstance(dEl);
+        }
       } else {
         self = this;
       }
@@ -2641,12 +3660,13 @@
           removeClass(popover, showClass);
           dismissHandlerToggle(self);
 
-          if (options.animation) emulateTransitionEnd(popover, () => popoverHideTrigger(self));
-          else popoverHideTrigger(self);
+          if (options.animation) emulateTransitionEnd(popover, () => popoverHideComplete(self));
+          else popoverHideComplete(self);
         }
       }, options.delay + 17);
     }
 
+    /** Disables the popover. */
     enable() {
       const self = this;
       const { enabled } = self;
@@ -2656,6 +3676,7 @@
       }
     }
 
+    /** Enables the popover. */
     disable() {
       const self = this;
       const { enabled, popover, options } = self;
@@ -2674,12 +3695,14 @@
       }
     }
 
+    /** Toggles the `enabled` property. */
     toggleEnabled() {
       const self = this;
       if (!self.enabled) self.enable();
       else self.disable();
     }
 
+    /** Removes the `Popover` from the target element. */
     dispose() {
       const self = this;
       const { popover, options } = self;
@@ -2691,35 +3714,55 @@
       } else {
         togglePopoverHandlers(self);
       }
-      super.dispose(popoverComponent);
+      super.dispose();
     }
   }
 
-  Popover.init = {
-    component: popoverComponent,
+  Object.assign(Popover, {
     selector: popoverSelector,
-    constructor: Popover,
-  };
+    /**
+     * A `Popover` initialization callback.
+     * @type {BSN.InitCallback<Popover>}
+     */
+    callback: (element) => new Popover(element),
+    getInstance: getPopoverInstance,
+  });
 
   /* Native JavaScript for Bootstrap 5 | ScrollSpy
   ------------------------------------------------ */
+
+  // console.log(typeof addEventListener)
 
   // SCROLLSPY PRIVATE GC
   // ====================
   const scrollspyString = 'scrollspy';
   const scrollspyComponent = 'ScrollSpy';
   const scrollspySelector = '[data-bs-spy="scroll"]';
-  const scrollSpyDefaultOptions = {
+
+  const scrollspyDefaults = {
     offset: 10,
     target: null,
   };
 
+  /**
+   * Static method which returns an existing `ScrollSpy` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<ScrollSpy>}
+   */
+  const getScrollSpyInstance = (element) => getInstance(element, scrollspyComponent);
+
   // SCROLLSPY CUSTOM EVENT
   // ======================
+  /** @type {BSN.ScrollSpyEvent.activate} */
   const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`);
 
   // SCROLLSPY PRIVATE METHODS
   // =========================
+  /**
+   * Update the state of all items.
+   * @param {ScrollSpy} self the `ScrollSpy` instance
+   */
   function updateSpyTargets(self) {
     const {
       target, scrollTarget, isWindow, options, itemsLength, scrollHeight,
@@ -2757,6 +3800,10 @@
     }
   }
 
+  /**
+   * Returns the `scrollHeight` property of the scrolling element.
+   * @param {Element?} scrollTarget the `ScrollSpy` instance
+   */
   function getScrollHeight(scrollTarget) {
     return scrollTarget.scrollHeight || Math.max(
       document.body.scrollHeight,
@@ -2764,17 +3811,30 @@
     );
   }
 
+  /**
+   * Returns the height property of the scrolling element.
+   * @param {{Element, boolean}} params the `ScrollSpy` instance
+   */
   function getOffsetHeight({ element, isWindow }) {
     if (!isWindow) return element.getBoundingClientRect().height;
     return window.innerHeight;
   }
 
+  /**
+   * Clear all items of the target.
+   * @param {Element} target a single item
+   */
   function clear(target) {
     Array.from(target.getElementsByTagName('A')).forEach((item) => {
       if (hasClass(item, activeClass)) removeClass(item, activeClass);
     });
   }
 
+  /**
+   * Activates a new item.
+   * @param {ScrollSpy} self the `ScrollSpy` instance
+   * @param {Element} item a single item
+   */
   function activate(self, item) {
     const { target, element } = self;
     clear(target);
@@ -2802,6 +3862,11 @@
     element.dispatchEvent(activateScrollSpy);
   }
 
+  /**
+   * Toggles on/off the component event listener.
+   * @param {ScrollSpy} self the `ScrollSpy` instance
+   * @param {boolean | number} add when `true`, listener is added
+   */
   function toggleSpyHandlers(self, add) {
     const action = add ? addEventListener : removeEventListener;
     self.scrollTarget[action]('scroll', self.refresh, passiveHandler);
@@ -2809,9 +3874,14 @@
 
   // SCROLLSPY DEFINITION
   // ====================
+  /** Returns a new `ScrollSpy` instance. */
   class ScrollSpy extends BaseComponent {
+    /**
+     * @param {Element | string} target the target element
+     * @param {BSN.ScrollspyOptions?} config the instance options
+     */
     constructor(target, config) {
-      super(scrollspyComponent, target, scrollSpyDefaultOptions, config);
+      super(target, config);
       // bind
       const self = this;
 
@@ -2819,19 +3889,28 @@
       const { element, options } = self;
 
       // additional properties
+      /** @private @type {Element} */
       self.target = queryElement(options.target);
 
       // invalidate
       if (!self.target) return;
 
       // set initial state
+      /** @private @type {Element} */
       self.scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
+      /** @private @type {boolean} */
       self.isWindow = self.scrollTarget === window;
+      /** @private @type {number} */
       self.scrollTop = 0;
+      /** @private @type {number} */
       self.maxScroll = 0;
+      /** @private @type {number} */
       self.scrollHeight = 0;
+      /** @private @type {Element?} */
       self.activeItem = null;
+      /** @private @type {Element[]} */
       self.items = [];
+      /** @private @type {number[]} */
       self.offsets = [];
 
       // bind events
@@ -2843,8 +3922,22 @@
       self.refresh();
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return scrollspyComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return scrollspyDefaults; }
+    /* eslint-enable */
+
     // SCROLLSPY PUBLIC METHODS
     // ========================
+    /** Updates all items. */
     refresh() {
       const self = this;
       const { target } = self;
@@ -2883,18 +3976,27 @@
       });
     }
 
+    /** Removes `ScrollSpy` from the target element. */
     dispose() {
       toggleSpyHandlers(this);
       super.dispose(scrollspyComponent);
     }
   }
 
-  ScrollSpy.init = {
-    component: scrollspyComponent,
+  Object.assign(ScrollSpy, {
     selector: scrollspySelector,
-    constructor: ScrollSpy,
-  };
+    /**
+     * A `ScrollSpy` initialization callback.
+     * @type {BSN.InitCallback<ScrollSpy>}
+     */
+    callback: (element) => new ScrollSpy(element),
+    getInstance: getScrollSpyInstance,
+  });
 
+  /**
+   * A global namespace for aria-selected.
+   * @type {string}
+   */
   const ariaSelected = 'aria-selected';
 
   /* Native JavaScript for Bootstrap 5 | Tab
@@ -2906,11 +4008,23 @@
   const tabComponent = 'Tab';
   const tabSelector = `[${dataBsToggle}="${tabString}"]`;
 
+  /**
+   * Static method which returns an existing `Tab` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Tab>}
+   */
+  const getTabInstance = (element) => getInstance(element, tabComponent);
+
   // TAB CUSTOM EVENTS
   // =================
+  /** @type {BSN.TabEvent.show} */
   const showTabEvent = bootstrapCustomEvent(`show.bs.${tabString}`);
+  /** @type {BSN.TabEvent.shown} */
   const shownTabEvent = bootstrapCustomEvent(`shown.bs.${tabString}`);
+  /** @type {BSN.TabEvent.hide} */
   const hideTabEvent = bootstrapCustomEvent(`hide.bs.${tabString}`);
+  /** @type {BSN.TabEvent.hidden} */
   const hiddenTabEvent = bootstrapCustomEvent(`hidden.bs.${tabString}`);
 
   let nextTab;
@@ -2923,6 +4037,10 @@
 
   // TAB PRIVATE METHODS
   // ===================
+  /**
+   * Executes after tab transition has finished.
+   * @param {Tab} self the `Tab` instance
+   */
   function triggerTabEnd(self) {
     const { tabContent, nav } = self;
     tabContent.style.height = '';
@@ -2930,6 +4048,10 @@
     nav.isAnimating = false;
   }
 
+  /**
+   * Executes before showing the tab content.
+   * @param {Tab} self the `Tab` instance
+   */
   function triggerTabShow(self) {
     const { tabContent, nav } = self;
 
@@ -2950,6 +4072,10 @@
     nextTab.dispatchEvent(shownTabEvent);
   }
 
+  /**
+   * Executes before hiding the tab.
+   * @param {Tab} self the `Tab` instance
+   */
   function triggerTabHide(self) {
     const { tabContent } = self;
     if (tabContent) {
@@ -2989,6 +4115,11 @@
     activeTab.dispatchEvent(hiddenTabEvent);
   }
 
+  /**
+   * Returns the current active tab.
+   * @param {Tab} self the `Tab` instance
+   * @returns {Element} the query result
+   */
   function getActiveTab({ nav }) {
     const activeTabs = nav.getElementsByClassName(activeClass);
 
@@ -3001,10 +4132,21 @@
     return activeTab;
   }
 
+  /**
+   * Returns the current active tab content.
+   * @param {Tab} self the `Tab` instance
+   * @returns {Element} the query result
+   */
   function getActiveTabContent(self) {
-    return queryElement(getActiveTab(self).getAttribute('href'));
+    return queryElement(getActiveTab(self).getAttribute('href')
+      || getActiveTab(self).getAttribute(dataBsToggle));
   }
 
+  /**
+   * Toggles on/off the `click` event listener.
+   * @param {Tab} self the `Tab` instance
+   * @returns {Element} the query result
+   */
   function toggleTabHandler(self, add) {
     const action = add ? addEventListener : removeEventListener;
     self.element[action]('click', tabClickHandler);
@@ -3012,17 +4154,25 @@
 
   // TAB EVENT HANDLER
   // =================
+  /**
+   * Handles the `click` event listener.
+   * @param {Event} e the `Event` object
+   */
   function tabClickHandler(e) {
-    const self = this[tabComponent];
+    const self = getTabInstance(this);
     e.preventDefault();
     if (!self.nav.isAnimating) self.show();
   }
 
   // TAB DEFINITION
   // ==============
+  /** Creates a new `Tab` instance. */
   class Tab extends BaseComponent {
+    /**
+     * @param {Element | string} target the target element
+     */
     constructor(target) {
-      super(tabComponent, target);
+      super(target);
       // bind
       const self = this;
 
@@ -3030,8 +4180,10 @@
       const { element } = self;
 
       // event targets
+      /** @private @type {Element} */
       self.nav = element.closest('.nav');
       const { nav } = self;
+      /** @private @type {Element} */
       self.dropdown = nav && queryElement(`.${dropdownMenuClasses[0]}-toggle`, nav);
       activeTabContent = getActiveTabContent(self);
       self.tabContent = supportTransition && activeTabContent.closest('.tab-content');
@@ -3044,8 +4196,17 @@
       toggleTabHandler(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */  
+    get name() { return tabComponent; }
+    /* eslint-enable */
+
     // TAB PUBLIC METHODS
     // ==================
+    /** Shows the tab to the user. */
     show() { // the tab we clicked is now the nextTab tab
       const self = this;
       const { element, nav, dropdown } = self;
@@ -3082,17 +4243,22 @@
       }
     }
 
+    /** Removes the `Tab` component from the target element. */
     dispose() {
       toggleTabHandler(this);
-      super.dispose(tabComponent);
+      super.dispose();
     }
   }
 
-  Tab.init = {
-    component: tabComponent,
+  Object.assign(Tab, {
     selector: tabSelector,
-    constructor: Tab,
-  };
+    /**
+     * A `Tab` initialization callback.
+     * @type {BSN.InitCallback<Tab>}
+     */
+    callback: (element) => new Tab(element),
+    getInstance: getTabInstance,
+  });
 
   /* Native JavaScript for Bootstrap 5 | Toast
   -------------------------------------------- */
@@ -3104,22 +4270,40 @@
   const toastSelector = `.${toastString}`;
   const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
   const showingClass = 'showing';
-  const hideClass = 'hide'; // marked as deprecated
-  const toastDefaultOptions = {
+  /** @deprecated */
+  const hideClass = 'hide';
+
+  const toastDefaults = {
     animation: true,
     autohide: true,
     delay: 500,
   };
 
+  /**
+   * Static method which returns an existing `Toast` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Toast>}
+   */
+  const getToastInstance = (element) => getInstance(element, toastComponent);
+
   // TOAST CUSTOM EVENTS
   // ===================
+  /** @type {BSN.ToastEvent.show} */
   const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
+  /** @type {BSN.ToastEvent.shown} */
   const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
+  /** @type {BSN.ToastEvent.hide} */
   const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
+  /** @type {BSN.ToastEvent.hidden} */
   const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 
   // TOAST PRIVATE METHODS
   // =====================
+  /**
+   * Executes after the toast is shown to the user.
+   * @param {Toast} self the `Toast` instance
+   */
   function showToastComplete(self) {
     const { element, options } = self;
     removeClass(element, showingClass);
@@ -3128,6 +4312,10 @@
     if (options.autohide) self.hide();
   }
 
+  /**
+   * Executes after the toast is hidden to the user.
+   * @param {Toast} self the `Toast` instance
+   */
   function hideToastComplete(self) {
     const { element } = self;
     removeClass(element, showingClass);
@@ -3136,6 +4324,10 @@
     element.dispatchEvent(hiddenToastEvent);
   }
 
+  /**
+   * Executes before hiding the toast.
+   * @param {Toast} self the `Toast` instance
+   */
   function hideToast(self) {
     const { element, options } = self;
     addClass(element, showingClass);
@@ -3148,6 +4340,10 @@
     }
   }
 
+  /**
+   * Executes before showing the toast.
+   * @param {Toast} self the `Toast` instance
+   */
   function showToast(self) {
     const { element, options } = self;
     removeClass(element, hideClass); // B/C
@@ -3162,6 +4358,11 @@
     }
   }
 
+  /**
+   * Toggles on/off the `click` event listener.
+   * @param {Toast} self the `Toast` instance
+   * @param {boolean | number} add when `true`, it will add the listener
+   */
   function toggleToastHandler(self, add) {
     const action = add ? addEventListener : removeEventListener;
     if (self.dismiss) {
@@ -3171,6 +4372,10 @@
 
   // TOAST EVENT HANDLERS
   // ====================
+  /**
+   * Executes after the instance has been disposed.
+   * @param {Toast} self the `Toast` instance
+   */
   function completeDisposeToast(self) {
     clearTimeout(self.timer);
     toggleToastHandler(self);
@@ -3178,9 +4383,14 @@
 
   // TOAST DEFINITION
   // ================
+  /** Creates a new `Toast` instance. */
   class Toast extends BaseComponent {
+    /**
+     * @param {Element | string} target the target `.toast` element
+     * @param {BSN.ToastOptions?} config the instance options
+     */
     constructor(target, config) {
-      super(toastComponent, target, toastDefaultOptions, config);
+      super(target, config);
       // bind
       const self = this;
       const { element, options } = self;
@@ -3189,6 +4399,7 @@
       if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
       else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
       // dismiss button
+      /** @private @type {Element} */
       self.dismiss = queryElement(toastDismissSelector, element);
 
       // bind
@@ -3199,8 +4410,22 @@
       toggleToastHandler(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */  
+    get name() { return toastComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */  
+    get defaults() { return toastDefaults; }
+    /* eslint-enable */
+
     // TOAST PUBLIC METHODS
     // ====================
+    /** Shows the toast. */
     show() {
       const self = this;
       const { element } = self;
@@ -3213,6 +4438,7 @@
       }
     }
 
+    /** Hides the toast. */
     hide(noTimer) {
       const self = this;
       const { element, options } = self;
@@ -3227,24 +4453,34 @@
       }
     }
 
+    /** Removes the `Toast` component from the target element. */
     dispose() {
       const self = this;
-      const { element, options } = self;
-      self.hide(1);
+      const { element } = self;
 
-      if (options.animation) emulateTransitionEnd(element, () => completeDisposeToast(self));
-      else completeDisposeToast(self);
+      if (hasClass(element, showClass)) {
+        removeClass(element, showClass);
+      }
 
-      super.dispose(toastComponent);
+      completeDisposeToast(self);
+
+      super.dispose();
     }
   }
 
-  Toast.init = {
-    component: toastComponent,
+  Object.assign(Toast, {
     selector: toastSelector,
-    constructor: Toast,
-  };
+    /**
+     * A `Toast` initialization callback.
+     * @type {BSN.InitCallback<Toast>}
+     */
+    callback: (element) => new Toast(element),
+    getInstance: getToastInstance,
+  });
 
+  /**
+   * Global namespace for `data-bs-title` attribute.
+   */
   const dataOriginalTitle = 'data-original-title';
 
   /* Native JavaScript for Bootstrap 5 | Tooltip
@@ -3255,29 +4491,45 @@
   const tooltipString = 'tooltip';
   const tooltipComponent = 'Tooltip';
   const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${tooltipString}"]`;
-
   const titleAttr = 'title';
   const tooltipInnerClass = `${tooltipString}-inner`;
-  const tooltipDefaultOptions = {
+  const tooltipDefaults = {
     template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
     title: null, // string
     customClass: null, // string | null
     placement: 'top', // string
     sanitizeFn: null, // function
     animation: true, // bool
-    html: false, // bool
     delay: 200, // number
+    container: null,
   };
+
+  /**
+   * Static method which returns an existing `Tooltip` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Tooltip>}
+   */
+  const getTooltipInstance = (element) => getInstance(element, tooltipComponent);
 
   // TOOLTIP CUSTOM EVENTS
   // =====================
+  /** @type {BSN.TooltipEvent.show} */
   const showTooltipEvent = bootstrapCustomEvent(`show.bs.${tooltipString}`);
+  /** @type {BSN.TooltipEvent.shown} */
   const shownTooltipEvent = bootstrapCustomEvent(`shown.bs.${tooltipString}`);
+  /** @type {BSN.TooltipEvent.hide} */
   const hideTooltipEvent = bootstrapCustomEvent(`hide.bs.${tooltipString}`);
+  /** @type {BSN.TooltipEvent.hidden} */
   const hiddenTooltipEvent = bootstrapCustomEvent(`hidden.bs.${tooltipString}`);
 
   // TOOLTIP PRIVATE METHODS
   // =======================
+  /**
+   * Creates a new tooltip.
+   *
+   * @param {Tooltip} self the `Tooltip` instance
+   */
   function createTooltip(self) {
     const { options, id } = self;
     const {
@@ -3305,7 +4557,6 @@
     // set id & role attribute
     tooltip.setAttribute('id', id);
     tooltip.setAttribute('role', tooltipString);
-
     // set arrow
     self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
 
@@ -3318,6 +4569,11 @@
     if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
   }
 
+  /**
+   * Removes the tooltip from the DOM.
+   *
+   * @param {Tooltip} self the `Tooltip` instance
+   */
   function removeTooltip(self) {
     const { element, tooltip } = self;
     element.removeAttribute(ariaDescribedBy);
@@ -3325,11 +4581,23 @@
     self.timer = null;
   }
 
+  /**
+   * Executes after the instance has been disposed.
+   *
+   * @param {Tooltip} self the `Tooltip` instance
+   */
   function disposeTooltipComplete(self) {
     const { element } = self;
     toggleTooltipHandlers(self);
     if (element.hasAttribute(dataOriginalTitle)) toggleTooltipTitle(self);
   }
+
+  /**
+   * Toggles on/off the special `Tooltip` event listeners.
+   *
+   * @param {Tooltip} self the `Tooltip` instance
+   * @param {boolean | number} add when `true`, event listeners are added
+   */
   function toggleTooltipAction(self, add) {
     const action = add ? addEventListener : removeEventListener;
 
@@ -3340,15 +4608,34 @@
       window[action]('resize', self.update, passiveHandler);
     }
   }
+
+  /**
+   * Executes after the tooltip was shown to the user.
+   *
+   * @param {Tooltip} self the `Tooltip` instance
+   */
   function tooltipShownAction(self) {
     toggleTooltipAction(self, 1);
     self.element.dispatchEvent(shownTooltipEvent);
   }
+
+  /**
+   * Executes after the tooltip was hidden to the user.
+   *
+   * @param {Tooltip} self the `Tooltip` instance
+   */
   function tooltipHiddenAction(self) {
     toggleTooltipAction(self);
     removeTooltip(self);
     self.element.dispatchEvent(hiddenTooltipEvent);
   }
+
+  /**
+   * Toggles on/off the `Tooltip` event listeners.
+   *
+   * @param {Tooltip} self the `Tooltip` instance
+   * @param {boolean | number} add when `true`, event listeners are added
+   */
   function toggleTooltipHandlers(self, add) {
     const action = add ? addEventListener : removeEventListener;
     const { element } = self;
@@ -3359,6 +4646,12 @@
     element[action]('mouseleave', self.hide);
   }
 
+  /**
+   * Toggles the `title` and `data-original-title` attributes.
+   *
+   * @param {Tooltip} self the `Tooltip` instance
+   * @param {string} content when `true`, event listeners are added
+   */
   function toggleTooltipTitle(self, content) {
     // [0 - add, 1 - remove] | [0 - remove, 1 - add]
     const titleAtt = [dataOriginalTitle, titleAttr];
@@ -3371,6 +4664,10 @@
 
   // TOOLTIP EVENT HANDLERS
   // ======================
+  /**
+   * Handles the `touchstart` event listener for `Tooltip`
+   * @param {Event} e the `Event` object
+   */
   function tooltipTouchHandler({ target }) {
     const { tooltip, element } = this;
     if (tooltip.contains(target) || target === element || element.contains(target)) ; else {
@@ -3380,21 +4677,30 @@
 
   // TOOLTIP DEFINITION
   // ==================
+  /** Creates a new `Tooltip` instance. */
   class Tooltip extends BaseComponent {
+    /**
+     * @param {Element | string} target the target element
+     * @param {BSN.TooltipOptions?} config the instance options
+     */
     constructor(target, config) {
       // initialization element
       const element = queryElement(target);
-      tooltipDefaultOptions.title = element.getAttribute(titleAttr);
-      tooltipDefaultOptions.container = getTipContainer(element);
-      super(tooltipComponent, element, tooltipDefaultOptions, config);
+      tooltipDefaults[titleAttr] = element.getAttribute(titleAttr);
+      tooltipDefaults.container = getTipContainer(element);
+      super(element, config);
 
       // bind
       const self = this;
 
       // additional properties
+      /** @private @type {Element} */
       self.tooltip = null;
+      /** @private @type {Element} */
       self.arrow = null;
+      /** @private @type {number} */
       self.timer = null;
+      /** @private @type {boolean} */
       self.enabled = false;
 
       // instance options
@@ -3402,12 +4708,12 @@
 
       // media elements only work with body as a container
       self.options.container = isMedia(element)
-        ? tooltipDefaultOptions.container
+        ? tooltipDefaults.container
         : queryElement(options.container);
 
       // reset default options
-      tooltipDefaultOptions.container = null;
-      tooltipDefaultOptions[titleAttr] = null;
+      tooltipDefaults.container = null;
+      tooltipDefaults[titleAttr] = null;
 
       // invalidate
       if (!options.title) return;
@@ -3431,6 +4737,7 @@
       const containerIsStatic = !parentIsBody && containerPosition === 'static';
       const containerIsRelative = !parentIsBody && containerPosition === 'relative';
       const relContainer = containerIsStatic && closestRelative(container);
+      /** @private @type {Record<string, any>} */
       self.positions = {
         elementPosition,
         containerIsRelative,
@@ -3442,10 +4749,28 @@
       toggleTooltipHandlers(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */
+    get name() { return tooltipComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return tooltipDefaults; }
+    /* eslint-enable */
+
     // TOOLTIP PUBLIC METHODS
     // ======================
+    /**
+     * Shows the tooltip.
+     *
+     * @param {Event?} e the `Event` object
+     */
     show(e) {
-      const self = e ? this[tooltipComponent] : this;
+      const self = e ? getTooltipInstance(this) : this;
       const {
         options, tooltip, element, id,
       } = self;
@@ -3468,8 +4793,13 @@
       }
     }
 
+    /**
+     * Hides the tooltip.
+     *
+     * @param {Event?} e the `Event` object
+     */
     hide(e) {
-      const self = e ? this[tooltipComponent] : this;
+      const self = e ? getTooltipInstance(this) : this;
       const { options, tooltip, element } = self;
 
       clearTimeout(self.timer);
@@ -3485,17 +4815,28 @@
       }, options.delay);
     }
 
+    /**
+     * Updates the tooltip position.
+     *
+     * @param {Event?} e the `Event` object
+     */
     update(e) {
       styleTip(this, e);
     }
 
-    toggle() {
-      const self = this;
+    /**
+     * Toggles the tooltip visibility.
+     *
+     * @param {Event?} e the `Event` object
+     */
+    toggle(e) {
+      const self = e ? getTooltipInstance(this) : this;
       const { tooltip, options } = self;
       if (!isVisibleTip(tooltip, options.container)) self.show();
       else self.hide();
     }
 
+    /** Enables the tooltip. */
     enable() {
       const self = this;
       const { enabled } = self;
@@ -3505,6 +4846,7 @@
       }
     }
 
+    /** Disables the tooltip. */
     disable() {
       const self = this;
       const { tooltip, options, enabled } = self;
@@ -3523,12 +4865,14 @@
       }
     }
 
+    /** Toggles the `disabled` property. */
     toggleEnabled() {
       const self = this;
       if (!self.enabled) self.enable();
       else self.disable();
     }
 
+    /** Removes the `Tooltip` from the target element. */
     dispose() {
       const self = this;
       const { tooltip, options } = self;
@@ -3540,45 +4884,80 @@
       } else {
         disposeTooltipComplete(self);
       }
-      super.dispose(tooltipComponent);
+      super.dispose();
     }
   }
 
-  Tooltip.init = {
-    component: tooltipComponent,
+  Object.assign(Tooltip, {
     selector: tooltipSelector,
-    constructor: Tooltip,
+    /**
+     * A `Tooltip` initialization callback.
+     * @type {BSN.InitCallback<Tooltip>}
+     */
+    callback: (element) => new Tooltip(element),
+    getInstance: getTooltipInstance,
+  });
+
+  const componentsList = {
+    Alert,
+    Button,
+    Carousel,
+    Collapse,
+    Dropdown,
+    Modal,
+    Offcanvas,
+    Popover,
+    ScrollSpy,
+    Tab,
+    Toast,
+    Tooltip,
   };
 
-  var version = "4.0.8";
+  const componentsKeys = Object.keys(componentsList);
 
-  const Version = version;
-
-  const componentsInit = {
-    Alert: Alert.init,
-    Button: Button.init,
-    Carousel: Carousel.init,
-    Collapse: Collapse.init,
-    Dropdown: Dropdown.init,
-    Modal: Modal.init,
-    Offcanvas: Offcanvas.init,
-    Popover: Popover.init,
-    ScrollSpy: ScrollSpy.init,
-    Tab: Tab.init,
-    Toast: Toast.init,
-    Tooltip: Tooltip.init,
-  };
-
-  function initializeDataAPI(Konstructor, collection) {
-    Array.from(collection).forEach((x) => new Konstructor(x));
+  /**
+   * Initialize all matched `Element`s for one component.
+   * @param {function} callback the component callback
+   * @param {HTMLCollection | NodeList} collection the matched collection
+   */
+  function initComponentDataAPI(callback, collection) {
+    Array.from(collection).forEach((x) => callback(x));
   }
 
+  /**
+   * Remove one component from a target container element or all in the page.
+   * @param {string} component the component name
+   * @param {Element | Document} context parent `Element`
+   */
+  function removeComponentDataAPI(component, context) {
+    Array.from(Data.getAllFor(component)).forEach((x) => {
+      const [element, instance] = x;
+      if (context.contains(element)) instance.dispose();
+    });
+  }
+
+  /**
+   * Initialize all BSN components for a target container.
+   * @param {Element=} context parent `Element`
+   */
   function initCallback(context) {
     const lookUp = context instanceof Element ? context : document;
 
-    Object.keys(componentsInit).forEach((comp) => {
-      const { constructor, selector } = componentsInit[comp];
-      initializeDataAPI(constructor, lookUp.querySelectorAll(selector));
+    componentsKeys.forEach((comp) => {
+      const { callback, selector } = componentsList[comp];
+      initComponentDataAPI(callback, lookUp.querySelectorAll(selector));
+    });
+  }
+
+  /**
+   * Remove all BSN components for a target container.
+   * @param {Element=} context parent `Element`
+   */
+  function removeDataAPI(context) {
+    const lookUp = context instanceof Element ? context : document;
+
+    componentsKeys.forEach((comp) => {
+      removeComponentDataAPI(comp, lookUp);
     });
   }
 
@@ -3603,6 +4982,7 @@
     Tooltip,
 
     initCallback,
+    removeDataAPI,
     Version,
   };
 

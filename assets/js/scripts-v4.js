@@ -7,12 +7,12 @@ var offCanvasCollapse = document.getElementsByClassName('offcanvas-collapse')[0]
 		// scrollTarget = /(EDGE|Mac)/i.test(navigator.userAgent) ? document.body : document.documentElement;
 		scrollTarget = document.documentElement;
 
-sideLinks.map((x,i) => x.addEventListener('click', (e) => { 
+sideLinks.map(function(x,i) { x.addEventListener('click', function(e) { 
 	var target = document.getElementById(x.getAttribute('href').replace('#', ''));
 	e.preventDefault();
 	scrollTarget.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) -  70;
 	topNav.contains(x) && offCanvasCollapse.classList.toggle('open')
-})) 
+})}) 
 // offcanvas
 document.querySelector('[data-toggle="offcanvas"]').addEventListener('click', function () {
 	offCanvasCollapse.classList.toggle('open')

@@ -1,29 +1,38 @@
 /* Native JavaScript for Bootstrap 5 | Dropdown
 ----------------------------------------------- */
-import queryElement from 'shorter-js/src/misc/queryElement.js';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
-import addClass from 'shorter-js/src/class/addClass.js';
-import hasClass from 'shorter-js/src/class/hasClass.js';
-import removeClass from 'shorter-js/src/class/removeClass.js';
-import addEventListener from 'shorter-js/src/strings/addEventListener.js';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import addEventListener from 'shorter-js/src/strings/addEventListener';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import ariaExpanded from 'shorter-js/src/strings/ariaExpanded';
+import { getInstance } from 'shorter-js/src/misc/data';
 
-import ariaExpanded from '../strings/ariaExpanded.js';
-import showClass from '../strings/showClass.js';
-import dataBsToggle from '../strings/dataBsToggle.js';
-import dropdownClasses from '../strings/dropdownClasses.js';
-import dropdownMenuClass from '../strings/dropdownMenuClass.js';
+import showClass from '../strings/showClass';
+import dataBsToggle from '../strings/dataBsToggle';
+import dropdownClasses from '../strings/dropdownClasses';
+import dropdownMenuClass from '../strings/dropdownMenuClass';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import isEmptyAnchor from '../util/isEmptyAnchor.js';
-import setFocus from '../util/setFocus.js';
-import BaseComponent from './base-component.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import isEmptyAnchor from '../util/isEmptyAnchor';
+import setFocus from '../util/setFocus';
+import BaseComponent from './base-component';
 
 // DROPDOWN PRIVATE GC
 // ===================
 const [dropdownString] = dropdownClasses;
 const dropdownComponent = 'Dropdown';
 const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
+
+/**
+ * Static method which returns an existing `Dropdown` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Dropdown>}
+ */
+const getDropdownInstance = (element) => getInstance(element, dropdownComponent);
 
 // DROPDOWN PRIVATE GC
 // ===================
@@ -34,20 +43,32 @@ const dropdownMenuEndClass = `${dropdownMenuClass}-end`;
 const hideMenuClass = ['d-block', 'invisible'];
 const verticalClass = [dropdownString, dropupString];
 const horizontalClass = [dropstartString, dropendString];
-const defaultDropdownOptions = {
+
+const dropdownDefaults = {
   offset: 5, // [number] 5(px)
   display: 'dynamic', // [dynamic|static]
 };
 
 // DROPDOWN CUSTOM EVENTS
 // ========================
+/** @type {BSN.DropdownEvent.show} */
 const showDropdownEvent = bootstrapCustomEvent(`show.bs.${dropdownString}`);
+/** @type {BSN.DropdownEvent.shown} */
 const shownDropdownEvent = bootstrapCustomEvent(`shown.bs.${dropdownString}`);
+/** @type {BSN.DropdownEvent.hide} */
 const hideDropdownEvent = bootstrapCustomEvent(`hide.bs.${dropdownString}`);
+/** @type {BSN.DropdownEvent.hidden} */
 const hiddenDropdownEvent = bootstrapCustomEvent(`hidden.bs.${dropdownString}`);
 
 // DROPDOWN PRIVATE METHODS
 // ========================
+/**
+ * Apply specific style or class names to a `.dropdown-menu` to automatically
+ * accomodate the layout and the page scroll.
+ *
+ * @param {Dropdown} self the `Dropdown` instance
+ * @param {boolean | number} show when `true` will have a different effect
+ */
 function styleDropdown(self, show) {
   const {
     element, menu, originalClass, menuEnd, options,
@@ -162,6 +183,12 @@ function styleDropdown(self, show) {
   hideMenuClass.forEach((c) => removeClass(menu, c));
 }
 
+/**
+ * Toggles on/off the listeners for the events that close the dropdown
+ * as well as event that request a new position for the dropdown.
+ *
+ * @param {Dropdown} self the `Dropdown` instance
+ */
 function toggleDropdownDismiss(self) {
   const action = self.open ? addEventListener : removeEventListener;
 
@@ -176,13 +203,24 @@ function toggleDropdownDismiss(self) {
   }
 }
 
+/**
+ * Toggles on/off the `click` event listener of the `Dropdown`.
+ *
+ * @param {Dropdown} self the `Dropdown` instance
+ * @param {*} add when `true`, it will add the event listener
+ */
 function toggleDropdownHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
   self.element[action]('click', dropdownClickHandler);
 }
 
+/**
+ * Returns the currently open `.dropdown` element.
+ *
+ * @returns {Element?} the query result
+ */
 function getCurrentOpenDropdown() {
-  const currentParent = dropdownClasses.concat('btn-group')
+  const currentParent = [...dropdownClasses, 'btn-group', 'input-group']
     .map((c) => document.getElementsByClassName(`${c} ${showClass}`))
     .find((x) => x.length);
 
@@ -194,13 +232,20 @@ function getCurrentOpenDropdown() {
 
 // DROPDOWN EVENT HANDLERS
 // =======================
+/**
+ * Handles the `click` event for the `Dropdown` instance.
+ *
+ * @param {Event} e event object
+ */
 function dropdownDismissHandler(e) {
   const { target, type } = e;
   if (!target.closest) return; // some weird FF bug #409
 
   const element = getCurrentOpenDropdown();
-  const parent = element && element.parentNode;
-  const self = element && element[dropdownComponent];
+  if (!element) return;
+
+  const self = getDropdownInstance(element);
+  const parent = element.parentNode;
   const menu = self && self.menu;
 
   const hasData = target.closest(dropdownSelector) !== null;
@@ -222,21 +267,36 @@ function dropdownDismissHandler(e) {
   }
 }
 
+/**
+ *
+ * @param {EventListener} e event object
+ * @returns {void}
+ */
 function dropdownClickHandler(e) {
   const element = this;
-  const self = element[dropdownComponent];
+  const self = getDropdownInstance(element);
   self.toggle(element);
 
   if (isEmptyAnchor(e.target)) e.preventDefault();
 }
 
+/**
+ *
+ * @param {EventListener} e event object
+ * @returns {void}
+ */
 function dropdownPreventScroll(e) {
   if (e.which === 38 || e.which === 40) e.preventDefault();
 }
 
+/**
+ *
+ * @param {{which: number}} which keyboard key
+ * @returns {void}
+ */
 function dropdownKeyHandler({ which }) {
   const element = getCurrentOpenDropdown();
-  const self = element[dropdownComponent];
+  const self = getDropdownInstance(element);
   const { menu, menuItems, open } = self;
   const activeItem = document.activeElement;
   const isSameElement = activeItem === element;
@@ -266,18 +326,29 @@ function dropdownKeyHandler({ which }) {
   }
 }
 
+/**
+ * @returns {void}
+ */
 function dropdownLayoutHandler() {
   const element = getCurrentOpenDropdown();
-  const self = element && element[dropdownComponent];
+  const self = element && getDropdownInstance(element);
 
   if (self && self.open) styleDropdown(self, 1);
 }
 
 // DROPDOWN DEFINITION
 // ===================
+/**
+ * Returns a new Dropdown instance.
+ * @implements {BaseComponent}
+ */
 export default class Dropdown extends BaseComponent {
+  /**
+   * @param {Element | string} target Element or string selector
+   * @param {BSN.DropdownOptions?} config the instance options
+   */
   constructor(target, config) {
-    super(dropdownComponent, target, defaultDropdownOptions, config);
+    super(target, config);
     // bind
     const self = this;
 
@@ -285,15 +356,19 @@ export default class Dropdown extends BaseComponent {
     const { element } = self;
 
     // set targets
-    const parent = element.parentElement;
-    self.menu = queryElement(`.${dropdownMenuClass}`, parent);
+    const { parentElement } = element;
+    /** @private @type {Element} */
+    self.menu = queryElement(`.${dropdownMenuClass}`, parentElement);
     const { menu } = self;
 
-    self.originalClass = Array.from(parent.classList);
+    /** @private @type {string} */
+    self.originalClass = Array.from(parentElement.classList);
 
     // set original position
+    /** @private @type {boolean} */
     self.menuEnd = hasClass(menu, dropdownMenuEndClass);
 
+    /** @private @type {Element[]} */
     self.menuItems = [];
 
     Array.from(menu.children).forEach((child) => {
@@ -302,34 +377,49 @@ export default class Dropdown extends BaseComponent {
     });
 
     // set initial state to closed
+    /** @private @type {boolean} */
     self.open = false;
 
     // add event listener
     toggleDropdownHandler(self, 1);
   }
 
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */
+  get name() { return dropdownComponent; }
+  /**
+   * Returns component default options.
+   * @readonly @static
+   */
+  get defaults() { return dropdownDefaults; }
+  /* eslint-enable */
+
   // DROPDOWN PUBLIC METHODS
   // =======================
-  toggle(related) {
+  /** Shows/hides the dropdown menu to the user. */
+  toggle() {
     const self = this;
     const { open } = self;
 
-    if (open) self.hide(related);
-    else self.show(related);
+    if (open) self.hide();
+    else self.show();
   }
 
-  show(related) {
+  /** Shows the dropdown menu to the user. */
+  show() {
     const self = this;
-    const currentParent = queryElement(dropdownClasses.concat('btn-group').map((c) => `.${c}.${showClass}`).join(','));
+    const currentParent = queryElement(dropdownClasses.concat('btn-group', 'input-group').map((c) => `.${c}.${showClass}`).join(','));
     const currentElement = currentParent && queryElement(dropdownSelector, currentParent);
 
-    if (currentElement) currentElement[dropdownComponent].hide();
+    if (currentElement) getDropdownInstance(currentElement).hide();
 
     const { element, menu, open } = self;
     const parent = element.parentNode;
 
     // update relatedTarget and dispatch
-    showDropdownEvent.relatedTarget = related || null;
     parent.dispatchEvent(showDropdownEvent);
     if (showDropdownEvent.defaultPrevented) return;
 
@@ -343,19 +433,18 @@ export default class Dropdown extends BaseComponent {
     self.open = !open;
 
     setTimeout(() => {
-      setFocus(menu.getElementsByTagName('INPUT')[0] || element); // focus the first input item | element
+      setFocus(element); // focus the element
       toggleDropdownDismiss(self);
 
-      shownDropdownEvent.relatedTarget = related || null;
       parent.dispatchEvent(shownDropdownEvent);
     }, 1);
   }
 
-  hide(related) {
+  /** Hides the dropdown menu from the user. */
+  hide() {
     const self = this;
     const { element, menu, open } = self;
     const parent = element.parentNode;
-    hideDropdownEvent.relatedTarget = related || null;
     parent.dispatchEvent(hideDropdownEvent);
     if (hideDropdownEvent.defaultPrevented) return;
 
@@ -368,16 +457,13 @@ export default class Dropdown extends BaseComponent {
     element.setAttribute(ariaExpanded, false);
     self.open = !open;
 
-    setFocus(element);
-
     // only re-attach handler if the instance is not disposed
     setTimeout(() => toggleDropdownDismiss(self), 1);
 
-    // update relatedTarget and dispatch
-    hiddenDropdownEvent.relatedTarget = related || null;
     parent.dispatchEvent(hiddenDropdownEvent);
   }
 
+  /** Removes the `Dropdown` component from the target element. */
   dispose() {
     const self = this;
     const { element } = self;
@@ -386,12 +472,16 @@ export default class Dropdown extends BaseComponent {
 
     toggleDropdownHandler(self);
 
-    super.dispose(dropdownComponent);
+    super.dispose();
   }
 }
 
-Dropdown.init = {
-  component: dropdownComponent,
+Object.assign(Dropdown, {
   selector: dropdownSelector,
-  constructor: Dropdown,
-};
+  /**
+   * A `Dropdown` initialization callback.
+   * @type {BSN.InitCallback<Dropdown>}
+   */
+  callback: (element) => new Dropdown(element),
+  getInstance: getDropdownInstance,
+});

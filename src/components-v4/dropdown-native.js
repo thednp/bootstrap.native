@@ -1,10 +1,10 @@
 /* Native JavaScript for Bootstrap 4 | Dropdown
 ----------------------------------------------- */
-import queryElement from 'shorter-js/src/misc/queryElement.js';
+import queryElement from 'shorter-js/src/misc/queryElement';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
-import setFocus from '../util/setFocus.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
+import setFocus from '../util/setFocus';
 
 // DROPDOWN DEFINITION
 // ===================

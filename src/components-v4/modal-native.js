@@ -1,14 +1,14 @@
 /* Native JavaScript for Bootstrap 4 | Modal
 -------------------------------------------- */
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
-import reflow from 'shorter-js/src/misc/reflow.js';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import reflow from 'shorter-js/src/misc/reflow';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4.js';
-import dispatchCustomEvent from '../util/dispatchCustomEvent.js';
-import setFocus from '../util/setFocus.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
+import setFocus from '../util/setFocus';
 
 // MODAL DEFINITION
 // ================

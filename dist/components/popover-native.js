@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Popover v4.0.8 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Popover v4.1.0 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -9,10 +9,22 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Popover = factory());
 })(this, (function () { 'use strict';
 
+  /**
+   * A global namespace for 'addEventListener' string.
+   * @type {string}
+   */
   const addEventListener = 'addEventListener';
 
+  /**
+   * A global namespace for 'removeEventListener' string.
+   * @type {string}
+   */
   const removeEventListener = 'removeEventListener';
 
+  /**
+   * A global namespace for passive events support.
+   * @type {boolean}
+   */
   const supportPassive = (() => {
     let result = false;
     try {
@@ -34,16 +46,66 @@
 
   // general event options
 
-  var passiveHandler = supportPassive ? { passive: true } : false;
+  /**
+   * A global namespace for most scroll event listeners.
+   */
+  const passiveHandler = supportPassive ? { passive: true } : false;
 
+  /**
+   * A global namespace for 'transitionend' string.
+   * @type {string}
+   */
   const transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
 
+  /**
+   * A global namespace for CSS3 transition support.
+   * @type {boolean}
+   */
   const supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
 
-  const transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+  /**
+   * A global namespace for 'transitionDelay' string.
+   * @type {string}
+   */
+  const transitionDelay = 'webkitTransition' in document.head.style ? 'webkitTransitionDelay' : 'transitionDelay';
 
+  /**
+   * A global namespace for 'transitionProperty' string.
+   * @type {string}
+   */
   const transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
+  /**
+   * Utility to get the computed transitionDelay
+   * from Element in miliseconds.
+   *
+   * @param {Element} element target
+   * @return {number} the value in miliseconds
+   */
+  function getElementTransitionDelay(element) {
+    const computedStyle = getComputedStyle(element);
+    const propertyValue = computedStyle[transitionProperty];
+    const delayValue = computedStyle[transitionDelay];
+    const delayScale = delayValue.includes('ms') ? 1 : 1000;
+    const duration = supportTransition && propertyValue && propertyValue !== 'none'
+      ? parseFloat(delayValue) * delayScale : 0;
+
+    return !Number.isNaN(duration) ? duration : 0;
+  }
+
+  /**
+   * A global namespace for 'transitionDuration' string.
+   * @type {string}
+   */
+  const transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+
+  /**
+   * Utility to get the computed transitionDuration
+   * from Element in miliseconds.
+   *
+   * @param {Element} element target
+   * @return {number} the value in miliseconds
+   */
   function getElementTransitionDuration(element) {
     const computedStyle = getComputedStyle(element);
     const propertyValue = computedStyle[transitionProperty];
@@ -55,61 +117,199 @@
     return !Number.isNaN(duration) ? duration : 0;
   }
 
+  /**
+   * Utility to make sure callbacks are consistently
+   * called when transition ends.
+   *
+   * @param {Element} element target
+   * @param {function} handler `transitionend` callback
+   */
   function emulateTransitionEnd(element, handler) {
     let called = 0;
     const endEvent = new Event(transitionEndEvent);
     const duration = getElementTransitionDuration(element);
+    const delay = getElementTransitionDelay(element);
 
     if (duration) {
-      element.addEventListener(transitionEndEvent, function transitionEndWrapper(e) {
+      /**
+       * Wrap the handler in on -> off callback
+       * @param {Event} e Event object
+       * @callback
+       */
+      const transitionEndWrapper = (e) => {
         if (e.target === element) {
           handler.apply(element, [e]);
           element.removeEventListener(transitionEndEvent, transitionEndWrapper);
           called = 1;
         }
-      });
+      };
+      element.addEventListener(transitionEndEvent, transitionEndWrapper);
       setTimeout(() => {
         if (!called) element.dispatchEvent(endEvent);
-      }, duration + 17);
+      }, duration + delay + 17);
     } else {
       handler.apply(element, [endEvent]);
     }
   }
 
+  /**
+   * Utility to check if target is typeof Element
+   * or find one that matches a selector.
+   *
+   * @param {Element | string} selector the input selector or target element
+   * @param {Element | null} parent optional Element to look into
+   * @return {Element | null} the Element or result of the querySelector
+   */
   function queryElement(selector, parent) {
     const lookUp = parent && parent instanceof Element ? parent : document;
     return selector instanceof Element ? selector : lookUp.querySelector(selector);
   }
 
+  /**
+   * Add class to Element.classList
+   *
+   * @param {Element} element target
+   * @param {string} classNAME to add
+   */
   function addClass(element, classNAME) {
     element.classList.add(classNAME);
   }
 
+  /**
+   * Check class in Element.classList
+   *
+   * @param {Element} element target
+   * @param {string} classNAME to check
+   * @return {boolean}
+   */
   function hasClass(element, classNAME) {
     return element.classList.contains(classNAME);
   }
 
+  /**
+   * Remove class from Element.classList
+   *
+   * @param {Element} element target
+   * @param {string} classNAME to remove
+   */
   function removeClass(element, classNAME) {
     element.classList.remove(classNAME);
   }
 
+  /**
+   * A global namespace for aria-describedby.
+   * @type {string}
+   */
   const ariaDescribedBy = 'aria-describedby';
 
+  const componentData = new Map();
+  /**
+   * An interface for web components background data.
+   * @see https://github.com/thednp/bootstrap.native/blob/master/src/components/base-component.js
+   */
+  const Data = {
+    /**
+     * Sets web components data.
+     * @param {Element} element target element
+     * @param {string} component the component's name or a unique key
+     * @param {any} instance the component instance
+     */
+    set: (element, component, instance) => {
+      if (!componentData.has(component)) {
+        componentData.set(component, new Map());
+      }
+
+      const instanceMap = componentData.get(component);
+      instanceMap.set(element, instance);
+    },
+
+    /**
+     * Returns all instances for specified component.
+     * @param {string} component the component's name or a unique key
+     * @returns {?any} all the component instances
+     */
+    getAllFor: (component) => {
+      if (componentData.has(component)) {
+        return componentData.get(component) || null;
+      }
+      return null;
+    },
+
+    /**
+     * Returns the instance associated with the target.
+     * @param {Element} element target element
+     * @param {string} component the component's name or a unique key
+     * @returns {?any} the instance
+     */
+    get: (element, component) => {
+      const allForC = Data.getAllFor(component);
+      if (allForC && allForC.has(element)) {
+        return allForC.get(element) || null;
+      }
+      return null;
+    },
+
+    /**
+     * Removes web components data.
+     * @param {Element} element target element
+     * @param {string} component the component's name or a unique key
+     * @param {any} instance the component instance
+     */
+    remove: (element, component) => {
+      if (!componentData.has(component)) return;
+
+      const instanceMap = componentData.get(component);
+      instanceMap.delete(element);
+
+      if (instanceMap.size === 0) {
+        componentData.delete(component);
+      }
+    },
+  };
+
+  /**
+   * Shortcut for `Data.get(a, b)` to setup usable component static method.
+   * @type {SHORTER.getInstance<SHORTER.Component, string>}
+   */
+  const getInstance = (element, component) => Data.get(element, component);
+
+  /**
+   * Checks if an element is an `<svg>`, `<img>` or `<video>`.
+   * *Tooltip* / *Popover* works different with media elements.
+   * @param {Element} element the target element
+   * @returns {boolean} the query result
+   */
+  function isMedia(element) {
+    return [SVGElement, HTMLImageElement, HTMLVideoElement]
+      .some((mediaType) => element instanceof mediaType);
+  }
+
+  /**
+   * Global namespace for most components `toggle` option.
+   */
   const dataBsToggle = 'data-bs-toggle';
 
+  /**
+   * Global namespace for most components `show` class.
+   */
   const showClass = 'show';
 
+  /**
+   * Global namespace for most components `fade` class.
+   */
   const fadeClass = 'fade';
 
+  /**
+   * Returns a namespaced `CustomEvent` specific to each component.
+   * @param {string} namespacedEventType Event.type
+   * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
+   * @returns {CustomEvent} a new namespaced event
+   */
   function bootstrapCustomEvent(namespacedEventType, eventProperties) {
     const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
 
     if (eventProperties instanceof Object) {
-      Object.keys(eventProperties).forEach((key) => {
-        Object.defineProperty(OriginalCustomEvent, key, {
-          value: eventProperties[key],
-        });
-      });
+      Object.assign(OriginalCustomEvent, eventProperties);
     }
     return OriginalCustomEvent;
   }
@@ -122,14 +322,14 @@
     return container.contains(tip);
   }
 
-  function isMedia(element) {
-    return [SVGElement, HTMLImageElement, HTMLVideoElement]
-      .some((mediaType) => element instanceof mediaType);
-  }
-
-  // both popovers and tooltips (this, event)
+  /**
+   * Style popovers and tooltips.
+   * @param {BSN.Tooltip | BSN.Popover} self the Popover / Tooltip instance
+   * @param {Event=} e event object
+   */
   function styleTip(self, e) {
     const tipClasses = /\b(top|bottom|start|end)+/;
+    // @ts-ignore
     const tip = self.tooltip || self.popover;
     // reset tip style
     tip.style.top = '';
@@ -300,22 +500,46 @@
     }
   }
 
+  /**
+   * Points the focus to a specific element.
+   * @param {Element} element target
+   */
   function setFocus(element) {
     element.focus();
   }
 
   let bsnUID = 1;
 
-  // popover, tooltip, scrollspy need a unique id
+  /**
+   * Returns a unique identifier for popover, tooltip, scrollspy.
+   *
+   * @param {Element} element target element
+   * @param {number} key predefined key
+   * @returns {number} an existing or new unique key
+   */
   function getUID(element, key) {
     bsnUID += 1;
     return element[key] || bsnUID;
   }
 
+  /**
+   * Global namespace for components `fixed-top` class.
+   */
   const fixedTopClass = 'fixed-top';
 
+  /**
+   * Global namespace for components `fixed-bottom` class.
+   */
   const fixedBottomClass = 'fixed-bottom';
 
+  /**
+   * Returns an `Element` to be used as *options.container*
+   * for `Tooltip` / `Popover` components when the target is included inside
+   * a modal or a fixed navbar.
+   *
+   * @param {Element} element the target
+   * @returns {Element} the query result
+   */
   function getTipContainer(element) {
     // maybe the element is inside a modal
     const modal = element.closest('.modal');
@@ -327,6 +551,11 @@
     return modal || navbarFixed || document.body;
   }
 
+  /**
+   * Returns the closest parentElement with `position: relative`.
+   * @param {Element} element target element
+   * @returns {?Element} the closest match
+   */
   function closestRelative(element) {
     let retval = null;
     let el = element;
@@ -340,10 +569,18 @@
     return retval;
   }
 
+  /**
+   * Append an existing `Element` to Popover / Tooltip component or HTML
+   * markup string to be parsed & sanitized to be used as popover / tooltip content.
+   *
+   * @param {Element} element target
+   * @param {Element | string} content the `Element` to append / string
+   * @param {function} sanitizeFn a function to sanitize string content
+   */
   function setHtml(element, content, sanitizeFn) {
     if (typeof content === 'string' && !content.length) return;
 
-    if (typeof content === 'object') {
+    if (content instanceof Element) {
       element.append(content);
     } else {
       let dirty = content.trim(); // fixing #233
@@ -352,36 +589,59 @@
 
       const domParser = new DOMParser();
       const tempDocument = domParser.parseFromString(dirty, 'text/html');
-      const method = tempDocument.children.length ? 'innerHTML' : 'innerText';
-      element[method] = tempDocument.body[method];
+      const { body } = tempDocument;
+      const method = body.children.length ? 'innerHTML' : 'innerText';
+      element[method] = body[method];
     }
   }
 
+  /**
+   * The raw value or a given component option.
+   *
+   * @typedef {string | Element | Function | number | boolean | null} niceValue
+   */
+
+  /**
+   * Utility to normalize component options
+   *
+   * @param {any} value the input value
+   * @return {niceValue} the normalized value
+   */
   function normalizeValue(value) {
-    if (value === 'true') {
+    if (value === 'true') { // boolean
       return true;
     }
 
-    if (value === 'false') {
+    if (value === 'false') { // boolean
       return false;
     }
 
-    if (!Number.isNaN(+value)) {
+    if (!Number.isNaN(+value)) { // number
       return +value;
     }
 
-    if (value === '' || value === 'null') {
+    if (value === '' || value === 'null') { // null
       return null;
     }
 
-    // string / function / Element / Object
+    // string / function / Element / object
     return value;
   }
 
+  /**
+   * Utility to normalize component options
+   *
+   * @param {Element} element target
+   * @param {object} defaultOps component default options
+   * @param {object} inputOps component instance options
+   * @param {string} ns component namespace
+   * @return {object} normalized component options object
+   */
   function normalizeOptions(element, defaultOps, inputOps, ns) {
+    // @ts-ignore
+    const data = { ...element.dataset };
     const normalOps = {};
     const dataOps = {};
-    const data = { ...element.dataset };
 
     Object.keys(data)
       .forEach((k) => {
@@ -411,26 +671,58 @@
     return normalOps;
   }
 
+  var version = "4.1.0";
+
+  const Version = version;
+
   /* Native JavaScript for Bootstrap 5 | Base Component
   ----------------------------------------------------- */
 
+  /**
+   * Returns a new `BaseComponent` instance.
+   */
   class BaseComponent {
-    constructor(name, target, defaults, config) {
+    /**
+     * @param {Element | string} target Element or selector string
+     * @param {BSN.ComponentOptions?} config
+     */
+    constructor(target, config) {
       const self = this;
       const element = queryElement(target);
 
-      if (element[name]) element[name].dispose();
+      if (!element) return;
+
+      const prevInstance = getInstance(element, self.name);
+      if (prevInstance) prevInstance.dispose();
+
+      /** @private */
       self.element = element;
 
-      if (defaults && Object.keys(defaults).length) {
-        self.options = normalizeOptions(element, defaults, (config || {}), 'bs');
+      if (self.defaults && Object.keys(self.defaults).length) {
+        /** @private */
+        self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
-      element[name] = self;
+
+      Data.set(element, self.name, self);
     }
 
-    dispose(name) {
+    /* eslint-disable */
+    /** @static */
+    get version() { return Version; }
+    /* eslint-enable */
+
+    /** @static */
+    get name() { return this.constructor.name; }
+
+    /** @static */
+    get defaults() { return this.constructor.defaults; }
+
+    /**
+     * Removes component from target element;
+     */
+    dispose() {
       const self = this;
-      self.element[name] = null;
+      Data.remove(self.element, self.name);
       Object.keys(self).forEach((prop) => { self[prop] = null; });
     }
   }
@@ -443,7 +735,16 @@
   const popoverString = 'popover';
   const popoverComponent = 'Popover';
   const popoverSelector = `[${dataBsToggle}="${popoverString}"],[data-tip="${popoverString}"]`;
-  const popoverDefaultOptions = {
+
+  /**
+   * Static method which returns an existing `Popover` instance associated
+   * to a target `Element`.
+   *
+   * @type {BSN.GetInstance<Popover>}
+   */
+  const getPopoverInstance = (element) => getInstance(element, popoverComponent);
+
+  const popoverDefaults = {
     template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>', // string
     title: null, // string
     content: null, // string
@@ -455,6 +756,7 @@
     dismissible: false, // boolean
     animation: true, // boolean
     delay: 200, // number
+    container: null,
   };
 
   // POPOVER PRIVATE GC
@@ -468,17 +770,21 @@
 
   // POPOVER CUSTOM EVENTS
   // =====================
+  /** @type {BSN.PopoverEvent.show} */
   const showPopoverEvent = bootstrapCustomEvent(`show.bs.${popoverString}`);
+  /** @type {BSN.PopoverEvent.shown} */
   const shownPopoverEvent = bootstrapCustomEvent(`shown.bs.${popoverString}`);
+  /** @type {BSN.PopoverEvent.hide} */
   const hidePopoverEvent = bootstrapCustomEvent(`hide.bs.${popoverString}`);
+  /** @type {BSN.PopoverEvent.hidden} */
   const hiddenPopoverEvent = bootstrapCustomEvent(`hidden.bs.${popoverString}`);
 
   // POPOVER EVENT HANDLERS
   // ======================
-  function popoverForceFocus() {
-    setFocus(this);
-  }
-
+  /**
+   * Handles the `touchstart` event listener for `Popover`
+   * @param {Event} e the `Event` object
+   */
   function popoverTouchHandler({ target }) {
     const self = this;
     const { popover, element } = self;
@@ -492,6 +798,11 @@
 
   // POPOVER PRIVATE METHODS
   // =======================
+  /**
+   * Creates a new popover.
+   *
+   * @param {Popover} self the `Popover` instance
+   */
   function createPopover(self) {
     const { id, options } = self;
     const {
@@ -560,6 +871,11 @@
     if (!hasClass(popover, placementClass)) addClass(popover, placementClass);
   }
 
+  /**
+   * Removes the popover from the DOM.
+   *
+   * @param {Popover} self the `Popover` instance
+   */
   function removePopover(self) {
     const { element, popover } = self;
     element.removeAttribute(ariaDescribedBy);
@@ -567,6 +883,12 @@
     self.timer = null;
   }
 
+  /**
+   * Toggles on/off the `Popover` event listeners.
+   *
+   * @param {Popover} self the `Popover` instance
+   * @param {boolean | number} add when `true`, event listeners are added
+   */
   function togglePopoverHandlers(self, add) {
     const action = add ? addEventListener : removeEventListener;
     const { element, options } = self;
@@ -581,11 +903,17 @@
     } else if (trigger === 'click') {
       element[action](trigger, self.toggle);
     } else if (trigger === 'focus') {
-      if (isIphone) element[action]('click', popoverForceFocus);
+      if (isIphone) element[action]('click', () => setFocus(element));
       element[action]('focusin', self.show);
     }
   }
 
+  /**
+   * Toggles on/off the `Popover` event listeners that close popover.
+   *
+   * @param {Popover} self the `Popover` instance
+   * @param {boolean | number} add when `true`, event listeners are added
+   */
   function dismissHandlerToggle(self, add) {
     const action = add ? addEventListener : removeEventListener;
     const { options, element, btn } = self;
@@ -604,34 +932,54 @@
     }
   }
 
-  function popoverShowTrigger(self) {
+  /**
+   * Executes after popover was shown to the user.
+   *
+   * @param {Popover} self the `Popover` instance
+   */
+  function popoverShowComplete(self) {
     self.element.dispatchEvent(shownPopoverEvent);
   }
 
-  function popoverHideTrigger(self) {
+  /**
+   * Executes after popover was been hidden from the user.
+   *
+   * @param {Popover} self the `Popover` instance
+   */
+  function popoverHideComplete(self) {
     removePopover(self);
     self.element.dispatchEvent(hiddenPopoverEvent);
   }
 
   // POPOVER DEFINITION
   // ==================
+  /** Returns a new `Popover` instance. */
   class Popover extends BaseComponent {
+    /**
+     * @param {Element | string} target usualy an element with `data-bs-toggle` attribute
+     * @param {BSN.PopoverOptions?} config instance options
+     */
     constructor(target, config) {
-      popoverDefaultOptions.container = getTipContainer(queryElement(target));
-      super(popoverComponent, target, popoverDefaultOptions, config);
+      const element = queryElement(target);
+      popoverDefaults.container = getTipContainer(element);
+      super(target, config);
 
       // bind
       const self = this;
 
-      // initialization element
-      const { element } = self;
       // additional instance properties
+      /** @private @type {number} */
       self.timer = null;
+      /** @private @type {Element} */
       self.popover = null;
+      /** @private @type {Element} */
       self.arrow = null;
+      /** @private @type {Element} */
       self.btn = null;
+      /** @private @type {boolean} */
       self.enabled = false;
       // set unique ID for aria-describedby
+      /** @private @type {string} */
       self.id = `${popoverString}-${getUID(element)}`;
 
       // set instance options
@@ -639,11 +987,11 @@
 
       // media elements only work with body as a container
       self.options.container = isMedia(element)
-        ? popoverDefaultOptions.container
+        ? popoverDefaults.container
         : queryElement(options.container);
 
       // reset default container
-      popoverDefaultOptions.container = null;
+      popoverDefaults.container = null;
 
       // invalidate when no content is set
       if (!options.content) return;
@@ -659,6 +1007,7 @@
       const containerIsStatic = !parentIsBody && containerPosition === 'static';
       const containerIsRelative = !parentIsBody && containerPosition === 'relative';
       const relContainer = containerIsStatic && closestRelative(container);
+      /** @private @type {Record<string, any>} */
       self.positions = {
         elementPosition,
         containerIsRelative,
@@ -673,21 +1022,49 @@
       togglePopoverHandlers(self, 1);
     }
 
+    /* eslint-disable */
+    /**
+     * Returns component name string.
+     * @readonly @static
+     */ 
+    get name() { return popoverComponent; }
+    /**
+     * Returns component default options.
+     * @readonly @static
+     */
+    get defaults() { return popoverDefaults; }
+    /* eslint-enable */
+
+    /**
+     * Updates the position of the popover.
+     *
+     * @param {Event?} e the `Event` object
+     */
     update(e) {
       styleTip(this, e);
     }
 
     // POPOVER PUBLIC METHODS
     // ======================
+    /**
+     * Toggles visibility of the popover.
+     *
+     * @param {Event?} e the `Event` object
+     */
     toggle(e) {
-      const self = e ? this[popoverComponent] : this;
+      const self = e ? getPopoverInstance(this) : this;
       const { popover, options } = self;
       if (!isVisibleTip(popover, options.container)) self.show();
       else self.hide();
     }
 
+    /**
+     * Shows the popover.
+     *
+     * @param {Event?} e the `Event` object
+     */
     show(e) {
-      const self = e ? this[popoverComponent] : this;
+      const self = e ? getPopoverInstance(this) : this;
       const {
         element, popover, options, id,
       } = self;
@@ -706,19 +1083,25 @@
         if (!hasClass(popover, showClass)) addClass(popover, showClass);
         dismissHandlerToggle(self, 1);
 
-        if (options.animation) emulateTransitionEnd(popover, () => popoverShowTrigger(self));
-        else popoverShowTrigger(self);
+        if (options.animation) emulateTransitionEnd(popover, () => popoverShowComplete(self));
+        else popoverShowComplete(self);
       }
     }
 
+    /**
+     * Hides the popover.
+     *
+     * @param {Event?} e the `Event` object
+     */
     hide(e) {
       let self;
-      if (e && this[popoverComponent]) {
-        self = this[popoverComponent];
-      } else if (e) { // dismissible popover
-        const dPopover = this.closest(`.${popoverString}`);
-        const dEl = dPopover && queryElement(`[${ariaDescribedBy}="${dPopover.id}"]`);
-        self = dEl[popoverComponent];
+      if (e) {
+        self = getPopoverInstance(this);
+        if (!self) { // dismissible popover
+          const dPopover = this.closest(`.${popoverString}`);
+          const dEl = dPopover && queryElement(`[${ariaDescribedBy}="${dPopover.id}"]`);
+          self = getPopoverInstance(dEl);
+        }
       } else {
         self = this;
       }
@@ -733,12 +1116,13 @@
           removeClass(popover, showClass);
           dismissHandlerToggle(self);
 
-          if (options.animation) emulateTransitionEnd(popover, () => popoverHideTrigger(self));
-          else popoverHideTrigger(self);
+          if (options.animation) emulateTransitionEnd(popover, () => popoverHideComplete(self));
+          else popoverHideComplete(self);
         }
       }, options.delay + 17);
     }
 
+    /** Disables the popover. */
     enable() {
       const self = this;
       const { enabled } = self;
@@ -748,6 +1132,7 @@
       }
     }
 
+    /** Enables the popover. */
     disable() {
       const self = this;
       const { enabled, popover, options } = self;
@@ -766,12 +1151,14 @@
       }
     }
 
+    /** Toggles the `enabled` property. */
     toggleEnabled() {
       const self = this;
       if (!self.enabled) self.enable();
       else self.disable();
     }
 
+    /** Removes the `Popover` from the target element. */
     dispose() {
       const self = this;
       const { popover, options } = self;
@@ -783,15 +1170,19 @@
       } else {
         togglePopoverHandlers(self);
       }
-      super.dispose(popoverComponent);
+      super.dispose();
     }
   }
 
-  Popover.init = {
-    component: popoverComponent,
+  Object.assign(Popover, {
     selector: popoverSelector,
-    constructor: Popover,
-  };
+    /**
+     * A `Popover` initialization callback.
+     * @type {BSN.InitCallback<Popover>}
+     */
+    callback: (element) => new Popover(element),
+    getInstance: getPopoverInstance,
+  });
 
   return Popover;
 

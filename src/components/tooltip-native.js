@@ -1,60 +1,77 @@
 /* Native JavaScript for Bootstrap 5 | Tooltip
 ---------------------------------------------- */
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
-import addClass from 'shorter-js/src/class/addClass.js';
-import hasClass from 'shorter-js/src/class/hasClass.js';
-import removeClass from 'shorter-js/src/class/removeClass.js';
-import addEventListener from 'shorter-js/src/strings/addEventListener.js';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import addEventListener from 'shorter-js/src/strings/addEventListener';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import ariaDescribedBy from 'shorter-js/src/strings/ariaDescribedBy';
+import { getInstance } from 'shorter-js/src/misc/data';
+import isMedia from 'shorter-js/src/misc/isMedia';
 
-import ariaDescribedBy from '../strings/ariaDescribedBy.js';
-import dataBsToggle from '../strings/dataBsToggle.js';
-import dataOriginalTitle from '../strings/dataOriginalTitle.js';
-import fadeClass from '../strings/fadeClass.js';
-import showClass from '../strings/showClass.js';
+import dataBsToggle from '../strings/dataBsToggle';
+import dataOriginalTitle from '../strings/dataOriginalTitle';
+import fadeClass from '../strings/fadeClass';
+import showClass from '../strings/showClass';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import tipClassPositions from '../util/tipClassPositions.js';
-import styleTip from '../util/styleTip.js';
-import isVisibleTip from '../util/isVisibleTip.js';
-import isMedia from '../util/isMedia.js';
-import getUID from '../util/getUID.js';
-import getTipContainer from '../util/getTipContainer.js';
-import closestRelative from '../util/closestRelative.js';
-import setHtml from '../util/setHtml.js';
-import BaseComponent from './base-component.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import tipClassPositions from '../util/tipClassPositions';
+import styleTip from '../util/styleTip';
+import isVisibleTip from '../util/isVisibleTip';
+import getUID from '../util/getUID';
+import getTipContainer from '../util/getTipContainer';
+import closestRelative from '../util/closestRelative';
+import setHtml from '../util/setHtml';
+import BaseComponent from './base-component';
 
 // TOOLTIP PRIVATE GC
 // ==================
 const tooltipString = 'tooltip';
 const tooltipComponent = 'Tooltip';
 const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${tooltipString}"]`;
-
 const titleAttr = 'title';
 const tooltipInnerClass = `${tooltipString}-inner`;
-const tooltipDefaultOptions = {
+const tooltipDefaults = {
   template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
   title: null, // string
   customClass: null, // string | null
   placement: 'top', // string
   sanitizeFn: null, // function
   animation: true, // bool
-  html: false, // bool
   delay: 200, // number
+  container: null,
 };
+
+/**
+ * Static method which returns an existing `Tooltip` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Tooltip>}
+ */
+const getTooltipInstance = (element) => getInstance(element, tooltipComponent);
 
 // TOOLTIP CUSTOM EVENTS
 // =====================
+/** @type {BSN.TooltipEvent.show} */
 const showTooltipEvent = bootstrapCustomEvent(`show.bs.${tooltipString}`);
+/** @type {BSN.TooltipEvent.shown} */
 const shownTooltipEvent = bootstrapCustomEvent(`shown.bs.${tooltipString}`);
+/** @type {BSN.TooltipEvent.hide} */
 const hideTooltipEvent = bootstrapCustomEvent(`hide.bs.${tooltipString}`);
+/** @type {BSN.TooltipEvent.hidden} */
 const hiddenTooltipEvent = bootstrapCustomEvent(`hidden.bs.${tooltipString}`);
 
 // TOOLTIP PRIVATE METHODS
 // =======================
+/**
+ * Creates a new tooltip.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
 function createTooltip(self) {
   const { options, id } = self;
   const {
@@ -82,7 +99,6 @@ function createTooltip(self) {
   // set id & role attribute
   tooltip.setAttribute('id', id);
   tooltip.setAttribute('role', tooltipString);
-
   // set arrow
   self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
 
@@ -95,6 +111,11 @@ function createTooltip(self) {
   if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
 }
 
+/**
+ * Removes the tooltip from the DOM.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
 function removeTooltip(self) {
   const { element, tooltip } = self;
   element.removeAttribute(ariaDescribedBy);
@@ -102,11 +123,23 @@ function removeTooltip(self) {
   self.timer = null;
 }
 
+/**
+ * Executes after the instance has been disposed.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
 function disposeTooltipComplete(self) {
   const { element } = self;
   toggleTooltipHandlers(self);
   if (element.hasAttribute(dataOriginalTitle)) toggleTooltipTitle(self);
 }
+
+/**
+ * Toggles on/off the special `Tooltip` event listeners.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ * @param {boolean | number} add when `true`, event listeners are added
+ */
 function toggleTooltipAction(self, add) {
   const action = add ? addEventListener : removeEventListener;
 
@@ -117,15 +150,34 @@ function toggleTooltipAction(self, add) {
     window[action]('resize', self.update, passiveHandler);
   }
 }
+
+/**
+ * Executes after the tooltip was shown to the user.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
 function tooltipShownAction(self) {
   toggleTooltipAction(self, 1);
   self.element.dispatchEvent(shownTooltipEvent);
 }
+
+/**
+ * Executes after the tooltip was hidden to the user.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
 function tooltipHiddenAction(self) {
   toggleTooltipAction(self);
   removeTooltip(self);
   self.element.dispatchEvent(hiddenTooltipEvent);
 }
+
+/**
+ * Toggles on/off the `Tooltip` event listeners.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ * @param {boolean | number} add when `true`, event listeners are added
+ */
 function toggleTooltipHandlers(self, add) {
   const action = add ? addEventListener : removeEventListener;
   const { element } = self;
@@ -136,6 +188,12 @@ function toggleTooltipHandlers(self, add) {
   element[action]('mouseleave', self.hide);
 }
 
+/**
+ * Toggles the `title` and `data-original-title` attributes.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ * @param {string} content when `true`, event listeners are added
+ */
 function toggleTooltipTitle(self, content) {
   // [0 - add, 1 - remove] | [0 - remove, 1 - add]
   const titleAtt = [dataOriginalTitle, titleAttr];
@@ -148,6 +206,10 @@ function toggleTooltipTitle(self, content) {
 
 // TOOLTIP EVENT HANDLERS
 // ======================
+/**
+ * Handles the `touchstart` event listener for `Tooltip`
+ * @param {Event} e the `Event` object
+ */
 function tooltipTouchHandler({ target }) {
   const { tooltip, element } = this;
   if (tooltip.contains(target) || target === element || element.contains(target)) {
@@ -159,21 +221,30 @@ function tooltipTouchHandler({ target }) {
 
 // TOOLTIP DEFINITION
 // ==================
+/** Creates a new `Tooltip` instance. */
 export default class Tooltip extends BaseComponent {
+  /**
+   * @param {Element | string} target the target element
+   * @param {BSN.TooltipOptions?} config the instance options
+   */
   constructor(target, config) {
     // initialization element
     const element = queryElement(target);
-    tooltipDefaultOptions.title = element.getAttribute(titleAttr);
-    tooltipDefaultOptions.container = getTipContainer(element);
-    super(tooltipComponent, element, tooltipDefaultOptions, config);
+    tooltipDefaults[titleAttr] = element.getAttribute(titleAttr);
+    tooltipDefaults.container = getTipContainer(element);
+    super(element, config);
 
     // bind
     const self = this;
 
     // additional properties
+    /** @private @type {Element} */
     self.tooltip = null;
+    /** @private @type {Element} */
     self.arrow = null;
+    /** @private @type {number} */
     self.timer = null;
+    /** @private @type {boolean} */
     self.enabled = false;
 
     // instance options
@@ -181,12 +252,12 @@ export default class Tooltip extends BaseComponent {
 
     // media elements only work with body as a container
     self.options.container = isMedia(element)
-      ? tooltipDefaultOptions.container
+      ? tooltipDefaults.container
       : queryElement(options.container);
 
     // reset default options
-    tooltipDefaultOptions.container = null;
-    tooltipDefaultOptions[titleAttr] = null;
+    tooltipDefaults.container = null;
+    tooltipDefaults[titleAttr] = null;
 
     // invalidate
     if (!options.title) return;
@@ -210,6 +281,7 @@ export default class Tooltip extends BaseComponent {
     const containerIsStatic = !parentIsBody && containerPosition === 'static';
     const containerIsRelative = !parentIsBody && containerPosition === 'relative';
     const relContainer = containerIsStatic && closestRelative(container);
+    /** @private @type {Record<string, any>} */
     self.positions = {
       elementPosition,
       containerIsRelative,
@@ -221,10 +293,28 @@ export default class Tooltip extends BaseComponent {
     toggleTooltipHandlers(self, 1);
   }
 
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */
+  get name() { return tooltipComponent; }
+  /**
+   * Returns component default options.
+   * @readonly @static
+   */
+  get defaults() { return tooltipDefaults; }
+  /* eslint-enable */
+
   // TOOLTIP PUBLIC METHODS
   // ======================
+  /**
+   * Shows the tooltip.
+   *
+   * @param {Event?} e the `Event` object
+   */
   show(e) {
-    const self = e ? this[tooltipComponent] : this;
+    const self = e ? getTooltipInstance(this) : this;
     const {
       options, tooltip, element, id,
     } = self;
@@ -247,8 +337,13 @@ export default class Tooltip extends BaseComponent {
     }
   }
 
+  /**
+   * Hides the tooltip.
+   *
+   * @param {Event?} e the `Event` object
+   */
   hide(e) {
-    const self = e ? this[tooltipComponent] : this;
+    const self = e ? getTooltipInstance(this) : this;
     const { options, tooltip, element } = self;
 
     clearTimeout(self.timer);
@@ -264,17 +359,28 @@ export default class Tooltip extends BaseComponent {
     }, options.delay);
   }
 
+  /**
+   * Updates the tooltip position.
+   *
+   * @param {Event?} e the `Event` object
+   */
   update(e) {
     styleTip(this, e);
   }
 
-  toggle() {
-    const self = this;
+  /**
+   * Toggles the tooltip visibility.
+   *
+   * @param {Event?} e the `Event` object
+   */
+  toggle(e) {
+    const self = e ? getTooltipInstance(this) : this;
     const { tooltip, options } = self;
     if (!isVisibleTip(tooltip, options.container)) self.show();
     else self.hide();
   }
 
+  /** Enables the tooltip. */
   enable() {
     const self = this;
     const { enabled } = self;
@@ -284,6 +390,7 @@ export default class Tooltip extends BaseComponent {
     }
   }
 
+  /** Disables the tooltip. */
   disable() {
     const self = this;
     const { tooltip, options, enabled } = self;
@@ -302,12 +409,14 @@ export default class Tooltip extends BaseComponent {
     }
   }
 
+  /** Toggles the `disabled` property. */
   toggleEnabled() {
     const self = this;
     if (!self.enabled) self.enable();
     else self.disable();
   }
 
+  /** Removes the `Tooltip` from the target element. */
   dispose() {
     const self = this;
     const { tooltip, options } = self;
@@ -319,12 +428,16 @@ export default class Tooltip extends BaseComponent {
     } else {
       disposeTooltipComplete(self);
     }
-    super.dispose(tooltipComponent);
+    super.dispose();
   }
 }
 
-Tooltip.init = {
-  component: tooltipComponent,
+Object.assign(Tooltip, {
   selector: tooltipSelector,
-  constructor: Tooltip,
-};
+  /**
+   * A `Tooltip` initialization callback.
+   * @type {BSN.InitCallback<Tooltip>}
+   */
+  callback: (element) => new Tooltip(element),
+  getInstance: getTooltipInstance,
+});

@@ -1,31 +1,50 @@
-export default BSN;
-declare namespace BSN {
-    export { Alert };
-    export { Button };
-    export { Carousel };
-    export { Collapse };
-    export { Dropdown };
-    export { Modal };
-    export { Offcanvas };
-    export { Popover };
-    export { ScrollSpy };
-    export { Tab };
-    export { Toast };
-    export { Tooltip };
-    export { initCallback };
-    export { Version };
-}
-import Alert from "./components/alert-native.js";
-import Button from "./components/button-native.js";
-import Carousel from "./components/carousel-native.js";
-import Collapse from "./components/collapse-native.js";
-import Dropdown from "./components/dropdown-native.js";
-import Modal from "./components/modal-native.js";
-import Offcanvas from "./components/offcanvas-native.js";
-import Popover from "./components/popover-native.js";
-import ScrollSpy from "./components/scrollspy-native.js";
-import Tab from "./components/tab-native.js";
-import Toast from "./components/toast-native.js";
-import Tooltip from "./components/tooltip-native.js";
-import { initCallback } from "./util/init.js";
-import Version from "./util/version.js";
+export as namespace BSN;
+
+import './bsn';
+export {default as Alert} from "bootstrap.native/src/components/alert-native";
+export {default as Button} from "bootstrap.native/src/components/button-native";
+export {default as Carousel} from "bootstrap.native/src/components/carousel-native";
+export {default as Collapse} from "bootstrap.native/src/components/collapse-native";
+export {default as Dropdown} from "bootstrap.native/src/components/dropdown-native";
+export {default as Modal} from "bootstrap.native/src/components/modal-native";
+export {default as Offcanvas} from "bootstrap.native/src/components/offcanvas-native";
+export {default as Popover} from "bootstrap.native/src/components/popover-native";
+export {default as ScrollSpy} from "bootstrap.native/src/components/scrollspy-native";
+export {default as Tab} from "bootstrap.native/src/components/tab-native";
+export {default as Toast} from "bootstrap.native/src/components/toast-native";
+export {default as Tooltip} from "bootstrap.native/src/components/tooltip-native";
+export { initCallback, removeDataAPI } from "bootstrap.native/src/util/init";
+export {default as Version} from "bootstrap.native/src/version";
+
+// internal types
+export {
+  // generic typings
+  GetInstance,
+  InitCallback,
+  ComponentOptions,
+  ComponentInstance,
+  // component typings
+  AlertEvent,
+  CarouselEvent,
+  CarouselOptions,
+  CollapseEvent,
+  CollapseOptions,
+  DropdownEvent,
+  DropdownOptions,
+  ModalEvent,
+  ModalOptions,
+  OffcanvasEvent,
+  OffcanvasOptions,
+  PopoverEvent,
+  PopoverOptions,
+  ScrollSpyEvent,
+  ScrollspyOptions,
+  TabEvent,
+  ToastEvent,
+  ToastOptions,
+  TooltipEvent,
+  TooltipOptions,
+} from './more/types';
+
+// dependency
+export * as SHORTER from "shorter-js";

@@ -16,11 +16,11 @@ function setOffset() {
 		mobileNavOffcanvas.style.top = '';
 	}
 }
-mobileNavOffcanvas.addEventListener('show.bs.offcanvas', () => {
+mobileNavOffcanvas.addEventListener('show.bs.offcanvas', function(){
 	setOffset();
 	window.addEventListener('scroll', setOffset);
 });
-mobileNavOffcanvas.addEventListener('hidden.bs.offcanvas', () => {
+mobileNavOffcanvas.addEventListener('hidden.bs.offcanvas', function(){
 	mobileNavOffcanvas.style.top = '';
 	window.removeEventListener('scroll', setOffset)
 
@@ -31,7 +31,7 @@ sideLinks.forEach( function(x,i) {x.addEventListener('click', function(e){
 	const offset =  document.body.offsetWidth <= 768 ? 70 : 0;
 	e.preventDefault();
 	scrollTarget.scrollTop = target.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - offset;
-	if (mobileNav.contains(e.target)) mobileNavOffcanvas.Offcanvas.hide();
+	if (mobileNav.contains(e.target)) BSN.Offcanvas.getInstance(mobileNavOffcanvas).hide();
 })}) 
 
 // COMPONENTS
@@ -83,13 +83,13 @@ myModal.addEventListener('hidden.bs.modal', function (e) {
 
 // Modal initialized with JavaScript
 // wrap 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function(){
 	var btnModal = document.getElementById('openModalViaJS');
 	var myModalJS = document.getElementById('myModalJS');
 	var modalInitJS = new BSN.Modal(myModalJS, {
 		backdrop: 'static'
 	});
-	btnModal.addEventListener('click', () => {
+	btnModal.addEventListener('click', function(){
 		modalInitJS.show();
 	}, false);
 }, {once: true})
@@ -166,15 +166,17 @@ toastElement.addEventListener('hidden.bs.toast',function(e){
 },false)
 
 showToastBTN.addEventListener('click',function(){
-	toastElement.Toast ? toastElement.Toast.show() : console.log( 'DISPOSED!' )
-},false)
+	const inst = BSN.Toast.getInstance(toastElement);
+	inst ? inst.show() : console.log( 'DISPOSED!' )
+}, false)
 
 // ScrollSpy
 function toggleScrollSpy(){
-	var disposableSpy = document.getElementById('disposableSpy')
+	var disposableSpy = document.getElementById('disposableSpy');
+	var spyInstance = BSN.ScrollSpy.getInstance(disposableSpy);
 
-	if ( disposableSpy.ScrollSpy ){
-		disposableSpy.ScrollSpy.dispose()
+	if ( spyInstance ){
+		spyInstance.dispose()
 		this.innerHTML = 'Init'
 		this.classList.remove( 'btn-outline-danger' )
 		this.classList.add( 'btn-outline-primary' )
@@ -207,4 +209,21 @@ offcanvasExample.addEventListener('hidden.bs.offcanvas', function(e){
 	var related = e.relatedTarget;
 	var relatedTarget = '\nevent.relatedTarget is: ' +  (related ? related.tagName + '.' + related.className.replace(/\s/,'.') : 'null');
 	console.log('The hidden.bs.offcanvas event fired for #' + offcanvasExample.id + relatedTarget);
+}, false);
+
+// carousel
+const carouselGenericExample = document.getElementById('carouselGenericExample');
+carouselGenericExample.addEventListener('slide.bs.carousel', function(e) {
+	var related = `\n> relatedTarget <div class="${Array.from(e.relatedTarget.classList).join(' ')}">\n`;
+	var from = `\n> from index ${e.from}`;
+	var to = `\n> to index ${e.to}`;
+	var direction = `\n> with direction ${e.direction}`;
+	console.log('The "slide.bs.carousel" event fired for <div id=' + carouselGenericExample.id + '"> ' + direction + from + to + related);
+}, false);
+carouselGenericExample.addEventListener('slid.bs.carousel', function(e) {
+	var related = `\n> relatedTarget <div class="${Array.from(e.relatedTarget.classList).join(' ')}">\n`;
+	var from = `\n> from index ${e.from}`;
+	var to = `\n> to index ${e.to}`;
+	var direction = `\n> with direction ${e.direction}`;
+	console.log('The "slid.bs.carousel" event fired for <div id=' + carouselGenericExample.id + '"> ' + direction + from + to + related);
 }, false);

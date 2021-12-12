@@ -1,25 +1,26 @@
 /* Native JavaScript for Bootstrap 5 | Modal
 -------------------------------------------- */
-import passiveHandler from 'shorter-js/src/misc/passiveHandler.js';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd.js';
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration.js';
-import queryElement from 'shorter-js/src/misc/queryElement.js';
-import addClass from 'shorter-js/src/class/addClass.js';
-import hasClass from 'shorter-js/src/class/hasClass.js';
-import removeClass from 'shorter-js/src/class/removeClass.js';
-import addEventListener from 'shorter-js/src/strings/addEventListener.js';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener.js';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
+import queryElement from 'shorter-js/src/misc/queryElement';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import addEventListener from 'shorter-js/src/strings/addEventListener';
+import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import ariaHidden from 'shorter-js/src/strings/ariaHidden';
+import ariaModal from 'shorter-js/src/strings/ariaModal';
+import { getInstance } from 'shorter-js/src/misc/data';
 
-import ariaHidden from '../strings/ariaHidden.js';
-import dataBsToggle from '../strings/dataBsToggle.js';
-import dataBsDismiss from '../strings/dataBsDismiss.js';
-import fadeClass from '../strings/fadeClass.js';
-import showClass from '../strings/showClass.js';
-import ariaModal from '../strings/ariaModal.js';
+import dataBsToggle from '../strings/dataBsToggle';
+import dataBsDismiss from '../strings/dataBsDismiss';
+import fadeClass from '../strings/fadeClass';
+import showClass from '../strings/showClass';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent.js';
-import getTargetElement from '../util/getTargetElement.js';
-import { setScrollbar, measureScrollbar, resetScrollbar } from '../util/scrollbar.js';
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import getTargetElement from '../util/getTargetElement';
+import { setScrollbar, measureScrollbar } from '../util/scrollbar';
 import {
   overlay,
   modalActiveSelector,
@@ -29,10 +30,10 @@ import {
   hideOverlay,
   getCurrentOpen,
   removeOverlay,
-} from '../util/backdrop.js';
-import setFocus from '../util/setFocus.js';
-import isVisible from '../util/isVisible.js';
-import BaseComponent from './base-component.js';
+} from '../util/backdrop';
+import setFocus from '../util/setFocus';
+import isVisible from '../util/isVisible';
+import BaseComponent from './base-component';
 
 // MODAL PRIVATE GC
 // ================
@@ -42,20 +43,38 @@ const modalSelector = `.${modalString}`;
 const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
 const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
 const modalStaticClass = `${modalString}-static`;
-const modalDefaultOptions = {
+/**
+ * Static method which returns an existing `Modal` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Modal>}
+ */
+const getModalInstance = (element) => getInstance(element, modalComponent);
+
+const modalDefaults = {
   backdrop: true, // boolean|string
   keyboard: true, // boolean
 };
 
 // MODAL CUSTOM EVENTS
 // ===================
+/** @type {BSN.ModalEvent.show} */
 const showModalEvent = bootstrapCustomEvent(`show.bs.${modalString}`);
+/** @type {BSN.ModalEvent.shown} */
 const shownModalEvent = bootstrapCustomEvent(`shown.bs.${modalString}`);
+/** @type {BSN.ModalEvent.hide} */
 const hideModalEvent = bootstrapCustomEvent(`hide.bs.${modalString}`);
+/** @type {BSN.ModalEvent.hidden} */
 const hiddenModalEvent = bootstrapCustomEvent(`hidden.bs.${modalString}`);
 
 // MODAL PRIVATE METHODS
 // =====================
+/**
+ * Applies special style for the `<body>` and fixed elements
+ * when a modal instance is shown to the user.
+ *
+ * @param {Modal} self the `Modal` instance
+ */
 function setModalScrollbar(self) {
   const { element, scrollbarWidth } = self;
   const bd = document.body;
@@ -70,6 +89,12 @@ function setModalScrollbar(self) {
   setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow));
 }
 
+/**
+ * Toggles on/off the listeners of events that close the modal.
+ *
+ * @param {Modal} self the `Modal` instance
+ * @param {boolean | number} add when `true`, event listeners are added
+ */
 function toggleModalDismiss(self, add) {
   const action = add ? addEventListener : removeEventListener;
   window[action]('resize', self.update, passiveHandler);
@@ -77,6 +102,11 @@ function toggleModalDismiss(self, add) {
   document[action]('keydown', modalKeyHandler);
 }
 
+/**
+ * Toggles on/off the `click` event listener of the `Modal` instance.
+ * @param {Modal} self the `Modal` instance
+ * @param {boolean | number} add when `true`, event listener is added
+ */
 function toggleModalHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
   const { triggers } = self;
@@ -86,12 +116,13 @@ function toggleModalHandler(self, add) {
   }
 }
 
+/**
+ * Executes after a modal is hidden to the user.
+ * @param {Modal} self the `Modal` instance
+ */
 function afterModalHide(self) {
-  const { triggers, options } = self;
-  if (!getCurrentOpen()) {
-    if (options.backdrop) removeOverlay();
-    resetScrollbar();
-  }
+  const { triggers } = self;
+  removeOverlay();
   self.element.style.paddingRight = '';
   self.isAnimating = false;
 
@@ -101,6 +132,10 @@ function afterModalHide(self) {
   }
 }
 
+/**
+ * Executes after a modal is shown to the user.
+ * @param {Modal} self the `Modal` instance
+ */
 function afterModalShow(self) {
   const { element, relatedTarget } = self;
   setFocus(element);
@@ -112,6 +147,10 @@ function afterModalShow(self) {
   element.dispatchEvent(shownModalEvent);
 }
 
+/**
+ * Executes before a modal is shown to the user.
+ * @param {Modal} self the `Modal` instance
+ */
 function beforeModalShow(self) {
   const { element, hasFade } = self;
   element.style.display = 'block';
@@ -129,6 +168,10 @@ function beforeModalShow(self) {
   else afterModalShow(self);
 }
 
+/**
+ * Executes before a modal is hidden to the user.
+ * @param {Modal} self the `Modal` instance
+ */
 function beforeModalHide(self, force) {
   const {
     element, options, relatedTarget, hasFade,
@@ -154,11 +197,15 @@ function beforeModalHide(self, force) {
 
 // MODAL EVENT HANDLERS
 // ====================
+/**
+ * Handles the `click` event listener for modal.
+ * @param {Event} e the `Event` object
+ */
 function modalClickHandler(e) {
   const { target } = e;
   const trigger = target.closest(modalToggleSelector);
   const element = getTargetElement(trigger);
-  const self = element && element[modalComponent];
+  const self = element && getModalInstance(element, modalComponent);
 
   if (trigger.tagName === 'A') e.preventDefault();
 
@@ -169,9 +216,15 @@ function modalClickHandler(e) {
   self.toggle();
 }
 
+/**
+ * Handles the `keydown` event listener for modal
+ * to hide the modal when user type the `ESC` key.
+ *
+ * @param {Event} e the `Event` object
+ */
 function modalKeyHandler({ which }) {
   const element = queryElement(modalActiveSelector);
-  const self = element[modalComponent];
+  const self = getModalInstance(element, modalComponent);
   const { options, isAnimating } = self;
   if (!isAnimating // modal has no animations running
     && options.keyboard && which === 27 // the keyboard option is enabled and the key is 27
@@ -181,9 +234,14 @@ function modalKeyHandler({ which }) {
   }
 }
 
+/**
+ * Handles the `click` event listeners that hide the modal.
+ *
+ * @param {Event} e the `Event` object
+ */
 function modalDismissHandler(e) {
   const element = this;
-  const self = element[modalComponent];
+  const self = getModalInstance(element, modalComponent);
 
   if (self.isAnimating) return;
 
@@ -214,9 +272,14 @@ function staticTransitionEnd(self) {
 
 // MODAL DEFINITION
 // ================
+/** Returns a new `Modal` instance. */
 export default class Modal extends BaseComponent {
+  /**
+   * @param {Element | string} target usually the `.modal` element
+   * @param {BSN.ModalOptions?} config instance options
+   */
   constructor(target, config) {
-    super(modalComponent, target, modalDefaultOptions, config);
+    super(target, config);
 
     // bind
     const self = this;
@@ -225,17 +288,24 @@ export default class Modal extends BaseComponent {
     const { element } = self;
 
     // the modal-dialog
+    /** @private @type {Element} */
     self.modalDialog = queryElement(`.${modalString}-dialog`, element);
 
     // modal can have multiple triggering elements
+    /** @private @type {Element[]} */
     self.triggers = Array.from(document.querySelectorAll(modalToggleSelector))
       .filter((btn) => getTargetElement(btn) === element);
 
     // additional internals
+    /** @private @type {boolean} */
     self.isStatic = self.options.backdrop === 'static';
+    /** @private @type {boolean} */
     self.hasFade = hasClass(element, fadeClass);
+    /** @private @type {boolean} */
     self.isAnimating = false;
+    /** @private @type {number} */
     self.scrollbarWidth = measureScrollbar();
+    /** @private @type {number} */
     self.relatedTarget = null;
 
     // attach event listeners
@@ -245,14 +315,29 @@ export default class Modal extends BaseComponent {
     self.update = self.update.bind(self);
   }
 
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */
+  get name() { return modalComponent; }
+  /**
+   * Returns component default options.
+   * @readonly @static
+   */
+  get defaults() { return modalDefaults; }
+  /* eslint-enable */
+
   // MODAL PUBLIC METHODS
   // ====================
+  /** Toggles the visibility of the modal. */
   toggle() {
     const self = this;
     if (hasClass(self.element, showClass)) self.hide();
     else self.show();
   }
 
+  /** Shows the modal to the user. */
   show() {
     const self = this;
     const {
@@ -270,10 +355,9 @@ export default class Modal extends BaseComponent {
     // we elegantly hide any opened modal/offcanvas
     const currentOpen = getCurrentOpen();
     if (currentOpen && currentOpen !== element) {
-      const that = currentOpen[modalComponent]
-        ? currentOpen[modalComponent]
-        : currentOpen.Offcanvas;
-      that.hide();
+      const this1 = getModalInstance(currentOpen);
+      const that1 = this1 || getInstance(currentOpen, 'Offcanvas');
+      that1.hide();
     }
 
     self.isAnimating = true;
@@ -296,6 +380,10 @@ export default class Modal extends BaseComponent {
     }
   }
 
+  /**
+   * Hide the modal from the user.
+   * @param {boolean | number} force when `true` it will skip animation
+   */
   hide(force) {
     const self = this;
     const {
@@ -319,24 +407,30 @@ export default class Modal extends BaseComponent {
     }
   }
 
+  /** Updates the modal layout. */
   update() {
     const self = this;
 
     if (hasClass(self.element, showClass)) setModalScrollbar(self);
   }
 
+  /** Removes the `Modal` component from target element. */
   dispose() {
     const self = this;
     self.hide(1); // forced call
 
     toggleModalHandler(self);
 
-    super.dispose(modalComponent);
+    super.dispose();
   }
 }
 
-Modal.init = {
-  component: modalComponent,
+Object.assign(Modal, {
   selector: modalSelector,
-  constructor: Modal,
-};
+  /**
+   * A `Modal` initialization callback.
+   * @type {BSN.InitCallback<Modal>}
+   */
+  callback: (element) => new Modal(element),
+  getInstance: getModalInstance,
+});

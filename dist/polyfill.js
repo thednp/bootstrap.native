@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap Polyfill v3.0.15 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap Polyfill v4.0.8 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2021 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -234,5 +234,22 @@ if (!Node.prototype.contains) {
       if (el === this) { return true; }
     }
     return false;
+  };
+}
+
+if (!Number.isNaN) {
+  Number.isNaN = function(value) {
+    return typeof value === 'number'
+      && value !== value;
+  };
+}
+
+if (!String.prototype.includes) {
+  String.prototype.includes = function(search, start) {
+    if (search instanceof RegExp) {
+      throw TypeError('first argument must not be a RegExp');
+    } 
+    if (start === undefined) { start = 0; }
+    return this.indexOf(search, start) !== -1;
   };
 }

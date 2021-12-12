@@ -39,12 +39,12 @@ if (MIN){
   OUTPUT.banner = banner;
 }
 
-if (INPUTFILE.includes('v4')){
-  PLUGINS.push(buble({objectAssign: 'Object.assign'}));
-}
-
 if (FORMAT!=='esm') {
   OUTPUT.name = 'BSN';
+}
+
+if (INPUTFILE.includes('v4')){
+  PLUGINS.push(buble({objectAssign: 'Object.assign'}));
 }
 
 export default [
