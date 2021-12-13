@@ -401,6 +401,12 @@ const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
  */
 const getAlertInstance = (element) => getInstance(element, alertComponent);
 
+/**
+* An `Alert` initialization callback.
+* @type {BSN.InitCallback<Alert>}
+*/
+const alertInitCallback = (element) => new Alert(element);
+
 // ALERT CUSTOM EVENTS
 // ===================
 /** @type {BSN.AlertEvent.close} */
@@ -471,13 +477,11 @@ class Alert extends BaseComponent {
   // ALERT PUBLIC METHODS
   // ====================
   /**
-   * Private method that:
-   * * Hides the `.alert` element from the user,
-   * * Destroy the instance once animation is complete,
-   * * Removes the element from the DOM.
+   * Public method that hides the `.alert` element from the user,
+   * disposes the instance once animation is complete, then
+   * removes the element from the DOM.
    *
    * @param {Event} e most likely the `click` event
-   * @returns {void}
    */
   close(e) {
     const target = e ? e.target : null;
@@ -511,11 +515,7 @@ class Alert extends BaseComponent {
 
 Object.assign(Alert, {
   selector: alertSelector,
-  /**
-   * An `Alert` initialization callback.
-   * @type {BSN.InitCallback<Alert>}
-   */
-  callback: (element) => new Alert(element),
+  init: alertInitCallback,
   getInstance: getAlertInstance,
 });
 
@@ -561,6 +561,12 @@ const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
  * @type {BSN.GetInstance<Button>}
  */
 const getButtonInstance = (element) => getInstance(element, buttonComponent);
+
+/**
+ * A `Button` initialization callback.
+ * @type {BSN.InitCallback<Button>}
+ */
+const buttonInitCallback = (element) => new Button(element);
 
 // BUTTON PRIVATE METHOD
 // =====================
@@ -632,11 +638,7 @@ class Button extends BaseComponent {
 
 Object.assign(Button, {
   selector: buttonSelector,
-  /**
-   * A `Button` initialization callback.
-   * @type {BSN.InitCallback<Button>}
-   */
-  callback: (element) => new Button(element),
+  init: buttonInitCallback,
   getInstance: getButtonInstance,
 });
 
@@ -732,6 +734,12 @@ const CarouselEventProperties = {
  * @type {BSN.GetInstance<Carousel>}
  */
 const getCarouselInstance = (element) => getInstance(element, carouselComponent);
+
+/**
+ * A `Carousel` initialization callback.
+ * @type {BSN.InitCallback<Carousel>}
+ */
+const carouselInitCallback = (element) => new Carousel(element);
 
 let startX = 0;
 let currentX = 0;
@@ -1027,7 +1035,7 @@ function getActiveIndex(self) {
 // CAROUSEL DEFINITION
 // ===================
 /**
- * Returns a new `Carousel` instance.
+ * Creates a new `Carousel` instance.
  */
 class Carousel extends BaseComponent {
   /**
@@ -1258,11 +1266,7 @@ class Carousel extends BaseComponent {
 
 Object.assign(Carousel, {
   selector: carouselSelector,
-  /**
-   * A `Carousel` initialization callback.
-   * @type {BSN.InitCallback<Carousel>}
-   */
-  callback: (element) => new Carousel(element),
+  init: carouselInitCallback,
   getInstance: getCarouselInstance,
 });
 
@@ -1324,6 +1328,12 @@ const collapseDefaults = { parent: null };
  * @type {BSN.GetInstance<Collapse>}
  */
 const getCollapseInstance = (element) => getInstance(element, collapseComponent);
+
+/**
+ * A `Collapse` initialization callback.
+ * @type {BSN.InitCallback<Collapse>}
+ */
+const collapseInitCallback = (element) => new Collapse(element);
 
 // COLLAPSE CUSTOM EVENTS
 // ======================
@@ -1558,11 +1568,7 @@ class Collapse extends BaseComponent {
 
 Object.assign(Collapse, {
   selector: collapseSelector,
-  /**
-   * A `Collapse` initialization callback.
-   * @type {BSN.InitCallback<Collapse>}
-   */
-  callback: (element) => new Collapse(element),
+  init: collapseInitCallback,
   getInstance: getCollapseInstance,
 });
 
@@ -1615,6 +1621,12 @@ const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
  * @type {BSN.GetInstance<Dropdown>}
  */
 const getDropdownInstance = (element) => getInstance(element, dropdownComponent);
+
+/**
+ * A `Dropdown` initialization callback.
+ * @type {BSN.InitCallback<Dropdown>}
+ */
+const dropdownInitCallback = (element) => new Dropdown(element);
 
 // DROPDOWN PRIVATE GC
 // ===================
@@ -2058,11 +2070,7 @@ class Dropdown extends BaseComponent {
 
 Object.assign(Dropdown, {
   selector: dropdownSelector,
-  /**
-   * A `Dropdown` initialization callback.
-   * @type {BSN.InitCallback<Dropdown>}
-   */
-  callback: (element) => new Dropdown(element),
+  init: dropdownInitCallback,
   getInstance: getDropdownInstance,
 });
 
@@ -2245,6 +2253,12 @@ const modalStaticClass = `${modalString}-static`;
  * @type {BSN.GetInstance<Modal>}
  */
 const getModalInstance = (element) => getInstance(element, modalComponent);
+
+/**
+ * A `Modal` initialization callback.
+ * @type {BSN.InitCallback<Modal>}
+ */
+const modalInitCallback = (element) => new Modal(element);
 
 const modalDefaults = {
   backdrop: true, // boolean|string
@@ -2622,11 +2636,7 @@ class Modal extends BaseComponent {
 
 Object.assign(Modal, {
   selector: modalSelector,
-  /**
-   * A `Modal` initialization callback.
-   * @type {BSN.InitCallback<Modal>}
-   */
-  callback: (element) => new Modal(element),
+  init: modalInitCallback,
   getInstance: getModalInstance,
 });
 
@@ -2642,6 +2652,12 @@ const offcanvasToggleSelector = `[${dataBsToggle}="${offcanvasString}"]`;
 const offcanvasDismissSelector = `[${dataBsDismiss}="${offcanvasString}"]`;
 const offcanvasTogglingClass = `${offcanvasString}-toggling`;
 
+const offcanvasDefaults = {
+  backdrop: true, // boolean
+  keyboard: true, // boolean
+  scroll: false, // boolean
+};
+
 /**
  * Static method which returns an existing `Offcanvas` instance associated
  * to a target `Element`.
@@ -2650,11 +2666,11 @@ const offcanvasTogglingClass = `${offcanvasString}-toggling`;
  */
 const getOffcanvasInstance = (element) => getInstance(element, offcanvasComponent);
 
-const offcanvasDefaults = {
-  backdrop: true, // boolean
-  keyboard: true, // boolean
-  scroll: false, // boolean
-};
+/**
+ * An `Offcanvas` initialization callback.
+ * @type {BSN.InitCallback<Offcanvas>}
+ */
+const offcanvasInitCallback = (element) => new Offcanvas(element);
 
 // OFFCANVAS CUSTOM EVENTS
 // =======================
@@ -2977,11 +2993,7 @@ class Offcanvas extends BaseComponent {
 
 Object.assign(Offcanvas, {
   selector: offcanvasSelector,
-  /**
-   * An `Offcanvas` initialization callback.
-   * @type {BSN.InitCallback<Offcanvas>}
-   */
-  callback: (element) => new Offcanvas(element),
+  init: offcanvasInitCallback,
   getInstance: getOffcanvasInstance,
 });
 
@@ -3273,32 +3285,6 @@ function setHtml(element, content, sanitizeFn) {
 const popoverString = 'popover';
 const popoverComponent = 'Popover';
 const popoverSelector = `[${dataBsToggle}="${popoverString}"],[data-tip="${popoverString}"]`;
-
-/**
- * Static method which returns an existing `Popover` instance associated
- * to a target `Element`.
- *
- * @type {BSN.GetInstance<Popover>}
- */
-const getPopoverInstance = (element) => getInstance(element, popoverComponent);
-
-const popoverDefaults = {
-  template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>', // string
-  title: null, // string
-  content: null, // string
-  customClass: null, // string
-  trigger: 'hover', // string
-  placement: 'top', // string
-  btnClose: '<button class="btn-close" aria-label="Close"></button>', // string
-  sanitizeFn: null, // function
-  dismissible: false, // boolean
-  animation: true, // boolean
-  delay: 200, // number
-  container: null,
-};
-
-// POPOVER PRIVATE GC
-// ==================
 const appleBrands = /(iPhone|iPod|iPad)/;
 const isIphone = navigator.userAgentData
   ? navigator.userAgentData.brands.some((x) => appleBrands.test(x.brand))
@@ -3316,6 +3302,35 @@ const shownPopoverEvent = bootstrapCustomEvent(`shown.bs.${popoverString}`);
 const hidePopoverEvent = bootstrapCustomEvent(`hide.bs.${popoverString}`);
 /** @type {BSN.PopoverEvent.hidden} */
 const hiddenPopoverEvent = bootstrapCustomEvent(`hidden.bs.${popoverString}`);
+
+const popoverDefaults = {
+  template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+  title: null,
+  content: null,
+  customClass: null,
+  trigger: 'hover',
+  placement: 'top',
+  btnClose: '<button class="btn-close" aria-label="Close"></button>',
+  sanitizeFn: null,
+  dismissible: false,
+  animation: true,
+  delay: 200,
+  container: null,
+};
+
+/**
+ * Static method which returns an existing `Popover` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Popover>}
+ */
+const getPopoverInstance = (element) => getInstance(element, popoverComponent);
+
+/**
+ * A `Popover` initialization callback.
+ * @type {BSN.InitCallback<Popover>}
+ */
+const popoverInitCallback = (element) => new Popover(element);
 
 // POPOVER EVENT HANDLERS
 // ======================
@@ -3714,11 +3729,7 @@ class Popover extends BaseComponent {
 
 Object.assign(Popover, {
   selector: popoverSelector,
-  /**
-   * A `Popover` initialization callback.
-   * @type {BSN.InitCallback<Popover>}
-   */
-  callback: (element) => new Popover(element),
+  init: popoverInitCallback,
   getInstance: getPopoverInstance,
 });
 
@@ -3745,6 +3756,12 @@ const scrollspyDefaults = {
  * @type {BSN.GetInstance<ScrollSpy>}
  */
 const getScrollSpyInstance = (element) => getInstance(element, scrollspyComponent);
+
+/**
+ * A `ScrollSpy` initialization callback.
+ * @type {BSN.InitCallback<ScrollSpy>}
+ */
+const scrollspyInitCallback = (element) => new ScrollSpy(element);
 
 // SCROLLSPY CUSTOM EVENT
 // ======================
@@ -3979,11 +3996,7 @@ class ScrollSpy extends BaseComponent {
 
 Object.assign(ScrollSpy, {
   selector: scrollspySelector,
-  /**
-   * A `ScrollSpy` initialization callback.
-   * @type {BSN.InitCallback<ScrollSpy>}
-   */
-  callback: (element) => new ScrollSpy(element),
+  init: scrollspyInitCallback,
   getInstance: getScrollSpyInstance,
 });
 
@@ -4009,6 +4022,12 @@ const tabSelector = `[${dataBsToggle}="${tabString}"]`;
  * @type {BSN.GetInstance<Tab>}
  */
 const getTabInstance = (element) => getInstance(element, tabComponent);
+
+/**
+ * A `Tab` initialization callback.
+ * @type {BSN.InitCallback<Tab>}
+ */
+const tabInitCallback = (element) => new Tab(element);
 
 // TAB CUSTOM EVENTS
 // =================
@@ -4132,8 +4151,9 @@ function getActiveTab({ nav }) {
  * @returns {Element} the query result
  */
 function getActiveTabContent(self) {
-  return queryElement(getActiveTab(self).getAttribute('href')
-    || getActiveTab(self).getAttribute(dataBsToggle));
+  activeTab = getActiveTab(self);
+  return queryElement(activeTab.getAttribute('href')
+    || activeTab.getAttribute(dataBsTarget));
 }
 
 /**
@@ -4246,11 +4266,7 @@ class Tab extends BaseComponent {
 
 Object.assign(Tab, {
   selector: tabSelector,
-  /**
-   * A `Tab` initialization callback.
-   * @type {BSN.InitCallback<Tab>}
-   */
-  callback: (element) => new Tab(element),
+  init: tabInitCallback,
   getInstance: getTabInstance,
 });
 
@@ -4280,6 +4296,12 @@ const toastDefaults = {
  * @type {BSN.GetInstance<Toast>}
  */
 const getToastInstance = (element) => getInstance(element, toastComponent);
+
+/**
+ * A `Toast` initialization callback.
+ * @type {BSN.InitCallback<Toast>}
+ */
+const toastInitCallback = (element) => new Toast(element);
 
 // TOAST CUSTOM EVENTS
 // ===================
@@ -4464,11 +4486,7 @@ class Toast extends BaseComponent {
 
 Object.assign(Toast, {
   selector: toastSelector,
-  /**
-   * A `Toast` initialization callback.
-   * @type {BSN.InitCallback<Toast>}
-   */
-  callback: (element) => new Toast(element),
+  init: toastInitCallback,
   getInstance: getToastInstance,
 });
 
@@ -4505,6 +4523,12 @@ const tooltipDefaults = {
  * @type {BSN.GetInstance<Tooltip>}
  */
 const getTooltipInstance = (element) => getInstance(element, tooltipComponent);
+
+/**
+ * A `Tooltip` initialization callback.
+ * @type {BSN.InitCallback<Tooltip>}
+ */
+const tooltipInitCallback = (element) => new Tooltip(element);
 
 // TOOLTIP CUSTOM EVENTS
 // =====================
@@ -4884,11 +4908,7 @@ class Tooltip extends BaseComponent {
 
 Object.assign(Tooltip, {
   selector: tooltipSelector,
-  /**
-   * A `Tooltip` initialization callback.
-   * @type {BSN.InitCallback<Tooltip>}
-   */
-  callback: (element) => new Tooltip(element),
+  init: tooltipInitCallback,
   getInstance: getTooltipInstance,
 });
 
@@ -4938,8 +4958,8 @@ function initCallback(context) {
   const lookUp = context instanceof Element ? context : document;
 
   componentsKeys.forEach((comp) => {
-    const { callback, selector } = componentsList[comp];
-    initComponentDataAPI(callback, lookUp.querySelectorAll(selector));
+    const { init, selector } = componentsList[comp];
+    initComponentDataAPI(init, lookUp.querySelectorAll(selector));
   });
 }
 

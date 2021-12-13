@@ -342,6 +342,12 @@
    */
   const getScrollSpyInstance = (element) => getInstance(element, scrollspyComponent);
 
+  /**
+   * A `ScrollSpy` initialization callback.
+   * @type {BSN.InitCallback<ScrollSpy>}
+   */
+  const scrollspyInitCallback = (element) => new ScrollSpy(element);
+
   // SCROLLSPY CUSTOM EVENT
   // ======================
   /** @type {BSN.ScrollSpyEvent.activate} */
@@ -575,11 +581,7 @@
 
   Object.assign(ScrollSpy, {
     selector: scrollspySelector,
-    /**
-     * A `ScrollSpy` initialization callback.
-     * @type {BSN.InitCallback<ScrollSpy>}
-     */
-    callback: (element) => new ScrollSpy(element),
+    init: scrollspyInitCallback,
     getInstance: getScrollSpyInstance,
   });
 

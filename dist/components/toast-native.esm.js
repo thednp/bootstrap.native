@@ -431,6 +431,12 @@ const toastDefaults = {
  */
 const getToastInstance = (element) => getInstance(element, toastComponent);
 
+/**
+ * A `Toast` initialization callback.
+ * @type {BSN.InitCallback<Toast>}
+ */
+const toastInitCallback = (element) => new Toast(element);
+
 // TOAST CUSTOM EVENTS
 // ===================
 /** @type {BSN.ToastEvent.show} */
@@ -614,11 +620,7 @@ class Toast extends BaseComponent {
 
 Object.assign(Toast, {
   selector: toastSelector,
-  /**
-   * A `Toast` initialization callback.
-   * @type {BSN.InitCallback<Toast>}
-   */
-  callback: (element) => new Toast(element),
+  init: toastInitCallback,
   getInstance: getToastInstance,
 });
 

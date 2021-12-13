@@ -464,6 +464,12 @@
    */
   const getCollapseInstance = (element) => getInstance(element, collapseComponent);
 
+  /**
+   * A `Collapse` initialization callback.
+   * @type {BSN.InitCallback<Collapse>}
+   */
+  const collapseInitCallback = (element) => new Collapse(element);
+
   // COLLAPSE CUSTOM EVENTS
   // ======================
   /** @type {BSN.CollapseEvent.show} */
@@ -697,11 +703,7 @@
 
   Object.assign(Collapse, {
     selector: collapseSelector,
-    /**
-     * A `Collapse` initialization callback.
-     * @type {BSN.InitCallback<Collapse>}
-     */
-    callback: (element) => new Collapse(element),
+    init: collapseInitCallback,
     getInstance: getCollapseInstance,
   });
 

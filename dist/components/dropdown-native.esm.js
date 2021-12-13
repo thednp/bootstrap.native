@@ -373,6 +373,12 @@ const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
  */
 const getDropdownInstance = (element) => getInstance(element, dropdownComponent);
 
+/**
+ * A `Dropdown` initialization callback.
+ * @type {BSN.InitCallback<Dropdown>}
+ */
+const dropdownInitCallback = (element) => new Dropdown(element);
+
 // DROPDOWN PRIVATE GC
 // ===================
 const dropupString = dropdownMenuClasses[1];
@@ -815,11 +821,7 @@ class Dropdown extends BaseComponent {
 
 Object.assign(Dropdown, {
   selector: dropdownSelector,
-  /**
-   * A `Dropdown` initialization callback.
-   * @type {BSN.InitCallback<Dropdown>}
-   */
-  callback: (element) => new Dropdown(element),
+  init: dropdownInitCallback,
   getInstance: getDropdownInstance,
 });
 

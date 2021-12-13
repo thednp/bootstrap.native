@@ -729,32 +729,6 @@ class BaseComponent {
 const popoverString = 'popover';
 const popoverComponent = 'Popover';
 const popoverSelector = `[${dataBsToggle}="${popoverString}"],[data-tip="${popoverString}"]`;
-
-/**
- * Static method which returns an existing `Popover` instance associated
- * to a target `Element`.
- *
- * @type {BSN.GetInstance<Popover>}
- */
-const getPopoverInstance = (element) => getInstance(element, popoverComponent);
-
-const popoverDefaults = {
-  template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>', // string
-  title: null, // string
-  content: null, // string
-  customClass: null, // string
-  trigger: 'hover', // string
-  placement: 'top', // string
-  btnClose: '<button class="btn-close" aria-label="Close"></button>', // string
-  sanitizeFn: null, // function
-  dismissible: false, // boolean
-  animation: true, // boolean
-  delay: 200, // number
-  container: null,
-};
-
-// POPOVER PRIVATE GC
-// ==================
 const appleBrands = /(iPhone|iPod|iPad)/;
 const isIphone = navigator.userAgentData
   ? navigator.userAgentData.brands.some((x) => appleBrands.test(x.brand))
@@ -772,6 +746,35 @@ const shownPopoverEvent = bootstrapCustomEvent(`shown.bs.${popoverString}`);
 const hidePopoverEvent = bootstrapCustomEvent(`hide.bs.${popoverString}`);
 /** @type {BSN.PopoverEvent.hidden} */
 const hiddenPopoverEvent = bootstrapCustomEvent(`hidden.bs.${popoverString}`);
+
+const popoverDefaults = {
+  template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+  title: null,
+  content: null,
+  customClass: null,
+  trigger: 'hover',
+  placement: 'top',
+  btnClose: '<button class="btn-close" aria-label="Close"></button>',
+  sanitizeFn: null,
+  dismissible: false,
+  animation: true,
+  delay: 200,
+  container: null,
+};
+
+/**
+ * Static method which returns an existing `Popover` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Popover>}
+ */
+const getPopoverInstance = (element) => getInstance(element, popoverComponent);
+
+/**
+ * A `Popover` initialization callback.
+ * @type {BSN.InitCallback<Popover>}
+ */
+const popoverInitCallback = (element) => new Popover(element);
 
 // POPOVER EVENT HANDLERS
 // ======================
@@ -1170,11 +1173,7 @@ class Popover extends BaseComponent {
 
 Object.assign(Popover, {
   selector: popoverSelector,
-  /**
-   * A `Popover` initialization callback.
-   * @type {BSN.InitCallback<Popover>}
-   */
-  callback: (element) => new Popover(element),
+  init: popoverInitCallback,
   getInstance: getPopoverInstance,
 });
 

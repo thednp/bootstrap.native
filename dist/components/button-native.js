@@ -301,6 +301,12 @@
    */
   const getButtonInstance = (element) => getInstance(element, buttonComponent);
 
+  /**
+   * A `Button` initialization callback.
+   * @type {BSN.InitCallback<Button>}
+   */
+  const buttonInitCallback = (element) => new Button(element);
+
   // BUTTON PRIVATE METHOD
   // =====================
   function toggleButtonHandler(self, add) {
@@ -371,11 +377,7 @@
 
   Object.assign(Button, {
     selector: buttonSelector,
-    /**
-     * A `Button` initialization callback.
-     * @type {BSN.InitCallback<Button>}
-     */
-    callback: (element) => new Button(element),
+    init: buttonInitCallback,
     getInstance: getButtonInstance,
   });
 

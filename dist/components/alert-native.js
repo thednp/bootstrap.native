@@ -407,6 +407,12 @@
    */
   const getAlertInstance = (element) => getInstance(element, alertComponent);
 
+  /**
+  * An `Alert` initialization callback.
+  * @type {BSN.InitCallback<Alert>}
+  */
+  const alertInitCallback = (element) => new Alert(element);
+
   // ALERT CUSTOM EVENTS
   // ===================
   /** @type {BSN.AlertEvent.close} */
@@ -477,13 +483,11 @@
     // ALERT PUBLIC METHODS
     // ====================
     /**
-     * Private method that:
-     * * Hides the `.alert` element from the user,
-     * * Destroy the instance once animation is complete,
-     * * Removes the element from the DOM.
+     * Public method that hides the `.alert` element from the user,
+     * disposes the instance once animation is complete, then
+     * removes the element from the DOM.
      *
      * @param {Event} e most likely the `click` event
-     * @returns {void}
      */
     close(e) {
       const target = e ? e.target : null;
@@ -517,11 +521,7 @@
 
   Object.assign(Alert, {
     selector: alertSelector,
-    /**
-     * An `Alert` initialization callback.
-     * @type {BSN.InitCallback<Alert>}
-     */
-    callback: (element) => new Alert(element),
+    init: alertInitCallback,
     getInstance: getAlertInstance,
   });
 

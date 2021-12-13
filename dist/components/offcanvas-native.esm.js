@@ -624,6 +624,12 @@ const offcanvasToggleSelector = `[${dataBsToggle}="${offcanvasString}"]`;
 const offcanvasDismissSelector = `[${dataBsDismiss}="${offcanvasString}"]`;
 const offcanvasTogglingClass = `${offcanvasString}-toggling`;
 
+const offcanvasDefaults = {
+  backdrop: true, // boolean
+  keyboard: true, // boolean
+  scroll: false, // boolean
+};
+
 /**
  * Static method which returns an existing `Offcanvas` instance associated
  * to a target `Element`.
@@ -632,11 +638,11 @@ const offcanvasTogglingClass = `${offcanvasString}-toggling`;
  */
 const getOffcanvasInstance = (element) => getInstance(element, offcanvasComponent);
 
-const offcanvasDefaults = {
-  backdrop: true, // boolean
-  keyboard: true, // boolean
-  scroll: false, // boolean
-};
+/**
+ * An `Offcanvas` initialization callback.
+ * @type {BSN.InitCallback<Offcanvas>}
+ */
+const offcanvasInitCallback = (element) => new Offcanvas(element);
 
 // OFFCANVAS CUSTOM EVENTS
 // =======================
@@ -959,11 +965,7 @@ class Offcanvas extends BaseComponent {
 
 Object.assign(Offcanvas, {
   selector: offcanvasSelector,
-  /**
-   * An `Offcanvas` initialization callback.
-   * @type {BSN.InitCallback<Offcanvas>}
-   */
-  callback: (element) => new Offcanvas(element),
+  init: offcanvasInitCallback,
   getInstance: getOffcanvasInstance,
 });
 

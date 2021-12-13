@@ -51,6 +51,12 @@ const modalStaticClass = `${modalString}-static`;
  */
 const getModalInstance = (element) => getInstance(element, modalComponent);
 
+/**
+ * A `Modal` initialization callback.
+ * @type {BSN.InitCallback<Modal>}
+ */
+const modalInitCallback = (element) => new Modal(element);
+
 const modalDefaults = {
   backdrop: true, // boolean|string
   keyboard: true, // boolean
@@ -427,10 +433,6 @@ export default class Modal extends BaseComponent {
 
 Object.assign(Modal, {
   selector: modalSelector,
-  /**
-   * A `Modal` initialization callback.
-   * @type {BSN.InitCallback<Modal>}
-   */
-  callback: (element) => new Modal(element),
+  init: modalInitCallback,
   getInstance: getModalInstance,
 });

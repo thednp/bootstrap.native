@@ -26,7 +26,7 @@
     // Allow extensions on imports
     "import/extensions": 0,
     // Allow functions to toggle events
-    "no-use-before-define": ["error", { "functions": false, "classes": true, "variables": true }],
+    "no-use-before-define": ["error", { "functions": false, "classes": false, "variables": true }],
     // Allow exporting mutable 'let' binding
     "import/no-mutable-exports": 0
   }

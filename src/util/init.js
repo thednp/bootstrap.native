@@ -59,8 +59,8 @@ export function initCallback(context) {
   const lookUp = context instanceof Element ? context : document;
 
   componentsKeys.forEach((comp) => {
-    const { callback, selector } = componentsList[comp];
-    initComponentDataAPI(callback, lookUp.querySelectorAll(selector));
+    const { init, selector } = componentsList[comp];
+    initComponentDataAPI(init, lookUp.querySelectorAll(selector));
   });
 }
 

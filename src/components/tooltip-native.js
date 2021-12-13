@@ -54,6 +54,12 @@ const tooltipDefaults = {
  */
 const getTooltipInstance = (element) => getInstance(element, tooltipComponent);
 
+/**
+ * A `Tooltip` initialization callback.
+ * @type {BSN.InitCallback<Tooltip>}
+ */
+const tooltipInitCallback = (element) => new Tooltip(element);
+
 // TOOLTIP CUSTOM EVENTS
 // =====================
 /** @type {BSN.TooltipEvent.show} */
@@ -434,10 +440,6 @@ export default class Tooltip extends BaseComponent {
 
 Object.assign(Tooltip, {
   selector: tooltipSelector,
-  /**
-   * A `Tooltip` initialization callback.
-   * @type {BSN.InitCallback<Tooltip>}
-   */
-  callback: (element) => new Tooltip(element),
+  init: tooltipInitCallback,
   getInstance: getTooltipInstance,
 });

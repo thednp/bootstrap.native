@@ -476,6 +476,12 @@ const CarouselEventProperties = {
  */
 const getCarouselInstance = (element) => getInstance(element, carouselComponent);
 
+/**
+ * A `Carousel` initialization callback.
+ * @type {BSN.InitCallback<Carousel>}
+ */
+const carouselInitCallback = (element) => new Carousel(element);
+
 let startX = 0;
 let currentX = 0;
 let endX = 0;
@@ -770,7 +776,7 @@ function getActiveIndex(self) {
 // CAROUSEL DEFINITION
 // ===================
 /**
- * Returns a new `Carousel` instance.
+ * Creates a new `Carousel` instance.
  */
 class Carousel extends BaseComponent {
   /**
@@ -1001,11 +1007,7 @@ class Carousel extends BaseComponent {
 
 Object.assign(Carousel, {
   selector: carouselSelector,
-  /**
-   * A `Carousel` initialization callback.
-   * @type {BSN.InitCallback<Carousel>}
-   */
-  callback: (element) => new Carousel(element),
+  init: carouselInitCallback,
   getInstance: getCarouselInstance,
 });
 

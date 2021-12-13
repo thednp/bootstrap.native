@@ -291,6 +291,11 @@
   const dataBsToggle = 'data-bs-toggle';
 
   /**
+   * Global namespace for most components `target` option.
+   */
+  const dataBsTarget = 'data-bs-target';
+
+  /**
    * Returns a namespaced `CustomEvent` specific to each component.
    * @param {string} namespacedEventType Event.type
    * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
@@ -454,6 +459,12 @@
    */
   const getTabInstance = (element) => getInstance(element, tabComponent);
 
+  /**
+   * A `Tab` initialization callback.
+   * @type {BSN.InitCallback<Tab>}
+   */
+  const tabInitCallback = (element) => new Tab(element);
+
   // TAB CUSTOM EVENTS
   // =================
   /** @type {BSN.TabEvent.show} */
@@ -576,8 +587,9 @@
    * @returns {Element} the query result
    */
   function getActiveTabContent(self) {
-    return queryElement(getActiveTab(self).getAttribute('href')
-      || getActiveTab(self).getAttribute(dataBsToggle));
+    activeTab = getActiveTab(self);
+    return queryElement(activeTab.getAttribute('href')
+      || activeTab.getAttribute(dataBsTarget));
   }
 
   /**
@@ -690,11 +702,7 @@
 
   Object.assign(Tab, {
     selector: tabSelector,
-    /**
-     * A `Tab` initialization callback.
-     * @type {BSN.InitCallback<Tab>}
-     */
-    callback: (element) => new Tab(element),
+    init: tabInitCallback,
     getInstance: getTabInstance,
   });
 

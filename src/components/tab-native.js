@@ -19,6 +19,7 @@ import showClass from '../strings/showClass';
 import dropdownClasses from '../strings/dropdownClasses';
 import dropdownMenuClass from '../strings/dropdownMenuClass';
 import dataBsToggle from '../strings/dataBsToggle';
+import dataBsTarget from '../strings/dataBsTarget';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import BaseComponent from './base-component';
@@ -36,6 +37,12 @@ const tabSelector = `[${dataBsToggle}="${tabString}"]`;
  * @type {BSN.GetInstance<Tab>}
  */
 const getTabInstance = (element) => getInstance(element, tabComponent);
+
+/**
+ * A `Tab` initialization callback.
+ * @type {BSN.InitCallback<Tab>}
+ */
+const tabInitCallback = (element) => new Tab(element);
 
 // TAB CUSTOM EVENTS
 // =================
@@ -159,8 +166,9 @@ function getActiveTab({ nav }) {
  * @returns {Element} the query result
  */
 function getActiveTabContent(self) {
-  return queryElement(getActiveTab(self).getAttribute('href')
-    || getActiveTab(self).getAttribute(dataBsToggle));
+  activeTab = getActiveTab(self);
+  return queryElement(activeTab.getAttribute('href')
+    || activeTab.getAttribute(dataBsTarget));
 }
 
 /**
@@ -273,10 +281,6 @@ export default class Tab extends BaseComponent {
 
 Object.assign(Tab, {
   selector: tabSelector,
-  /**
-   * A `Tab` initialization callback.
-   * @type {BSN.InitCallback<Tab>}
-   */
-  callback: (element) => new Tab(element),
+  init: tabInitCallback,
   getInstance: getTabInstance,
 });
