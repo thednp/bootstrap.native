@@ -52,16 +52,27 @@
   const passiveHandler = supportPassive ? { passive: true } : false;
 
   /**
+   * Checks if an element is an `Element`.
+   *
+   * @param {any} element the target element
+   * @returns {boolean} the query result
+   */
+  function isElement(element) {
+    return element instanceof Element;
+  }
+
+  /**
    * Utility to check if target is typeof Element
    * or find one that matches a selector.
    *
    * @param {Element | string} selector the input selector or target element
-   * @param {Element | null} parent optional Element to look into
-   * @return {Element | null} the Element or result of the querySelector
+   * @param {Element=} parent optional Element to look into
+   * @return {Element?} the Element or `querySelector` result
    */
   function queryElement(selector, parent) {
-    const lookUp = parent && parent instanceof Element ? parent : document;
-    return selector instanceof Element ? selector : lookUp.querySelector(selector);
+    const lookUp = parent && isElement(parent) ? parent : document;
+    // @ts-ignore
+    return isElement(selector) ? selector : lookUp.querySelector(selector);
   }
 
   /**
@@ -103,41 +114,46 @@
   const Data = {
     /**
      * Sets web components data.
-     * @param {Element} element target element
+     * @param {Element | string} element target element
      * @param {string} component the component's name or a unique key
      * @param {any} instance the component instance
      */
     set: (element, component, instance) => {
+      const ELEMENT = queryElement(element);
+      if (!isElement(ELEMENT)) return;
+
       if (!componentData.has(component)) {
         componentData.set(component, new Map());
       }
 
       const instanceMap = componentData.get(component);
-      instanceMap.set(element, instance);
+      instanceMap.set(ELEMENT, instance);
     },
 
     /**
      * Returns all instances for specified component.
      * @param {string} component the component's name or a unique key
-     * @returns {?any} all the component instances
+     * @returns {any?} all the component instances
      */
     getAllFor: (component) => {
       if (componentData.has(component)) {
-        return componentData.get(component) || null;
+        return componentData.get(component);
       }
       return null;
     },
 
     /**
      * Returns the instance associated with the target.
-     * @param {Element} element target element
+     * @param {Element | string} element target element
      * @param {string} component the component's name or a unique key
-     * @returns {?any} the instance
+     * @returns {any?} the instance
      */
     get: (element, component) => {
+      const ELEMENT = queryElement(element);
+
       const allForC = Data.getAllFor(component);
-      if (allForC && allForC.has(element)) {
-        return allForC.get(element) || null;
+      if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
+        return allForC.get(ELEMENT);
       }
       return null;
     },
@@ -146,7 +162,6 @@
      * Removes web components data.
      * @param {Element} element target element
      * @param {string} component the component's name or a unique key
-     * @param {any} instance the component instance
      */
     remove: (element, component) => {
       if (!componentData.has(component)) return;
@@ -161,8 +176,10 @@
   };
 
   /**
-   * Shortcut for `Data.get(a, b)` to setup usable component static method.
-   * @type {SHORTER.getInstance<SHORTER.Component, string>}
+   * An alias for `Data.get()`.
+   * @param {Element | string} element target element
+   * @param {string} component the component's name or a unique key
+   * @returns {any} the request result
    */
   const getInstance = (element, component) => Data.get(element, component);
 
@@ -171,17 +188,30 @@
    */
   const activeClass = 'active';
 
+  /** Returns an original event for Bootstrap Native components. */
+  class OriginalEvent extends CustomEvent {
+    /**
+     * @param {string} EventType event.type
+     * @param {Record<string, any>=} config Event.options | Event.properties
+     */
+    constructor(EventType, config) {
+      super(EventType, config);
+      /** @type {EventTarget?} */
+      this.relatedTarget = null;
+    }
+  }
+
   /**
    * Returns a namespaced `CustomEvent` specific to each component.
-   * @param {string} namespacedEventType Event.type
-   * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
-   * @returns {CustomEvent} a new namespaced event
+   * @param {string} EventType Event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   * @returns {OriginalEvent} a new namespaced event
    */
-  function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-    const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+  function bootstrapCustomEvent(EventType, config) {
+    const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
 
-    if (eventProperties instanceof Object) {
-      Object.assign(OriginalCustomEvent, eventProperties);
+    if (config instanceof Object) {
+      Object.assign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
   }
@@ -275,25 +305,34 @@
   class BaseComponent {
     /**
      * @param {Element | string} target Element or selector string
-     * @param {BSN.ComponentOptions?} config
+     * @param {BSN.ComponentOptions=} config component instance options
      */
     constructor(target, config) {
       const self = this;
       const element = queryElement(target);
 
-      if (!element) return;
+      if (!isElement(element)) {
+        throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+      }
 
-      const prevInstance = getInstance(element, self.name);
+      /** @type {BSN.ComponentOptions} */
+      self.options = {};
+
+      // @ts-ignore
+      const prevInstance = Data.get(element, self.name);
       if (prevInstance) prevInstance.dispose();
 
-      /** @private */
+      /** @type {Element} */
+      // @ts-ignore
       self.element = element;
 
       if (self.defaults && Object.keys(self.defaults).length) {
-        /** @private */
+        /** @static @type {Record<string, any>} */
+        // @ts-ignore
         self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
 
+      // @ts-ignore
       Data.set(element, self.name, self);
     }
 
@@ -306,6 +345,7 @@
     get name() { return this.constructor.name; }
 
     /** @static */
+    // @ts-ignore
     get defaults() { return this.constructor.defaults; }
 
     /**
@@ -313,7 +353,9 @@
      */
     dispose() {
       const self = this;
+      // @ts-ignore
       Data.remove(self.element, self.name);
+      // @ts-ignore
       Object.keys(self).forEach((prop) => { self[prop] = null; });
     }
   }
@@ -350,7 +392,6 @@
 
   // SCROLLSPY CUSTOM EVENT
   // ======================
-  /** @type {BSN.ScrollSpyEvent.activate} */
   const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`);
 
   // SCROLLSPY PRIVATE METHODS
@@ -361,25 +402,31 @@
    */
   function updateSpyTargets(self) {
     const {
+      // @ts-ignore
       target, scrollTarget, isWindow, options, itemsLength, scrollHeight,
     } = self;
     const { offset } = options;
+    // @ts-ignore
     const links = target.getElementsByTagName('A');
 
-    self.scrollTop = isWindow
-      ? scrollTarget.pageYOffset
-      : scrollTarget.scrollTop;
+    // @ts-ignore
+    self.scrollTop = isWindow ? scrollTarget.pageYOffset : scrollTarget.scrollTop;
 
     // only update items/offsets once or with each mutation
+
     if (itemsLength !== links.length || getScrollHeight(scrollTarget) !== scrollHeight) {
       let href;
       let targetItem;
       let rect;
 
       // reset arrays & update
+      // @ts-ignore
       self.items = [];
+      // @ts-ignore
       self.offsets = [];
+      // @ts-ignore
       self.scrollHeight = getScrollHeight(scrollTarget);
+      // @ts-ignore
       self.maxScroll = self.scrollHeight - getOffsetHeight(self);
 
       Array.from(links).forEach((link) => {
@@ -387,20 +434,25 @@
         targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
 
         if (targetItem) {
+          // @ts-ignore
           self.items.push(link);
           rect = targetItem.getBoundingClientRect();
+          // @ts-ignore
           self.offsets.push((isWindow ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
         }
       });
+      // @ts-ignore
       self.itemsLength = self.items.length;
     }
   }
 
   /**
    * Returns the `scrollHeight` property of the scrolling element.
-   * @param {Element?} scrollTarget the `ScrollSpy` instance
+   * @param {Element | Window} scrollTarget the `ScrollSpy` instance
+   * @return {number} `scrollTarget` height
    */
   function getScrollHeight(scrollTarget) {
+    // @ts-ignore
     return scrollTarget.scrollHeight || Math.max(
       document.body.scrollHeight,
       document.documentElement.scrollHeight,
@@ -409,7 +461,7 @@
 
   /**
    * Returns the height property of the scrolling element.
-   * @param {{Element, boolean}} params the `ScrollSpy` instance
+   * @param {{element: Element, isWindow: boolean}} params the `ScrollSpy` instance
    */
   function getOffsetHeight({ element, isWindow }) {
     if (!isWindow) return element.getBoundingClientRect().height;
@@ -432,8 +484,11 @@
    * @param {Element} item a single item
    */
   function activate(self, item) {
+    // @ts-ignore
     const { target, element } = self;
+    // @ts-ignore
     clear(target);
+    // @ts-ignore
     self.activeItem = item;
     addClass(item, activeClass);
 
@@ -441,6 +496,7 @@
     const parents = [];
     let parentItem = item;
     while (parentItem !== document.body) {
+      // @ts-ignore
       parentItem = parentItem.parentNode;
       if (hasClass(parentItem, 'nav') || hasClass(parentItem, 'dropdown-menu')) parents.push(parentItem);
     }
@@ -453,18 +509,18 @@
       }
     });
 
-    // update relatedTarget and dispatch
-    activateScrollSpy.relatedTarget = item;
+    // dispatch
     element.dispatchEvent(activateScrollSpy);
   }
 
   /**
    * Toggles on/off the component event listener.
    * @param {ScrollSpy} self the `ScrollSpy` instance
-   * @param {boolean | number} add when `true`, listener is added
+   * @param {boolean=} add when `true`, listener is added
    */
   function toggleSpyHandlers(self, add) {
     const action = add ? addEventListener : removeEventListener;
+    // @ts-ignore
     self.scrollTarget[action]('scroll', self.refresh, passiveHandler);
   }
 
@@ -474,7 +530,7 @@
   class ScrollSpy extends BaseComponent {
     /**
      * @param {Element | string} target the target element
-     * @param {BSN.ScrollspyOptions?} config the instance options
+     * @param {BSN.Options.ScrollSpy=} config the instance options
      */
     constructor(target, config) {
       super(target, config);
@@ -485,14 +541,14 @@
       const { element, options } = self;
 
       // additional properties
-      /** @private @type {Element} */
+      /** @private @type {Element?} */
       self.target = queryElement(options.target);
 
       // invalidate
       if (!self.target) return;
 
       // set initial state
-      /** @private @type {Element} */
+      /** @private @type {Element | Window} */
       self.scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
       /** @private @type {boolean} */
       self.isWindow = self.scrollTarget === window;
@@ -506,6 +562,8 @@
       self.activeItem = null;
       /** @private @type {Element[]} */
       self.items = [];
+      /** @private @type {number} */
+      self.itemsLength = 0;
       /** @private @type {number[]} */
       self.offsets = [];
 
@@ -513,7 +571,7 @@
       self.refresh = self.refresh.bind(self);
 
       // add event handlers
-      toggleSpyHandlers(self, 1);
+      toggleSpyHandlers(self, true);
 
       self.refresh();
     }
@@ -539,6 +597,7 @@
       const { target } = self;
 
       // check if target is visible and invalidate
+      // @ts-ignore
       if (target.offsetHeight === 0) return;
 
       updateSpyTargets(self);
@@ -560,6 +619,7 @@
 
       if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
         self.activeItem = null;
+        // @ts-ignore
         clear(target);
         return;
       }
@@ -575,7 +635,7 @@
     /** Removes `ScrollSpy` from the target element. */
     dispose() {
       toggleSpyHandlers(this);
-      super.dispose(scrollspyComponent);
+      super.dispose();
     }
   }
 

@@ -64,13 +64,9 @@ const offcanvasInitCallback = (element) => new Offcanvas(element);
 
 // OFFCANVAS CUSTOM EVENTS
 // =======================
-/** @type {BSN.OffcanvasEvent.show} */
 const showOffcanvasEvent = bootstrapCustomEvent(`show.bs.${offcanvasString}`);
-/** @type {BSN.OffcanvasEvent.shown} */
 const shownOffcanvasEvent = bootstrapCustomEvent(`shown.bs.${offcanvasString}`);
-/** @type {BSN.OffcanvasEvent.hide} */
 const hideOffcanvasEvent = bootstrapCustomEvent(`hide.bs.${offcanvasString}`);
-/** @type {BSN.OffcanvasEvent.hidden} */
 const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`);
 
 // OFFCANVAS PRIVATE METHODS
@@ -86,6 +82,7 @@ function setOffCanvasScrollbar(self) {
   const html = document.documentElement;
   const bodyOverflow = html.clientHeight !== html.scrollHeight
                     || bd.clientHeight !== bd.scrollHeight;
+  // @ts-ignore
   setScrollbar(self.scrollbarWidth, bodyOverflow);
 }
 
@@ -93,21 +90,24 @@ function setOffCanvasScrollbar(self) {
  * Toggles on/off the `click` event listeners.
  *
  * @param {Offcanvas} self the `Offcanvas` instance
- * @param {boolean | number} add when `true`, listeners are added
+ * @param {boolean=} add when `true`, listeners are added
  */
 function toggleOffcanvasEvents(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   self.triggers.forEach((btn) => btn[action]('click', offcanvasTriggerHandler));
 }
 
 /**
  * Toggles on/off the listeners of the events that close the offcanvas.
  *
- * @param {boolean | number} add the `Offcanvas` instance
+ * @param {boolean=} add the `Offcanvas` instance
  */
 function toggleOffCanvasDismiss(add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   document[action]('keydown', offcanvasKeyDismissHandler);
+  // @ts-ignore
   document[action]('click', offcanvasDismissHandler);
 }
 
@@ -126,6 +126,7 @@ function beforeOffcanvasShow(self) {
 
   addClass(element, offcanvasTogglingClass);
   addClass(element, showClass);
+  // @ts-ignore
   element.style.visibility = 'visible';
 
   emulateTransitionEnd(element, () => showOffcanvasComplete(self));
@@ -140,6 +141,7 @@ function beforeOffcanvasHide(self) {
   const { element, options } = self;
   const currentOpen = getCurrentOpen();
 
+  // @ts-ignore
   element.blur();
 
   if (!currentOpen && options.backdrop && hasClass(overlay, showClass)) {
@@ -153,14 +155,15 @@ function beforeOffcanvasHide(self) {
 /**
  * Handles the `click` event listeners.
  *
+ * @this {Element}
  * @param {Event} e the `Event` object
  */
 function offcanvasTriggerHandler(e) {
   const trigger = this.closest(offcanvasToggleSelector);
-  const element = getTargetElement(trigger);
+  const element = trigger && getTargetElement(trigger);
   const self = element && getOffcanvasInstance(element);
 
-  if (trigger.tagName === 'A') e.preventDefault();
+  if (trigger && trigger.tagName === 'A') e.preventDefault();
   if (self) {
     self.toggle();
   }
@@ -179,14 +182,18 @@ function offcanvasDismissHandler(e) {
   const self = getOffcanvasInstance(element);
   if (!self) return;
 
+  // @ts-ignore
   const { options, triggers } = self;
   const { target } = e;
+  // @ts-ignore
   const trigger = target.closest(offcanvasToggleSelector);
 
   if (trigger && trigger.tagName === 'A') e.preventDefault();
 
+  // @ts-ignore
   if ((!element.contains(target) && options.backdrop
     && (!trigger || (trigger && !triggers.includes(trigger))))
+    // @ts-ignore
     || (offCanvasDismiss && offCanvasDismiss.contains(target))) {
     self.hide();
   }
@@ -196,7 +203,7 @@ function offcanvasDismissHandler(e) {
  * Handles the `keydown` event listener for offcanvas
  * to hide it when user type the `ESC` key.
  *
- * @param {Event} {which} the `Event` object
+ * @param {{which: number}} e the `Event` object
  */
 function offcanvasKeyDismissHandler({ which }) {
   const element = queryElement(offcanvasActiveSelector);
@@ -209,38 +216,53 @@ function offcanvasKeyDismissHandler({ which }) {
   }
 }
 
+/**
+ * Handles the `transitionend` when showing the offcanvas.
+ *
+ * @param {Offcanvas} self the `Offcanvas` instance
+ */
 function showOffcanvasComplete(self) {
+  // @ts-ignore
   const { element, triggers } = self;
   removeClass(element, offcanvasTogglingClass);
 
   element.removeAttribute(ariaHidden);
-  element.setAttribute(ariaModal, true);
+  element.setAttribute(ariaModal, 'true');
   element.setAttribute('role', 'dialog');
+  // @ts-ignore
   self.isAnimating = false;
 
   if (triggers.length) {
-    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, true));
+    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'true'));
   }
 
   element.dispatchEvent(shownOffcanvasEvent);
 
-  toggleOffCanvasDismiss(1);
+  toggleOffCanvasDismiss(true);
   setFocus(element);
 }
 
+/**
+ * Handles the `transitionend` when hiding the offcanvas.
+ *
+ * @param {Offcanvas} self the `Offcanvas` instance
+ */
 function hideOffcanvasComplete(self) {
   const {
+    // @ts-ignore
     element, triggers,
   } = self;
 
-  element.setAttribute(ariaHidden, true);
+  element.setAttribute(ariaHidden, 'true');
   element.removeAttribute(ariaModal);
   element.removeAttribute('role');
+  // @ts-ignore
   element.style.visibility = '';
+  // @ts-ignore
   self.isAnimating = false;
 
   if (triggers.length) {
-    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, false));
+    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'false'));
     const visibleTrigger = triggers.find((x) => isVisible(x));
     if (visibleTrigger) setFocus(visibleTrigger);
   }
@@ -259,7 +281,7 @@ function hideOffcanvasComplete(self) {
 export default class Offcanvas extends BaseComponent {
   /**
    * @param {Element | string} target usually an `.offcanvas` element
-   * @param {BSN.OffcanvasOptions?} config instance options
+   * @param {BSN.Options.Offcanvas=} config instance options
    */
   constructor(target, config) {
     super(target, config);
@@ -280,7 +302,7 @@ export default class Offcanvas extends BaseComponent {
     self.scrollbarWidth = measureScrollbar();
 
     // attach event listeners
-    toggleOffcanvasEvents(self, 1);
+    toggleOffcanvasEvents(self, true);
   }
 
   /* eslint-disable */
@@ -307,8 +329,7 @@ export default class Offcanvas extends BaseComponent {
 
   /** Shows the offcanvas to the user. */
   show() {
-    const that = getOffcanvasInstance(this);
-    const self = that || this;
+    const self = this;
     const {
       element, options, isAnimating,
     } = self;
@@ -332,7 +353,7 @@ export default class Offcanvas extends BaseComponent {
 
     if (options.backdrop) {
       if (!currentOpen) {
-        appendOverlay(1);
+        appendOverlay(true);
       } else {
         toggleOverlayType();
       }
@@ -352,7 +373,7 @@ export default class Offcanvas extends BaseComponent {
 
   /**
    * Hides the offcanvas from the user.
-   * @param {boolean | number} force when `true` it will skip animation
+   * @param {boolean=} force when `true` it will skip animation
    */
   hide(force) {
     const self = this;
@@ -369,13 +390,13 @@ export default class Offcanvas extends BaseComponent {
 
     if (!force) {
       emulateTransitionEnd(element, () => beforeOffcanvasHide(self));
-    } else beforeOffcanvasHide(self, force);
+    } else beforeOffcanvasHide(self);
   }
 
   /** Removes the `Offcanvas` from the target element. */
   dispose() {
     const self = this;
-    self.hide(1);
+    self.hide(true);
     toggleOffcanvasEvents(self);
     super.dispose();
   }

@@ -15,7 +15,7 @@ const overlay = document.createElement('div');
 
 /**
  * Returns the current active modal / offcancas element.
- * @returns {Element} the requested element
+ * @returns {Element?} the requested element
  */
 function getCurrentOpen() {
   return queryElement(`${modalActiveSelector},${offcanvasActiveSelector}`);
@@ -23,7 +23,7 @@ function getCurrentOpen() {
 
 /**
  * Toogles from a Modal overlay to an Offcanvas, or vice-versa.
- * @param {boolean | number} isModal
+ * @param {boolean=} isModal
  */
 function toggleOverlayType(isModal) {
   const targetClass = isModal ? modalBackdropClass : offcanvasBackdropClass;
@@ -35,8 +35,8 @@ function toggleOverlayType(isModal) {
 
 /**
  * Append the overlay to DOM.
- * @param {boolean | number} hasFade
- * @param {boolean | number} isModal
+ * @param {boolean} hasFade
+ * @param {boolean=} isModal
  */
 function appendOverlay(hasFade, isModal) {
   toggleOverlayType(isModal);

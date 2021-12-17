@@ -218,12 +218,12 @@ carouselGenericExample.addEventListener('slide.bs.carousel', function(e) {
 	var from = `\n> from index ${e.from}`;
 	var to = `\n> to index ${e.to}`;
 	var direction = `\n> with direction ${e.direction}`;
-	console.log('The "slide.bs.carousel" event fired for <div id=' + carouselGenericExample.id + '"> ' + direction + from + to + related);
+	console.log('The "slide.bs.carousel" event fired for <div id="' + carouselGenericExample.id + '"> ' + direction + from + to + related);
 }, false);
 carouselGenericExample.addEventListener('slid.bs.carousel', function(e) {
 	var related = `\n> relatedTarget <div class="${Array.from(e.relatedTarget.classList).join(' ')}">\n`;
 	var from = `\n> from index ${e.from}`;
 	var to = `\n> to index ${e.to}`;
 	var direction = `\n> with direction ${e.direction}`;
-	console.log('The "slid.bs.carousel" event fired for <div id=' + carouselGenericExample.id + '"> ' + direction + from + to + related);
+	console.log('The "slid.bs.carousel" event fired for <div id="' + carouselGenericExample.id + '"> ' + direction + from + to + related);
 }, false);

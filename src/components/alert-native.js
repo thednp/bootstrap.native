@@ -7,6 +7,7 @@ import removeClass from 'shorter-js/src/class/removeClass';
 import addEventListener from 'shorter-js/src/strings/addEventListener';
 import removeEventListener from 'shorter-js/src/strings/removeEventListener';
 import { getInstance } from 'shorter-js/src/misc/data';
+import isElement from 'shorter-js/src/misc/isElement';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -38,9 +39,7 @@ const alertInitCallback = (element) => new Alert(element);
 
 // ALERT CUSTOM EVENTS
 // ===================
-/** @type {BSN.AlertEvent.close} */
 const closeAlertEvent = bootstrapCustomEvent(`close.bs.${alertString}`);
-/** @type {BSN.AlertEvent.closed} */
 const closedAlertEvent = bootstrapCustomEvent(`closed.bs.${alertString}`);
 
 // ALERT EVENT HANDLER
@@ -50,10 +49,9 @@ const closedAlertEvent = bootstrapCustomEvent(`closed.bs.${alertString}`);
  * @param {Alert} self target Alert instance
  */
 function alertTransitionEnd(self) {
-  const { element, relatedTarget } = self;
+  const { element } = self;
   toggleAlertHandler(self);
 
-  if (relatedTarget) closedAlertEvent.relatedTarget = relatedTarget;
   element.dispatchEvent(closedAlertEvent);
 
   self.dispose();
@@ -65,11 +63,12 @@ function alertTransitionEnd(self) {
 /**
  * Toggle on / off the `click` event listener.
  * @param {Alert} self the target alert instance
- * @param {boolean | number} add
+ * @param {boolean=} add when `true`, event listener is added
  */
 function toggleAlertHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
-  if (self.dismiss) self.dismiss[action]('click', self.close);
+  // @ts-ignore
+  if (isElement(self.dismiss)) self.dismiss[action]('click', self.close);
 }
 
 // ALERT DEFINITION
@@ -86,13 +85,14 @@ export default class Alert extends BaseComponent {
     const { element } = self;
 
     // the dismiss button
-    /** @private */
+    /** @static @type {Element?} */
+    // @ts-ignore
     self.dismiss = queryElement(alertDismissSelector, element);
-    /** @private */
+    /** @static @type {Element?} */
     self.relatedTarget = null;
 
     // add event listener
-    toggleAlertHandler(self, 1);
+    toggleAlertHandler(self, true);
   }
 
   /* eslint-disable */
@@ -114,16 +114,11 @@ export default class Alert extends BaseComponent {
    */
   close(e) {
     const target = e ? e.target : null;
-    const self = e
-      ? getAlertInstance(e.target.closest(alertSelector))
-      : this;
+    // @ts-ignore
+    const self = e ? getAlertInstance(target.closest(alertSelector)) : this;
     const { element } = self;
 
     if (self && element && hasClass(element, showClass)) {
-      if (target) {
-        closeAlertEvent.relatedTarget = target;
-        self.relatedTarget = target;
-      }
       element.dispatchEvent(closeAlertEvent);
       if (closeAlertEvent.defaultPrevented) return;
 

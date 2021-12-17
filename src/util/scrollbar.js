@@ -21,7 +21,9 @@ export function resetScrollbar() {
 
   if (fixedItems.length) {
     fixedItems.forEach((fixed) => {
+      // @ts-ignore
       fixed.style.paddingRight = '';
+      // @ts-ignore
       fixed.style.marginRight = '';
     });
   }
@@ -59,9 +61,11 @@ export function setScrollbar(scrollbarWidth, overflow) {
       fixedItems.forEach((fixed) => {
         const isSticky = hasClass(fixed, stickyTopClass);
         const itemPadValue = getComputedStyle(fixed).paddingRight;
+        // @ts-ignore
         fixed.style.paddingRight = `${parseInt(itemPadValue, 10) + sbWidth}px`;
         if (isSticky) {
           const itemMValue = getComputedStyle(fixed).marginRight;
+          // @ts-ignore
           fixed.style.marginRight = `${parseInt(itemMValue, 10) - sbWidth}px`;
         }
       });

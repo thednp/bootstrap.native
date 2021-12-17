@@ -34,8 +34,14 @@ const buttonInitCallback = (element) => new Button(element);
 
 // BUTTON PRIVATE METHOD
 // =====================
+/**
+ * Toggles on/off the `click` event listener.
+ * @param {Button} self the `Button` instance
+ * @param {boolean=} add when `true`, event listener is added
+ */
 function toggleButtonHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   self.element[action]('click', self.toggle);
 }
 
@@ -56,10 +62,10 @@ export default class Button extends BaseComponent {
     // set initial state
     /** @private @type {boolean} */
     self.isActive = hasClass(element, activeClass);
-    element.setAttribute(ariaPressed, !!self.isActive);
+    element.setAttribute(ariaPressed, `${!!self.isActive}`);
 
     // add event listener
-    toggleButtonHandler(self, 1);
+    toggleButtonHandler(self, true);
   }
 
   /* eslint-disable */
@@ -78,25 +84,24 @@ export default class Button extends BaseComponent {
    */
   toggle(e) {
     if (e) e.preventDefault();
+    // @ts-ignore
     const self = e ? getButtonInstance(this) : this;
     const { element } = self;
 
     if (hasClass(element, 'disabled')) return;
-
     self.isActive = hasClass(element, activeClass);
     const { isActive } = self;
 
     const action = isActive ? removeClass : addClass;
-    const ariaValue = isActive ? 'false' : 'true';
 
     action(element, activeClass);
-    element.setAttribute(ariaPressed, ariaValue);
+    element.setAttribute(ariaPressed, isActive ? 'false' : 'true');
   }
 
   /** Removes the `Button` component from the target element. */
   dispose() {
     toggleButtonHandler(this);
-    super.dispose(buttonComponent);
+    super.dispose();
   }
 }
 

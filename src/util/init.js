@@ -13,6 +13,7 @@ import Tab from '../components/tab-native';
 import Toast from '../components/toast-native';
 import Tooltip from '../components/tooltip-native';
 
+/** @type {Object<string, any>} */
 const componentsList = {
   Alert,
   Button,

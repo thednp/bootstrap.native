@@ -116,16 +116,27 @@ function reflow(element) {
 }
 
 /**
+ * Checks if an element is an `Element`.
+ *
+ * @param {any} element the target element
+ * @returns {boolean} the query result
+ */
+function isElement(element) {
+  return element instanceof Element;
+}
+
+/**
  * Utility to check if target is typeof Element
  * or find one that matches a selector.
  *
  * @param {Element | string} selector the input selector or target element
- * @param {Element | null} parent optional Element to look into
- * @return {Element | null} the Element or result of the querySelector
+ * @param {Element=} parent optional Element to look into
+ * @return {Element?} the Element or `querySelector` result
  */
 function queryElement(selector, parent) {
-  const lookUp = parent && parent instanceof Element ? parent : document;
-  return selector instanceof Element ? selector : lookUp.querySelector(selector);
+  const lookUp = parent && isElement(parent) ? parent : document;
+  // @ts-ignore
+  return isElement(selector) ? selector : lookUp.querySelector(selector);
 }
 
 /**
@@ -185,41 +196,46 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {Element} element target element
+   * @param {Element | string} element target element
    * @param {string} component the component's name or a unique key
    * @param {any} instance the component instance
    */
   set: (element, component, instance) => {
+    const ELEMENT = queryElement(element);
+    if (!isElement(ELEMENT)) return;
+
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    instanceMap.set(element, instance);
+    instanceMap.set(ELEMENT, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {?any} all the component instances
+   * @returns {any?} all the component instances
    */
   getAllFor: (component) => {
     if (componentData.has(component)) {
-      return componentData.get(component) || null;
+      return componentData.get(component);
     }
     return null;
   },
 
   /**
    * Returns the instance associated with the target.
-   * @param {Element} element target element
+   * @param {Element | string} element target element
    * @param {string} component the component's name or a unique key
-   * @returns {?any} the instance
+   * @returns {any?} the instance
    */
   get: (element, component) => {
+    const ELEMENT = queryElement(element);
+
     const allForC = Data.getAllFor(component);
-    if (allForC && allForC.has(element)) {
-      return allForC.get(element) || null;
+    if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
+      return allForC.get(ELEMENT);
     }
     return null;
   },
@@ -228,7 +244,6 @@ const Data = {
    * Removes web components data.
    * @param {Element} element target element
    * @param {string} component the component's name or a unique key
-   * @param {any} instance the component instance
    */
   remove: (element, component) => {
     if (!componentData.has(component)) return;
@@ -243,8 +258,10 @@ const Data = {
 };
 
 /**
- * Shortcut for `Data.get(a, b)` to setup usable component static method.
- * @type {SHORTER.getInstance<SHORTER.Component, string>}
+ * An alias for `Data.get()`.
+ * @param {Element | string} element target element
+ * @param {string} component the component's name or a unique key
+ * @returns {any} the request result
  */
 const getInstance = (element, component) => Data.get(element, component);
 
@@ -290,16 +307,54 @@ const dataBsToggle = 'data-bs-toggle';
 const dataBsTarget = 'data-bs-target';
 
 /**
- * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} namespacedEventType Event.type
- * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
- * @returns {CustomEvent} a new namespaced event
+ * Global namespace for most components `parent` option.
  */
-function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-  const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+const dataBsParent = 'data-bs-parent';
 
-  if (eventProperties instanceof Object) {
-    Object.assign(OriginalCustomEvent, eventProperties);
+/**
+ * Global namespace for most components `container` option.
+ */
+const dataBsContainer = 'data-bs-container';
+
+// @ts-nocheck
+
+/**
+ * Returns the `Element` that THIS one targets
+ * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
+ *
+ * @param {Element} element the target element
+ * @returns {Element?} the query result
+ */
+function getTargetElement(element) {
+  return queryElement(element.getAttribute(dataBsTarget) || element.getAttribute('href'))
+  || element.closest(element.getAttribute(dataBsParent))
+        || queryElement(element.getAttribute(dataBsContainer));
+}
+
+/** Returns an original event for Bootstrap Native components. */
+class OriginalEvent extends CustomEvent {
+  /**
+   * @param {string} EventType event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   */
+  constructor(EventType, config) {
+    super(EventType, config);
+    /** @type {EventTarget?} */
+    this.relatedTarget = null;
+  }
+}
+
+/**
+ * Returns a namespaced `CustomEvent` specific to each component.
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {OriginalEvent} a new namespaced event
+ */
+function bootstrapCustomEvent(EventType, config) {
+  const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
+
+  if (config instanceof Object) {
+    Object.assign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
 }
@@ -393,25 +448,34 @@ const Version = version;
 class BaseComponent {
   /**
    * @param {Element | string} target Element or selector string
-   * @param {BSN.ComponentOptions?} config
+   * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
     const self = this;
     const element = queryElement(target);
 
-    if (!element) return;
+    if (!isElement(element)) {
+      throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+    }
 
-    const prevInstance = getInstance(element, self.name);
+    /** @type {BSN.ComponentOptions} */
+    self.options = {};
+
+    // @ts-ignore
+    const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @private */
+    /** @type {Element} */
+    // @ts-ignore
     self.element = element;
 
     if (self.defaults && Object.keys(self.defaults).length) {
-      /** @private */
+      /** @static @type {Record<string, any>} */
+      // @ts-ignore
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
+    // @ts-ignore
     Data.set(element, self.name, self);
   }
 
@@ -424,6 +488,7 @@ class BaseComponent {
   get name() { return this.constructor.name; }
 
   /** @static */
+  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -431,7 +496,9 @@ class BaseComponent {
    */
   dispose() {
     const self = this;
+    // @ts-ignore
     Data.remove(self.element, self.name);
+    // @ts-ignore
     Object.keys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -461,21 +528,24 @@ const tabInitCallback = (element) => new Tab(element);
 
 // TAB CUSTOM EVENTS
 // =================
-/** @type {BSN.TabEvent.show} */
 const showTabEvent = bootstrapCustomEvent(`show.bs.${tabString}`);
-/** @type {BSN.TabEvent.shown} */
 const shownTabEvent = bootstrapCustomEvent(`shown.bs.${tabString}`);
-/** @type {BSN.TabEvent.hide} */
 const hideTabEvent = bootstrapCustomEvent(`hide.bs.${tabString}`);
-/** @type {BSN.TabEvent.hidden} */
 const hiddenTabEvent = bootstrapCustomEvent(`hidden.bs.${tabString}`);
 
+/** @type {Element} */
 let nextTab;
+/** @type {Element} */
 let nextTabContent;
+/** @type {number} */
 let nextTabHeight;
+/** @type {Element} */
 let activeTab;
+/** @type {Element} */
 let activeTabContent;
+/** @type {number} */
 let tabContainerHeight;
+/** @type {boolean} */
 let tabEqualContents;
 
 // TAB PRIVATE METHODS
@@ -485,9 +555,13 @@ let tabEqualContents;
  * @param {Tab} self the `Tab` instance
  */
 function triggerTabEnd(self) {
+  // @ts-ignore
   const { tabContent, nav } = self;
+  // @ts-ignore
   tabContent.style.height = '';
+  // @ts-ignore
   removeClass(tabContent, collapsingClass);
+  // @ts-ignore
   nav.isAnimating = false;
 }
 
@@ -496,6 +570,7 @@ function triggerTabEnd(self) {
  * @param {Tab} self the `Tab` instance
  */
 function triggerTabShow(self) {
+  // @ts-ignore
   const { tabContent, nav } = self;
 
   if (tabContent) { // height animation
@@ -503,14 +578,17 @@ function triggerTabShow(self) {
       triggerTabEnd(self);
     } else {
       setTimeout(() => { // enables height animation
+        // @ts-ignore
         tabContent.style.height = `${nextTabHeight}px`; // height animation
         reflow(tabContent);
         emulateTransitionEnd(tabContent, () => triggerTabEnd(self));
       }, 50);
     }
   } else {
+    // @ts-ignore
     nav.isAnimating = false;
   }
+  // @ts-ignore
   shownTabEvent.relatedTarget = activeTab;
   nextTab.dispatchEvent(shownTabEvent);
 }
@@ -522,13 +600,17 @@ function triggerTabShow(self) {
 function triggerTabHide(self) {
   const { tabContent } = self;
   if (tabContent) {
+    // @ts-ignore
     activeTabContent.style.float = 'left';
+    // @ts-ignore
     nextTabContent.style.float = 'left';
     tabContainerHeight = activeTabContent.scrollHeight;
   }
 
   // update relatedTarget and dispatch event
+  // @ts-ignore
   showTabEvent.relatedTarget = activeTab;
+  // @ts-ignore
   hiddenTabEvent.relatedTarget = nextTab;
   nextTab.dispatchEvent(showTabEvent);
   if (showTabEvent.defaultPrevented) return;
@@ -540,9 +622,12 @@ function triggerTabHide(self) {
     nextTabHeight = nextTabContent.scrollHeight;
     tabEqualContents = nextTabHeight === tabContainerHeight;
     addClass(tabContent, collapsingClass);
+    // @ts-ignore
     tabContent.style.height = `${tabContainerHeight}px`; // height animation
     reflow(tabContent);
+    // @ts-ignore
     activeTabContent.style.float = '';
+    // @ts-ignore
     nextTabContent.style.float = '';
   }
 
@@ -560,13 +645,14 @@ function triggerTabHide(self) {
 
 /**
  * Returns the current active tab.
- * @param {Tab} self the `Tab` instance
+ * @param {{nav: Element}} self the `Tab` instance
  * @returns {Element} the query result
  */
 function getActiveTab({ nav }) {
   const activeTabs = nav.getElementsByClassName(activeClass);
 
   if (activeTabs.length === 1
+    // @ts-ignore
     && !dropdownMenuClasses.some((c) => hasClass(activeTabs[0].parentNode, c))) {
     [activeTab] = activeTabs;
   } else if (activeTabs.length > 1) {
@@ -581,18 +667,22 @@ function getActiveTab({ nav }) {
  * @returns {Element} the query result
  */
 function getActiveTabContent(self) {
+  // @ts-ignore
   activeTab = getActiveTab(self);
-  return queryElement(activeTab.getAttribute('href')
-    || activeTab.getAttribute(dataBsTarget));
+  // return queryElement(activeTab.getAttribute('href')
+  //   || activeTab.getAttribute(dataBsTarget));
+  // @ts-ignore
+  return getTargetElement(activeTab);
 }
 
 /**
  * Toggles on/off the `click` event listener.
  * @param {Tab} self the `Tab` instance
- * @returns {Element} the query result
+ * @param {boolean=} add when `true`, event listener is added
  */
 function toggleTabHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   self.element[action]('click', tabClickHandler);
 }
 
@@ -600,11 +690,13 @@ function toggleTabHandler(self, add) {
 // =================
 /**
  * Handles the `click` event listener.
+ * @this {Element}
  * @param {Event} e the `Event` object
  */
 function tabClickHandler(e) {
   const self = getTabInstance(this);
   e.preventDefault();
+  // @ts-ignore
   if (!self.nav.isAnimating) self.show();
 }
 
@@ -624,20 +716,21 @@ class Tab extends BaseComponent {
     const { element } = self;
 
     // event targets
-    /** @private @type {Element} */
+    /** @private @type {Element?} */
     self.nav = element.closest('.nav');
     const { nav } = self;
-    /** @private @type {Element} */
+    /** @private @type {Element?} */
     self.dropdown = nav && queryElement(`.${dropdownMenuClasses[0]}-toggle`, nav);
     activeTabContent = getActiveTabContent(self);
     self.tabContent = supportTransition && activeTabContent.closest('.tab-content');
     tabContainerHeight = activeTabContent.scrollHeight;
 
     // set default animation state
+    // @ts-ignore
     nav.isAnimating = false;
 
     // add event listener
-    toggleTabHandler(self, 1);
+    toggleTabHandler(self, true);
   }
 
   /* eslint-disable */
@@ -657,15 +750,20 @@ class Tab extends BaseComponent {
     nextTab = element;
     if (!hasClass(nextTab, activeClass)) {
       // this is the actual object, the nextTab tab content to activate
+      // @ts-ignore
       nextTabContent = queryElement(nextTab.getAttribute('href'));
+      // @ts-ignore
       activeTab = getActiveTab({ nav });
+      // @ts-ignore
       activeTabContent = getActiveTabContent({ nav });
 
       // update relatedTarget and dispatch
+      // @ts-ignore
       hideTabEvent.relatedTarget = nextTab;
       activeTab.dispatchEvent(hideTabEvent);
       if (hideTabEvent.defaultPrevented) return;
 
+      // @ts-ignore
       nav.isAnimating = true;
       removeClass(activeTab, activeClass);
       activeTab.setAttribute(ariaSelected, 'false');
@@ -673,6 +771,7 @@ class Tab extends BaseComponent {
       nextTab.setAttribute(ariaSelected, 'true');
 
       if (dropdown) {
+        // @ts-ignore
         if (!hasClass(element.parentNode, dropdownMenuClass)) {
           if (hasClass(dropdown, activeClass)) removeClass(dropdown, activeClass);
         } else if (!hasClass(dropdown, activeClass)) addClass(dropdown, activeClass);

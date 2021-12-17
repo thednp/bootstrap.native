@@ -3,7 +3,7 @@ import tipClassPositions from './tipClassPositions';
 
 /**
  * Style popovers and tooltips.
- * @param {BSN.Tooltip | BSN.Popover} self the Popover / Tooltip instance
+ * @param {BSN.Tooltip | BSN.Popover} self the `Popover` / `Tooltip` instance
  * @param {Event=} e event object
  */
 export default function styleTip(self, e) {
@@ -15,11 +15,13 @@ export default function styleTip(self, e) {
   tip.style.left = '';
   tip.style.right = '';
   // continue with metrics
+  // @ts-ignore
   const isPopover = !!self.popover;
   let tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
   const windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
   const windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
   const {
+    // @ts-ignore
     element, options, arrow, positions,
   } = self;
   let { container, placement } = options;
@@ -42,8 +44,11 @@ export default function styleTip(self, e) {
   const scroll = parentIsBody
     ? { x: window.pageXOffset, y: window.pageYOffset }
     : { x: container.scrollLeft, y: container.scrollTop };
+  // @ts-ignore
   const elemDimensions = { w: element.offsetWidth, h: element.offsetHeight };
+  // @ts-ignore
   const top = containerIsRelative ? element.offsetTop : targetRect.top;
+  // @ts-ignore
   const left = containerIsRelative ? element.offsetLeft : targetRect.left;
   // reset arrow style
   arrow.style.top = '';
@@ -117,11 +122,11 @@ export default function styleTip(self, e) {
   } else if (['top', 'bottom'].includes(placement)) {
     if (e && isMedia(element)) {
       const eX = !containerIsRelative
-        ? e.pageX
-        : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
+        // @ts-ignore
+        ? e.pageX : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
       const eY = !containerIsRelative
-        ? e.pageY
-        : e.layerY + (absoluteTarget ? element.offsetTop : 0);
+        // @ts-ignore
+        ? e.pageY : e.layerY + (absoluteTarget ? element.offsetTop : 0);
 
       if (placement === 'top') {
         topPosition = eY - tipDimensions.h - (isPopover ? arrowWidth : arrowHeight);
@@ -130,9 +135,11 @@ export default function styleTip(self, e) {
       }
 
       // adjust left | right and also the arrow
+      // @ts-ignore
       if (e.clientX - tipDimensions.w / 2 < leftBoundry) { // when exceeds left
         leftPosition = 0;
         arrowLeft = eX - arrowAdjust;
+      // @ts-ignore
       } else if (e.clientX + tipDimensions.w * 0.51 >= rightBoundry) { // when exceeds right
         leftPosition = 'auto';
         rightPosition = 0;

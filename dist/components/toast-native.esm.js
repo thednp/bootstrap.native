@@ -148,16 +148,27 @@ const addEventListener = 'addEventListener';
 const removeEventListener = 'removeEventListener';
 
 /**
+ * Checks if an element is an `Element`.
+ *
+ * @param {any} element the target element
+ * @returns {boolean} the query result
+ */
+function isElement(element) {
+  return element instanceof Element;
+}
+
+/**
  * Utility to check if target is typeof Element
  * or find one that matches a selector.
  *
  * @param {Element | string} selector the input selector or target element
- * @param {Element | null} parent optional Element to look into
- * @return {Element | null} the Element or result of the querySelector
+ * @param {Element=} parent optional Element to look into
+ * @return {Element?} the Element or `querySelector` result
  */
 function queryElement(selector, parent) {
-  const lookUp = parent && parent instanceof Element ? parent : document;
-  return selector instanceof Element ? selector : lookUp.querySelector(selector);
+  const lookUp = parent && isElement(parent) ? parent : document;
+  // @ts-ignore
+  return isElement(selector) ? selector : lookUp.querySelector(selector);
 }
 
 /**
@@ -179,41 +190,46 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {Element} element target element
+   * @param {Element | string} element target element
    * @param {string} component the component's name or a unique key
    * @param {any} instance the component instance
    */
   set: (element, component, instance) => {
+    const ELEMENT = queryElement(element);
+    if (!isElement(ELEMENT)) return;
+
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    instanceMap.set(element, instance);
+    instanceMap.set(ELEMENT, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {?any} all the component instances
+   * @returns {any?} all the component instances
    */
   getAllFor: (component) => {
     if (componentData.has(component)) {
-      return componentData.get(component) || null;
+      return componentData.get(component);
     }
     return null;
   },
 
   /**
    * Returns the instance associated with the target.
-   * @param {Element} element target element
+   * @param {Element | string} element target element
    * @param {string} component the component's name or a unique key
-   * @returns {?any} the instance
+   * @returns {any?} the instance
    */
   get: (element, component) => {
+    const ELEMENT = queryElement(element);
+
     const allForC = Data.getAllFor(component);
-    if (allForC && allForC.has(element)) {
-      return allForC.get(element) || null;
+    if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
+      return allForC.get(ELEMENT);
     }
     return null;
   },
@@ -222,7 +238,6 @@ const Data = {
    * Removes web components data.
    * @param {Element} element target element
    * @param {string} component the component's name or a unique key
-   * @param {any} instance the component instance
    */
   remove: (element, component) => {
     if (!componentData.has(component)) return;
@@ -237,8 +252,10 @@ const Data = {
 };
 
 /**
- * Shortcut for `Data.get(a, b)` to setup usable component static method.
- * @type {SHORTER.getInstance<SHORTER.Component, string>}
+ * An alias for `Data.get()`.
+ * @param {Element | string} element target element
+ * @param {string} component the component's name or a unique key
+ * @returns {any} the request result
  */
 const getInstance = (element, component) => Data.get(element, component);
 
@@ -257,17 +274,30 @@ const showClass = 'show';
  */
 const dataBsDismiss = 'data-bs-dismiss';
 
+/** Returns an original event for Bootstrap Native components. */
+class OriginalEvent extends CustomEvent {
+  /**
+   * @param {string} EventType event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   */
+  constructor(EventType, config) {
+    super(EventType, config);
+    /** @type {EventTarget?} */
+    this.relatedTarget = null;
+  }
+}
+
 /**
  * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} namespacedEventType Event.type
- * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
- * @returns {CustomEvent} a new namespaced event
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {OriginalEvent} a new namespaced event
  */
-function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-  const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+function bootstrapCustomEvent(EventType, config) {
+  const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
 
-  if (eventProperties instanceof Object) {
-    Object.assign(OriginalCustomEvent, eventProperties);
+  if (config instanceof Object) {
+    Object.assign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
 }
@@ -361,25 +391,34 @@ const Version = version;
 class BaseComponent {
   /**
    * @param {Element | string} target Element or selector string
-   * @param {BSN.ComponentOptions?} config
+   * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
     const self = this;
     const element = queryElement(target);
 
-    if (!element) return;
+    if (!isElement(element)) {
+      throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+    }
 
-    const prevInstance = getInstance(element, self.name);
+    /** @type {BSN.ComponentOptions} */
+    self.options = {};
+
+    // @ts-ignore
+    const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @private */
+    /** @type {Element} */
+    // @ts-ignore
     self.element = element;
 
     if (self.defaults && Object.keys(self.defaults).length) {
-      /** @private */
+      /** @static @type {Record<string, any>} */
+      // @ts-ignore
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
+    // @ts-ignore
     Data.set(element, self.name, self);
   }
 
@@ -392,6 +431,7 @@ class BaseComponent {
   get name() { return this.constructor.name; }
 
   /** @static */
+  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -399,7 +439,9 @@ class BaseComponent {
    */
   dispose() {
     const self = this;
+    // @ts-ignore
     Data.remove(self.element, self.name);
+    // @ts-ignore
     Object.keys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -439,13 +481,9 @@ const toastInitCallback = (element) => new Toast(element);
 
 // TOAST CUSTOM EVENTS
 // ===================
-/** @type {BSN.ToastEvent.show} */
 const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
-/** @type {BSN.ToastEvent.shown} */
 const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
-/** @type {BSN.ToastEvent.hide} */
 const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
-/** @type {BSN.ToastEvent.hidden} */
 const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 
 // TOAST PRIVATE METHODS
@@ -511,11 +549,13 @@ function showToast(self) {
 /**
  * Toggles on/off the `click` event listener.
  * @param {Toast} self the `Toast` instance
- * @param {boolean | number} add when `true`, it will add the listener
+ * @param {boolean=} add when `true`, it will add the listener
  */
 function toggleToastHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   if (self.dismiss) {
+    // @ts-ignore
     self.dismiss[action]('click', self.hide);
   }
 }
@@ -527,6 +567,7 @@ function toggleToastHandler(self, add) {
  * @param {Toast} self the `Toast` instance
  */
 function completeDisposeToast(self) {
+  // @ts-ignore
   clearTimeout(self.timer);
   toggleToastHandler(self);
 }
@@ -537,7 +578,7 @@ function completeDisposeToast(self) {
 class Toast extends BaseComponent {
   /**
    * @param {Element | string} target the target `.toast` element
-   * @param {BSN.ToastOptions?} config the instance options
+   * @param {BSN.Options.Toast=} config the instance options
    */
   constructor(target, config) {
     super(target, config);
@@ -549,7 +590,9 @@ class Toast extends BaseComponent {
     if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
     else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
     // dismiss button
-    /** @private @type {Element} */
+    /** @private @type {any} */
+    self.timer = null;
+    /** @private @type {Element?} */
     self.dismiss = queryElement(toastDismissSelector, element);
 
     // bind
@@ -557,7 +600,7 @@ class Toast extends BaseComponent {
     self.hide = self.hide.bind(self);
 
     // add event listener
-    toggleToastHandler(self, 1);
+    toggleToastHandler(self, true);
   }
 
   /* eslint-disable */
@@ -589,7 +632,7 @@ class Toast extends BaseComponent {
   }
 
   /** Hides the toast. */
-  hide(noTimer) {
+  hide() {
     const self = this;
     const { element, options } = self;
 
@@ -598,8 +641,7 @@ class Toast extends BaseComponent {
       if (hideToastEvent.defaultPrevented) return;
 
       clearTimeout(self.timer);
-      self.timer = setTimeout(() => hideToast(self),
-        noTimer ? 10 : options.delay);
+      self.timer = setTimeout(() => hideToast(self), options.delay);
     }
   }
 

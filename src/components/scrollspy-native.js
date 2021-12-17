@@ -43,7 +43,6 @@ const scrollspyInitCallback = (element) => new ScrollSpy(element);
 
 // SCROLLSPY CUSTOM EVENT
 // ======================
-/** @type {BSN.ScrollSpyEvent.activate} */
 const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`);
 
 // SCROLLSPY PRIVATE METHODS
@@ -54,25 +53,31 @@ const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`)
  */
 function updateSpyTargets(self) {
   const {
+    // @ts-ignore
     target, scrollTarget, isWindow, options, itemsLength, scrollHeight,
   } = self;
   const { offset } = options;
+  // @ts-ignore
   const links = target.getElementsByTagName('A');
 
-  self.scrollTop = isWindow
-    ? scrollTarget.pageYOffset
-    : scrollTarget.scrollTop;
+  // @ts-ignore
+  self.scrollTop = isWindow ? scrollTarget.pageYOffset : scrollTarget.scrollTop;
 
   // only update items/offsets once or with each mutation
+
   if (itemsLength !== links.length || getScrollHeight(scrollTarget) !== scrollHeight) {
     let href;
     let targetItem;
     let rect;
 
     // reset arrays & update
+    // @ts-ignore
     self.items = [];
+    // @ts-ignore
     self.offsets = [];
+    // @ts-ignore
     self.scrollHeight = getScrollHeight(scrollTarget);
+    // @ts-ignore
     self.maxScroll = self.scrollHeight - getOffsetHeight(self);
 
     Array.from(links).forEach((link) => {
@@ -80,20 +85,25 @@ function updateSpyTargets(self) {
       targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
 
       if (targetItem) {
+        // @ts-ignore
         self.items.push(link);
         rect = targetItem.getBoundingClientRect();
+        // @ts-ignore
         self.offsets.push((isWindow ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
       }
     });
+    // @ts-ignore
     self.itemsLength = self.items.length;
   }
 }
 
 /**
  * Returns the `scrollHeight` property of the scrolling element.
- * @param {Element?} scrollTarget the `ScrollSpy` instance
+ * @param {Element | Window} scrollTarget the `ScrollSpy` instance
+ * @return {number} `scrollTarget` height
  */
 function getScrollHeight(scrollTarget) {
+  // @ts-ignore
   return scrollTarget.scrollHeight || Math.max(
     document.body.scrollHeight,
     document.documentElement.scrollHeight,
@@ -102,7 +112,7 @@ function getScrollHeight(scrollTarget) {
 
 /**
  * Returns the height property of the scrolling element.
- * @param {{Element, boolean}} params the `ScrollSpy` instance
+ * @param {{element: Element, isWindow: boolean}} params the `ScrollSpy` instance
  */
 function getOffsetHeight({ element, isWindow }) {
   if (!isWindow) return element.getBoundingClientRect().height;
@@ -125,8 +135,11 @@ function clear(target) {
  * @param {Element} item a single item
  */
 function activate(self, item) {
+  // @ts-ignore
   const { target, element } = self;
+  // @ts-ignore
   clear(target);
+  // @ts-ignore
   self.activeItem = item;
   addClass(item, activeClass);
 
@@ -134,6 +147,7 @@ function activate(self, item) {
   const parents = [];
   let parentItem = item;
   while (parentItem !== document.body) {
+    // @ts-ignore
     parentItem = parentItem.parentNode;
     if (hasClass(parentItem, 'nav') || hasClass(parentItem, 'dropdown-menu')) parents.push(parentItem);
   }
@@ -146,18 +160,18 @@ function activate(self, item) {
     }
   });
 
-  // update relatedTarget and dispatch
-  activateScrollSpy.relatedTarget = item;
+  // dispatch
   element.dispatchEvent(activateScrollSpy);
 }
 
 /**
  * Toggles on/off the component event listener.
  * @param {ScrollSpy} self the `ScrollSpy` instance
- * @param {boolean | number} add when `true`, listener is added
+ * @param {boolean=} add when `true`, listener is added
  */
 function toggleSpyHandlers(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   self.scrollTarget[action]('scroll', self.refresh, passiveHandler);
 }
 
@@ -167,7 +181,7 @@ function toggleSpyHandlers(self, add) {
 export default class ScrollSpy extends BaseComponent {
   /**
    * @param {Element | string} target the target element
-   * @param {BSN.ScrollspyOptions?} config the instance options
+   * @param {BSN.Options.ScrollSpy=} config the instance options
    */
   constructor(target, config) {
     super(target, config);
@@ -178,14 +192,14 @@ export default class ScrollSpy extends BaseComponent {
     const { element, options } = self;
 
     // additional properties
-    /** @private @type {Element} */
+    /** @private @type {Element?} */
     self.target = queryElement(options.target);
 
     // invalidate
     if (!self.target) return;
 
     // set initial state
-    /** @private @type {Element} */
+    /** @private @type {Element | Window} */
     self.scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
     /** @private @type {boolean} */
     self.isWindow = self.scrollTarget === window;
@@ -199,6 +213,8 @@ export default class ScrollSpy extends BaseComponent {
     self.activeItem = null;
     /** @private @type {Element[]} */
     self.items = [];
+    /** @private @type {number} */
+    self.itemsLength = 0;
     /** @private @type {number[]} */
     self.offsets = [];
 
@@ -206,7 +222,7 @@ export default class ScrollSpy extends BaseComponent {
     self.refresh = self.refresh.bind(self);
 
     // add event handlers
-    toggleSpyHandlers(self, 1);
+    toggleSpyHandlers(self, true);
 
     self.refresh();
   }
@@ -232,6 +248,7 @@ export default class ScrollSpy extends BaseComponent {
     const { target } = self;
 
     // check if target is visible and invalidate
+    // @ts-ignore
     if (target.offsetHeight === 0) return;
 
     updateSpyTargets(self);
@@ -253,6 +270,7 @@ export default class ScrollSpy extends BaseComponent {
 
     if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
       self.activeItem = null;
+      // @ts-ignore
       clear(target);
       return;
     }
@@ -268,7 +286,7 @@ export default class ScrollSpy extends BaseComponent {
   /** Removes `ScrollSpy` from the target element. */
   dispose() {
     toggleSpyHandlers(this);
-    super.dispose(scrollspyComponent);
+    super.dispose();
   }
 }
 

@@ -177,16 +177,27 @@
   }
 
   /**
+   * Checks if an element is an `Element`.
+   *
+   * @param {any} element the target element
+   * @returns {boolean} the query result
+   */
+  function isElement(element) {
+    return element instanceof Element;
+  }
+
+  /**
    * Utility to check if target is typeof Element
    * or find one that matches a selector.
    *
    * @param {Element | string} selector the input selector or target element
-   * @param {Element | null} parent optional Element to look into
-   * @return {Element | null} the Element or result of the querySelector
+   * @param {Element=} parent optional Element to look into
+   * @return {Element?} the Element or `querySelector` result
    */
   function queryElement(selector, parent) {
-    const lookUp = parent && parent instanceof Element ? parent : document;
-    return selector instanceof Element ? selector : lookUp.querySelector(selector);
+    const lookUp = parent && isElement(parent) ? parent : document;
+    // @ts-ignore
+    return isElement(selector) ? selector : lookUp.querySelector(selector);
   }
 
   /**
@@ -228,41 +239,46 @@
   const Data = {
     /**
      * Sets web components data.
-     * @param {Element} element target element
+     * @param {Element | string} element target element
      * @param {string} component the component's name or a unique key
      * @param {any} instance the component instance
      */
     set: (element, component, instance) => {
+      const ELEMENT = queryElement(element);
+      if (!isElement(ELEMENT)) return;
+
       if (!componentData.has(component)) {
         componentData.set(component, new Map());
       }
 
       const instanceMap = componentData.get(component);
-      instanceMap.set(element, instance);
+      instanceMap.set(ELEMENT, instance);
     },
 
     /**
      * Returns all instances for specified component.
      * @param {string} component the component's name or a unique key
-     * @returns {?any} all the component instances
+     * @returns {any?} all the component instances
      */
     getAllFor: (component) => {
       if (componentData.has(component)) {
-        return componentData.get(component) || null;
+        return componentData.get(component);
       }
       return null;
     },
 
     /**
      * Returns the instance associated with the target.
-     * @param {Element} element target element
+     * @param {Element | string} element target element
      * @param {string} component the component's name or a unique key
-     * @returns {?any} the instance
+     * @returns {any?} the instance
      */
     get: (element, component) => {
+      const ELEMENT = queryElement(element);
+
       const allForC = Data.getAllFor(component);
-      if (allForC && allForC.has(element)) {
-        return allForC.get(element) || null;
+      if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
+        return allForC.get(ELEMENT);
       }
       return null;
     },
@@ -271,7 +287,6 @@
      * Removes web components data.
      * @param {Element} element target element
      * @param {string} component the component's name or a unique key
-     * @param {any} instance the component instance
      */
     remove: (element, component) => {
       if (!componentData.has(component)) return;
@@ -286,22 +301,37 @@
   };
 
   /**
-   * Shortcut for `Data.get(a, b)` to setup usable component static method.
-   * @type {SHORTER.getInstance<SHORTER.Component, string>}
+   * An alias for `Data.get()`.
+   * @param {Element | string} element target element
+   * @param {string} component the component's name or a unique key
+   * @returns {any} the request result
    */
   const getInstance = (element, component) => Data.get(element, component);
 
+  /** Returns an original event for Bootstrap Native components. */
+  class OriginalEvent extends CustomEvent {
+    /**
+     * @param {string} EventType event.type
+     * @param {Record<string, any>=} config Event.options | Event.properties
+     */
+    constructor(EventType, config) {
+      super(EventType, config);
+      /** @type {EventTarget?} */
+      this.relatedTarget = null;
+    }
+  }
+
   /**
    * Returns a namespaced `CustomEvent` specific to each component.
-   * @param {string} namespacedEventType Event.type
-   * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
-   * @returns {CustomEvent} a new namespaced event
+   * @param {string} EventType Event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   * @returns {OriginalEvent} a new namespaced event
    */
-  function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-    const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+  function bootstrapCustomEvent(EventType, config) {
+    const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
 
-    if (eventProperties instanceof Object) {
-      Object.assign(OriginalCustomEvent, eventProperties);
+    if (config instanceof Object) {
+      Object.assign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
   }
@@ -400,25 +430,34 @@
   class BaseComponent {
     /**
      * @param {Element | string} target Element or selector string
-     * @param {BSN.ComponentOptions?} config
+     * @param {BSN.ComponentOptions=} config component instance options
      */
     constructor(target, config) {
       const self = this;
       const element = queryElement(target);
 
-      if (!element) return;
+      if (!isElement(element)) {
+        throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+      }
 
-      const prevInstance = getInstance(element, self.name);
+      /** @type {BSN.ComponentOptions} */
+      self.options = {};
+
+      // @ts-ignore
+      const prevInstance = Data.get(element, self.name);
       if (prevInstance) prevInstance.dispose();
 
-      /** @private */
+      /** @type {Element} */
+      // @ts-ignore
       self.element = element;
 
       if (self.defaults && Object.keys(self.defaults).length) {
-        /** @private */
+        /** @static @type {Record<string, any>} */
+        // @ts-ignore
         self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
 
+      // @ts-ignore
       Data.set(element, self.name, self);
     }
 
@@ -431,6 +470,7 @@
     get name() { return this.constructor.name; }
 
     /** @static */
+    // @ts-ignore
     get defaults() { return this.constructor.defaults; }
 
     /**
@@ -438,7 +478,9 @@
      */
     dispose() {
       const self = this;
+      // @ts-ignore
       Data.remove(self.element, self.name);
+      // @ts-ignore
       Object.keys(self).forEach((prop) => { self[prop] = null; });
     }
   }
@@ -463,17 +505,6 @@
     interval: 5000,
   };
 
-  const CarouselEventProperties = {
-    /** @type {Element} */
-    relatedTarget: null,
-    /** @type {string} */
-    direction: 'left' ,
-    /** @type {number} */
-    from: 0,
-    /** @type {number} */
-    to: 1,
-  };
-
   /**
    * Static method which returns an existing `Carousel` instance associated
    * to a target `Element`.
@@ -494,10 +525,8 @@
 
   // CAROUSEL CUSTOM EVENTS
   // ======================
-  /** @type {BSN.CarouselEvent.slide} */
-  const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`, CarouselEventProperties);
-  /** @type {BSN.CarouselEvent.slid} */
-  const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`, CarouselEventProperties);
+  const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`);
+  const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`);
 
   // CAROUSEL EVENT HANDLERS
   // =======================
@@ -507,14 +536,17 @@
    */
   function carouselTransitionEndHandler(self) {
     const {
+      // @ts-ignore
       index, direction, element, slides, options, isAnimating,
     } = self;
 
     // discontinue disposed instances
+    // @ts-ignore
     if (isAnimating && getCarouselInstance(element)) {
       const activeItem = getActiveIndex(self);
       const orientation = direction === 'left' ? 'next' : 'prev';
       const directionClass = direction === 'left' ? 'start' : 'end';
+      // @ts-ignore
       self.isAnimating = false;
 
       addClass(slides[index], activeClass);
@@ -524,10 +556,12 @@
       removeClass(slides[index], `${carouselItem}-${directionClass}`);
       removeClass(slides[activeItem], `${carouselItem}-${directionClass}`);
 
+      // @ts-ignore
       element.dispatchEvent(carouselSlidEvent);
 
       // check for element, might have been disposed
       if (!document.hidden && options.interval
+        // @ts-ignore
         && !hasClass(element, pausedClass)) {
         self.cycle();
       }
@@ -542,13 +576,19 @@
    */
   function carouselPauseHandler(e) {
     const eventTarget = e.target;
+    // @ts-ignore
     const self = getCarouselInstance(eventTarget.closest(carouselSelector));
+    // @ts-ignore
     const { element, isAnimating } = self;
 
+    // @ts-ignore
     if (!hasClass(element, pausedClass)) {
+      // @ts-ignore
       addClass(element, pausedClass);
       if (!isAnimating) {
+        // @ts-ignore
         clearInterval(self.timer);
+        // @ts-ignore
         self.timer = null;
       }
     }
@@ -562,14 +602,20 @@
    */
   function carouselResumeHandler(e) {
     const { target } = e;
+    // @ts-ignore
     const self = getCarouselInstance(target.closest(carouselSelector));
+    // @ts-ignore
     const { isPaused, isAnimating, element } = self;
 
+    // @ts-ignore
     if (!isPaused && hasClass(element, pausedClass)) {
+      // @ts-ignore
       removeClass(element, pausedClass);
 
       if (!isAnimating) {
+        // @ts-ignore
         clearInterval(self.timer);
+        // @ts-ignore
         self.timer = null;
         self.cycle();
       }
@@ -584,12 +630,15 @@
   function carouselIndicatorHandler(e) {
     e.preventDefault();
     const { target } = e;
+    // @ts-ignore
     const self = getCarouselInstance(target.closest(carouselSelector));
-
+    // @ts-ignore
     if (self.isAnimating) return;
 
+    // @ts-ignore
     const newIndex = target.getAttribute(dataBsSlideTo);
 
+    // @ts-ignore
     if (target && !hasClass(target, activeClass) // event target is not active
       && newIndex) { // AND has the specific attribute
       self.to(+newIndex); // do the slide
@@ -599,13 +648,16 @@
   /**
    * Handles the `click` event for the `Carousel` arrows.
    *
+   * @this {Element}
    * @param {Event} e the `Event` object
    */
   function carouselControlsHandler(e) {
     e.preventDefault();
     const that = this;
+    // @ts-ignore
     const self = getCarouselInstance(that.closest(carouselSelector));
 
+    // @ts-ignore
     const { controls } = self;
 
     if (controls[1] && that === controls[1]) {
@@ -618,7 +670,7 @@
   /**
    * Handles the keyboard `keydown` event for the visible `Carousel` elements.
    *
-   * @param {Event} e the `Event` object
+   * @param {{which: number}} e the `Event` object
    */
   function carouselKeyHandler({ which }) {
     const [element] = Array.from(document.querySelectorAll(carouselSelector))
@@ -642,31 +694,39 @@
   /**
    * Handles the `touchdown` event for the `Carousel` element.
    *
+   * @this {Element}
    * @param {Event} e the `Event` object
    */
   function carouselTouchDownHandler(e) {
     const element = this;
     const self = getCarouselInstance(element);
 
+    // @ts-ignore
     if (!self || self.isTouch) { return; }
 
+    // @ts-ignore
     startX = e.changedTouches[0].pageX;
 
+    // @ts-ignore
     if (element.contains(e.target)) {
+      // @ts-ignore
       self.isTouch = true;
-      toggleCarouselTouchHandlers(self, 1);
+      toggleCarouselTouchHandlers(self, true);
     }
   }
 
   /**
    * Handles the `touchmove` event for the `Carousel` element.
    *
+   * @this {Element}
    * @param {Event} e the `Event` object
    */
   function carouselTouchMoveHandler(e) {
+    // @ts-ignore
     const { changedTouches, type } = e;
     const self = getCarouselInstance(this);
 
+    // @ts-ignore
     if (!self || !self.isTouch) { return; }
 
     currentX = changedTouches[0].pageX;
@@ -680,30 +740,39 @@
   /**
    * Handles the `touchend` event for the `Carousel` element.
    *
+   * @this {Element}
    * @param {Event} e the `Event` object
    */
   function carouselTouchEndHandler(e) {
     const element = this;
     const self = getCarouselInstance(element);
 
+    // @ts-ignore
     if (!self || !self.isTouch) { return; }
 
+    // @ts-ignore
     endX = currentX || e.changedTouches[0].pageX;
 
+    // @ts-ignore
     if (self.isTouch) {
       // the event target is outside the carousel OR carousel doens't include the related target
+      // @ts-ignore
       if ((!element.contains(e.target) || !element.contains(e.relatedTarget))
         && Math.abs(startX - endX) < 75) { // AND swipe distance is less than 75px
         // when the above conditions are satisfied, no need to continue
         return;
       } // OR determine next index to slide to
       if (currentX < startX) {
+        // @ts-ignore
         self.index += 1;
       } else if (currentX > startX) {
+        // @ts-ignore
         self.index -= 1;
       }
 
+      // @ts-ignore
       self.isTouch = false;
+      // @ts-ignore
       self.to(self.index); // do the slide
 
       toggleCarouselTouchHandlers(self); // remove touch events handlers
@@ -718,30 +787,35 @@
    * @param {number} pageIndex the index of the new active indicator
    */
   function activateCarouselIndicator(self, pageIndex) {
+    // @ts-ignore
     const { indicators } = self;
     Array.from(indicators).forEach((x) => removeClass(x, activeClass));
+    // @ts-ignore
     if (self.indicators[pageIndex]) addClass(indicators[pageIndex], activeClass);
   }
 
   /**
    * Toggles the touch event listeners for a given `Carousel` instance.
    * @param {Carousel} self the `Carousel` instance
-   * @param {boolean | number} add when `TRUE` event listeners are added
+   * @param {boolean=} add when `TRUE` event listeners are added
    */
   function toggleCarouselTouchHandlers(self, add) {
     const { element } = self;
     const action = add ? addEventListener : removeEventListener;
+    // @ts-ignore
     element[action]('touchmove', carouselTouchMoveHandler, passiveHandler);
+    // @ts-ignore
     element[action]('touchend', carouselTouchEndHandler, passiveHandler);
   }
 
   /**
    * Toggles all event listeners for a given `Carousel` instance.
    * @param {Carousel} self the `Carousel` instance
-   * @param {boolean | number} add when `TRUE` event listeners are added
+   * @param {boolean=} add when `TRUE` event listeners are added
    */
   function toggleCarouselHandlers(self, add) {
     const {
+      // @ts-ignore
       element, options, slides, controls, indicator,
     } = self;
     const {
@@ -750,21 +824,29 @@
     const action = add ? addEventListener : removeEventListener;
 
     if (pause && interval) {
+      // @ts-ignore
       element[action]('mouseenter', carouselPauseHandler);
+      // @ts-ignore
       element[action]('mouseleave', carouselResumeHandler);
+      // @ts-ignore
       element[action]('touchstart', carouselPauseHandler, passiveHandler);
+      // @ts-ignore
       element[action]('touchend', carouselResumeHandler, passiveHandler);
     }
 
     if (touch && slides.length > 1) {
+      // @ts-ignore
       element[action]('touchstart', carouselTouchDownHandler, passiveHandler);
     }
 
     controls.forEach((arrow) => {
+      // @ts-ignore
       if (arrow) arrow[action]('click', carouselControlsHandler);
     });
 
+    // @ts-ignore
     if (indicator) indicator[action]('click', carouselIndicatorHandler);
+    // @ts-ignore
     if (keyboard) window[action]('keydown', carouselKeyHandler);
   }
 
@@ -774,6 +856,7 @@
    * @returns {number} the query result
    */
   function getActiveIndex(self) {
+    // @ts-ignore
     const { slides, element } = self;
     return Array.from(slides)
       .indexOf(element.getElementsByClassName(`${carouselItem} ${activeClass}`)[0]) || 0;
@@ -781,14 +864,11 @@
 
   // CAROUSEL DEFINITION
   // ===================
-  /**
-   * Creates a new `Carousel` instance.
-   */
+  /** Creates a new `Carousel` instance. */
   class Carousel extends BaseComponent {
     /**
-     *
      * @param {Element | string} target mostly a `.carousel` element
-     * @param {BSN.CarouselOptions?} config instance options
+     * @param {BSN.Options.Carousel=} config instance options
      */
     constructor(target, config) {
       super(target, config);
@@ -796,7 +876,7 @@
       const self = this;
 
       // additional properties
-      /** @private @type {number?} */
+      /** @private @type {any?} */
       self.timer = null;
       /** @private @type {string} */
       self.direction = 'left';
@@ -848,7 +928,7 @@
       }
 
       // attach event handlers
-      toggleCarouselHandlers(self, 1);
+      toggleCarouselHandlers(self, true);
 
       // start to cycle if interval is set
       if (options.interval) self.cycle();

@@ -163,28 +163,15 @@
           
             <section id="alertMethods">
               <h3>Alert Methods</h3>
-              <p>The <b>Alert</b> component exposes two public methods to be used via JavaScript:</p>
+              <p>The <b>Alert</b> component exposes two public methods and a static method to be used via JavaScript:</p>
+              <h4>instance.close()</h4>
+              <p>The method hides an initialized alert and removes the <code>&lt;div class="alert"&gt;</code> element from the DOM.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element. If the alert has been closed, calling this method
+                should produce no effect, since the alert was already removed from the DOM.</p>
               <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.close()</code></td>
-                      <td>The method hides an initialized alert and removes the <code>&lt;div class="alert"&gt;</code> element from the DOM.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element. If the alert has been closed, calling this method
-                        should produce no effect, since the alert was already removed from the DOM.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>Alert.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access an Alert instance associated to a DOM element.</p>
             </section>
           
             <section id="alertEvents">
@@ -223,10 +210,24 @@
           
 <pre><code class="language-markup">&lt;!-- notice the &lt;button&gt; with the data-bs-dismiss="alert" attribute --&gt;
 &lt;div class="alert alert-warning alert-dismissible fade show" role="alert"&gt;
-  &lt;button id="myButtonAlert" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"&gt;&lt;/button&gt;
+  &lt;button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"&gt;&lt;/button&gt;
   Some critical notice.
 &lt;/div&gt;
 </code></pre>
+              <p>In this example the <b>Alert</b> component will find a child element of the <code>&lt;div class="alert"&gt;</code>
+                with the <code>data-bs-dismsiss="alert"</code> attribute to use it as a trigger for its <code>.close()</code>
+                public method.</p>
+          
+<pre><code class="language-markup">&lt;!-- notice the &lt;button&gt; with the data-bs-dismiss="alert" attribute --&gt;
+&lt;div id="mySuccessAlert" class="alert alert-success alert-dismissible fade show" role="alert"&gt;
+  Some notice it's OK.
+&lt;/div&gt;
+
+&lt;button type="button" class="btn btn-secondary" data-bs-dismiss="alert" data-bs-target="#mySuccessAlert" aria-label="Close"&gt;&lt;/button&gt;
+</code></pre>
+              <p>In this example the <b>Alert</b> component will try to locate any element <b>outside</b> the <code>&lt;div class="alert"&gt;</code>
+                with the <code>data-bs-dismsiss="alert"</code> attribute and the <code>data-bs-target="#mySuccessAlert"</code> attribute to
+                provide dismissal for this particular alert instance.</p>
 
             </section>
 
@@ -255,14 +256,14 @@ myAlert.addEventListener('closed.bs.alert', function(event){
 }, false);
 </code></pre>
           
-              <p>Like all components of the library you can access the initialization object even if it was done via the DATA API:
-              </p>
+              <p>Similar to the original library, all components of this library expose a <i>static</i> method that allows you
+                to easily access the instance even if it was created via the DATA API:</p>
           
 <pre><code class="language-javascript">// find an element initialized via DATA API
 var myAlert = document.querySelector('.alert');
 
-// reference the initialization object
-var myAlertInit = myAlert.Alert;
+// get the initialization object
+var myAlertInit = BSN.Alert.getInstance(myAlert);
 
 // apply the public methods
 myAlertInit.close();
@@ -277,7 +278,7 @@ myAlertInit.dispose();
               <p>This alert has some handlers attached to <code>close.bs.alert</code> and <code>closed.bs.alert</code> events, so
                 check your console.</p>
               <div id="alertDemo" class="alert alert-warning alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" id="alertDemo1" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-target="alertDemo" data-bs-dismiss="alert" aria-label="Close"></button>
                 <b>Holy guacamole!</b> Best check yo self, you're not looking too good.
               </div>
           
@@ -306,26 +307,13 @@ myAlertInit.dispose();
 
             <section id="buttonMethods">
               <h3>Button Methods</h3>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.toggle()</code></td>
-                      <td>Toggles the state of a button. When pushed it changes the appearence of the button.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element. Its toggle state is not changed.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>instance.toggle()</h4>
+              <p>Toggles the state of a button. When pushed it changes the appearence of the button.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element. Its toggle state is not changed.</p>
+              <h4>Button.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Button instance associated to a DOM element.</p>
+
             </section>
           
             <section id="buttonDATA">
@@ -357,11 +345,10 @@ myAlertInit.dispose();
 var myButtonINIT = new BSN.Button('#myButton');
 </code></pre>
           
-              <p>The <code>&lt;button id="myButton"&gt;</code> element now stores the initialization object, just like the other
-                components of the library:</p>
+              <p>The <code>&lt;button id="myButton"&gt;</code> element is now initialized, you can access the instance object anywhere you need:</p>
           
 <pre><code class="language-javascript">// reference the initialization, even for DATA API initialized btn-group elements
-var myButtonINIT = myButton.Button;
+var myButtonINIT = BSN.Button.getInstance('#myButton');
 </code></pre>
           
             </section>
@@ -505,50 +492,25 @@ var myButtonINIT = myButton.Button;
           
             <section id="carouselMethods">
               <h3>Carousel Methods</h3>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.cycle()</code></td>
-                      <td>The method will cycle through items. Using the method while the animation is
-                        running will produce no effect.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.pause()</code></td>
-                      <td>The method will pause the automatic cycle of the carousel. To resume, you can use
-                        the above <code>.cycle()</code> method.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.to()</code></td>
-                      <td>The method will allow you to jump to the index of a certain item. Using the
-                        method while the animation is running will produce no effect.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.next()</code></td>
-                      <td>The method will allow you to jump to the <b>next</b> item. This uses the above 
-                        <code>.to()</code> method.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.prev()</code></td>
-                      <td>The method will allow you to jump to the <b>previous</b> item. This uses the above 
-                        <code>.to()</code> method.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <p>The previously featured instance method <code>.getActiveIndex()</code> has been deprecated in favor of custom event properties
-              which provide much more information from the instance execution context.</p>
+              <h4>instance.cycle()</h4>
+              <p>The method will cycle through items. Using the method while the animation is running will produce no effect.</p>
+              <h4>instance.pause()</h4>
+              <p>The method will pause the automatic cycle of the carousel. To resume, you can use the above <code>.cycle()</code>
+                method.</p>
+              <h4>instance.to()</h4>
+              <p>The method will allow you to jump to the index of a certain item. Using the
+                method while the animation is running will produce no effect.</p>
+              <h4>instance.next()</h4>
+              <p>The method will allow you to jump to the <b>next</b> item. This uses the above <code>.to()</code> method.</p>
+              <h4>instance.prev()</h4>
+              <p>The method will allow you to jump to the <b>previous</b> item. This uses the above <code>.to()</code> method.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element.</p>
+              <h4>Carousel.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Carousel instance associated to a DOM element.</p>
+
+              <p><b>Note</b> The previously featured instance method <code>.getActiveIndex()</code> has been deprecated in favor of
+                custom event properties which provide much more information from the instance execution context.</p>
             </section>
           
             <section id="carouselEvents">
@@ -718,18 +680,10 @@ myCarouselInit.cycle();
 // anytime you need to destroy
 myCarouselInit.dispose();
 </code></pre>
-          
-              <p>As you probably expect by now, this component also stores the initialization in the element it targets on
-                initialization, even for instances where the DATA API was used:</p>
-          
-<pre><code class="language-javascript">// get some carousel item and reference the initialization
-var mySpecialCarouselInit = document.getElementById('mySpecialCarousel').Carousel;
 
-// apply methods
-mySpecialCarouselInit.cycle();
-</code></pre>
 
-              <p>Also, additional interaction can be coded around the original events:</p>
+              <p>Additional interaction can be coded around the original events:</p>
+
 <pre><code class="language-javascript">// this event handler function will run when the carousel begins to slide
 document.querySelector('.carousel').addEventListener('slide.bs.carousel', event => {
   if (event.target.id !== '#myCarousel') {
@@ -742,6 +696,16 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
   console.log("The carousel is sliding from index " + event.from);
 });
 </code></pre>
+
+              <p>Access the instance object anywhere, even for instances where the DATA API was used:</p>
+
+<pre><code class="language-javascript">// get some carousel item and reference the initialization
+var mySpecialCarouselInit = BSN.Carousel.getInstance('#mySpecialCarousel');
+
+// apply methods
+mySpecialCarouselInit.cycle();
+</code></pre>
+
 
             </section>
             
@@ -871,37 +835,21 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
             <section id="collapseMethods">
               <h3>Collapse Methods</h3>
               <p>Calling any of the public methods while animation is running, will produce no effect.</p>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.show()</code></td>
-                      <td>The method will expand a collapsible element. In addition, if the collapsible
-                        element is part of an accordion (it's options include a reference to a parent), 
-                        it will also close any other visible collapsible element.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.hide()</code></td>
-                      <td>The method hides a collapsible element.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.toggle()</code></td>
-                      <td>The method will show or hide a collapsible element using the above methods and
-                        their full functionalities, based on the visibility state at the time of the call.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+
+              <h4>instance.show()</h4>
+              <p>The method will expand a collapsible element. In addition, if the collapsible
+                element is part of an accordion (it's options include a reference to a parent), 
+                it will also close any other visible collapsible element.</p>
+              <h4>instance.hide()</h4>
+              <p>The method hides a collapsible element.</p>
+              <h4>instance.toggle()</h4>
+              <p>The method will show or hide a collapsible element using the above methods and
+                their full functionalities, based on the visibility state at the time of the call.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element.</p>
+              <h4>Collapse.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Collapse instance associated to a DOM element.</p>
+
             </section>
           
             <section id="collapseEvents">
@@ -1013,8 +961,7 @@ document.querySelector('.carousel').addEventListener('slide.bs.carousel', event 
             <section id="collapseJS">
 
               <h3>Collapse JavaScript API</h3>
-              <p>If the above single collapse template have been inserted into the DOM, you need to initialize it via JavaScript.
-              </p>
+              <p>First, you need to initialize it via JavaScript:</p>
 
 <pre><code class="language-javascript">// initialize the component for collapse
 var myCollapseInit = new BSN.Collapse('.collapse')
@@ -1067,13 +1014,10 @@ Array.from(myAccordionCollapses).forEach((collapse) =>
 )
 </code></pre>
           
-              <p>The component grants access to the initialization object.</p>
+              <p>The component also allows access to the instance object:</p>
           
 <pre><code class="language-javascript">// grab the collapse initialized via DATA API
-var myCollapse = document.getElementById('myCollapse');
-
-// reference the initialization
-var myCollapseInit = myCollapse.Collapse;
+var myCollapseInit = BSN.Collapse.getInstance('#myCollapse');
 
 // call any public method
 myCollapseInit.toggle();
@@ -1235,45 +1179,26 @@ myCollapseInit.toggle();
 
             <section id="dropdownMethods">
               <h3>Dropdown Methods</h3>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.show()</code></td>
-                      <td>Shows the dropdown-menu.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.hide()</code></td>
-                      <td>Hides the dropdown-menu.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.toggle()</code></td>
-                      <td>For a given initialization the method shows the dropdown-menu if hidden or hides
-                        it otherwise using the above two methods.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+
+              <h4>instance.show()</h4>
+              <p>Shows the dropdown-menu.</p>
+              <h4>instance.hide()</h4>
+              <p>Hides the dropdown-menu.</p>
+              <h4>instance.toggle()</h4>
+              <p>For a given initialization the method shows the dropdown-menu if hidden or hides
+                it otherwise using the above two methods.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element.</p>
+              <h4>Dropdown.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Dropdown instance associated to a DOM element.</p>
+
             </section>
           
             <section id="dropdownEvents">
               <h3>Dropdown Events</h3>
               <p>The <b>Dropdown</b> component covers the original events and the target of all events is the 
-                <code>&lt;div class="dropdown"&gt;</code> element.</p>
-              <p>If clicked, the triggering element with the specific <code>data-bs-toggle="dropdown"</code> 
-                attribute will be the <code>event.relatedTarget</code>. However, if you dismiss the dropdown via
-                JavaScript, the <kbd>Esc</kbd> key or by clicking outside the triggering button, the
-                <code>event.relatedTarget</code> is <em>null</em>.</p>              
+                <code>&lt;div class="dropdown"&gt;</code> element or the parent of the element with the 
+                <code>data-bs-toggle="dropdown"</code> attribute.</p>
               <div class="table-responsive">
                 <table class="table">
                   <thead>
@@ -1304,6 +1229,8 @@ myCollapseInit.toggle();
                   </tbody>
                 </table>
               </div>
+              <p>For all Dropdown events the <code>event.relatedTarget</code> is the element with the initialization 
+                <code>data-bs-toggle="dropdown"</code>.</p>
             </section>
 
 
@@ -1372,11 +1299,10 @@ myDropdown.parentNode.addEventListener('hidden.bs.dropdown', function(event){
                 <code>&lt;div class="dropdown"&gt;</code> element, you might consider a
                 <code>getClosest()</code> function to find it so you can then attach the original events to it.</p>
           
-              <p>Now, the <b>Dropdown</b> component also stores the initialization object in the targeted elements, just as for
-                the modal triggering buttons:</p>
+              <p>Now, the <b>Dropdown</b> component allows access to the isntance object, just as for all other components:</p>
           
 <pre><code class="language-javascript">// reference the initialization
-var myDropdownInit = document.getElementById('myDropdown').Dropdown;
+var myDropdownInit = BSN.Dropdown.getInstance('#myDropdown');
 
 // use the public Methods
 myDropdownInit.toggle();
@@ -1540,46 +1466,27 @@ myDropdownInit.dispose();
 
             <section id="modalMethods">
               <h3>Modal Methods</h3>
-              <p>For full control the <b>Modal</b> component exposes a couple of public methods to be used via JavaScript :</p>
+              <p>For full control the <b>Modal</b> component exposes a couple of public methods to be used via JavaScript.</p>
 
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.show()</code></td>
-                      <td>The method that shows an initialized modal. When called, it will also hide any
-                        other visible modal before showing the one requested, making sure to keep the backdrop in place.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.hide()</code></td>
-                      <td>This hides an initialized modal. Additionally it will also close (if enabled)
-                        the backdrop.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.toggle()</code></td>
-                      <td>When called it shows the modal if hidden and hides it otherwise, using one of
-                        the above two methods.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.update()</code></td>
-                      <td>This allows you to update the modal layout (handling overflowing/non-overflowing
-                        body and/or modal) after layout changes have occured.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>The method that allows you to remove the modal functionality from a target element. 
-                        If the modal is shown, this method will close it first by calling the <code>.hide()</code>
-                        method before the removal of the functionality.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>instance.show()</h4>
+              <p>The method that shows an initialized modal. When called, it will also hide any
+                other visible modal before showing the one requested, making sure to keep the backdrop in place.</p>
+              <h4>instance.hide()</h4>
+              <p>This hides an initialized modal. Additionally it will also close (if enabled)
+                the backdrop.</p>
+              <h4>instance.toggle()</h4>
+              <p>When called it shows the modal if hidden and hides it otherwise, using one of
+                the above two methods.</p>
+              <h4>instance.update()</h4>
+              <p>This allows you to update the modal layout (handling overflowing/non-overflowing
+                body and/or modal) after layout changes have occured.</p>
+              <h4>instance.dispose()</h4>
+              <p>The method that allows you to remove the modal functionality from a target element. 
+                If the modal is shown, this method will close it first by calling the <code>.hide()</code>
+                method before the removal of the functionality.</p>
+              <h4>Modal.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Modal instance associated to a DOM element.</p>
+
               <p>The previously featured <code>.setContent()</code> method has been deprecated.</p>
             </section>
             <section id="modalEvents">
@@ -1622,6 +1529,7 @@ myDropdownInit.dispose();
               <p>If modal is opened via JavaScript methods, or by clicking on another element that is not a modal triggering 
                 element, the <code>event.relatedTarget</code> is <em>null</em>.</p>
             </section>
+
             <section id="modalDATA">
               <h3 id="modalDataAPI">Modal DATA API</h3>
               <p>You can initialize <b>Modal</b> without writing any code as long as you have a modal and a trigger button with
@@ -1689,19 +1597,11 @@ var myModalInstance = new BSN.Modal(
   }
 );
 </code></pre>
-          
-              <p>Now you can re-initialize your target elements very much like the original plugin, but
-                with native JavaScript syntax:</p>
-          
-<pre><code class="language-javascript">// re-initialize on a target with different options
-// also call the .show() method right away
-var myNewModalInstance = new BSN.Modal('#myModal', { backdrop: true }).show();
-</code></pre>
 
               <p>Keep in mind that re-initializing will make use of the <code>.dispose()</code> method to clear memory
                 allocated for previous initialization, which involves two things: reseting the other options' values to the 
                 DATA API specified, or default values AND lastly, if the modal is open, on re-initialization the modal will
-                be hidden via <code>.hide()</code>, you can instantly call the <code>.show()</code> method as written above.</p>
+                get hidden via <code>.hide()</code>, you can instantly call the <code>.show()</code> method as written above.</p>
           
               <p>Now we have an initialization reference in <code>myModalInstance</code>, we can start applying the
                 component's public methods:</p>
@@ -1760,7 +1660,7 @@ myModal.addEventListener('hidden.bs.modal', function(event){
                 execution, hopefully would help you as well.</p>
           
 <pre><code class="language-javascript">// you can access the initialization object from the modal itself
-var myModalInit = myModal.Modal;
+var myModalInit = BSN.Modal.getInstance(myModal);
 </code></pre>
             </section>
           
@@ -1901,7 +1801,7 @@ btnModal.addEventListener('click', function(e){
 // BONUS
 // since there is no triggering element, you might need
 // access to the initialization object from another application
-var findModalInitJS = myModal.Modal;
+var findModalInitJS = BSN.Modal.getInstance(myModal);
 </code></pre>
           
               <p><button id="openModalViaJS" type="button" class="btn btn-secondary btn-lg">Open Modal</button></p>
@@ -1977,45 +1877,26 @@ var findModalInitJS = myModal.Modal;
               <h3>Offcanvas Methods</h3>
               <p>For full control the <b>Offcanvas</b> component exposes a couple of public methods to be used via JavaScript :</p>
 
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.show()</code></td>
-                      <td>The method that shows an initialized offcanvas. When called, it will also hide any
-                        other visible offcanvas before showing the one requested, making sure to keep track on
-                        the backdrop for each offcanvas instance.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.hide()</code></td>
-                      <td>This hides an initialized offcanvas. Additionally it will also remove (if enabled)
-                        the backdrop.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.toggle()</code></td>
-                      <td>When called it shows the offcanvas if hidden and hides it otherwise, using one of
-                        the above two methods.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.update()</code></td>
-                      <td>This allows you to update the offcanvas layout (handling overflowing/non-overflowing
-                        body and/or offcanvas) after you have changed it's content or other layout changes occured.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>The method that allows you to remove the offcanvas functionality from a target element. 
-                        If the offcanvas is shown, this method will close it first by calling the <code>.hide()</code>
-                        method before the removal of the functionality.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>instance.show()</h4>
+              <p>The method that shows an initialized offcanvas. When called, it will also hide any
+                other visible offcanvas before showing the one requested, making sure to keep track on
+                the backdrop for each offcanvas instance.</p>
+              <h4>instance.hide()</h4>
+              <p>This hides an initialized offcanvas. Additionally it will also remove (if enabled)
+                the backdrop.</p>
+              <h4>instance.toggle()</h4>
+              <p>When called it shows the offcanvas if hidden and hides it otherwise, using one of
+                the above two methods.</p>
+              <h4>instance.update()</h4>
+              <p>This allows you to update the offcanvas layout (handling overflowing/non-overflowing
+                body and/or offcanvas) after you have changed it's content or other layout changes occured.</p>
+              <h4>instance.dispose()</h4>
+              <p>The method that allows you to remove the offcanvas functionality from a target element. 
+                If the offcanvas is shown, this method will close it first by calling the <code>.hide()</code>
+                method before the removal of the functionality.</p>
+              <h4>Offcanvas.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Offcanvas instance associated to a DOM element.</p>
+
             </section>
 
             <section id="offcanvasEvents">
@@ -2169,7 +2050,7 @@ myOffcanvas.addEventListener('hidden.bs.offcanvas', function(event){
                 execution, hopefully would help you as well.</p>
           
 <pre><code class="language-javascript">// you can access the initialization object from the offcanvas itself
-var myOffcanvasInit = myModal.Offcanvas;
+var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
 </code></pre>
 
             </section>
@@ -2405,55 +2286,29 @@ var myOffcanvasInit = myModal.Offcanvas;
           
             <section id="popoverMethods">
               <h3>Popover Methods</h3>
-              <p>For full control the <b>Popover</b> component exposes a couple of public methods to be used via JavaScript:</p>
+              <p>For full control the <b>Popover</b> component exposes a couple of public methods to be used via JavaScript.</p>
 
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.show()</code></td>
-                      <td>The method shows an initialized popover. When the method is called, it will
-                        always <b>create</b> a new popover and append it into your designated container.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.hide()</code></td>
-                      <td>The method hides an initialized popover and remove it from its container and
-                        also from the memory, as if you would automatically <em>destroy</em> it.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.toggle()</code></td>
-                      <td>The method shows the popover if hidden and hides it otherwise, using the above
-                        two methods.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.enable()</code></td>
-                      <td>Starts showing the popover again to the user. Popovers are <b>enabled by default</b>.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.disable()</code></td>
-                      <td>Stops showing the popover to the user.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.toggleEnabled()</code></td>
-                      <td>Toggles the enabled state by calling one of the two methods above.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.update()</code></td>
-                      <td>Updates the position of the popover.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>instance.show()</h4>
+              <p>The method shows an initialized popover. When the method is called, it will
+                always <b>create</b> a new popover and append it into your designated container.</p>
+              <h4>instance.hide()</h4>
+              <p>The method hides an initialized popover and remove it from its container and
+                also from the memory, as if you would automatically <em>destroy</em> it.</p>
+              <h4>instance.toggle()</h4>
+              <p>The method shows the popover if hidden and hides it otherwise, using the above
+                two methods.</p>
+              <h4>instance.enable()</h4>
+              <p>Starts showing the popover again to the user. Popovers are <b>enabled by default</b>.</p>
+              <h4>instance.disable()</h4>
+              <p>Stops showing the popover to the user.</p>
+              <h4>instance.toggleEnabled()</h4>
+              <p>Toggles the enabled state by calling one of the two methods above.</p>
+              <h4>instance.update()</h4>
+              <p>Updates the position of the popover.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element.</p>
+              <h4>Popover.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Popover instance associated to a DOM element.</p>
             </section>
           
             <section id="popoverEvents">
@@ -2541,7 +2396,7 @@ Array.from(popoverTargets).forEach(
 var myLinkWithPopover = document.getElementById('myLinkWithPopover');
 
 // reference the initialization object
-var myPopoverInit = myLinkWithPopover.Popover;
+var myPopoverInit = BSN.Popover.getInstance(myLinkWithPopover);
 </code></pre>
 
               <p>Just because you can, you can re-initialize any element on the fly, to change options or to just call the
@@ -2686,27 +2541,14 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
 
             <section id="scrollspyMethods">
               <h3>ScrollSpy Methods</h3>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.refresh()</code></td>
-                      <td>When DOM layout changes occured without triggering a resize of your element, you
-                        will have this option to immediately update the status of your menu items.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>instance.refresh()</h4>
+              <p>When DOM layout changes occured without triggering a resize of your element, you
+                will have this option to immediately update the status of your menu items.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element.</p>
+              <h4>ScrollSpy.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a ScrollSpy instance associated to a DOM element.</p>              
+
             </section>
           
             <section id="scrollspyEvents">
@@ -2871,11 +2713,8 @@ myScrollSpyInit.dispose();
 <pre><code class="language-javascript">// grab an element we know it was initialized via DATA API
 var myScrollSpy = document.getElementById('myScrollSpy');
 
-// check if the element is already initialized
-var myScrollSpyIsInitialized = 'ScrollSpy' in myScrollSpy;
-
-// if the above is true
-var myScrollSpyInit = myScrollSpy.ScrollSpy;
+// get the instance
+var myScrollSpyInit = BSN.ScrollSpy.getInstance(myScrollSpy);
 
 // call the public methods
 myScrollSpyInit.refresh();
@@ -3031,7 +2870,7 @@ myScrollSpyInit.dispose();
                 <a href="https://getbootstrap.com/docs/5.0/components/scrollspy/">original plugin</a> for other guides or to compare 
                 implementations.</p>
 
-            </section>
+          </section>
           </section>
           
           <section id="componentTab">
@@ -3052,28 +2891,13 @@ myScrollSpyInit.dispose();
           
             <section id="tabMethods">
               <h3>Tab Methods</h3>
-
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.show()</code></td>
-                      <td>The public method to switch to a certain tab of your choice via JavaScript. If that tab is already 
-                        visible / active or the method is called while animation is running, the call has no effect.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>instance.show()</h4>
+              <p>The public method to switch to a certain tab of your choice via JavaScript. If that tab is already 
+                visible / active or the method is called while animation is running, the call has no effect.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element.</p>
+              <h4>Tab.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Tab instance associated to a DOM element.</p>
             </section>
           
             <section id="tabEvents">
@@ -3185,7 +3009,7 @@ Array.from(myTabsCollection).forEach(
           
 <pre><code class="language-javascript">// get last item from collection and reference it's initialization
 var myLastTab = myTabsCollection[myTabsCollection.length-1];
-var myLastTabInit = myLastTab.Tab;
+var myLastTabInit = BSN.Tab.getInstance(myLastTab);
 
 // assuming the last tab is not active, we can show it
 myLastTabInit.show();
@@ -3387,34 +3211,19 @@ myLastTab.addEventListener('show.bs.tab', function(event){
           
             <section id="toastMethods">
               <h3>Toast Methods</h3>
-              <p>The <b>Toast</b> component exposes two public methods to be used via JavaScript:</p>
+              <p>The <b>Toast</b> component exposes two public methods as well as a <i>static</i> method to be used via JavaScript:</p>
 
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.show()</code></td>
-                      <td>The method shows an initialized toast.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.hide()</code></td>
-                      <td>The method hides an initialized toast, but doesn't remove
-                        the toast from the DOM.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from target element without calling any of the 
-                        above methods. Also the toast is not removed from the DOM.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>instance.show()</h4>
+              <p>The method shows an initialized toast.</p>
+              <h4>instance.hide()</h4>
+              <p>The method hides an initialized toast, but doesn't remove
+                the toast from the DOM.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element without calling any of the 
+                above methods. Also the toast is not removed from the DOM.</p>
+              <h4>Toast.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Toast instance associated to a DOM element.</p>
+
             </section>
           
             <section id="toastEvents">
@@ -3518,7 +3327,7 @@ myTastyToast.closest('.toast').addEventListener('hidden.bs.toast', function(even
 var myToastButton = document.getElementById('myToastButton');
 
 // reference the initialization object
-var myToastInit = myToastButton.Toast;
+var myToastInit = BSN.Toast.getInstance(myToastButton);
 
 // call the public methods
 myToastInit.show();
@@ -3665,55 +3474,32 @@ myToastInit.dispose();
           
             <section id="tooltipMethods">
               <h3>Tooltip Methods</h3>
-              <p>For full control the <b>Tooltip</b> component exposes a couple of public methods to be used via JavaScript:</p>
+              <p>For full control the <b>Tooltip</b> component exposes a couple of public methods as well as a <i>static</i> method
+                to be used via JavaScript:</p>
 
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Method Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>instance.show()</code></td>
-                      <td>The method shows an initialized tooltip. When the method is executed, it will
-                        always <b>create</b> a new tooltip and append it into your desired container.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.hide()</code></td>
-                      <td>The method hides an initialized tooltip and remove it from it's container and
-                        also from the memory, as if you would automatically <em>destroy</em> it.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.toggle()</code></td>
-                      <td>The method shows the tooltip if hidden and hides it otherwise, using the above
-                        two methods.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.enable()</code></td>
-                      <td>Starts showing the tooltip again to the user. Tooltips are <b>enabled by default</b>.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.disable()</code></td>
-                      <td>Stops showing the tooltip to the user.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.toggleEnabled()</code></td>
-                      <td>Toggles the enabled state by calling one of the two methods above.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.update()</code></td>
-                      <td>Updates the position of the popover.</td>
-                    </tr>
-                    <tr>
-                      <td><code>instance.dispose()</code></td>
-                      <td>Removes the component from the target element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <h4>instance.show()</h4>
+              <p>The method shows an initialized tooltip. When the method is executed, it will
+                always <b>create</b> a new tooltip and append it into your desired container.</p>
+              <h4>instance.hide()</h4>
+              <p>The method hides an initialized tooltip and remove it from it's container and
+                also from the memory, as if you would automatically <em>destroy</em> it.</p>
+              <h4>instance.toggle()</h4>
+              <p>The method shows the tooltip if hidden and hides it otherwise, using the above
+                two methods.</p>
+              <h4>instance.enable()</h4>
+              <p>Starts showing the tooltip again to the user by re-adding event listeners associated to the target.
+                Tooltips are <b>enabled by default</b>.</p>
+              <h4>instance.disable()</h4>
+              <p>Stops showing the tooltip to the user by removing event listeners associated to the target.</p>
+              <h4>instance.toggleEnabled()</h4>
+              <p>Toggles the enabled state by calling one of the two methods above.</p>
+              <h4>instance.update()</h4>
+              <p>Updates the position of the tooltip.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from the target element.</p>
+              <h4>Tooltip.getInstance()</h4>
+              <p>A <i>static</i> method that allows you to access a Tooltip instance associated to a DOM element.</p>
+
             </section>
           
             <section id="tooltipEvents">
@@ -3802,7 +3588,7 @@ Array.from(elementsTooltip).forEach(
 var myLinkWithTooltip = document.getElementById('myLinkWithTooltip');
 
 // reference the initialization object
-var myTooltipInit = myLinkWithTooltip.Tooltip;
+var myTooltipInit = BSN.Tooltip.getInstance(myLinkWithTooltip);
 </code></pre>
           
               <p>Considering the above element, let's go ahead and put the component's events to use:</p>

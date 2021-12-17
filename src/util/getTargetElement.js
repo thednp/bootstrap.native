@@ -1,3 +1,4 @@
+// @ts-nocheck
 import queryElement from 'shorter-js/src/misc/queryElement';
 
 import dataBsTarget from '../strings/dataBsTarget';
@@ -9,10 +10,10 @@ import dataBsContainer from '../strings/dataBsContainer';
  * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
  *
  * @param {Element} element the target element
- * @returns {?Element} the query result
+ * @returns {Element?} the query result
  */
 export default function getTargetElement(element) {
   return queryElement(element.getAttribute(dataBsTarget) || element.getAttribute('href'))
-        || element.closest(element.getAttribute(dataBsParent))
+  || element.closest(element.getAttribute(dataBsParent))
         || queryElement(element.getAttribute(dataBsContainer));
 }

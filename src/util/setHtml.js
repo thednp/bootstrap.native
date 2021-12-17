@@ -1,3 +1,5 @@
+import isElement from 'shorter-js/src/misc/isElement';
+
 /**
  * Append an existing `Element` to Popover / Tooltip component or HTML
  * markup string to be parsed & sanitized to be used as popover / tooltip content.
@@ -9,9 +11,10 @@
 export default function setHtml(element, content, sanitizeFn) {
   if (typeof content === 'string' && !content.length) return;
 
-  if (content instanceof Element) {
+  if (isElement(content)) {
     element.append(content);
   } else {
+    // @ts-ignore
     let dirty = content.trim(); // fixing #233
 
     if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
@@ -20,6 +23,7 @@ export default function setHtml(element, content, sanitizeFn) {
     const tempDocument = domParser.parseFromString(dirty, 'text/html');
     const { body } = tempDocument;
     const method = body.children.length ? 'innerHTML' : 'innerText';
+    // @ts-ignore
     element[method] = body[method];
   }
 }

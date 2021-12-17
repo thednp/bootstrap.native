@@ -10,16 +10,27 @@
 })(this, (function () { 'use strict';
 
   /**
+   * Checks if an element is an `Element`.
+   *
+   * @param {any} element the target element
+   * @returns {boolean} the query result
+   */
+  function isElement(element) {
+    return element instanceof Element;
+  }
+
+  /**
    * Utility to check if target is typeof Element
    * or find one that matches a selector.
    *
    * @param {Element | string} selector the input selector or target element
-   * @param {Element | null} parent optional Element to look into
-   * @return {Element | null} the Element or result of the querySelector
+   * @param {Element=} parent optional Element to look into
+   * @return {Element?} the Element or `querySelector` result
    */
   function queryElement(selector, parent) {
-    const lookUp = parent && parent instanceof Element ? parent : document;
-    return selector instanceof Element ? selector : lookUp.querySelector(selector);
+    const lookUp = parent && isElement(parent) ? parent : document;
+    // @ts-ignore
+    return isElement(selector) ? selector : lookUp.querySelector(selector);
   }
 
   /**
@@ -192,41 +203,46 @@
   const Data = {
     /**
      * Sets web components data.
-     * @param {Element} element target element
+     * @param {Element | string} element target element
      * @param {string} component the component's name or a unique key
      * @param {any} instance the component instance
      */
     set: (element, component, instance) => {
+      const ELEMENT = queryElement(element);
+      if (!isElement(ELEMENT)) return;
+
       if (!componentData.has(component)) {
         componentData.set(component, new Map());
       }
 
       const instanceMap = componentData.get(component);
-      instanceMap.set(element, instance);
+      instanceMap.set(ELEMENT, instance);
     },
 
     /**
      * Returns all instances for specified component.
      * @param {string} component the component's name or a unique key
-     * @returns {?any} all the component instances
+     * @returns {any?} all the component instances
      */
     getAllFor: (component) => {
       if (componentData.has(component)) {
-        return componentData.get(component) || null;
+        return componentData.get(component);
       }
       return null;
     },
 
     /**
      * Returns the instance associated with the target.
-     * @param {Element} element target element
+     * @param {Element | string} element target element
      * @param {string} component the component's name or a unique key
-     * @returns {?any} the instance
+     * @returns {any?} the instance
      */
     get: (element, component) => {
+      const ELEMENT = queryElement(element);
+
       const allForC = Data.getAllFor(component);
-      if (allForC && allForC.has(element)) {
-        return allForC.get(element) || null;
+      if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
+        return allForC.get(ELEMENT);
       }
       return null;
     },
@@ -235,7 +251,6 @@
      * Removes web components data.
      * @param {Element} element target element
      * @param {string} component the component's name or a unique key
-     * @param {any} instance the component instance
      */
     remove: (element, component) => {
       if (!componentData.has(component)) return;
@@ -250,22 +265,37 @@
   };
 
   /**
-   * Shortcut for `Data.get(a, b)` to setup usable component static method.
-   * @type {SHORTER.getInstance<SHORTER.Component, string>}
+   * An alias for `Data.get()`.
+   * @param {Element | string} element target element
+   * @param {string} component the component's name or a unique key
+   * @returns {any} the request result
    */
   const getInstance = (element, component) => Data.get(element, component);
 
+  /** Returns an original event for Bootstrap Native components. */
+  class OriginalEvent extends CustomEvent {
+    /**
+     * @param {string} EventType event.type
+     * @param {Record<string, any>=} config Event.options | Event.properties
+     */
+    constructor(EventType, config) {
+      super(EventType, config);
+      /** @type {EventTarget?} */
+      this.relatedTarget = null;
+    }
+  }
+
   /**
    * Returns a namespaced `CustomEvent` specific to each component.
-   * @param {string} namespacedEventType Event.type
-   * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
-   * @returns {CustomEvent} a new namespaced event
+   * @param {string} EventType Event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   * @returns {OriginalEvent} a new namespaced event
    */
-  function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-    const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+  function bootstrapCustomEvent(EventType, config) {
+    const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
 
-    if (eventProperties instanceof Object) {
-      Object.assign(OriginalCustomEvent, eventProperties);
+    if (config instanceof Object) {
+      Object.assign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
   }
@@ -285,16 +315,18 @@
    */
   const dataBsContainer = 'data-bs-container';
 
+  // @ts-nocheck
+
   /**
    * Returns the `Element` that THIS one targets
    * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
    *
    * @param {Element} element the target element
-   * @returns {?Element} the query result
+   * @returns {Element?} the query result
    */
   function getTargetElement(element) {
     return queryElement(element.getAttribute(dataBsTarget) || element.getAttribute('href'))
-          || element.closest(element.getAttribute(dataBsParent))
+    || element.closest(element.getAttribute(dataBsParent))
           || queryElement(element.getAttribute(dataBsContainer));
   }
 
@@ -359,7 +391,9 @@
 
     if (fixedItems.length) {
       fixedItems.forEach((fixed) => {
+        // @ts-ignore
         fixed.style.paddingRight = '';
+        // @ts-ignore
         fixed.style.marginRight = '';
       });
     }
@@ -397,9 +431,11 @@
         fixedItems.forEach((fixed) => {
           const isSticky = hasClass(fixed, stickyTopClass);
           const itemPadValue = getComputedStyle(fixed).paddingRight;
+          // @ts-ignore
           fixed.style.paddingRight = `${parseInt(itemPadValue, 10) + sbWidth}px`;
           if (isSticky) {
             const itemMValue = getComputedStyle(fixed).marginRight;
+            // @ts-ignore
             fixed.style.marginRight = `${parseInt(itemMValue, 10) - sbWidth}px`;
           }
         });
@@ -431,7 +467,7 @@
 
   /**
    * Returns the current active modal / offcancas element.
-   * @returns {Element} the requested element
+   * @returns {Element?} the requested element
    */
   function getCurrentOpen() {
     return queryElement(`${modalActiveSelector},${offcanvasActiveSelector}`);
@@ -439,7 +475,7 @@
 
   /**
    * Toogles from a Modal overlay to an Offcanvas, or vice-versa.
-   * @param {boolean | number} isModal
+   * @param {boolean=} isModal
    */
   function toggleOverlayType(isModal) {
     const targetClass = isModal ? modalBackdropClass : offcanvasBackdropClass;
@@ -451,8 +487,8 @@
 
   /**
    * Append the overlay to DOM.
-   * @param {boolean | number} hasFade
-   * @param {boolean | number} isModal
+   * @param {boolean} hasFade
+   * @param {boolean=} isModal
    */
   function appendOverlay(hasFade, isModal) {
     toggleOverlayType(isModal);
@@ -575,25 +611,34 @@
   class BaseComponent {
     /**
      * @param {Element | string} target Element or selector string
-     * @param {BSN.ComponentOptions?} config
+     * @param {BSN.ComponentOptions=} config component instance options
      */
     constructor(target, config) {
       const self = this;
       const element = queryElement(target);
 
-      if (!element) return;
+      if (!isElement(element)) {
+        throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+      }
 
-      const prevInstance = getInstance(element, self.name);
+      /** @type {BSN.ComponentOptions} */
+      self.options = {};
+
+      // @ts-ignore
+      const prevInstance = Data.get(element, self.name);
       if (prevInstance) prevInstance.dispose();
 
-      /** @private */
+      /** @type {Element} */
+      // @ts-ignore
       self.element = element;
 
       if (self.defaults && Object.keys(self.defaults).length) {
-        /** @private */
+        /** @static @type {Record<string, any>} */
+        // @ts-ignore
         self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
 
+      // @ts-ignore
       Data.set(element, self.name, self);
     }
 
@@ -606,6 +651,7 @@
     get name() { return this.constructor.name; }
 
     /** @static */
+    // @ts-ignore
     get defaults() { return this.constructor.defaults; }
 
     /**
@@ -613,7 +659,9 @@
      */
     dispose() {
       const self = this;
+      // @ts-ignore
       Data.remove(self.element, self.name);
+      // @ts-ignore
       Object.keys(self).forEach((prop) => { self[prop] = null; });
     }
   }
@@ -652,13 +700,9 @@
 
   // OFFCANVAS CUSTOM EVENTS
   // =======================
-  /** @type {BSN.OffcanvasEvent.show} */
   const showOffcanvasEvent = bootstrapCustomEvent(`show.bs.${offcanvasString}`);
-  /** @type {BSN.OffcanvasEvent.shown} */
   const shownOffcanvasEvent = bootstrapCustomEvent(`shown.bs.${offcanvasString}`);
-  /** @type {BSN.OffcanvasEvent.hide} */
   const hideOffcanvasEvent = bootstrapCustomEvent(`hide.bs.${offcanvasString}`);
-  /** @type {BSN.OffcanvasEvent.hidden} */
   const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`);
 
   // OFFCANVAS PRIVATE METHODS
@@ -674,6 +718,7 @@
     const html = document.documentElement;
     const bodyOverflow = html.clientHeight !== html.scrollHeight
                       || bd.clientHeight !== bd.scrollHeight;
+    // @ts-ignore
     setScrollbar(self.scrollbarWidth, bodyOverflow);
   }
 
@@ -681,21 +726,24 @@
    * Toggles on/off the `click` event listeners.
    *
    * @param {Offcanvas} self the `Offcanvas` instance
-   * @param {boolean | number} add when `true`, listeners are added
+   * @param {boolean=} add when `true`, listeners are added
    */
   function toggleOffcanvasEvents(self, add) {
     const action = add ? addEventListener : removeEventListener;
+    // @ts-ignore
     self.triggers.forEach((btn) => btn[action]('click', offcanvasTriggerHandler));
   }
 
   /**
    * Toggles on/off the listeners of the events that close the offcanvas.
    *
-   * @param {boolean | number} add the `Offcanvas` instance
+   * @param {boolean=} add the `Offcanvas` instance
    */
   function toggleOffCanvasDismiss(add) {
     const action = add ? addEventListener : removeEventListener;
+    // @ts-ignore
     document[action]('keydown', offcanvasKeyDismissHandler);
+    // @ts-ignore
     document[action]('click', offcanvasDismissHandler);
   }
 
@@ -714,6 +762,7 @@
 
     addClass(element, offcanvasTogglingClass);
     addClass(element, showClass);
+    // @ts-ignore
     element.style.visibility = 'visible';
 
     emulateTransitionEnd(element, () => showOffcanvasComplete(self));
@@ -728,6 +777,7 @@
     const { element, options } = self;
     const currentOpen = getCurrentOpen();
 
+    // @ts-ignore
     element.blur();
 
     if (!currentOpen && options.backdrop && hasClass(overlay, showClass)) {
@@ -741,14 +791,15 @@
   /**
    * Handles the `click` event listeners.
    *
+   * @this {Element}
    * @param {Event} e the `Event` object
    */
   function offcanvasTriggerHandler(e) {
     const trigger = this.closest(offcanvasToggleSelector);
-    const element = getTargetElement(trigger);
+    const element = trigger && getTargetElement(trigger);
     const self = element && getOffcanvasInstance(element);
 
-    if (trigger.tagName === 'A') e.preventDefault();
+    if (trigger && trigger.tagName === 'A') e.preventDefault();
     if (self) {
       self.toggle();
     }
@@ -767,14 +818,18 @@
     const self = getOffcanvasInstance(element);
     if (!self) return;
 
+    // @ts-ignore
     const { options, triggers } = self;
     const { target } = e;
+    // @ts-ignore
     const trigger = target.closest(offcanvasToggleSelector);
 
     if (trigger && trigger.tagName === 'A') e.preventDefault();
 
+    // @ts-ignore
     if ((!element.contains(target) && options.backdrop
       && (!trigger || (trigger && !triggers.includes(trigger))))
+      // @ts-ignore
       || (offCanvasDismiss && offCanvasDismiss.contains(target))) {
       self.hide();
     }
@@ -784,7 +839,7 @@
    * Handles the `keydown` event listener for offcanvas
    * to hide it when user type the `ESC` key.
    *
-   * @param {Event} {which} the `Event` object
+   * @param {{which: number}} e the `Event` object
    */
   function offcanvasKeyDismissHandler({ which }) {
     const element = queryElement(offcanvasActiveSelector);
@@ -797,38 +852,53 @@
     }
   }
 
+  /**
+   * Handles the `transitionend` when showing the offcanvas.
+   *
+   * @param {Offcanvas} self the `Offcanvas` instance
+   */
   function showOffcanvasComplete(self) {
+    // @ts-ignore
     const { element, triggers } = self;
     removeClass(element, offcanvasTogglingClass);
 
     element.removeAttribute(ariaHidden);
-    element.setAttribute(ariaModal, true);
+    element.setAttribute(ariaModal, 'true');
     element.setAttribute('role', 'dialog');
+    // @ts-ignore
     self.isAnimating = false;
 
     if (triggers.length) {
-      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, true));
+      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'true'));
     }
 
     element.dispatchEvent(shownOffcanvasEvent);
 
-    toggleOffCanvasDismiss(1);
+    toggleOffCanvasDismiss(true);
     setFocus(element);
   }
 
+  /**
+   * Handles the `transitionend` when hiding the offcanvas.
+   *
+   * @param {Offcanvas} self the `Offcanvas` instance
+   */
   function hideOffcanvasComplete(self) {
     const {
+      // @ts-ignore
       element, triggers,
     } = self;
 
-    element.setAttribute(ariaHidden, true);
+    element.setAttribute(ariaHidden, 'true');
     element.removeAttribute(ariaModal);
     element.removeAttribute('role');
+    // @ts-ignore
     element.style.visibility = '';
+    // @ts-ignore
     self.isAnimating = false;
 
     if (triggers.length) {
-      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, false));
+      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'false'));
       const visibleTrigger = triggers.find((x) => isVisible(x));
       if (visibleTrigger) setFocus(visibleTrigger);
     }
@@ -847,7 +917,7 @@
   class Offcanvas extends BaseComponent {
     /**
      * @param {Element | string} target usually an `.offcanvas` element
-     * @param {BSN.OffcanvasOptions?} config instance options
+     * @param {BSN.Options.Offcanvas=} config instance options
      */
     constructor(target, config) {
       super(target, config);
@@ -868,7 +938,7 @@
       self.scrollbarWidth = measureScrollbar();
 
       // attach event listeners
-      toggleOffcanvasEvents(self, 1);
+      toggleOffcanvasEvents(self, true);
     }
 
     /* eslint-disable */
@@ -895,8 +965,7 @@
 
     /** Shows the offcanvas to the user. */
     show() {
-      const that = getOffcanvasInstance(this);
-      const self = that || this;
+      const self = this;
       const {
         element, options, isAnimating,
       } = self;
@@ -920,7 +989,7 @@
 
       if (options.backdrop) {
         if (!currentOpen) {
-          appendOverlay(1);
+          appendOverlay(true);
         } else {
           toggleOverlayType();
         }
@@ -940,7 +1009,7 @@
 
     /**
      * Hides the offcanvas from the user.
-     * @param {boolean | number} force when `true` it will skip animation
+     * @param {boolean=} force when `true` it will skip animation
      */
     hide(force) {
       const self = this;
@@ -963,7 +1032,7 @@
     /** Removes the `Offcanvas` from the target element. */
     dispose() {
       const self = this;
-      self.hide(1);
+      self.hide(true);
       toggleOffcanvasEvents(self);
       super.dispose();
     }

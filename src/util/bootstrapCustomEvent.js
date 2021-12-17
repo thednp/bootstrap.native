@@ -1,14 +1,27 @@
+/** Returns an original event for Bootstrap Native components. */
+class OriginalEvent extends CustomEvent {
+  /**
+   * @param {string} EventType event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   */
+  constructor(EventType, config) {
+    super(EventType, config);
+    /** @type {EventTarget?} */
+    this.relatedTarget = null;
+  }
+}
+
 /**
  * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} namespacedEventType Event.type
- * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
- * @returns {CustomEvent} a new namespaced event
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {OriginalEvent} a new namespaced event
  */
-export default function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-  const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+export default function bootstrapCustomEvent(EventType, config) {
+  const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
 
-  if (eventProperties instanceof Object) {
-    Object.assign(OriginalCustomEvent, eventProperties);
+  if (config instanceof Object) {
+    Object.assign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
 }

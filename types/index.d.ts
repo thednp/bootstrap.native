@@ -22,28 +22,8 @@ export {
   GetInstance,
   InitCallback,
   ComponentOptions,
-  ComponentInstance,
-  // component typings
-  AlertEvent,
-  CarouselEvent,
-  CarouselOptions,
-  CollapseEvent,
-  CollapseOptions,
-  DropdownEvent,
-  DropdownOptions,
-  ModalEvent,
-  ModalOptions,
-  OffcanvasEvent,
-  OffcanvasOptions,
-  PopoverEvent,
-  PopoverOptions,
-  ScrollSpyEvent,
-  ScrollspyOptions,
-  TabEvent,
-  ToastEvent,
-  ToastOptions,
-  TooltipEvent,
-  TooltipOptions,
+  Event,
+  Options
 } from './more/types';
 
 // dependency

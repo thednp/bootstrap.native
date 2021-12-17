@@ -43,13 +43,9 @@ const collapseInitCallback = (element) => new Collapse(element);
 
 // COLLAPSE CUSTOM EVENTS
 // ======================
-/** @type {BSN.CollapseEvent.show} */
 const showCollapseEvent = bootstrapCustomEvent(`show.bs.${collapseString}`);
-/** @type {BSN.CollapseEvent.shown} */
 const shownCollapseEvent = bootstrapCustomEvent(`shown.bs.${collapseString}`);
-/** @type {BSN.CollapseEvent.hide} */
 const hideCollapseEvent = bootstrapCustomEvent(`hide.bs.${collapseString}`);
-/** @type {BSN.CollapseEvent.hidden} */
 const hiddenCollapseEvent = bootstrapCustomEvent(`hidden.bs.${collapseString}`);
 
 // COLLAPSE PRIVATE METHODS
@@ -60,22 +56,28 @@ const hiddenCollapseEvent = bootstrapCustomEvent(`hidden.bs.${collapseString}`);
  */
 function expandCollapse(self) {
   const {
+    // @ts-ignore
     element, parent, triggers,
   } = self;
 
   element.dispatchEvent(showCollapseEvent);
   if (showCollapseEvent.defaultPrevented) return;
 
+  // @ts-ignore
   self.isAnimating = true;
+  // @ts-ignore
   if (parent) parent.isAnimating = true;
 
   addClass(element, collapsingClass);
   removeClass(element, collapseString);
 
+  // @ts-ignore
   element.style.height = `${element.scrollHeight}px`;
 
   emulateTransitionEnd(element, () => {
+    // @ts-ignore
     self.isAnimating = false;
+    // @ts-ignore
     if (parent) parent.isAnimating = false;
 
     triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'true'));
@@ -84,6 +86,7 @@ function expandCollapse(self) {
     addClass(element, collapseString);
     addClass(element, showClass);
 
+    // @ts-ignore
     element.style.height = '';
 
     element.dispatchEvent(shownCollapseEvent);
@@ -96,6 +99,7 @@ function expandCollapse(self) {
  */
 function collapseContent(self) {
   const {
+    // @ts-ignore
     element, parent, triggers,
   } = self;
 
@@ -103,9 +107,12 @@ function collapseContent(self) {
 
   if (hideCollapseEvent.defaultPrevented) return;
 
+  // @ts-ignore
   self.isAnimating = true;
+  // @ts-ignore
   if (parent) parent.isAnimating = true;
 
+  // @ts-ignore
   element.style.height = `${element.scrollHeight}px`;
 
   removeClass(element, collapseString);
@@ -113,10 +120,13 @@ function collapseContent(self) {
   addClass(element, collapsingClass);
 
   reflow(element);
+  // @ts-ignore
   element.style.height = '0px';
 
   emulateTransitionEnd(element, () => {
+    // @ts-ignore
     self.isAnimating = false;
+    // @ts-ignore
     if (parent) parent.isAnimating = false;
 
     triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'false'));
@@ -124,6 +134,7 @@ function collapseContent(self) {
     removeClass(element, collapsingClass);
     addClass(element, collapseString);
 
+    // @ts-ignore
     element.style.height = '';
 
     element.dispatchEvent(hiddenCollapseEvent);
@@ -133,13 +144,15 @@ function collapseContent(self) {
 /**
  * Toggles on/off the event listener(s) of the `Collapse` instance.
  * @param {Collapse} self the `Collapse` instance
- * @param {boolean | number} add when `true`, the event listener is added
+ * @param {boolean=} add when `true`, the event listener is added
  */
 function toggleCollapseHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   const { triggers } = self;
 
   if (triggers.length) {
+    // @ts-ignore
     triggers.forEach((btn) => btn[action]('click', collapseClickHandler));
   }
 }
@@ -152,6 +165,7 @@ function toggleCollapseHandler(self, add) {
  */
 function collapseClickHandler(e) {
   const { target } = e;
+  // @ts-ignore
   const trigger = target.closest(collapseToggleSelector);
   const element = getTargetElement(trigger);
   const self = element && getCollapseInstance(element);
@@ -168,7 +182,7 @@ function collapseClickHandler(e) {
 export default class Collapse extends BaseComponent {
   /**
    * @param {Element | string} target and `Element` that matches the selector
-   * @param {BSN.CollapseOptions?} config instance options
+   * @param {BSN.Options.Collapse=} config instance options
    */
   constructor(target, config) {
     super(target, config);
@@ -191,10 +205,11 @@ export default class Collapse extends BaseComponent {
     // set initial state
     /** @private @type {boolean} */
     self.isAnimating = false;
+    // @ts-ignore
     if (parent) parent.isAnimating = false;
 
     // add event listeners
-    toggleCollapseHandler(self, 1);
+    toggleCollapseHandler(self, true);
   }
 
   /* eslint-disable */
@@ -246,6 +261,7 @@ export default class Collapse extends BaseComponent {
       activeCollapseInstance = activeCollapse && getCollapseInstance(activeCollapse);
     }
 
+    // @ts-ignore
     if ((!parent || (parent && !parent.isAnimating)) && !isAnimating) {
       if (activeCollapseInstance && activeCollapse !== element) {
         collapseContent(activeCollapseInstance);
@@ -267,6 +283,7 @@ export default class Collapse extends BaseComponent {
     const { parent } = self;
     toggleCollapseHandler(self);
 
+    // @ts-ignore
     if (parent) delete parent.isAnimating;
     super.dispose();
   }

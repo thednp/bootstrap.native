@@ -49,13 +49,9 @@ const toastInitCallback = (element) => new Toast(element);
 
 // TOAST CUSTOM EVENTS
 // ===================
-/** @type {BSN.ToastEvent.show} */
 const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
-/** @type {BSN.ToastEvent.shown} */
 const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
-/** @type {BSN.ToastEvent.hide} */
 const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
-/** @type {BSN.ToastEvent.hidden} */
 const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 
 // TOAST PRIVATE METHODS
@@ -121,11 +117,13 @@ function showToast(self) {
 /**
  * Toggles on/off the `click` event listener.
  * @param {Toast} self the `Toast` instance
- * @param {boolean | number} add when `true`, it will add the listener
+ * @param {boolean=} add when `true`, it will add the listener
  */
 function toggleToastHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   if (self.dismiss) {
+    // @ts-ignore
     self.dismiss[action]('click', self.hide);
   }
 }
@@ -137,6 +135,7 @@ function toggleToastHandler(self, add) {
  * @param {Toast} self the `Toast` instance
  */
 function completeDisposeToast(self) {
+  // @ts-ignore
   clearTimeout(self.timer);
   toggleToastHandler(self);
 }
@@ -147,7 +146,7 @@ function completeDisposeToast(self) {
 export default class Toast extends BaseComponent {
   /**
    * @param {Element | string} target the target `.toast` element
-   * @param {BSN.ToastOptions?} config the instance options
+   * @param {BSN.Options.Toast=} config the instance options
    */
   constructor(target, config) {
     super(target, config);
@@ -159,7 +158,9 @@ export default class Toast extends BaseComponent {
     if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
     else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
     // dismiss button
-    /** @private @type {Element} */
+    /** @private @type {any} */
+    self.timer = null;
+    /** @private @type {Element?} */
     self.dismiss = queryElement(toastDismissSelector, element);
 
     // bind
@@ -167,7 +168,7 @@ export default class Toast extends BaseComponent {
     self.hide = self.hide.bind(self);
 
     // add event listener
-    toggleToastHandler(self, 1);
+    toggleToastHandler(self, true);
   }
 
   /* eslint-disable */
@@ -199,7 +200,7 @@ export default class Toast extends BaseComponent {
   }
 
   /** Hides the toast. */
-  hide(noTimer) {
+  hide() {
     const self = this;
     const { element, options } = self;
 
@@ -208,8 +209,7 @@ export default class Toast extends BaseComponent {
       if (hideToastEvent.defaultPrevented) return;
 
       clearTimeout(self.timer);
-      self.timer = setTimeout(() => hideToast(self),
-        noTimer ? 10 : options.delay);
+      self.timer = setTimeout(() => hideToast(self), options.delay);
     }
   }
 

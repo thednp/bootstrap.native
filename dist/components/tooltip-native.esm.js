@@ -147,16 +147,27 @@ function emulateTransitionEnd(element, handler) {
 }
 
 /**
+ * Checks if an element is an `Element`.
+ *
+ * @param {any} element the target element
+ * @returns {boolean} the query result
+ */
+function isElement(element) {
+  return element instanceof Element;
+}
+
+/**
  * Utility to check if target is typeof Element
  * or find one that matches a selector.
  *
  * @param {Element | string} selector the input selector or target element
- * @param {Element | null} parent optional Element to look into
- * @return {Element | null} the Element or result of the querySelector
+ * @param {Element=} parent optional Element to look into
+ * @return {Element?} the Element or `querySelector` result
  */
 function queryElement(selector, parent) {
-  const lookUp = parent && parent instanceof Element ? parent : document;
-  return selector instanceof Element ? selector : lookUp.querySelector(selector);
+  const lookUp = parent && isElement(parent) ? parent : document;
+  // @ts-ignore
+  return isElement(selector) ? selector : lookUp.querySelector(selector);
 }
 
 /**
@@ -204,41 +215,46 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {Element} element target element
+   * @param {Element | string} element target element
    * @param {string} component the component's name or a unique key
    * @param {any} instance the component instance
    */
   set: (element, component, instance) => {
+    const ELEMENT = queryElement(element);
+    if (!isElement(ELEMENT)) return;
+
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    instanceMap.set(element, instance);
+    instanceMap.set(ELEMENT, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {?any} all the component instances
+   * @returns {any?} all the component instances
    */
   getAllFor: (component) => {
     if (componentData.has(component)) {
-      return componentData.get(component) || null;
+      return componentData.get(component);
     }
     return null;
   },
 
   /**
    * Returns the instance associated with the target.
-   * @param {Element} element target element
+   * @param {Element | string} element target element
    * @param {string} component the component's name or a unique key
-   * @returns {?any} the instance
+   * @returns {any?} the instance
    */
   get: (element, component) => {
+    const ELEMENT = queryElement(element);
+
     const allForC = Data.getAllFor(component);
-    if (allForC && allForC.has(element)) {
-      return allForC.get(element) || null;
+    if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
+      return allForC.get(ELEMENT);
     }
     return null;
   },
@@ -247,7 +263,6 @@ const Data = {
    * Removes web components data.
    * @param {Element} element target element
    * @param {string} component the component's name or a unique key
-   * @param {any} instance the component instance
    */
   remove: (element, component) => {
     if (!componentData.has(component)) return;
@@ -262,8 +277,10 @@ const Data = {
 };
 
 /**
- * Shortcut for `Data.get(a, b)` to setup usable component static method.
- * @type {SHORTER.getInstance<SHORTER.Component, string>}
+ * An alias for `Data.get()`.
+ * @param {Element | string} element target element
+ * @param {string} component the component's name or a unique key
+ * @returns {any} the request result
  */
 const getInstance = (element, component) => Data.get(element, component);
 
@@ -298,28 +315,42 @@ const fadeClass = 'fade';
  */
 const showClass = 'show';
 
+/** Returns an original event for Bootstrap Native components. */
+class OriginalEvent extends CustomEvent {
+  /**
+   * @param {string} EventType event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   */
+  constructor(EventType, config) {
+    super(EventType, config);
+    /** @type {EventTarget?} */
+    this.relatedTarget = null;
+  }
+}
+
 /**
  * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} namespacedEventType Event.type
- * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
- * @returns {CustomEvent} a new namespaced event
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {OriginalEvent} a new namespaced event
  */
-function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-  const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+function bootstrapCustomEvent(EventType, config) {
+  const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
 
-  if (eventProperties instanceof Object) {
-    Object.assign(OriginalCustomEvent, eventProperties);
+  if (config instanceof Object) {
+    Object.assign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
 }
 
+/** @type {Record<string, string>} */
 var tipClassPositions = {
   top: 'top', bottom: 'bottom', left: 'start', right: 'end',
 };
 
 /**
  * Style popovers and tooltips.
- * @param {BSN.Tooltip | BSN.Popover} self the Popover / Tooltip instance
+ * @param {BSN.Tooltip | BSN.Popover} self the `Popover` / `Tooltip` instance
  * @param {Event=} e event object
  */
 function styleTip(self, e) {
@@ -331,11 +362,13 @@ function styleTip(self, e) {
   tip.style.left = '';
   tip.style.right = '';
   // continue with metrics
+  // @ts-ignore
   const isPopover = !!self.popover;
   let tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
   const windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
   const windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
   const {
+    // @ts-ignore
     element, options, arrow, positions,
   } = self;
   let { container, placement } = options;
@@ -358,8 +391,11 @@ function styleTip(self, e) {
   const scroll = parentIsBody
     ? { x: window.pageXOffset, y: window.pageYOffset }
     : { x: container.scrollLeft, y: container.scrollTop };
+  // @ts-ignore
   const elemDimensions = { w: element.offsetWidth, h: element.offsetHeight };
+  // @ts-ignore
   const top = containerIsRelative ? element.offsetTop : targetRect.top;
+  // @ts-ignore
   const left = containerIsRelative ? element.offsetLeft : targetRect.left;
   // reset arrow style
   arrow.style.top = '';
@@ -433,11 +469,11 @@ function styleTip(self, e) {
   } else if (['top', 'bottom'].includes(placement)) {
     if (e && isMedia(element)) {
       const eX = !containerIsRelative
-        ? e.pageX
-        : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
+        // @ts-ignore
+        ? e.pageX : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
       const eY = !containerIsRelative
-        ? e.pageY
-        : e.layerY + (absoluteTarget ? element.offsetTop : 0);
+        // @ts-ignore
+        ? e.pageY : e.layerY + (absoluteTarget ? element.offsetTop : 0);
 
       if (placement === 'top') {
         topPosition = eY - tipDimensions.h - (isPopover ? arrowWidth : arrowHeight);
@@ -446,9 +482,11 @@ function styleTip(self, e) {
       }
 
       // adjust left | right and also the arrow
+      // @ts-ignore
       if (e.clientX - tipDimensions.w / 2 < leftBoundry) { // when exceeds left
         leftPosition = 0;
         arrowLeft = eX - arrowAdjust;
+      // @ts-ignore
       } else if (e.clientX + tipDimensions.w * 0.51 >= rightBoundry) { // when exceeds right
         leftPosition = 'auto';
         rightPosition = 0;
@@ -505,11 +543,12 @@ let bsnUID = 1;
  * Returns a unique identifier for popover, tooltip, scrollspy.
  *
  * @param {Element} element target element
- * @param {number} key predefined key
+ * @param {string} key predefined key
  * @returns {number} an existing or new unique key
  */
 function getUID(element, key) {
   bsnUID += 1;
+  // @ts-ignore
   return element[key] || bsnUID;
 }
 
@@ -551,6 +590,7 @@ function closestRelative(element) {
   let retval = null;
   let el = element;
   while (el !== document.body) {
+    // @ts-ignore
     el = el.parentElement;
     if (getComputedStyle(el).position === 'relative') {
       retval = el;
@@ -571,9 +611,10 @@ function closestRelative(element) {
 function setHtml(element, content, sanitizeFn) {
   if (typeof content === 'string' && !content.length) return;
 
-  if (content instanceof Element) {
+  if (isElement(content)) {
     element.append(content);
   } else {
+    // @ts-ignore
     let dirty = content.trim(); // fixing #233
 
     if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
@@ -582,6 +623,7 @@ function setHtml(element, content, sanitizeFn) {
     const tempDocument = domParser.parseFromString(dirty, 'text/html');
     const { body } = tempDocument;
     const method = body.children.length ? 'innerHTML' : 'innerText';
+    // @ts-ignore
     element[method] = body[method];
   }
 }
@@ -675,25 +717,34 @@ const Version = version;
 class BaseComponent {
   /**
    * @param {Element | string} target Element or selector string
-   * @param {BSN.ComponentOptions?} config
+   * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
     const self = this;
     const element = queryElement(target);
 
-    if (!element) return;
+    if (!isElement(element)) {
+      throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+    }
 
-    const prevInstance = getInstance(element, self.name);
+    /** @type {BSN.ComponentOptions} */
+    self.options = {};
+
+    // @ts-ignore
+    const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @private */
+    /** @type {Element} */
+    // @ts-ignore
     self.element = element;
 
     if (self.defaults && Object.keys(self.defaults).length) {
-      /** @private */
+      /** @static @type {Record<string, any>} */
+      // @ts-ignore
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
+    // @ts-ignore
     Data.set(element, self.name, self);
   }
 
@@ -706,6 +757,7 @@ class BaseComponent {
   get name() { return this.constructor.name; }
 
   /** @static */
+  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -713,7 +765,9 @@ class BaseComponent {
    */
   dispose() {
     const self = this;
+    // @ts-ignore
     Data.remove(self.element, self.name);
+    // @ts-ignore
     Object.keys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -755,13 +809,9 @@ const tooltipInitCallback = (element) => new Tooltip(element);
 
 // TOOLTIP CUSTOM EVENTS
 // =====================
-/** @type {BSN.TooltipEvent.show} */
 const showTooltipEvent = bootstrapCustomEvent(`show.bs.${tooltipString}`);
-/** @type {BSN.TooltipEvent.shown} */
 const shownTooltipEvent = bootstrapCustomEvent(`shown.bs.${tooltipString}`);
-/** @type {BSN.TooltipEvent.hide} */
 const hideTooltipEvent = bootstrapCustomEvent(`hide.bs.${tooltipString}`);
-/** @type {BSN.TooltipEvent.hidden} */
 const hiddenTooltipEvent = bootstrapCustomEvent(`hidden.bs.${tooltipString}`);
 
 // TOOLTIP PRIVATE METHODS
@@ -791,22 +841,33 @@ function createTooltip(self) {
   }
 
   // create tooltip
+  // @ts-ignore
   self.tooltip = tooltipTemplate.cloneNode(true);
+  // @ts-ignore
   const { tooltip } = self;
   // set title
+  // @ts-ignore
   setHtml(queryElement(`.${tooltipInnerClass}`, tooltip), title, sanitizeFn);
   // set id & role attribute
+  // @ts-ignore
   tooltip.setAttribute('id', id);
+  // @ts-ignore
   tooltip.setAttribute('role', tooltipString);
   // set arrow
+  // @ts-ignore
   self.arrow = queryElement(`.${tooltipString}-arrow`, tooltip);
 
   // set classes
+  // @ts-ignore
   if (!hasClass(tooltip, tooltipString)) addClass(tooltip, tooltipString);
+  // @ts-ignore
   if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
+  // @ts-ignore
   if (customClass && !hasClass(tooltip, customClass)) {
+    // @ts-ignore
     addClass(tooltip, customClass);
   }
+  // @ts-ignore
   if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
 }
 
@@ -816,9 +877,12 @@ function createTooltip(self) {
  * @param {Tooltip} self the `Tooltip` instance
  */
 function removeTooltip(self) {
+  // @ts-ignore
   const { element, tooltip } = self;
   element.removeAttribute(ariaDescribedBy);
+  // @ts-ignore
   tooltip.remove();
+  // @ts-ignore
   self.timer = null;
 }
 
@@ -830,6 +894,7 @@ function removeTooltip(self) {
 function disposeTooltipComplete(self) {
   const { element } = self;
   toggleTooltipHandlers(self);
+  // @ts-ignore
   if (element.hasAttribute(dataOriginalTitle)) toggleTooltipTitle(self);
 }
 
@@ -837,15 +902,18 @@ function disposeTooltipComplete(self) {
  * Toggles on/off the special `Tooltip` event listeners.
  *
  * @param {Tooltip} self the `Tooltip` instance
- * @param {boolean | number} add when `true`, event listeners are added
+ * @param {boolean=} add when `true`, event listeners are added
  */
 function toggleTooltipAction(self, add) {
   const action = add ? addEventListener : removeEventListener;
 
+  // @ts-ignore
   document[action]('touchstart', tooltipTouchHandler, passiveHandler);
 
   if (!isMedia(self.element)) {
+    // @ts-ignore
     window[action]('scroll', self.update, passiveHandler);
+    // @ts-ignore
     window[action]('resize', self.update, passiveHandler);
   }
 }
@@ -856,7 +924,7 @@ function toggleTooltipAction(self, add) {
  * @param {Tooltip} self the `Tooltip` instance
  */
 function tooltipShownAction(self) {
-  toggleTooltipAction(self, 1);
+  toggleTooltipAction(self, true);
   self.element.dispatchEvent(shownTooltipEvent);
 }
 
@@ -875,15 +943,19 @@ function tooltipHiddenAction(self) {
  * Toggles on/off the `Tooltip` event listeners.
  *
  * @param {Tooltip} self the `Tooltip` instance
- * @param {boolean | number} add when `true`, event listeners are added
+ * @param {boolean=} add when `true`, event listeners are added
  */
 function toggleTooltipHandlers(self, add) {
   const action = add ? addEventListener : removeEventListener;
   const { element } = self;
 
+  // @ts-ignore
   if (isMedia(element)) element[action]('mousemove', self.update, passiveHandler);
+  // @ts-ignore
   element[action]('mousedown', self.show);
+  // @ts-ignore
   element[action]('mouseenter', self.show);
+  // @ts-ignore
   element[action]('mouseleave', self.hide);
 }
 
@@ -899,6 +971,7 @@ function toggleTooltipTitle(self, content) {
   const { element } = self;
 
   element.setAttribute(titleAtt[content ? 0 : 1],
+    // @ts-ignore
     (content || element.getAttribute(titleAtt[0])));
   element.removeAttribute(titleAtt[content ? 1 : 0]);
 }
@@ -907,11 +980,15 @@ function toggleTooltipTitle(self, content) {
 // ======================
 /**
  * Handles the `touchstart` event listener for `Tooltip`
- * @param {Event} e the `Event` object
+ * @this {Tooltip}
+ * @param {{target: Element}} e the `Event` object
  */
 function tooltipTouchHandler({ target }) {
+  // @ts-ignore
   const { tooltip, element } = this;
+  // @ts-ignore
   if (tooltip.contains(target) || target === element || element.contains(target)) ; else {
+    // @ts-ignore
     this.hide();
   }
 }
@@ -922,27 +999,29 @@ function tooltipTouchHandler({ target }) {
 class Tooltip extends BaseComponent {
   /**
    * @param {Element | string} target the target element
-   * @param {BSN.TooltipOptions?} config the instance options
+   * @param {BSN.Options.Tooltip=} config the instance options
    */
   constructor(target, config) {
     // initialization element
     const element = queryElement(target);
+    // @ts-ignore
     tooltipDefaults[titleAttr] = element.getAttribute(titleAttr);
+    // @ts-ignore
     tooltipDefaults.container = getTipContainer(element);
-    super(element, config);
+    super(target, config);
 
     // bind
     const self = this;
 
     // additional properties
-    /** @private @type {Element} */
+    /** @private @type {Element?} */
     self.tooltip = null;
-    /** @private @type {Element} */
+    /** @private @type {Element?} */
     self.arrow = null;
-    /** @private @type {number} */
+    /** @private @type {number?} */
     self.timer = null;
     /** @private @type {boolean} */
-    self.enabled = false;
+    self.enabled = true;
 
     // instance options
     const { options } = self;
@@ -964,14 +1043,17 @@ class Tooltip extends BaseComponent {
     self.update = self.update.bind(self);
 
     // set title attributes and add event listeners
+    // @ts-ignore
     if (element.hasAttribute(titleAttr)) toggleTooltipTitle(self, options.title);
 
     // create tooltip here
+    // @ts-ignore
     self.id = `${tooltipString}-${getUID(element)}`;
     createTooltip(self);
 
     // set positions
     const { container } = self.options;
+    // @ts-ignore
     const elementPosition = getComputedStyle(element).position;
     const containerPosition = getComputedStyle(container).position;
     const parentIsBody = container === document.body;
@@ -987,7 +1069,7 @@ class Tooltip extends BaseComponent {
     };
 
     // attach events
-    toggleTooltipHandlers(self, 1);
+    toggleTooltipHandlers(self, true);
   }
 
   /* eslint-disable */
@@ -1011,6 +1093,7 @@ class Tooltip extends BaseComponent {
    * @param {Event?} e the `Event` object
    */
   show(e) {
+    // @ts-ignore
     const self = e ? getTooltipInstance(this) : this;
     const {
       options, tooltip, element, id,
@@ -1018,6 +1101,7 @@ class Tooltip extends BaseComponent {
     const {
       container, animation,
     } = options;
+    // @ts-ignore
     clearTimeout(self.timer);
     if (!isVisibleTip(tooltip, container)) {
       element.dispatchEvent(showTooltipEvent);
@@ -1028,7 +1112,9 @@ class Tooltip extends BaseComponent {
       element.setAttribute(ariaDescribedBy, id);
 
       self.update(e);
+      // @ts-ignore
       if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
+      // @ts-ignore
       if (animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
       else tooltipShownAction(self);
     }
@@ -1040,16 +1126,21 @@ class Tooltip extends BaseComponent {
    * @param {Event?} e the `Event` object
    */
   hide(e) {
+    // @ts-ignore
     const self = e ? getTooltipInstance(this) : this;
     const { options, tooltip, element } = self;
 
+    // @ts-ignore
     clearTimeout(self.timer);
+    // @ts-ignore
     self.timer = setTimeout(() => {
       if (isVisibleTip(tooltip, options.container)) {
         element.dispatchEvent(hideTooltipEvent);
         if (hideTooltipEvent.defaultPrevented) return;
 
+        // @ts-ignore
         removeClass(tooltip, showClass);
+        // @ts-ignore
         if (options.animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(self));
         else tooltipHiddenAction(self);
       }
@@ -1062,6 +1153,7 @@ class Tooltip extends BaseComponent {
    * @param {Event?} e the `Event` object
    */
   update(e) {
+    // @ts-ignore
     styleTip(this, e);
   }
 
@@ -1071,9 +1163,12 @@ class Tooltip extends BaseComponent {
    * @param {Event?} e the `Event` object
    */
   toggle(e) {
+    // @ts-ignore
     const self = e ? getTooltipInstance(this) : this;
     const { tooltip, options } = self;
+    // @ts-ignore
     if (!isVisibleTip(tooltip, options.container)) self.show();
+    // @ts-ignore
     else self.hide();
   }
 
@@ -1082,7 +1177,7 @@ class Tooltip extends BaseComponent {
     const self = this;
     const { enabled } = self;
     if (!enabled) {
-      toggleTooltipHandlers(self, 1);
+      toggleTooltipHandlers(self, true);
       self.enabled = !enabled;
     }
   }
@@ -1093,10 +1188,12 @@ class Tooltip extends BaseComponent {
     const { tooltip, options, enabled } = self;
     if (enabled) {
       if (!isVisibleTip(tooltip, options.container) && options.animation) {
+        // @ts-ignore
         self.hide();
 
         setTimeout(
           () => toggleTooltipHandlers(self),
+          // @ts-ignore
           getElementTransitionDuration(tooltip) + options.delay + 17,
         );
       } else {
@@ -1120,7 +1217,9 @@ class Tooltip extends BaseComponent {
 
     if (options.animation && isVisibleTip(tooltip, options.container)) {
       options.delay = 0; // reset delay
+      // @ts-ignore
       self.hide();
+      // @ts-ignore
       emulateTransitionEnd(tooltip, () => disposeTooltipComplete(self));
     } else {
       disposeTooltipComplete(self);

@@ -3,7 +3,8 @@
 
 import queryElement from 'shorter-js/src/misc/queryElement';
 import normalizeOptions from 'shorter-js/src/misc/normalizeOptions';
-import Data, { getInstance } from 'shorter-js/src/misc/data';
+import Data from 'shorter-js/src/misc/data';
+import isElement from 'shorter-js/src/misc/isElement';
 
 import Version from '../version';
 
@@ -13,25 +14,34 @@ import Version from '../version';
 export default class BaseComponent {
   /**
    * @param {Element | string} target Element or selector string
-   * @param {BSN.ComponentOptions?} config
+   * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
     const self = this;
     const element = queryElement(target);
 
-    if (!element) return;
+    if (!isElement(element)) {
+      throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+    }
 
-    const prevInstance = getInstance(element, self.name);
+    /** @type {BSN.ComponentOptions} */
+    self.options = {};
+
+    // @ts-ignore
+    const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @private */
+    /** @type {Element} */
+    // @ts-ignore
     self.element = element;
 
     if (self.defaults && Object.keys(self.defaults).length) {
-      /** @private */
+      /** @static @type {Record<string, any>} */
+      // @ts-ignore
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
+    // @ts-ignore
     Data.set(element, self.name, self);
   }
 
@@ -44,6 +54,7 @@ export default class BaseComponent {
   get name() { return this.constructor.name; }
 
   /** @static */
+  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -51,7 +62,9 @@ export default class BaseComponent {
    */
   dispose() {
     const self = this;
+    // @ts-ignore
     Data.remove(self.element, self.name);
+    // @ts-ignore
     Object.keys(self).forEach((prop) => { self[prop] = null; });
   }
 }

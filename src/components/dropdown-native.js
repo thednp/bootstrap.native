@@ -56,14 +56,10 @@ const dropdownDefaults = {
 };
 
 // DROPDOWN CUSTOM EVENTS
-// ========================
-/** @type {BSN.DropdownEvent.show} */
+// ======================
 const showDropdownEvent = bootstrapCustomEvent(`show.bs.${dropdownString}`);
-/** @type {BSN.DropdownEvent.shown} */
 const shownDropdownEvent = bootstrapCustomEvent(`shown.bs.${dropdownString}`);
-/** @type {BSN.DropdownEvent.hide} */
 const hideDropdownEvent = bootstrapCustomEvent(`hide.bs.${dropdownString}`);
-/** @type {BSN.DropdownEvent.hidden} */
 const hiddenDropdownEvent = bootstrapCustomEvent(`hidden.bs.${dropdownString}`);
 
 // DROPDOWN PRIVATE METHODS
@@ -73,10 +69,11 @@ const hiddenDropdownEvent = bootstrapCustomEvent(`hidden.bs.${dropdownString}`);
  * accomodate the layout and the page scroll.
  *
  * @param {Dropdown} self the `Dropdown` instance
- * @param {boolean | number} show when `true` will have a different effect
+ * @param {boolean=} show when `true` will have a different effect
  */
 function styleDropdown(self, show) {
   const {
+    // @ts-ignore
     element, menu, originalClass, menuEnd, options,
   } = self;
   const { offset } = options;
@@ -84,11 +81,14 @@ function styleDropdown(self, show) {
 
   // reset menu offset and position
   const resetProps = ['margin', 'top', 'bottom', 'left', 'right'];
+  // @ts-ignore
   resetProps.forEach((p) => { menu.style[p] = ''; });
+  // @ts-ignore
   removeClass(parent, 'position-static');
 
   if (!show) {
     const menuEndNow = hasClass(menu, dropdownMenuEndClass);
+    // @ts-ignore
     parent.className = originalClass.join(' ');
     if (menuEndNow && !menuEnd) removeClass(menu, dropdownMenuEndClass);
     else if (!menuEndNow && menuEnd) addClass(menu, dropdownMenuEndClass);
@@ -118,7 +118,9 @@ function styleDropdown(self, show) {
   hideMenuClass.forEach((c) => addClass(menu, c));
 
   const dropdownRegex = new RegExp(`\\b(${dropdownString}|${dropupString}|${dropstartString}|${dropendString})+`);
+  // @ts-ignore
   const elementDimensions = { w: element.offsetWidth, h: element.offsetHeight };
+  // @ts-ignore
   const menuDimensions = { w: menu.offsetWidth, h: menu.offsetHeight };
   const HTML = document.documentElement;
   const BD = document.body;
@@ -161,14 +163,20 @@ function styleDropdown(self, show) {
   }
 
   // set spacing
+  // @ts-ignore
   dropdownMargin = dropdownMargin[positionClass];
+  // @ts-ignore
   menu.style.margin = `${dropdownMargin.map((x) => (x ? `${x}px` : x)).join(' ')}`;
+  // @ts-ignore
   Object.keys(dropdownPosition[positionClass]).forEach((position) => {
+    // @ts-ignore
     menu.style[position] = dropdownPosition[positionClass][position];
   });
 
   // update dropdown position class
+  // @ts-ignore
   if (!hasClass(parent, positionClass)) {
+    // @ts-ignore
     parent.className = parent.className.replace(dropdownRegex, positionClass);
   }
 
@@ -180,6 +188,7 @@ function styleDropdown(self, show) {
 
     if (hasClass(menu, dropdownMenuEndClass)) {
       Object.keys(dropdownPosition.menuEnd).forEach((p) => {
+        // @ts-ignore
         menu.style[p] = dropdownPosition.menuEnd[p];
       });
     }
@@ -196,15 +205,22 @@ function styleDropdown(self, show) {
  * @param {Dropdown} self the `Dropdown` instance
  */
 function toggleDropdownDismiss(self) {
+  // @ts-ignore
   const action = self.open ? addEventListener : removeEventListener;
 
+  // @ts-ignore
   document[action]('click', dropdownDismissHandler);
+  // @ts-ignore
   document[action]('focus', dropdownDismissHandler);
+  // @ts-ignore
   document[action]('keydown', dropdownPreventScroll);
+  // @ts-ignore
   document[action]('keyup', dropdownKeyHandler);
 
   if (self.options.display === 'dynamic') {
+    // @ts-ignore
     window[action]('scroll', dropdownLayoutHandler, passiveHandler);
+    // @ts-ignore
     window[action]('resize', dropdownLayoutHandler, passiveHandler);
   }
 }
@@ -213,10 +229,11 @@ function toggleDropdownDismiss(self) {
  * Toggles on/off the `click` event listener of the `Dropdown`.
  *
  * @param {Dropdown} self the `Dropdown` instance
- * @param {*} add when `true`, it will add the event listener
+ * @param {boolean=} add when `true`, it will add the event listener
  */
 function toggleDropdownHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   self.element[action]('click', dropdownClickHandler);
 }
 
@@ -231,7 +248,9 @@ function getCurrentOpenDropdown() {
     .find((x) => x.length);
 
   if (currentParent && currentParent.length) {
-    return Array.from(currentParent[0].children).find((x) => x.hasAttribute(dataBsToggle));
+    // @ts-ignore
+    return Array.from(currentParent[0].children)
+      .find((x) => x.hasAttribute(dataBsToggle));
   }
   return null;
 }
@@ -245,6 +264,7 @@ function getCurrentOpenDropdown() {
  */
 function dropdownDismissHandler(e) {
   const { target, type } = e;
+  // @ts-ignore
   if (!target.closest) return; // some weird FF bug #409
 
   const element = getCurrentOpenDropdown();
@@ -252,16 +272,21 @@ function dropdownDismissHandler(e) {
 
   const self = getDropdownInstance(element);
   const parent = element.parentNode;
+  // @ts-ignore
   const menu = self && self.menu;
 
+  // @ts-ignore
   const hasData = target.closest(dropdownSelector) !== null;
+  // @ts-ignore
   const isForm = parent && parent.contains(target)
+    // @ts-ignore
     && (target.tagName === 'form' || target.closest('form') !== null);
 
+  // @ts-ignore
   if (type === 'click' && isEmptyAnchor(target)) {
     e.preventDefault();
   }
-  if (type === 'focus'
+  if (type === 'focus' // @ts-ignore
     && (target === element || target === menu || menu.contains(target))) {
     return;
   }
@@ -269,46 +294,50 @@ function dropdownDismissHandler(e) {
   if (isForm || hasData) {
     // smile to ESLint
   } else if (self) {
-    self.hide(element);
+    self.hide();
   }
 }
 
 /**
- *
- * @param {EventListener} e event object
- * @returns {void}
+ * Handles `click` event listener for `Dropdown`.
+ * @this {Element}
+ * @param {Event} e event object
  */
 function dropdownClickHandler(e) {
   const element = this;
   const self = getDropdownInstance(element);
-  self.toggle(element);
+  self.toggle();
 
+  // @ts-ignore
   if (isEmptyAnchor(e.target)) e.preventDefault();
 }
 
 /**
- *
- * @param {EventListener} e event object
- * @returns {void}
+ * Prevents scroll when dropdown-menu is visible.
+ * @param {Event} e event object
  */
 function dropdownPreventScroll(e) {
+  // @ts-ignore
   if (e.which === 38 || e.which === 40) e.preventDefault();
 }
 
 /**
- *
- * @param {{which: number}} which keyboard key
- * @returns {void}
+ * Handles keyboard `keydown` events for `Dropdown`.
+ * @param {{which: number}} e keyboard key
  */
 function dropdownKeyHandler({ which }) {
   const element = getCurrentOpenDropdown();
+  // @ts-ignore
   const self = getDropdownInstance(element);
+  // @ts-ignore
   const { menu, menuItems, open } = self;
   const activeItem = document.activeElement;
   const isSameElement = activeItem === element;
   const isInsideMenu = menu.contains(activeItem);
+  // @ts-ignore
   const isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu;
 
+  // @ts-ignore
   let idx = menuItems.indexOf(activeItem);
 
   if (isMenuItem) { // navigate up | down
@@ -339,7 +368,8 @@ function dropdownLayoutHandler() {
   const element = getCurrentOpenDropdown();
   const self = element && getDropdownInstance(element);
 
-  if (self && self.open) styleDropdown(self, 1);
+  // @ts-ignore
+  if (self && self.open) styleDropdown(self, true);
 }
 
 // DROPDOWN DEFINITION
@@ -351,7 +381,7 @@ function dropdownLayoutHandler() {
 export default class Dropdown extends BaseComponent {
   /**
    * @param {Element | string} target Element or string selector
-   * @param {BSN.DropdownOptions?} config the instance options
+   * @param {BSN.Options.Dropdown=} config the instance options
    */
   constructor(target, config) {
     super(target, config);
@@ -364,10 +394,12 @@ export default class Dropdown extends BaseComponent {
     // set targets
     const { parentElement } = element;
     /** @private @type {Element} */
+    // @ts-ignore
     self.menu = queryElement(`.${dropdownMenuClass}`, parentElement);
     const { menu } = self;
 
-    /** @private @type {string} */
+    /** @private @type {string[]} */
+    // @ts-ignore
     self.originalClass = Array.from(parentElement.classList);
 
     // set original position
@@ -387,7 +419,7 @@ export default class Dropdown extends BaseComponent {
     self.open = false;
 
     // add event listener
-    toggleDropdownHandler(self, 1);
+    toggleDropdownHandler(self, true);
   }
 
   /* eslint-disable */
@@ -408,9 +440,8 @@ export default class Dropdown extends BaseComponent {
   /** Shows/hides the dropdown menu to the user. */
   toggle() {
     const self = this;
-    const { open } = self;
 
-    if (open) self.hide();
+    if (self.open) self.hide();
     else self.show();
   }
 
@@ -423,26 +454,30 @@ export default class Dropdown extends BaseComponent {
     if (currentElement) getDropdownInstance(currentElement).hide();
 
     const { element, menu, open } = self;
-    const parent = element.parentNode;
+    const { parentElement } = element;
 
-    // update relatedTarget and dispatch
-    parent.dispatchEvent(showDropdownEvent);
+    // dispatch
+    [showDropdownEvent, shownDropdownEvent].forEach((e) => { e.relatedTarget = element; });
+
+    // @ts-ignore
+    parentElement.dispatchEvent(showDropdownEvent);
     if (showDropdownEvent.defaultPrevented) return;
 
     // change menu position
-    styleDropdown(self, 1);
+    styleDropdown(self, true);
 
     addClass(menu, showClass);
-    addClass(parent, showClass);
+    // @ts-ignore
+    addClass(parentElement, showClass);
 
-    element.setAttribute(ariaExpanded, true);
+    element.setAttribute(ariaExpanded, 'true');
     self.open = !open;
 
     setTimeout(() => {
       setFocus(element); // focus the element
       toggleDropdownDismiss(self);
-
-      parent.dispatchEvent(shownDropdownEvent);
+      // @ts-ignore
+      parentElement.dispatchEvent(shownDropdownEvent);
     }, 1);
   }
 
@@ -450,23 +485,29 @@ export default class Dropdown extends BaseComponent {
   hide() {
     const self = this;
     const { element, menu, open } = self;
-    const parent = element.parentNode;
-    parent.dispatchEvent(hideDropdownEvent);
+    const { parentElement } = element;
+    // @ts-ignore
+    [hideDropdownEvent, hiddenDropdownEvent].forEach((e) => { e.relatedTarget = element; });
+
+    // @ts-ignore
+    parentElement.dispatchEvent(hideDropdownEvent);
     if (hideDropdownEvent.defaultPrevented) return;
 
     removeClass(menu, showClass);
-    removeClass(parent, showClass);
+    // @ts-ignore
+    removeClass(parentElement, showClass);
 
     // revert to original position
     styleDropdown(self);
 
-    element.setAttribute(ariaExpanded, false);
+    element.setAttribute(ariaExpanded, 'false');
     self.open = !open;
 
     // only re-attach handler if the instance is not disposed
     setTimeout(() => toggleDropdownDismiss(self), 1);
 
-    parent.dispatchEvent(hiddenDropdownEvent);
+    // @ts-ignore
+    parentElement.dispatchEvent(hiddenDropdownEvent);
   }
 
   /** Removes the `Dropdown` component from the target element. */
@@ -474,6 +515,7 @@ export default class Dropdown extends BaseComponent {
     const self = this;
     const { element } = self;
 
+    // @ts-ignore
     if (hasClass(element.parentNode, showClass) && self.open) self.hide();
 
     toggleDropdownHandler(self);

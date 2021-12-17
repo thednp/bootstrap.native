@@ -22,11 +22,22 @@ declare module "bootstrap.native/src/strings/dataBsDismiss" {
 declare module "bootstrap.native/src/util/bootstrapCustomEvent" {
     /**
      * Returns a namespaced `CustomEvent` specific to each component.
-     * @param {string} namespacedEventType Event.type
-     * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
-     * @returns {CustomEvent} a new namespaced event
+     * @param {string} EventType Event.type
+     * @param {Record<string, any>=} config Event.options | Event.properties
+     * @returns {OriginalEvent} a new namespaced event
      */
-    export default function bootstrapCustomEvent(namespacedEventType: string, eventProperties: AddEventListenerOptions | boolean): CustomEvent;
+    export default function bootstrapCustomEvent(EventType: string, config?: Record<string, any> | undefined): OriginalEvent;
+    /** Returns an original event for Bootstrap Native components. */
+    class OriginalEvent extends CustomEvent<any> {
+        /**
+         * @param {string} EventType event.type
+         * @param {Record<string, any>=} config Event.options | Event.properties
+         */
+        constructor(EventType: string, config?: Record<string, any> | undefined);
+        /** @type {EventTarget?} */
+        relatedTarget: EventTarget | null;
+    }
+    export {};
 }
 declare module "bootstrap.native/src/version" {
     export default Version;
@@ -39,11 +50,13 @@ declare module "bootstrap.native/src/components/base-component" {
     export default class BaseComponent {
         /**
          * @param {Element | string} target Element or selector string
-         * @param {BSN.ComponentOptions?} config
+         * @param {BSN.ComponentOptions=} config component instance options
          */
-        constructor(target: Element | string, config: BSN.ComponentOptions | null);
-        /** @private */
-        private element;
+        constructor(target: Element | string, config?: BSN.ComponentOptions | undefined);
+        /** @type {BSN.ComponentOptions} */
+        options: BSN.ComponentOptions;
+        /** @type {Element} */
+        element: Element;
         /** @static */
         get version(): string;
         /** @static */
@@ -61,18 +74,16 @@ declare module "bootstrap.native/src/components/alert-native" {
     export default class Alert extends BaseComponent {
         /** @param {Element | string} target element or selector */
         constructor(target: Element | string);
-        /** @private */
-        private dismiss;
-        /** @private */
-        private relatedTarget;
+        /** @static @type {Element?} */
+        dismiss: Element | null;
+        /** @static @type {Element?} */
+        relatedTarget: Element | null;
         /**
-         * Private method that:
-         * * Hides the `.alert` element from the user,
-         * * Destroy the instance once animation is complete,
-         * * Removes the element from the DOM.
+         * Public method that hides the `.alert` element from the user,
+         * disposes the instance once animation is complete, then
+         * removes the element from the DOM.
          *
          * @param {Event} e most likely the `click` event
-         * @returns {void}
          */
         close(e: Event): void;
     }
@@ -110,17 +121,14 @@ declare module "bootstrap.native/src/components/button-native" {
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
 declare module "bootstrap.native/src/components/carousel-native" {
-    /**
-     * Returns a new `Carousel` instance.
-     */
+    /** Creates a new `Carousel` instance. */
     export default class Carousel extends BaseComponent {
         /**
-         *
          * @param {Element | string} target mostly a `.carousel` element
-         * @param {BSN.CarouselOptions?} config instance options
+         * @param {BSN.Options.Carousel=} config instance options
          */
-        constructor(target: Element | string, config: BSN.CarouselOptions | null);
-        /** @private @type {number?} */
+        constructor(target: Element | string, config?: BSN.Options.Carousel | undefined);
+        /** @private @type {any?} */
         private timer;
         /** @private @type {string} */
         private direction;
@@ -191,7 +199,7 @@ declare module "bootstrap.native/src/util/getTargetElement" {
      * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
      *
      * @param {Element} element the target element
-     * @returns {?Element} the query result
+     * @returns {Element?} the query result
      */
     export default function getTargetElement(element: Element): Element | null;
 }
@@ -200,9 +208,9 @@ declare module "bootstrap.native/src/components/collapse-native" {
     export default class Collapse extends BaseComponent {
         /**
          * @param {Element | string} target and `Element` that matches the selector
-         * @param {BSN.CollapseOptions?} config instance options
+         * @param {BSN.Options.Collapse=} config instance options
          */
-        constructor(target: Element | string, config: BSN.CollapseOptions | null);
+        constructor(target: Element | string, config?: BSN.Options.Collapse | undefined);
         /** @private @type {Element[]} */
         private triggers;
         /** @private @type {Element?} */
@@ -257,12 +265,12 @@ declare module "bootstrap.native/src/components/dropdown-native" {
     export default class Dropdown extends BaseComponent implements BaseComponent {
         /**
          * @param {Element | string} target Element or string selector
-         * @param {BSN.DropdownOptions?} config the instance options
+         * @param {BSN.Options.Dropdown=} config the instance options
          */
-        constructor(target: Element | string, config: BSN.DropdownOptions | null);
+        constructor(target: Element | string, config?: BSN.Options.Dropdown | undefined);
         /** @private @type {Element} */
         private menu;
-        /** @private @type {string} */
+        /** @private @type {string[]} */
         private originalClass;
         /** @private @type {boolean} */
         private menuEnd;
@@ -329,15 +337,15 @@ declare module "bootstrap.native/src/util/backdrop" {
     export const offcanvasActiveSelector: string;
     /**
      * Toogles from a Modal overlay to an Offcanvas, or vice-versa.
-     * @param {boolean | number} isModal
+     * @param {boolean=} isModal
      */
-    export function toggleOverlayType(isModal: boolean | number): void;
+    export function toggleOverlayType(isModal?: boolean | undefined): void;
     /**
      * Append the overlay to DOM.
-     * @param {boolean | number} hasFade
-     * @param {boolean | number} isModal
+     * @param {boolean} hasFade
+     * @param {boolean=} isModal
      */
-    export function appendOverlay(hasFade: boolean | number, isModal: boolean | number): void;
+    export function appendOverlay(hasFade: boolean, isModal?: boolean | undefined): void;
     /**
      * Shows the overlay to the user.
      */
@@ -348,9 +356,9 @@ declare module "bootstrap.native/src/util/backdrop" {
     export function hideOverlay(): void;
     /**
      * Returns the current active modal / offcancas element.
-     * @returns {Element} the requested element
+     * @returns {Element?} the requested element
      */
-    export function getCurrentOpen(): Element;
+    export function getCurrentOpen(): Element | null;
     /**
      * Removes the overlay from DOM.
      */
@@ -364,10 +372,10 @@ declare module "bootstrap.native/src/components/modal-native" {
     export default class Modal extends BaseComponent {
         /**
          * @param {Element | string} target usually the `.modal` element
-         * @param {BSN.ModalOptions?} config instance options
+         * @param {BSN.Options.Modal=} config instance options
          */
-        constructor(target: Element | string, config: BSN.ModalOptions | null);
-        /** @private @type {Element} */
+        constructor(target: Element | string, config?: BSN.Options.Modal | undefined);
+        /** @private @type {Element?} */
         private modalDialog;
         /** @private @type {Element[]} */
         private triggers;
@@ -379,7 +387,7 @@ declare module "bootstrap.native/src/components/modal-native" {
         private isAnimating;
         /** @private @type {number} */
         private scrollbarWidth;
-        /** @private @type {number} */
+        /** @private @type {Element?} */
         private relatedTarget;
         /** Updates the modal layout. */
         update(): void;
@@ -389,9 +397,9 @@ declare module "bootstrap.native/src/components/modal-native" {
         show(): void;
         /**
          * Hide the modal from the user.
-         * @param {boolean | number} force when `true` it will skip animation
+         * @param {boolean=} force when `true` it will skip animation
          */
-        hide(force: boolean | number): void;
+        hide(force?: boolean | undefined): void;
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
@@ -400,9 +408,9 @@ declare module "bootstrap.native/src/components/offcanvas-native" {
     export default class Offcanvas extends BaseComponent {
         /**
          * @param {Element | string} target usually an `.offcanvas` element
-         * @param {BSN.OffcanvasOptions?} config instance options
+         * @param {BSN.Options.Offcanvas=} config instance options
          */
-        constructor(target: Element | string, config: BSN.OffcanvasOptions | null);
+        constructor(target: Element | string, config?: BSN.Options.Offcanvas | undefined);
         /** @private @type {Element[]} */
         private triggers;
         /** @private @type {boolean} */
@@ -415,19 +423,14 @@ declare module "bootstrap.native/src/components/offcanvas-native" {
         show(): void;
         /**
          * Hides the offcanvas from the user.
-         * @param {boolean | number} force when `true` it will skip animation
+         * @param {boolean=} force when `true` it will skip animation
          */
-        hide(force: boolean | number): void;
+        hide(force?: boolean | undefined): void;
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
 declare module "bootstrap.native/src/util/tipClassPositions" {
-    namespace _default {
-        const top: string;
-        const bottom: string;
-        const left: string;
-        const right: string;
-    }
+    var _default: Record<string, string>;
     export default _default;
 }
 declare module "bootstrap.native/src/util/isVisibleTip" {
@@ -436,7 +439,7 @@ declare module "bootstrap.native/src/util/isVisibleTip" {
 declare module "bootstrap.native/src/util/styleTip" {
     /**
      * Style popovers and tooltips.
-     * @param {BSN.Tooltip | BSN.Popover} self the Popover / Tooltip instance
+     * @param {BSN.Tooltip | BSN.Popover} self the `Popover` / `Tooltip` instance
      * @param {Event=} e event object
      */
     export default function styleTip(self: BSN.Tooltip | BSN.Popover, e?: Event | undefined): void;
@@ -446,10 +449,10 @@ declare module "bootstrap.native/src/util/getUID" {
      * Returns a unique identifier for popover, tooltip, scrollspy.
      *
      * @param {Element} element target element
-     * @param {number} key predefined key
+     * @param {string} key predefined key
      * @returns {number} an existing or new unique key
      */
-    export default function getUID(element: Element, key: number): number;
+    export default function getUID(element: Element, key: string): number;
 }
 declare module "bootstrap.native/src/util/getTipContainer" {
     /**
@@ -486,16 +489,16 @@ declare module "bootstrap.native/src/components/popover-native" {
     export default class Popover extends BaseComponent {
         /**
          * @param {Element | string} target usualy an element with `data-bs-toggle` attribute
-         * @param {BSN.PopoverOptions?} config instance options
+         * @param {BSN.Options.Popover=} config instance options
          */
-        constructor(target: Element | string, config: BSN.PopoverOptions | null);
-        /** @private @type {number} */
+        constructor(target: Element | string, config?: BSN.Options.Popover | undefined);
+        /** @private @type {any?} */
         private timer;
-        /** @private @type {Element} */
+        /** @private @type {Element?} */
         private popover;
-        /** @private @type {Element} */
+        /** @private @type {Element?} */
         private arrow;
-        /** @private @type {Element} */
+        /** @private @type {Element?} */
         private btn;
         /** @private @type {boolean} */
         private enabled;
@@ -506,27 +509,28 @@ declare module "bootstrap.native/src/components/popover-native" {
         /**
          * Updates the position of the popover.
          *
-         * @param {Event?} e the `Event` object
+         * @param {Event=} e the `Event` object
          */
-        update(e: Event | null): void;
+        update(e?: Event | undefined): void;
         /**
          * Toggles visibility of the popover.
          *
-         * @param {Event?} e the `Event` object
+         * @param {Event=} e the `Event` object
          */
-        toggle(e: Event | null): void;
+        toggle(e?: Event | undefined): void;
         /**
          * Shows the popover.
          *
-         * @param {Event?} e the `Event` object
+         * @param {Event=} e the `Event` object
          */
-        show(e: Event | null): void;
+        show(e?: Event | undefined): void;
         /**
          * Hides the popover.
          *
-         * @param {Event?} e the `Event` object
+         * @this {Element | Popover}
+         * @param {Event=} e the `Event` object
          */
-        hide(e: Event | null): void;
+        hide(e?: Event | undefined): void;
         /** Disables the popover. */
         enable(): void;
         /** Enables the popover. */
@@ -541,12 +545,12 @@ declare module "bootstrap.native/src/components/scrollspy-native" {
     export default class ScrollSpy extends BaseComponent {
         /**
          * @param {Element | string} target the target element
-         * @param {BSN.ScrollspyOptions?} config the instance options
+         * @param {BSN.Options.ScrollSpy=} config the instance options
          */
-        constructor(target: Element | string, config: BSN.ScrollspyOptions | null);
-        /** @private @type {Element} */
+        constructor(target: Element | string, config?: BSN.Options.ScrollSpy | undefined);
+        /** @private @type {Element?} */
         private target;
-        /** @private @type {Element} */
+        /** @private @type {Element | Window} */
         private scrollTarget;
         /** @private @type {boolean} */
         private isWindow;
@@ -560,6 +564,8 @@ declare module "bootstrap.native/src/components/scrollspy-native" {
         private activeItem;
         /** @private @type {Element[]} */
         private items;
+        /** @private @type {number} */
+        private itemsLength;
         /** @private @type {number[]} */
         private offsets;
         /** Updates all items. */
@@ -574,9 +580,9 @@ declare module "bootstrap.native/src/components/tab-native" {
          * @param {Element | string} target the target element
          */
         constructor(target: Element | string);
-        /** @private @type {Element} */
+        /** @private @type {Element?} */
         private nav;
-        /** @private @type {Element} */
+        /** @private @type {Element?} */
         private dropdown;
         tabContent: false | Element | null;
         /** Shows the tab to the user. */
@@ -589,15 +595,17 @@ declare module "bootstrap.native/src/components/toast-native" {
     export default class Toast extends BaseComponent {
         /**
          * @param {Element | string} target the target `.toast` element
-         * @param {BSN.ToastOptions?} config the instance options
+         * @param {BSN.Options.Toast=} config the instance options
          */
-        constructor(target: Element | string, config: BSN.ToastOptions | null);
-        /** @private @type {Element} */
+        constructor(target: Element | string, config?: BSN.Options.Toast | undefined);
+        /** @private @type {any} */
+        private timer;
+        /** @private @type {Element?} */
         private dismiss;
         /** Shows the toast. */
         show(): void;
         /** Hides the toast. */
-        hide(noTimer: any): void;
+        hide(): void;
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
@@ -613,14 +621,14 @@ declare module "bootstrap.native/src/components/tooltip-native" {
     export default class Tooltip extends BaseComponent {
         /**
          * @param {Element | string} target the target element
-         * @param {BSN.TooltipOptions?} config the instance options
+         * @param {BSN.Options.Tooltip=} config the instance options
          */
-        constructor(target: Element | string, config: BSN.TooltipOptions | null);
-        /** @private @type {Element} */
+        constructor(target: Element | string, config?: BSN.Options.Tooltip | undefined);
+        /** @private @type {Element?} */
         private tooltip;
-        /** @private @type {Element} */
+        /** @private @type {Element?} */
         private arrow;
-        /** @private @type {number} */
+        /** @private @type {number?} */
         private timer;
         /** @private @type {boolean} */
         private enabled;

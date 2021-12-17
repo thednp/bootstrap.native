@@ -62,6 +62,10 @@ html {
 /* misc */
 .popover .close {line-height: 0.75;}
 .popover .btn-close {position: absolute; right:0.75em}
+[dir="rtl"] .popover .btn-close {
+  left: 0.75em;
+  right: auto;
+}
 
 /* bg */
 .bg-bootstrap { background-color: #563d7c }

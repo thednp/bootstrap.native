@@ -153,16 +153,27 @@
   }
 
   /**
+   * Checks if an element is an `Element`.
+   *
+   * @param {any} element the target element
+   * @returns {boolean} the query result
+   */
+  function isElement(element) {
+    return element instanceof Element;
+  }
+
+  /**
    * Utility to check if target is typeof Element
    * or find one that matches a selector.
    *
    * @param {Element | string} selector the input selector or target element
-   * @param {Element | null} parent optional Element to look into
-   * @return {Element | null} the Element or result of the querySelector
+   * @param {Element=} parent optional Element to look into
+   * @return {Element?} the Element or `querySelector` result
    */
   function queryElement(selector, parent) {
-    const lookUp = parent && parent instanceof Element ? parent : document;
-    return selector instanceof Element ? selector : lookUp.querySelector(selector);
+    const lookUp = parent && isElement(parent) ? parent : document;
+    // @ts-ignore
+    return isElement(selector) ? selector : lookUp.querySelector(selector);
   }
 
   /**
@@ -210,41 +221,46 @@
   const Data = {
     /**
      * Sets web components data.
-     * @param {Element} element target element
+     * @param {Element | string} element target element
      * @param {string} component the component's name or a unique key
      * @param {any} instance the component instance
      */
     set: (element, component, instance) => {
+      const ELEMENT = queryElement(element);
+      if (!isElement(ELEMENT)) return;
+
       if (!componentData.has(component)) {
         componentData.set(component, new Map());
       }
 
       const instanceMap = componentData.get(component);
-      instanceMap.set(element, instance);
+      instanceMap.set(ELEMENT, instance);
     },
 
     /**
      * Returns all instances for specified component.
      * @param {string} component the component's name or a unique key
-     * @returns {?any} all the component instances
+     * @returns {any?} all the component instances
      */
     getAllFor: (component) => {
       if (componentData.has(component)) {
-        return componentData.get(component) || null;
+        return componentData.get(component);
       }
       return null;
     },
 
     /**
      * Returns the instance associated with the target.
-     * @param {Element} element target element
+     * @param {Element | string} element target element
      * @param {string} component the component's name or a unique key
-     * @returns {?any} the instance
+     * @returns {any?} the instance
      */
     get: (element, component) => {
+      const ELEMENT = queryElement(element);
+
       const allForC = Data.getAllFor(component);
-      if (allForC && allForC.has(element)) {
-        return allForC.get(element) || null;
+      if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
+        return allForC.get(ELEMENT);
       }
       return null;
     },
@@ -253,7 +269,6 @@
      * Removes web components data.
      * @param {Element} element target element
      * @param {string} component the component's name or a unique key
-     * @param {any} instance the component instance
      */
     remove: (element, component) => {
       if (!componentData.has(component)) return;
@@ -268,8 +283,10 @@
   };
 
   /**
-   * Shortcut for `Data.get(a, b)` to setup usable component static method.
-   * @type {SHORTER.getInstance<SHORTER.Component, string>}
+   * An alias for `Data.get()`.
+   * @param {Element | string} element target element
+   * @param {string} component the component's name or a unique key
+   * @returns {any} the request result
    */
   const getInstance = (element, component) => Data.get(element, component);
 
@@ -283,6 +300,17 @@
     return [SVGElement, HTMLImageElement, HTMLVideoElement]
       .some((mediaType) => element instanceof mediaType);
   }
+
+  // @ts-ignore
+  const { userAgentData } = navigator;
+  const appleBrands = /(iPhone|iPod|iPad)/;
+
+  /**
+   * A global namespace for Apple browsers.
+   * @type {boolean}
+   */
+  const isApple = !userAgentData ? appleBrands.test(navigator.userAgent)
+    : userAgentData.brands.some((x) => appleBrands.test(x.brand));
 
   /**
    * Global namespace for most components `toggle` option.
@@ -299,21 +327,35 @@
    */
   const fadeClass = 'fade';
 
+  /** Returns an original event for Bootstrap Native components. */
+  class OriginalEvent extends CustomEvent {
+    /**
+     * @param {string} EventType event.type
+     * @param {Record<string, any>=} config Event.options | Event.properties
+     */
+    constructor(EventType, config) {
+      super(EventType, config);
+      /** @type {EventTarget?} */
+      this.relatedTarget = null;
+    }
+  }
+
   /**
    * Returns a namespaced `CustomEvent` specific to each component.
-   * @param {string} namespacedEventType Event.type
-   * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
-   * @returns {CustomEvent} a new namespaced event
+   * @param {string} EventType Event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   * @returns {OriginalEvent} a new namespaced event
    */
-  function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-    const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+  function bootstrapCustomEvent(EventType, config) {
+    const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
 
-    if (eventProperties instanceof Object) {
-      Object.assign(OriginalCustomEvent, eventProperties);
+    if (config instanceof Object) {
+      Object.assign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
   }
 
+  /** @type {Record<string, string>} */
   var tipClassPositions = {
     top: 'top', bottom: 'bottom', left: 'start', right: 'end',
   };
@@ -324,7 +366,7 @@
 
   /**
    * Style popovers and tooltips.
-   * @param {BSN.Tooltip | BSN.Popover} self the Popover / Tooltip instance
+   * @param {BSN.Tooltip | BSN.Popover} self the `Popover` / `Tooltip` instance
    * @param {Event=} e event object
    */
   function styleTip(self, e) {
@@ -336,11 +378,13 @@
     tip.style.left = '';
     tip.style.right = '';
     // continue with metrics
+    // @ts-ignore
     const isPopover = !!self.popover;
     let tipDimensions = { w: tip.offsetWidth, h: tip.offsetHeight };
     const windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
     const windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
     const {
+      // @ts-ignore
       element, options, arrow, positions,
     } = self;
     let { container, placement } = options;
@@ -363,8 +407,11 @@
     const scroll = parentIsBody
       ? { x: window.pageXOffset, y: window.pageYOffset }
       : { x: container.scrollLeft, y: container.scrollTop };
+    // @ts-ignore
     const elemDimensions = { w: element.offsetWidth, h: element.offsetHeight };
+    // @ts-ignore
     const top = containerIsRelative ? element.offsetTop : targetRect.top;
+    // @ts-ignore
     const left = containerIsRelative ? element.offsetLeft : targetRect.left;
     // reset arrow style
     arrow.style.top = '';
@@ -438,11 +485,11 @@
     } else if (['top', 'bottom'].includes(placement)) {
       if (e && isMedia(element)) {
         const eX = !containerIsRelative
-          ? e.pageX
-          : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
+          // @ts-ignore
+          ? e.pageX : e.layerX + (absoluteTarget ? element.offsetLeft : 0);
         const eY = !containerIsRelative
-          ? e.pageY
-          : e.layerY + (absoluteTarget ? element.offsetTop : 0);
+          // @ts-ignore
+          ? e.pageY : e.layerY + (absoluteTarget ? element.offsetTop : 0);
 
         if (placement === 'top') {
           topPosition = eY - tipDimensions.h - (isPopover ? arrowWidth : arrowHeight);
@@ -451,9 +498,11 @@
         }
 
         // adjust left | right and also the arrow
+        // @ts-ignore
         if (e.clientX - tipDimensions.w / 2 < leftBoundry) { // when exceeds left
           leftPosition = 0;
           arrowLeft = eX - arrowAdjust;
+        // @ts-ignore
         } else if (e.clientX + tipDimensions.w * 0.51 >= rightBoundry) { // when exceeds right
           leftPosition = 'auto';
           rightPosition = 0;
@@ -514,11 +563,12 @@
    * Returns a unique identifier for popover, tooltip, scrollspy.
    *
    * @param {Element} element target element
-   * @param {number} key predefined key
+   * @param {string} key predefined key
    * @returns {number} an existing or new unique key
    */
   function getUID(element, key) {
     bsnUID += 1;
+    // @ts-ignore
     return element[key] || bsnUID;
   }
 
@@ -560,6 +610,7 @@
     let retval = null;
     let el = element;
     while (el !== document.body) {
+      // @ts-ignore
       el = el.parentElement;
       if (getComputedStyle(el).position === 'relative') {
         retval = el;
@@ -580,9 +631,10 @@
   function setHtml(element, content, sanitizeFn) {
     if (typeof content === 'string' && !content.length) return;
 
-    if (content instanceof Element) {
+    if (isElement(content)) {
       element.append(content);
     } else {
+      // @ts-ignore
       let dirty = content.trim(); // fixing #233
 
       if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
@@ -591,6 +643,7 @@
       const tempDocument = domParser.parseFromString(dirty, 'text/html');
       const { body } = tempDocument;
       const method = body.children.length ? 'innerHTML' : 'innerText';
+      // @ts-ignore
       element[method] = body[method];
     }
   }
@@ -684,25 +737,34 @@
   class BaseComponent {
     /**
      * @param {Element | string} target Element or selector string
-     * @param {BSN.ComponentOptions?} config
+     * @param {BSN.ComponentOptions=} config component instance options
      */
     constructor(target, config) {
       const self = this;
       const element = queryElement(target);
 
-      if (!element) return;
+      if (!isElement(element)) {
+        throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+      }
 
-      const prevInstance = getInstance(element, self.name);
+      /** @type {BSN.ComponentOptions} */
+      self.options = {};
+
+      // @ts-ignore
+      const prevInstance = Data.get(element, self.name);
       if (prevInstance) prevInstance.dispose();
 
-      /** @private */
+      /** @type {Element} */
+      // @ts-ignore
       self.element = element;
 
       if (self.defaults && Object.keys(self.defaults).length) {
-        /** @private */
+        /** @static @type {Record<string, any>} */
+        // @ts-ignore
         self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
 
+      // @ts-ignore
       Data.set(element, self.name, self);
     }
 
@@ -715,6 +777,7 @@
     get name() { return this.constructor.name; }
 
     /** @static */
+    // @ts-ignore
     get defaults() { return this.constructor.defaults; }
 
     /**
@@ -722,7 +785,9 @@
      */
     dispose() {
       const self = this;
+      // @ts-ignore
       Data.remove(self.element, self.name);
+      // @ts-ignore
       Object.keys(self).forEach((prop) => { self[prop] = null; });
     }
   }
@@ -735,22 +800,14 @@
   const popoverString = 'popover';
   const popoverComponent = 'Popover';
   const popoverSelector = `[${dataBsToggle}="${popoverString}"],[data-tip="${popoverString}"]`;
-  const appleBrands = /(iPhone|iPod|iPad)/;
-  const isIphone = navigator.userAgentData
-    ? navigator.userAgentData.brands.some((x) => appleBrands.test(x.brand))
-    : appleBrands.test(navigator.userAgent);
   const popoverHeaderClass = `${popoverString}-header`;
   const popoverBodyClass = `${popoverString}-body`;
 
   // POPOVER CUSTOM EVENTS
   // =====================
-  /** @type {BSN.PopoverEvent.show} */
   const showPopoverEvent = bootstrapCustomEvent(`show.bs.${popoverString}`);
-  /** @type {BSN.PopoverEvent.shown} */
   const shownPopoverEvent = bootstrapCustomEvent(`shown.bs.${popoverString}`);
-  /** @type {BSN.PopoverEvent.hide} */
   const hidePopoverEvent = bootstrapCustomEvent(`hide.bs.${popoverString}`);
-  /** @type {BSN.PopoverEvent.hidden} */
   const hiddenPopoverEvent = bootstrapCustomEvent(`hidden.bs.${popoverString}`);
 
   const popoverDefaults = {
@@ -786,10 +843,12 @@
   // ======================
   /**
    * Handles the `touchstart` event listener for `Popover`
-   * @param {Event} e the `Event` object
+   * @this {Popover}
+   * @param {{target: Element}} e the `Event` object
    */
   function popoverTouchHandler({ target }) {
     const self = this;
+    // @ts-ignore
     const { popover, element } = self;
 
     if ((popover && popover.contains(target)) // popover includes touch target
@@ -807,6 +866,7 @@
    * @param {Popover} self the `Popover` instance
    */
   function createPopover(self) {
+    // @ts-ignore
     const { id, options } = self;
     const {
       animation, customClass, sanitizeFn, placement, dismissible,
@@ -831,18 +891,25 @@
       popoverTemplate = htmlMarkup.firstChild;
     }
     // set popover markup
+    // @ts-ignore
     self.popover = popoverTemplate.cloneNode(true);
 
+    // @ts-ignore
     const { popover } = self;
 
     // set id and role attributes
+    // @ts-ignore
     popover.setAttribute('id', id);
+    // @ts-ignore
     popover.setAttribute('role', 'tooltip');
 
+    // @ts-ignore
     const popoverHeader = queryElement(`.${popoverHeaderClass}`, popover);
+    // @ts-ignore
     const popoverBody = queryElement(`.${popoverBodyClass}`, popover);
 
     // set arrow and enable access for styleTip
+    // @ts-ignore
     self.arrow = queryElement(`.${popoverString}-arrow`, popover);
 
     // set dismissible button
@@ -863,14 +930,20 @@
     if (content && popoverBody) setHtml(popoverBody, content, sanitizeFn);
 
     // set btn and enable access for styleTip
+    // @ts-ignore
     [self.btn] = popover.getElementsByClassName('btn-close');
 
     // set popover animation and placement
+    // @ts-ignore
     if (!hasClass(popover, popoverString)) addClass(popover, popoverString);
+    // @ts-ignore
     if (animation && !hasClass(popover, fadeClass)) addClass(popover, fadeClass);
+    // @ts-ignore
     if (customClass && !hasClass(popover, customClass)) {
+      // @ts-ignore
       addClass(popover, customClass);
     }
+    // @ts-ignore
     if (!hasClass(popover, placementClass)) addClass(popover, placementClass);
   }
 
@@ -880,9 +953,12 @@
    * @param {Popover} self the `Popover` instance
    */
   function removePopover(self) {
+    // @ts-ignore
     const { element, popover } = self;
     element.removeAttribute(ariaDescribedBy);
+    // @ts-ignore
     popover.remove();
+    // @ts-ignore
     self.timer = null;
   }
 
@@ -890,23 +966,31 @@
    * Toggles on/off the `Popover` event listeners.
    *
    * @param {Popover} self the `Popover` instance
-   * @param {boolean | number} add when `true`, event listeners are added
+   * @param {boolean=} add when `true`, event listeners are added
    */
   function togglePopoverHandlers(self, add) {
     const action = add ? addEventListener : removeEventListener;
     const { element, options } = self;
     const { trigger, dismissible } = options;
+    // @ts-ignore
     self.enabled = !!add;
 
     if (trigger === 'hover') {
+      // @ts-ignore
       element[action]('mousedown', self.show);
+      // @ts-ignore
       element[action]('mouseenter', self.show);
+      // @ts-ignore
       if (isMedia(element)) element[action]('mousemove', self.update, passiveHandler);
+      // @ts-ignore
       if (!dismissible) element[action]('mouseleave', self.hide);
     } else if (trigger === 'click') {
+      // @ts-ignore
       element[action](trigger, self.toggle);
     } else if (trigger === 'focus') {
-      if (isIphone) element[action]('click', () => setFocus(element));
+      // @ts-ignore
+      if (isApple) element[action]('click', () => setFocus(element));
+      // @ts-ignore
       element[action]('focusin', self.show);
     }
   }
@@ -915,22 +999,28 @@
    * Toggles on/off the `Popover` event listeners that close popover.
    *
    * @param {Popover} self the `Popover` instance
-   * @param {boolean | number} add when `true`, event listeners are added
+   * @param {boolean=} add when `true`, event listeners are added
    */
   function dismissHandlerToggle(self, add) {
     const action = add ? addEventListener : removeEventListener;
+    // @ts-ignore
     const { options, element, btn } = self;
     const { trigger, dismissible } = options;
 
     if (dismissible) {
+      // @ts-ignore
       if (btn) btn[action]('click', self.hide);
     } else {
+      // @ts-ignore
       if (trigger === 'focus') element[action]('focusout', self.hide);
+      // @ts-ignore
       if (trigger === 'hover') document[action]('touchstart', popoverTouchHandler, passiveHandler);
     }
 
     if (!isMedia(element)) {
+      // @ts-ignore
       window[action]('scroll', self.update, passiveHandler);
+      // @ts-ignore
       window[action]('resize', self.update, passiveHandler);
     }
   }
@@ -960,10 +1050,11 @@
   class Popover extends BaseComponent {
     /**
      * @param {Element | string} target usualy an element with `data-bs-toggle` attribute
-     * @param {BSN.PopoverOptions?} config instance options
+     * @param {BSN.Options.Popover=} config instance options
      */
     constructor(target, config) {
       const element = queryElement(target);
+      // @ts-ignore
       popoverDefaults.container = getTipContainer(element);
       super(target, config);
 
@@ -971,18 +1062,19 @@
       const self = this;
 
       // additional instance properties
-      /** @private @type {number} */
+      /** @private @type {any?} */
       self.timer = null;
-      /** @private @type {Element} */
+      /** @private @type {Element?} */
       self.popover = null;
-      /** @private @type {Element} */
+      /** @private @type {Element?} */
       self.arrow = null;
-      /** @private @type {Element} */
+      /** @private @type {Element?} */
       self.btn = null;
       /** @private @type {boolean} */
-      self.enabled = false;
+      self.enabled = true;
       // set unique ID for aria-describedby
       /** @private @type {string} */
+      // @ts-ignore
       self.id = `${popoverString}-${getUID(element)}`;
 
       // set instance options
@@ -1004,6 +1096,7 @@
 
       // set positions
       const { container } = self.options;
+      // @ts-ignore
       const elementPosition = getComputedStyle(element).position;
       const containerPosition = getComputedStyle(container).position;
       const parentIsBody = container === document.body;
@@ -1019,10 +1112,11 @@
       };
 
       // bind
+      popoverTouchHandler.bind(self);
       self.update = self.update.bind(self);
 
       // attach event listeners
-      togglePopoverHandlers(self, 1);
+      togglePopoverHandlers(self, true);
     }
 
     /* eslint-disable */
@@ -1041,9 +1135,10 @@
     /**
      * Updates the position of the popover.
      *
-     * @param {Event?} e the `Event` object
+     * @param {Event=} e the `Event` object
      */
     update(e) {
+      // @ts-ignore
       styleTip(this, e);
     }
 
@@ -1052,11 +1147,13 @@
     /**
      * Toggles visibility of the popover.
      *
-     * @param {Event?} e the `Event` object
+     * @param {Event=} e the `Event` object
      */
     toggle(e) {
+      // @ts-ignore
       const self = e ? getPopoverInstance(this) : this;
       const { popover, options } = self;
+      // @ts-ignore
       if (!isVisibleTip(popover, options.container)) self.show();
       else self.hide();
     }
@@ -1064,9 +1161,10 @@
     /**
      * Shows the popover.
      *
-     * @param {Event?} e the `Event` object
+     * @param {Event=} e the `Event` object
      */
     show(e) {
+      // @ts-ignore
       const self = e ? getPopoverInstance(this) : this;
       const {
         element, popover, options, id,
@@ -1083,9 +1181,11 @@
         element.setAttribute(ariaDescribedBy, id);
 
         self.update(e);
+        // @ts-ignore
         if (!hasClass(popover, showClass)) addClass(popover, showClass);
-        dismissHandlerToggle(self, 1);
+        dismissHandlerToggle(self, true);
 
+        // @ts-ignore
         if (options.animation) emulateTransitionEnd(popover, () => popoverShowComplete(self));
         else popoverShowComplete(self);
       }
@@ -1094,18 +1194,23 @@
     /**
      * Hides the popover.
      *
-     * @param {Event?} e the `Event` object
+     * @this {Element | Popover}
+     * @param {Event=} e the `Event` object
      */
     hide(e) {
+      /** @type {Popover} */
       let self;
       if (e) {
+        // @ts-ignore
         self = getPopoverInstance(this);
         if (!self) { // dismissible popover
+          // @ts-ignore
           const dPopover = this.closest(`.${popoverString}`);
           const dEl = dPopover && queryElement(`[${ariaDescribedBy}="${dPopover.id}"]`);
           self = getPopoverInstance(dEl);
         }
       } else {
+        // @ts-ignore
         self = this;
       }
       const { element, popover, options } = self;
@@ -1116,9 +1221,11 @@
           element.dispatchEvent(hidePopoverEvent);
           if (hidePopoverEvent.defaultPrevented) return;
 
+          // @ts-ignore
           removeClass(popover, showClass);
           dismissHandlerToggle(self);
 
+          // @ts-ignore
           if (options.animation) emulateTransitionEnd(popover, () => popoverHideComplete(self));
           else popoverHideComplete(self);
         }
@@ -1130,7 +1237,7 @@
       const self = this;
       const { enabled } = self;
       if (!enabled) {
-        togglePopoverHandlers(self, 1);
+        togglePopoverHandlers(self, true);
         self.enabled = !enabled;
       }
     }
@@ -1145,6 +1252,7 @@
 
           setTimeout(
             () => togglePopoverHandlers(self),
+            // @ts-ignore
             getElementTransitionDuration(popover) + options.delay + 17,
           );
         } else {
@@ -1169,6 +1277,7 @@
       if (animation && isVisibleTip(popover, container)) {
         self.options.delay = 0; // reset delay
         self.hide();
+        // @ts-ignore
         emulateTransitionEnd(popover, () => togglePopoverHandlers(self));
       } else {
         togglePopoverHandlers(self);

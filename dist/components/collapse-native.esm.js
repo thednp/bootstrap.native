@@ -105,16 +105,27 @@ function emulateTransitionEnd(element, handler) {
 }
 
 /**
+ * Checks if an element is an `Element`.
+ *
+ * @param {any} element the target element
+ * @returns {boolean} the query result
+ */
+function isElement(element) {
+  return element instanceof Element;
+}
+
+/**
  * Utility to check if target is typeof Element
  * or find one that matches a selector.
  *
  * @param {Element | string} selector the input selector or target element
- * @param {Element | null} parent optional Element to look into
- * @return {Element | null} the Element or result of the querySelector
+ * @param {Element=} parent optional Element to look into
+ * @return {Element?} the Element or `querySelector` result
  */
 function queryElement(selector, parent) {
-  const lookUp = parent && parent instanceof Element ? parent : document;
-  return selector instanceof Element ? selector : lookUp.querySelector(selector);
+  const lookUp = parent && isElement(parent) ? parent : document;
+  // @ts-ignore
+  return isElement(selector) ? selector : lookUp.querySelector(selector);
 }
 
 /**
@@ -185,41 +196,46 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {Element} element target element
+   * @param {Element | string} element target element
    * @param {string} component the component's name or a unique key
    * @param {any} instance the component instance
    */
   set: (element, component, instance) => {
+    const ELEMENT = queryElement(element);
+    if (!isElement(ELEMENT)) return;
+
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    instanceMap.set(element, instance);
+    instanceMap.set(ELEMENT, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {?any} all the component instances
+   * @returns {any?} all the component instances
    */
   getAllFor: (component) => {
     if (componentData.has(component)) {
-      return componentData.get(component) || null;
+      return componentData.get(component);
     }
     return null;
   },
 
   /**
    * Returns the instance associated with the target.
-   * @param {Element} element target element
+   * @param {Element | string} element target element
    * @param {string} component the component's name or a unique key
-   * @returns {?any} the instance
+   * @returns {any?} the instance
    */
   get: (element, component) => {
+    const ELEMENT = queryElement(element);
+
     const allForC = Data.getAllFor(component);
-    if (allForC && allForC.has(element)) {
-      return allForC.get(element) || null;
+    if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
+      return allForC.get(ELEMENT);
     }
     return null;
   },
@@ -228,7 +244,6 @@ const Data = {
    * Removes web components data.
    * @param {Element} element target element
    * @param {string} component the component's name or a unique key
-   * @param {any} instance the component instance
    */
   remove: (element, component) => {
     if (!componentData.has(component)) return;
@@ -243,8 +258,10 @@ const Data = {
 };
 
 /**
- * Shortcut for `Data.get(a, b)` to setup usable component static method.
- * @type {SHORTER.getInstance<SHORTER.Component, string>}
+ * An alias for `Data.get()`.
+ * @param {Element | string} element target element
+ * @param {string} component the component's name or a unique key
+ * @returns {any} the request result
  */
 const getInstance = (element, component) => Data.get(element, component);
 
@@ -264,17 +281,30 @@ const collapsingClass = 'collapsing';
  */
 const showClass = 'show';
 
+/** Returns an original event for Bootstrap Native components. */
+class OriginalEvent extends CustomEvent {
+  /**
+   * @param {string} EventType event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   */
+  constructor(EventType, config) {
+    super(EventType, config);
+    /** @type {EventTarget?} */
+    this.relatedTarget = null;
+  }
+}
+
 /**
  * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} namespacedEventType Event.type
- * @param {AddEventListenerOptions | boolean} eventProperties Event.options | Event.properties
- * @returns {CustomEvent} a new namespaced event
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {OriginalEvent} a new namespaced event
  */
-function bootstrapCustomEvent(namespacedEventType, eventProperties) {
-  const OriginalCustomEvent = new CustomEvent(namespacedEventType, { cancelable: true });
+function bootstrapCustomEvent(EventType, config) {
+  const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
 
-  if (eventProperties instanceof Object) {
-    Object.assign(OriginalCustomEvent, eventProperties);
+  if (config instanceof Object) {
+    Object.assign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
 }
@@ -294,16 +324,18 @@ const dataBsParent = 'data-bs-parent';
  */
 const dataBsContainer = 'data-bs-container';
 
+// @ts-nocheck
+
 /**
  * Returns the `Element` that THIS one targets
  * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
  *
  * @param {Element} element the target element
- * @returns {?Element} the query result
+ * @returns {Element?} the query result
  */
 function getTargetElement(element) {
   return queryElement(element.getAttribute(dataBsTarget) || element.getAttribute('href'))
-        || element.closest(element.getAttribute(dataBsParent))
+  || element.closest(element.getAttribute(dataBsParent))
         || queryElement(element.getAttribute(dataBsContainer));
 }
 
@@ -396,25 +428,34 @@ const Version = version;
 class BaseComponent {
   /**
    * @param {Element | string} target Element or selector string
-   * @param {BSN.ComponentOptions?} config
+   * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
     const self = this;
     const element = queryElement(target);
 
-    if (!element) return;
+    if (!isElement(element)) {
+      throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+    }
 
-    const prevInstance = getInstance(element, self.name);
+    /** @type {BSN.ComponentOptions} */
+    self.options = {};
+
+    // @ts-ignore
+    const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @private */
+    /** @type {Element} */
+    // @ts-ignore
     self.element = element;
 
     if (self.defaults && Object.keys(self.defaults).length) {
-      /** @private */
+      /** @static @type {Record<string, any>} */
+      // @ts-ignore
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
+    // @ts-ignore
     Data.set(element, self.name, self);
   }
 
@@ -427,6 +468,7 @@ class BaseComponent {
   get name() { return this.constructor.name; }
 
   /** @static */
+  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -434,7 +476,9 @@ class BaseComponent {
    */
   dispose() {
     const self = this;
+    // @ts-ignore
     Data.remove(self.element, self.name);
+    // @ts-ignore
     Object.keys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -466,13 +510,9 @@ const collapseInitCallback = (element) => new Collapse(element);
 
 // COLLAPSE CUSTOM EVENTS
 // ======================
-/** @type {BSN.CollapseEvent.show} */
 const showCollapseEvent = bootstrapCustomEvent(`show.bs.${collapseString}`);
-/** @type {BSN.CollapseEvent.shown} */
 const shownCollapseEvent = bootstrapCustomEvent(`shown.bs.${collapseString}`);
-/** @type {BSN.CollapseEvent.hide} */
 const hideCollapseEvent = bootstrapCustomEvent(`hide.bs.${collapseString}`);
-/** @type {BSN.CollapseEvent.hidden} */
 const hiddenCollapseEvent = bootstrapCustomEvent(`hidden.bs.${collapseString}`);
 
 // COLLAPSE PRIVATE METHODS
@@ -483,22 +523,28 @@ const hiddenCollapseEvent = bootstrapCustomEvent(`hidden.bs.${collapseString}`);
  */
 function expandCollapse(self) {
   const {
+    // @ts-ignore
     element, parent, triggers,
   } = self;
 
   element.dispatchEvent(showCollapseEvent);
   if (showCollapseEvent.defaultPrevented) return;
 
+  // @ts-ignore
   self.isAnimating = true;
+  // @ts-ignore
   if (parent) parent.isAnimating = true;
 
   addClass(element, collapsingClass);
   removeClass(element, collapseString);
 
+  // @ts-ignore
   element.style.height = `${element.scrollHeight}px`;
 
   emulateTransitionEnd(element, () => {
+    // @ts-ignore
     self.isAnimating = false;
+    // @ts-ignore
     if (parent) parent.isAnimating = false;
 
     triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'true'));
@@ -507,6 +553,7 @@ function expandCollapse(self) {
     addClass(element, collapseString);
     addClass(element, showClass);
 
+    // @ts-ignore
     element.style.height = '';
 
     element.dispatchEvent(shownCollapseEvent);
@@ -519,6 +566,7 @@ function expandCollapse(self) {
  */
 function collapseContent(self) {
   const {
+    // @ts-ignore
     element, parent, triggers,
   } = self;
 
@@ -526,9 +574,12 @@ function collapseContent(self) {
 
   if (hideCollapseEvent.defaultPrevented) return;
 
+  // @ts-ignore
   self.isAnimating = true;
+  // @ts-ignore
   if (parent) parent.isAnimating = true;
 
+  // @ts-ignore
   element.style.height = `${element.scrollHeight}px`;
 
   removeClass(element, collapseString);
@@ -536,10 +587,13 @@ function collapseContent(self) {
   addClass(element, collapsingClass);
 
   reflow(element);
+  // @ts-ignore
   element.style.height = '0px';
 
   emulateTransitionEnd(element, () => {
+    // @ts-ignore
     self.isAnimating = false;
+    // @ts-ignore
     if (parent) parent.isAnimating = false;
 
     triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'false'));
@@ -547,6 +601,7 @@ function collapseContent(self) {
     removeClass(element, collapsingClass);
     addClass(element, collapseString);
 
+    // @ts-ignore
     element.style.height = '';
 
     element.dispatchEvent(hiddenCollapseEvent);
@@ -556,13 +611,15 @@ function collapseContent(self) {
 /**
  * Toggles on/off the event listener(s) of the `Collapse` instance.
  * @param {Collapse} self the `Collapse` instance
- * @param {boolean | number} add when `true`, the event listener is added
+ * @param {boolean=} add when `true`, the event listener is added
  */
 function toggleCollapseHandler(self, add) {
   const action = add ? addEventListener : removeEventListener;
+  // @ts-ignore
   const { triggers } = self;
 
   if (triggers.length) {
+    // @ts-ignore
     triggers.forEach((btn) => btn[action]('click', collapseClickHandler));
   }
 }
@@ -575,6 +632,7 @@ function toggleCollapseHandler(self, add) {
  */
 function collapseClickHandler(e) {
   const { target } = e;
+  // @ts-ignore
   const trigger = target.closest(collapseToggleSelector);
   const element = getTargetElement(trigger);
   const self = element && getCollapseInstance(element);
@@ -591,7 +649,7 @@ function collapseClickHandler(e) {
 class Collapse extends BaseComponent {
   /**
    * @param {Element | string} target and `Element` that matches the selector
-   * @param {BSN.CollapseOptions?} config instance options
+   * @param {BSN.Options.Collapse=} config instance options
    */
   constructor(target, config) {
     super(target, config);
@@ -614,10 +672,11 @@ class Collapse extends BaseComponent {
     // set initial state
     /** @private @type {boolean} */
     self.isAnimating = false;
+    // @ts-ignore
     if (parent) parent.isAnimating = false;
 
     // add event listeners
-    toggleCollapseHandler(self, 1);
+    toggleCollapseHandler(self, true);
   }
 
   /* eslint-disable */
@@ -669,6 +728,7 @@ class Collapse extends BaseComponent {
       activeCollapseInstance = activeCollapse && getCollapseInstance(activeCollapse);
     }
 
+    // @ts-ignore
     if ((!parent || (parent && !parent.isAnimating)) && !isAnimating) {
       if (activeCollapseInstance && activeCollapse !== element) {
         collapseContent(activeCollapseInstance);
@@ -690,6 +750,7 @@ class Collapse extends BaseComponent {
     const { parent } = self;
     toggleCollapseHandler(self);
 
+    // @ts-ignore
     if (parent) delete parent.isAnimating;
     super.dispose();
   }
