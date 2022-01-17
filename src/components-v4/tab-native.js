@@ -1,8 +1,8 @@
 /* Native JavaScript for Bootstrap 4 | Tab
 ------------------------------------------ */
 import supportTransition from 'shorter-js/src/boolean/supportTransition';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEndLegacy';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 import reflow from 'shorter-js/src/misc/reflow';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
@@ -109,7 +109,7 @@ export default function Tab(elem, opsInput) {
     }
     return activeTab;
   }
-  function getActiveContent() { return queryElement(getActiveTab().getAttribute('href')); }
+  function getActiveContent() { return querySelector(getActiveTab().getAttribute('href')); }
   // handler
   function clickHandler(e) {
     e.preventDefault();
@@ -122,7 +122,7 @@ export default function Tab(elem, opsInput) {
     next = next || element;
 
     if (!next.classList.contains('active')) {
-      nextContent = queryElement(next.getAttribute('href')); // this is the actual object, the next tab content to activate
+      nextContent = querySelector(next.getAttribute('href')); // this is the actual object, the next tab content to activate
       activeTab = getActiveTab();
       activeContent = getActiveContent();
 
@@ -155,7 +155,7 @@ export default function Tab(elem, opsInput) {
 
   // INIT
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Tab) element.Tab.dispose();
@@ -164,7 +164,7 @@ export default function Tab(elem, opsInput) {
   const heightData = element.getAttribute('data-height');
   // event targets
   tabs = element.closest('.nav');
-  dropdown = tabs && queryElement('.dropdown-toggle', tabs);
+  dropdown = tabs && querySelector('.dropdown-toggle', tabs);
 
   // instance options
   const animateHeight = !(!supportTransition || (options.height === false || heightData === 'false'));

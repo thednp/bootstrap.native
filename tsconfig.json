@@ -9,7 +9,7 @@
     "allowJs": true,
     "checkJs": true,
     "rootDir": "../",
-    // "outFile": "types/bsn.d.ts", // comment after generate
+    "outFile": "types/bsn.d.ts", // comment after generate
     "outDir": "types"
   },
   "files": [

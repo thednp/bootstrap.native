@@ -1,11 +1,11 @@
 /* Native JavaScript for Bootstrap 5 | ScrollSpy
 ------------------------------------------------ */
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
 import dispatchCustomEvent from '../util/dispatchCustomEvent';
-import getScroll from '../util/getScroll';
+import getScroll from '../util/getScroll-v4';
 
 // SCROLLSPY DEFINITION
 // ====================
@@ -51,7 +51,7 @@ export default function ScrollSpy(elem, opsInput) {
 
       Array.from(links).forEach((link) => {
         href = link.getAttribute('href');
-        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
+        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && querySelector(href);
 
         if (targetItem) {
           vars.items.push(link);
@@ -145,7 +145,7 @@ export default function ScrollSpy(elem, opsInput) {
 
   // init
   // initialization element, the element we spy on
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.ScrollSpy) element.ScrollSpy.dispose();
@@ -156,7 +156,7 @@ export default function ScrollSpy(elem, opsInput) {
   const offsetData = element.getAttribute('data-offset');
 
   // targets
-  spyTarget = queryElement(options.target || targetData);
+  spyTarget = querySelector(options.target || targetData);
 
   // determine which is the real scrollTarget
   scrollTarget = element.clientHeight < element.scrollHeight ? element : window;

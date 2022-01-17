@@ -1,47 +1,40 @@
 /* Native JavaScript for Bootstrap 5 | Base Component
 ----------------------------------------------------- */
 
-import queryElement from 'shorter-js/src/misc/queryElement';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 import normalizeOptions from 'shorter-js/src/misc/normalizeOptions';
 import Data from 'shorter-js/src/misc/data';
-import isElement from 'shorter-js/src/misc/isElement';
+import ObjectKeys from 'shorter-js/src/misc/ObjectKeys';
 
 import Version from '../version';
 
-/**
- * Returns a new `BaseComponent` instance.
- */
+/** Returns a new `BaseComponent` instance. */
 export default class BaseComponent {
   /**
-   * @param {Element | string} target Element or selector string
+   * @param {HTMLElement | Element | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
     const self = this;
-    const element = queryElement(target);
+    const element = querySelector(target);
 
-    if (!isElement(element)) {
-      throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+    if (!element) {
+      throw Error(`${self.name} Error: "${target}" is not a valid selector.`);
     }
 
-    /** @type {BSN.ComponentOptions} */
+    /** @static @type {BSN.ComponentOptions} */
     self.options = {};
 
-    // @ts-ignore
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {Element} */
-    // @ts-ignore
+    /** @type {HTMLElement | Element} */
     self.element = element;
 
     if (self.defaults && Object.keys(self.defaults).length) {
-      /** @static @type {Record<string, any>} */
-      // @ts-ignore
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
-    // @ts-ignore
     Data.set(element, self.name, self);
   }
 
@@ -62,9 +55,8 @@ export default class BaseComponent {
    */
   dispose() {
     const self = this;
-    // @ts-ignore
     Data.remove(self.element, self.name);
     // @ts-ignore
-    Object.keys(self).forEach((prop) => { self[prop] = null; });
+    ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }

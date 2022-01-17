@@ -2,10 +2,10 @@
 ----------------------------------------------- */
 import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents';
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import isElementInScrollRange from 'shorter-js/src/misc/isElementInScrollRange';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDurationLegacy';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEndLegacy';
+import isElementInScrollRange from 'shorter-js/src/is/isElementInScrollRange';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 import reflow from 'shorter-js/src/misc/reflow';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
@@ -292,7 +292,7 @@ export default function Carousel(elem, opsInput) {
   // init
 
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Carousel) element.Carousel.dispose();

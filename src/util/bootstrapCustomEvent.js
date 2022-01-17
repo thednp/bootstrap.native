@@ -1,27 +1,16 @@
-/** Returns an original event for Bootstrap Native components. */
-class OriginalEvent extends CustomEvent {
-  /**
-   * @param {string} EventType event.type
-   * @param {Record<string, any>=} config Event.options | Event.properties
-   */
-  constructor(EventType, config) {
-    super(EventType, config);
-    /** @type {EventTarget?} */
-    this.relatedTarget = null;
-  }
-}
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 
 /**
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {OriginalEvent} a new namespaced event
+ * @returns {BSN.OriginalEvent} a new namespaced event
  */
 export default function bootstrapCustomEvent(EventType, config) {
-  const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
+  const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
 
   if (config instanceof Object) {
-    Object.assign(OriginalCustomEvent, config);
+    ObjectAssign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
 }

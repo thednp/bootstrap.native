@@ -23,6 +23,8 @@ const FORMAT = process.env.FORMAT // umd|iife|esm|cjs
 const INPUTFILE = process.env.INPUTFILE ? process.env.INPUTFILE : 'src/index.js'
 const OUTPUTFILE = process.env.OUTPUTFILE ? process.env.OUTPUTFILE : (FORMAT === 'umd' ? './dist/bootstrap-native'+(MIN?'.min':'')+'.js' : './dist/bootstrap-native.'+FORMAT+(MIN?'.min':'')+'.js')
 
+// process.env.NODE_ENV = "development";
+
 const OUTPUT = {
   file: OUTPUTFILE,
   format: FORMAT, // or iife

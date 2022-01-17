@@ -1,15 +1,37 @@
 /* Native JavaScript for Bootstrap 5 | Dropdown
 ----------------------------------------------- */
-import queryElement from 'shorter-js/src/misc/queryElement';
+import setAttribute from 'shorter-js/src/attr/setAttribute';
+import closest from 'shorter-js/src/selectors/closest';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import getElementsByClassName from 'shorter-js/src/selectors/getElementsByClassName';
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import addEventListener from 'shorter-js/src/strings/addEventListener';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
 import ariaExpanded from 'shorter-js/src/strings/ariaExpanded';
+import focusEvent from 'shorter-js/src/strings/focusEvent';
+import keydownEvent from 'shorter-js/src/strings/keydownEvent';
+import keyupEvent from 'shorter-js/src/strings/keyupEvent';
+import scrollEvent from 'shorter-js/src/strings/scrollEvent';
+import resizeEvent from 'shorter-js/src/strings/resizeEvent';
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
+import keyArrowUp from 'shorter-js/src/strings/keyArrowUp';
+import keyArrowDown from 'shorter-js/src/strings/keyArrowDown';
+import keyEscape from 'shorter-js/src/strings/keyEscape';
+import isRTL from 'shorter-js/src/is/isRTL';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import getElementStyle from 'shorter-js/src/get/getElementStyle';
 import { getInstance } from 'shorter-js/src/misc/data';
-
+import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
+import setElementStyle from 'shorter-js/src/misc/setElementStyle';
+import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
+import focus from 'shorter-js/src/misc/focus';
+import hasAttribute from 'shorter-js/src/attr/hasAttribute';
+import getDocument from 'shorter-js/src/get/getDocument';
+import getWindow from 'shorter-js/src/get/getWindow';
 import showClass from '../strings/showClass';
 import dataBsToggle from '../strings/dataBsToggle';
 import dropdownClasses from '../strings/dropdownClasses';
@@ -17,12 +39,16 @@ import dropdownMenuClass from '../strings/dropdownMenuClass';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import isEmptyAnchor from '../util/isEmptyAnchor';
-import setFocus from '../util/setFocus';
 import BaseComponent from './base-component';
 
 // DROPDOWN PRIVATE GC
 // ===================
-const [dropdownString] = dropdownClasses;
+const [
+  dropdownString,
+  dropupString,
+  dropstartString,
+  dropendString,
+] = dropdownClasses;
 const dropdownComponent = 'Dropdown';
 const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
 
@@ -42,13 +68,10 @@ const dropdownInitCallback = (element) => new Dropdown(element);
 
 // DROPDOWN PRIVATE GC
 // ===================
-const dropupString = dropdownClasses[1];
-const dropstartString = dropdownClasses[2];
-const dropendString = dropdownClasses[3];
 const dropdownMenuEndClass = `${dropdownMenuClass}-end`;
-const hideMenuClass = ['d-block', 'invisible'];
 const verticalClass = [dropdownString, dropupString];
 const horizontalClass = [dropstartString, dropendString];
+const menuFocusTags = ['A', 'BUTTON'];
 
 const dropdownDefaults = {
   offset: 5, // [number] 5(px)
@@ -69,90 +92,79 @@ const hiddenDropdownEvent = bootstrapCustomEvent(`hidden.bs.${dropdownString}`);
  * accomodate the layout and the page scroll.
  *
  * @param {Dropdown} self the `Dropdown` instance
- * @param {boolean=} show when `true` will have a different effect
  */
-function styleDropdown(self, show) {
+function styleDropdown(self) {
   const {
-    // @ts-ignore
-    element, menu, originalClass, menuEnd, options,
+    element, menu, parentElement, options,
   } = self;
   const { offset } = options;
-  const parent = element.parentElement;
+
+  // don't apply any style on mobile view
+  if (getElementStyle(menu, 'position') === 'static') return;
+
+  const RTL = isRTL(element);
+  const menuEnd = hasClass(parentElement, dropdownMenuEndClass);
 
   // reset menu offset and position
   const resetProps = ['margin', 'top', 'bottom', 'left', 'right'];
   // @ts-ignore
   resetProps.forEach((p) => { menu.style[p] = ''; });
-  // @ts-ignore
-  removeClass(parent, 'position-static');
-
-  if (!show) {
-    const menuEndNow = hasClass(menu, dropdownMenuEndClass);
-    // @ts-ignore
-    parent.className = originalClass.join(' ');
-    if (menuEndNow && !menuEnd) removeClass(menu, dropdownMenuEndClass);
-    else if (!menuEndNow && menuEnd) addClass(menu, dropdownMenuEndClass);
-    return;
-  }
 
   // set initial position class
   // take into account .btn-group parent as .dropdown
-  let positionClass = dropdownClasses.find((c) => originalClass.includes(c)) || dropdownString;
+  let positionClass = dropdownClasses.find((c) => hasClass(parentElement, c)) || dropdownString;
 
+  /** @type {Record<string, Record<string, any>>} */
   let dropdownMargin = {
     dropdown: [offset, 0, 0],
     dropup: [0, 0, offset],
-    dropstart: [-1, offset, 0],
-    dropend: [-1, 0, 0, offset],
+    dropstart: RTL ? [-1, 0, 0, offset] : [-1, offset, 0],
+    dropend: RTL ? [-1, offset, 0] : [-1, 0, 0, offset],
   };
 
+  /** @type {Record<string, Record<string, any>>} */
   const dropdownPosition = {
     dropdown: { top: '100%' },
     dropup: { top: 'auto', bottom: '100%' },
-    dropstart: { left: 'auto', right: '100%' },
-    dropend: { left: '100%', right: 'auto' },
-    menuEnd: { right: 0, left: 'auto' },
+    dropstart: RTL ? { left: '100%', right: 'auto' } : { left: 'auto', right: '100%' },
+    dropend: RTL ? { left: 'auto', right: '100%' } : { left: '100%', right: 'auto' },
+    menuEnd: RTL ? { right: 'auto', left: 0 } : { right: 0, left: 'auto' },
   };
 
-  // force showing the menu to calculate its size
-  hideMenuClass.forEach((c) => addClass(menu, c));
+  // @ts-ignore
+  const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menu;
 
-  const dropdownRegex = new RegExp(`\\b(${dropdownString}|${dropupString}|${dropstartString}|${dropendString})+`);
-  // @ts-ignore
-  const elementDimensions = { w: element.offsetWidth, h: element.offsetHeight };
-  // @ts-ignore
-  const menuDimensions = { w: menu.offsetWidth, h: menu.offsetHeight };
-  const HTML = document.documentElement;
-  const BD = document.body;
-  const windowWidth = (HTML.clientWidth || BD.clientWidth);
-  const windowHeight = (HTML.clientHeight || BD.clientHeight);
-  const targetBCR = element.getBoundingClientRect();
-  // dropdownMenuEnd && [ dropdown | dropup ]
-  const leftExceed = targetBCR.left + elementDimensions.w - menuDimensions.w < 0;
-  // dropstart
-  const leftFullExceed = targetBCR.left - menuDimensions.w < 0;
-  // !dropdownMenuEnd && [ dropdown | dropup ]
-  const rightExceed = targetBCR.left + menuDimensions.w >= windowWidth;
-  // dropend
-  const rightFullExceed = targetBCR.left + menuDimensions.w + elementDimensions.w >= windowWidth;
+  const { clientWidth, clientHeight } = getDocumentElement(element);
+  const {
+    left: targetLeft, top: targetTop,
+    width: targetWidth, height: targetHeight,
+  } = getBoundingClientRect(element);
+
   // dropstart | dropend
-  const bottomExceed = targetBCR.top + menuDimensions.h >= windowHeight;
+  const leftFullExceed = targetLeft - menuWidth - offset < 0;
+  // dropend
+  const rightFullExceed = targetLeft + menuWidth + targetWidth + offset >= clientWidth;
+  // dropstart | dropend
+  const bottomExceed = targetTop + menuHeight + offset >= clientHeight;
   // dropdown
-  const bottomFullExceed = targetBCR.top + menuDimensions.h + elementDimensions.h >= windowHeight;
+  const bottomFullExceed = targetTop + menuHeight + targetHeight + offset >= clientHeight;
   // dropup
-  const topExceed = targetBCR.top - menuDimensions.h < 0;
+  const topExceed = targetTop - menuHeight - offset < 0;
+  // dropdown / dropup
+  const leftExceed = ((!RTL && menuEnd) || (RTL && !menuEnd))
+    && targetLeft + targetWidth - menuWidth < 0;
+  const rightExceed = ((RTL && menuEnd) || (!RTL && !menuEnd))
+    && targetLeft + menuWidth >= clientWidth;
 
   // recompute position
+  // handle RTL as well
   if (horizontalClass.includes(positionClass) && leftFullExceed && rightFullExceed) {
     positionClass = dropdownString;
   }
-  if (horizontalClass.includes(positionClass) && bottomExceed) {
-    positionClass = dropupString;
-  }
-  if (positionClass === dropstartString && leftFullExceed && !bottomExceed) {
+  if (positionClass === dropstartString && (!RTL ? leftFullExceed : rightFullExceed)) {
     positionClass = dropendString;
   }
-  if (positionClass === dropendString && rightFullExceed && !bottomExceed) {
+  if (positionClass === dropendString && (RTL ? leftFullExceed : rightFullExceed)) {
     positionClass = dropstartString;
   }
   if (positionClass === dropupString && topExceed && !bottomFullExceed) {
@@ -161,41 +173,49 @@ function styleDropdown(self, show) {
   if (positionClass === dropdownString && bottomFullExceed && !topExceed) {
     positionClass = dropupString;
   }
-
-  // set spacing
-  // @ts-ignore
-  dropdownMargin = dropdownMargin[positionClass];
-  // @ts-ignore
-  menu.style.margin = `${dropdownMargin.map((x) => (x ? `${x}px` : x)).join(' ')}`;
-  // @ts-ignore
-  Object.keys(dropdownPosition[positionClass]).forEach((position) => {
-    // @ts-ignore
-    menu.style[position] = dropdownPosition[positionClass][position];
-  });
-
-  // update dropdown position class
-  // @ts-ignore
-  if (!hasClass(parent, positionClass)) {
-    // @ts-ignore
-    parent.className = parent.className.replace(dropdownRegex, positionClass);
+  // override position for horizontal classes
+  if (horizontalClass.includes(positionClass) && bottomExceed) {
+    ObjectAssign(dropdownPosition[positionClass], {
+      top: 'auto', bottom: 0,
+    });
   }
-
-  // update dropdown / dropup to handle parent btn-group element
-  // as well as the dropdown-menu-end utility class
-  if (verticalClass.includes(positionClass)) {
-    if (!menuEnd && rightExceed) addClass(menu, dropdownMenuEndClass);
-    else if (menuEnd && leftExceed) removeClass(menu, dropdownMenuEndClass);
-
-    if (hasClass(menu, dropdownMenuEndClass)) {
-      Object.keys(dropdownPosition.menuEnd).forEach((p) => {
-        // @ts-ignore
-        menu.style[p] = dropdownPosition.menuEnd[p];
-      });
+  // override position for vertical classes
+  if (verticalClass.includes(positionClass) && (leftExceed || rightExceed)) {
+    // don't realign when menu is wider than window
+    // in both RTL and non-RTL readability is KING
+    if (targetLeft + targetWidth + Math.abs(menuWidth - targetWidth) + offset < clientWidth) {
+      ObjectAssign(dropdownPosition[positionClass],
+        leftExceed ? { left: 0, right: 'auto' } : { left: 'auto', right: 0 });
     }
   }
 
-  // remove util classes from the menu, we have its size
-  hideMenuClass.forEach((c) => removeClass(menu, c));
+  dropdownMargin = dropdownMargin[positionClass];
+  // @ts-ignore
+  menu.style.margin = `${dropdownMargin.map((x) => (x ? `${x}px` : x)).join(' ')}`;
+
+  setElementStyle(menu, dropdownPosition[positionClass]);
+
+  // update dropdown-menu-end
+  if (hasClass(menu, dropdownMenuEndClass)) {
+    setElementStyle(menu, dropdownPosition.menuEnd);
+  }
+}
+
+/**
+ * Returns an `Array` of focusable items in the given dropdown-menu.
+ * @param {HTMLElement | Element} menu
+ * @returns {(HTMLElement | Element)[]}
+ */
+function getMenuItems(menu) {
+  // @ts-ignore
+  return [...menu.children].map((c) => {
+    if (c && menuFocusTags.includes(c.tagName)) return c;
+    const { firstElementChild } = c;
+    if (firstElementChild && menuFocusTags.includes(firstElementChild.tagName)) {
+      return firstElementChild;
+    }
+    return null;
+  }).filter((c) => c);
 }
 
 /**
@@ -205,23 +225,20 @@ function styleDropdown(self, show) {
  * @param {Dropdown} self the `Dropdown` instance
  */
 function toggleDropdownDismiss(self) {
-  // @ts-ignore
-  const action = self.open ? addEventListener : removeEventListener;
+  const { element } = self;
+  const action = self.open ? on : off;
+  const doc = getDocument(element);
 
-  // @ts-ignore
-  document[action]('click', dropdownDismissHandler);
-  // @ts-ignore
-  document[action]('focus', dropdownDismissHandler);
-  // @ts-ignore
-  document[action]('keydown', dropdownPreventScroll);
-  // @ts-ignore
-  document[action]('keyup', dropdownKeyHandler);
+  action(doc, mouseclickEvent, dropdownDismissHandler);
+  action(doc, focusEvent, dropdownDismissHandler);
+  action(doc, keydownEvent, dropdownPreventScroll);
+  action(doc, keyupEvent, dropdownKeyHandler);
 
   if (self.options.display === 'dynamic') {
-    // @ts-ignore
-    window[action]('scroll', dropdownLayoutHandler, passiveHandler);
-    // @ts-ignore
-    window[action]('resize', dropdownLayoutHandler, passiveHandler);
+    [scrollEvent, resizeEvent].forEach((ev) => {
+      // @ts-ignore
+      action(getWindow(element), ev, dropdownLayoutHandler, passiveHandler);
+    });
   }
 }
 
@@ -232,25 +249,25 @@ function toggleDropdownDismiss(self) {
  * @param {boolean=} add when `true`, it will add the event listener
  */
 function toggleDropdownHandler(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  self.element[action]('click', dropdownClickHandler);
+  const action = add ? on : off;
+  action(self.element, mouseclickEvent, dropdownClickHandler);
 }
 
 /**
  * Returns the currently open `.dropdown` element.
  *
- * @returns {Element?} the query result
+ * @param {(Document | HTMLElement | Element | globalThis)=} element target
+ * @returns {HTMLElement?} the query result
  */
-function getCurrentOpenDropdown() {
+function getCurrentOpenDropdown(element) {
   const currentParent = [...dropdownClasses, 'btn-group', 'input-group']
-    .map((c) => document.getElementsByClassName(`${c} ${showClass}`))
+    .map((c) => getElementsByClassName(`${c} ${showClass}`), getDocument(element))
     .find((x) => x.length);
 
   if (currentParent && currentParent.length) {
-    // @ts-ignore
-    return Array.from(currentParent[0].children)
-      .find((x) => x.hasAttribute(dataBsToggle));
+    // @ts-ignore -- HTMLElement is also Element
+    return [...currentParent[0].children]
+      .find((x) => hasAttribute(x, dataBsToggle));
   }
   return null;
 }
@@ -260,33 +277,35 @@ function getCurrentOpenDropdown() {
 /**
  * Handles the `click` event for the `Dropdown` instance.
  *
- * @param {Event} e event object
+ * @param {MouseEvent} e event object
+ * @this {Document}
  */
 function dropdownDismissHandler(e) {
   const { target, type } = e;
   // @ts-ignore
-  if (!target.closest) return; // some weird FF bug #409
+  if (!target || !target.closest) return; // some weird FF bug #409
 
-  const element = getCurrentOpenDropdown();
+  // @ts-ignore
+  const element = getCurrentOpenDropdown(target);
   if (!element) return;
 
   const self = getDropdownInstance(element);
-  const parent = element.parentNode;
-  // @ts-ignore
-  const menu = self && self.menu;
+  if (!self) return;
+
+  const { parentElement, menu } = self;
 
   // @ts-ignore
-  const hasData = target.closest(dropdownSelector) !== null;
+  const hasData = closest(target, dropdownSelector) !== null;
   // @ts-ignore
-  const isForm = parent && parent.contains(target)
+  const isForm = parentElement && parentElement.contains(target)
     // @ts-ignore
-    && (target.tagName === 'form' || target.closest('form') !== null);
+    && (target.tagName === 'form' || closest(target, 'form') !== null);
 
   // @ts-ignore
-  if (type === 'click' && isEmptyAnchor(target)) {
+  if (type === mouseclickEvent && isEmptyAnchor(target)) {
     e.preventDefault();
   }
-  if (type === 'focus' // @ts-ignore
+  if (type === focusEvent // @ts-ignore
     && (target === element || target === menu || menu.contains(target))) {
     return;
   }
@@ -300,87 +319,78 @@ function dropdownDismissHandler(e) {
 
 /**
  * Handles `click` event listener for `Dropdown`.
- * @this {Element}
- * @param {Event} e event object
+ * @this {HTMLElement | Element}
+ * @param {MouseEvent} e event object
  */
 function dropdownClickHandler(e) {
   const element = this;
+  const { target } = e;
   const self = getDropdownInstance(element);
-  self.toggle();
 
-  // @ts-ignore
-  if (isEmptyAnchor(e.target)) e.preventDefault();
+  if (self) {
+    self.toggle();
+    if (target && isEmptyAnchor(target)) e.preventDefault();
+  }
 }
 
 /**
  * Prevents scroll when dropdown-menu is visible.
- * @param {Event} e event object
+ * @param {KeyboardEvent} e event object
  */
 function dropdownPreventScroll(e) {
-  // @ts-ignore
-  if (e.which === 38 || e.which === 40) e.preventDefault();
+  if ([keyArrowDown, keyArrowUp].includes(e.code)) e.preventDefault();
 }
 
 /**
  * Handles keyboard `keydown` events for `Dropdown`.
- * @param {{which: number}} e keyboard key
+ * @param {KeyboardEvent} e keyboard key
+ * @this {Document}
  */
-function dropdownKeyHandler({ which }) {
-  const element = getCurrentOpenDropdown();
-  // @ts-ignore
-  const self = getDropdownInstance(element);
-  // @ts-ignore
-  const { menu, menuItems, open } = self;
-  const activeItem = document.activeElement;
-  const isSameElement = activeItem === element;
-  const isInsideMenu = menu.contains(activeItem);
-  // @ts-ignore
-  const isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu;
+function dropdownKeyHandler(e) {
+  const { code } = e;
+  const element = getCurrentOpenDropdown(this);
+  const self = element && getDropdownInstance(element);
+  const activeItem = element && getDocument(element).activeElement;
+  if (!self || !activeItem) return;
+  const { menu, open } = self;
+  const menuItems = getMenuItems(menu);
 
-  // @ts-ignore
-  let idx = menuItems.indexOf(activeItem);
-
-  if (isMenuItem) { // navigate up | down
-    if (isSameElement) {
+  // arrow up & down
+  if (menuItems && menuItems.length) {
+    let idx = menuItems.indexOf(activeItem);
+    if (activeItem === element) {
       idx = 0;
-    } else if (which === 38) {
+    } else if (code === keyArrowUp) {
       idx = idx > 1 ? idx - 1 : 0;
-    } else if (which === 40) {
+    } else if (code === keyArrowDown) {
       idx = idx < menuItems.length - 1 ? idx + 1 : idx;
     }
-
-    if (menuItems[idx]) setFocus(menuItems[idx]);
+    if (menuItems[idx]) focus(menuItems[idx]);
   }
 
-  if (((menuItems.length && isMenuItem) // menu has items
-      || (!menuItems.length && (isInsideMenu || isSameElement)) // menu might be a form
-      || !isInsideMenu) // or the focused element is not in the menu at all
-      && open && which === 27 // menu must be open
-  ) {
+  if (keyEscape === code && open) {
     self.toggle();
+    focus(element);
   }
 }
 
 /**
+ * @this {globalThis}
  * @returns {void}
  */
 function dropdownLayoutHandler() {
-  const element = getCurrentOpenDropdown();
+  const element = getCurrentOpenDropdown(this);
   const self = element && getDropdownInstance(element);
 
-  // @ts-ignore
-  if (self && self.open) styleDropdown(self, true);
+  if (self && self.open) styleDropdown(self);
 }
 
 // DROPDOWN DEFINITION
 // ===================
-/**
- * Returns a new Dropdown instance.
- * @implements {BaseComponent}
- */
+/** Returns a new Dropdown instance. */
 export default class Dropdown extends BaseComponent {
   /**
-   * @param {Element | string} target Element or string selector
+   * @param {HTMLElement | Element | string} target Element or string selector
    * @param {BSN.Options.Dropdown=} config the instance options
    */
   constructor(target, config) {
@@ -390,32 +400,18 @@ export default class Dropdown extends BaseComponent {
 
     // initialization element
     const { element } = self;
+    const { parentElement } = element;
 
     // set targets
-    const { parentElement } = element;
-    /** @private @type {Element} */
+    /** @type {(Element | HTMLElement)} */
     // @ts-ignore
-    self.menu = queryElement(`.${dropdownMenuClass}`, parentElement);
-    const { menu } = self;
-
-    /** @private @type {string[]} */
+    self.parentElement = parentElement;
+    /** @type {(Element | HTMLElement)} */
     // @ts-ignore
-    self.originalClass = Array.from(parentElement.classList);
-
-    // set original position
-    /** @private @type {boolean} */
-    self.menuEnd = hasClass(menu, dropdownMenuEndClass);
-
-    /** @private @type {Element[]} */
-    self.menuItems = [];
-
-    Array.from(menu.children).forEach((child) => {
-      if (child.children.length && (child.children[0].tagName === 'A')) self.menuItems.push(child.children[0]);
-      if (child.tagName === 'A') self.menuItems.push(child);
-    });
+    self.menu = querySelector(`.${dropdownMenuClass}`, parentElement);
 
     // set initial state to closed
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     self.open = false;
 
     // add event listener
@@ -448,75 +444,64 @@ export default class Dropdown extends BaseComponent {
   /** Shows the dropdown menu to the user. */
   show() {
     const self = this;
-    const currentParent = queryElement(dropdownClasses.concat('btn-group', 'input-group').map((c) => `.${c}.${showClass}`).join(','));
-    const currentElement = currentParent && queryElement(dropdownSelector, currentParent);
+    const {
+      element, open, menu, parentElement,
+    } = self;
 
-    if (currentElement) getDropdownInstance(currentElement).hide();
-
-    const { element, menu, open } = self;
-    const { parentElement } = element;
+    const currentElement = getCurrentOpenDropdown(element);
+    const currentInstance = currentElement && getDropdownInstance(currentElement);
+    if (currentInstance) currentInstance.hide();
 
     // dispatch
     [showDropdownEvent, shownDropdownEvent].forEach((e) => { e.relatedTarget = element; });
-
-    // @ts-ignore
-    parentElement.dispatchEvent(showDropdownEvent);
+    dispatchEvent(parentElement, showDropdownEvent);
     if (showDropdownEvent.defaultPrevented) return;
 
-    // change menu position
-    styleDropdown(self, true);
-
     addClass(menu, showClass);
-    // @ts-ignore
     addClass(parentElement, showClass);
+    setAttribute(element, ariaExpanded, 'true');
 
-    element.setAttribute(ariaExpanded, 'true');
+    // change menu position
+    styleDropdown(self);
+
     self.open = !open;
 
     setTimeout(() => {
-      setFocus(element); // focus the element
+      focus(element); // focus the element
       toggleDropdownDismiss(self);
-      // @ts-ignore
-      parentElement.dispatchEvent(shownDropdownEvent);
+      dispatchEvent(parentElement, shownDropdownEvent);
     }, 1);
   }
 
   /** Hides the dropdown menu from the user. */
   hide() {
     const self = this;
-    const { element, menu, open } = self;
-    const { parentElement } = element;
-    // @ts-ignore
+    const {
+      element, open, menu, parentElement,
+    } = self;
     [hideDropdownEvent, hiddenDropdownEvent].forEach((e) => { e.relatedTarget = element; });
 
-    // @ts-ignore
-    parentElement.dispatchEvent(hideDropdownEvent);
+    dispatchEvent(parentElement, hideDropdownEvent);
     if (hideDropdownEvent.defaultPrevented) return;
 
     removeClass(menu, showClass);
-    // @ts-ignore
     removeClass(parentElement, showClass);
+    setAttribute(element, ariaExpanded, 'false');
 
-    // revert to original position
-    styleDropdown(self);
-
-    element.setAttribute(ariaExpanded, 'false');
     self.open = !open;
 
     // only re-attach handler if the instance is not disposed
     setTimeout(() => toggleDropdownDismiss(self), 1);
 
-    // @ts-ignore
-    parentElement.dispatchEvent(hiddenDropdownEvent);
+    dispatchEvent(parentElement, hiddenDropdownEvent);
   }
 
   /** Removes the `Dropdown` component from the target element. */
   dispose() {
     const self = this;
-    const { element } = self;
+    const { parentElement } = self;
 
-    // @ts-ignore
-    if (hasClass(element.parentNode, showClass) && self.open) self.hide();
+    if (hasClass(parentElement, showClass) && self.open) self.hide();
 
     toggleDropdownHandler(self);
 
@@ -524,7 +509,7 @@ export default class Dropdown extends BaseComponent {
   }
 }
 
-Object.assign(Dropdown, {
+ObjectAssign(Dropdown, {
   selector: dropdownSelector,
   init: dropdownInitCallback,
   getInstance: getDropdownInstance,

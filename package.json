@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "4.1.0",
+  "version": "4.1.0alpha1",
   "description": "Native JavaScript for Bootstrap, the sweetest JavaScript library without jQuery.",
   "main": "dist/bootstrap-native.min.js",
   "types": "src/index.d.ts",
@@ -83,13 +83,15 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
-    "minifill": "^0.0.16",
-    "shorter-js": "^0.2.15"
+    "minifill": "^0.0.17",
+    "shorter-js": "^0.3.0-alpha16"
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-replace": "^3.0.1",
     "@rollup/plugin-node-resolve": "^7.1.0",
+    "@rollup/plugin-typescript": "^8.3.0",
     "eslint": "^7.22.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",

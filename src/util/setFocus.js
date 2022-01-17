@@ -1,7 +1,6 @@
 /**
  * Points the focus to a specific element.
- * @param {Element} element target
+ * @param {HTMLElement} element target
  */
-export default function setFocus(element) {
-  element.focus();
-}
+const setFocus = (element) => element.focus();
+export default setFocus;

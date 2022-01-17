@@ -1,7 +1,7 @@
 /* Native JavaScript for Bootstrap 4 | Toast
 -------------------------------------------- */
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEndLegacy';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 import reflow from 'shorter-js/src/misc/reflow';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
@@ -84,7 +84,7 @@ export default function Toast(elem, opsInput) {
   // init
 
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Toast) element.Toast.dispose();

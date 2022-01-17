@@ -1,6 +1,6 @@
 /* Native JavaScript for Bootstrap 4 | Button
 ---------------------------------------------*/
-import queryElement from 'shorter-js/src/misc/queryElement';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
 import dispatchCustomEvent from '../util/dispatchCustomEvent';
@@ -118,7 +118,7 @@ export default function Button(elem) {
 
   // init
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Button) element.Button.dispose();
@@ -140,7 +140,7 @@ export default function Button(elem) {
 
   // activate items on load
   Array.from(labels).forEach((btn) => {
-    const hasChecked = queryElement('input:checked', btn);
+    const hasChecked = querySelector('input:checked', btn);
     if (!btn.classList.contains('active') && hasChecked) {
       btn.classList.add('active');
     }

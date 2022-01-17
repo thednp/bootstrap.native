@@ -1,7 +1,7 @@
 /* Native JavaScript for Bootstrap 4 | Alert
 -------------------------------------------- */
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEndLegacy';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
 import dispatchCustomEvent from '../util/dispatchCustomEvent';
@@ -35,7 +35,7 @@ export default function Alert(elem) {
   // event handlers
   function clickHandler(e) {
     alert = e && e.target.closest('.alert');
-    element = queryElement('[data-dismiss="alert"]', alert);
+    element = querySelector('[data-dismiss="alert"]', alert);
     if (element && alert && (element === e.target || element.contains(e.target))) self.close();
   }
   function transitionEndHandler() {
@@ -62,7 +62,7 @@ export default function Alert(elem) {
 
   // INIT
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // find the target alert
   alert = element.closest('.alert');

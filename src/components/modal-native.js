@@ -1,17 +1,34 @@
 /* Native JavaScript for Bootstrap 5 | Modal
 -------------------------------------------- */
+import setAttribute from 'shorter-js/src/attr/setAttribute';
+import removeAttribute from 'shorter-js/src/attr/removeAttribute';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
+import getWindow from 'shorter-js/src/get/getWindow';
+import getDocument from 'shorter-js/src/get/getDocument';
+import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
+import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
+import closest from 'shorter-js/src/selectors/closest';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import addEventListener from 'shorter-js/src/strings/addEventListener';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import keyEscape from 'shorter-js/src/strings/keyEscape';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
 import ariaHidden from 'shorter-js/src/strings/ariaHidden';
 import ariaModal from 'shorter-js/src/strings/ariaModal';
+import resizeEvent from 'shorter-js/src/strings/resizeEvent';
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
+import keydownEvent from 'shorter-js/src/strings/keydownEvent';
+import isRTL from 'shorter-js/src/is/isRTL';
 import { getInstance } from 'shorter-js/src/misc/data';
+import Timer from 'shorter-js/src/misc/timer';
+import focus from 'shorter-js/src/misc/focus';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import dataBsDismiss from '../strings/dataBsDismiss';
@@ -19,6 +36,7 @@ import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import getElementContainer from '../util/getElementContainer';
 import getTargetElement from '../util/getTargetElement';
 import { setScrollbar, measureScrollbar } from '../util/scrollbar';
 import {
@@ -31,7 +49,6 @@ import {
   getCurrentOpen,
   removeOverlay,
 } from '../util/backdrop';
-import setFocus from '../util/setFocus';
 import isVisible from '../util/isVisible';
 import BaseComponent from './base-component';
 
@@ -79,19 +96,18 @@ const hiddenModalEvent = bootstrapCustomEvent(`hidden.bs.${modalString}`);
  * @param {Modal} self the `Modal` instance
  */
 function setModalScrollbar(self) {
-  // @ts-ignore
-  const { element, scrollbarWidth } = self;
-  const bd = document.body;
-  const html = document.documentElement;
-  const bodyOverflow = html.clientHeight !== html.scrollHeight
-                    || bd.clientHeight !== bd.scrollHeight;
-  const modalOverflow = element.clientHeight !== element.scrollHeight;
+  const { element } = self;
+  const scrollbarWidth = measureScrollbar(element);
+  const { clientHeight, scrollHeight } = getDocumentElement(element);
+  const { clientHeight: modalHeight, scrollHeight: modalScrollHeight } = element;
+  const modalOverflow = modalHeight !== modalScrollHeight;
 
   if (!modalOverflow && scrollbarWidth) {
+    const pad = isRTL(element) ? 'paddingLeft' : 'paddingRight';
     // @ts-ignore
-    element.style.paddingRight = `${scrollbarWidth}px`;
+    element.style[pad] = `${scrollbarWidth}px`;
   }
-  setScrollbar(scrollbarWidth, (modalOverflow || bodyOverflow));
+  setScrollbar(element, (modalOverflow || clientHeight !== scrollHeight));
 }
 
 /**
@@ -101,13 +117,12 @@ function setModalScrollbar(self) {
  * @param {boolean=} add when `true`, event listeners are added
  */
 function toggleModalDismiss(self, add) {
-  const action = add ? addEventListener : removeEventListener;
+  const action = add ? on : off;
+  const { element } = self;
+  action(element, mouseclickEvent, modalDismissHandler);
   // @ts-ignore
-  window[action]('resize', self.update, passiveHandler);
-  // @ts-ignore
-  self.element[action]('click', modalDismissHandler);
-  // @ts-ignore
-  document[action]('keydown', modalKeyHandler);
+  action(getWindow(element), resizeEvent, self.update, passiveHandler);
+  action(getDocument(element), keydownEvent, modalKeyHandler);
 }
 
 /**
@@ -116,13 +131,11 @@ function toggleModalDismiss(self, add) {
  * @param {boolean=} add when `true`, event listener is added
  */
 function toggleModalHandler(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
+  const action = add ? on : off;
   const { triggers } = self;
 
   if (triggers.length) {
-    // @ts-ignore
-    triggers.forEach((btn) => btn[action]('click', modalClickHandler));
+    triggers.forEach((btn) => action(btn, mouseclickEvent, modalClickHandler));
   }
 }
 
@@ -131,17 +144,14 @@ function toggleModalHandler(self, add) {
  * @param {Modal} self the `Modal` instance
  */
 function afterModalHide(self) {
+  const { triggers, element } = self;
+  removeOverlay(element);
   // @ts-ignore
-  const { triggers } = self;
-  removeOverlay();
-  // @ts-ignore
-  self.element.style.paddingRight = '';
-  // @ts-ignore
-  self.isAnimating = false;
+  element.style.paddingRight = '';
 
   if (triggers.length) {
     const visibleTrigger = triggers.find((x) => isVisible(x));
-    if (visibleTrigger) setFocus(visibleTrigger);
+    if (visibleTrigger) focus(visibleTrigger);
   }
 }
 
@@ -150,17 +160,12 @@ function afterModalHide(self) {
  * @param {Modal} self the `Modal` instance
  */
 function afterModalShow(self) {
-  // @ts-ignore
   const { element, relatedTarget } = self;
-  setFocus(element);
-  // @ts-ignore
-  self.isAnimating = false;
-
+  focus(element);
   toggleModalDismiss(self, true);
 
-  // @ts-ignore
   shownModalEvent.relatedTarget = relatedTarget;
-  element.dispatchEvent(shownModalEvent);
+  dispatchEvent(element, shownModalEvent);
 }
 
 /**
@@ -168,19 +173,18 @@ function afterModalShow(self) {
  * @param {Modal} self the `Modal` instance
  */
 function beforeModalShow(self) {
-  // @ts-ignore
   const { element, hasFade } = self;
   // @ts-ignore
   element.style.display = 'block';
 
   setModalScrollbar(self);
-  if (!getCurrentOpen()) {
-    document.body.style.overflow = 'hidden';
+  if (!getCurrentOpen(element)) {
+    getDocumentBody(element).style.overflow = 'hidden';
   }
 
   addClass(element, showClass);
-  element.removeAttribute(ariaHidden);
-  element.setAttribute(ariaModal, 'true');
+  removeAttribute(element, ariaHidden);
+  setAttribute(element, ariaModal, 'true');
 
   if (hasFade) emulateTransitionEnd(element, () => afterModalShow(self));
   else afterModalShow(self);
@@ -193,7 +197,6 @@ function beforeModalShow(self) {
  */
 function beforeModalHide(self, force) {
   const {
-    // @ts-ignore
     element, options, relatedTarget, hasFade,
   } = self;
 
@@ -203,7 +206,7 @@ function beforeModalHide(self, force) {
   // force can also be the transitionEvent object, we wanna make sure it's not
   // call is not forced and overlay is visible
   if (options.backdrop && !force && hasFade && hasClass(overlay, showClass)
-    && !getCurrentOpen()) { // AND no modal is visible
+    && !getCurrentOpen(element)) { // AND no modal is visible
     hideOverlay();
     emulateTransitionEnd(overlay, () => afterModalHide(self));
   } else {
@@ -213,31 +216,27 @@ function beforeModalHide(self, force) {
   toggleModalDismiss(self);
 
   hiddenModalEvent.relatedTarget = relatedTarget;
-  element.dispatchEvent(hiddenModalEvent);
+  dispatchEvent(element, hiddenModalEvent);
 }
 
 // MODAL EVENT HANDLERS
 // ====================
 /**
  * Handles the `click` event listener for modal.
- * @param {Event} e the `Event` object
+ * @param {MouseEvent} e the `Event` object
+ * @this {HTMLElement | Element}
  */
 function modalClickHandler(e) {
   const { target } = e;
-  // @ts-ignore
-  const trigger = target.closest(modalToggleSelector);
-  const element = getTargetElement(trigger);
+
+  const trigger = target && closest(this, modalToggleSelector);
+  const element = trigger && getTargetElement(trigger);
   const self = element && getModalInstance(element);
+
   if (!self) return;
 
-  if (trigger.tagName === 'A') e.preventDefault();
-
-  // @ts-ignore
-  if (self.isAnimating) return;
-
-  // @ts-ignore
+  if (trigger && trigger.tagName === 'A') e.preventDefault();
   self.relatedTarget = trigger;
-
   self.toggle();
 }
 
@@ -245,19 +244,15 @@ function modalClickHandler(e) {
  * Handles the `keydown` event listener for modal
  * to hide the modal when user type the `ESC` key.
  *
- * @param {{which: number}} e the `Event` object
+ * @param {KeyboardEvent} e the `Event` object
  */
-function modalKeyHandler({ which }) {
-  const element = queryElement(modalActiveSelector);
-  // @ts-ignore
-  const self = getModalInstance(element);
-  // @ts-ignore
-  const { options, isAnimating } = self;
-  if (!isAnimating // modal has no animations running
-    && options.keyboard && which === 27 // the keyboard option is enabled and the key is 27
-    // @ts-ignore
+function modalKeyHandler({ code }) {
+  const element = querySelector(modalActiveSelector);
+  const self = element && getModalInstance(element);
+  if (!self) return;
+  const { options } = self;
+  if (options.keyboard && code === keyEscape // the keyboard option is enabled and the key is 27
     && hasClass(element, showClass)) { // the modal is not visible
-    // @ts-ignore
     self.relatedTarget = null;
     self.hide();
   }
@@ -266,35 +261,34 @@ function modalKeyHandler({ which }) {
 /**
  * Handles the `click` event listeners that hide the modal.
  *
- * @this {Element}
- * @param {Event} e the `Event` object
+ * @this {HTMLElement | Element}
+ * @param {MouseEvent} e the `Event` object
  */
 function modalDismissHandler(e) {
   const element = this;
   const self = getModalInstance(element);
 
-  // @ts-ignore
-  if (self.isAnimating) return;
+  // this timer is needed
+  if (!self || Timer.get(element)) return;
 
-  // @ts-ignore
   const { options, isStatic, modalDialog } = self;
   const { backdrop } = options;
   const { target } = e;
+
   // @ts-ignore
-  const selectedText = document.getSelection().toString().length;
+  const selectedText = getDocument(element).getSelection().toString().length;
   // @ts-ignore
   const targetInsideDialog = modalDialog.contains(target);
   // @ts-ignore
-  const dismiss = target.closest(modalDismissSelector);
+  const dismiss = target && closest(target, modalDismissSelector);
 
   if (isStatic && !targetInsideDialog) {
-    addClass(element, modalStaticClass);
-    // @ts-ignore
-    self.isAnimating = true;
-    // @ts-ignore
-    emulateTransitionEnd(modalDialog, () => staticTransitionEnd(self));
+    const dismissCallback = () => {
+      addClass(element, modalStaticClass);
+      emulateTransitionEnd(modalDialog, () => staticTransitionEnd(self));
+    };
+    Timer.set(element, dismissCallback, 17);
   } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)) {
-    // @ts-ignore
     self.relatedTarget = dismiss || null;
     self.hide();
     e.preventDefault();
@@ -307,12 +301,11 @@ function modalDismissHandler(e) {
  * @param {Modal} self the `Modal` instance
  */
 function staticTransitionEnd(self) {
-  // @ts-ignore
-  const duration = getElementTransitionDuration(self.modalDialog) + 17;
-  removeClass(self.element, modalStaticClass);
+  const { element, modalDialog } = self;
+  const duration = getElementTransitionDuration(modalDialog) + 17;
+  removeClass(element, modalStaticClass);
   // user must wait for zoom out transition
-  // @ts-ignore
-  setTimeout(() => { self.isAnimating = false; }, duration);
+  Timer.set(element, () => Timer.clear(element), duration);
 }
 
 // MODAL DEFINITION
@@ -320,7 +313,7 @@ function staticTransitionEnd(self) {
 /** Returns a new `Modal` instance. */
 export default class Modal extends BaseComponent {
   /**
-   * @param {Element | string} target usually the `.modal` element
+   * @param {HTMLElement | Element | string} target usually the `.modal` element
    * @param {BSN.Options.Modal=} config instance options
    */
   constructor(target, config) {
@@ -333,25 +326,25 @@ export default class Modal extends BaseComponent {
     const { element } = self;
 
     // the modal-dialog
-    /** @private @type {Element?} */
-    self.modalDialog = queryElement(`.${modalString}-dialog`, element);
+    /** @type {(HTMLElement | Element)} */
+    // @ts-ignore
+    self.modalDialog = querySelector(`.${modalString}-dialog`, element);
 
     // modal can have multiple triggering elements
-    /** @private @type {Element[]} */
-    self.triggers = Array.from(document.querySelectorAll(modalToggleSelector))
+    /** @type {(HTMLElement | Element)[]} */
+    self.triggers = [...querySelectorAll(modalToggleSelector)]
       .filter((btn) => getTargetElement(btn) === element);
 
     // additional internals
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     self.isStatic = self.options.backdrop === 'static';
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     self.hasFade = hasClass(element, fadeClass);
-    /** @private @type {boolean} */
-    self.isAnimating = false;
-    /** @private @type {number} */
-    self.scrollbarWidth = measureScrollbar();
-    /** @private @type {Element?} */
+    /** @type {(HTMLElement | Element)?} */
     self.relatedTarget = null;
+    /** @type {HTMLBodyElement | HTMLElement | Element} */
+    // @ts-ignore
+    self.container = getElementContainer(element);
 
     // attach event listeners
     toggleModalHandler(self, true);
@@ -386,31 +379,28 @@ export default class Modal extends BaseComponent {
   show() {
     const self = this;
     const {
-      element, options, isAnimating, hasFade, relatedTarget,
+      element, options, hasFade, relatedTarget, container,
     } = self;
     const { backdrop } = options;
     let overlayDelay = 0;
 
-    if (hasClass(element, showClass) && !isAnimating) return;
+    if (hasClass(element, showClass)) return;
 
-    // @ts-ignore
     showModalEvent.relatedTarget = relatedTarget || null;
-    element.dispatchEvent(showModalEvent);
+    dispatchEvent(element, showModalEvent);
     if (showModalEvent.defaultPrevented) return;
 
     // we elegantly hide any opened modal/offcanvas
-    const currentOpen = getCurrentOpen();
+    const currentOpen = getCurrentOpen(element);
     if (currentOpen && currentOpen !== element) {
       const this1 = getModalInstance(currentOpen);
       const that1 = this1 || getInstance(currentOpen, 'Offcanvas');
       that1.hide();
     }
 
-    self.isAnimating = true;
-
     if (backdrop) {
       if (!currentOpen && !hasClass(overlay, showClass)) {
-        appendOverlay(hasFade, true);
+        appendOverlay(container, hasFade, true);
       } else {
         toggleOverlayType(true);
       }
@@ -433,19 +423,17 @@ export default class Modal extends BaseComponent {
   hide(force) {
     const self = this;
     const {
-      element, isAnimating, hasFade, relatedTarget,
+      element, hasFade, relatedTarget,
     } = self;
-    if (!hasClass(element, showClass) && !isAnimating) return;
 
-    // @ts-ignore
+    if (!hasClass(element, showClass)) return;
+
     hideModalEvent.relatedTarget = relatedTarget || null;
-    element.dispatchEvent(hideModalEvent);
+    dispatchEvent(element, hideModalEvent);
     if (hideModalEvent.defaultPrevented) return;
-
-    self.isAnimating = true;
     removeClass(element, showClass);
-    element.setAttribute(ariaHidden, 'true');
-    element.removeAttribute(ariaModal);
+    setAttribute(element, ariaHidden, 'true');
+    removeAttribute(element, ariaModal);
 
     if (hasFade && force !== false) {
       emulateTransitionEnd(element, () => beforeModalHide(self));
@@ -472,7 +460,7 @@ export default class Modal extends BaseComponent {
   }
 }
 
-Object.assign(Modal, {
+ObjectAssign(Modal, {
   selector: modalSelector,
   init: modalInitCallback,
   getInstance: getModalInstance,

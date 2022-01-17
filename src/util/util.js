@@ -7,7 +7,7 @@ import bootstrapCustomEvent from './bootstrapCustomEvent';
 import dispatchCustomEvent from './dispatchCustomEvent';
 import setFocus from './setFocus';
 import styleTip from './styleTip';
-import getScroll from './getScroll';
+import getScroll from './getScroll-v4';
 
 // for faster execution
 // export this object to global

@@ -1,6 +1,6 @@
 /*!
-  * Native JavaScript for Bootstrap Collapse v4.1.0 (https://thednp.github.io/bootstrap.native/)
-  * Copyright 2015-2021 © dnp_theme
+  * Native JavaScript for Bootstrap - Collapse v4.1.0alpha1 (https://thednp.github.io/bootstrap.native/)
+  * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 (function (global, factory) {
@@ -10,42 +10,66 @@
 })(this, (function () { 'use strict';
 
   /**
+   * Shortcut for `HTMLElement.setAttribute()` method.
+   * @param  {HTMLElement | Element} element target element
+   * @param  {string} attribute attribute name
+   * @param  {string} value attribute value
+   */
+  const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
+
+  /**
    * A global namespace for 'transitionend' string.
    * @type {string}
    */
-  const transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
-
-  /**
-   * A global namespace for CSS3 transition support.
-   * @type {boolean}
-   */
-  const supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
+  const transitionEndEvent = 'transitionend';
 
   /**
    * A global namespace for 'transitionDelay' string.
    * @type {string}
    */
-  const transitionDelay = 'webkitTransition' in document.head.style ? 'webkitTransitionDelay' : 'transitionDelay';
+  const transitionDelay = 'transitionDelay';
 
   /**
-   * A global namespace for 'transitionProperty' string.
+   * A global namespace for:
+   * * `transitionProperty` string for Firefox,
+   * * `transition` property for all other browsers.
+   *
    * @type {string}
    */
-  const transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
+  const transitionProperty = 'transitionProperty';
 
   /**
-   * Utility to get the computed transitionDelay
+   * Shortcut for `window.getComputedStyle(element).propertyName`
+   * static method.
+   *
+   * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
+   * throws a `ReferenceError`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} property the css property
+   * @return {string} the css property value
+   */
+  function getElementStyle(element, property) {
+    const computedStyle = getComputedStyle(element);
+
+    // @ts-ignore -- must use camelcase strings,
+    // or non-camelcase strings with `getPropertyValue`
+    return property in computedStyle ? computedStyle[property] : '';
+  }
+
+  /**
+   * Utility to get the computed `transitionDelay`
    * from Element in miliseconds.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @return {number} the value in miliseconds
    */
   function getElementTransitionDelay(element) {
-    const computedStyle = getComputedStyle(element);
-    const propertyValue = computedStyle[transitionProperty];
-    const delayValue = computedStyle[transitionDelay];
+    const propertyValue = getElementStyle(element, transitionProperty);
+    const delayValue = getElementStyle(element, transitionDelay);
+
     const delayScale = delayValue.includes('ms') ? 1 : 1000;
-    const duration = supportTransition && propertyValue && propertyValue !== 'none'
+    const duration = propertyValue && propertyValue !== 'none'
       ? parseFloat(delayValue) * delayScale : 0;
 
     return !Number.isNaN(duration) ? duration : 0;
@@ -55,32 +79,57 @@
    * A global namespace for 'transitionDuration' string.
    * @type {string}
    */
-  const transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+  const transitionDuration = 'transitionDuration';
 
   /**
-   * Utility to get the computed transitionDuration
+   * Utility to get the computed `transitionDuration`
    * from Element in miliseconds.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @return {number} the value in miliseconds
    */
   function getElementTransitionDuration(element) {
-    const computedStyle = getComputedStyle(element);
-    const propertyValue = computedStyle[transitionProperty];
-    const durationValue = computedStyle[transitionDuration];
+    const propertyValue = getElementStyle(element, transitionProperty);
+    const durationValue = getElementStyle(element, transitionDuration);
     const durationScale = durationValue.includes('ms') ? 1 : 1000;
-    const duration = supportTransition && propertyValue && propertyValue !== 'none'
+    const duration = propertyValue && propertyValue !== 'none'
       ? parseFloat(durationValue) * durationScale : 0;
 
     return !Number.isNaN(duration) ? duration : 0;
   }
 
   /**
+   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function on(element, eventName, handler, options) {
+    const ops = options || false;
+    element.addEventListener(eventName, handler, ops);
+  }
+
+  /**
+   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function off(element, eventName, handler, options) {
+    const ops = options || false;
+    element.removeEventListener(eventName, handler, ops);
+  }
+
+  /**
    * Utility to make sure callbacks are consistently
    * called when transition ends.
    *
-   * @param {Element} element target
-   * @param {function} handler `transitionend` callback
+   * @param {HTMLElement | Element} element target
+   * @param {EventListener} handler `transitionend` callback
    */
   function emulateTransitionEnd(element, handler) {
     let called = 0;
@@ -91,17 +140,16 @@
     if (duration) {
       /**
        * Wrap the handler in on -> off callback
-       * @param {Event} e Event object
-       * @callback
+       * @param {TransitionEvent} e Event object
        */
       const transitionEndWrapper = (e) => {
         if (e.target === element) {
           handler.apply(element, [e]);
-          element.removeEventListener(transitionEndEvent, transitionEndWrapper);
+          off(element, transitionEndEvent, transitionEndWrapper);
           called = 1;
         }
       };
-      element.addEventListener(transitionEndEvent, transitionEndWrapper);
+      on(element, transitionEndEvent, transitionEndWrapper);
       setTimeout(() => {
         if (!called) element.dispatchEvent(endEvent);
       }, duration + delay + 17);
@@ -111,44 +159,91 @@
   }
 
   /**
-   * Checks if an element is an `Element`.
+   * Shortcut for `HTMLElement.closest` method which also works
+   * with children of `ShadowRoot`. The order of the parameters
+   * is intentional since they're both required.
    *
-   * @param {any} element the target element
-   * @returns {boolean} the query result
+   * @see https://stackoverflow.com/q/54520554/803358
+   *
+   * @param {HTMLElement | Element} element Element to look into
+   * @param {string} selector the selector name
+   * @return {(HTMLElement | Element)?} the query result
    */
-  function isElement(element) {
-    return element instanceof Element;
+  function closest(element, selector) {
+    return element ? (element.closest(selector)
+      // @ts-ignore -- break out of `ShadowRoot`
+      || closest(element.getRootNode().host, selector)) : null;
   }
 
   /**
-   * Utility to check if target is typeof Element
+   * Returns the `document` or the `#document` element.
+   * @see https://github.com/floating-ui/floating-ui
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {Document}
+   */
+  function getDocument(node) {
+    if (node instanceof HTMLElement) return node.ownerDocument;
+    if (node instanceof Window) return node.document;
+    return window.document;
+  }
+
+  /**
+   * A global array of possible `ParentNode`.
+   */
+  const parentNodes = [Document, Node, Element, HTMLElement];
+
+  /**
+   * A global array with `Element` | `HTMLElement`.
+   */
+  const elementNodes = [Element, HTMLElement];
+
+  /**
+   * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
    * or find one that matches a selector.
    *
-   * @param {Element | string} selector the input selector or target element
-   * @param {Element=} parent optional Element to look into
-   * @return {Element?} the Element or `querySelector` result
+   * @param {HTMLElement | Element | string} selector the input selector or target element
+   * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+   * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
    */
-  function queryElement(selector, parent) {
-    const lookUp = parent && isElement(parent) ? parent : document;
-    // @ts-ignore
-    return isElement(selector) ? selector : lookUp.querySelector(selector);
+  function querySelector(selector, parent) {
+    const selectorIsString = typeof selector === 'string';
+    const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+      ? parent : getDocument();
+
+    if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+      return selector;
+    }
+    // @ts-ignore -- `ShadowRoot` is also a node
+    return selectorIsString ? lookUp.querySelector(selector) : null;
   }
 
   /**
-   * Utility to force re-paint of an Element
+   * A shortcut for `(document|Element).querySelectorAll`.
    *
-   * @param {Element | HTMLElement} element is the target
-   * @return {number} the Element.offsetHeight value
+   * @param {string} selector the input selector
+   * @param {(HTMLElement | Element | Document | Node)=} parent optional node to look into
+   * @return {NodeListOf<HTMLElement | Element>} the query result
    */
-  function reflow(element) {
-    // @ts-ignore
-    return element.offsetHeight;
+  function querySelectorAll(selector, parent) {
+    const lookUp = parent && parentNodes
+      .some((x) => parent instanceof x) ? parent : getDocument();
+    // @ts-ignore -- `ShadowRoot` is also a node
+    return lookUp.querySelectorAll(selector);
   }
 
   /**
-   * Add class to Element.classList
+   * Utility to force re-paint of an `HTMLElement` target.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element is the target
+   * @return {number} the `Element.offsetHeight` value
+   */
+  // @ts-ignore
+  const reflow = (element) => element.offsetHeight;
+
+  /**
+   * Add class to `HTMLElement.classList`.
+   *
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to add
    */
   function addClass(element, classNAME) {
@@ -156,9 +251,9 @@
   }
 
   /**
-   * Check class in Element.classList
+   * Check class in `HTMLElement.classList`.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to check
    * @return {boolean}
    */
@@ -167,9 +262,9 @@
   }
 
   /**
-   * Remove class from Element.classList
+   * Remove class from `HTMLElement.classList`.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to remove
    */
   function removeClass(element, classNAME) {
@@ -177,16 +272,10 @@
   }
 
   /**
-   * A global namespace for 'addEventListener' string.
+   * A global namespace for `click` event.
    * @type {string}
    */
-  const addEventListener = 'addEventListener';
-
-  /**
-   * A global namespace for 'removeEventListener' string.
-   * @type {string}
-   */
-  const removeEventListener = 'removeEventListener';
+  const mouseclickEvent = 'click';
 
   /**
    * A global namespace for aria-expanded.
@@ -194,6 +283,22 @@
    */
   const ariaExpanded = 'aria-expanded';
 
+  /**
+   * Shortcut for `Object.assign()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @param  {Record<string, any>} source a source object
+   */
+  const ObjectAssign = (obj, source) => Object.assign(obj, source);
+
+  /**
+   * Shortcut for the `Element.dispatchEvent(Event)` method.
+   *
+   * @param {HTMLElement | Element} element is the target
+   * @param {Event} event is the `Event` object
+   */
+  const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+  /** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
   const componentData = new Map();
   /**
    * An interface for web components background data.
@@ -202,59 +307,58 @@
   const Data = {
     /**
      * Sets web components data.
-     * @param {Element | string} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
-     * @param {any} instance the component instance
+     * @param {Record<string, any>} instance the component instance
      */
-    set: (element, component, instance) => {
-      const ELEMENT = queryElement(element);
-      if (!isElement(ELEMENT)) return;
+    set: (target, component, instance) => {
+      const element = querySelector(target);
+      if (!element) return;
 
       if (!componentData.has(component)) {
         componentData.set(component, new Map());
       }
 
       const instanceMap = componentData.get(component);
-      instanceMap.set(ELEMENT, instance);
+      // @ts-ignore - not undefined, but defined right above
+      instanceMap.set(element, instance);
     },
 
     /**
      * Returns all instances for specified component.
      * @param {string} component the component's name or a unique key
-     * @returns {any?} all the component instances
+     * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
      */
     getAllFor: (component) => {
-      if (componentData.has(component)) {
-        return componentData.get(component);
-      }
-      return null;
+      const instanceMap = componentData.get(component);
+
+      return instanceMap || null;
     },
 
     /**
      * Returns the instance associated with the target.
-     * @param {Element | string} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
-     * @returns {any?} the instance
+     * @returns {Record<string, any>?} the instance
      */
-    get: (element, component) => {
-      const ELEMENT = queryElement(element);
-
+    get: (target, component) => {
+      const element = querySelector(target);
       const allForC = Data.getAllFor(component);
-      if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
-        return allForC.get(ELEMENT);
-      }
-      return null;
+      const instance = element && allForC && allForC.get(element);
+
+      return instance || null;
     },
 
     /**
      * Removes web components data.
-     * @param {Element} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
      */
-    remove: (element, component) => {
-      if (!componentData.has(component)) return;
-
+    remove: (target, component) => {
+      const element = querySelector(target);
       const instanceMap = componentData.get(component);
+      if (!instanceMap || !element) return;
+
       instanceMap.delete(element);
 
       if (instanceMap.size === 0) {
@@ -265,11 +369,84 @@
 
   /**
    * An alias for `Data.get()`.
-   * @param {Element | string} element target element
-   * @param {string} component the component's name or a unique key
-   * @returns {any} the request result
+   * @type {SHORTER.getInstance<any>}
    */
-  const getInstance = (element, component) => Data.get(element, component);
+  const getInstance = (target, component) => Data.get(target, component);
+
+  /** @type {Map<HTMLElement | Element, any>} */
+  const TimeCache = new Map();
+  /**
+   * An interface for one or more `TimerHandler`s per `Element`.
+   * @see https://github.com/thednp/navbar.js/
+   */
+  const Timer = {
+    /**
+     * Sets a new timeout timer for an element, or element -> key association.
+     * @param {HTMLElement | Element | string} target target element
+     * @param {ReturnType<TimerHandler>} callback the callback
+     * @param {number} delay the execution delay
+     * @param {string=} key a unique
+     */
+    set: (target, callback, delay, key) => {
+      const element = querySelector(target);
+
+      if (!element) return;
+
+      if (key && key.length) {
+        if (!TimeCache.has(element)) {
+          TimeCache.set(element, new Map());
+        }
+        const keyTimers = TimeCache.get(element);
+        keyTimers.set(key, setTimeout(callback, delay));
+      } else {
+        TimeCache.set(element, setTimeout(callback, delay));
+      }
+    },
+
+    /**
+     * Returns the timer associated with the target.
+     * @param {HTMLElement | Element | string} target target element
+     * @param {string=} key a unique
+     * @returns {number?} the timer
+     */
+    get: (target, key) => {
+      const element = querySelector(target);
+
+      if (!element) return null;
+      const keyTimers = TimeCache.get(element);
+
+      if (key && key.length && keyTimers && keyTimers.get) {
+        return keyTimers.get(key) || null;
+      }
+      return keyTimers || null;
+    },
+
+    /**
+     * Clears the element's timer.
+     * @param {HTMLElement | Element | string} target target element
+     * @param {string=} key a unique key
+     */
+    clear: (target, key) => {
+      const element = querySelector(target);
+
+      if (!element) return;
+
+      if (key && key.length) {
+        const keyTimers = TimeCache.get(element);
+
+        if (keyTimers && keyTimers.get) {
+          clearTimeout(keyTimers.get(key));
+          keyTimers.delete(key);
+          if (keyTimers.size === 0) {
+            TimeCache.delete(element);
+          }
+        }
+      } else {
+        clearTimeout(TimeCache.get(element));
+        TimeCache.delete(element);
+      }
+    },
+  };
 
   /**
    * Global namespace for most components `toggle` option.
@@ -287,33 +464,27 @@
    */
   const showClass = 'show';
 
-  /** Returns an original event for Bootstrap Native components. */
-  class OriginalEvent extends CustomEvent {
-    /**
-     * @param {string} EventType event.type
-     * @param {Record<string, any>=} config Event.options | Event.properties
-     */
-    constructor(EventType, config) {
-      super(EventType, config);
-      /** @type {EventTarget?} */
-      this.relatedTarget = null;
-    }
-  }
-
   /**
    * Returns a namespaced `CustomEvent` specific to each component.
    * @param {string} EventType Event.type
    * @param {Record<string, any>=} config Event.options | Event.properties
-   * @returns {OriginalEvent} a new namespaced event
+   * @returns {BSN.OriginalEvent} a new namespaced event
    */
   function bootstrapCustomEvent(EventType, config) {
-    const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
+    const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
 
     if (config instanceof Object) {
-      Object.assign(OriginalCustomEvent, config);
+      ObjectAssign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
   }
+
+  /**
+   * Shortcut for `HTMLElement.getAttribute()` method.
+   * @param  {HTMLElement | Element} element target element
+   * @param  {string} attribute attribute name
+   */
+  const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
   /**
    * Global namespace for most components `target` option.
@@ -330,25 +501,30 @@
    */
   const dataBsContainer = 'data-bs-container';
 
-  // @ts-nocheck
-
   /**
    * Returns the `Element` that THIS one targets
    * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
    *
-   * @param {Element} element the target element
-   * @returns {Element?} the query result
+   * @param {HTMLElement | Element} element the target element
+   * @returns {(HTMLElement | Element)?} the query result
    */
   function getTargetElement(element) {
-    return queryElement(element.getAttribute(dataBsTarget) || element.getAttribute('href'))
-    || element.closest(element.getAttribute(dataBsParent))
-          || queryElement(element.getAttribute(dataBsContainer));
+    const targetAttr = [dataBsTarget, dataBsParent, dataBsContainer, 'href'];
+    const doc = getDocument(element);
+
+    return targetAttr.map((att) => {
+      const attValue = getAttribute(element, att);
+      if (attValue) {
+        return att === dataBsParent ? closest(element, attValue) : querySelector(attValue, doc);
+      }
+      return null;
+    }).filter((x) => x)[0];
   }
 
   /**
    * The raw value or a given component option.
    *
-   * @typedef {string | Element | Function | number | boolean | null} niceValue
+   * @typedef {string | HTMLElement | Function | number | boolean | null} niceValue
    */
 
   /**
@@ -374,94 +550,93 @@
       return null;
     }
 
-    // string / function / Element / object
+    // string / function / HTMLElement / object
     return value;
   }
 
   /**
-   * Utility to normalize component options
+   * Shortcut for `Object.keys()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @returns {string[]}
+   */
+  const ObjectKeys = (obj) => Object.keys(obj);
+
+  /**
+   * Utility to normalize component options.
    *
-   * @param {Element} element target
-   * @param {object} defaultOps component default options
-   * @param {object} inputOps component instance options
-   * @param {string} ns component namespace
-   * @return {object} normalized component options object
+   * @param {HTMLElement | Element} element target
+   * @param {Record<string, any>} defaultOps component default options
+   * @param {Record<string, any>} inputOps component instance options
+   * @param {string=} ns component namespace
+   * @return {Record<string, any>} normalized component options object
    */
   function normalizeOptions(element, defaultOps, inputOps, ns) {
-    // @ts-ignore
+    // @ts-ignore -- our targets are always `HTMLElement`
     const data = { ...element.dataset };
+    /** @type {Record<string, any>} */
     const normalOps = {};
+    /** @type {Record<string, any>} */
     const dataOps = {};
 
-    Object.keys(data)
-      .forEach((k) => {
-        const key = k.includes(ns)
-          ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
-          : k;
+    ObjectKeys(data).forEach((k) => {
+      const key = ns && k.includes(ns)
+        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+        : k;
 
-        dataOps[key] = normalizeValue(data[k]);
-      });
+      dataOps[key] = normalizeValue(data[k]);
+    });
 
-    Object.keys(inputOps)
-      .forEach((k) => {
-        inputOps[k] = normalizeValue(inputOps[k]);
-      });
+    ObjectKeys(inputOps).forEach((k) => {
+      inputOps[k] = normalizeValue(inputOps[k]);
+    });
 
-    Object.keys(defaultOps)
-      .forEach((k) => {
-        if (k in inputOps) {
-          normalOps[k] = inputOps[k];
-        } else if (k in dataOps) {
-          normalOps[k] = dataOps[k];
-        } else {
-          normalOps[k] = defaultOps[k];
-        }
-      });
+    ObjectKeys(defaultOps).forEach((k) => {
+      if (k in inputOps) {
+        normalOps[k] = inputOps[k];
+      } else if (k in dataOps) {
+        normalOps[k] = dataOps[k];
+      } else {
+        normalOps[k] = defaultOps[k];
+      }
+    });
 
     return normalOps;
   }
 
-  var version = "4.1.0";
+  var version = "4.1.0alpha1";
 
   const Version = version;
 
   /* Native JavaScript for Bootstrap 5 | Base Component
   ----------------------------------------------------- */
 
-  /**
-   * Returns a new `BaseComponent` instance.
-   */
+  /** Returns a new `BaseComponent` instance. */
   class BaseComponent {
     /**
-     * @param {Element | string} target Element or selector string
+     * @param {HTMLElement | Element | string} target `Element` or selector string
      * @param {BSN.ComponentOptions=} config component instance options
      */
     constructor(target, config) {
       const self = this;
-      const element = queryElement(target);
+      const element = querySelector(target);
 
-      if (!isElement(element)) {
-        throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+      if (!element) {
+        throw Error(`${self.name} Error: "${target}" is not a valid selector.`);
       }
 
-      /** @type {BSN.ComponentOptions} */
+      /** @static @type {BSN.ComponentOptions} */
       self.options = {};
 
-      // @ts-ignore
       const prevInstance = Data.get(element, self.name);
       if (prevInstance) prevInstance.dispose();
 
-      /** @type {Element} */
-      // @ts-ignore
+      /** @type {HTMLElement | Element} */
       self.element = element;
 
       if (self.defaults && Object.keys(self.defaults).length) {
-        /** @static @type {Record<string, any>} */
-        // @ts-ignore
         self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
 
-      // @ts-ignore
       Data.set(element, self.name, self);
     }
 
@@ -482,10 +657,9 @@
      */
     dispose() {
       const self = this;
-      // @ts-ignore
       Data.remove(self.element, self.name);
       // @ts-ignore
-      Object.keys(self).forEach((prop) => { self[prop] = null; });
+      ObjectKeys(self).forEach((prop) => { self[prop] = null; });
     }
   }
 
@@ -529,17 +703,14 @@
    */
   function expandCollapse(self) {
     const {
-      // @ts-ignore
       element, parent, triggers,
     } = self;
 
-    element.dispatchEvent(showCollapseEvent);
+    dispatchEvent(element, showCollapseEvent);
     if (showCollapseEvent.defaultPrevented) return;
 
-    // @ts-ignore
-    self.isAnimating = true;
-    // @ts-ignore
-    if (parent) parent.isAnimating = true;
+    Timer.set(element, () => {}, 17);
+    if (parent) Timer.set(parent, () => {}, 17);
 
     addClass(element, collapsingClass);
     removeClass(element, collapseString);
@@ -548,12 +719,10 @@
     element.style.height = `${element.scrollHeight}px`;
 
     emulateTransitionEnd(element, () => {
-      // @ts-ignore
-      self.isAnimating = false;
-      // @ts-ignore
-      if (parent) parent.isAnimating = false;
+      Timer.clear(element);
+      if (parent) Timer.clear(parent);
 
-      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'true'));
+      triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'true'));
 
       removeClass(element, collapsingClass);
       addClass(element, collapseString);
@@ -562,7 +731,7 @@
       // @ts-ignore
       element.style.height = '';
 
-      element.dispatchEvent(shownCollapseEvent);
+      dispatchEvent(element, shownCollapseEvent);
     });
   }
 
@@ -576,14 +745,12 @@
       element, parent, triggers,
     } = self;
 
-    element.dispatchEvent(hideCollapseEvent);
+    dispatchEvent(element, hideCollapseEvent);
 
     if (hideCollapseEvent.defaultPrevented) return;
 
-    // @ts-ignore
-    self.isAnimating = true;
-    // @ts-ignore
-    if (parent) parent.isAnimating = true;
+    Timer.set(element, () => {}, 17);
+    if (parent) Timer.set(parent, () => {}, 17);
 
     // @ts-ignore
     element.style.height = `${element.scrollHeight}px`;
@@ -597,12 +764,10 @@
     element.style.height = '0px';
 
     emulateTransitionEnd(element, () => {
-      // @ts-ignore
-      self.isAnimating = false;
-      // @ts-ignore
-      if (parent) parent.isAnimating = false;
+      Timer.clear(element);
+      if (parent) Timer.clear(parent);
 
-      triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'false'));
+      triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'false'));
 
       removeClass(element, collapsingClass);
       addClass(element, collapseString);
@@ -610,7 +775,7 @@
       // @ts-ignore
       element.style.height = '';
 
-      element.dispatchEvent(hiddenCollapseEvent);
+      dispatchEvent(element, hiddenCollapseEvent);
     });
   }
 
@@ -620,13 +785,11 @@
    * @param {boolean=} add when `true`, the event listener is added
    */
   function toggleCollapseHandler(self, add) {
-    const action = add ? addEventListener : removeEventListener;
-    // @ts-ignore
+    const action = add ? on : off;
     const { triggers } = self;
 
     if (triggers.length) {
-      // @ts-ignore
-      triggers.forEach((btn) => btn[action]('click', collapseClickHandler));
+      triggers.forEach((btn) => action(btn, mouseclickEvent, collapseClickHandler));
     }
   }
 
@@ -634,13 +797,12 @@
   // ======================
   /**
    * Handles the `click` event for the `Collapse` instance.
-   * @param {Event} e the `Event` object
+   * @param {MouseEvent} e the `Event` object
    */
   function collapseClickHandler(e) {
-    const { target } = e;
-    // @ts-ignore
-    const trigger = target.closest(collapseToggleSelector);
-    const element = getTargetElement(trigger);
+    const { target } = e; // @ts-ignore - our target is `HTMLElement`
+    const trigger = target && closest(target, collapseToggleSelector);
+    const element = trigger && getTargetElement(trigger);
     const self = element && getCollapseInstance(element);
     if (self) self.toggle();
 
@@ -654,7 +816,7 @@
   /** Returns a new `Colapse` instance. */
   class Collapse extends BaseComponent {
     /**
-     * @param {Element | string} target and `Element` that matches the selector
+     * @param {HTMLElement | Element | string} target and `Element` that matches the selector
      * @param {BSN.Options.Collapse=} config instance options
      */
     constructor(target, config) {
@@ -666,20 +828,13 @@
       const { element, options } = self;
 
       // set triggering elements
-      /** @private @type {Element[]} */
-      self.triggers = Array.from(document.querySelectorAll(collapseToggleSelector))
+      /** @type {(HTMLElement | Element)[]} */
+      self.triggers = [...querySelectorAll(collapseToggleSelector)]
         .filter((btn) => getTargetElement(btn) === element);
 
       // set parent accordion
-      /** @private @type {Element?} */
-      self.parent = queryElement(options.parent);
-      const { parent } = self;
-
-      // set initial state
-      /** @private @type {boolean} */
-      self.isAnimating = false;
-      // @ts-ignore
-      if (parent) parent.isAnimating = false;
+      /** @type {(HTMLElement | Element)?} */
+      self.parent = querySelector(options.parent);
 
       // add event listeners
       toggleCollapseHandler(self, true);
@@ -710,8 +865,8 @@
     /** Hides the collapse. */
     hide() {
       const self = this;
-      const { triggers, isAnimating } = self;
-      if (isAnimating) return;
+      const { triggers, element } = self;
+      if (Timer.get(element)) return;
 
       collapseContent(self);
       if (triggers.length) {
@@ -723,19 +878,18 @@
     show() {
       const self = this;
       const {
-        element, parent, triggers, isAnimating,
+        element, parent, triggers,
       } = self;
       let activeCollapse;
       let activeCollapseInstance;
 
       if (parent) {
-        activeCollapse = Array.from(parent.querySelectorAll(`.${collapseString}.${showClass}`))
+        activeCollapse = [...querySelectorAll(`.${collapseString}.${showClass}`, parent)]
           .find((i) => getCollapseInstance(i));
         activeCollapseInstance = activeCollapse && getCollapseInstance(activeCollapse);
       }
 
-      // @ts-ignore
-      if ((!parent || (parent && !parent.isAnimating)) && !isAnimating) {
+      if ((!parent || (parent && !Timer.get(parent))) && !Timer.get(element)) {
         if (activeCollapseInstance && activeCollapse !== element) {
           collapseContent(activeCollapseInstance);
           activeCollapseInstance.triggers.forEach((btn) => {
@@ -753,16 +907,13 @@
     /** Remove the `Collapse` component from the target `Element`. */
     dispose() {
       const self = this;
-      const { parent } = self;
       toggleCollapseHandler(self);
 
-      // @ts-ignore
-      if (parent) delete parent.isAnimating;
       super.dispose();
     }
   }
 
-  Object.assign(Collapse, {
+  ObjectAssign(Collapse, {
     selector: collapseSelector,
     init: collapseInitCallback,
     getInstance: getCollapseInstance,

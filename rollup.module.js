@@ -10,12 +10,12 @@ const NAME = MODULE === 'scrollspy' ? 'ScrollSpy' : MODULE.charAt(0).toUpperCase
 
 const year = (new Date).getFullYear()
 const banner = `/*!
-  * Native JavaScript for Bootstrap ${NAME} v${pkg.version} (${pkg.homepage})
+  * Native JavaScript for Bootstrap - ${NAME} v${pkg.version} (${pkg.homepage})
   * Copyright 2015-${year} © ${pkg.author}
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */`
 
-const miniBanner = `// Native JavaScript for Bootstrap ${NAME} v${pkg.version} | ${year} © ${pkg.author} | ${pkg.license}-License`
+const miniBanner = `// Native JavaScript for Bootstrap - ${NAME} v${pkg.version} | ${year} © ${pkg.author} | ${pkg.license}-License`
 
 // set config
 const MIN = process.env.MIN === 'true' // true/false|unset
@@ -31,7 +31,7 @@ const OUTPUT = {
 
 const PLUGINS = [
   json(),
-  node({mainFields: ['jsnext','module'], dedupe: ['shorter-js']})
+  node({mainFields: ['jsnext','module'], dedupe: ['shorter-js']}),
 ]
 
 if (MIN){

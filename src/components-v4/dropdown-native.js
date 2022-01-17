@@ -1,6 +1,6 @@
 /* Native JavaScript for Bootstrap 4 | Dropdown
 ----------------------------------------------- */
-import queryElement from 'shorter-js/src/misc/queryElement';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
 import dispatchCustomEvent from '../util/dispatchCustomEvent';
@@ -29,7 +29,7 @@ export default function Dropdown(elem, option) {
   // preventDefault on empty anchor links
   function preventEmptyAnchor(anchor) {
     if ((anchor.hasAttribute('href') && anchor.href.slice(-1) === '#') || (anchor.parentNode
-      && anchor.hasAttribute('href')
+      && anchor.parentNode.hasAttribute('href')
       && anchor.parentNode.href.slice(-1) === '#')) this.preventDefault();
   }
   // toggle dismissible events
@@ -144,14 +144,14 @@ export default function Dropdown(elem, option) {
   // init
 
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Dropdown) element.Dropdown.dispose();
 
   // set  targets
   parent = element.parentNode;
-  menu = queryElement('.dropdown-menu', parent);
+  menu = querySelector('.dropdown-menu', parent);
 
   Array.from(menu.children).forEach((child) => {
     if (child.children.length && child.children[0].tagName === 'A') {

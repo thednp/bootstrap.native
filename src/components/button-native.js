@@ -1,12 +1,15 @@
 /* Native JavaScript for Bootstrap 5 | Button
 ---------------------------------------------*/
+import ariaPressed from 'shorter-js/src/strings/ariaPressed';
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
+import setAttribute from 'shorter-js/src/attr/setAttribute';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import addEventListener from 'shorter-js/src/strings/addEventListener';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener';
-import ariaPressed from 'shorter-js/src/strings/ariaPressed';
 import { getInstance } from 'shorter-js/src/misc/data';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
 
 import activeClass from '../strings/activeClass';
 import dataBsToggle from '../strings/dataBsToggle';
@@ -40,9 +43,8 @@ const buttonInitCallback = (element) => new Button(element);
  * @param {boolean=} add when `true`, event listener is added
  */
 function toggleButtonHandler(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  self.element[action]('click', self.toggle);
+  const action = add ? on : off;
+  action(self.element, mouseclickEvent, self.toggle);
 }
 
 // BUTTON DEFINITION
@@ -50,7 +52,7 @@ function toggleButtonHandler(self, add) {
 /** Creates a new `Button` instance. */
 export default class Button extends BaseComponent {
   /**
-   * @param {Element | string} target usually a `.btn` element
+   * @param {HTMLElement | Element | string} target usually a `.btn` element
    */
   constructor(target) {
     super(target);
@@ -60,9 +62,9 @@ export default class Button extends BaseComponent {
     const { element } = self;
 
     // set initial state
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     self.isActive = hasClass(element, activeClass);
-    element.setAttribute(ariaPressed, `${!!self.isActive}`);
+    setAttribute(element, ariaPressed, `${!!self.isActive}`);
 
     // add event listener
     toggleButtonHandler(self, true);
@@ -80,12 +82,13 @@ export default class Button extends BaseComponent {
   // =====================
   /**
    * Toggles the state of the target button.
-   * @param {Event} e usually `click` Event object
+   * @param {MouseEvent} e usually `click` Event object
    */
   toggle(e) {
     if (e) e.preventDefault();
     // @ts-ignore
     const self = e ? getButtonInstance(this) : this;
+    if (!self) return;
     const { element } = self;
 
     if (hasClass(element, 'disabled')) return;
@@ -95,7 +98,7 @@ export default class Button extends BaseComponent {
     const action = isActive ? removeClass : addClass;
 
     action(element, activeClass);
-    element.setAttribute(ariaPressed, isActive ? 'false' : 'true');
+    setAttribute(element, ariaPressed, isActive ? 'false' : 'true');
   }
 
   /** Removes the `Button` component from the target element. */
@@ -105,7 +108,7 @@ export default class Button extends BaseComponent {
   }
 }
 
-Object.assign(Button, {
+ObjectAssign(Button, {
   selector: buttonSelector,
   init: buttonInitCallback,
   getInstance: getButtonInstance,

@@ -1,26 +1,39 @@
 /* Native JavaScript for Bootstrap 5 | OffCanvas
 ------------------------------------------------ */
-import queryElement from 'shorter-js/src/misc/queryElement';
-import addEventListener from 'shorter-js/src/strings/addEventListener';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import setAttribute from 'shorter-js/src/attr/setAttribute';
+import removeAttribute from 'shorter-js/src/attr/removeAttribute';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
 import hasClass from 'shorter-js/src/class/hasClass';
 import addClass from 'shorter-js/src/class/addClass';
 import removeClass from 'shorter-js/src/class/removeClass';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
+import getDocument from 'shorter-js/src/get/getDocument';
+import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
+import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
+import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
 import ariaHidden from 'shorter-js/src/strings/ariaHidden';
 import ariaModal from 'shorter-js/src/strings/ariaModal';
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
+import keydownEvent from 'shorter-js/src/strings/keydownEvent';
 import ariaExpanded from 'shorter-js/src/strings/ariaExpanded';
+import keyEscape from 'shorter-js/src/strings/keyEscape';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import { getInstance } from 'shorter-js/src/misc/data';
+import focus from 'shorter-js/src/misc/focus';
+import closest from 'shorter-js/src/selectors/closest';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import getTargetElement from '../util/getTargetElement';
+import getElementContainer from '../util/getElementContainer';
 import dataBsDismiss from '../strings/dataBsDismiss';
 import dataBsToggle from '../strings/dataBsToggle';
 import showClass from '../strings/showClass';
-import setFocus from '../util/setFocus';
 import isVisible from '../util/isVisible';
-import { setScrollbar, measureScrollbar } from '../util/scrollbar';
+import { setScrollbar } from '../util/scrollbar';
 import {
   overlay,
   offcanvasActiveSelector,
@@ -78,37 +91,33 @@ const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`
  * @param {Offcanvas} self the `Offcanvas` instance
  */
 function setOffCanvasScrollbar(self) {
-  const bd = document.body;
-  const html = document.documentElement;
-  const bodyOverflow = html.clientHeight !== html.scrollHeight
-                    || bd.clientHeight !== bd.scrollHeight;
-  // @ts-ignore
-  setScrollbar(self.scrollbarWidth, bodyOverflow);
+  const { element } = self;
+  const { clientHeight, scrollHeight } = getDocumentElement(element);
+  setScrollbar(element, clientHeight !== scrollHeight);
 }
 
 /**
  * Toggles on/off the `click` event listeners.
  *
  * @param {Offcanvas} self the `Offcanvas` instance
- * @param {boolean=} add when `true`, listeners are added
+ * @param {boolean=} add when *true*, listeners are added
  */
 function toggleOffcanvasEvents(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  self.triggers.forEach((btn) => btn[action]('click', offcanvasTriggerHandler));
+  const action = add ? on : off;
+  self.triggers.forEach((btn) => action(btn, mouseclickEvent, offcanvasTriggerHandler));
 }
 
 /**
  * Toggles on/off the listeners of the events that close the offcanvas.
  *
- * @param {boolean=} add the `Offcanvas` instance
+ * @param {Offcanvas} self the `Offcanvas` instance
+ * @param {boolean=} add when *true* listeners are added
  */
-function toggleOffCanvasDismiss(add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  document[action]('keydown', offcanvasKeyDismissHandler);
-  // @ts-ignore
-  document[action]('click', offcanvasDismissHandler);
+function toggleOffCanvasDismiss(self, add) {
+  const action = add ? on : off;
+  const doc = getDocument(self.element);
+  action(doc, keydownEvent, offcanvasKeyDismissHandler);
+  action(doc, mouseclickEvent, offcanvasDismissHandler);
 }
 
 /**
@@ -120,8 +129,8 @@ function beforeOffcanvasShow(self) {
   const { element, options } = self;
 
   if (!options.scroll) {
-    document.body.style.overflow = 'hidden';
     setOffCanvasScrollbar(self);
+    getDocumentBody(element).style.overflow = 'hidden';
   }
 
   addClass(element, offcanvasTogglingClass);
@@ -139,7 +148,7 @@ function beforeOffcanvasShow(self) {
  */
 function beforeOffcanvasHide(self) {
   const { element, options } = self;
-  const currentOpen = getCurrentOpen();
+  const currentOpen = getCurrentOpen(element);
 
   // @ts-ignore
   element.blur();
@@ -155,63 +164,73 @@ function beforeOffcanvasHide(self) {
 /**
  * Handles the `click` event listeners.
  *
- * @this {Element}
- * @param {Event} e the `Event` object
+ * @this {HTMLElement | Element}
+ * @param {MouseEvent} e the `Event` object
  */
 function offcanvasTriggerHandler(e) {
-  const trigger = this.closest(offcanvasToggleSelector);
+  const trigger = closest(this, offcanvasToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getOffcanvasInstance(element);
 
-  if (trigger && trigger.tagName === 'A') e.preventDefault();
   if (self) {
+    self.relatedTarget = trigger;
     self.toggle();
+    if (trigger && trigger.tagName === 'A') {
+      e.preventDefault();
+    }
   }
 }
 
 /**
  * Handles the event listeners that close the offcanvas.
  *
- * @param {Event} e the `Event` object
+ * @this {Document}
+ * @param {MouseEvent} e the `Event` object
  */
 function offcanvasDismissHandler(e) {
-  const element = queryElement(offcanvasActiveSelector);
+  const element = querySelector(offcanvasActiveSelector, this);
   if (!element) return;
 
-  const offCanvasDismiss = queryElement(offcanvasDismissSelector, element);
+  const offCanvasDismiss = querySelector(offcanvasDismissSelector, element);
   const self = getOffcanvasInstance(element);
+
   if (!self) return;
 
-  // @ts-ignore
   const { options, triggers } = self;
   const { target } = e;
-  // @ts-ignore
-  const trigger = target.closest(offcanvasToggleSelector);
+  // @ts-ignore -- `EventTarget` is `HTMLElement`
+  const trigger = closest(target, offcanvasToggleSelector);
+  const selection = getDocument(element).getSelection();
 
-  if (trigger && trigger.tagName === 'A') e.preventDefault();
-
-  // @ts-ignore
-  if ((!element.contains(target) && options.backdrop
+  if (!(selection && selection.toString().length)
+    // @ts-ignore
+    && ((!element.contains(target) && options.backdrop
     && (!trigger || (trigger && !triggers.includes(trigger))))
     // @ts-ignore
-    || (offCanvasDismiss && offCanvasDismiss.contains(target))) {
+    || (offCanvasDismiss && offCanvasDismiss.contains(target)))) {
+    // @ts-ignore
+    self.relatedTarget = offCanvasDismiss && offCanvasDismiss.contains(target)
+      ? offCanvasDismiss : null;
     self.hide();
   }
+  if (trigger && trigger.tagName === 'A') e.preventDefault();
 }
 
 /**
  * Handles the `keydown` event listener for offcanvas
  * to hide it when user type the `ESC` key.
  *
- * @param {{which: number}} e the `Event` object
+ * @param {KeyboardEvent} e the `Event` object
+ * @this {Document}
  */
-function offcanvasKeyDismissHandler({ which }) {
-  const element = queryElement(offcanvasActiveSelector);
+function offcanvasKeyDismissHandler({ code }) {
+  const element = querySelector(offcanvasActiveSelector, this);
   if (!element) return;
 
   const self = getOffcanvasInstance(element);
 
-  if (self && self.options.keyboard && which === 27) {
+  if (self && self.options.keyboard && code === keyEscape) {
+    self.relatedTarget = null;
     self.hide();
   }
 }
@@ -222,24 +241,21 @@ function offcanvasKeyDismissHandler({ which }) {
  * @param {Offcanvas} self the `Offcanvas` instance
  */
 function showOffcanvasComplete(self) {
-  // @ts-ignore
   const { element, triggers } = self;
   removeClass(element, offcanvasTogglingClass);
 
-  element.removeAttribute(ariaHidden);
-  element.setAttribute(ariaModal, 'true');
-  element.setAttribute('role', 'dialog');
-  // @ts-ignore
-  self.isAnimating = false;
+  removeAttribute(element, ariaHidden);
+  setAttribute(element, ariaModal, 'true');
+  setAttribute(element, 'role', 'dialog');
 
   if (triggers.length) {
-    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'true'));
+    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'true'));
   }
 
-  element.dispatchEvent(shownOffcanvasEvent);
+  dispatchEvent(element, shownOffcanvasEvent);
 
-  toggleOffCanvasDismiss(true);
-  setFocus(element);
+  toggleOffCanvasDismiss(self, true);
+  focus(element);
 }
 
 /**
@@ -248,31 +264,29 @@ function showOffcanvasComplete(self) {
  * @param {Offcanvas} self the `Offcanvas` instance
  */
 function hideOffcanvasComplete(self) {
-  const {
-    // @ts-ignore
-    element, triggers,
-  } = self;
+  const { element, triggers } = self;
 
-  element.setAttribute(ariaHidden, 'true');
-  element.removeAttribute(ariaModal);
-  element.removeAttribute('role');
+  setAttribute(element, ariaHidden, 'true');
+  removeAttribute(element, ariaModal);
+  removeAttribute(element, 'role');
   // @ts-ignore
   element.style.visibility = '';
-  // @ts-ignore
-  self.isAnimating = false;
 
   if (triggers.length) {
-    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'false'));
+    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'false'));
     const visibleTrigger = triggers.find((x) => isVisible(x));
-    if (visibleTrigger) setFocus(visibleTrigger);
+    if (visibleTrigger) focus(visibleTrigger);
   }
 
-  removeOverlay();
+  removeOverlay(element);
 
-  element.dispatchEvent(hiddenOffcanvasEvent);
+  dispatchEvent(element, hiddenOffcanvasEvent);
   removeClass(element, offcanvasTogglingClass);
 
-  toggleOffCanvasDismiss();
+  // must check for open instances
+  if (!getCurrentOpen(element)) {
+    toggleOffCanvasDismiss(self);
+  }
 }
 
 // OFFCANVAS DEFINITION
@@ -280,7 +294,7 @@ function hideOffcanvasComplete(self) {
 /** Returns a new `Offcanvas` instance. */
 export default class Offcanvas extends BaseComponent {
   /**
-   * @param {Element | string} target usually an `.offcanvas` element
+   * @param {HTMLElement | Element | string} target usually an `.offcanvas` element
    * @param {BSN.Options.Offcanvas=} config instance options
    */
   constructor(target, config) {
@@ -291,15 +305,16 @@ export default class Offcanvas extends BaseComponent {
     const { element } = self;
 
     // all the triggering buttons
-    /** @private @type {Element[]} */
-    self.triggers = Array.from(document.querySelectorAll(offcanvasToggleSelector))
+    /** @type {(HTMLElement | Element)[]} */
+    self.triggers = [...querySelectorAll(offcanvasToggleSelector)]
       .filter((btn) => getTargetElement(btn) === element);
 
     // additional instance property
-    /** @private @type {boolean} */
-    self.isAnimating = false;
-    /** @private @type {number} */
-    self.scrollbarWidth = measureScrollbar();
+    /** @type {HTMLBodyElement | HTMLElement | Element} */
+    // @ts-ignore
+    self.container = getElementContainer(element);
+    /** @type {(HTMLElement | Element)?} */
+    self.relatedTarget = null;
 
     // attach event listeners
     toggleOffcanvasEvents(self, true);
@@ -331,35 +346,32 @@ export default class Offcanvas extends BaseComponent {
   show() {
     const self = this;
     const {
-      element, options, isAnimating,
+      element, options, container, relatedTarget,
     } = self;
     let overlayDelay = 0;
 
-    if (hasClass(element, showClass) || isAnimating) return;
+    if (hasClass(element, showClass)) return;
 
-    element.dispatchEvent(showOffcanvasEvent);
-
+    showOffcanvasEvent.relatedTarget = relatedTarget;
+    shownOffcanvasEvent.relatedTarget = relatedTarget;
+    dispatchEvent(element, showOffcanvasEvent);
     if (showOffcanvasEvent.defaultPrevented) return;
 
     // we elegantly hide any opened modal/offcanvas
-    const currentOpen = getCurrentOpen();
+    const currentOpen = getCurrentOpen(element);
     if (currentOpen && currentOpen !== element) {
       const this1 = getOffcanvasInstance(currentOpen);
       const that1 = this1 || getInstance(currentOpen, 'Modal');
       that1.hide();
     }
 
-    self.isAnimating = true;
-
     if (options.backdrop) {
       if (!currentOpen) {
-        appendOverlay(true);
+        appendOverlay(container, true);
       } else {
         toggleOverlayType();
       }
-
       overlayDelay = getElementTransitionDuration(overlay);
-
       if (!hasClass(overlay, showClass)) showOverlay();
 
       setTimeout(() => beforeOffcanvasShow(self), overlayDelay);
@@ -377,14 +389,15 @@ export default class Offcanvas extends BaseComponent {
    */
   hide(force) {
     const self = this;
-    const { element, isAnimating } = self;
+    const { element, relatedTarget } = self;
 
-    if (!hasClass(element, showClass) || isAnimating) return;
+    if (!hasClass(element, showClass)) return;
 
-    element.dispatchEvent(hideOffcanvasEvent);
+    hideOffcanvasEvent.relatedTarget = relatedTarget;
+    hiddenOffcanvasEvent.relatedTarget = relatedTarget;
+    dispatchEvent(element, hideOffcanvasEvent);
     if (hideOffcanvasEvent.defaultPrevented) return;
 
-    self.isAnimating = true;
     addClass(element, offcanvasTogglingClass);
     removeClass(element, showClass);
 
@@ -402,7 +415,7 @@ export default class Offcanvas extends BaseComponent {
   }
 }
 
-Object.assign(Offcanvas, {
+ObjectAssign(Offcanvas, {
   selector: offcanvasSelector,
   init: offcanvasInitCallback,
   getInstance: getOffcanvasInstance,

@@ -1,12 +1,39 @@
 /*!
-  * Native JavaScript for Bootstrap Button v4.1.0 (https://thednp.github.io/bootstrap.native/)
-  * Copyright 2015-2021 © dnp_theme
+  * Native JavaScript for Bootstrap - Button v4.1.0alpha1 (https://thednp.github.io/bootstrap.native/)
+  * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 /**
- * Add class to Element.classList
+ * A global namespace for aria-pressed.
+ * @type {string}
+ */
+const ariaPressed = 'aria-pressed';
+
+/**
+ * A global namespace for `click` event.
+ * @type {string}
+ */
+const mouseclickEvent = 'click';
+
+/**
+ * Shortcut for `HTMLElement.setAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ * @param  {string} value attribute value
+ */
+const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
+
+/**
+ * Shortcut for `Object.assign()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @param  {Record<string, any>} source a source object
+ */
+const ObjectAssign = (obj, source) => Object.assign(obj, source);
+
+/**
+ * Add class to `HTMLElement.classList`.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @param {string} classNAME to add
  */
 function addClass(element, classNAME) {
@@ -14,9 +41,9 @@ function addClass(element, classNAME) {
 }
 
 /**
- * Check class in Element.classList
+ * Check class in `HTMLElement.classList`.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @param {string} classNAME to check
  * @return {boolean}
  */
@@ -25,9 +52,9 @@ function hasClass(element, classNAME) {
 }
 
 /**
- * Remove class from Element.classList
+ * Remove class from `HTMLElement.classList`.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @param {string} classNAME to remove
  */
 function removeClass(element, classNAME) {
@@ -35,47 +62,48 @@ function removeClass(element, classNAME) {
 }
 
 /**
- * A global namespace for 'addEventListener' string.
- * @type {string}
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {Document}
  */
-const addEventListener = 'addEventListener';
-
-/**
- * A global namespace for 'removeEventListener' string.
- * @type {string}
- */
-const removeEventListener = 'removeEventListener';
-
-/**
- * A global namespace for aria-pressed.
- * @type {string}
- */
-const ariaPressed = 'aria-pressed';
-
-/**
- * Checks if an element is an `Element`.
- *
- * @param {any} element the target element
- * @returns {boolean} the query result
- */
-function isElement(element) {
-  return element instanceof Element;
+function getDocument(node) {
+  if (node instanceof HTMLElement) return node.ownerDocument;
+  if (node instanceof Window) return node.document;
+  return window.document;
 }
 
 /**
- * Utility to check if target is typeof Element
+ * A global array of possible `ParentNode`.
+ */
+const parentNodes = [Document, Node, Element, HTMLElement];
+
+/**
+ * A global array with `Element` | `HTMLElement`.
+ */
+const elementNodes = [Element, HTMLElement];
+
+/**
+ * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
  * or find one that matches a selector.
  *
- * @param {Element | string} selector the input selector or target element
- * @param {Element=} parent optional Element to look into
- * @return {Element?} the Element or `querySelector` result
+ * @param {HTMLElement | Element | string} selector the input selector or target element
+ * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+ * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
  */
-function queryElement(selector, parent) {
-  const lookUp = parent && isElement(parent) ? parent : document;
-  // @ts-ignore
-  return isElement(selector) ? selector : lookUp.querySelector(selector);
+function querySelector(selector, parent) {
+  const selectorIsString = typeof selector === 'string';
+  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+    ? parent : getDocument();
+
+  if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+    return selector;
+  }
+  // @ts-ignore -- `ShadowRoot` is also a node
+  return selectorIsString ? lookUp.querySelector(selector) : null;
 }
 
+/** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
 const componentData = new Map();
 /**
  * An interface for web components background data.
@@ -84,59 +112,58 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {Element | string} element target element
+   * @param {HTMLElement | Element | string} target target element
    * @param {string} component the component's name or a unique key
-   * @param {any} instance the component instance
+   * @param {Record<string, any>} instance the component instance
    */
-  set: (element, component, instance) => {
-    const ELEMENT = queryElement(element);
-    if (!isElement(ELEMENT)) return;
+  set: (target, component, instance) => {
+    const element = querySelector(target);
+    if (!element) return;
 
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    instanceMap.set(ELEMENT, instance);
+    // @ts-ignore - not undefined, but defined right above
+    instanceMap.set(element, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {any?} all the component instances
+   * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
    */
   getAllFor: (component) => {
-    if (componentData.has(component)) {
-      return componentData.get(component);
-    }
-    return null;
+    const instanceMap = componentData.get(component);
+
+    return instanceMap || null;
   },
 
   /**
    * Returns the instance associated with the target.
-   * @param {Element | string} element target element
+   * @param {HTMLElement | Element | string} target target element
    * @param {string} component the component's name or a unique key
-   * @returns {any?} the instance
+   * @returns {Record<string, any>?} the instance
    */
-  get: (element, component) => {
-    const ELEMENT = queryElement(element);
-
+  get: (target, component) => {
+    const element = querySelector(target);
     const allForC = Data.getAllFor(component);
-    if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
-      return allForC.get(ELEMENT);
-    }
-    return null;
+    const instance = element && allForC && allForC.get(element);
+
+    return instance || null;
   },
 
   /**
    * Removes web components data.
-   * @param {Element} element target element
+   * @param {HTMLElement | Element | string} target target element
    * @param {string} component the component's name or a unique key
    */
-  remove: (element, component) => {
-    if (!componentData.has(component)) return;
-
+  remove: (target, component) => {
+    const element = querySelector(target);
     const instanceMap = componentData.get(component);
+    if (!instanceMap || !element) return;
+
     instanceMap.delete(element);
 
     if (instanceMap.size === 0) {
@@ -147,11 +174,35 @@ const Data = {
 
 /**
  * An alias for `Data.get()`.
- * @param {Element | string} element target element
- * @param {string} component the component's name or a unique key
- * @returns {any} the request result
+ * @type {SHORTER.getInstance<any>}
  */
-const getInstance = (element, component) => Data.get(element, component);
+const getInstance = (target, component) => Data.get(target, component);
+
+/**
+ * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function on(element, eventName, handler, options) {
+  const ops = options || false;
+  element.addEventListener(eventName, handler, ops);
+}
+
+/**
+ * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function off(element, eventName, handler, options) {
+  const ops = options || false;
+  element.removeEventListener(eventName, handler, ops);
+}
 
 /**
  * Global namespace for most components active class.
@@ -166,7 +217,7 @@ const dataBsToggle = 'data-bs-toggle';
 /**
  * The raw value or a given component option.
  *
- * @typedef {string | Element | Function | number | boolean | null} niceValue
+ * @typedef {string | HTMLElement | Function | number | boolean | null} niceValue
  */
 
 /**
@@ -192,94 +243,93 @@ function normalizeValue(value) {
     return null;
   }
 
-  // string / function / Element / object
+  // string / function / HTMLElement / object
   return value;
 }
 
 /**
- * Utility to normalize component options
+ * Shortcut for `Object.keys()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @returns {string[]}
+ */
+const ObjectKeys = (obj) => Object.keys(obj);
+
+/**
+ * Utility to normalize component options.
  *
- * @param {Element} element target
- * @param {object} defaultOps component default options
- * @param {object} inputOps component instance options
- * @param {string} ns component namespace
- * @return {object} normalized component options object
+ * @param {HTMLElement | Element} element target
+ * @param {Record<string, any>} defaultOps component default options
+ * @param {Record<string, any>} inputOps component instance options
+ * @param {string=} ns component namespace
+ * @return {Record<string, any>} normalized component options object
  */
 function normalizeOptions(element, defaultOps, inputOps, ns) {
-  // @ts-ignore
+  // @ts-ignore -- our targets are always `HTMLElement`
   const data = { ...element.dataset };
+  /** @type {Record<string, any>} */
   const normalOps = {};
+  /** @type {Record<string, any>} */
   const dataOps = {};
 
-  Object.keys(data)
-    .forEach((k) => {
-      const key = k.includes(ns)
-        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
-        : k;
+  ObjectKeys(data).forEach((k) => {
+    const key = ns && k.includes(ns)
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      : k;
 
-      dataOps[key] = normalizeValue(data[k]);
-    });
+    dataOps[key] = normalizeValue(data[k]);
+  });
 
-  Object.keys(inputOps)
-    .forEach((k) => {
-      inputOps[k] = normalizeValue(inputOps[k]);
-    });
+  ObjectKeys(inputOps).forEach((k) => {
+    inputOps[k] = normalizeValue(inputOps[k]);
+  });
 
-  Object.keys(defaultOps)
-    .forEach((k) => {
-      if (k in inputOps) {
-        normalOps[k] = inputOps[k];
-      } else if (k in dataOps) {
-        normalOps[k] = dataOps[k];
-      } else {
-        normalOps[k] = defaultOps[k];
-      }
-    });
+  ObjectKeys(defaultOps).forEach((k) => {
+    if (k in inputOps) {
+      normalOps[k] = inputOps[k];
+    } else if (k in dataOps) {
+      normalOps[k] = dataOps[k];
+    } else {
+      normalOps[k] = defaultOps[k];
+    }
+  });
 
   return normalOps;
 }
 
-var version = "4.1.0";
+var version = "4.1.0alpha1";
 
 const Version = version;
 
 /* Native JavaScript for Bootstrap 5 | Base Component
 ----------------------------------------------------- */
 
-/**
- * Returns a new `BaseComponent` instance.
- */
+/** Returns a new `BaseComponent` instance. */
 class BaseComponent {
   /**
-   * @param {Element | string} target Element or selector string
+   * @param {HTMLElement | Element | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
     const self = this;
-    const element = queryElement(target);
+    const element = querySelector(target);
 
-    if (!isElement(element)) {
-      throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+    if (!element) {
+      throw Error(`${self.name} Error: "${target}" is not a valid selector.`);
     }
 
-    /** @type {BSN.ComponentOptions} */
+    /** @static @type {BSN.ComponentOptions} */
     self.options = {};
 
-    // @ts-ignore
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {Element} */
-    // @ts-ignore
+    /** @type {HTMLElement | Element} */
     self.element = element;
 
     if (self.defaults && Object.keys(self.defaults).length) {
-      /** @static @type {Record<string, any>} */
-      // @ts-ignore
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
-    // @ts-ignore
     Data.set(element, self.name, self);
   }
 
@@ -300,10 +350,9 @@ class BaseComponent {
    */
   dispose() {
     const self = this;
-    // @ts-ignore
     Data.remove(self.element, self.name);
     // @ts-ignore
-    Object.keys(self).forEach((prop) => { self[prop] = null; });
+    ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }
 
@@ -338,9 +387,8 @@ const buttonInitCallback = (element) => new Button(element);
  * @param {boolean=} add when `true`, event listener is added
  */
 function toggleButtonHandler(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  self.element[action]('click', self.toggle);
+  const action = add ? on : off;
+  action(self.element, mouseclickEvent, self.toggle);
 }
 
 // BUTTON DEFINITION
@@ -348,7 +396,7 @@ function toggleButtonHandler(self, add) {
 /** Creates a new `Button` instance. */
 class Button extends BaseComponent {
   /**
-   * @param {Element | string} target usually a `.btn` element
+   * @param {HTMLElement | Element | string} target usually a `.btn` element
    */
   constructor(target) {
     super(target);
@@ -358,9 +406,9 @@ class Button extends BaseComponent {
     const { element } = self;
 
     // set initial state
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     self.isActive = hasClass(element, activeClass);
-    element.setAttribute(ariaPressed, `${!!self.isActive}`);
+    setAttribute(element, ariaPressed, `${!!self.isActive}`);
 
     // add event listener
     toggleButtonHandler(self, true);
@@ -378,12 +426,13 @@ class Button extends BaseComponent {
   // =====================
   /**
    * Toggles the state of the target button.
-   * @param {Event} e usually `click` Event object
+   * @param {MouseEvent} e usually `click` Event object
    */
   toggle(e) {
     if (e) e.preventDefault();
     // @ts-ignore
     const self = e ? getButtonInstance(this) : this;
+    if (!self) return;
     const { element } = self;
 
     if (hasClass(element, 'disabled')) return;
@@ -393,7 +442,7 @@ class Button extends BaseComponent {
     const action = isActive ? removeClass : addClass;
 
     action(element, activeClass);
-    element.setAttribute(ariaPressed, isActive ? 'false' : 'true');
+    setAttribute(element, ariaPressed, isActive ? 'false' : 'true');
   }
 
   /** Removes the `Button` component from the target element. */
@@ -403,7 +452,7 @@ class Button extends BaseComponent {
   }
 }
 
-Object.assign(Button, {
+ObjectAssign(Button, {
   selector: buttonSelector,
   init: buttonInitCallback,
   getInstance: getButtonInstance,

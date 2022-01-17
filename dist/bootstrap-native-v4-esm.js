@@ -1,43 +1,69 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.0 (https://thednp.github.io/bootstrap.native/)
-  * Copyright 2015-2021 © dnp_theme
+  * Native JavaScript for Bootstrap v4.1.0alpha1 (https://thednp.github.io/bootstrap.native/)
+  * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
+/**
+ * A global namespace for `document.head`.
+ */
+var documentHead = document.head;
+
+/**
+ * A global `boolean` for CSS3 transition support.
+ * @type {boolean}
+ */
+var supportTransition = 'webkitTransition' in documentHead.style || 'transition' in documentHead.style;
+
 /**
  * A global namespace for 'transitionend' string.
  * @type {string}
  */
-var transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
-
-/**
- * A global namespace for CSS3 transition support.
- * @type {boolean}
- */
-var supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
+var transitionEndEvent = 'webkitTransition' in documentHead.style ? 'webkitTransitionEnd' : 'transitionend';
 
 /**
  * A global namespace for 'transitionDelay' string.
  * @type {string}
  */
-var transitionDelay = 'webkitTransition' in document.head.style ? 'webkitTransitionDelay' : 'transitionDelay';
+var transitionDelay = 'webkitTransition' in documentHead.style ? 'webkitTransitionDelay' : 'transitionDelay';
 
 /**
- * A global namespace for 'transitionProperty' string.
+ * A global namespace for:
+ * * `transitionProperty` string for Firefox,
+ * * `webkitTransition` for older Chrome / Safari browsers,
+ * * `transition` property for all other browsers.
  * @type {string}
  */
-var transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
+var transitionProperty = 'webkitTransition' in documentHead.style ? 'webkitTransitionProperty' : 'transitionProperty';
 
 /**
- * Utility to get the computed transitionDelay
+ * Shortcut for `window.getComputedStyle(element).propertyName`
+ * static method.
+ *
+ * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
+ * throws a `ReferenceError`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} property the css property
+ * @return {string} the css property value
+ */
+function getElementStyle(element, property) {
+  var computedStyle = getComputedStyle(element);
+
+  // @ts-ignore -- must use camelcase strings,
+  // or non-camelcase strings with `getPropertyValue`
+  return property in computedStyle ? computedStyle[property] : '';
+}
+
+/**
+ * Utility to get the computed `transitionDelay`
  * from Element in miliseconds.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDelay(element) {
-  var computedStyle = getComputedStyle(element);
-  var propertyValue = computedStyle[transitionProperty];
-  var delayValue = computedStyle[transitionDelay];
+  var propertyValue = getElementStyle(element, transitionProperty);
+  var delayValue = getElementStyle(element, transitionDelay);
   var delayScale = delayValue.includes('ms') ? 1 : 1000;
   var duration = supportTransition && propertyValue && propertyValue !== 'none'
     ? parseFloat(delayValue) * delayScale : 0;
@@ -49,19 +75,18 @@ function getElementTransitionDelay(element) {
  * A global namespace for 'transitionDuration' string.
  * @type {string}
  */
-var transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+var transitionDuration = 'webkitTransition' in documentHead.style ? 'webkitTransitionDuration' : 'transitionDuration';
 
 /**
- * Utility to get the computed transitionDuration
+ * Utility to get the computed `transitionDuration`
  * from Element in miliseconds.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDuration(element) {
-  var computedStyle = getComputedStyle(element);
-  var propertyValue = computedStyle[transitionProperty];
-  var durationValue = computedStyle[transitionDuration];
+  var propertyValue = getElementStyle(element, transitionProperty);
+  var durationValue = getElementStyle(element, transitionDuration);
   var durationScale = durationValue.includes('ms') ? 1 : 1000;
   var duration = supportTransition && propertyValue && propertyValue !== 'none'
     ? parseFloat(durationValue) * durationScale : 0;
@@ -73,8 +98,8 @@ function getElementTransitionDuration(element) {
  * Utility to make sure callbacks are consistently
  * called when transition ends.
  *
- * @param {Element} element target
- * @param {function} handler `transitionend` callback
+ * @param {HTMLElement | Element} element target
+ * @param {EventListener} handler `transitionend` callback
  */
 function emulateTransitionEnd(element, handler) {
   var called = 0;
@@ -82,11 +107,10 @@ function emulateTransitionEnd(element, handler) {
   var duration = getElementTransitionDuration(element);
   var delay = getElementTransitionDelay(element);
 
-  if (duration) {
+  if (supportTransition && duration) {
     /**
      * Wrap the handler in on -> off callback
      * @param {Event} e Event object
-     * @callback
      */
     var transitionEndWrapper = function (e) {
       if (e.target === element) {
@@ -105,27 +129,45 @@ function emulateTransitionEnd(element, handler) {
 }
 
 /**
- * Checks if an element is an `Element`.
- *
- * @param {any} element the target element
- * @returns {boolean} the query result
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {Document}
  */
-function isElement(element) {
-  return element instanceof Element;
+function getDocument(node) {
+  if (node instanceof HTMLElement) { return node.ownerDocument; }
+  if (node instanceof Window) { return node.document; }
+  return window.document;
 }
 
 /**
- * Utility to check if target is typeof Element
+ * A global array of possible `ParentNode`.
+ */
+var parentNodes = [Document, Node, Element, HTMLElement];
+
+/**
+ * A global array with `Element` | `HTMLElement`.
+ */
+var elementNodes = [Element, HTMLElement];
+
+/**
+ * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
  * or find one that matches a selector.
  *
- * @param {Element | string} selector the input selector or target element
- * @param {Element=} parent optional Element to look into
- * @return {Element?} the Element or `querySelector` result
+ * @param {HTMLElement | Element | string} selector the input selector or target element
+ * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+ * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
  */
-function queryElement(selector, parent) {
-  var lookUp = parent && isElement(parent) ? parent : document;
-  // @ts-ignore
-  return isElement(selector) ? selector : lookUp.querySelector(selector);
+function querySelector(selector, parent) {
+  var selectorIsString = typeof selector === 'string';
+  var lookUp = parent && parentNodes.some(function (x) { return parent instanceof x; })
+    ? parent : getDocument();
+
+  if (!selectorIsString && [].concat( elementNodes ).some(function (x) { return selector instanceof x; })) {
+    return selector;
+  }
+  // @ts-ignore -- `ShadowRoot` is also a node
+  return selectorIsString ? lookUp.querySelector(selector) : null;
 }
 
 /** BSN v4 custom event */
@@ -182,7 +224,7 @@ function Alert(elem) {
   // event handlers
   function clickHandler(e) {
     alert = e && e.target.closest('.alert');
-    element = queryElement('[data-dismiss="alert"]', alert);
+    element = querySelector('[data-dismiss="alert"]', alert);
     if (element && alert && (element === e.target || element.contains(e.target))) { self.close(); }
   }
   function transitionEndHandler() {
@@ -209,7 +251,7 @@ function Alert(elem) {
 
   // INIT
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // find the target alert
   alert = element.closest('.alert');
@@ -341,7 +383,7 @@ function Button(elem) {
 
   // init
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Button) { element.Button.dispose(); }
@@ -363,7 +405,7 @@ function Button(elem) {
 
   // activate items on load
   Array.from(labels).forEach(function (btn) {
-    var hasChecked = queryElement('input:checked', btn);
+    var hasChecked = querySelector('input:checked', btn);
     if (!btn.classList.contains('active') && hasChecked) {
       btn.classList.add('active');
     }
@@ -380,70 +422,85 @@ function Button(elem) {
 var mouseHoverEvents = ('onmouseleave' in document) ? ['mouseenter', 'mouseleave'] : ['mouseover', 'mouseout'];
 
 /**
- * A global namespace for 'addEventListener' string.
- * @type {string}
+ * A global namespace for most scroll event listeners.
+ * @type {Partial<AddEventListenerOptions>}
  */
-var addEventListener = 'addEventListener';
+var passiveHandler = { passive: true };
 
 /**
- * A global namespace for 'removeEventListener' string.
- * @type {string}
+ * Returns the bounding client rect of a target `HTMLElement`.
+ *
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {HTMLElement | Element} element event.target
+ * @param {boolean=} includeScale when *true*, the target scale is also computed
+ * @returns {SHORTER.BoundingClientRect} the bounding client rect object
  */
-var removeEventListener = 'removeEventListener';
+function getBoundingClientRect(element, includeScale) {
+  var ref = element.getBoundingClientRect();
+  var width = ref.width;
+  var height = ref.height;
+  var top = ref.top;
+  var right = ref.right;
+  var bottom = ref.bottom;
+  var left = ref.left;
+  var scaleX = 1;
+  var scaleY = 1;
 
-/**
- * A global namespace for passive events support.
- * @type {boolean}
- */
-var supportPassive = (function () {
-  var result = false;
-  try {
-    var opts = Object.defineProperty({}, 'passive', {
-      get: function get() {
-        result = true;
-        return result;
-      },
-    });
-    document[addEventListener]('DOMContentLoaded', function wrap() {
-      document[removeEventListener]('DOMContentLoaded', wrap, opts);
-    }, opts);
-  } catch (e) {
-    throw Error('Passive events are not supported');
+  if (includeScale && element instanceof HTMLElement) {
+    var offsetWidth = element.offsetWidth;
+    var offsetHeight = element.offsetHeight;
+    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
+    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
   }
 
-  return result;
-})();
-
-// general event options
+  return {
+    width: width / scaleX,
+    height: height / scaleY,
+    top: top / scaleY,
+    right: right / scaleX,
+    bottom: bottom / scaleY,
+    left: left / scaleX,
+    x: left / scaleX,
+    y: top / scaleY,
+  };
+}
 
 /**
- * A global namespace for most scroll event listeners.
+ * Returns the `document.documentElement` or the `<html>` element.
+ *
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {HTMLElement | HTMLHtmlElement}
  */
-var passiveHandler = supportPassive ? { passive: true } : false;
+function getDocumentElement(node) {
+  return getDocument(node).documentElement;
+}
 
 /**
- * Utility to determine if an `Element`
+ * Utility to determine if an `HTMLElement`
  * is partially visible in viewport.
  *
- * @param {Element} element target
- * @return {boolean} Boolean
+ * @param {HTMLElement | Element} element target
+ * @return {boolean} the query result
  */
-function isElementInScrollRange(element) {
-  var bcr = element.getBoundingClientRect();
-  var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-  return bcr.top <= viewportHeight && bcr.bottom >= 0; // bottom && top
-}
+var isElementInScrollRange = function (element) {
+  var ref = getBoundingClientRect(element);
+  var top = ref.top;
+  var bottom = ref.bottom;
+  var ref$1 = getDocumentElement(element);
+  var clientHeight = ref$1.clientHeight;
+  // checks bottom && top
+  return top <= clientHeight && bottom >= 0;
+};
 
 /**
- * Utility to force re-paint of an Element
+ * Utility to force re-paint of an `HTMLElement` target.
  *
- * @param {Element | HTMLElement} element is the target
- * @return {number} the Element.offsetHeight value
+ * @param {HTMLElement | Element} element is the target
+ * @return {number} the `Element.offsetHeight` value
  */
-function reflow(element) {
-  // @ts-ignore
-  return element.offsetHeight;
-}
+// @ts-ignore
+var reflow = function (element) { return element.offsetHeight; };
 
 /* Native JavaScript for Bootstrap 4 | Carousel
 ----------------------------------------------- */
@@ -733,7 +790,7 @@ function Carousel(elem, opsInput) {
   // init
 
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Carousel) { element.Carousel.dispose(); }
@@ -887,8 +944,8 @@ function Collapse(elem, opsInput) {
 
     if (accordion) {
       (assign = accordion.getElementsByClassName('collapse show'), activeCollapse = assign[0]);
-      activeElement = activeCollapse && (queryElement(("[data-target=\"#" + (activeCollapse.id) + "\"]"), accordion)
-                    || queryElement(("[href=\"#" + (activeCollapse.id) + "\"]"), accordion));
+      activeElement = activeCollapse && (querySelector(("[data-target=\"#" + (activeCollapse.id) + "\"]"), accordion)
+                    || querySelector(("[href=\"#" + (activeCollapse.id) + "\"]"), accordion));
     }
 
     if (!collapse.isAnimating) {
@@ -908,7 +965,7 @@ function Collapse(elem, opsInput) {
   // init
 
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Collapse) { element.Collapse.dispose(); }
@@ -923,7 +980,7 @@ function Collapse(elem, opsInput) {
   hiddenCustomEvent = bootstrapCustomEvent('hidden', 'collapse');
 
   // determine targets
-  collapse = queryElement(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
+  collapse = querySelector(options.target || element.getAttribute('data-target') || element.getAttribute('href'));
 
   if (collapse !== null) { collapse.isAnimating = false; }
   var accordionSelector = options.parent || accordionData;
@@ -944,11 +1001,9 @@ function Collapse(elem, opsInput) {
 
 /**
  * Points the focus to a specific element.
- * @param {Element} element target
+ * @param {HTMLElement} element target
  */
-function setFocus(element) {
-  element.focus();
-}
+var setFocus = function (element) { return element.focus(); };
 
 /* Native JavaScript for Bootstrap 4 | Dropdown
 ----------------------------------------------- */
@@ -976,7 +1031,7 @@ function Dropdown(elem, option) {
   // preventDefault on empty anchor links
   function preventEmptyAnchor(anchor) {
     if ((anchor.hasAttribute('href') && anchor.href.slice(-1) === '#') || (anchor.parentNode
-      && anchor.hasAttribute('href')
+      && anchor.parentNode.hasAttribute('href')
       && anchor.parentNode.href.slice(-1) === '#')) { this.preventDefault(); }
   }
   // toggle dismissible events
@@ -1091,14 +1146,14 @@ function Dropdown(elem, option) {
   // init
 
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Dropdown) { element.Dropdown.dispose(); }
 
   // set  targets
   parent = element.parentNode;
-  menu = queryElement('.dropdown-menu', parent);
+  menu = querySelector('.dropdown-menu', parent);
 
   Array.from(menu.children).forEach(function (child) {
     if (child.children.length && child.children[0].tagName === 'A') {
@@ -1201,7 +1256,7 @@ function Modal(elem, opsInput) { // element can be the modal/triggering button
   }
   function createOverlay() {
     var newOverlay = document.createElement('div');
-    overlay = queryElement('.modal-backdrop');
+    overlay = querySelector('.modal-backdrop');
 
     if (overlay === null) {
       newOverlay.setAttribute('class', ("modal-backdrop" + (ops.animation ? ' fade' : '')));
@@ -1211,7 +1266,7 @@ function Modal(elem, opsInput) { // element can be the modal/triggering button
     return overlay;
   }
   function removeOverlay() {
-    overlay = queryElement('.modal-backdrop');
+    overlay = querySelector('.modal-backdrop');
     if (overlay && !document.getElementsByClassName('modal show')[0]) {
       document.body.removeChild(overlay); overlay = null;
     }
@@ -1252,7 +1307,7 @@ function Modal(elem, opsInput) { // element can be the modal/triggering button
     modal.style.display = '';
     if (element) { setFocus(element); }
 
-    overlay = queryElement('.modal-backdrop');
+    overlay = querySelector('.modal-backdrop');
 
     // force can also be the transitionEvent object, we wanna make sure it's not
     if (force !== 1 && overlay && overlay.classList.contains('show') && !document.getElementsByClassName('modal show')[0]) {
@@ -1354,7 +1409,7 @@ function Modal(elem, opsInput) { // element can be the modal/triggering button
     else { triggerHide(); }
   };
   self.setContent = function (content) {
-    queryElement('.modal-content', modal).innerHTML = content;
+    querySelector('.modal-content', modal).innerHTML = content;
   };
   self.update = function () {
     if (modal.classList.contains('show')) {
@@ -1369,10 +1424,10 @@ function Modal(elem, opsInput) { // element can be the modal/triggering button
   // init
 
   // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // determine modal, triggering element
-  var checkModal = queryElement(element.getAttribute('data-target') || element.getAttribute('href'));
+  var checkModal = querySelector(element.getAttribute('data-target') || element.getAttribute('href'));
   modal = element.classList.contains('modal') ? element : checkModal;
 
   // set fixed items
@@ -1416,7 +1471,7 @@ function Modal(elem, opsInput) { // element can be the modal/triggering button
 
 /**
  * A global namespace for mouse click events.
- * @type {{down: string, up: string}}
+ * @type {Record<string, string>}
  */
 var mouseClickEvents = { down: 'mousedown', up: 'mouseup' };
 
@@ -1566,7 +1621,7 @@ function Popover(elem, opsInput) {
 
   // handlers
   function dismissibleHandler(e) {
-    if (popover !== null && e.target === queryElement('.close', popover)) {
+    if (popover !== null && e.target === querySelector('.close', popover)) {
       self.hide();
     }
   }
@@ -1622,8 +1677,8 @@ function Popover(elem, opsInput) {
       popover.className = popoverTemplate.firstChild.className;
       popover.innerHTML = popoverTemplate.firstChild.innerHTML;
 
-      var popoverHeader = queryElement('.popover-header', popover);
-      var popoverBody = queryElement('.popover-body', popover);
+      var popoverHeader = querySelector('.popover-header', popover);
+      var popoverBody = querySelector('.popover-body', popover);
 
       // fill the template with content from data attributes
       if (titleString && popoverHeader) { popoverHeader.innerHTML = titleString.trim(); }
@@ -1730,7 +1785,7 @@ function Popover(elem, opsInput) {
 
   // INIT
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Popover) { element.Popover.dispose(); }
@@ -1754,8 +1809,8 @@ function Popover(elem, opsInput) {
   hiddenCustomEvent = bootstrapCustomEvent('hidden', 'popover');
 
   // check container
-  var containerElement = queryElement(options.container);
-  var containerDataElement = queryElement(containerData);
+  var containerElement = querySelector(options.container);
+  var containerDataElement = querySelector(containerData);
 
   // maybe the element is inside a modal
   var modal = element.closest('.modal');
@@ -1839,7 +1894,7 @@ function ScrollSpy(elem, opsInput) {
 
       Array.from(links).forEach(function (link) {
         href = link.getAttribute('href');
-        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
+        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && querySelector(href);
 
         if (targetItem) {
           vars.items.push(link);
@@ -1933,7 +1988,7 @@ function ScrollSpy(elem, opsInput) {
 
   // init
   // initialization element, the element we spy on
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.ScrollSpy) { element.ScrollSpy.dispose(); }
@@ -1944,7 +1999,7 @@ function ScrollSpy(elem, opsInput) {
   var offsetData = element.getAttribute('data-offset');
 
   // targets
-  spyTarget = queryElement(options.target || targetData);
+  spyTarget = querySelector(options.target || targetData);
 
   // determine which is the real scrollTarget
   scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
@@ -2079,7 +2134,7 @@ function Tab(elem, opsInput) {
     }
     return activeTab;
   }
-  function getActiveContent() { return queryElement(getActiveTab().getAttribute('href')); }
+  function getActiveContent() { return querySelector(getActiveTab().getAttribute('href')); }
   // handler
   function clickHandler(e) {
     e.preventDefault();
@@ -2092,7 +2147,7 @@ function Tab(elem, opsInput) {
     next = next || element;
 
     if (!next.classList.contains('active')) {
-      nextContent = queryElement(next.getAttribute('href')); // this is the actual object, the next tab content to activate
+      nextContent = querySelector(next.getAttribute('href')); // this is the actual object, the next tab content to activate
       activeTab = getActiveTab();
       activeContent = getActiveContent();
 
@@ -2125,7 +2180,7 @@ function Tab(elem, opsInput) {
 
   // INIT
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Tab) { element.Tab.dispose(); }
@@ -2134,7 +2189,7 @@ function Tab(elem, opsInput) {
   var heightData = element.getAttribute('data-height');
   // event targets
   tabs = element.closest('.nav');
-  dropdown = tabs && queryElement('.dropdown-toggle', tabs);
+  dropdown = tabs && querySelector('.dropdown-toggle', tabs);
 
   // instance options
   var animateHeight = !(!supportTransition || (options.height === false || heightData === 'false'));
@@ -2233,7 +2288,7 @@ function Toast(elem, opsInput) {
   // init
 
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Toast) { element.Toast.dispose(); }
@@ -2317,7 +2372,7 @@ function Tooltip(elem, opsInput) {
         tooltip.className = tooltipMarkup.firstChild.className;
         tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
 
-        queryElement('.tooltip-inner', tooltip).innerHTML = titleString.trim();
+        querySelector('.tooltip-inner', tooltip).innerHTML = titleString.trim();
       } else {
         // tooltip arrow
         var tooltipArrow = document.createElement('div');
@@ -2418,7 +2473,7 @@ function Tooltip(elem, opsInput) {
 
   // init
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Tooltip) { element.Tooltip.dispose(); }
@@ -2430,8 +2485,8 @@ function Tooltip(elem, opsInput) {
   var containerData = element.getAttribute('data-container');
 
   // check container
-  var containerElement = queryElement(options.container);
-  var containerDataElement = queryElement(containerData);
+  var containerElement = querySelector(options.container);
+  var containerDataElement = querySelector(containerData);
 
   // maybe the element is inside a modal
   var modal = element.closest('.modal');
@@ -2524,7 +2579,7 @@ function removeDataAPI(context) {
   });
 }
 
-var version = "4.1.0";
+var version = "4.1.0alpha1";
 
 var Version = version;
 

@@ -1,4 +1,8 @@
 import Data from 'shorter-js/src/misc/data';
+import ObjectKeys from 'shorter-js/src/misc/ObjectKeys';
+import parentNodes from 'shorter-js/src/selectors/parentNodes';
+import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
+import getCustomElements from 'shorter-js/src/selectors/getCustomElements';
 
 import Alert from '../components/alert-native';
 import Button from '../components/button-native';
@@ -13,7 +17,7 @@ import Tab from '../components/tab-native';
 import Toast from '../components/toast-native';
 import Tooltip from '../components/tooltip-native';
 
-/** @type {Object<string, any>} */
+/** @type {Record<string, any>} */
 const componentsList = {
   Alert,
   Button,
@@ -29,51 +33,64 @@ const componentsList = {
   Tooltip,
 };
 
-const componentsKeys = Object.keys(componentsList);
+const componentsKeys = ObjectKeys(componentsList);
 
 /**
  * Initialize all matched `Element`s for one component.
- * @param {function} callback the component callback
- * @param {HTMLCollection | NodeList} collection the matched collection
+ * @param {BSN.InitCallback<any>} callback the component callback
+ * @param {NodeListOf<HTMLElement | Element>} collection the matched collection
  */
 function initComponentDataAPI(callback, collection) {
-  Array.from(collection).forEach((x) => callback(x));
+  [...collection].forEach((x) => callback(x));
 }
 
 /**
  * Remove one component from a target container element or all in the page.
  * @param {string} component the component name
- * @param {Element | Document} context parent `Element`
+ * @param {(Element | HTMLElement | Document)=} context parent `Element`
  */
 function removeComponentDataAPI(component, context) {
-  Array.from(Data.getAllFor(component)).forEach((x) => {
-    const [element, instance] = x;
-    if (context.contains(element)) instance.dispose();
-  });
+  const compData = Data.getAllFor(component);
+
+  if (compData) {
+    [...compData].forEach((x) => {
+      const [element, instance] = x;
+      if (context && context.contains(element)) instance.dispose();
+    });
+  }
 }
 
 /**
  * Initialize all BSN components for a target container.
- * @param {Element=} context parent `Element`
+ * @param {(Element | HTMLElement | Document)=} context parent `Element`
  */
 export function initCallback(context) {
-  const lookUp = context instanceof Element ? context : document;
+  const lookUp = context && parentNodes.some((x) => context instanceof x)
+    ? context : undefined;
+  const customElementList = getCustomElements(lookUp);
 
   componentsKeys.forEach((comp) => {
     const { init, selector } = componentsList[comp];
-    initComponentDataAPI(init, lookUp.querySelectorAll(selector));
+    initComponentDataAPI(init, querySelectorAll(selector, lookUp));
+    customElementList
+      // @ts-ignore -- initialize anything inside `CustomElement.shadowRoot`
+      .forEach((ce) => initComponentDataAPI(init, querySelectorAll(selector, ce.shadowRoot)));
   });
 }
 
 /**
  * Remove all BSN components for a target container.
- * @param {Element=} context parent `Element`
+ * @param {(Element | HTMLElement | Document)=} context parent `Element`
  */
 export function removeDataAPI(context) {
-  const lookUp = context instanceof Element ? context : document;
+  const lookUp = context && parentNodes.some((x) => context instanceof x)
+    ? context : undefined;
+  const customElementList = getCustomElements(lookUp);
 
   componentsKeys.forEach((comp) => {
     removeComponentDataAPI(comp, lookUp);
+    // @ts-ignore -- allow `Element.shadowRoot` to initialize
+    customElementList.forEach((ce) => removeComponentDataAPI(comp, ce.shadowRoot));
   });
 }
 

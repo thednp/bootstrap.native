@@ -13,7 +13,7 @@
     <title>Native JavaScript for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link id="bsCSS" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
 
     <!-- Prism: Code Highlight -->
     <link rel="stylesheet" href="./assets/css/prism-coy.css">
@@ -22,12 +22,11 @@
     <link rel="stylesheet" href="./assets/css/theme.css">
 
     <!-- <script src="./dist/bootstrap-native.js"></script> -->
-
   </head>
   <body>
-    <header class="navbar navbar-expand-md navbar-dark bg-purple">
+    <header class="navbar navbar-expand-md navbar-dark bg-purple position-static">
       <nav class="container-fluid">
-        <a data-bs-toggle="tooltip" data-bs-placement="bottom" class="navbar-brand me-auto me-md-2" title="&lt;b&gt;Native JavaScript for Bootstrap&lt;/b&gt;&lt;br&gt;The sweetest Vanilla JavaScript library for everyone" href="https://github.com/thednp/bootstrap.native/">
+        <a data-bs-toggle="tooltip" data-bs-placement="top" title="&lt;b&gt;Native JavaScript for Bootstrap&lt;/b&gt;&lt;br&gt;The sweetest Vanilla JavaScript library for everyone" class="navbar-brand me-auto me-md-2"  href="https://github.com/thednp/bootstrap.native/">
           <svg class="d-inline-block align-top" width="40" height="32" viewBox="0 0 118 94" xmlns="http://www.w3.org/2000/svg" focusable="false">
             <path fill="currentColor" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
           </svg>
@@ -40,6 +39,9 @@
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
               <a class="nav-link" href="v4.html">V4</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="switchDirection.call(this)">RTL</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Github</a>
@@ -63,58 +65,62 @@
       </nav>
     </header>
 
-    <div id="myCarousel" class="carousel slide mb-0 mb-md-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover" data-bs-keyboard="true">
-      <div class="carousel-indicators">
-        <button aria-label="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></button>
-        <button aria-label="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1"></button>
-        <button aria-label="Why BSN?" data-bs-target="#myCarousel" data-bs-slide-to="2"></button>
+    <div id="carouselWrapper">
+      <div id="myCarousel" class="carousel slide mb-0 mb-md-5" data-bs-ride="carousel" data-bs-interval="7000" data-bs-pause="hover" data-bs-keyboard="true">
+        <div class="carousel-indicators">
+          <button aria-label="Download Native JavaScript for Bootstrap" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" data-bs-toggle="tooltip" data-bs-title="Welcome Page"></button>
+          <button aria-label="Getting started with Native JavaScript" data-bs-target="#myCarousel" data-bs-slide-to="1" data-bs-toggle="tooltip" data-bs-title="Get Starter"></button>
+          <button aria-label="Why BSN?" data-bs-target="#myCarousel" data-bs-slide-to="2" data-bs-toggle="tooltip" data-bs-title="Bootstrap Native"></button>
+        </div>
+        <div class="carousel-inner" role="listbox">
+          <div class="carousel-item active">
+            <div class="item-bg bg-warning"></div>
+            <div class="container d-flex align-items-end h-100">
+              <div class="position-relative text-dark text-left mb-5">
+                <h1>A better way to Bootstrap 5</h1>
+                <p>The lighter and more compact set of JavaScript components for Bootstrap, sourced with modern ES6+ codebase and strong TypeScript definitions.<br>
+                  At about half the size of the original and around <b>12kb gZipped</b>, this library does most of Bootstrap & Popper combined.</p>
+                <p>
+                  <a class="btn btn-lg btn-primary me-1" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a>
+                  <a class="btn btn-lg btn-secondary" href="https://www.npmjs.com/package/bootstrap.native">NPM</a>
+                  <a class="btn btn-lg btn-secondary" href="https://www.jsdelivr.com/package/npm/bootstrap.native">CDN</a>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="item-bg bg-info"></div>
+            <div class="container d-flex align-items-end h-100">
+              <div class="position-relative text-dark w-100 mb-5">
+                <h1>New to <span class="text-light">bootstrap.native</span>?</h1>
+                <p>We launched the project back in 2015 with the goal of debunking the "write less do more" 
+                  <a class="text-white" rel="noreferrer" href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank" role="button"></a>myth</a>, meanwhile the Bootstrap developers
+                  themselves have decided to drop jQuery, however we decided to keep maintaining the project for its many benefits and the learning experience.</p>
+                <p><a class="btn btn-lg btn-light" rel="noreferrer" href="https://bloggie.io/@kinopyo/bootstrap-native-bootstrap-without-jquery" target="_blank" role="button">Check out this article</a></p>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="item-bg bg-danger"></div>
+            <div class="container d-flex align-items-end h-100">
+              <div class="position-relative text-white text-right w-100 mb-5">
+                <h1>What's in it for me?</h1>
+                <p>If you mainly use Bootstrap plugins for your projects, why not use a much lighter, potentially faster library, see a different perspective on the same challenges, 
+                  interact with a less crowded community, get a better chance to learn or say hi!</p>
+                <p><a class="btn btn-lg btn-light" rel="noreferrer" href="https://github.com/thednp/bootstrap.native/issues" target="_blank" role="button">Take a look</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#myCarousel" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </a>
       </div>
-      <div class="carousel-inner" role="listbox">
-        <div class="carousel-item active">
-          <div class="item-bg bg-warning"></div>
-          <div class="container d-flex align-items-end h-100">
-            <div class="position-relative text-dark text-left mb-5">
-              <h1>A better way to Bootstrap 5</h1>
-              <p>The faster, lighter and more compact set of JavaScript components for Bootstrap, developed on modern ES6+ standards.<br> The <b>10kb gZip</b> 
-                library that does most of Bootstrap & Popper combined.</p>
-              <p><a class="btn btn-lg btn-primary" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download Now</a></p>
-            </div>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <div class="item-bg bg-info"></div>
-          <div class="container d-flex align-items-end h-100">
-            <div class="position-relative text-dark w-100 mb-5">
-              <h1>New to native JavaScript?</h1>
-              <p>Not to worry, <a style="text-decoration: underline" href="http://vanilla-js.com/" target="_blank">native JavaScript</a> is the coolest programing language 
-                ever!<br> Far more powerful and requires almost <b>zero</b> maintenance on very long periods of time.</p>
-              <p><a class="btn btn-lg btn-primary" rel="noreferrer" href="http://blog.garstasio.com/you-dont-need-jquery/" target="_blank" role="button">Get started</a></p>
-            </div>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <div class="item-bg bg-danger"></div>
-          <div class="container d-flex align-items-end h-100">
-            <div class="position-relative text-white text-right w-100 mb-5">
-              <h1>What's the fuzz?</h1>
-							<p>If you use mainly Bootstrap plugins in your projects, you may drop jQuery right away.<br>Why load jQuery if you don't really need it? It's too old school!</p>
-              <p><a class="btn btn-lg btn-light" rel="noreferrer" href="http://jsperf.com/jquery-vs-native-element-performance" target="_blank" role="button">See Now</a></p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev">
-        <svg class="carousel-control-prev-icon" viewBox="0 0 1024 1024" aria-hidden="true">
-          <path d="M658 686l-60 60-256-256 256-256 60 60-196 196z"></path>
-        </svg>
-        <span class="visually-hidden">Previous</span>
-      </a>
-      <a class="carousel-control-next" href="#myCarousel" role="button" data-bs-slide="next">
-        <svg class="carousel-control-next-icon" viewBox="0 0 1024 1024" aria-hidden="true">
-          <path d="M366 698l196-196-196-196 60-60 256 256-256 256z"></path>
-        </svg>
-        <span class="visually-hidden">Next</span>
-      </a>
     </div>
 
     <nav class="navbar navbar-light d-flex d-md-none bg-white sticky-top border-bottom">
@@ -616,33 +622,39 @@ var myButtonINIT = BSN.Button.getInstance('#myButton');
   &lt;/a&gt;
 &lt;/div&gt;
 </code></pre>
-              <p>A quick walk through the attributes:</p>
+              <p>Attributes walkthrough:</p>
               <ul>
-                <li><code>id="myCarousel"</code> is <b>not</b> required for any of the component's functionality, except 
-                  cases when you need to interact with it and attach additional functionality;</li>
+                <li><code>id="myCarousel"</code> is <b>only</b> required for controls outside the scope of the element itself;</li>
                 <li><code>data-bs-ride="carousel"</code> is the attribute required if you want the <b>Carousel</b> component
                   to initialize your element automatically;</li>
-                <li><code>data-bs-keyboard="false"</code> (not shown in the sample markup) is the attribute that enables carousel 
-                  navigation via keyboard left and right arrow keys;</li>
+                <li><code>data-bs-keyboard="false"</code> (not shown in the sample markup) is the attribute that enables 
+                  navigation via keyboard left and right arrow keys, but only if the target element is visible in the viewport;</li>
                 <li><code>data-bs-interval="5000"</code> sets the automatic slide interval; the <code>false</code> value will 
                   disable automatic slide transition; the usage of this attribute for each item is not implemented in BSN;</li>
                 <li><code>data-bs-pause="hover"</code> is the attribute you can set to pause the carousel on mouse hover, but 
-                  it also adds a <code>paused</code> class to your carousel; if the above is also <code>false</code>,
-                  this setting has no effect;</li>
+                  it also adds a <code>paused</code> class to your carousel; if the above attribute <code>data-bs-interval</code>
+                  is <code>false</code>, this setting has no effect;</li>
                 <li><code>data-bs-touch="true"</code> is the attribute you can set to enable touch support for your carousel,
                   however, you must have at least 3 <code>.carousel-item</code> elements in order to work;</li>
-                <li><code>data-bs-slide-to="0"</code> is an attribute used by <code>.carousel-indicators</code> elements; when
-                  clicked will slide to the carousel item with the same index, 0 (zero) in this case;</li>
-                <li><code>data-bs-slide="prev"</code> / <code>data-bs-slide="next"</code> when clicked, will slide to the next /
-                  previous carousel item; these attributes are <b>optional</b>, but the class <code>carousel-control</code> is
-                  <b>required</b>;</li>
-                <li><code>href="#myCarousel"</code> / <code>data-bs-target="#myCarousel"</code> attributes are not required
-                  for any of the Carousel controls; we will see in the example below why and how to do it with BSN;</li>
+                <li><code>data-bs-slide-to="0"</code> is an attribute used by elements of the <code>.carousel-indicators</code>;
+                  when clicked, it will transition to the carousel item with the specified index, which is 0 (zero) in this case;</li>
+                <li><code>data-bs-slide="prev"</code> / <code>data-bs-slide="next"</code> when clicked, will transition to the next /
+                  previous carousel item;</li>
+                <li><code>data-bs-target="#myCarousel"</code> attribute is <b>required</b> for any of the Carousel controls outside
+                  the scope of the carousel element itself and <b>optional</b> for indicators / controls inside;</li>
                 <li><code>class="carousel-item active"</code> / <code>class="active"</code> when <em>active</em> class is 
-                  present for a carousel item or indicator, that indicates which carousel item is currently shown to the user, 
-                  the above <code>.getActiveIndex()</code> method will look for it when needed.</li>
+                  present for a carousel item or indicator, that indicates which carousel item is currently shown to the user.</li>
               </ul>
-
+              <p><b class="lead">Right To Left languages</b><br>
+                The Carousel component provides support for RTL Languages but the functionality has some specific requirements:</p>
+              <ul>
+                <li>the <code>&lt;html&gt;</code> tag must have the <code>dir="rtl"</code> attribute;</li>
+                <li>as is, the <code>&lt;a class="carousel-control-prev"</code> element must use the <code>data-bs-slide="next"</code>
+                  attribute value, as well as the <code>&lt;a class="carousel-control-next"</code> element must use the
+                  <code>data-bs-slide="prev"</code> attribute value;</li>
+                <li>or, you can add additional CSS styling to only apply for RTL languages in combination with proper use of 
+                  <code>data-bs-slide</code> attribute, and Carousel will handle the rest.</li>
+              </ul>
             </section>
 
             <section id="carouselJS">
@@ -758,28 +770,20 @@ mySpecialCarouselInit.cycle();
               </div>
 
               <div class="btn-group my-3">
-                <button class="btn btn-outline-secondary"
-                        onclick="BSN.Carousel.getInstance(carouselGenericExample).to(0)">START</button>
-                <button class="btn btn-outline-secondary"
-                        onclick="BSN.Carousel.getInstance(carouselGenericExample).prev()">PREV</button>
-                <button class="btn btn-outline-secondary"
-                        onclick="BSN.Carousel.getInstance(carouselGenericExample).next()">NEXT</button>
+                <button class="btn btn-outline-secondary" data-bs-target="#carouselGenericExample" data-bs-slide-to="0">START</button>
+                <button class="btn btn-outline-secondary" data-bs-target="#carouselGenericExample" data-bs-slide="prev">PREV</button>
+                <button class="btn btn-outline-secondary" data-bs-target="#carouselGenericExample" data-bs-slide="next">NEXT</button>
               </div>
               <p>These three independent buttons use some inline JavaScript to control the carousel:</p>
-<pre><code class="language-markup">&lt;button class="btn btn-secondary" 
-  onclick="BSN.Carousel.getInstance(carouselGenericExample).to(0)">
+<pre><code class="language-markup">&lt;button data-bs-target="#myCarousel" data-bs-slide-to="0" class="btn btn-secondary">
   START
 &lt;/button>
 
-&lt;button 
-  class="btn btn-secondary"
-  onclick="BSN.Carousel.getInstance(carouselGenericExample).prev()">
+&lt;button data-bs-target="#myCarousel" data-bs-slide="prev" class="btn btn-secondary">
   PREV
 &lt;/button>
 
-&lt;button 
-  class="btn btn-secondary"
-  onclick="BSN.Carousel.getInstance(carouselGenericExample).next()">
+&lt;button data-bs-target="#myCarousel" data-bs-slide="next" class="btn btn-secondary">
   NEXT
 &lt;/button>
 </code></pre>
@@ -1326,7 +1330,7 @@ myDropdownInit.dispose();
                   </svg>
                   Dropdown trigger
                 </button>
-                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="myDropdown">
+                <div class="dropdown-menu" aria-labelledby="myDropdown">
                   <a class="dropdown-item" href="#">Action</a>
                   <a class="dropdown-item" href="#">Another action</a>
                   <a class="dropdown-item" href="#">Something else here</a>
@@ -1339,14 +1343,14 @@ myDropdownInit.dispose();
 
               <div class="btn-toolbar mb-3">
                 <div class="btn-group dropdown me-2">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown"
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownButton4" data-bs-toggle="dropdown"
                     data-bs-persist="true" aria-haspopup="true" aria-expanded="false">
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                       <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                     </svg>
                     Form
                   </button>
-                  <form class="px-3 dropdown-menu form-vertical" aria-expanded="false" aria-labelledby="dropdownMenuButton4">
+                  <form class="px-3 dropdown-menu form-vertical" aria-expanded="false" aria-labelledby="dropdownButton4">
                     <div class="mb-3">
                       <label for="inputEmail3" class="control-label">Email</label>
                       <div class=""><input type="email" class="form-control" id="inputEmail3" placeholder="Email"></div>
@@ -1379,7 +1383,7 @@ myDropdownInit.dispose();
                 <div class="btn-group dropstart me-2">
                   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">                    
-                    Left
+                    Menu Start
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <a class="dropdown-item" href="#">Action</a>
@@ -1390,7 +1394,7 @@ myDropdownInit.dispose();
                 <div class="btn-group dropend">
                   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
-                    Right
+                    Menu End
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
                     <a class="dropdown-item" href="#">Action</a>
@@ -1516,7 +1520,10 @@ myDropdownInit.dispose();
                     </tr>
                     <tr>
                       <td><code>hide.bs.modal</code></td>
-                      <td>This event is fired immediately when the <code>.hide()</code> instance method has been called.<br>
+                      <td>This event is fired immediately when the <code>.hide()</code> instance method has been called.
+                        If the click event target is the <code>.btn-close</code> element, that element becomes the
+                        <code>event.relatedTarget</code> of this Offcanvas event, however if the click event target is
+                        the backdrop, <code>event.relatedTarget</code> will be null.<br>
                         <b>This event can be default prevented.</b></td>
                     </tr>
                     <tr>
@@ -1526,7 +1533,7 @@ myDropdownInit.dispose();
                   </tbody>
                 </table>
               </div>
-              <p>If modal is opened via JavaScript methods, or by clicking on another element that is not a modal triggering 
+              <p>If the modal is opened via JavaScript methods, or by clicking on another element that is not a modal triggering 
                 element, the <code>event.relatedTarget</code> is <em>null</em>.</p>
             </section>
 
@@ -1696,6 +1703,22 @@ var myModalInit = BSN.Modal.getInstance(myModal);
                       <p><a href="#" class="tooltip-test" data-bs-toggle="tooltip" title="Tooltip">This link</a> and <a href="#"
                           data-bs-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.
                       </p>
+                      <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="me-1 " style="top:0; right:0"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                        data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
+                        <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
+                        <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
+                      </svg>
+                      <img class="me-1 " style="top:0; right:90px" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+                      
+                      <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="me-1 position-absolute" style="top:250px; right:0"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                        data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
+                        <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
+                        <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
+                      </svg>
+                      <img class="me-1 position-absolute" style="top:250px; right:90px" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+    
                       <h4>Open modal from modal</h4>
                       <p>Click <a data-bs-toggle="modal" href="#anotherModal">here</a> to open another modal.</p>
                       <h4>Dismissing the modal is prevented!</h4>
@@ -1927,7 +1950,8 @@ var findModalInitJS = BSN.Modal.getInstance(myModal);
                       <td><code>hide.bs.offcanvas</code></td>
                       <td>This event is fired immediately when the <code>.hide()</code> instance method has been called.
                         If the method is call came via click and the click target is a dismiss element, that element is 
-                        then assignes as the <code>event.relatedTarget</code> of this event.<br>
+                        then assigned as the <code>event.relatedTarget</code> of this event. If the click event target
+                        is the backdrop, <code>event.relatedTarget</code> is null.<br>
                         <b>This event can be default prevented.</b></td>
                     </tr>
                     <tr>
@@ -1938,8 +1962,8 @@ var findModalInitJS = BSN.Modal.getInstance(myModal);
                   </tbody>
                 </table>
               </div>
-              <p>If the offcanvas is opened/closed via JavaScript methods, or is dismissed by clicking on another element
-                outside the offcanvas, the <code>event.relatedTarget</code> is <em>null</em>.</p>
+              <p>Similar to the Modal component, if the offcanvas is opened/closed via JavaScript methods, or is dismissed
+                by clicking on another element outside the offcanvas, the <code>event.relatedTarget</code> is <em>null</em>.</p>
             </section>
             <section id="offcanvasDATA">
               <h3 id="offcanvasDataAPI">Offcanvas DATA API</h3>
@@ -2451,7 +2475,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
           
             </section>
           
-            <section id="popoverExamples" class="position-relative">
+            <section id="popoverExamples">
               <h3>Popover Examples</h3>
               <p>First let's test all the placement positions, we start with inline links having the <a href="#"
                   data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Testing bottom placement">bottom</a>
@@ -2462,36 +2486,109 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                 template system and different trigger options. The popover generated for the last two
                 examples can be dismissed on window resize or blur (focus out).</p>
 
+              <template id="sample-ce">
+                <style>
+:host {
+  display: inline-flex;
+}
+.btn-icon {
+  width: auto;
+  height: 1.5em;
+  margin-top: -0.25rem;
+  overflow: hidden;
+  vertical-align: middle;
+}
+button {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+button:hover,
+button:focus {
+  outline: none;
+}
+button:focus {
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 15%) inset, 0 0 0 3px rgb(0 0 0 / 15%);
+}
+
+:host([type="popover"]) button {
+  background-color: rgb(204, 85, 85);
+}
+:host([type="popover"]) button:focus,
+:host([type="popover"]) button:focus {
+  background-color: rgb(182, 69, 69);
+}
+
+:host([type="tooltip"]) button {
+  background-color: rgb(226, 67, 115);
+}
+:host([type="tooltip"]) button:focus,
+:host([type="tooltip"]) button:focus {
+  background-color: rgb(197, 55, 97);
+}
+
+                </style>
+                <button aria-label="__TYPE__ CustomElement Test" 
+                  data-bs-toggle="__type__" 
+                  data-bs-title="Custom Element __TYPE__" 
+                  data-bs-content="This is a CustomElement __TYPE__ example initialized automatically via data attributes.">
+                  CustomElement
+                  <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 1024 1024"><path d="M366 698l196-196-196-196 60-60 256 256-256 256z"/></svg>
+                </button>
+              </template>
+                
               <div class="btn-toolbar mb-3">
-                <button type="button" class="btn btn-success me-1" data-bs-toggle="popover" data-bs-placement="left" data-bs-dismissible="true"
+                <ce-tip type="popover" class="me-1 mb-1"></ce-tip>
+                <button type="button" class="btn btn-success me-1 mb-1" data-bs-toggle="popover" data-bs-placement="left" data-bs-dismissible="true"
                   data-bs-title="Dismissible Popover"
                   data-bs-content='Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'>
                   Dismissible
                 </button>
-                <button type="button" class="btn btn-dark me-1" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="customClass" data-bs-title="Popover on RIGHT &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;" data-bs-content="Here we add more content for testing. Completely synergize resource sucking relationships via premier niche markets.">
+                <button type="button" id="popoverElementContents" class="btn btn-dark me-1 mb-1" data-bs-placement="right" data-bs-custom-class="customClass">
                   Right
                 </button>
-                <button id="popoverWithEvents" type="button" class="btn btn-secondary me-1" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Popover on Bottom">
+                <button id="popoverWithEvents" type="button" class="btn btn-secondary me-1 mb-1" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Popover on Bottom">
                  Events
                 </button>
-                <div class="position-static me-1" id="staticContainer1">
-                  <button type="button" class="btn btn-primary" data-bs-toggle="popover" data-bs-container="#staticContainer1" 
-                    data-bs-title="Popover in static container" data-bs-content="This popover is added to a position: static container. This requires a parent with position : relative for the container.">Static</button>
+                <div class="position-static d-flex" id="staticContainer1">
+                  <button type="button" class="btn btn-primary me-1 mb-1" data-bs-toggle="popover" data-bs-container="#staticContainer1" 
+                    data-bs-title="Popover in static container" data-bs-content="This popover is added to a position: static container. If the configured container belongs to parent with position: relative, the component will bypass the configuration.">Static</button>
                 </div>                
-                <button type="button" class="btn btn-outline-secondary position-absolute" style="top:0; right: 0;" data-bs-toggle="popover" data-bs-placement="top"  data-container="#popoverExamples"
+                <button type="button" class="btn btn-outline-secondary position-absolute d-none" style="top:0; right: 0;" data-bs-toggle="popover" data-bs-placement="top"  data-container="#popoverExamples"
                   data-bs-title="Popover on absolute position" data-bs-content="This button is rendered in position: absolute and this requires a position: relative container.">Absolute</button>
-                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value=""  class="form-control popover-via-template me-1" placeholder="Focus me" data-bs-toggle="popover">
-                <button type="button" id="popover-via-click" class="btn btn-warning me-1"  data-bs-title="Popover on CLICK" data-bs-content="This popover is added to a position: relative container. Now simply click again to dismiss.">
+                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value=""  class="form-control popover-via-template me-1 mb-1" placeholder="Focus me" data-bs-toggle="popover">
+                <button type="button" id="popover-via-click" class="btn btn-warning me-1 mb-1"  data-bs-title="Popover on CLICK" data-bs-content="This popover is added to a position: relative container. Now simply click again to dismiss.">
                   Click
                 </button>
-                <svg class="me-1" viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
+                <svg class="me-1 mb-1" viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
                   data-bs-content="This is a demo content for a popover initialized on an &lt;code&gt;&amp;lt;svg&amp;gt;&lt;/code&gt; element.">
-                  <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
-                  <text fill="#333" x="25" y="22" font-size="14">SVG</text>
+                  <rect fill="white" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
+                  <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
                 </svg>
-                <img class="me-1" data-bs-toggle="popover" data-bs-placement="top"  data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdo dD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAg ICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwv dGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBk YXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUg Zm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEg ZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBz dHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9 IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2 Zz4=" />
+                <img class="me-1 mb-1" data-bs-toggle="popover" data-bs-placement="top"  data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+                
               </div>
-
+              <div class="position-relative p-3 mb-3 bg-light rounded">
+                <p style="width: calc(100% - 190px)">This is an a <code>&lt;div class="position-relative"&gt;</code> parent element to hold two position-absolute elements with Popover.
+                </p>
+                <svg class="position-absolute" style="top: calc(50% - 22px); right:1rem" viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
+                  data-bs-content="This is a demo content for a popover initialized on an &lt;code&gt;&amp;lt;svg&amp;gt;&lt;/code&gt; element.">
+                  <rect fill="white" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
+                  <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
+                </svg>
+                <img class="position-absolute" style="top: calc(50% - 22px); right: calc(85px + 1rem)" data-bs-toggle="popover" data-bs-placement="top"  data-bs-title="Demo Popover Title for IMG" data-bs-content="This is a demo content for popover initialized on an &lt;code&gt;&amp;lt;img&amp;gt;&lt;/code&gt; element." alt="Demo Popover for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+              </div>
             </section>
           </section>
 
@@ -2547,8 +2644,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
               <h4>instance.dispose()</h4>
               <p>Removes the component from target element.</p>
               <h4>ScrollSpy.getInstance()</h4>
-              <p>A <i>static</i> method that allows you to access a ScrollSpy instance associated to a DOM element.</p>              
-
+              <p>A <i>static</i> method that allows you to access a ScrollSpy instance associated to a DOM element.</p>
             </section>
           
             <section id="scrollspyEvents">
@@ -2567,7 +2663,8 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                   <tbody>
                     <tr>
                       <td><code>activate.bs.scrollspy</code></td>
-                      <td>This event fires whenever a new item was activated by the component.</td>
+                      <td>This event fires whenever a new item was activated by the component. The <code>event.relatedTarget</code>
+                      is the newly activated list/menu item.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -3200,7 +3297,7 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                     <tr>
                       <td><code>delay</code></td>
                       <td><em>number</em></td>
-                      <td><em>500</em></td>
+                      <td><em>5000</em></td>
                       <td>A short delay before hiding the tooltip. Can be set via JavaScript or the
                         <code>data-bs-delay="DELAY"</code> attribute.</td>
                     </tr>
@@ -3342,8 +3439,8 @@ myToastInit.dispose();
               <h3>Toast Example</h3>
               <p>This toast has some handlers attached to all its original events, so check your console.</p>
 
-              <div class="toast-container">
-                <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" data-bs-animation="true">
+              <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-animation="true">
                   <div class="toast-header">
                     <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                       <rect fill="#007aff" width="100%" height="100%"></rect>
@@ -3357,7 +3454,7 @@ myToastInit.dispose();
                   </div>
                 </div>
               </div>
-              <p><button class="btn btn-info d-none" id="showToastBTN">Show Toast</button></p>
+              <p><button class="btn btn-primary" id="showToastBTN">Show Toast</button></p>
 
             </section>
           </section>
@@ -3627,7 +3724,7 @@ new BSN.Tooltip('#selector',options).show();
           
             </section>
           
-            <section id="tooltipExamples" class="position-relative">
+            <section id="tooltipExamples">
               <h3>Tooltip Examples</h3>
               <p>Now let's test all the other placement positions, we start with inline links having the <a href="#"
                   title="Testing bottom placement" data-bs-toggle="tooltip" data-bs-placement="bottom">bottom</a> placement,
@@ -3635,33 +3732,45 @@ new BSN.Tooltip('#selector',options).show();
                   href="#" title="Testing right placement" data-bs-toggle="tooltip" data-bs-placement="right">right</a>.
                 Let's put it to the test! Some heavy testing on the automatic repositioning with very very long tooltips.</p>
 
+                
               <div class="btn-toolbar mb-3">          
-                <button type="button" class="btn btn-primary me-1" data-bs-toggle="tooltip" data-bs-placement="left"
-                  data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
-                <button id="tooltipWithEvents" type="button" class="btn btn-dark me-1" data-bs-toggle="tooltip" data-bs-placement="top" 
+                <ce-tip type="tooltip" class="me-1 mb-1"></ce-tip>
+                <button id="tooltipElementContent" type="button" class="btn btn-primary me-1 mb-1" data-bs-placement="left">Left</button>
+                <button id="tooltipWithEvents" type="button" class="btn btn-dark me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="top" 
                   data-bs-title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Events</button>
-                <button type="button" class="btn btn-secondary me-1" data-bs-toggle="tooltip" data-bs-placement="bottom" 
+                <button type="button" class="btn btn-secondary me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="bottom" 
                   data-bs-title="&lt;b&gt;Tooltip on bottom&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Bottom</button>
-                <button type="button" class="btn btn-success me-1" data-bs-toggle="tooltip" data-bs-placement="right" 
+                <button type="button" class="btn btn-success me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="right" 
                   data-bs-title="&lt;b&gt;Tooltip on right&lt;/b&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Right</button>
-                <button type="button" class="btn btn-warning me-1" data-bs-toggle="tooltip" data-bs-placement="left" 
+                <button type="button" class="btn btn-warning me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="left" 
                   data-bs-title="&lt;b&gt;Tooltip on left&lt;/b&gt; &lt;span class='badge bg-success'&gt;NEW&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Left</button>
-                <button id="tooltipTemplateExample" type="button" class="btn btn-danger me-1" 
+                <button id="tooltipTemplateExample" type="button" class="btn btn-danger me-1 mb-1" 
                   data-bs-title="&lt;b&gt;Top TEMPLATE&lt;/b&gt; &lt;span class='badge bg-danger'&gt;HOT&lt;/span&gt;&lt;br&gt;This tooltip will be added to a position: relative container. Check out the &lt;code&gt;scripts.js&lt;/code&gt; file for this template example sample code. Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip.">Template</button>
-                <button type="button" class="btn btn-outline-secondary position-absolute me-1" style="top:0; right: 0;" data-bs-toggle="tooltip" data-bs-placement="left"  data-container="#tooltipExamples"
+                <button type="button" class="btn btn-outline-secondary position-absolute me-1 mb-1 d-none" style="top:0; right: 0;" data-bs-toggle="tooltip" data-bs-placement="left"  data-container="#tooltipExamples"
                   data-bs-title="Tooltip on absolute position element. This requires a position: relative container.">Absolute</button>
-                <div class="position-static me-1" id="staticContainer">
-                  <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-container="#staticContainer" 
-                    data-bs-title="&lt;b&gt;Tooltip in static container&lt;/b&gt;&lt;br&gt;This tooltip is added to a position: static container. This requires a parent with position:relative for the container.">Static</button>
+                <div class="position-static d-flex" id="staticContainer">
+                  <button type="button" class="btn btn-info me-1 mb-1" data-bs-toggle="tooltip" data-bs-container="#staticContainer" 
+                    data-bs-title="&lt;b&gt;Tooltip in static container&lt;/b&gt;&lt;br&gt;This tooltip is added to a position: static container. If the configured container belongs to parent with position: relative, the component will bypass the configuration.">Static</button>
                 </div>
-                <svg viewBox="0 0 80 38" width="80" height="38" xmlns="http://www.w3.org/2000/svg" class="me-1"
+                <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="me-1 mb-1"
                   data-bs-toggle="tooltip" data-bs-placement="top"
                   data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
-                  <text fill="#333" x="25" y="22" font-size="14">SVG</text>
+                  <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
                 </svg>
-                <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-container="#tooltipExamples"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,ICAgICAgICAgICAgICAgIDxzdmcgdmlld0JveD0iMCAwIDgwIDM4IiB3aWR0aD0iODAiIGhlaWdodD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+DQogICAgICAgICAgICAgICAgICA8dGV4dCBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjIiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGRhdGEtYnMtdG9nZ2xlPSJwb3BvdmVyIiBkYXRhLWJzLXBsYWNlbWVudD0idG9wIiBkYXRhLWJzLXRpdGxlPSJEZW1vIFBvcG92ZXIgVGl0bGUgZm9yIFNWRyINCiAgICAgICAgICAgICAgICAgICAgZGF0YS1icy1jb250ZW50PSJUaGlzIGlzIGEgZGVtbyBwb3BvdmVyIGZvciBTVkcgZWxlbWVudHMuIiBmaWxsPSJyZ2JhKDAsMCwwLDAuMDEpIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSINCiAgICAgICAgICAgICAgICAgICAgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+                <img class="me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+              </div>
 
+              <div class="position-relative mb-3 p-3 bg-light rounded">
+                <p style="width: calc(100% - 190px)">This is an a <code>&lt;div class="position-relative"&gt;</code> parent element to hold two position-absolute elements with Tooltip.
+                </p>
+                <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="position-absolute" style="top:calc(50% - 22px); right:1rem"
+                  data-bs-toggle="tooltip" data-bs-placement="top"
+                  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
+                  <rect fill="white" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
+                  <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
+                </svg>
+                <img class="position-absolute" style="top:calc(50% - 22px); right: calc(85px + 1rem)" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
               </div>
 
             </section>
@@ -3805,13 +3914,50 @@ new BSN.Tooltip('#selector',options).show();
       <footer class="mt-3 pt-3 border-top">
         <div class="container">
           <p class="float-end"><a href="#myCarousel">Back to top</a></p>
-          <p><a href="http://themeforest.net/user/dnp_theme" rel="noreferrer" target="_blank">dnp_theme</a> &copy; 2015-2021.</p>
+          <p><a href="http://themeforest.net/user/dnp_theme" rel="noreferrer" target="_blank">dnp_theme</a> &copy; 2015-2022.</p>
         </div>
       </footer>
-
     </div>
 
+<script>
+class CustomButtonElement extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    const template = document.getElementById('sample-ce');
+    const node = document.importNode(template.content, true);
+    this.shadowRoot.appendChild(node);
+  }
+  
+  connectedCallback() {
+    this.type = this.getAttribute('type');
+    this.button = this.shadowRoot.querySelector('button');
+    const TYPE = this.type.charAt(0).toUpperCase() + this.type.slice(1);
+    this.TYPE = TYPE;
+    const label = this.button.getAttribute('aria-label');
+    const title = this.button.getAttribute('data-bs-title');
+    const content = this.button.getAttribute('data-bs-content');
+    // console.log({title, content, TYPE})
+    this.button.setAttribute('aria-label', label.replace('__TYPE__', TYPE));
+    this.button.setAttribute('data-bs-toggle', this.type);
+    if (this.type === 'tooltip') {
+      this.button.setAttribute('data-bs-title', (`<span class="fs-6 fw-bold">${title}</span>` + "<br>" + content).replace(/__TYPE__/g, TYPE));
+
+      this.button.removeAttribute('data-bs-content');
+    } else {
+      this.button.setAttribute('data-bs-title', title.replace('__TYPE__', TYPE));
+      this.button.setAttribute('data-bs-content', content.replace('__TYPE__', TYPE));
+    }
+  }
+  
+  disconnectedCallback() {}
+}
+
+customElements.define('ce-tip', CustomButtonElement);
+</script>
+
     <script src="./dist/bootstrap-native.js"></script>
+
     <script src="https://cure53.de/purify.js"></script>
     <script src="./assets/js/scripts.js"></script>
     <script src="./assets/js/prism.js"></script>

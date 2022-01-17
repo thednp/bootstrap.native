@@ -1,7 +1,8 @@
-import queryElement from 'shorter-js/src/misc/queryElement';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 import addClass from 'shorter-js/src/class/addClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 import reflow from 'shorter-js/src/misc/reflow';
+import getDocument from 'shorter-js/src/get/getDocument';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -11,14 +12,17 @@ const modalBackdropClass = 'modal-backdrop';
 const offcanvasBackdropClass = 'offcanvas-backdrop';
 const modalActiveSelector = `.modal.${showClass}`;
 const offcanvasActiveSelector = `.offcanvas.${showClass}`;
-const overlay = document.createElement('div');
+
+// any document would suffice
+const overlay = getDocument().createElement('div');
 
 /**
  * Returns the current active modal / offcancas element.
- * @returns {Element?} the requested element
+ * @param {(HTMLElement | Element)=} element the context element
+ * @returns {(HTMLElement | Element)?} the requested element
  */
-function getCurrentOpen() {
-  return queryElement(`${modalActiveSelector},${offcanvasActiveSelector}`);
+function getCurrentOpen(element) {
+  return querySelector(`${modalActiveSelector},${offcanvasActiveSelector}`, getDocument(element));
 }
 
 /**
@@ -35,12 +39,13 @@ function toggleOverlayType(isModal) {
 
 /**
  * Append the overlay to DOM.
+ * @param {HTMLElement | Element} container
  * @param {boolean} hasFade
  * @param {boolean=} isModal
  */
-function appendOverlay(hasFade, isModal) {
+function appendOverlay(container, hasFade, isModal) {
   toggleOverlayType(isModal);
-  document.body.append(overlay);
+  container.append(overlay);
   if (hasFade) addClass(overlay, fadeClass);
 }
 
@@ -61,12 +66,13 @@ function hideOverlay() {
 
 /**
  * Removes the overlay from DOM.
+ * @param {(HTMLElement | Element)=} element
  */
-function removeOverlay() {
-  if (!getCurrentOpen()) {
+function removeOverlay(element) {
+  if (!getCurrentOpen(element)) {
     removeClass(overlay, fadeClass);
     overlay.remove();
-    resetScrollbar();
+    resetScrollbar(element);
   }
 }
 

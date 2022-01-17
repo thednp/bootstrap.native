@@ -1,14 +1,22 @@
 /* Native JavaScript for Bootstrap 5 | Toast
 -------------------------------------------- */
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import addEventListener from 'shorter-js/src/strings/addEventListener';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
+import mouseenterEvent from 'shorter-js/src/strings/mouseenterEvent';
+import mouseleaveEvent from 'shorter-js/src/strings/mouseleaveEvent';
+import focusinEvent from 'shorter-js/src/strings/focusinEvent';
+import focusoutEvent from 'shorter-js/src/strings/focusoutEvent';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import reflow from 'shorter-js/src/misc/reflow';
 import { getInstance } from 'shorter-js/src/misc/data';
+import Timer from 'shorter-js/src/misc/timer';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -30,7 +38,7 @@ const hideClass = 'hide';
 const toastDefaults = {
   animation: true,
   autohide: true,
-  delay: 500,
+  delay: 5000,
 };
 
 /**
@@ -50,8 +58,8 @@ const toastInitCallback = (element) => new Toast(element);
 // TOAST CUSTOM EVENTS
 // ===================
 const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
-const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
 const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
+const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
 const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 
 // TOAST PRIVATE METHODS
@@ -63,9 +71,12 @@ const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 function showToastComplete(self) {
   const { element, options } = self;
   removeClass(element, showingClass);
+  Timer.clear(element, showingClass);
 
-  element.dispatchEvent(shownToastEvent);
-  if (options.autohide) self.hide();
+  dispatchEvent(element, shownToastEvent);
+  if (options.autohide) {
+    Timer.set(element, () => self.hide(), options.delay, toastString);
+  }
 }
 
 /**
@@ -77,7 +88,8 @@ function hideToastComplete(self) {
   removeClass(element, showingClass);
   removeClass(element, showClass);
   addClass(element, hideClass); // B/C
-  element.dispatchEvent(hiddenToastEvent);
+  Timer.clear(element, toastString);
+  dispatchEvent(element, hiddenToastEvent);
 }
 
 /**
@@ -102,16 +114,18 @@ function hideToast(self) {
  */
 function showToast(self) {
   const { element, options } = self;
-  removeClass(element, hideClass); // B/C
-  reflow(element);
-  addClass(element, showClass);
-  addClass(element, showingClass);
+  Timer.set(element, () => {
+    removeClass(element, hideClass); // B/C
+    reflow(element);
+    addClass(element, showClass);
+    addClass(element, showingClass);
 
-  if (options.animation) {
-    emulateTransitionEnd(element, () => showToastComplete(self));
-  } else {
-    showToastComplete(self);
-  }
+    if (options.animation) {
+      emulateTransitionEnd(element, () => showToastComplete(self));
+    } else {
+      showToastComplete(self);
+    }
+  }, 17, showingClass);
 }
 
 /**
@@ -119,12 +133,15 @@ function showToast(self) {
  * @param {Toast} self the `Toast` instance
  * @param {boolean=} add when `true`, it will add the listener
  */
-function toggleToastHandler(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  if (self.dismiss) {
-    // @ts-ignore
-    self.dismiss[action]('click', self.hide);
+function toggleToastHandlers(self, add) {
+  const action = add ? on : off;
+  const { element, dismiss, options } = self;
+  if (dismiss) {
+    action(dismiss, mouseclickEvent, self.hide);
+  }
+  if (options.autohide) {
+    [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent]
+      .forEach((e) => action(element, e, interactiveToastHandler));
   }
 }
 
@@ -135,9 +152,29 @@ function toggleToastHandler(self, add) {
  * @param {Toast} self the `Toast` instance
  */
 function completeDisposeToast(self) {
+  Timer.clear(self.element, toastString);
+  toggleToastHandlers(self);
+}
+
+/**
+ * Executes when user interacts with the toast without closing it,
+ * usually by hovering or focusing it.
+ *
+ * @this {HTMLElement | Element}
+ * @param {MouseEvent} e the `Toast` instance
+ */
+function interactiveToastHandler(e) {
+  const element = this;
+  const self = getToastInstance(element);
+  const { type, relatedTarget } = e;
   // @ts-ignore
-  clearTimeout(self.timer);
-  toggleToastHandler(self);
+  if (!self || (element === relatedTarget || element.contains(relatedTarget))) return;
+
+  if ([mouseenterEvent, focusinEvent].includes(type)) {
+    Timer.clear(element, toastString);
+  } else {
+    Timer.set(element, () => self.hide(), self.options.delay, toastString);
+  }
 }
 
 // TOAST DEFINITION
@@ -145,7 +182,7 @@ function completeDisposeToast(self) {
 /** Creates a new `Toast` instance. */
 export default class Toast extends BaseComponent {
   /**
-   * @param {Element | string} target the target `.toast` element
+   * @param {HTMLElement | Element | string} target the target `.toast` element
    * @param {BSN.Options.Toast=} config the instance options
    */
   constructor(target, config) {
@@ -158,17 +195,15 @@ export default class Toast extends BaseComponent {
     if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
     else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
     // dismiss button
-    /** @private @type {any} */
-    self.timer = null;
-    /** @private @type {Element?} */
-    self.dismiss = queryElement(toastDismissSelector, element);
+    /** @type {(HTMLElement | Element)?} */
+    self.dismiss = querySelector(toastDismissSelector, element);
 
     // bind
     self.show = self.show.bind(self);
     self.hide = self.hide.bind(self);
 
     // add event listener
-    toggleToastHandler(self, true);
+    toggleToastHandlers(self, true);
   }
 
   /* eslint-disable */
@@ -191,25 +226,22 @@ export default class Toast extends BaseComponent {
     const self = this;
     const { element } = self;
     if (element && !hasClass(element, showClass)) {
-      element.dispatchEvent(showToastEvent);
+      dispatchEvent(element, showToastEvent);
       if (showToastEvent.defaultPrevented) return;
 
-      clearTimeout(self.timer);
-      self.timer = setTimeout(() => showToast(self), 10);
+      showToast(self);
     }
   }
 
   /** Hides the toast. */
   hide() {
     const self = this;
-    const { element, options } = self;
+    const { element } = self;
 
     if (element && hasClass(element, showClass)) {
-      element.dispatchEvent(hideToastEvent);
+      dispatchEvent(element, hideToastEvent);
       if (hideToastEvent.defaultPrevented) return;
-
-      clearTimeout(self.timer);
-      self.timer = setTimeout(() => hideToast(self), options.delay);
+      hideToast(self);
     }
   }
 
@@ -228,7 +260,7 @@ export default class Toast extends BaseComponent {
   }
 }
 
-Object.assign(Toast, {
+ObjectAssign(Toast, {
   selector: toastSelector,
   init: toastInitCallback,
   getInstance: getToastInstance,

@@ -1,6 +1,6 @@
 /*!
-  * Native JavaScript for Bootstrap ScrollSpy v4.1.0 (https://thednp.github.io/bootstrap.native/)
-  * Copyright 2015-2021 © dnp_theme
+  * Native JavaScript for Bootstrap - ScrollSpy v4.1.0alpha1 (https://thednp.github.io/bootstrap.native/)
+  * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 (function (global, factory) {
@@ -10,75 +10,86 @@
 })(this, (function () { 'use strict';
 
   /**
-   * A global namespace for 'addEventListener' string.
-   * @type {string}
+   * Shortcut for `HTMLElement.getAttribute()` method.
+   * @param  {HTMLElement | Element} element target element
+   * @param  {string} attribute attribute name
    */
-  const addEventListener = 'addEventListener';
+  const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
   /**
-   * A global namespace for 'removeEventListener' string.
-   * @type {string}
+   * Shortcut for the `Element.dispatchEvent(Event)` method.
+   *
+   * @param {HTMLElement | Element} element is the target
+   * @param {Event} event is the `Event` object
    */
-  const removeEventListener = 'removeEventListener';
-
-  /**
-   * A global namespace for passive events support.
-   * @type {boolean}
-   */
-  const supportPassive = (() => {
-    let result = false;
-    try {
-      const opts = Object.defineProperty({}, 'passive', {
-        get() {
-          result = true;
-          return result;
-        },
-      });
-      document[addEventListener]('DOMContentLoaded', function wrap() {
-        document[removeEventListener]('DOMContentLoaded', wrap, opts);
-      }, opts);
-    } catch (e) {
-      throw Error('Passive events are not supported');
-    }
-
-    return result;
-  })();
-
-  // general event options
+  const dispatchEvent = (element, event) => element.dispatchEvent(event);
 
   /**
    * A global namespace for most scroll event listeners.
+   * @type {Partial<AddEventListenerOptions>}
    */
-  const passiveHandler = supportPassive ? { passive: true } : false;
+  const passiveHandler = { passive: true };
 
   /**
-   * Checks if an element is an `Element`.
-   *
-   * @param {any} element the target element
-   * @returns {boolean} the query result
+   * Returns the `document` or the `#document` element.
+   * @see https://github.com/floating-ui/floating-ui
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {Document}
    */
-  function isElement(element) {
-    return element instanceof Element;
+  function getDocument(node) {
+    if (node instanceof HTMLElement) return node.ownerDocument;
+    if (node instanceof Window) return node.document;
+    return window.document;
   }
 
   /**
-   * Utility to check if target is typeof Element
+   * A global array of possible `ParentNode`.
+   */
+  const parentNodes = [Document, Node, Element, HTMLElement];
+
+  /**
+   * A global array with `Element` | `HTMLElement`.
+   */
+  const elementNodes = [Element, HTMLElement];
+
+  /**
+   * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
    * or find one that matches a selector.
    *
-   * @param {Element | string} selector the input selector or target element
-   * @param {Element=} parent optional Element to look into
-   * @return {Element?} the Element or `querySelector` result
+   * @param {HTMLElement | Element | string} selector the input selector or target element
+   * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+   * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
    */
-  function queryElement(selector, parent) {
-    const lookUp = parent && isElement(parent) ? parent : document;
-    // @ts-ignore
-    return isElement(selector) ? selector : lookUp.querySelector(selector);
+  function querySelector(selector, parent) {
+    const selectorIsString = typeof selector === 'string';
+    const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+      ? parent : getDocument();
+
+    if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+      return selector;
+    }
+    // @ts-ignore -- `ShadowRoot` is also a node
+    return selectorIsString ? lookUp.querySelector(selector) : null;
   }
 
   /**
-   * Add class to Element.classList
+   * Shortcut for `HTMLElement.getElementsByTagName` method. Some `Node` elements
+   * like `ShadowRoot` do not support `getElementsByTagName`.
    *
-   * @param {Element} element target
+   * @param {string} selector the tag name
+   * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
+   * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
+   */
+  function getElementsByTagName(selector, parent) {
+    const lookUp = parent && parentNodes
+      .some((x) => parent instanceof x) ? parent : getDocument();
+    return lookUp.getElementsByTagName(selector);
+  }
+
+  /**
+   * Add class to `HTMLElement.classList`.
+   *
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to add
    */
   function addClass(element, classNAME) {
@@ -86,9 +97,9 @@
   }
 
   /**
-   * Check class in Element.classList
+   * Check class in `HTMLElement.classList`.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to check
    * @return {boolean}
    */
@@ -97,15 +108,55 @@
   }
 
   /**
-   * Remove class from Element.classList
+   * Remove class from `HTMLElement.classList`.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to remove
    */
   function removeClass(element, classNAME) {
     element.classList.remove(classNAME);
   }
 
+  /**
+   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function off(element, eventName, handler, options) {
+    const ops = options || false;
+    element.removeEventListener(eventName, handler, ops);
+  }
+
+  /**
+   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function on(element, eventName, handler, options) {
+    const ops = options || false;
+    element.addEventListener(eventName, handler, ops);
+  }
+
+  /**
+   * Shortcut for `Object.assign()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @param  {Record<string, any>} source a source object
+   */
+  const ObjectAssign = (obj, source) => Object.assign(obj, source);
+
+  /**
+   * A global namespace for `scroll` event.
+   * @type {string}
+   */
+  const scrollEvent = 'scroll';
+
+  /** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
   const componentData = new Map();
   /**
    * An interface for web components background data.
@@ -114,59 +165,58 @@
   const Data = {
     /**
      * Sets web components data.
-     * @param {Element | string} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
-     * @param {any} instance the component instance
+     * @param {Record<string, any>} instance the component instance
      */
-    set: (element, component, instance) => {
-      const ELEMENT = queryElement(element);
-      if (!isElement(ELEMENT)) return;
+    set: (target, component, instance) => {
+      const element = querySelector(target);
+      if (!element) return;
 
       if (!componentData.has(component)) {
         componentData.set(component, new Map());
       }
 
       const instanceMap = componentData.get(component);
-      instanceMap.set(ELEMENT, instance);
+      // @ts-ignore - not undefined, but defined right above
+      instanceMap.set(element, instance);
     },
 
     /**
      * Returns all instances for specified component.
      * @param {string} component the component's name or a unique key
-     * @returns {any?} all the component instances
+     * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
      */
     getAllFor: (component) => {
-      if (componentData.has(component)) {
-        return componentData.get(component);
-      }
-      return null;
+      const instanceMap = componentData.get(component);
+
+      return instanceMap || null;
     },
 
     /**
      * Returns the instance associated with the target.
-     * @param {Element | string} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
-     * @returns {any?} the instance
+     * @returns {Record<string, any>?} the instance
      */
-    get: (element, component) => {
-      const ELEMENT = queryElement(element);
-
+    get: (target, component) => {
+      const element = querySelector(target);
       const allForC = Data.getAllFor(component);
-      if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
-        return allForC.get(ELEMENT);
-      }
-      return null;
+      const instance = element && allForC && allForC.get(element);
+
+      return instance || null;
     },
 
     /**
      * Removes web components data.
-     * @param {Element} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
      */
-    remove: (element, component) => {
-      if (!componentData.has(component)) return;
-
+    remove: (target, component) => {
+      const element = querySelector(target);
       const instanceMap = componentData.get(component);
+      if (!instanceMap || !element) return;
+
       instanceMap.delete(element);
 
       if (instanceMap.size === 0) {
@@ -177,41 +227,101 @@
 
   /**
    * An alias for `Data.get()`.
-   * @param {Element | string} element target element
-   * @param {string} component the component's name or a unique key
-   * @returns {any} the request result
+   * @type {SHORTER.getInstance<any>}
    */
-  const getInstance = (element, component) => Data.get(element, component);
+  const getInstance = (target, component) => Data.get(target, component);
+
+  /**
+   * Returns the `Window` object of a target node.
+   * @see https://github.com/floating-ui/floating-ui
+   *
+   * @param {(Node | HTMLElement | Element | Window)=} node target node
+   * @returns {globalThis}
+   */
+  function getWindow(node) {
+    if (node == null) {
+      return window;
+    }
+
+    if (!(node instanceof Window)) {
+      const { ownerDocument } = node;
+      return ownerDocument ? ownerDocument.defaultView || window : window;
+    }
+
+    // @ts-ignore
+    return node;
+  }
+
+  /**
+   * Returns the `document.documentElement` or the `<html>` element.
+   *
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {HTMLElement | HTMLHtmlElement}
+   */
+  function getDocumentElement(node) {
+    return getDocument(node).documentElement;
+  }
+
+  /**
+   * Returns the `document.body` or the `<body>` element.
+   *
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {HTMLElement | HTMLBodyElement}
+   */
+  function getDocumentBody(node) {
+    return getDocument(node).body;
+  }
+
+  /**
+   * Returns the bounding client rect of a target `HTMLElement`.
+   *
+   * @see https://github.com/floating-ui/floating-ui
+   *
+   * @param {HTMLElement | Element} element event.target
+   * @param {boolean=} includeScale when *true*, the target scale is also computed
+   * @returns {SHORTER.BoundingClientRect} the bounding client rect object
+   */
+  function getBoundingClientRect(element, includeScale) {
+    const {
+      width, height, top, right, bottom, left,
+    } = element.getBoundingClientRect();
+    let scaleX = 1;
+    let scaleY = 1;
+
+    if (includeScale && element instanceof HTMLElement) {
+      const { offsetWidth, offsetHeight } = element;
+      scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
+      scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
+    }
+
+    return {
+      width: width / scaleX,
+      height: height / scaleY,
+      top: top / scaleY,
+      right: right / scaleX,
+      bottom: bottom / scaleY,
+      left: left / scaleX,
+      x: left / scaleX,
+      y: top / scaleY,
+    };
+  }
 
   /**
    * Global namespace for most components active class.
    */
   const activeClass = 'active';
 
-  /** Returns an original event for Bootstrap Native components. */
-  class OriginalEvent extends CustomEvent {
-    /**
-     * @param {string} EventType event.type
-     * @param {Record<string, any>=} config Event.options | Event.properties
-     */
-    constructor(EventType, config) {
-      super(EventType, config);
-      /** @type {EventTarget?} */
-      this.relatedTarget = null;
-    }
-  }
-
   /**
    * Returns a namespaced `CustomEvent` specific to each component.
    * @param {string} EventType Event.type
    * @param {Record<string, any>=} config Event.options | Event.properties
-   * @returns {OriginalEvent} a new namespaced event
+   * @returns {BSN.OriginalEvent} a new namespaced event
    */
   function bootstrapCustomEvent(EventType, config) {
-    const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
+    const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
 
     if (config instanceof Object) {
-      Object.assign(OriginalCustomEvent, config);
+      ObjectAssign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
   }
@@ -219,7 +329,7 @@
   /**
    * The raw value or a given component option.
    *
-   * @typedef {string | Element | Function | number | boolean | null} niceValue
+   * @typedef {string | HTMLElement | Function | number | boolean | null} niceValue
    */
 
   /**
@@ -245,94 +355,93 @@
       return null;
     }
 
-    // string / function / Element / object
+    // string / function / HTMLElement / object
     return value;
   }
 
   /**
-   * Utility to normalize component options
+   * Shortcut for `Object.keys()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @returns {string[]}
+   */
+  const ObjectKeys = (obj) => Object.keys(obj);
+
+  /**
+   * Utility to normalize component options.
    *
-   * @param {Element} element target
-   * @param {object} defaultOps component default options
-   * @param {object} inputOps component instance options
-   * @param {string} ns component namespace
-   * @return {object} normalized component options object
+   * @param {HTMLElement | Element} element target
+   * @param {Record<string, any>} defaultOps component default options
+   * @param {Record<string, any>} inputOps component instance options
+   * @param {string=} ns component namespace
+   * @return {Record<string, any>} normalized component options object
    */
   function normalizeOptions(element, defaultOps, inputOps, ns) {
-    // @ts-ignore
+    // @ts-ignore -- our targets are always `HTMLElement`
     const data = { ...element.dataset };
+    /** @type {Record<string, any>} */
     const normalOps = {};
+    /** @type {Record<string, any>} */
     const dataOps = {};
 
-    Object.keys(data)
-      .forEach((k) => {
-        const key = k.includes(ns)
-          ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
-          : k;
+    ObjectKeys(data).forEach((k) => {
+      const key = ns && k.includes(ns)
+        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+        : k;
 
-        dataOps[key] = normalizeValue(data[k]);
-      });
+      dataOps[key] = normalizeValue(data[k]);
+    });
 
-    Object.keys(inputOps)
-      .forEach((k) => {
-        inputOps[k] = normalizeValue(inputOps[k]);
-      });
+    ObjectKeys(inputOps).forEach((k) => {
+      inputOps[k] = normalizeValue(inputOps[k]);
+    });
 
-    Object.keys(defaultOps)
-      .forEach((k) => {
-        if (k in inputOps) {
-          normalOps[k] = inputOps[k];
-        } else if (k in dataOps) {
-          normalOps[k] = dataOps[k];
-        } else {
-          normalOps[k] = defaultOps[k];
-        }
-      });
+    ObjectKeys(defaultOps).forEach((k) => {
+      if (k in inputOps) {
+        normalOps[k] = inputOps[k];
+      } else if (k in dataOps) {
+        normalOps[k] = dataOps[k];
+      } else {
+        normalOps[k] = defaultOps[k];
+      }
+    });
 
     return normalOps;
   }
 
-  var version = "4.1.0";
+  var version = "4.1.0alpha1";
 
   const Version = version;
 
   /* Native JavaScript for Bootstrap 5 | Base Component
   ----------------------------------------------------- */
 
-  /**
-   * Returns a new `BaseComponent` instance.
-   */
+  /** Returns a new `BaseComponent` instance. */
   class BaseComponent {
     /**
-     * @param {Element | string} target Element or selector string
+     * @param {HTMLElement | Element | string} target `Element` or selector string
      * @param {BSN.ComponentOptions=} config component instance options
      */
     constructor(target, config) {
       const self = this;
-      const element = queryElement(target);
+      const element = querySelector(target);
 
-      if (!isElement(element)) {
-        throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+      if (!element) {
+        throw Error(`${self.name} Error: "${target}" is not a valid selector.`);
       }
 
-      /** @type {BSN.ComponentOptions} */
+      /** @static @type {BSN.ComponentOptions} */
       self.options = {};
 
-      // @ts-ignore
       const prevInstance = Data.get(element, self.name);
       if (prevInstance) prevInstance.dispose();
 
-      /** @type {Element} */
-      // @ts-ignore
+      /** @type {HTMLElement | Element} */
       self.element = element;
 
       if (self.defaults && Object.keys(self.defaults).length) {
-        /** @static @type {Record<string, any>} */
-        // @ts-ignore
         self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
 
-      // @ts-ignore
       Data.set(element, self.name, self);
     }
 
@@ -353,10 +462,9 @@
      */
     dispose() {
       const self = this;
-      // @ts-ignore
       Data.remove(self.element, self.name);
       // @ts-ignore
-      Object.keys(self).forEach((prop) => { self[prop] = null; });
+      ObjectKeys(self).forEach((prop) => { self[prop] = null; });
     }
   }
 
@@ -402,78 +510,73 @@
    */
   function updateSpyTargets(self) {
     const {
-      // @ts-ignore
-      target, scrollTarget, isWindow, options, itemsLength, scrollHeight,
+      target, scrollTarget, options, itemsLength, scrollHeight, element,
     } = self;
     const { offset } = options;
-    // @ts-ignore
-    const links = target.getElementsByTagName('A');
+    const isWin = scrollTarget instanceof Window;
+
+    const links = target && getElementsByTagName('A', target);
+    const scrollHEIGHT = scrollTarget && getScrollHeight(scrollTarget);
 
     // @ts-ignore
-    self.scrollTop = isWindow ? scrollTarget.pageYOffset : scrollTarget.scrollTop;
+    self.scrollTop = isWin ? scrollTarget.scrollY : scrollTarget.scrollTop;
 
     // only update items/offsets once or with each mutation
-
-    if (itemsLength !== links.length || getScrollHeight(scrollTarget) !== scrollHeight) {
+    if (links && (itemsLength !== links.length || scrollHEIGHT !== scrollHeight)) {
       let href;
       let targetItem;
       let rect;
 
       // reset arrays & update
-      // @ts-ignore
       self.items = [];
-      // @ts-ignore
       self.offsets = [];
-      // @ts-ignore
-      self.scrollHeight = getScrollHeight(scrollTarget);
-      // @ts-ignore
+      self.scrollHeight = scrollHEIGHT;
       self.maxScroll = self.scrollHeight - getOffsetHeight(self);
 
-      Array.from(links).forEach((link) => {
-        href = link.getAttribute('href');
-        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
+      [...links].forEach((link) => {
+        href = getAttribute(link, 'href');
+        targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#'
+          && querySelector(href, getDocument(element));
 
         if (targetItem) {
-          // @ts-ignore
           self.items.push(link);
           rect = targetItem.getBoundingClientRect();
           // @ts-ignore
-          self.offsets.push((isWindow ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
+          self.offsets.push((isWin ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
         }
       });
-      // @ts-ignore
       self.itemsLength = self.items.length;
     }
   }
 
   /**
    * Returns the `scrollHeight` property of the scrolling element.
-   * @param {Element | Window} scrollTarget the `ScrollSpy` instance
+   * @param {HTMLElement | Element | Window | globalThis} scrollTarget the `ScrollSpy` instance
    * @return {number} `scrollTarget` height
    */
   function getScrollHeight(scrollTarget) {
-    // @ts-ignore
-    return scrollTarget.scrollHeight || Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight,
-    );
+    return scrollTarget instanceof HTMLElement
+      ? scrollTarget.scrollHeight // @ts-ignore
+      : getDocumentElement(scrollTarget).scrollHeight;
   }
 
   /**
    * Returns the height property of the scrolling element.
-   * @param {{element: Element, isWindow: boolean}} params the `ScrollSpy` instance
+   * @param {ScrollSpy} params the `ScrollSpy` instance
+   * @returns {number}
    */
-  function getOffsetHeight({ element, isWindow }) {
-    if (!isWindow) return element.getBoundingClientRect().height;
-    return window.innerHeight;
+  function getOffsetHeight({ element, scrollTarget }) {
+    return (scrollTarget instanceof Window)
+      ? scrollTarget.innerHeight
+      : getBoundingClientRect(element).height;
   }
 
   /**
    * Clear all items of the target.
-   * @param {Element} target a single item
+   * @param {HTMLElement | Element} target a single item
    */
   function clear(target) {
-    Array.from(target.getElementsByTagName('A')).forEach((item) => {
+    [...getElementsByTagName('A', target)].forEach((item) => {
       if (hasClass(item, activeClass)) removeClass(item, activeClass);
     });
   }
@@ -481,10 +584,9 @@
   /**
    * Activates a new item.
    * @param {ScrollSpy} self the `ScrollSpy` instance
-   * @param {Element} item a single item
+   * @param {HTMLElement | Element} item a single item
    */
   function activate(self, item) {
-    // @ts-ignore
     const { target, element } = self;
     // @ts-ignore
     clear(target);
@@ -495,13 +597,14 @@
     // activate all parents
     const parents = [];
     let parentItem = item;
-    while (parentItem !== document.body) {
+    while (parentItem !== getDocumentBody(element)) {
       // @ts-ignore
-      parentItem = parentItem.parentNode;
+      parentItem = parentItem.parentElement;
       if (hasClass(parentItem, 'nav') || hasClass(parentItem, 'dropdown-menu')) parents.push(parentItem);
     }
 
     parents.forEach((menuItem) => {
+      /** @type {(HTMLElement | Element)?} */
       const parentLink = menuItem.previousElementSibling;
 
       if (parentLink && !hasClass(parentLink, activeClass)) {
@@ -510,7 +613,8 @@
     });
 
     // dispatch
-    element.dispatchEvent(activateScrollSpy);
+    activateScrollSpy.relatedTarget = item;
+    dispatchEvent(element, activateScrollSpy);
   }
 
   /**
@@ -519,9 +623,9 @@
    * @param {boolean=} add when `true`, listener is added
    */
   function toggleSpyHandlers(self, add) {
-    const action = add ? addEventListener : removeEventListener;
+    const action = add ? on : off;
     // @ts-ignore
-    self.scrollTarget[action]('scroll', self.refresh, passiveHandler);
+    action(self.scrollTarget, scrollEvent, self.refresh, passiveHandler);
   }
 
   // SCROLLSPY DEFINITION
@@ -529,7 +633,7 @@
   /** Returns a new `ScrollSpy` instance. */
   class ScrollSpy extends BaseComponent {
     /**
-     * @param {Element | string} target the target element
+     * @param {HTMLElement | Element | string} target the target element
      * @param {BSN.Options.ScrollSpy=} config the instance options
      */
     constructor(target, config) {
@@ -541,30 +645,30 @@
       const { element, options } = self;
 
       // additional properties
-      /** @private @type {Element?} */
-      self.target = queryElement(options.target);
+      /** @type {(HTMLElement | Element)?} */
+      self.target = querySelector(options.target, getDocument(element));
 
       // invalidate
       if (!self.target) return;
 
+      const win = getWindow(element);
+
       // set initial state
-      /** @private @type {Element | Window} */
-      self.scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
-      /** @private @type {boolean} */
-      self.isWindow = self.scrollTarget === window;
-      /** @private @type {number} */
+      /** @type {HTMLElement | Element | Window | globalThis} */
+      self.scrollTarget = element.clientHeight < element.scrollHeight ? element : win;
+      /** @type {number} */
       self.scrollTop = 0;
-      /** @private @type {number} */
+      /** @type {number} */
       self.maxScroll = 0;
-      /** @private @type {number} */
+      /** @type {number} */
       self.scrollHeight = 0;
-      /** @private @type {Element?} */
+      /** @type {(HTMLElement | Element)?} */
       self.activeItem = null;
-      /** @private @type {Element[]} */
+      /** @type {(HTMLElement | Element)[]} */
       self.items = [];
-      /** @private @type {number} */
+      /** @type {number} */
       self.itemsLength = 0;
-      /** @private @type {number[]} */
+      /** @type {number[]} */
       self.offsets = [];
 
       // bind events
@@ -639,7 +743,7 @@
     }
   }
 
-  Object.assign(ScrollSpy, {
+  ObjectAssign(ScrollSpy, {
     selector: scrollspySelector,
     init: scrollspyInitCallback,
     getInstance: getScrollSpyInstance,

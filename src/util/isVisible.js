@@ -1,4 +1,11 @@
+import getElementStyle from 'shorter-js/src/get/getElementStyle';
+
+/**
+ * @param {HTMLElement | Element} element target
+ * @returns {boolean}
+ */
 export default function isVisible(element) {
-  return getComputedStyle(element).visibility !== 'hidden'
+  return element && getElementStyle(element, 'visibility') !== 'hidden'
+    // @ts-ignore
     && element.offsetParent !== null;
 }

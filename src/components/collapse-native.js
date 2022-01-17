@@ -1,15 +1,22 @@
 /* Native JavaScript for Bootstrap 5 | Collapse
 ----------------------------------------------- */
+import setAttribute from 'shorter-js/src/attr/setAttribute';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import closest from 'shorter-js/src/selectors/closest';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
 import reflow from 'shorter-js/src/misc/reflow';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import addEventListener from 'shorter-js/src/strings/addEventListener';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
 import ariaExpanded from 'shorter-js/src/strings/ariaExpanded';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import { getInstance } from 'shorter-js/src/misc/data';
+import Timer from 'shorter-js/src/misc/timer';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import collapsingClass from '../strings/collapsingClass';
@@ -56,17 +63,14 @@ const hiddenCollapseEvent = bootstrapCustomEvent(`hidden.bs.${collapseString}`);
  */
 function expandCollapse(self) {
   const {
-    // @ts-ignore
     element, parent, triggers,
   } = self;
 
-  element.dispatchEvent(showCollapseEvent);
+  dispatchEvent(element, showCollapseEvent);
   if (showCollapseEvent.defaultPrevented) return;
 
-  // @ts-ignore
-  self.isAnimating = true;
-  // @ts-ignore
-  if (parent) parent.isAnimating = true;
+  Timer.set(element, () => {}, 17);
+  if (parent) Timer.set(parent, () => {}, 17);
 
   addClass(element, collapsingClass);
   removeClass(element, collapseString);
@@ -75,12 +79,10 @@ function expandCollapse(self) {
   element.style.height = `${element.scrollHeight}px`;
 
   emulateTransitionEnd(element, () => {
-    // @ts-ignore
-    self.isAnimating = false;
-    // @ts-ignore
-    if (parent) parent.isAnimating = false;
+    Timer.clear(element);
+    if (parent) Timer.clear(parent);
 
-    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'true'));
+    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'true'));
 
     removeClass(element, collapsingClass);
     addClass(element, collapseString);
@@ -89,7 +91,7 @@ function expandCollapse(self) {
     // @ts-ignore
     element.style.height = '';
 
-    element.dispatchEvent(shownCollapseEvent);
+    dispatchEvent(element, shownCollapseEvent);
   });
 }
 
@@ -103,14 +105,12 @@ function collapseContent(self) {
     element, parent, triggers,
   } = self;
 
-  element.dispatchEvent(hideCollapseEvent);
+  dispatchEvent(element, hideCollapseEvent);
 
   if (hideCollapseEvent.defaultPrevented) return;
 
-  // @ts-ignore
-  self.isAnimating = true;
-  // @ts-ignore
-  if (parent) parent.isAnimating = true;
+  Timer.set(element, () => {}, 17);
+  if (parent) Timer.set(parent, () => {}, 17);
 
   // @ts-ignore
   element.style.height = `${element.scrollHeight}px`;
@@ -124,12 +124,10 @@ function collapseContent(self) {
   element.style.height = '0px';
 
   emulateTransitionEnd(element, () => {
-    // @ts-ignore
-    self.isAnimating = false;
-    // @ts-ignore
-    if (parent) parent.isAnimating = false;
+    Timer.clear(element);
+    if (parent) Timer.clear(parent);
 
-    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'false'));
+    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'false'));
 
     removeClass(element, collapsingClass);
     addClass(element, collapseString);
@@ -137,7 +135,7 @@ function collapseContent(self) {
     // @ts-ignore
     element.style.height = '';
 
-    element.dispatchEvent(hiddenCollapseEvent);
+    dispatchEvent(element, hiddenCollapseEvent);
   });
 }
 
@@ -147,13 +145,11 @@ function collapseContent(self) {
  * @param {boolean=} add when `true`, the event listener is added
  */
 function toggleCollapseHandler(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
+  const action = add ? on : off;
   const { triggers } = self;
 
   if (triggers.length) {
-    // @ts-ignore
-    triggers.forEach((btn) => btn[action]('click', collapseClickHandler));
+    triggers.forEach((btn) => action(btn, mouseclickEvent, collapseClickHandler));
   }
 }
 
@@ -161,13 +157,12 @@ function toggleCollapseHandler(self, add) {
 // ======================
 /**
  * Handles the `click` event for the `Collapse` instance.
- * @param {Event} e the `Event` object
+ * @param {MouseEvent} e the `Event` object
  */
 function collapseClickHandler(e) {
-  const { target } = e;
-  // @ts-ignore
-  const trigger = target.closest(collapseToggleSelector);
-  const element = getTargetElement(trigger);
+  const { target } = e; // @ts-ignore - our target is `HTMLElement`
+  const trigger = target && closest(target, collapseToggleSelector);
+  const element = trigger && getTargetElement(trigger);
   const self = element && getCollapseInstance(element);
   if (self) self.toggle();
 
@@ -181,7 +176,7 @@ function collapseClickHandler(e) {
 /** Returns a new `Colapse` instance. */
 export default class Collapse extends BaseComponent {
   /**
-   * @param {Element | string} target and `Element` that matches the selector
+   * @param {HTMLElement | Element | string} target and `Element` that matches the selector
    * @param {BSN.Options.Collapse=} config instance options
    */
   constructor(target, config) {
@@ -193,20 +188,13 @@ export default class Collapse extends BaseComponent {
     const { element, options } = self;
 
     // set triggering elements
-    /** @private @type {Element[]} */
-    self.triggers = Array.from(document.querySelectorAll(collapseToggleSelector))
+    /** @type {(HTMLElement | Element)[]} */
+    self.triggers = [...querySelectorAll(collapseToggleSelector)]
       .filter((btn) => getTargetElement(btn) === element);
 
     // set parent accordion
-    /** @private @type {Element?} */
-    self.parent = queryElement(options.parent);
-    const { parent } = self;
-
-    // set initial state
-    /** @private @type {boolean} */
-    self.isAnimating = false;
-    // @ts-ignore
-    if (parent) parent.isAnimating = false;
+    /** @type {(HTMLElement | Element)?} */
+    self.parent = querySelector(options.parent);
 
     // add event listeners
     toggleCollapseHandler(self, true);
@@ -237,8 +225,8 @@ export default class Collapse extends BaseComponent {
   /** Hides the collapse. */
   hide() {
     const self = this;
-    const { triggers, isAnimating } = self;
-    if (isAnimating) return;
+    const { triggers, element } = self;
+    if (Timer.get(element)) return;
 
     collapseContent(self);
     if (triggers.length) {
@@ -250,19 +238,18 @@ export default class Collapse extends BaseComponent {
   show() {
     const self = this;
     const {
-      element, parent, triggers, isAnimating,
+      element, parent, triggers,
     } = self;
     let activeCollapse;
     let activeCollapseInstance;
 
     if (parent) {
-      activeCollapse = Array.from(parent.querySelectorAll(`.${collapseString}.${showClass}`))
+      activeCollapse = [...querySelectorAll(`.${collapseString}.${showClass}`, parent)]
         .find((i) => getCollapseInstance(i));
       activeCollapseInstance = activeCollapse && getCollapseInstance(activeCollapse);
     }
 
-    // @ts-ignore
-    if ((!parent || (parent && !parent.isAnimating)) && !isAnimating) {
+    if ((!parent || (parent && !Timer.get(parent))) && !Timer.get(element)) {
       if (activeCollapseInstance && activeCollapse !== element) {
         collapseContent(activeCollapseInstance);
         activeCollapseInstance.triggers.forEach((btn) => {
@@ -280,16 +267,13 @@ export default class Collapse extends BaseComponent {
   /** Remove the `Collapse` component from the target `Element`. */
   dispose() {
     const self = this;
-    const { parent } = self;
     toggleCollapseHandler(self);
 
-    // @ts-ignore
-    if (parent) delete parent.isAnimating;
     super.dispose();
   }
 }
 
-Object.assign(Collapse, {
+ObjectAssign(Collapse, {
   selector: collapseSelector,
   init: collapseInitCallback,
   getInstance: getCollapseInstance,

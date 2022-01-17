@@ -3,8 +3,8 @@
 import mouseHoverEvents from 'shorter-js/src/strings/mouseHoverEvents';
 import mouseClickEvents from 'shorter-js/src/strings/mouseClickEvents';
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEndLegacy';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
 import dispatchCustomEvent from '../util/dispatchCustomEvent';
@@ -59,7 +59,7 @@ export default function Tooltip(elem, opsInput) {
         tooltip.className = tooltipMarkup.firstChild.className;
         tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
 
-        queryElement('.tooltip-inner', tooltip).innerHTML = titleString.trim();
+        querySelector('.tooltip-inner', tooltip).innerHTML = titleString.trim();
       } else {
         // tooltip arrow
         const tooltipArrow = document.createElement('div');
@@ -162,7 +162,7 @@ export default function Tooltip(elem, opsInput) {
 
   // init
   // initialization element
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // reset on re-init
   if (element.Tooltip) element.Tooltip.dispose();
@@ -174,8 +174,8 @@ export default function Tooltip(elem, opsInput) {
   const containerData = element.getAttribute('data-container');
 
   // check container
-  const containerElement = queryElement(options.container);
-  const containerDataElement = queryElement(containerData);
+  const containerElement = querySelector(options.container);
+  const containerDataElement = querySelector(containerData);
 
   // maybe the element is inside a modal
   const modal = element.closest('.modal');

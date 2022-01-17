@@ -1,13 +1,23 @@
 /* Native JavaScript for Bootstrap 5 | ScrollSpy
 ------------------------------------------------ */
+import getAttribute from 'shorter-js/src/attr/getAttribute';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import getElementsByTagName from 'shorter-js/src/selectors/getElementsByTagName';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import addEventListener from 'shorter-js/src/strings/addEventListener';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import off from 'shorter-js/src/event/off';
+import on from 'shorter-js/src/event/on';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import scrollEvent from 'shorter-js/src/strings/scrollEvent';
 import { getInstance } from 'shorter-js/src/misc/data';
+import getWindow from 'shorter-js/src/get/getWindow';
+import getDocument from 'shorter-js/src/get/getDocument';
+import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
+import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
+import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
 
 import activeClass from '../strings/activeClass';
 
@@ -53,78 +63,73 @@ const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`)
  */
 function updateSpyTargets(self) {
   const {
-    // @ts-ignore
-    target, scrollTarget, isWindow, options, itemsLength, scrollHeight,
+    target, scrollTarget, options, itemsLength, scrollHeight, element,
   } = self;
   const { offset } = options;
-  // @ts-ignore
-  const links = target.getElementsByTagName('A');
+  const isWin = scrollTarget instanceof Window;
+
+  const links = target && getElementsByTagName('A', target);
+  const scrollHEIGHT = scrollTarget && getScrollHeight(scrollTarget);
 
   // @ts-ignore
-  self.scrollTop = isWindow ? scrollTarget.pageYOffset : scrollTarget.scrollTop;
+  self.scrollTop = isWin ? scrollTarget.scrollY : scrollTarget.scrollTop;
 
   // only update items/offsets once or with each mutation
-
-  if (itemsLength !== links.length || getScrollHeight(scrollTarget) !== scrollHeight) {
+  if (links && (itemsLength !== links.length || scrollHEIGHT !== scrollHeight)) {
     let href;
     let targetItem;
     let rect;
 
     // reset arrays & update
-    // @ts-ignore
     self.items = [];
-    // @ts-ignore
     self.offsets = [];
-    // @ts-ignore
-    self.scrollHeight = getScrollHeight(scrollTarget);
-    // @ts-ignore
+    self.scrollHeight = scrollHEIGHT;
     self.maxScroll = self.scrollHeight - getOffsetHeight(self);
 
-    Array.from(links).forEach((link) => {
-      href = link.getAttribute('href');
-      targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#' && queryElement(href);
+    [...links].forEach((link) => {
+      href = getAttribute(link, 'href');
+      targetItem = href && href.charAt(0) === '#' && href.slice(-1) !== '#'
+        && querySelector(href, getDocument(element));
 
       if (targetItem) {
-        // @ts-ignore
         self.items.push(link);
         rect = targetItem.getBoundingClientRect();
         // @ts-ignore
-        self.offsets.push((isWindow ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
+        self.offsets.push((isWin ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
       }
     });
-    // @ts-ignore
     self.itemsLength = self.items.length;
   }
 }
 
 /**
  * Returns the `scrollHeight` property of the scrolling element.
- * @param {Element | Window} scrollTarget the `ScrollSpy` instance
+ * @param {HTMLElement | Element | Window | globalThis} scrollTarget the `ScrollSpy` instance
  * @return {number} `scrollTarget` height
  */
 function getScrollHeight(scrollTarget) {
-  // @ts-ignore
-  return scrollTarget.scrollHeight || Math.max(
-    document.body.scrollHeight,
-    document.documentElement.scrollHeight,
-  );
+  return scrollTarget instanceof HTMLElement
+    ? scrollTarget.scrollHeight // @ts-ignore
+    : getDocumentElement(scrollTarget).scrollHeight;
 }
 
 /**
  * Returns the height property of the scrolling element.
- * @param {{element: Element, isWindow: boolean}} params the `ScrollSpy` instance
+ * @param {ScrollSpy} params the `ScrollSpy` instance
+ * @returns {number}
  */
-function getOffsetHeight({ element, isWindow }) {
-  if (!isWindow) return element.getBoundingClientRect().height;
-  return window.innerHeight;
+function getOffsetHeight({ element, scrollTarget }) {
+  return (scrollTarget instanceof Window)
+    ? scrollTarget.innerHeight
+    : getBoundingClientRect(element).height;
 }
 
 /**
  * Clear all items of the target.
- * @param {Element} target a single item
+ * @param {HTMLElement | Element} target a single item
  */
 function clear(target) {
-  Array.from(target.getElementsByTagName('A')).forEach((item) => {
+  [...getElementsByTagName('A', target)].forEach((item) => {
     if (hasClass(item, activeClass)) removeClass(item, activeClass);
   });
 }
@@ -132,10 +137,9 @@ function clear(target) {
 /**
  * Activates a new item.
  * @param {ScrollSpy} self the `ScrollSpy` instance
- * @param {Element} item a single item
+ * @param {HTMLElement | Element} item a single item
  */
 function activate(self, item) {
-  // @ts-ignore
   const { target, element } = self;
   // @ts-ignore
   clear(target);
@@ -146,13 +150,14 @@ function activate(self, item) {
   // activate all parents
   const parents = [];
   let parentItem = item;
-  while (parentItem !== document.body) {
+  while (parentItem !== getDocumentBody(element)) {
     // @ts-ignore
-    parentItem = parentItem.parentNode;
+    parentItem = parentItem.parentElement;
     if (hasClass(parentItem, 'nav') || hasClass(parentItem, 'dropdown-menu')) parents.push(parentItem);
   }
 
   parents.forEach((menuItem) => {
+    /** @type {(HTMLElement | Element)?} */
     const parentLink = menuItem.previousElementSibling;
 
     if (parentLink && !hasClass(parentLink, activeClass)) {
@@ -161,7 +166,8 @@ function activate(self, item) {
   });
 
   // dispatch
-  element.dispatchEvent(activateScrollSpy);
+  activateScrollSpy.relatedTarget = item;
+  dispatchEvent(element, activateScrollSpy);
 }
 
 /**
@@ -170,9 +176,9 @@ function activate(self, item) {
  * @param {boolean=} add when `true`, listener is added
  */
 function toggleSpyHandlers(self, add) {
-  const action = add ? addEventListener : removeEventListener;
+  const action = add ? on : off;
   // @ts-ignore
-  self.scrollTarget[action]('scroll', self.refresh, passiveHandler);
+  action(self.scrollTarget, scrollEvent, self.refresh, passiveHandler);
 }
 
 // SCROLLSPY DEFINITION
@@ -180,7 +186,7 @@ function toggleSpyHandlers(self, add) {
 /** Returns a new `ScrollSpy` instance. */
 export default class ScrollSpy extends BaseComponent {
   /**
-   * @param {Element | string} target the target element
+   * @param {HTMLElement | Element | string} target the target element
    * @param {BSN.Options.ScrollSpy=} config the instance options
    */
   constructor(target, config) {
@@ -192,30 +198,30 @@ export default class ScrollSpy extends BaseComponent {
     const { element, options } = self;
 
     // additional properties
-    /** @private @type {Element?} */
-    self.target = queryElement(options.target);
+    /** @type {(HTMLElement | Element)?} */
+    self.target = querySelector(options.target, getDocument(element));
 
     // invalidate
     if (!self.target) return;
 
+    const win = getWindow(element);
+
     // set initial state
-    /** @private @type {Element | Window} */
-    self.scrollTarget = element.clientHeight < element.scrollHeight ? element : window;
-    /** @private @type {boolean} */
-    self.isWindow = self.scrollTarget === window;
-    /** @private @type {number} */
+    /** @type {HTMLElement | Element | Window | globalThis} */
+    self.scrollTarget = element.clientHeight < element.scrollHeight ? element : win;
+    /** @type {number} */
     self.scrollTop = 0;
-    /** @private @type {number} */
+    /** @type {number} */
     self.maxScroll = 0;
-    /** @private @type {number} */
+    /** @type {number} */
     self.scrollHeight = 0;
-    /** @private @type {Element?} */
+    /** @type {(HTMLElement | Element)?} */
     self.activeItem = null;
-    /** @private @type {Element[]} */
+    /** @type {(HTMLElement | Element)[]} */
     self.items = [];
-    /** @private @type {number} */
+    /** @type {number} */
     self.itemsLength = 0;
-    /** @private @type {number[]} */
+    /** @type {number[]} */
     self.offsets = [];
 
     // bind events
@@ -290,7 +296,7 @@ export default class ScrollSpy extends BaseComponent {
   }
 }
 
-Object.assign(ScrollSpy, {
+ObjectAssign(ScrollSpy, {
   selector: scrollspySelector,
   init: scrollspyInitCallback,
   getInstance: getScrollSpyInstance,

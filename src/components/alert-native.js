@@ -1,13 +1,16 @@
 /* Native JavaScript for Bootstrap 5 | Alert
 -------------------------------------------- */
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import closest from 'shorter-js/src/selectors/closest';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import addEventListener from 'shorter-js/src/strings/addEventListener';
-import removeEventListener from 'shorter-js/src/strings/removeEventListener';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import { getInstance } from 'shorter-js/src/misc/data';
-import isElement from 'shorter-js/src/misc/isElement';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -52,7 +55,7 @@ function alertTransitionEnd(self) {
   const { element } = self;
   toggleAlertHandler(self);
 
-  element.dispatchEvent(closedAlertEvent);
+  dispatchEvent(element, closedAlertEvent);
 
   self.dispose();
   element.remove();
@@ -66,16 +69,16 @@ function alertTransitionEnd(self) {
  * @param {boolean=} add when `true`, event listener is added
  */
 function toggleAlertHandler(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  if (isElement(self.dismiss)) self.dismiss[action]('click', self.close);
+  const action = add ? on : off;
+  const { dismiss } = self;
+  if (dismiss) action(dismiss, mouseclickEvent, self.close);
 }
 
 // ALERT DEFINITION
 // ================
 /** Creates a new Alert instance. */
 export default class Alert extends BaseComponent {
-  /** @param {Element | string} target element or selector */
+  /** @param {HTMLElement | Element | string} target element or selector */
   constructor(target) {
     super(target);
     // bind
@@ -85,11 +88,8 @@ export default class Alert extends BaseComponent {
     const { element } = self;
 
     // the dismiss button
-    /** @static @type {Element?} */
-    // @ts-ignore
-    self.dismiss = queryElement(alertDismissSelector, element);
-    /** @static @type {Element?} */
-    self.relatedTarget = null;
+    /** @static @type {(HTMLElement | Element)?} */
+    self.dismiss = querySelector(alertDismissSelector, element);
 
     // add event listener
     toggleAlertHandler(self, true);
@@ -110,16 +110,17 @@ export default class Alert extends BaseComponent {
    * disposes the instance once animation is complete, then
    * removes the element from the DOM.
    *
-   * @param {Event} e most likely the `click` event
+   * @param {Event=} e most likely the `click` event
+   * @this {Alert} the `Alert` instance or `EventTarget`
    */
   close(e) {
-    const target = e ? e.target : null;
     // @ts-ignore
-    const self = e ? getAlertInstance(target.closest(alertSelector)) : this;
+    const self = e ? getAlertInstance(closest(this, alertSelector)) : this;
+    if (!self) return;
     const { element } = self;
 
-    if (self && element && hasClass(element, showClass)) {
-      element.dispatchEvent(closeAlertEvent);
+    if (hasClass(element, showClass)) {
+      dispatchEvent(element, closeAlertEvent);
       if (closeAlertEvent.defaultPrevented) return;
 
       removeClass(element, showClass);
@@ -137,7 +138,7 @@ export default class Alert extends BaseComponent {
   }
 }
 
-Object.assign(Alert, {
+ObjectAssign(Alert, {
   selector: alertSelector,
   init: alertInitCallback,
   getInstance: getAlertInstance,

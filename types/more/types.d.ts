@@ -1,24 +1,25 @@
 // BSN Generic Types
 export type ComponentOptions = Record<string, any>;
 
-export interface BaseComponent {
-  element: Element,
+export interface BaseComponent extends Record<string, any> {
+  element: HTMLElement | Element,
   dispose: Function,
   // getters
   name: string,
   options?: ComponentOptions,
-  defaults?: Record<string, any>,
+  defaults?: ComponentOptions,
   version: string,
-  // other 
-  [x:string]: any
 }
 
-export type GetInstance<T> = (element: string | Element) => T;
-export type InitCallback<T> = (element: string | Element, config?: ComponentOptions) => T;
+export type GetInstance<T> = (element: string | HTMLElement | Element) => T | null;
+export type InitCallback<T> = (element: string | HTMLElement | Element, config?: ComponentOptions) => T;
+
+export interface OriginalEvent extends CustomEvent {
+  relatedTarget?: HTMLElement | Element | null;
+}
 
 
 // BSN.Event
-
 export namespace Event {
   enum AlertEvents {
     close = "close.bs.alert",
@@ -61,7 +62,6 @@ export namespace Event {
   }
   interface Dropdown {
     /** e.type */
-    // readonly type: DropdownEvents.show | DropdownEvents.shown | DropdownEvents.hide | DropdownEvents.hidden;
     readonly type: DropdownEvents;
   }
   enum ModalEvents {
@@ -148,7 +148,7 @@ export namespace Options {
   }
   interface Collapse {
     /** @default null */
-    parent?: Element
+    parent?: HTMLElement | Element
   }
   interface Dropdown extends ComponentOptions {
     /** @default 5 usually px */
@@ -194,13 +194,13 @@ export namespace Options {
     /** @default 200 */
     delay?: number,
     /** @default document.body */
-    container?: Element,
+    container?: HTMLElement | Element,
   }
   interface ScrollSpy extends ComponentOptions {
     /** @default 10 */
     offset?: number,
     /** @default null */
-    target?: Element,
+    target?: HTMLElement | Element,
   }
   interface Toast extends ComponentOptions {
     /** @default true */
@@ -232,17 +232,6 @@ export namespace Options {
     /** @default 200 */
     delay?: number,
     /** @default document.body */
-    container?: Element,
-  }
-}
-
-
-declare global {
-  interface Element {
-    addEventListener(
-      type: Event.Carousel,
-      listener: (this: Element, ev: Event.Carousel) => any,
-      options?: boolean | AddEventListenerOptions,
-    ): void;
+    container?: HTMLElement | Element,
   }
 }

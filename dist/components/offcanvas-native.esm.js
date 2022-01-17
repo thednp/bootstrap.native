@@ -1,48 +1,109 @@
 /*!
-  * Native JavaScript for Bootstrap Offcanvas v4.1.0 (https://thednp.github.io/bootstrap.native/)
-  * Copyright 2015-2021 © dnp_theme
+  * Native JavaScript for Bootstrap - Offcanvas v4.1.0alpha1 (https://thednp.github.io/bootstrap.native/)
+  * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 /**
- * Checks if an element is an `Element`.
- *
- * @param {any} element the target element
- * @returns {boolean} the query result
+ * Shortcut for `HTMLElement.setAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ * @param  {string} value attribute value
  */
-function isElement(element) {
-  return element instanceof Element;
+const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
+
+/**
+ * Shortcut for `HTMLElement.removeAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ */
+const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
+
+/**
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {Document}
+ */
+function getDocument(node) {
+  if (node instanceof HTMLElement) return node.ownerDocument;
+  if (node instanceof Window) return node.document;
+  return window.document;
 }
 
 /**
- * Utility to check if target is typeof Element
+ * A global array of possible `ParentNode`.
+ */
+const parentNodes = [Document, Node, Element, HTMLElement];
+
+/**
+ * A global array with `Element` | `HTMLElement`.
+ */
+const elementNodes = [Element, HTMLElement];
+
+/**
+ * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
  * or find one that matches a selector.
  *
- * @param {Element | string} selector the input selector or target element
- * @param {Element=} parent optional Element to look into
- * @return {Element?} the Element or `querySelector` result
+ * @param {HTMLElement | Element | string} selector the input selector or target element
+ * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+ * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
  */
-function queryElement(selector, parent) {
-  const lookUp = parent && isElement(parent) ? parent : document;
-  // @ts-ignore
-  return isElement(selector) ? selector : lookUp.querySelector(selector);
+function querySelector(selector, parent) {
+  const selectorIsString = typeof selector === 'string';
+  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+    ? parent : getDocument();
+
+  if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+    return selector;
+  }
+  // @ts-ignore -- `ShadowRoot` is also a node
+  return selectorIsString ? lookUp.querySelector(selector) : null;
 }
 
 /**
- * A global namespace for 'addEventListener' string.
- * @type {string}
- */
-const addEventListener = 'addEventListener';
-
-/**
- * A global namespace for 'removeEventListener' string.
- * @type {string}
- */
-const removeEventListener = 'removeEventListener';
-
-/**
- * Check class in Element.classList
+ * A shortcut for `(document|Element).querySelectorAll`.
  *
- * @param {Element} element target
+ * @param {string} selector the input selector
+ * @param {(HTMLElement | Element | Document | Node)=} parent optional node to look into
+ * @return {NodeListOf<HTMLElement | Element>} the query result
+ */
+function querySelectorAll(selector, parent) {
+  const lookUp = parent && parentNodes
+    .some((x) => parent instanceof x) ? parent : getDocument();
+  // @ts-ignore -- `ShadowRoot` is also a node
+  return lookUp.querySelectorAll(selector);
+}
+
+/**
+ * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function on(element, eventName, handler, options) {
+  const ops = options || false;
+  element.addEventListener(eventName, handler, ops);
+}
+
+/**
+ * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function off(element, eventName, handler, options) {
+  const ops = options || false;
+  element.removeEventListener(eventName, handler, ops);
+}
+
+/**
+ * Check class in `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
  * @param {string} classNAME to check
  * @return {boolean}
  */
@@ -51,9 +112,9 @@ function hasClass(element, classNAME) {
 }
 
 /**
- * Add class to Element.classList
+ * Add class to `HTMLElement.classList`.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @param {string} classNAME to add
  */
 function addClass(element, classNAME) {
@@ -61,9 +122,9 @@ function addClass(element, classNAME) {
 }
 
 /**
- * Remove class from Element.classList
+ * Remove class from `HTMLElement.classList`.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @param {string} classNAME to remove
  */
 function removeClass(element, classNAME) {
@@ -71,42 +132,66 @@ function removeClass(element, classNAME) {
 }
 
 /**
+ * Shortcut for the `Element.dispatchEvent(Event)` method.
+ *
+ * @param {HTMLElement | Element} element is the target
+ * @param {Event} event is the `Event` object
+ */
+const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+/**
  * A global namespace for 'transitionend' string.
  * @type {string}
  */
-const transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
-
-/**
- * A global namespace for CSS3 transition support.
- * @type {boolean}
- */
-const supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
+const transitionEndEvent = 'transitionend';
 
 /**
  * A global namespace for 'transitionDelay' string.
  * @type {string}
  */
-const transitionDelay = 'webkitTransition' in document.head.style ? 'webkitTransitionDelay' : 'transitionDelay';
+const transitionDelay = 'transitionDelay';
 
 /**
- * A global namespace for 'transitionProperty' string.
+ * A global namespace for:
+ * * `transitionProperty` string for Firefox,
+ * * `transition` property for all other browsers.
+ *
  * @type {string}
  */
-const transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
+const transitionProperty = 'transitionProperty';
 
 /**
- * Utility to get the computed transitionDelay
+ * Shortcut for `window.getComputedStyle(element).propertyName`
+ * static method.
+ *
+ * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
+ * throws a `ReferenceError`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} property the css property
+ * @return {string} the css property value
+ */
+function getElementStyle(element, property) {
+  const computedStyle = getComputedStyle(element);
+
+  // @ts-ignore -- must use camelcase strings,
+  // or non-camelcase strings with `getPropertyValue`
+  return property in computedStyle ? computedStyle[property] : '';
+}
+
+/**
+ * Utility to get the computed `transitionDelay`
  * from Element in miliseconds.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDelay(element) {
-  const computedStyle = getComputedStyle(element);
-  const propertyValue = computedStyle[transitionProperty];
-  const delayValue = computedStyle[transitionDelay];
+  const propertyValue = getElementStyle(element, transitionProperty);
+  const delayValue = getElementStyle(element, transitionDelay);
+
   const delayScale = delayValue.includes('ms') ? 1 : 1000;
-  const duration = supportTransition && propertyValue && propertyValue !== 'none'
+  const duration = propertyValue && propertyValue !== 'none'
     ? parseFloat(delayValue) * delayScale : 0;
 
   return !Number.isNaN(duration) ? duration : 0;
@@ -116,21 +201,20 @@ function getElementTransitionDelay(element) {
  * A global namespace for 'transitionDuration' string.
  * @type {string}
  */
-const transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+const transitionDuration = 'transitionDuration';
 
 /**
- * Utility to get the computed transitionDuration
+ * Utility to get the computed `transitionDuration`
  * from Element in miliseconds.
  *
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDuration(element) {
-  const computedStyle = getComputedStyle(element);
-  const propertyValue = computedStyle[transitionProperty];
-  const durationValue = computedStyle[transitionDuration];
+  const propertyValue = getElementStyle(element, transitionProperty);
+  const durationValue = getElementStyle(element, transitionDuration);
   const durationScale = durationValue.includes('ms') ? 1 : 1000;
-  const duration = supportTransition && propertyValue && propertyValue !== 'none'
+  const duration = propertyValue && propertyValue !== 'none'
     ? parseFloat(durationValue) * durationScale : 0;
 
   return !Number.isNaN(duration) ? duration : 0;
@@ -140,8 +224,8 @@ function getElementTransitionDuration(element) {
  * Utility to make sure callbacks are consistently
  * called when transition ends.
  *
- * @param {Element} element target
- * @param {function} handler `transitionend` callback
+ * @param {HTMLElement | Element} element target
+ * @param {EventListener} handler `transitionend` callback
  */
 function emulateTransitionEnd(element, handler) {
   let called = 0;
@@ -152,23 +236,42 @@ function emulateTransitionEnd(element, handler) {
   if (duration) {
     /**
      * Wrap the handler in on -> off callback
-     * @param {Event} e Event object
-     * @callback
+     * @param {TransitionEvent} e Event object
      */
     const transitionEndWrapper = (e) => {
       if (e.target === element) {
         handler.apply(element, [e]);
-        element.removeEventListener(transitionEndEvent, transitionEndWrapper);
+        off(element, transitionEndEvent, transitionEndWrapper);
         called = 1;
       }
     };
-    element.addEventListener(transitionEndEvent, transitionEndWrapper);
+    on(element, transitionEndEvent, transitionEndWrapper);
     setTimeout(() => {
       if (!called) element.dispatchEvent(endEvent);
     }, duration + delay + 17);
   } else {
     handler.apply(element, [endEvent]);
   }
+}
+
+/**
+ * Returns the `document.documentElement` or the `<html>` element.
+ *
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {HTMLElement | HTMLHtmlElement}
+ */
+function getDocumentElement(node) {
+  return getDocument(node).documentElement;
+}
+
+/**
+ * Returns the `document.body` or the `<body>` element.
+ *
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {HTMLElement | HTMLBodyElement}
+ */
+function getDocumentBody(node) {
+  return getDocument(node).body;
 }
 
 /**
@@ -184,11 +287,37 @@ const ariaHidden = 'aria-hidden';
 const ariaModal = 'aria-modal';
 
 /**
+ * A global namespace for `click` event.
+ * @type {string}
+ */
+const mouseclickEvent = 'click';
+
+/**
+ * A global namespace for `keydown` event.
+ * @type {string}
+ */
+const keydownEvent = 'keydown';
+
+/**
  * A global namespace for aria-expanded.
  * @type {string}
  */
 const ariaExpanded = 'aria-expanded';
 
+/**
+ * A global namespace for `Escape` key.
+ * @type {string} e.which = 27 equivalent
+ */
+const keyEscape = 'Escape';
+
+/**
+ * Shortcut for `Object.assign()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @param  {Record<string, any>} source a source object
+ */
+const ObjectAssign = (obj, source) => Object.assign(obj, source);
+
+/** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
 const componentData = new Map();
 /**
  * An interface for web components background data.
@@ -197,59 +326,58 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {Element | string} element target element
+   * @param {HTMLElement | Element | string} target target element
    * @param {string} component the component's name or a unique key
-   * @param {any} instance the component instance
+   * @param {Record<string, any>} instance the component instance
    */
-  set: (element, component, instance) => {
-    const ELEMENT = queryElement(element);
-    if (!isElement(ELEMENT)) return;
+  set: (target, component, instance) => {
+    const element = querySelector(target);
+    if (!element) return;
 
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    instanceMap.set(ELEMENT, instance);
+    // @ts-ignore - not undefined, but defined right above
+    instanceMap.set(element, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {any?} all the component instances
+   * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
    */
   getAllFor: (component) => {
-    if (componentData.has(component)) {
-      return componentData.get(component);
-    }
-    return null;
+    const instanceMap = componentData.get(component);
+
+    return instanceMap || null;
   },
 
   /**
    * Returns the instance associated with the target.
-   * @param {Element | string} element target element
+   * @param {HTMLElement | Element | string} target target element
    * @param {string} component the component's name or a unique key
-   * @returns {any?} the instance
+   * @returns {Record<string, any>?} the instance
    */
-  get: (element, component) => {
-    const ELEMENT = queryElement(element);
-
+  get: (target, component) => {
+    const element = querySelector(target);
     const allForC = Data.getAllFor(component);
-    if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
-      return allForC.get(ELEMENT);
-    }
-    return null;
+    const instance = element && allForC && allForC.get(element);
+
+    return instance || null;
   },
 
   /**
    * Removes web components data.
-   * @param {Element} element target element
+   * @param {HTMLElement | Element | string} target target element
    * @param {string} component the component's name or a unique key
    */
-  remove: (element, component) => {
-    if (!componentData.has(component)) return;
-
+  remove: (target, component) => {
+    const element = querySelector(target);
     const instanceMap = componentData.get(component);
+    if (!instanceMap || !element) return;
+
     instanceMap.delete(element);
 
     if (instanceMap.size === 0) {
@@ -260,39 +388,56 @@ const Data = {
 
 /**
  * An alias for `Data.get()`.
- * @param {Element | string} element target element
- * @param {string} component the component's name or a unique key
- * @returns {any} the request result
+ * @type {SHORTER.getInstance<any>}
  */
-const getInstance = (element, component) => Data.get(element, component);
+const getInstance = (target, component) => Data.get(target, component);
 
-/** Returns an original event for Bootstrap Native components. */
-class OriginalEvent extends CustomEvent {
-  /**
-   * @param {string} EventType event.type
-   * @param {Record<string, any>=} config Event.options | Event.properties
-   */
-  constructor(EventType, config) {
-    super(EventType, config);
-    /** @type {EventTarget?} */
-    this.relatedTarget = null;
-  }
+/**
+ * Utility to focus an `HTMLElement` target.
+ *
+ * @param {HTMLElement | Element} element is the target
+ */
+// @ts-ignore -- `Element`s resulted from querySelector can focus too
+const focus = (element) => element.focus();
+
+/**
+ * Shortcut for `HTMLElement.closest` method which also works
+ * with children of `ShadowRoot`. The order of the parameters
+ * is intentional since they're both required.
+ *
+ * @see https://stackoverflow.com/q/54520554/803358
+ *
+ * @param {HTMLElement | Element} element Element to look into
+ * @param {string} selector the selector name
+ * @return {(HTMLElement | Element)?} the query result
+ */
+function closest(element, selector) {
+  return element ? (element.closest(selector)
+    // @ts-ignore -- break out of `ShadowRoot`
+    || closest(element.getRootNode().host, selector)) : null;
 }
 
 /**
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {OriginalEvent} a new namespaced event
+ * @returns {BSN.OriginalEvent} a new namespaced event
  */
 function bootstrapCustomEvent(EventType, config) {
-  const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
+  const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
 
   if (config instanceof Object) {
-    Object.assign(OriginalCustomEvent, config);
+    ObjectAssign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
 }
+
+/**
+ * Shortcut for `HTMLElement.getAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ */
+const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
 /**
  * Global namespace for most components `target` option.
@@ -309,19 +454,141 @@ const dataBsParent = 'data-bs-parent';
  */
 const dataBsContainer = 'data-bs-container';
 
-// @ts-nocheck
-
 /**
  * Returns the `Element` that THIS one targets
  * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
  *
- * @param {Element} element the target element
- * @returns {Element?} the query result
+ * @param {HTMLElement | Element} element the target element
+ * @returns {(HTMLElement | Element)?} the query result
  */
 function getTargetElement(element) {
-  return queryElement(element.getAttribute(dataBsTarget) || element.getAttribute('href'))
-  || element.closest(element.getAttribute(dataBsParent))
-        || queryElement(element.getAttribute(dataBsContainer));
+  const targetAttr = [dataBsTarget, dataBsParent, dataBsContainer, 'href'];
+  const doc = getDocument(element);
+
+  return targetAttr.map((att) => {
+    const attValue = getAttribute(element, att);
+    if (attValue) {
+      return att === dataBsParent ? closest(element, attValue) : querySelector(attValue, doc);
+    }
+    return null;
+  }).filter((x) => x)[0];
+}
+
+/**
+ * Returns the `Window` object of a target node.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {(Node | HTMLElement | Element | Window)=} node target node
+ * @returns {globalThis}
+ */
+function getWindow(node) {
+  if (node == null) {
+    return window;
+  }
+
+  if (!(node instanceof Window)) {
+    const { ownerDocument } = node;
+    return ownerDocument ? ownerDocument.defaultView || window : window;
+  }
+
+  // @ts-ignore
+  return node;
+}
+
+/**
+ * Check if target is a `ShadowRoot`.
+ *
+ * @param {any} element target
+ * @returns {boolean} the query result
+ */
+const isShadowRoot = (element) => {
+  const OwnElement = getWindow(element).ShadowRoot;
+  return element instanceof OwnElement || element instanceof ShadowRoot;
+};
+
+/**
+ * Returns the `parentNode` also going through `ShadowRoot`.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {Node | HTMLElement | Element} node the target node
+ * @returns {Node | HTMLElement | Element} the apropriate parent node
+ */
+function getParentNode(node) {
+  if (node.nodeName === 'HTML') {
+    return node;
+  }
+
+  // this is a quicker (but less type safe) way to save quite some bytes from the bundle
+  return (
+    // @ts-ignore
+    node.assignedSlot // step into the shadow DOM of the parent of a slotted node
+    || node.parentNode // @ts-ignore DOM Element detected
+    || (isShadowRoot(node) ? node.host : null) // ShadowRoot detected
+    || getDocumentElement(node) // fallback
+  );
+}
+
+/**
+ * Check if a target element is a `<table>`, `<td>` or `<th>`.
+ * @param {any} element the target element
+ * @returns {boolean} the query result
+ */
+const isTableElement = (element) => ['TABLE', 'TD', 'TH'].includes(element.tagName);
+
+/**
+ * Returns an `HTMLElement` to be used as default value for *options.container*
+ * for `Tooltip` / `Popover` components.
+ *
+ * When `getOffset` is *true*, it returns the `offsetParent` for tooltip/popover
+ * offsets computation similar to **floating-ui**.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {HTMLElement | Element} element the target
+ * @param {boolean=} getOffset when *true* it will return an `offsetParent`
+ * @returns {HTMLElement | HTMLBodyElement | Window} the query result
+ */
+function getElementContainer(element, getOffset) {
+  const majorBlockTags = ['HTML', 'BODY'];
+
+  if (getOffset) {
+    /** @type {any} */
+    let { offsetParent } = element;
+
+    while (offsetParent && isTableElement(offsetParent)
+      && getElementStyle(offsetParent, 'position') === 'static'
+        && offsetParent instanceof HTMLElement
+          && getElementStyle(offsetParent, 'position') !== 'fixed') {
+      offsetParent = offsetParent.offsetParent;
+    }
+
+    if (!offsetParent || (offsetParent
+      && (majorBlockTags.includes(offsetParent.tagName)
+        && getElementStyle(offsetParent, 'position') === 'static'))) {
+      offsetParent = getWindow(element);
+    }
+    return offsetParent;
+  }
+
+  /** @type {(HTMLElement)[]} */
+  const containers = [];
+  /** @type {any} */
+  let { parentNode } = element;
+
+  while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
+    parentNode = getParentNode(parentNode);
+    if (!(isShadowRoot(parentNode) || !!parentNode.shadowRoot
+      || isTableElement(parentNode))) {
+      containers.push(parentNode);
+    }
+  }
+
+  return containers.find((c, i) => {
+    if (getElementStyle(c, 'position') !== 'relative'
+      && containers.slice(i + 1).every((r) => getElementStyle(r, 'position') === 'static')) {
+      return c;
+    }
+    return null;
+  }) || getDocumentBody(element);
 }
 
 /**
@@ -340,17 +607,36 @@ const dataBsToggle = 'data-bs-toggle';
 const showClass = 'show';
 
 /**
- * Points the focus to a specific element.
- * @param {Element} element target
+ * @param {HTMLElement | Element} element target
+ * @returns {boolean}
  */
-function setFocus(element) {
-  element.focus();
-}
-
 function isVisible(element) {
-  return getComputedStyle(element).visibility !== 'hidden'
+  return element && getElementStyle(element, 'visibility') !== 'hidden'
+    // @ts-ignore
     && element.offsetParent !== null;
 }
+
+/**
+ * Shortcut for `HTMLElement.getElementsByClassName` method. Some `Node` elements
+ * like `ShadowRoot` do not support `getElementsByClassName`.
+ *
+ * @param {string} selector the class name
+ * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
+ * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
+ */
+function getElementsByClassName(selector, parent) {
+  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+    ? parent : getDocument();
+  return lookUp.getElementsByClassName(selector);
+}
+
+/**
+ * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {Partial<CSSStyleDeclaration>} styles attribute value
+ */
+// @ts-ignore
+const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
 
 /**
  * Global namespace for components `fixed-top` class.
@@ -367,28 +653,40 @@ const fixedBottomClass = 'fixed-bottom';
  */
 const stickyTopClass = 'sticky-top';
 
-const fixedItems = [
-  ...document.getElementsByClassName(fixedTopClass),
-  ...document.getElementsByClassName(fixedBottomClass),
-  ...document.getElementsByClassName(stickyTopClass),
-  ...document.getElementsByClassName('is-fixed'),
+/**
+ * Global namespace for components `position-sticky` class.
+ */
+const positionStickyClass = 'position-sticky';
+
+/** @param {(HTMLElement | Element | Document)=} parent */
+const getFixedItems = (parent) => [
+  ...getElementsByClassName(fixedTopClass, parent),
+  ...getElementsByClassName(fixedBottomClass, parent),
+  ...getElementsByClassName(stickyTopClass, parent),
+  ...getElementsByClassName(positionStickyClass, parent),
+  ...getElementsByClassName('is-fixed', parent),
 ];
 
 /**
  * Removes *padding* and *overflow* from the `<body>`
  * and all spacing from fixed items.
+ * @param {(HTMLElement | Element)=} element the target modal/offcanvas
  */
-function resetScrollbar() {
-  const bd = document.body;
-  bd.style.paddingRight = '';
-  bd.style.overflow = '';
+function resetScrollbar(element) {
+  const bd = getDocumentBody(element);
+  setElementStyle(bd, {
+    paddingRight: '',
+    overflow: '',
+  });
+
+  const fixedItems = getFixedItems(bd);
 
   if (fixedItems.length) {
     fixedItems.forEach((fixed) => {
-      // @ts-ignore
-      fixed.style.paddingRight = '';
-      // @ts-ignore
-      fixed.style.marginRight = '';
+      setElementStyle(fixed, {
+        paddingRight: '',
+        marginRight: '',
+      });
     });
   }
 }
@@ -396,39 +694,42 @@ function resetScrollbar() {
 /**
  * Returns the scrollbar width if the body does overflow
  * the window.
+ * @param {(HTMLElement | Element)=} element
  * @returns {number} the value
  */
-function measureScrollbar() {
-  const { clientWidth } = document.documentElement;
-  return Math.abs(window.innerWidth - clientWidth);
+function measureScrollbar(element) {
+  const { clientWidth } = getDocumentElement(element);
+  const { innerWidth } = getWindow(element);
+  return Math.abs(innerWidth - clientWidth);
 }
 
 /**
  * Sets the `<body>` and fixed items style when modal / offcanvas
  * is shown to the user.
  *
- * @param {number} scrollbarWidth the previously measured scrollbar width
- * @param {boolean | number} overflow body does overflow or not
+ * @param {HTMLElement | Element} element the target modal/offcanvas
+ * @param {boolean=} overflow body does overflow or not
  */
-function setScrollbar(scrollbarWidth, overflow) {
-  const bd = document.body;
-  const bdStyle = getComputedStyle(bd);
-  const bodyPad = parseInt(bdStyle.paddingRight, 10);
-  const isOpen = bdStyle.overflow === 'hidden';
-  const sbWidth = isOpen && bodyPad ? 0 : scrollbarWidth;
+function setScrollbar(element, overflow) {
+  const bd = getDocumentBody(element);
+  const bodyPad = parseInt(getElementStyle(bd, 'paddingRight'), 10);
+  const isOpen = getElementStyle(bd, 'overflow') === 'hidden';
+  const sbWidth = isOpen && bodyPad ? 0 : measureScrollbar(element);
+  const fixedItems = getFixedItems(bd);
 
   if (overflow) {
-    bd.style.overflow = 'hidden';
-    bd.style.paddingRight = `${bodyPad + sbWidth}px`;
+    setElementStyle(bd, {
+      overflow: 'hidden',
+      paddingRight: `${bodyPad + sbWidth}px`,
+    });
 
     if (fixedItems.length) {
       fixedItems.forEach((fixed) => {
-        const isSticky = hasClass(fixed, stickyTopClass);
-        const itemPadValue = getComputedStyle(fixed).paddingRight;
+        const itemPadValue = getElementStyle(fixed, 'paddingRight');
         // @ts-ignore
         fixed.style.paddingRight = `${parseInt(itemPadValue, 10) + sbWidth}px`;
-        if (isSticky) {
-          const itemMValue = getComputedStyle(fixed).marginRight;
+        if ([stickyTopClass, positionStickyClass].some((c) => hasClass(fixed, c))) {
+          const itemMValue = getElementStyle(fixed, 'marginRight');
           // @ts-ignore
           fixed.style.marginRight = `${parseInt(itemMValue, 10) - sbWidth}px`;
         }
@@ -438,15 +739,13 @@ function setScrollbar(scrollbarWidth, overflow) {
 }
 
 /**
- * Utility to force re-paint of an Element
+ * Utility to force re-paint of an `HTMLElement` target.
  *
- * @param {Element | HTMLElement} element is the target
- * @return {number} the Element.offsetHeight value
+ * @param {HTMLElement | Element} element is the target
+ * @return {number} the `Element.offsetHeight` value
  */
-function reflow(element) {
-  // @ts-ignore
-  return element.offsetHeight;
-}
+// @ts-ignore
+const reflow = (element) => element.offsetHeight;
 
 /**
  * Global namespace for most components `fade` class.
@@ -457,14 +756,17 @@ const modalBackdropClass = 'modal-backdrop';
 const offcanvasBackdropClass = 'offcanvas-backdrop';
 const modalActiveSelector = `.modal.${showClass}`;
 const offcanvasActiveSelector = `.offcanvas.${showClass}`;
-const overlay = document.createElement('div');
+
+// any document would suffice
+const overlay = getDocument().createElement('div');
 
 /**
  * Returns the current active modal / offcancas element.
- * @returns {Element?} the requested element
+ * @param {(HTMLElement | Element)=} element the context element
+ * @returns {(HTMLElement | Element)?} the requested element
  */
-function getCurrentOpen() {
-  return queryElement(`${modalActiveSelector},${offcanvasActiveSelector}`);
+function getCurrentOpen(element) {
+  return querySelector(`${modalActiveSelector},${offcanvasActiveSelector}`, getDocument(element));
 }
 
 /**
@@ -481,12 +783,13 @@ function toggleOverlayType(isModal) {
 
 /**
  * Append the overlay to DOM.
+ * @param {HTMLElement | Element} container
  * @param {boolean} hasFade
  * @param {boolean=} isModal
  */
-function appendOverlay(hasFade, isModal) {
+function appendOverlay(container, hasFade, isModal) {
   toggleOverlayType(isModal);
-  document.body.append(overlay);
+  container.append(overlay);
   if (hasFade) addClass(overlay, fadeClass);
 }
 
@@ -507,19 +810,20 @@ function hideOverlay() {
 
 /**
  * Removes the overlay from DOM.
+ * @param {(HTMLElement | Element)=} element
  */
-function removeOverlay() {
-  if (!getCurrentOpen()) {
+function removeOverlay(element) {
+  if (!getCurrentOpen(element)) {
     removeClass(overlay, fadeClass);
     overlay.remove();
-    resetScrollbar();
+    resetScrollbar(element);
   }
 }
 
 /**
  * The raw value or a given component option.
  *
- * @typedef {string | Element | Function | number | boolean | null} niceValue
+ * @typedef {string | HTMLElement | Function | number | boolean | null} niceValue
  */
 
 /**
@@ -545,94 +849,93 @@ function normalizeValue(value) {
     return null;
   }
 
-  // string / function / Element / object
+  // string / function / HTMLElement / object
   return value;
 }
 
 /**
- * Utility to normalize component options
+ * Shortcut for `Object.keys()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @returns {string[]}
+ */
+const ObjectKeys = (obj) => Object.keys(obj);
+
+/**
+ * Utility to normalize component options.
  *
- * @param {Element} element target
- * @param {object} defaultOps component default options
- * @param {object} inputOps component instance options
- * @param {string} ns component namespace
- * @return {object} normalized component options object
+ * @param {HTMLElement | Element} element target
+ * @param {Record<string, any>} defaultOps component default options
+ * @param {Record<string, any>} inputOps component instance options
+ * @param {string=} ns component namespace
+ * @return {Record<string, any>} normalized component options object
  */
 function normalizeOptions(element, defaultOps, inputOps, ns) {
-  // @ts-ignore
+  // @ts-ignore -- our targets are always `HTMLElement`
   const data = { ...element.dataset };
+  /** @type {Record<string, any>} */
   const normalOps = {};
+  /** @type {Record<string, any>} */
   const dataOps = {};
 
-  Object.keys(data)
-    .forEach((k) => {
-      const key = k.includes(ns)
-        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
-        : k;
+  ObjectKeys(data).forEach((k) => {
+    const key = ns && k.includes(ns)
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      : k;
 
-      dataOps[key] = normalizeValue(data[k]);
-    });
+    dataOps[key] = normalizeValue(data[k]);
+  });
 
-  Object.keys(inputOps)
-    .forEach((k) => {
-      inputOps[k] = normalizeValue(inputOps[k]);
-    });
+  ObjectKeys(inputOps).forEach((k) => {
+    inputOps[k] = normalizeValue(inputOps[k]);
+  });
 
-  Object.keys(defaultOps)
-    .forEach((k) => {
-      if (k in inputOps) {
-        normalOps[k] = inputOps[k];
-      } else if (k in dataOps) {
-        normalOps[k] = dataOps[k];
-      } else {
-        normalOps[k] = defaultOps[k];
-      }
-    });
+  ObjectKeys(defaultOps).forEach((k) => {
+    if (k in inputOps) {
+      normalOps[k] = inputOps[k];
+    } else if (k in dataOps) {
+      normalOps[k] = dataOps[k];
+    } else {
+      normalOps[k] = defaultOps[k];
+    }
+  });
 
   return normalOps;
 }
 
-var version = "4.1.0";
+var version = "4.1.0alpha1";
 
 const Version = version;
 
 /* Native JavaScript for Bootstrap 5 | Base Component
 ----------------------------------------------------- */
 
-/**
- * Returns a new `BaseComponent` instance.
- */
+/** Returns a new `BaseComponent` instance. */
 class BaseComponent {
   /**
-   * @param {Element | string} target Element or selector string
+   * @param {HTMLElement | Element | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
     const self = this;
-    const element = queryElement(target);
+    const element = querySelector(target);
 
-    if (!isElement(element)) {
-      throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+    if (!element) {
+      throw Error(`${self.name} Error: "${target}" is not a valid selector.`);
     }
 
-    /** @type {BSN.ComponentOptions} */
+    /** @static @type {BSN.ComponentOptions} */
     self.options = {};
 
-    // @ts-ignore
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {Element} */
-    // @ts-ignore
+    /** @type {HTMLElement | Element} */
     self.element = element;
 
     if (self.defaults && Object.keys(self.defaults).length) {
-      /** @static @type {Record<string, any>} */
-      // @ts-ignore
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
-    // @ts-ignore
     Data.set(element, self.name, self);
   }
 
@@ -653,10 +956,9 @@ class BaseComponent {
    */
   dispose() {
     const self = this;
-    // @ts-ignore
     Data.remove(self.element, self.name);
     // @ts-ignore
-    Object.keys(self).forEach((prop) => { self[prop] = null; });
+    ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }
 
@@ -708,37 +1010,33 @@ const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`
  * @param {Offcanvas} self the `Offcanvas` instance
  */
 function setOffCanvasScrollbar(self) {
-  const bd = document.body;
-  const html = document.documentElement;
-  const bodyOverflow = html.clientHeight !== html.scrollHeight
-                    || bd.clientHeight !== bd.scrollHeight;
-  // @ts-ignore
-  setScrollbar(self.scrollbarWidth, bodyOverflow);
+  const { element } = self;
+  const { clientHeight, scrollHeight } = getDocumentElement(element);
+  setScrollbar(element, clientHeight !== scrollHeight);
 }
 
 /**
  * Toggles on/off the `click` event listeners.
  *
  * @param {Offcanvas} self the `Offcanvas` instance
- * @param {boolean=} add when `true`, listeners are added
+ * @param {boolean=} add when *true*, listeners are added
  */
 function toggleOffcanvasEvents(self, add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  self.triggers.forEach((btn) => btn[action]('click', offcanvasTriggerHandler));
+  const action = add ? on : off;
+  self.triggers.forEach((btn) => action(btn, mouseclickEvent, offcanvasTriggerHandler));
 }
 
 /**
  * Toggles on/off the listeners of the events that close the offcanvas.
  *
- * @param {boolean=} add the `Offcanvas` instance
+ * @param {Offcanvas} self the `Offcanvas` instance
+ * @param {boolean=} add when *true* listeners are added
  */
-function toggleOffCanvasDismiss(add) {
-  const action = add ? addEventListener : removeEventListener;
-  // @ts-ignore
-  document[action]('keydown', offcanvasKeyDismissHandler);
-  // @ts-ignore
-  document[action]('click', offcanvasDismissHandler);
+function toggleOffCanvasDismiss(self, add) {
+  const action = add ? on : off;
+  const doc = getDocument(self.element);
+  action(doc, keydownEvent, offcanvasKeyDismissHandler);
+  action(doc, mouseclickEvent, offcanvasDismissHandler);
 }
 
 /**
@@ -750,8 +1048,8 @@ function beforeOffcanvasShow(self) {
   const { element, options } = self;
 
   if (!options.scroll) {
-    document.body.style.overflow = 'hidden';
     setOffCanvasScrollbar(self);
+    getDocumentBody(element).style.overflow = 'hidden';
   }
 
   addClass(element, offcanvasTogglingClass);
@@ -769,7 +1067,7 @@ function beforeOffcanvasShow(self) {
  */
 function beforeOffcanvasHide(self) {
   const { element, options } = self;
-  const currentOpen = getCurrentOpen();
+  const currentOpen = getCurrentOpen(element);
 
   // @ts-ignore
   element.blur();
@@ -785,63 +1083,73 @@ function beforeOffcanvasHide(self) {
 /**
  * Handles the `click` event listeners.
  *
- * @this {Element}
- * @param {Event} e the `Event` object
+ * @this {HTMLElement | Element}
+ * @param {MouseEvent} e the `Event` object
  */
 function offcanvasTriggerHandler(e) {
-  const trigger = this.closest(offcanvasToggleSelector);
+  const trigger = closest(this, offcanvasToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getOffcanvasInstance(element);
 
-  if (trigger && trigger.tagName === 'A') e.preventDefault();
   if (self) {
+    self.relatedTarget = trigger;
     self.toggle();
+    if (trigger && trigger.tagName === 'A') {
+      e.preventDefault();
+    }
   }
 }
 
 /**
  * Handles the event listeners that close the offcanvas.
  *
- * @param {Event} e the `Event` object
+ * @this {Document}
+ * @param {MouseEvent} e the `Event` object
  */
 function offcanvasDismissHandler(e) {
-  const element = queryElement(offcanvasActiveSelector);
+  const element = querySelector(offcanvasActiveSelector, this);
   if (!element) return;
 
-  const offCanvasDismiss = queryElement(offcanvasDismissSelector, element);
+  const offCanvasDismiss = querySelector(offcanvasDismissSelector, element);
   const self = getOffcanvasInstance(element);
+
   if (!self) return;
 
-  // @ts-ignore
   const { options, triggers } = self;
   const { target } = e;
-  // @ts-ignore
-  const trigger = target.closest(offcanvasToggleSelector);
+  // @ts-ignore -- `EventTarget` is `HTMLElement`
+  const trigger = closest(target, offcanvasToggleSelector);
+  const selection = getDocument(element).getSelection();
 
-  if (trigger && trigger.tagName === 'A') e.preventDefault();
-
-  // @ts-ignore
-  if ((!element.contains(target) && options.backdrop
+  if (!(selection && selection.toString().length)
+    // @ts-ignore
+    && ((!element.contains(target) && options.backdrop
     && (!trigger || (trigger && !triggers.includes(trigger))))
     // @ts-ignore
-    || (offCanvasDismiss && offCanvasDismiss.contains(target))) {
+    || (offCanvasDismiss && offCanvasDismiss.contains(target)))) {
+    // @ts-ignore
+    self.relatedTarget = offCanvasDismiss && offCanvasDismiss.contains(target)
+      ? offCanvasDismiss : null;
     self.hide();
   }
+  if (trigger && trigger.tagName === 'A') e.preventDefault();
 }
 
 /**
  * Handles the `keydown` event listener for offcanvas
  * to hide it when user type the `ESC` key.
  *
- * @param {{which: number}} e the `Event` object
+ * @param {KeyboardEvent} e the `Event` object
+ * @this {Document}
  */
-function offcanvasKeyDismissHandler({ which }) {
-  const element = queryElement(offcanvasActiveSelector);
+function offcanvasKeyDismissHandler({ code }) {
+  const element = querySelector(offcanvasActiveSelector, this);
   if (!element) return;
 
   const self = getOffcanvasInstance(element);
 
-  if (self && self.options.keyboard && which === 27) {
+  if (self && self.options.keyboard && code === keyEscape) {
+    self.relatedTarget = null;
     self.hide();
   }
 }
@@ -852,24 +1160,21 @@ function offcanvasKeyDismissHandler({ which }) {
  * @param {Offcanvas} self the `Offcanvas` instance
  */
 function showOffcanvasComplete(self) {
-  // @ts-ignore
   const { element, triggers } = self;
   removeClass(element, offcanvasTogglingClass);
 
-  element.removeAttribute(ariaHidden);
-  element.setAttribute(ariaModal, 'true');
-  element.setAttribute('role', 'dialog');
-  // @ts-ignore
-  self.isAnimating = false;
+  removeAttribute(element, ariaHidden);
+  setAttribute(element, ariaModal, 'true');
+  setAttribute(element, 'role', 'dialog');
 
   if (triggers.length) {
-    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'true'));
+    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'true'));
   }
 
-  element.dispatchEvent(shownOffcanvasEvent);
+  dispatchEvent(element, shownOffcanvasEvent);
 
-  toggleOffCanvasDismiss(true);
-  setFocus(element);
+  toggleOffCanvasDismiss(self, true);
+  focus(element);
 }
 
 /**
@@ -878,31 +1183,29 @@ function showOffcanvasComplete(self) {
  * @param {Offcanvas} self the `Offcanvas` instance
  */
 function hideOffcanvasComplete(self) {
-  const {
-    // @ts-ignore
-    element, triggers,
-  } = self;
+  const { element, triggers } = self;
 
-  element.setAttribute(ariaHidden, 'true');
-  element.removeAttribute(ariaModal);
-  element.removeAttribute('role');
+  setAttribute(element, ariaHidden, 'true');
+  removeAttribute(element, ariaModal);
+  removeAttribute(element, 'role');
   // @ts-ignore
   element.style.visibility = '';
-  // @ts-ignore
-  self.isAnimating = false;
 
   if (triggers.length) {
-    triggers.forEach((btn) => btn.setAttribute(ariaExpanded, 'false'));
+    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'false'));
     const visibleTrigger = triggers.find((x) => isVisible(x));
-    if (visibleTrigger) setFocus(visibleTrigger);
+    if (visibleTrigger) focus(visibleTrigger);
   }
 
-  removeOverlay();
+  removeOverlay(element);
 
-  element.dispatchEvent(hiddenOffcanvasEvent);
+  dispatchEvent(element, hiddenOffcanvasEvent);
   removeClass(element, offcanvasTogglingClass);
 
-  toggleOffCanvasDismiss();
+  // must check for open instances
+  if (!getCurrentOpen(element)) {
+    toggleOffCanvasDismiss(self);
+  }
 }
 
 // OFFCANVAS DEFINITION
@@ -910,7 +1213,7 @@ function hideOffcanvasComplete(self) {
 /** Returns a new `Offcanvas` instance. */
 class Offcanvas extends BaseComponent {
   /**
-   * @param {Element | string} target usually an `.offcanvas` element
+   * @param {HTMLElement | Element | string} target usually an `.offcanvas` element
    * @param {BSN.Options.Offcanvas=} config instance options
    */
   constructor(target, config) {
@@ -921,15 +1224,16 @@ class Offcanvas extends BaseComponent {
     const { element } = self;
 
     // all the triggering buttons
-    /** @private @type {Element[]} */
-    self.triggers = Array.from(document.querySelectorAll(offcanvasToggleSelector))
+    /** @type {(HTMLElement | Element)[]} */
+    self.triggers = [...querySelectorAll(offcanvasToggleSelector)]
       .filter((btn) => getTargetElement(btn) === element);
 
     // additional instance property
-    /** @private @type {boolean} */
-    self.isAnimating = false;
-    /** @private @type {number} */
-    self.scrollbarWidth = measureScrollbar();
+    /** @type {HTMLBodyElement | HTMLElement | Element} */
+    // @ts-ignore
+    self.container = getElementContainer(element);
+    /** @type {(HTMLElement | Element)?} */
+    self.relatedTarget = null;
 
     // attach event listeners
     toggleOffcanvasEvents(self, true);
@@ -961,35 +1265,32 @@ class Offcanvas extends BaseComponent {
   show() {
     const self = this;
     const {
-      element, options, isAnimating,
+      element, options, container, relatedTarget,
     } = self;
     let overlayDelay = 0;
 
-    if (hasClass(element, showClass) || isAnimating) return;
+    if (hasClass(element, showClass)) return;
 
-    element.dispatchEvent(showOffcanvasEvent);
-
+    showOffcanvasEvent.relatedTarget = relatedTarget;
+    shownOffcanvasEvent.relatedTarget = relatedTarget;
+    dispatchEvent(element, showOffcanvasEvent);
     if (showOffcanvasEvent.defaultPrevented) return;
 
     // we elegantly hide any opened modal/offcanvas
-    const currentOpen = getCurrentOpen();
+    const currentOpen = getCurrentOpen(element);
     if (currentOpen && currentOpen !== element) {
       const this1 = getOffcanvasInstance(currentOpen);
       const that1 = this1 || getInstance(currentOpen, 'Modal');
       that1.hide();
     }
 
-    self.isAnimating = true;
-
     if (options.backdrop) {
       if (!currentOpen) {
-        appendOverlay(true);
+        appendOverlay(container, true);
       } else {
         toggleOverlayType();
       }
-
       overlayDelay = getElementTransitionDuration(overlay);
-
       if (!hasClass(overlay, showClass)) showOverlay();
 
       setTimeout(() => beforeOffcanvasShow(self), overlayDelay);
@@ -1007,14 +1308,15 @@ class Offcanvas extends BaseComponent {
    */
   hide(force) {
     const self = this;
-    const { element, isAnimating } = self;
+    const { element, relatedTarget } = self;
 
-    if (!hasClass(element, showClass) || isAnimating) return;
+    if (!hasClass(element, showClass)) return;
 
-    element.dispatchEvent(hideOffcanvasEvent);
+    hideOffcanvasEvent.relatedTarget = relatedTarget;
+    hiddenOffcanvasEvent.relatedTarget = relatedTarget;
+    dispatchEvent(element, hideOffcanvasEvent);
     if (hideOffcanvasEvent.defaultPrevented) return;
 
-    self.isAnimating = true;
     addClass(element, offcanvasTogglingClass);
     removeClass(element, showClass);
 
@@ -1032,7 +1334,7 @@ class Offcanvas extends BaseComponent {
   }
 }
 
-Object.assign(Offcanvas, {
+ObjectAssign(Offcanvas, {
   selector: offcanvasSelector,
   init: offcanvasInitCallback,
   getInstance: getOffcanvasInstance,

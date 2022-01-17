@@ -1,6 +1,6 @@
 /*!
-  * Native JavaScript for Bootstrap Toast v4.1.0 (https://thednp.github.io/bootstrap.native/)
-  * Copyright 2015-2021 © dnp_theme
+  * Native JavaScript for Bootstrap - Toast v4.1.0alpha1 (https://thednp.github.io/bootstrap.native/)
+  * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 (function (global, factory) {
@@ -10,42 +10,66 @@
 })(this, (function () { 'use strict';
 
   /**
+   * Shortcut for the `Element.dispatchEvent(Event)` method.
+   *
+   * @param {HTMLElement | Element} element is the target
+   * @param {Event} event is the `Event` object
+   */
+  const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+  /**
    * A global namespace for 'transitionend' string.
    * @type {string}
    */
-  const transitionEndEvent = 'webkitTransition' in document.head.style ? 'webkitTransitionEnd' : 'transitionend';
-
-  /**
-   * A global namespace for CSS3 transition support.
-   * @type {boolean}
-   */
-  const supportTransition = 'webkitTransition' in document.head.style || 'transition' in document.head.style;
+  const transitionEndEvent = 'transitionend';
 
   /**
    * A global namespace for 'transitionDelay' string.
    * @type {string}
    */
-  const transitionDelay = 'webkitTransition' in document.head.style ? 'webkitTransitionDelay' : 'transitionDelay';
+  const transitionDelay = 'transitionDelay';
 
   /**
-   * A global namespace for 'transitionProperty' string.
+   * A global namespace for:
+   * * `transitionProperty` string for Firefox,
+   * * `transition` property for all other browsers.
+   *
    * @type {string}
    */
-  const transitionProperty = 'webkitTransition' in document.head.style ? 'webkitTransitionProperty' : 'transitionProperty';
+  const transitionProperty = 'transitionProperty';
 
   /**
-   * Utility to get the computed transitionDelay
+   * Shortcut for `window.getComputedStyle(element).propertyName`
+   * static method.
+   *
+   * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
+   * throws a `ReferenceError`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} property the css property
+   * @return {string} the css property value
+   */
+  function getElementStyle(element, property) {
+    const computedStyle = getComputedStyle(element);
+
+    // @ts-ignore -- must use camelcase strings,
+    // or non-camelcase strings with `getPropertyValue`
+    return property in computedStyle ? computedStyle[property] : '';
+  }
+
+  /**
+   * Utility to get the computed `transitionDelay`
    * from Element in miliseconds.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @return {number} the value in miliseconds
    */
   function getElementTransitionDelay(element) {
-    const computedStyle = getComputedStyle(element);
-    const propertyValue = computedStyle[transitionProperty];
-    const delayValue = computedStyle[transitionDelay];
+    const propertyValue = getElementStyle(element, transitionProperty);
+    const delayValue = getElementStyle(element, transitionDelay);
+
     const delayScale = delayValue.includes('ms') ? 1 : 1000;
-    const duration = supportTransition && propertyValue && propertyValue !== 'none'
+    const duration = propertyValue && propertyValue !== 'none'
       ? parseFloat(delayValue) * delayScale : 0;
 
     return !Number.isNaN(duration) ? duration : 0;
@@ -55,32 +79,57 @@
    * A global namespace for 'transitionDuration' string.
    * @type {string}
    */
-  const transitionDuration = 'webkitTransition' in document.head.style ? 'webkitTransitionDuration' : 'transitionDuration';
+  const transitionDuration = 'transitionDuration';
 
   /**
-   * Utility to get the computed transitionDuration
+   * Utility to get the computed `transitionDuration`
    * from Element in miliseconds.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @return {number} the value in miliseconds
    */
   function getElementTransitionDuration(element) {
-    const computedStyle = getComputedStyle(element);
-    const propertyValue = computedStyle[transitionProperty];
-    const durationValue = computedStyle[transitionDuration];
+    const propertyValue = getElementStyle(element, transitionProperty);
+    const durationValue = getElementStyle(element, transitionDuration);
     const durationScale = durationValue.includes('ms') ? 1 : 1000;
-    const duration = supportTransition && propertyValue && propertyValue !== 'none'
+    const duration = propertyValue && propertyValue !== 'none'
       ? parseFloat(durationValue) * durationScale : 0;
 
     return !Number.isNaN(duration) ? duration : 0;
   }
 
   /**
+   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function on(element, eventName, handler, options) {
+    const ops = options || false;
+    element.addEventListener(eventName, handler, ops);
+  }
+
+  /**
+   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function off(element, eventName, handler, options) {
+    const ops = options || false;
+    element.removeEventListener(eventName, handler, ops);
+  }
+
+  /**
    * Utility to make sure callbacks are consistently
    * called when transition ends.
    *
-   * @param {Element} element target
-   * @param {function} handler `transitionend` callback
+   * @param {HTMLElement | Element} element target
+   * @param {EventListener} handler `transitionend` callback
    */
   function emulateTransitionEnd(element, handler) {
     let called = 0;
@@ -91,17 +140,16 @@
     if (duration) {
       /**
        * Wrap the handler in on -> off callback
-       * @param {Event} e Event object
-       * @callback
+       * @param {TransitionEvent} e Event object
        */
       const transitionEndWrapper = (e) => {
         if (e.target === element) {
           handler.apply(element, [e]);
-          element.removeEventListener(transitionEndEvent, transitionEndWrapper);
+          off(element, transitionEndEvent, transitionEndWrapper);
           called = 1;
         }
       };
-      element.addEventListener(transitionEndEvent, transitionEndWrapper);
+      on(element, transitionEndEvent, transitionEndWrapper);
       setTimeout(() => {
         if (!called) element.dispatchEvent(endEvent);
       }, duration + delay + 17);
@@ -111,9 +159,9 @@
   }
 
   /**
-   * Add class to Element.classList
+   * Add class to `HTMLElement.classList`.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to add
    */
   function addClass(element, classNAME) {
@@ -121,9 +169,9 @@
   }
 
   /**
-   * Check class in Element.classList
+   * Check class in `HTMLElement.classList`.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to check
    * @return {boolean}
    */
@@ -132,9 +180,9 @@
   }
 
   /**
-   * Remove class from Element.classList
+   * Remove class from `HTMLElement.classList`.
    *
-   * @param {Element} element target
+   * @param {HTMLElement | Element} element target
    * @param {string} classNAME to remove
    */
   function removeClass(element, classNAME) {
@@ -142,52 +190,94 @@
   }
 
   /**
-   * A global namespace for 'addEventListener' string.
+   * A global namespace for `click` event.
    * @type {string}
    */
-  const addEventListener = 'addEventListener';
+  const mouseclickEvent = 'click';
 
   /**
-   * A global namespace for 'removeEventListener' string.
+   * A global namespace for `mouseenter` event.
    * @type {string}
    */
-  const removeEventListener = 'removeEventListener';
+  const mouseenterEvent = 'mouseenter';
 
   /**
-   * Checks if an element is an `Element`.
-   *
-   * @param {any} element the target element
-   * @returns {boolean} the query result
+   * A global namespace for `mouseleave` event.
+   * @type {string}
    */
-  function isElement(element) {
-    return element instanceof Element;
+  const mouseleaveEvent = 'mouseleave';
+
+  /**
+   * A global namespace for `focusin` event.
+   * @type {string}
+   */
+  const focusinEvent = 'focusin';
+
+  /**
+   * A global namespace for `focusout` event.
+   * @type {string}
+   */
+  const focusoutEvent = 'focusout';
+
+  /**
+   * Returns the `document` or the `#document` element.
+   * @see https://github.com/floating-ui/floating-ui
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {Document}
+   */
+  function getDocument(node) {
+    if (node instanceof HTMLElement) return node.ownerDocument;
+    if (node instanceof Window) return node.document;
+    return window.document;
   }
 
   /**
-   * Utility to check if target is typeof Element
+   * A global array of possible `ParentNode`.
+   */
+  const parentNodes = [Document, Node, Element, HTMLElement];
+
+  /**
+   * A global array with `Element` | `HTMLElement`.
+   */
+  const elementNodes = [Element, HTMLElement];
+
+  /**
+   * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
    * or find one that matches a selector.
    *
-   * @param {Element | string} selector the input selector or target element
-   * @param {Element=} parent optional Element to look into
-   * @return {Element?} the Element or `querySelector` result
+   * @param {HTMLElement | Element | string} selector the input selector or target element
+   * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+   * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
    */
-  function queryElement(selector, parent) {
-    const lookUp = parent && isElement(parent) ? parent : document;
-    // @ts-ignore
-    return isElement(selector) ? selector : lookUp.querySelector(selector);
+  function querySelector(selector, parent) {
+    const selectorIsString = typeof selector === 'string';
+    const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+      ? parent : getDocument();
+
+    if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+      return selector;
+    }
+    // @ts-ignore -- `ShadowRoot` is also a node
+    return selectorIsString ? lookUp.querySelector(selector) : null;
   }
 
   /**
-   * Utility to force re-paint of an Element
-   *
-   * @param {Element | HTMLElement} element is the target
-   * @return {number} the Element.offsetHeight value
+   * Shortcut for `Object.assign()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @param  {Record<string, any>} source a source object
    */
-  function reflow(element) {
-    // @ts-ignore
-    return element.offsetHeight;
-  }
+  const ObjectAssign = (obj, source) => Object.assign(obj, source);
 
+  /**
+   * Utility to force re-paint of an `HTMLElement` target.
+   *
+   * @param {HTMLElement | Element} element is the target
+   * @return {number} the `Element.offsetHeight` value
+   */
+  // @ts-ignore
+  const reflow = (element) => element.offsetHeight;
+
+  /** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
   const componentData = new Map();
   /**
    * An interface for web components background data.
@@ -196,59 +286,58 @@
   const Data = {
     /**
      * Sets web components data.
-     * @param {Element | string} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
-     * @param {any} instance the component instance
+     * @param {Record<string, any>} instance the component instance
      */
-    set: (element, component, instance) => {
-      const ELEMENT = queryElement(element);
-      if (!isElement(ELEMENT)) return;
+    set: (target, component, instance) => {
+      const element = querySelector(target);
+      if (!element) return;
 
       if (!componentData.has(component)) {
         componentData.set(component, new Map());
       }
 
       const instanceMap = componentData.get(component);
-      instanceMap.set(ELEMENT, instance);
+      // @ts-ignore - not undefined, but defined right above
+      instanceMap.set(element, instance);
     },
 
     /**
      * Returns all instances for specified component.
      * @param {string} component the component's name or a unique key
-     * @returns {any?} all the component instances
+     * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
      */
     getAllFor: (component) => {
-      if (componentData.has(component)) {
-        return componentData.get(component);
-      }
-      return null;
+      const instanceMap = componentData.get(component);
+
+      return instanceMap || null;
     },
 
     /**
      * Returns the instance associated with the target.
-     * @param {Element | string} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
-     * @returns {any?} the instance
+     * @returns {Record<string, any>?} the instance
      */
-    get: (element, component) => {
-      const ELEMENT = queryElement(element);
-
+    get: (target, component) => {
+      const element = querySelector(target);
       const allForC = Data.getAllFor(component);
-      if (allForC && isElement(ELEMENT) && allForC.has(ELEMENT)) {
-        return allForC.get(ELEMENT);
-      }
-      return null;
+      const instance = element && allForC && allForC.get(element);
+
+      return instance || null;
     },
 
     /**
      * Removes web components data.
-     * @param {Element} element target element
+     * @param {HTMLElement | Element | string} target target element
      * @param {string} component the component's name or a unique key
      */
-    remove: (element, component) => {
-      if (!componentData.has(component)) return;
-
+    remove: (target, component) => {
+      const element = querySelector(target);
       const instanceMap = componentData.get(component);
+      if (!instanceMap || !element) return;
+
       instanceMap.delete(element);
 
       if (instanceMap.size === 0) {
@@ -259,11 +348,84 @@
 
   /**
    * An alias for `Data.get()`.
-   * @param {Element | string} element target element
-   * @param {string} component the component's name or a unique key
-   * @returns {any} the request result
+   * @type {SHORTER.getInstance<any>}
    */
-  const getInstance = (element, component) => Data.get(element, component);
+  const getInstance = (target, component) => Data.get(target, component);
+
+  /** @type {Map<HTMLElement | Element, any>} */
+  const TimeCache = new Map();
+  /**
+   * An interface for one or more `TimerHandler`s per `Element`.
+   * @see https://github.com/thednp/navbar.js/
+   */
+  const Timer = {
+    /**
+     * Sets a new timeout timer for an element, or element -> key association.
+     * @param {HTMLElement | Element | string} target target element
+     * @param {ReturnType<TimerHandler>} callback the callback
+     * @param {number} delay the execution delay
+     * @param {string=} key a unique
+     */
+    set: (target, callback, delay, key) => {
+      const element = querySelector(target);
+
+      if (!element) return;
+
+      if (key && key.length) {
+        if (!TimeCache.has(element)) {
+          TimeCache.set(element, new Map());
+        }
+        const keyTimers = TimeCache.get(element);
+        keyTimers.set(key, setTimeout(callback, delay));
+      } else {
+        TimeCache.set(element, setTimeout(callback, delay));
+      }
+    },
+
+    /**
+     * Returns the timer associated with the target.
+     * @param {HTMLElement | Element | string} target target element
+     * @param {string=} key a unique
+     * @returns {number?} the timer
+     */
+    get: (target, key) => {
+      const element = querySelector(target);
+
+      if (!element) return null;
+      const keyTimers = TimeCache.get(element);
+
+      if (key && key.length && keyTimers && keyTimers.get) {
+        return keyTimers.get(key) || null;
+      }
+      return keyTimers || null;
+    },
+
+    /**
+     * Clears the element's timer.
+     * @param {HTMLElement | Element | string} target target element
+     * @param {string=} key a unique key
+     */
+    clear: (target, key) => {
+      const element = querySelector(target);
+
+      if (!element) return;
+
+      if (key && key.length) {
+        const keyTimers = TimeCache.get(element);
+
+        if (keyTimers && keyTimers.get) {
+          clearTimeout(keyTimers.get(key));
+          keyTimers.delete(key);
+          if (keyTimers.size === 0) {
+            TimeCache.delete(element);
+          }
+        }
+      } else {
+        clearTimeout(TimeCache.get(element));
+        TimeCache.delete(element);
+      }
+    },
+  };
 
   /**
    * Global namespace for most components `fade` class.
@@ -280,30 +442,17 @@
    */
   const dataBsDismiss = 'data-bs-dismiss';
 
-  /** Returns an original event for Bootstrap Native components. */
-  class OriginalEvent extends CustomEvent {
-    /**
-     * @param {string} EventType event.type
-     * @param {Record<string, any>=} config Event.options | Event.properties
-     */
-    constructor(EventType, config) {
-      super(EventType, config);
-      /** @type {EventTarget?} */
-      this.relatedTarget = null;
-    }
-  }
-
   /**
    * Returns a namespaced `CustomEvent` specific to each component.
    * @param {string} EventType Event.type
    * @param {Record<string, any>=} config Event.options | Event.properties
-   * @returns {OriginalEvent} a new namespaced event
+   * @returns {BSN.OriginalEvent} a new namespaced event
    */
   function bootstrapCustomEvent(EventType, config) {
-    const OriginalCustomEvent = new OriginalEvent(EventType, { cancelable: true, bubbles: true });
+    const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
 
     if (config instanceof Object) {
-      Object.assign(OriginalCustomEvent, config);
+      ObjectAssign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
   }
@@ -311,7 +460,7 @@
   /**
    * The raw value or a given component option.
    *
-   * @typedef {string | Element | Function | number | boolean | null} niceValue
+   * @typedef {string | HTMLElement | Function | number | boolean | null} niceValue
    */
 
   /**
@@ -337,94 +486,93 @@
       return null;
     }
 
-    // string / function / Element / object
+    // string / function / HTMLElement / object
     return value;
   }
 
   /**
-   * Utility to normalize component options
+   * Shortcut for `Object.keys()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @returns {string[]}
+   */
+  const ObjectKeys = (obj) => Object.keys(obj);
+
+  /**
+   * Utility to normalize component options.
    *
-   * @param {Element} element target
-   * @param {object} defaultOps component default options
-   * @param {object} inputOps component instance options
-   * @param {string} ns component namespace
-   * @return {object} normalized component options object
+   * @param {HTMLElement | Element} element target
+   * @param {Record<string, any>} defaultOps component default options
+   * @param {Record<string, any>} inputOps component instance options
+   * @param {string=} ns component namespace
+   * @return {Record<string, any>} normalized component options object
    */
   function normalizeOptions(element, defaultOps, inputOps, ns) {
-    // @ts-ignore
+    // @ts-ignore -- our targets are always `HTMLElement`
     const data = { ...element.dataset };
+    /** @type {Record<string, any>} */
     const normalOps = {};
+    /** @type {Record<string, any>} */
     const dataOps = {};
 
-    Object.keys(data)
-      .forEach((k) => {
-        const key = k.includes(ns)
-          ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
-          : k;
+    ObjectKeys(data).forEach((k) => {
+      const key = ns && k.includes(ns)
+        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+        : k;
 
-        dataOps[key] = normalizeValue(data[k]);
-      });
+      dataOps[key] = normalizeValue(data[k]);
+    });
 
-    Object.keys(inputOps)
-      .forEach((k) => {
-        inputOps[k] = normalizeValue(inputOps[k]);
-      });
+    ObjectKeys(inputOps).forEach((k) => {
+      inputOps[k] = normalizeValue(inputOps[k]);
+    });
 
-    Object.keys(defaultOps)
-      .forEach((k) => {
-        if (k in inputOps) {
-          normalOps[k] = inputOps[k];
-        } else if (k in dataOps) {
-          normalOps[k] = dataOps[k];
-        } else {
-          normalOps[k] = defaultOps[k];
-        }
-      });
+    ObjectKeys(defaultOps).forEach((k) => {
+      if (k in inputOps) {
+        normalOps[k] = inputOps[k];
+      } else if (k in dataOps) {
+        normalOps[k] = dataOps[k];
+      } else {
+        normalOps[k] = defaultOps[k];
+      }
+    });
 
     return normalOps;
   }
 
-  var version = "4.1.0";
+  var version = "4.1.0alpha1";
 
   const Version = version;
 
   /* Native JavaScript for Bootstrap 5 | Base Component
   ----------------------------------------------------- */
 
-  /**
-   * Returns a new `BaseComponent` instance.
-   */
+  /** Returns a new `BaseComponent` instance. */
   class BaseComponent {
     /**
-     * @param {Element | string} target Element or selector string
+     * @param {HTMLElement | Element | string} target `Element` or selector string
      * @param {BSN.ComponentOptions=} config component instance options
      */
     constructor(target, config) {
       const self = this;
-      const element = queryElement(target);
+      const element = querySelector(target);
 
-      if (!isElement(element)) {
-        throw TypeError(`${self.name} Error: "${target}" not a valid selector.`);
+      if (!element) {
+        throw Error(`${self.name} Error: "${target}" is not a valid selector.`);
       }
 
-      /** @type {BSN.ComponentOptions} */
+      /** @static @type {BSN.ComponentOptions} */
       self.options = {};
 
-      // @ts-ignore
       const prevInstance = Data.get(element, self.name);
       if (prevInstance) prevInstance.dispose();
 
-      /** @type {Element} */
-      // @ts-ignore
+      /** @type {HTMLElement | Element} */
       self.element = element;
 
       if (self.defaults && Object.keys(self.defaults).length) {
-        /** @static @type {Record<string, any>} */
-        // @ts-ignore
         self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
 
-      // @ts-ignore
       Data.set(element, self.name, self);
     }
 
@@ -445,10 +593,9 @@
      */
     dispose() {
       const self = this;
-      // @ts-ignore
       Data.remove(self.element, self.name);
       // @ts-ignore
-      Object.keys(self).forEach((prop) => { self[prop] = null; });
+      ObjectKeys(self).forEach((prop) => { self[prop] = null; });
     }
   }
 
@@ -468,7 +615,7 @@
   const toastDefaults = {
     animation: true,
     autohide: true,
-    delay: 500,
+    delay: 5000,
   };
 
   /**
@@ -488,8 +635,8 @@
   // TOAST CUSTOM EVENTS
   // ===================
   const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
-  const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
   const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
+  const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
   const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
 
   // TOAST PRIVATE METHODS
@@ -501,9 +648,12 @@
   function showToastComplete(self) {
     const { element, options } = self;
     removeClass(element, showingClass);
+    Timer.clear(element, showingClass);
 
-    element.dispatchEvent(shownToastEvent);
-    if (options.autohide) self.hide();
+    dispatchEvent(element, shownToastEvent);
+    if (options.autohide) {
+      Timer.set(element, () => self.hide(), options.delay, toastString);
+    }
   }
 
   /**
@@ -515,7 +665,8 @@
     removeClass(element, showingClass);
     removeClass(element, showClass);
     addClass(element, hideClass); // B/C
-    element.dispatchEvent(hiddenToastEvent);
+    Timer.clear(element, toastString);
+    dispatchEvent(element, hiddenToastEvent);
   }
 
   /**
@@ -540,16 +691,18 @@
    */
   function showToast(self) {
     const { element, options } = self;
-    removeClass(element, hideClass); // B/C
-    reflow(element);
-    addClass(element, showClass);
-    addClass(element, showingClass);
+    Timer.set(element, () => {
+      removeClass(element, hideClass); // B/C
+      reflow(element);
+      addClass(element, showClass);
+      addClass(element, showingClass);
 
-    if (options.animation) {
-      emulateTransitionEnd(element, () => showToastComplete(self));
-    } else {
-      showToastComplete(self);
-    }
+      if (options.animation) {
+        emulateTransitionEnd(element, () => showToastComplete(self));
+      } else {
+        showToastComplete(self);
+      }
+    }, 17, showingClass);
   }
 
   /**
@@ -557,12 +710,15 @@
    * @param {Toast} self the `Toast` instance
    * @param {boolean=} add when `true`, it will add the listener
    */
-  function toggleToastHandler(self, add) {
-    const action = add ? addEventListener : removeEventListener;
-    // @ts-ignore
-    if (self.dismiss) {
-      // @ts-ignore
-      self.dismiss[action]('click', self.hide);
+  function toggleToastHandlers(self, add) {
+    const action = add ? on : off;
+    const { element, dismiss, options } = self;
+    if (dismiss) {
+      action(dismiss, mouseclickEvent, self.hide);
+    }
+    if (options.autohide) {
+      [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent]
+        .forEach((e) => action(element, e, interactiveToastHandler));
     }
   }
 
@@ -573,9 +729,29 @@
    * @param {Toast} self the `Toast` instance
    */
   function completeDisposeToast(self) {
+    Timer.clear(self.element, toastString);
+    toggleToastHandlers(self);
+  }
+
+  /**
+   * Executes when user interacts with the toast without closing it,
+   * usually by hovering or focusing it.
+   *
+   * @this {HTMLElement | Element}
+   * @param {MouseEvent} e the `Toast` instance
+   */
+  function interactiveToastHandler(e) {
+    const element = this;
+    const self = getToastInstance(element);
+    const { type, relatedTarget } = e;
     // @ts-ignore
-    clearTimeout(self.timer);
-    toggleToastHandler(self);
+    if (!self || (element === relatedTarget || element.contains(relatedTarget))) return;
+
+    if ([mouseenterEvent, focusinEvent].includes(type)) {
+      Timer.clear(element, toastString);
+    } else {
+      Timer.set(element, () => self.hide(), self.options.delay, toastString);
+    }
   }
 
   // TOAST DEFINITION
@@ -583,7 +759,7 @@
   /** Creates a new `Toast` instance. */
   class Toast extends BaseComponent {
     /**
-     * @param {Element | string} target the target `.toast` element
+     * @param {HTMLElement | Element | string} target the target `.toast` element
      * @param {BSN.Options.Toast=} config the instance options
      */
     constructor(target, config) {
@@ -596,17 +772,15 @@
       if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
       else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
       // dismiss button
-      /** @private @type {any} */
-      self.timer = null;
-      /** @private @type {Element?} */
-      self.dismiss = queryElement(toastDismissSelector, element);
+      /** @type {(HTMLElement | Element)?} */
+      self.dismiss = querySelector(toastDismissSelector, element);
 
       // bind
       self.show = self.show.bind(self);
       self.hide = self.hide.bind(self);
 
       // add event listener
-      toggleToastHandler(self, true);
+      toggleToastHandlers(self, true);
     }
 
     /* eslint-disable */
@@ -629,25 +803,22 @@
       const self = this;
       const { element } = self;
       if (element && !hasClass(element, showClass)) {
-        element.dispatchEvent(showToastEvent);
+        dispatchEvent(element, showToastEvent);
         if (showToastEvent.defaultPrevented) return;
 
-        clearTimeout(self.timer);
-        self.timer = setTimeout(() => showToast(self), 10);
+        showToast(self);
       }
     }
 
     /** Hides the toast. */
     hide() {
       const self = this;
-      const { element, options } = self;
+      const { element } = self;
 
       if (element && hasClass(element, showClass)) {
-        element.dispatchEvent(hideToastEvent);
+        dispatchEvent(element, hideToastEvent);
         if (hideToastEvent.defaultPrevented) return;
-
-        clearTimeout(self.timer);
-        self.timer = setTimeout(() => hideToast(self), options.delay);
+        hideToast(self);
       }
     }
 
@@ -666,7 +837,7 @@
     }
   }
 
-  Object.assign(Toast, {
+  ObjectAssign(Toast, {
     selector: toastSelector,
     init: toastInitCallback,
     getInstance: getToastInstance,

@@ -2,5 +2,5 @@ package-lock.json
 .npmignore
 .vscode/
 node_modules/
-local/
+experiments/
 demo.html

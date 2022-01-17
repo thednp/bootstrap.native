@@ -1,9 +1,9 @@
 /* Native JavaScript for Bootstrap 4 | Modal
 -------------------------------------------- */
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import getElementTransitionDuration from 'shorter-js/src/misc/getElementTransitionDuration';
-import queryElement from 'shorter-js/src/misc/queryElement';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEndLegacy';
+import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDurationLegacy';
+import querySelector from 'shorter-js/src/selectors/querySelector';
 import reflow from 'shorter-js/src/misc/reflow';
 
 import bootstrapCustomEvent from '../util/bootstrapCustomEvent-v4';
@@ -85,7 +85,7 @@ export default function Modal(elem, opsInput) { // element can be the modal/trig
   }
   function createOverlay() {
     const newOverlay = document.createElement('div');
-    overlay = queryElement('.modal-backdrop');
+    overlay = querySelector('.modal-backdrop');
 
     if (overlay === null) {
       newOverlay.setAttribute('class', `modal-backdrop${ops.animation ? ' fade' : ''}`);
@@ -95,7 +95,7 @@ export default function Modal(elem, opsInput) { // element can be the modal/trig
     return overlay;
   }
   function removeOverlay() {
-    overlay = queryElement('.modal-backdrop');
+    overlay = querySelector('.modal-backdrop');
     if (overlay && !document.getElementsByClassName('modal show')[0]) {
       document.body.removeChild(overlay); overlay = null;
     }
@@ -136,7 +136,7 @@ export default function Modal(elem, opsInput) { // element can be the modal/trig
     modal.style.display = '';
     if (element) setFocus(element);
 
-    overlay = queryElement('.modal-backdrop');
+    overlay = querySelector('.modal-backdrop');
 
     // force can also be the transitionEvent object, we wanna make sure it's not
     if (force !== 1 && overlay && overlay.classList.contains('show') && !document.getElementsByClassName('modal show')[0]) {
@@ -236,7 +236,7 @@ export default function Modal(elem, opsInput) { // element can be the modal/trig
     else triggerHide();
   };
   self.setContent = (content) => {
-    queryElement('.modal-content', modal).innerHTML = content;
+    querySelector('.modal-content', modal).innerHTML = content;
   };
   self.update = () => {
     if (modal.classList.contains('show')) {
@@ -251,10 +251,10 @@ export default function Modal(elem, opsInput) { // element can be the modal/trig
   // init
 
   // the modal (both JavaScript / DATA API init) / triggering button element (DATA API)
-  element = queryElement(elem);
+  element = querySelector(elem);
 
   // determine modal, triggering element
-  const checkModal = queryElement(element.getAttribute('data-target') || element.getAttribute('href'));
+  const checkModal = querySelector(element.getAttribute('data-target') || element.getAttribute('href'));
   modal = element.classList.contains('modal') ? element : checkModal;
 
   // set fixed items

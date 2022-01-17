@@ -118,7 +118,12 @@ var tooltipTemplateExample = new BSN.Tooltip('#tooltipTemplateExample', {
 	sanitizeFn: function(dirty){
 		return DOMPurify.sanitize( dirty );
 	}	
-})
+});
+
+// Tooltip HTMLElement as title option
+var tooltipElementContent = document.getElementById('tooltipElementContent');
+var tooltipTitle = document.createElement('span'); tooltipTitle.innerHTML = '<b>Tooltip on LEFT</b> <span class="badge bg-danger">HOT</span><br>This tooltip uses a title set via JavaScript as <code>HTMLElement</code> elements.<br>This feature is JavaScript only.';
+new BSN.Tooltip(tooltipElementContent, { title: tooltipTitle });
 
 // Popover 
 var popover1 = new BSN.Popover('#popover-via-click', { container: '#popoverExamples',	trigger: 'click' } );
@@ -146,23 +151,32 @@ popoverEvents.addEventListener('shown.bs.popover', function(){ console.log('The 
 popoverEvents.addEventListener('hide.bs.popover', function(){ console.log('The hide.bs.popover event fired for #' + popoverEvents.id); }, false);
 popoverEvents.addEventListener('hidden.bs.popover', function(){ console.log('The hidden.bs.popover event fired for #' + popoverEvents.id); }, false);
 
+var popoverElementContents = document.getElementById('popoverElementContents');
+var popoverTitle = document.createElement('span'); popoverTitle.innerHTML = 'Popover on RIGHT <span class="badge bg-danger">HOT</span>';
+var popoverContent = document.createElement('span'); popoverContent.innerHTML = 'This popover uses a custom <code>class</code> set via <code>data-bs-custom-class</code> attribute, but the title and content are set via JavaScript as <code>HTMLElement</code> elements. This feature is JavaScript only.';
+new BSN.Popover(popoverElementContents, {
+	title: popoverTitle,
+	content: popoverContent
+});
+
 // TOAST
 var toastBTN = document.getElementById('myTastyToastBTN');
 var toastElement = toastBTN.closest('.toast');
 var showToastBTN = document.getElementById('showToastBTN');
+
 toastElement.addEventListener('show.bs.toast',function(e){
-	console.log( 'The "show.bs.toast" event fired for #' + toastBTN.id );
+	console.log( 'The "show.bs.toast" event fired for #' + toastElement.id );
 },false)
 toastElement.addEventListener('shown.bs.toast',function(e){
-	console.log( 'The "shown.bs.toast" event fired for #' + toastBTN.id );
-	showToastBTN.classList.add('d-none')
+	console.log( 'The "shown.bs.toast" event fired for #' + toastElement.id );
+	// showToastBTN.classList.add('d-none')
 },false)
 toastElement.addEventListener('hide.bs.toast',function(e){
-	console.log( 'The "hide.bs.toast" event fired for #' + toastBTN.id );
+	console.log( 'The "hide.bs.toast" event fired for #' + toastElement.id );
 },false)
 toastElement.addEventListener('hidden.bs.toast',function(e){
-	console.log( 'The "hidden.bs.toast" event fired for #' + toastBTN.id );
-	showToastBTN.classList.remove('d-none')
+	console.log( 'The "hidden.bs.toast" event fired for #' + toastElement.id );
+	// showToastBTN.classList.remove('d-none')
 },false)
 
 showToastBTN.addEventListener('click',function(){
@@ -171,17 +185,27 @@ showToastBTN.addEventListener('click',function(){
 }, false)
 
 // ScrollSpy
+var disposableSpy = document.getElementById('disposableSpy');
+var scrollSpyEventCallback = function(e){
+	const { tagName, classList } = e.relatedTarget;
+	var scrollSpyLog = 'The "activate.bs.scrollspy" event fired for #' + disposableSpy.id
+		+ '\nevent.relatedTarget: ' + (e.relatedTarget ? (tagName + '.' + [...classList].join('.')) : 'null');
+	console.log(scrollSpyLog);
+}
+disposableSpy.addEventListener('activate.bs.scrollspy', scrollSpyEventCallback);
+
 function toggleScrollSpy(){
-	var disposableSpy = document.getElementById('disposableSpy');
 	var spyInstance = BSN.ScrollSpy.getInstance(disposableSpy);
 
 	if ( spyInstance ){
+		disposableSpy.removeEventListener('activate.bs.scrollspy', scrollSpyEventCallback);
 		spyInstance.dispose()
 		this.innerHTML = 'Init'
 		this.classList.remove( 'btn-outline-danger' )
 		this.classList.add( 'btn-outline-primary' )
 	} else {
 		new BSN.ScrollSpy(disposableSpy)
+		disposableSpy.addEventListener('activate.bs.scrollspy', scrollSpyEventCallback);
 		this.innerHTML = 'Dispose'
 		this.classList.remove( 'btn-outline-primary' )                        
 		this.classList.add( 'btn-outline-danger' )
@@ -227,3 +251,20 @@ carouselGenericExample.addEventListener('slid.bs.carousel', function(e) {
 	var direction = `\n> with direction ${e.direction}`;
 	console.log('The "slid.bs.carousel" event fired for <div id="' + carouselGenericExample.id + '"> ' + direction + from + to + related);
 }, false);
+
+// RTL play
+function switchDirection() {
+	var isRTL = document.documentElement.dir === 'rtl';
+	var bsCSS = document.getElementById('bsCSS');
+	var href = bsCSS.getAttribute('href');
+
+	if (isRTL) {
+		bsCSS.href = href.replace('bootstrap.rtl.min', 'bootstrap.min');
+		document.documentElement.removeAttribute('dir');
+		this.innerText = 'RTL';
+	} else {
+		bsCSS.href = href.replace('bootstrap.min', 'bootstrap.rtl.min');
+		document.documentElement.setAttribute('dir', 'rtl');
+		this.innerText = 'LTR';
+	}
+}
