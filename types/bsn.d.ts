@@ -310,15 +310,10 @@ declare module "bootstrap.native/src/util/getElementContainer" {
      * Returns an `HTMLElement` to be used as default value for *options.container*
      * for `Tooltip` / `Popover` components.
      *
-     * When `getOffset` is *true*, it returns the `offsetParent` for tooltip/popover
-     * offsets computation similar to **floating-ui**.
-     * @see https://github.com/floating-ui/floating-ui
-     *
      * @param {HTMLElement | Element} element the target
-     * @param {boolean=} getOffset when *true* it will return an `offsetParent`
-     * @returns {HTMLElement | HTMLBodyElement | Window} the query result
+     * @returns {HTMLElement | HTMLBodyElement} the query result
      */
-    export default function getElementContainer(element: HTMLElement | Element, getOffset?: boolean | undefined): HTMLElement | HTMLBodyElement | Window;
+    export default function getElementContainer(element: HTMLElement | Element): HTMLElement | HTMLBodyElement;
 }
 declare module "bootstrap.native/src/strings/fixedTopClass" {
     export default fixedTopClass;

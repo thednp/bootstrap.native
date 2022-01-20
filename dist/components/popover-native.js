@@ -1191,35 +1191,11 @@
    * Returns an `HTMLElement` to be used as default value for *options.container*
    * for `Tooltip` / `Popover` components.
    *
-   * When `getOffset` is *true*, it returns the `offsetParent` for tooltip/popover
-   * offsets computation similar to **floating-ui**.
-   * @see https://github.com/floating-ui/floating-ui
-   *
    * @param {HTMLElement | Element} element the target
-   * @param {boolean=} getOffset when *true* it will return an `offsetParent`
-   * @returns {HTMLElement | HTMLBodyElement | Window} the query result
+   * @returns {HTMLElement | HTMLBodyElement} the query result
    */
-  function getElementContainer(element, getOffset) {
+  function getElementContainer(element) {
     const majorBlockTags = ['HTML', 'BODY'];
-
-    if (getOffset) {
-      /** @type {any} */
-      let { offsetParent } = element;
-
-      while (offsetParent && isTableElement(offsetParent)
-        && getElementStyle(offsetParent, 'position') === 'static'
-          && offsetParent instanceof HTMLElement
-            && getElementStyle(offsetParent, 'position') !== 'fixed') {
-        offsetParent = offsetParent.offsetParent;
-      }
-
-      if (!offsetParent || (offsetParent
-        && (majorBlockTags.includes(offsetParent.tagName)
-          && getElementStyle(offsetParent, 'position') === 'static'))) {
-        offsetParent = getWindow(element);
-      }
-      return offsetParent;
-    }
 
     /** @type {(HTMLElement)[]} */
     const containers = [];
