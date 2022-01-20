@@ -3717,7 +3717,6 @@
       tipPositions.left = 'end';
       tipPositions.right = 'start';
     }
-    const win = getWindow(element);
     const documentElement = getDocumentElement(element);
     const windowWidth = documentElement.clientWidth;
     const windowHeight = documentElement.clientHeight;
@@ -3739,9 +3738,10 @@
       right: elemRectRight,
       top: elemRectTop,
     } = getBoundingClientRect(element, true);
-    const scroll = getNodeScroll(parentIsBody || staticParent ? win : container);
-    const isSVG = isSVGElement(element); // @ts-ignore
-    const { x, y } = getRectRelativeToOffsetParent(element, win, scroll);
+    const offsetParent = parentIsBody || staticParent ? getWindow(element) : container;
+    const scroll = getNodeScroll(offsetParent);
+    const isSVG = isSVGElement(element);
+    const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
 
     // reset arrow style
     setElementStyle(arrow, { top: '', left: '', right: '' });
