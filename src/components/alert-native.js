@@ -9,20 +9,20 @@ import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import { getInstance } from 'shorter-js/src/misc/data';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 import on from 'shorter-js/src/event/on';
 import off from 'shorter-js/src/event/off';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
 import dataBsDismiss from '../strings/dataBsDismiss';
+import alertString from '../strings/alertString';
+import alertComponent from '../strings/alertComponent';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import BaseComponent from './base-component';
 
 // ALERT PRIVATE GC
 // ================
-const alertString = 'alert';
-const alertComponent = 'Alert';
 const alertSelector = `.${alertString}`;
 const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
 
@@ -42,8 +42,8 @@ const alertInitCallback = (element) => new Alert(element);
 
 // ALERT CUSTOM EVENTS
 // ===================
-const closeAlertEvent = bootstrapCustomEvent(`close.bs.${alertString}`);
-const closedAlertEvent = bootstrapCustomEvent(`closed.bs.${alertString}`);
+const closeAlertEvent = OriginalEvent(`close.bs.${alertString}`);
+const closedAlertEvent = OriginalEvent(`closed.bs.${alertString}`);
 
 // ALERT EVENT HANDLER
 // ===================

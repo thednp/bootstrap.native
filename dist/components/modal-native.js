@@ -10,6 +10,42 @@
 })(this, (function () { 'use strict';
 
   /**
+   * A global namespace for `Escape` key.
+   * @type {string} e.which = 27 equivalent
+   */
+  const keyEscape = 'Escape';
+
+  /**
+   * A global namespace for aria-hidden.
+   * @type {string}
+   */
+  const ariaHidden = 'aria-hidden';
+
+  /**
+   * A global namespace for aria-modal.
+   * @type {string}
+   */
+  const ariaModal = 'aria-modal';
+
+  /**
+   * A global namespace for `resize` event.
+   * @type {string}
+   */
+  const resizeEvent = 'resize';
+
+  /**
+   * A global namespace for `click` event.
+   * @type {string}
+   */
+  const mouseclickEvent = 'click';
+
+  /**
+   * A global namespace for `keydown` event.
+   * @type {string}
+   */
+  const keydownEvent = 'keydown';
+
+  /**
    * Shortcut for `HTMLElement.setAttribute()` method.
    * @param  {HTMLElement | Element} element target element
    * @param  {string} attribute attribute name
@@ -25,37 +61,10 @@
   const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
 
   /**
-   * Shortcut for `Object.assign()` static method.
-   * @param  {Record<string, any>} obj a target object
-   * @param  {Record<string, any>} source a source object
-   */
-  const ObjectAssign = (obj, source) => Object.assign(obj, source);
-
-  /**
-   * Shortcut for the `Element.dispatchEvent(Event)` method.
-   *
-   * @param {HTMLElement | Element} element is the target
-   * @param {Event} event is the `Event` object
-   */
-  const dispatchEvent = (element, event) => element.dispatchEvent(event);
-
-  /**
-   * A global namespace for most scroll event listeners.
-   * @type {Partial<AddEventListenerOptions>}
-   */
-  const passiveHandler = { passive: true };
-
-  /**
-   * A global namespace for 'transitionend' string.
+   * A global namespace for 'transitionDuration' string.
    * @type {string}
    */
-  const transitionEndEvent = 'transitionend';
-
-  /**
-   * A global namespace for 'transitionDelay' string.
-   * @type {string}
-   */
-  const transitionDelay = 'transitionDelay';
+  const transitionDuration = 'transitionDuration';
 
   /**
    * A global namespace for:
@@ -86,30 +95,6 @@
   }
 
   /**
-   * Utility to get the computed `transitionDelay`
-   * from Element in miliseconds.
-   *
-   * @param {HTMLElement | Element} element target
-   * @return {number} the value in miliseconds
-   */
-  function getElementTransitionDelay(element) {
-    const propertyValue = getElementStyle(element, transitionProperty);
-    const delayValue = getElementStyle(element, transitionDelay);
-
-    const delayScale = delayValue.includes('ms') ? 1 : 1000;
-    const duration = propertyValue && propertyValue !== 'none'
-      ? parseFloat(delayValue) * delayScale : 0;
-
-    return !Number.isNaN(duration) ? duration : 0;
-  }
-
-  /**
-   * A global namespace for 'transitionDuration' string.
-   * @type {string}
-   */
-  const transitionDuration = 'transitionDuration';
-
-  /**
    * Utility to get the computed `transitionDuration`
    * from Element in miliseconds.
    *
@@ -124,66 +109,6 @@
       ? parseFloat(durationValue) * durationScale : 0;
 
     return !Number.isNaN(duration) ? duration : 0;
-  }
-
-  /**
-   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function on(element, eventName, handler, options) {
-    const ops = options || false;
-    element.addEventListener(eventName, handler, ops);
-  }
-
-  /**
-   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function off(element, eventName, handler, options) {
-    const ops = options || false;
-    element.removeEventListener(eventName, handler, ops);
-  }
-
-  /**
-   * Utility to make sure callbacks are consistently
-   * called when transition ends.
-   *
-   * @param {HTMLElement | Element} element target
-   * @param {EventListener} handler `transitionend` callback
-   */
-  function emulateTransitionEnd(element, handler) {
-    let called = 0;
-    const endEvent = new Event(transitionEndEvent);
-    const duration = getElementTransitionDuration(element);
-    const delay = getElementTransitionDelay(element);
-
-    if (duration) {
-      /**
-       * Wrap the handler in on -> off callback
-       * @param {TransitionEvent} e Event object
-       */
-      const transitionEndWrapper = (e) => {
-        if (e.target === element) {
-          handler.apply(element, [e]);
-          off(element, transitionEndEvent, transitionEndWrapper);
-          called = 1;
-        }
-      };
-      on(element, transitionEndEvent, transitionEndWrapper);
-      setTimeout(() => {
-        if (!called) element.dispatchEvent(endEvent);
-      }, duration + delay + 17);
-    } else {
-      handler.apply(element, [endEvent]);
-    }
   }
 
   /**
@@ -332,40 +257,30 @@
   }
 
   /**
-   * A global namespace for `Escape` key.
-   * @type {string} e.which = 27 equivalent
+   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
    */
-  const keyEscape = 'Escape';
+  function on(element, eventName, handler, options) {
+    const ops = options || false;
+    element.addEventListener(eventName, handler, ops);
+  }
 
   /**
-   * A global namespace for aria-hidden.
-   * @type {string}
+   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
    */
-  const ariaHidden = 'aria-hidden';
-
-  /**
-   * A global namespace for aria-modal.
-   * @type {string}
-   */
-  const ariaModal = 'aria-modal';
-
-  /**
-   * A global namespace for `resize` event.
-   * @type {string}
-   */
-  const resizeEvent = 'resize';
-
-  /**
-   * A global namespace for `click` event.
-   * @type {string}
-   */
-  const mouseclickEvent = 'click';
-
-  /**
-   * A global namespace for `keydown` event.
-   * @type {string}
-   */
-  const keydownEvent = 'keydown';
+  function off(element, eventName, handler, options) {
+    const ops = options || false;
+    element.removeEventListener(eventName, handler, ops);
+  }
 
   /**
    * Checks if a page is Right To Left.
@@ -533,6 +448,108 @@
   const focus = (element) => element.focus();
 
   /**
+   * Shortcut for `Object.assign()` static method.
+   * @param  {Record<string, any>} obj a target object
+   * @param  {Record<string, any>} source a source object
+   */
+  const ObjectAssign = (obj, source) => Object.assign(obj, source);
+
+  /**
+   * Shortcut for the `Element.dispatchEvent(Event)` method.
+   *
+   * @param {HTMLElement | Element} element is the target
+   * @param {Event} event is the `Event` object
+   */
+  const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+  /**
+   * A global namespace for most scroll event listeners.
+   * @type {Partial<AddEventListenerOptions>}
+   */
+  const passiveHandler = { passive: true };
+
+  /**
+   * A global namespace for 'transitionend' string.
+   * @type {string}
+   */
+  const transitionEndEvent = 'transitionend';
+
+  /**
+   * A global namespace for 'transitionDelay' string.
+   * @type {string}
+   */
+  const transitionDelay = 'transitionDelay';
+
+  /**
+   * Utility to get the computed `transitionDelay`
+   * from Element in miliseconds.
+   *
+   * @param {HTMLElement | Element} element target
+   * @return {number} the value in miliseconds
+   */
+  function getElementTransitionDelay(element) {
+    const propertyValue = getElementStyle(element, transitionProperty);
+    const delayValue = getElementStyle(element, transitionDelay);
+
+    const delayScale = delayValue.includes('ms') ? 1 : 1000;
+    const duration = propertyValue && propertyValue !== 'none'
+      ? parseFloat(delayValue) * delayScale : 0;
+
+    return !Number.isNaN(duration) ? duration : 0;
+  }
+
+  /**
+   * Utility to make sure callbacks are consistently
+   * called when transition ends.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {EventListener} handler `transitionend` callback
+   */
+  function emulateTransitionEnd(element, handler) {
+    let called = 0;
+    const endEvent = new Event(transitionEndEvent);
+    const duration = getElementTransitionDuration(element);
+    const delay = getElementTransitionDelay(element);
+
+    if (duration) {
+      /**
+       * Wrap the handler in on -> off callback
+       * @param {TransitionEvent} e Event object
+       */
+      const transitionEndWrapper = (e) => {
+        if (e.target === element) {
+          handler.apply(element, [e]);
+          off(element, transitionEndEvent, transitionEndWrapper);
+          called = 1;
+        }
+      };
+      on(element, transitionEndEvent, transitionEndWrapper);
+      setTimeout(() => {
+        if (!called) element.dispatchEvent(endEvent);
+      }, duration + delay + 17);
+    } else {
+      handler.apply(element, [endEvent]);
+    }
+  }
+
+  /**
+   * Returns a namespaced `CustomEvent` specific to each component.
+   * @param {string} EventType Event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   * @returns {SHORTER.OriginalEvent} a new namespaced event
+   */
+  function OriginalEvent(EventType, config) {
+    const OriginalCustomEvent = new CustomEvent(EventType, {
+      cancelable: true, bubbles: true,
+    });
+
+    if (config instanceof Object) {
+      ObjectAssign(OriginalCustomEvent, config);
+    }
+    return OriginalCustomEvent;
+  }
+
+  /**
    * Global namespace for most components `toggle` option.
    */
   const dataBsToggle = 'data-bs-toggle';
@@ -552,20 +569,11 @@
    */
   const showClass = 'show';
 
-  /**
-   * Returns a namespaced `CustomEvent` specific to each component.
-   * @param {string} EventType Event.type
-   * @param {Record<string, any>=} config Event.options | Event.properties
-   * @returns {BSN.OriginalEvent} a new namespaced event
-   */
-  function bootstrapCustomEvent(EventType, config) {
-    const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
+  /** @type {string} */
+  const modalString = 'modal';
 
-    if (config instanceof Object) {
-      ObjectAssign(OriginalCustomEvent, config);
-    }
-    return OriginalCustomEvent;
-  }
+  /** @type {string} */
+  const modalComponent = 'Modal';
 
   /**
    * Check if target is a `ShadowRoot`.
@@ -836,10 +844,14 @@
   // @ts-ignore
   const reflow = (element) => element.offsetHeight;
 
-  const modalBackdropClass = 'modal-backdrop';
-  const offcanvasBackdropClass = 'offcanvas-backdrop';
-  const modalActiveSelector = `.modal.${showClass}`;
-  const offcanvasActiveSelector = `.offcanvas.${showClass}`;
+  /** @type {string} */
+  const offcanvasString = 'offcanvas';
+
+  const backdropString = 'backdrop';
+  const modalBackdropClass = `${modalString}-${backdropString}`;
+  const offcanvasBackdropClass = `${offcanvasString}-${backdropString}`;
+  const modalActiveSelector = `.${modalString}.${showClass}`;
+  const offcanvasActiveSelector = `.${offcanvasString}.${showClass}`;
 
   // any document would suffice
   const overlay = getDocument().createElement('div');
@@ -955,6 +967,14 @@
   const ObjectKeys = (obj) => Object.keys(obj);
 
   /**
+   * Shortcut for `String.toLowerCase()`.
+   *
+   * @param {string} source input string
+   * @returns {string} lowercase output string
+   */
+  const toLowerCase = (source) => source.toLowerCase();
+
+  /**
    * Utility to normalize component options.
    *
    * @param {HTMLElement | Element} element target
@@ -970,10 +990,11 @@
     const normalOps = {};
     /** @type {Record<string, any>} */
     const dataOps = {};
+    const title = 'title';
 
     ObjectKeys(data).forEach((k) => {
       const key = ns && k.includes(ns)
-        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+        ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
         : k;
 
       dataOps[key] = normalizeValue(data[k]);
@@ -989,7 +1010,9 @@
       } else if (k in dataOps) {
         normalOps[k] = dataOps[k];
       } else {
-        normalOps[k] = defaultOps[k];
+        normalOps[k] = k === title
+          ? getAttribute(element, title)
+          : defaultOps[k];
       }
     });
 
@@ -1061,8 +1084,6 @@
 
   // MODAL PRIVATE GC
   // ================
-  const modalString = 'modal';
-  const modalComponent = 'Modal';
   const modalSelector = `.${modalString}`;
   const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
   const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
@@ -1089,10 +1110,10 @@
 
   // MODAL CUSTOM EVENTS
   // ===================
-  const showModalEvent = bootstrapCustomEvent(`show.bs.${modalString}`);
-  const shownModalEvent = bootstrapCustomEvent(`shown.bs.${modalString}`);
-  const hideModalEvent = bootstrapCustomEvent(`hide.bs.${modalString}`);
-  const hiddenModalEvent = bootstrapCustomEvent(`hidden.bs.${modalString}`);
+  const showModalEvent = OriginalEvent(`show.bs.${modalString}`);
+  const shownModalEvent = OriginalEvent(`shown.bs.${modalString}`);
+  const hideModalEvent = OriginalEvent(`hide.bs.${modalString}`);
+  const hiddenModalEvent = OriginalEvent(`hidden.bs.${modalString}`);
 
   // MODAL PRIVATE METHODS
   // =====================
@@ -1290,11 +1311,10 @@
     const dismiss = target && closest(target, modalDismissSelector);
 
     if (isStatic && !targetInsideDialog) {
-      const dismissCallback = () => {
+      Timer.set(element, () => {
         addClass(element, modalStaticClass);
         emulateTransitionEnd(modalDialog, () => staticTransitionEnd(self));
-      };
-      Timer.set(element, dismissCallback, 17);
+      }, 17);
     } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)) {
       self.relatedTarget = dismiss || null;
       self.hide();

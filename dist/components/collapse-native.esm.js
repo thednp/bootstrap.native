@@ -443,6 +443,23 @@ const Timer = {
 };
 
 /**
+ * Returns a namespaced `CustomEvent` specific to each component.
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {SHORTER.OriginalEvent} a new namespaced event
+ */
+function OriginalEvent(EventType, config) {
+  const OriginalCustomEvent = new CustomEvent(EventType, {
+    cancelable: true, bubbles: true,
+  });
+
+  if (config instanceof Object) {
+    ObjectAssign(OriginalCustomEvent, config);
+  }
+  return OriginalCustomEvent;
+}
+
+/**
  * Global namespace for most components `toggle` option.
  */
 const dataBsToggle = 'data-bs-toggle';
@@ -458,20 +475,11 @@ const collapsingClass = 'collapsing';
  */
 const showClass = 'show';
 
-/**
- * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} EventType Event.type
- * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {BSN.OriginalEvent} a new namespaced event
- */
-function bootstrapCustomEvent(EventType, config) {
-  const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
+/** @type {string} */
+const collapseString = 'collapse';
 
-  if (config instanceof Object) {
-    ObjectAssign(OriginalCustomEvent, config);
-  }
-  return OriginalCustomEvent;
-}
+/** @type {string} */
+const collapseComponent = 'Collapse';
 
 /**
  * Shortcut for `HTMLElement.getAttribute()` method.
@@ -556,6 +564,14 @@ function normalizeValue(value) {
 const ObjectKeys = (obj) => Object.keys(obj);
 
 /**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
  * Utility to normalize component options.
  *
  * @param {HTMLElement | Element} element target
@@ -571,10 +587,11 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   const normalOps = {};
   /** @type {Record<string, any>} */
   const dataOps = {};
+  const title = 'title';
 
   ObjectKeys(data).forEach((k) => {
     const key = ns && k.includes(ns)
-      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
       : k;
 
     dataOps[key] = normalizeValue(data[k]);
@@ -590,7 +607,9 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
     } else if (k in dataOps) {
       normalOps[k] = dataOps[k];
     } else {
-      normalOps[k] = defaultOps[k];
+      normalOps[k] = k === title
+        ? getAttribute(element, title)
+        : defaultOps[k];
     }
   });
 
@@ -662,8 +681,6 @@ class BaseComponent {
 
 // COLLAPSE GC
 // ===========
-const collapseString = 'collapse';
-const collapseComponent = 'Collapse';
 const collapseSelector = `.${collapseString}`;
 const collapseToggleSelector = `[${dataBsToggle}="${collapseString}"]`;
 const collapseDefaults = { parent: null };
@@ -684,10 +701,10 @@ const collapseInitCallback = (element) => new Collapse(element);
 
 // COLLAPSE CUSTOM EVENTS
 // ======================
-const showCollapseEvent = bootstrapCustomEvent(`show.bs.${collapseString}`);
-const shownCollapseEvent = bootstrapCustomEvent(`shown.bs.${collapseString}`);
-const hideCollapseEvent = bootstrapCustomEvent(`hide.bs.${collapseString}`);
-const hiddenCollapseEvent = bootstrapCustomEvent(`hidden.bs.${collapseString}`);
+const showCollapseEvent = OriginalEvent(`show.bs.${collapseString}`);
+const shownCollapseEvent = OriginalEvent(`shown.bs.${collapseString}`);
+const hideCollapseEvent = OriginalEvent(`hide.bs.${collapseString}`);
+const hiddenCollapseEvent = OriginalEvent(`hidden.bs.${collapseString}`);
 
 // COLLAPSE PRIVATE METHODS
 // ========================

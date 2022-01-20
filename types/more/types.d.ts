@@ -14,11 +14,6 @@ export interface BaseComponent extends Record<string, any> {
 export type GetInstance<T> = (element: string | HTMLElement | Element) => T | null;
 export type InitCallback<T> = (element: string | HTMLElement | Element, config?: ComponentOptions) => T;
 
-export interface OriginalEvent extends CustomEvent {
-  relatedTarget?: HTMLElement | Element | null;
-}
-
-
 // BSN.Event
 export namespace Event {
   enum AlertEvents {

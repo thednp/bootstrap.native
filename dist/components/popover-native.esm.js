@@ -4,19 +4,19 @@
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 /**
- * Shortcut for `HTMLElement.setAttribute()` method.
- * @param  {HTMLElement | Element} element target element
- * @param  {string} attribute attribute name
- * @param  {string} value attribute value
+ * Shortcut for `Object.assign()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @param  {Record<string, any>} source a source object
  */
-const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
+const ObjectAssign = (obj, source) => Object.assign(obj, source);
 
 /**
- * Shortcut for `HTMLElement.removeAttribute()` method.
- * @param  {HTMLElement | Element} element target element
- * @param  {string} attribute attribute name
+ * Utility to focus an `HTMLElement` target.
+ *
+ * @param {HTMLElement | Element} element is the target
  */
-const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
+// @ts-ignore -- `Element`s resulted from querySelector can focus too
+const focus = (element) => element.focus();
 
 /**
  * Returns the `document` or the `#document` element.
@@ -28,171 +28,6 @@ function getDocument(node) {
   if (node instanceof HTMLElement) return node.ownerDocument;
   if (node instanceof Window) return node.document;
   return window.document;
-}
-
-/**
- * Returns the `document.body` or the `<body>` element.
- *
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {HTMLElement | HTMLBodyElement}
- */
-function getDocumentBody(node) {
-  return getDocument(node).body;
-}
-
-/**
- * A global namespace for most scroll event listeners.
- * @type {Partial<AddEventListenerOptions>}
- */
-const passiveHandler = { passive: true };
-
-/**
- * Shortcut for the `Element.dispatchEvent(Event)` method.
- *
- * @param {HTMLElement | Element} element is the target
- * @param {Event} event is the `Event` object
- */
-const dispatchEvent = (element, event) => element.dispatchEvent(event);
-
-/**
- * A global namespace for 'transitionend' string.
- * @type {string}
- */
-const transitionEndEvent = 'transitionend';
-
-/**
- * A global namespace for 'transitionDelay' string.
- * @type {string}
- */
-const transitionDelay = 'transitionDelay';
-
-/**
- * A global namespace for:
- * * `transitionProperty` string for Firefox,
- * * `transition` property for all other browsers.
- *
- * @type {string}
- */
-const transitionProperty = 'transitionProperty';
-
-/**
- * Shortcut for `window.getComputedStyle(element).propertyName`
- * static method.
- *
- * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
- * throws a `ReferenceError`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} property the css property
- * @return {string} the css property value
- */
-function getElementStyle(element, property) {
-  const computedStyle = getComputedStyle(element);
-
-  // @ts-ignore -- must use camelcase strings,
-  // or non-camelcase strings with `getPropertyValue`
-  return property in computedStyle ? computedStyle[property] : '';
-}
-
-/**
- * Utility to get the computed `transitionDelay`
- * from Element in miliseconds.
- *
- * @param {HTMLElement | Element} element target
- * @return {number} the value in miliseconds
- */
-function getElementTransitionDelay(element) {
-  const propertyValue = getElementStyle(element, transitionProperty);
-  const delayValue = getElementStyle(element, transitionDelay);
-
-  const delayScale = delayValue.includes('ms') ? 1 : 1000;
-  const duration = propertyValue && propertyValue !== 'none'
-    ? parseFloat(delayValue) * delayScale : 0;
-
-  return !Number.isNaN(duration) ? duration : 0;
-}
-
-/**
- * A global namespace for 'transitionDuration' string.
- * @type {string}
- */
-const transitionDuration = 'transitionDuration';
-
-/**
- * Utility to get the computed `transitionDuration`
- * from Element in miliseconds.
- *
- * @param {HTMLElement | Element} element target
- * @return {number} the value in miliseconds
- */
-function getElementTransitionDuration(element) {
-  const propertyValue = getElementStyle(element, transitionProperty);
-  const durationValue = getElementStyle(element, transitionDuration);
-  const durationScale = durationValue.includes('ms') ? 1 : 1000;
-  const duration = propertyValue && propertyValue !== 'none'
-    ? parseFloat(durationValue) * durationScale : 0;
-
-  return !Number.isNaN(duration) ? duration : 0;
-}
-
-/**
- * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
- *
- * @param {HTMLElement | Element | Document | Window} element event.target
- * @param {string} eventName event.type
- * @param {EventListenerObject['handleEvent']} handler callback
- * @param {(EventListenerOptions | boolean)=} options other event options
- */
-function on(element, eventName, handler, options) {
-  const ops = options || false;
-  element.addEventListener(eventName, handler, ops);
-}
-
-/**
- * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
- *
- * @param {HTMLElement | Element | Document | Window} element event.target
- * @param {string} eventName event.type
- * @param {EventListenerObject['handleEvent']} handler callback
- * @param {(EventListenerOptions | boolean)=} options other event options
- */
-function off(element, eventName, handler, options) {
-  const ops = options || false;
-  element.removeEventListener(eventName, handler, ops);
-}
-
-/**
- * Utility to make sure callbacks are consistently
- * called when transition ends.
- *
- * @param {HTMLElement | Element} element target
- * @param {EventListener} handler `transitionend` callback
- */
-function emulateTransitionEnd(element, handler) {
-  let called = 0;
-  const endEvent = new Event(transitionEndEvent);
-  const duration = getElementTransitionDuration(element);
-  const delay = getElementTransitionDelay(element);
-
-  if (duration) {
-    /**
-     * Wrap the handler in on -> off callback
-     * @param {TransitionEvent} e Event object
-     */
-    const transitionEndWrapper = (e) => {
-      if (e.target === element) {
-        handler.apply(element, [e]);
-        off(element, transitionEndEvent, transitionEndWrapper);
-        called = 1;
-      }
-    };
-    on(element, transitionEndEvent, transitionEndWrapper);
-    setTimeout(() => {
-      if (!called) element.dispatchEvent(endEvent);
-    }, duration + delay + 17);
-  } else {
-    handler.apply(element, [endEvent]);
-  }
 }
 
 /**
@@ -224,64 +59,6 @@ function querySelector(selector, parent) {
   // @ts-ignore -- `ShadowRoot` is also a node
   return selectorIsString ? lookUp.querySelector(selector) : null;
 }
-
-/**
- * Shortcut for `HTMLElement.getElementsByClassName` method. Some `Node` elements
- * like `ShadowRoot` do not support `getElementsByClassName`.
- *
- * @param {string} selector the class name
- * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
- * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
- */
-function getElementsByClassName(selector, parent) {
-  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
-  return lookUp.getElementsByClassName(selector);
-}
-
-/**
- * Add class to `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to add
- */
-function addClass(element, classNAME) {
-  element.classList.add(classNAME);
-}
-
-/**
- * Check class in `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to check
- * @return {boolean}
- */
-function hasClass(element, classNAME) {
-  return element.classList.contains(classNAME);
-}
-
-/**
- * Remove class from `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to remove
- */
-function removeClass(element, classNAME) {
-  element.classList.remove(classNAME);
-}
-
-/**
- * A global namespace for aria-describedby.
- * @type {string}
- */
-const ariaDescribedBy = 'aria-describedby';
-
-/**
- * Shortcut for `Object.assign()` static method.
- * @param  {Record<string, any>} obj a target object
- * @param  {Record<string, any>} source a source object
- */
-const ObjectAssign = (obj, source) => Object.assign(obj, source);
 
 /** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
 const componentData = new Map();
@@ -359,6 +136,35 @@ const Data = {
 const getInstance = (target, component) => Data.get(target, component);
 
 /**
+ * Global namespace for most components `toggle` option.
+ */
+const dataBsToggle = 'data-bs-toggle';
+
+/** @type {string} */
+const popoverString = 'popover';
+
+/** @type {string} */
+const popoverComponent = 'Popover';
+
+/** @type {string} */
+const tooltipString = 'tooltip';
+
+/**
+ * Returns a template for Popover / Tooltip.
+ *
+ * @param {string} tipType the expected markup type
+ * @returns {string} the template markup
+ */
+function getTipTemplate(tipType) {
+  const isTooltip = tipType === tooltipString;
+  const bodyClass = isTooltip ? `${tipType}-inner` : `${tipType}-body`;
+  const header = !isTooltip ? `<h3 class="${tipType}-header"></h3>` : '';
+  const arrow = `<div class="${tipType}-arrow"></div>`;
+  const body = `<div class="${bodyClass}"></div>`;
+  return `<div class="${tipType}" role="${tooltipString}">${header + arrow + body}</div>`;
+}
+
+/**
  * Checks if an element is an `<svg>` (or any type of SVG element),
  * `<img>` or `<video>`.
  *
@@ -369,30 +175,6 @@ const getInstance = (target, component) => Data.get(target, component);
 const isMedia = (element) => element
   && [SVGElement, HTMLImageElement, HTMLVideoElement]
     .some((mediaType) => element instanceof mediaType);
-
-// @ts-ignore
-const { userAgentData: uaDATA } = navigator;
-
-/**
- * A global namespace for `userAgentData` object.
- */
-const userAgentData = uaDATA;
-
-const { userAgent: userAgentString } = navigator;
-
-/**
- * A global namespace for `navigator.userAgent` string.
- */
-const userAgent = userAgentString;
-
-const appleBrands = /(iPhone|iPod|iPad)/;
-
-/**
- * A global `boolean` for Apple browsers.
- * @type {boolean}
- */
-const isApple = !userAgentData ? appleBrands.test(userAgent)
-  : userAgentData.brands.some((/** @type {Record<string, any>} */x) => appleBrands.test(x.brand));
 
 /**
  * Returns the `document.documentElement` or the `<html>` element.
@@ -410,6 +192,690 @@ function getDocumentElement(node) {
  * @returns {boolean} the query result
  */
 const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
+
+const { userAgent: userAgentString } = navigator;
+
+/**
+ * A global namespace for `navigator.userAgent` string.
+ */
+const userAgent = userAgentString;
+
+/**
+ * A global boolean for Gecko browsers. When writing this file,
+ * Gecko was not supporting `userAgentData`.
+ */
+const isFirefox = userAgent ? userAgent.includes('Firefox') : false;
+
+/**
+ * Check if an element is an `<svg>` or any other SVG element.
+ * @param {any} element the target element
+ * @returns {boolean} the query result
+ */
+const isSVGElement = (element) => element instanceof SVGElement;
+
+/**
+ * Shortcut for `window.getComputedStyle(element).propertyName`
+ * static method.
+ *
+ * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
+ * throws a `ReferenceError`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} property the css property
+ * @return {string} the css property value
+ */
+function getElementStyle(element, property) {
+  const computedStyle = getComputedStyle(element);
+
+  // @ts-ignore -- must use camelcase strings,
+  // or non-camelcase strings with `getPropertyValue`
+  return property in computedStyle ? computedStyle[property] : '';
+}
+
+/**
+ * Returns the bounding client rect of a target `HTMLElement`.
+ *
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {HTMLElement | Element} element event.target
+ * @param {boolean=} includeScale when *true*, the target scale is also computed
+ * @returns {SHORTER.BoundingClientRect} the bounding client rect object
+ */
+function getBoundingClientRect(element, includeScale) {
+  const {
+    width, height, top, right, bottom, left,
+  } = element.getBoundingClientRect();
+  let scaleX = 1;
+  let scaleY = 1;
+
+  if (includeScale && element instanceof HTMLElement) {
+    const { offsetWidth, offsetHeight } = element;
+    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
+    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
+  }
+
+  return {
+    width: width / scaleX,
+    height: height / scaleY,
+    top: top / scaleY,
+    right: right / scaleX,
+    bottom: bottom / scaleY,
+    left: left / scaleX,
+    x: left / scaleX,
+    y: top / scaleY,
+  };
+}
+
+/**
+ * Returns an `{x,y}` object with the target
+ * `HTMLElement` / `Node` scroll position.
+ *
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {HTMLElement | Element | Window} element target node / element
+ * @returns {{x: number, y: number}} the scroll tuple
+ */
+function getNodeScroll(element) {
+  const isWin = 'scrollX' in element;
+  const x = isWin ? element.scrollX : element.scrollLeft;
+  const y = isWin ? element.scrollY : element.scrollTop;
+
+  return { x, y };
+}
+
+/**
+ * Checks if a target `HTMLElement` is affected by scale.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {HTMLElement} element target
+ * @returns {boolean} the query result
+ */
+function isScaledElement(element) {
+  const { width, height } = getBoundingClientRect(element);
+  const { offsetWidth, offsetHeight } = element;
+  return Math.round(width) !== offsetWidth
+    || Math.round(height) !== offsetHeight;
+}
+
+/**
+ * Returns the rect relative to an offset parent.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {HTMLElement | Element | Window} offsetParent the container / offset parent
+ * @param {{x: number, y: number}} scroll
+ * @returns {SHORTER.OffsetRect}
+ */
+function getRectRelativeToOffsetParent(element, offsetParent, scroll) {
+  const isParentAnElement = offsetParent instanceof HTMLElement;
+  const rect = getBoundingClientRect(element, isParentAnElement && isScaledElement(offsetParent));
+  const offsets = { x: 0, y: 0 };
+
+  if (isParentAnElement) {
+    const offsetRect = getBoundingClientRect(offsetParent, true);
+    offsets.x = offsetRect.x + offsetParent.clientLeft;
+    offsets.y = offsetRect.y + offsetParent.clientTop;
+  }
+
+  return {
+    x: rect.left + scroll.x - offsets.x,
+    y: rect.top + scroll.y - offsets.y,
+    width: rect.width,
+    height: rect.height,
+  };
+}
+
+/**
+ * Returns the `Window` object of a target node.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {(Node | HTMLElement | Element | Window)=} node target node
+ * @returns {globalThis}
+ */
+function getWindow(node) {
+  if (node == null) {
+    return window;
+  }
+
+  if (!(node instanceof Window)) {
+    const { ownerDocument } = node;
+    return ownerDocument ? ownerDocument.defaultView || window : window;
+  }
+
+  // @ts-ignore
+  return node;
+}
+
+/**
+ * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {Partial<CSSStyleDeclaration>} styles attribute value
+ */
+// @ts-ignore
+const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
+
+/** @type {Record<string, string>} */
+var tipClassPositions = {
+  top: 'top',
+  bottom: 'bottom',
+  left: 'start',
+  right: 'end',
+};
+
+/**
+ * Style popovers and tooltips.
+ * @param {BSN.Tooltip | BSN.Popover} self the `Popover` / `Tooltip` instance
+ * @param {PointerEvent=} e event object
+ */
+function styleTip(self, e) {
+  const tipClasses = /\b(top|bottom|start|end)+/;
+  const {
+    element, tooltip, options, arrow,
+  } = self;
+  const tipPositions = { ...tipClassPositions };
+
+  // reset tooltip style (top: 0, left: 0 works best)
+  setElementStyle(tooltip, { top: '0px', left: '0px', right: '' });
+  // @ts-ignore
+  const isPopover = self.name === popoverComponent;
+  const tipWidth = tooltip.offsetWidth;
+  const tipHeight = tooltip.offsetHeight;
+  const RTL = isRTL(element);
+  if (RTL) {
+    tipPositions.left = 'end';
+    tipPositions.right = 'start';
+  }
+  const win = getWindow(element);
+  const documentElement = getDocumentElement(element);
+  const windowWidth = documentElement.clientWidth;
+  const windowHeight = documentElement.clientHeight;
+  const { container } = options;
+  let { placement } = options;
+  const parentIsBody = container.tagName === 'BODY';
+  const { left: parentLeft, right: parentRight } = getBoundingClientRect(container, true);
+  const parentPosition = getElementStyle(container, 'position');
+  // const absoluteParent = parentPosition === 'absolute';
+  const fixedParent = parentPosition === 'fixed';
+  const staticParent = parentPosition === 'static';
+  const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
+  const leftBoundry = 0;
+  const rightBoundry = container.clientWidth + parentLeft + (windowWidth - parentRight) - 1;
+  const {
+    width: elemWidth,
+    height: elemHeight,
+    left: elemRectLeft,
+    right: elemRectRight,
+    top: elemRectTop,
+  } = getBoundingClientRect(element, true);
+  const scroll = getNodeScroll(parentIsBody || staticParent ? win : container);
+  const isSVG = isSVGElement(element); // @ts-ignore
+  const { x, y } = getRectRelativeToOffsetParent(element, win, scroll);
+
+  // reset arrow style
+  setElementStyle(arrow, { top: '', left: '', right: '' });
+  let topPosition;
+  let leftPosition;
+  let rightPosition;
+  let arrowTop;
+  let arrowLeft;
+  let arrowRight;
+
+  const arrowWidth = arrow.offsetWidth || 0;
+  const arrowHeight = arrow.offsetHeight || 0;
+  const arrowAdjust = arrowWidth / 2;
+
+  // check placement
+  let topExceed = elemRectTop - tipHeight - arrowHeight < 0;
+  let bottomExceed = elemRectTop + tipHeight + elemHeight
+    + arrowHeight >= windowHeight;
+  let leftExceed = elemRectLeft - tipWidth - arrowWidth < leftBoundry;
+  let rightExceed = elemRectLeft + tipWidth + elemWidth
+    + arrowWidth >= rightBoundry;
+
+  const horizontal = ['left', 'right'];
+  const vertical = ['top', 'bottom'];
+  topExceed = horizontal.includes(placement)
+    ? elemRectTop + elemHeight / 2 - tipHeight / 2 - arrowHeight < 0
+    : topExceed;
+  bottomExceed = horizontal.includes(placement)
+    ? elemRectTop + tipHeight / 2 + elemHeight / 2 + arrowHeight >= windowHeight
+    : bottomExceed;
+  leftExceed = vertical.includes(placement)
+    ? elemRectLeft + elemWidth / 2 - tipWidth / 2 < leftBoundry
+    : leftExceed;
+  rightExceed = vertical.includes(placement)
+    ? elemRectLeft + tipWidth / 2 + elemWidth / 2 >= rightBoundry
+    : rightExceed;
+
+  // recompute placement
+  // first, when both left and right limits are exceeded, we fall back to top|bottom
+  placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
+  placement = placement === 'top' && topExceed ? 'bottom' : placement;
+  placement = placement === 'bottom' && bottomExceed ? 'top' : placement;
+  placement = placement === 'left' && leftExceed ? 'right' : placement;
+  placement = placement === 'right' && rightExceed ? 'left' : placement;
+
+  // update tooltip/popover class
+  if (!tooltip.className.includes(placement)) {
+    tooltip.className = tooltip.className.replace(tipClasses, tipPositions[placement]);
+  }
+
+  // compute tooltip / popover coordinates
+  if (horizontal.includes(placement)) { // secondary|side positions
+    if (placement === 'left') { // LEFT
+      leftPosition = x - tipWidth - (isPopover ? arrowWidth : 0);
+    } else { // RIGHT
+      leftPosition = x + elemWidth + (isPopover ? arrowWidth : 0);
+    }
+
+    // adjust top and arrow
+    if (topExceed) {
+      topPosition = y;
+      arrowTop = elemHeight / 2 - arrowWidth;
+    } else if (bottomExceed) {
+      topPosition = y - tipHeight + elemHeight;
+      arrowTop = tipHeight - elemHeight / 2 - arrowWidth;
+    } else {
+      topPosition = y - tipHeight / 2 + elemHeight / 2;
+      arrowTop = tipHeight / 2 - arrowHeight / 2;
+    }
+  } else if (vertical.includes(placement)) {
+    if (e && isMedia(element)) {
+      let eX = 0;
+      let eY = 0;
+
+      if (parentIsBody || staticParent) {
+        eX = e.pageX;
+        eY = e.pageY;
+      } else if (['sticky', 'fixed'].includes(parentPosition)) {
+        eX = e.clientX + scroll.x;
+        eY = e.clientY + scroll.y;
+      // parentPosition === 'relative | static | absolute'
+      } else {
+        // @ts-ignore -- Firefix breaks here
+        eX = e.layerX + ((isSVG && !isFirefox) || absoluteTarget ? x : 0);
+        // @ts-ignore -- Firefix breaks here
+        eY = e.layerY + ((isSVG && !isFirefox) || absoluteTarget ? y : 0);
+      }
+      // some weird RTL bug
+      const scrollbarWidth = parentRight - container.clientWidth;
+      eX -= RTL && fixedParent ? scrollbarWidth : 0;
+
+      if (placement === 'top') {
+        topPosition = eY - tipHeight - arrowWidth;
+      } else {
+        topPosition = eY + arrowWidth;
+      }
+
+      // adjust (left | right) and also the arrow
+      if (e.clientX - tipWidth / 2 < leftBoundry) {
+        leftPosition = 0;
+        arrowLeft = eX - arrowAdjust;
+      } else if (e.clientX + tipWidth / 2 > rightBoundry) {
+        leftPosition = 'auto';
+        rightPosition = 0;
+        arrowRight = rightBoundry - eX - arrowAdjust;
+      // normal top/bottom
+      } else {
+        leftPosition = eX - tipWidth / 2;
+        arrowLeft = tipWidth / 2 - arrowAdjust;
+      }
+    } else {
+      if (placement === 'top') {
+        topPosition = y - tipHeight - (isPopover ? arrowHeight : 0);
+      } else { // BOTTOM
+        topPosition = y + elemHeight + (isPopover ? arrowHeight : 0);
+      }
+
+      // adjust left | right and also the arrow
+      if (leftExceed) {
+        leftPosition = 0;
+        arrowLeft = x + elemWidth / 2 - arrowAdjust;
+      } else if (rightExceed) {
+        leftPosition = 'auto';
+        rightPosition = 0;
+        arrowRight = elemWidth / 2 + rightBoundry - elemRectRight - arrowAdjust;
+      } else {
+        leftPosition = x - tipWidth / 2 + elemWidth / 2;
+        arrowLeft = tipWidth / 2 - arrowAdjust;
+      }
+    }
+  }
+
+  // apply style to tooltip/popover
+  setElementStyle(tooltip, {
+    top: `${topPosition}px`,
+    left: leftPosition === 'auto' ? leftPosition : `${leftPosition}px`,
+    right: rightPosition !== undefined ? `${rightPosition}px` : '',
+  });
+
+  // update arrow placement
+  if (arrow instanceof HTMLElement) {
+    if (arrowTop !== undefined) {
+      arrow.style.top = `${arrowTop}px`;
+    }
+    if (arrowLeft !== undefined) {
+      arrow.style.left = `${arrowLeft}px`;
+    } else if (arrowRight !== undefined) {
+      arrow.style.right = `${arrowRight}px`;
+    }
+  }
+}
+
+const tooltipDefaults = {
+  /** @type {string} */
+  template: getTipTemplate(tooltipString),
+  /** @type {string?} */
+  title: null, // string
+  /** @type {string?} */
+  customClass: null, // string | null
+  /** @type {string} */
+  trigger: 'hover focus',
+  /** @type {string?} */
+  placement: 'top', // string
+  /** @type {((c:string)=>string)?} */
+  sanitizeFn: null, // function
+  /** @type {boolean} */
+  animation: true, // bool
+  /** @type {number} */
+  delay: 200, // number
+  /** @type {(HTMLElement | Element)?} */
+  container: null,
+};
+
+/**
+ * A global namespace for aria-describedby.
+ * @type {string}
+ */
+const ariaDescribedBy = 'aria-describedby';
+
+/**
+ * A global namespace for `click` event.
+ * @type {string}
+ */
+const mouseclickEvent = 'click';
+
+/**
+ * A global namespace for `mousedown` event.
+ * @type {string}
+ */
+const mousedownEvent = 'mousedown';
+
+/**
+ * A global namespace for `mouseenter` event.
+ * @type {string}
+ */
+const mouseenterEvent = 'mouseenter';
+
+/**
+ * A global namespace for `mouseleave` event.
+ * @type {string}
+ */
+const mouseleaveEvent = 'mouseleave';
+
+/**
+ * A global namespace for `mousemove` event.
+ * @type {string}
+ */
+const mousemoveEvent = 'mousemove';
+
+/**
+ * A global namespace for `focus` event.
+ * @type {string}
+ */
+const focusEvent = 'focus';
+
+/**
+ * A global namespace for `focusin` event.
+ * @type {string}
+ */
+const focusinEvent = 'focusin';
+
+/**
+ * A global namespace for `focusout` event.
+ * @type {string}
+ */
+const focusoutEvent = 'focusout';
+
+/**
+ * A global namespace for `hover` event.
+ * @type {string}
+ */
+const mousehoverEvent = 'hover';
+
+/**
+ * A global namespace for `scroll` event.
+ * @type {string}
+ */
+const scrollEvent = 'scroll';
+
+/**
+ * A global namespace for `resize` event.
+ * @type {string}
+ */
+const resizeEvent = 'resize';
+
+/**
+ * A global namespace for `touchstart` event.
+ * @type {string}
+ */
+const touchstartEvent = 'touchstart';
+
+/**
+ * Shortcut for `HTMLElement.setAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ * @param  {string} value attribute value
+ */
+const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
+
+/**
+ * Shortcut for `HTMLElement.getAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ */
+const getAttribute = (element, attribute) => element.getAttribute(attribute);
+
+/**
+ * Shortcut for `HTMLElement.removeAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ */
+const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
+
+/**
+ * Returns the `document.body` or the `<body>` element.
+ *
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {HTMLElement | HTMLBodyElement}
+ */
+function getDocumentBody(node) {
+  return getDocument(node).body;
+}
+
+/**
+ * A global namespace for 'transitionDuration' string.
+ * @type {string}
+ */
+const transitionDuration = 'transitionDuration';
+
+/**
+ * A global namespace for:
+ * * `transitionProperty` string for Firefox,
+ * * `transition` property for all other browsers.
+ *
+ * @type {string}
+ */
+const transitionProperty = 'transitionProperty';
+
+/**
+ * Utility to get the computed `transitionDuration`
+ * from Element in miliseconds.
+ *
+ * @param {HTMLElement | Element} element target
+ * @return {number} the value in miliseconds
+ */
+function getElementTransitionDuration(element) {
+  const propertyValue = getElementStyle(element, transitionProperty);
+  const durationValue = getElementStyle(element, transitionDuration);
+  const durationScale = durationValue.includes('ms') ? 1 : 1000;
+  const duration = propertyValue && propertyValue !== 'none'
+    ? parseFloat(durationValue) * durationScale : 0;
+
+  return !Number.isNaN(duration) ? duration : 0;
+}
+
+/**
+ * Add class to `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to add
+ */
+function addClass(element, classNAME) {
+  element.classList.add(classNAME);
+}
+
+/**
+ * Check class in `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to check
+ * @return {boolean}
+ */
+function hasClass(element, classNAME) {
+  return element.classList.contains(classNAME);
+}
+
+/**
+ * Remove class from `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to remove
+ */
+function removeClass(element, classNAME) {
+  element.classList.remove(classNAME);
+}
+
+/**
+ * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function on(element, eventName, handler, options) {
+  const ops = options || false;
+  element.addEventListener(eventName, handler, ops);
+}
+
+/**
+ * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function off(element, eventName, handler, options) {
+  const ops = options || false;
+  element.removeEventListener(eventName, handler, ops);
+}
+
+// @ts-ignore
+const { userAgentData: uaDATA } = navigator;
+
+/**
+ * A global namespace for `userAgentData` object.
+ */
+const userAgentData = uaDATA;
+
+const appleBrands = /(iPhone|iPod|iPad)/;
+
+/**
+ * A global `boolean` for Apple browsers.
+ * @type {boolean}
+ */
+const isApple = !userAgentData ? appleBrands.test(userAgent)
+  : userAgentData.brands.some((/** @type {Record<string, any>} */x) => appleBrands.test(x.brand));
+
+/**
+ * Shortcut for the `Element.dispatchEvent(Event)` method.
+ *
+ * @param {HTMLElement | Element} element is the target
+ * @param {Event} event is the `Event` object
+ */
+const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+/**
+ * A global namespace for most scroll event listeners.
+ * @type {Partial<AddEventListenerOptions>}
+ */
+const passiveHandler = { passive: true };
+
+/**
+ * A global namespace for 'transitionend' string.
+ * @type {string}
+ */
+const transitionEndEvent = 'transitionend';
+
+/**
+ * A global namespace for 'transitionDelay' string.
+ * @type {string}
+ */
+const transitionDelay = 'transitionDelay';
+
+/**
+ * Utility to get the computed `transitionDelay`
+ * from Element in miliseconds.
+ *
+ * @param {HTMLElement | Element} element target
+ * @return {number} the value in miliseconds
+ */
+function getElementTransitionDelay(element) {
+  const propertyValue = getElementStyle(element, transitionProperty);
+  const delayValue = getElementStyle(element, transitionDelay);
+
+  const delayScale = delayValue.includes('ms') ? 1 : 1000;
+  const duration = propertyValue && propertyValue !== 'none'
+    ? parseFloat(delayValue) * delayScale : 0;
+
+  return !Number.isNaN(duration) ? duration : 0;
+}
+
+/**
+ * Utility to make sure callbacks are consistently
+ * called when transition ends.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {EventListener} handler `transitionend` callback
+ */
+function emulateTransitionEnd(element, handler) {
+  let called = 0;
+  const endEvent = new Event(transitionEndEvent);
+  const duration = getElementTransitionDuration(element);
+  const delay = getElementTransitionDelay(element);
+
+  if (duration) {
+    /**
+     * Wrap the handler in on -> off callback
+     * @param {TransitionEvent} e Event object
+     */
+    const transitionEndWrapper = (e) => {
+      if (e.target === element) {
+        handler.apply(element, [e]);
+        off(element, transitionEndEvent, transitionEndWrapper);
+        called = 1;
+      }
+    };
+    on(element, transitionEndEvent, transitionEndWrapper);
+    setTimeout(() => {
+      if (!called) element.dispatchEvent(endEvent);
+    }, duration + delay + 17);
+  } else {
+    handler.apply(element, [endEvent]);
+  }
+}
 
 /** @type {Map<HTMLElement | Element, any>} */
 const TimeCache = new Map();
@@ -517,129 +983,15 @@ function getUID(element, key) {
 }
 
 /**
- * A global namespace for `mousedown` event.
- * @type {string}
- */
-const mousedownEvent = 'mousedown';
-
-/**
- * A global namespace for `mouseenter` event.
- * @type {string}
- */
-const mouseenterEvent = 'mouseenter';
-
-/**
- * A global namespace for `mousemove` event.
- * @type {string}
- */
-const mousemoveEvent = 'mousemove';
-
-/**
- * A global namespace for `mouseleave` event.
- * @type {string}
- */
-const mouseleaveEvent = 'mouseleave';
-
-/**
- * A global namespace for `hover` event.
- * @type {string}
- */
-const mousehoverEvent = 'hover';
-
-/**
- * A global namespace for `click` event.
- * @type {string}
- */
-const mouseclickEvent = 'click';
-
-/**
- * A global namespace for `focus` event.
- * @type {string}
- */
-const focusEvent = 'focus';
-
-/**
- * A global namespace for `focusin` event.
- * @type {string}
- */
-const focusinEvent = 'focusin';
-
-/**
- * A global namespace for `focusout` event.
- * @type {string}
- */
-const focusoutEvent = 'focusout';
-
-/**
- * A global namespace for `touchstart` event.
- * @type {string}
- */
-const touchstartEvent = 'touchstart';
-
-/**
- * A global namespace for `scroll` event.
- * @type {string}
- */
-const scrollEvent = 'scroll';
-
-/**
- * A global namespace for `resize` event.
- * @type {string}
- */
-const resizeEvent = 'resize';
-
-/**
- * Returns the `Window` object of a target node.
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {(Node | HTMLElement | Element | Window)=} node target node
- * @returns {globalThis}
- */
-function getWindow(node) {
-  if (node == null) {
-    return window;
-  }
-
-  if (!(node instanceof Window)) {
-    const { ownerDocument } = node;
-    return ownerDocument ? ownerDocument.defaultView || window : window;
-  }
-
-  // @ts-ignore
-  return node;
-}
-
-/**
- * Utility to focus an `HTMLElement` target.
- *
- * @param {HTMLElement | Element} element is the target
- */
-// @ts-ignore -- `Element`s resulted from querySelector can focus too
-const focus = (element) => element.focus();
-
-/**
- * Global namespace for most components `toggle` option.
- */
-const dataBsToggle = 'data-bs-toggle';
-
-/**
- * Global namespace for most components `show` class.
- */
-const showClass = 'show';
-
-/**
- * Global namespace for most components `fade` class.
- */
-const fadeClass = 'fade';
-
-/**
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {BSN.OriginalEvent} a new namespaced event
+ * @returns {SHORTER.OriginalEvent} a new namespaced event
  */
-function bootstrapCustomEvent(EventType, config) {
-  const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
+function OriginalEvent(EventType, config) {
+  const OriginalCustomEvent = new CustomEvent(EventType, {
+    cancelable: true, bubbles: true,
+  });
 
   if (config instanceof Object) {
     ObjectAssign(OriginalCustomEvent, config);
@@ -647,13 +999,138 @@ function bootstrapCustomEvent(EventType, config) {
   return OriginalCustomEvent;
 }
 
-/** @type {Record<string, string>} */
-var tipClassPositions = {
-  top: 'top',
-  bottom: 'bottom',
-  left: 'start',
-  right: 'end',
-};
+/**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
+ * Global namespace for `data-bs-title` attribute.
+ */
+const dataOriginalTitle = 'data-original-title';
+
+/**
+ * Global namespace for most components `show` class.
+ */
+const showClass = 'show';
+
+/** @type {string} */
+const tooltipComponent = 'Tooltip';
+
+/**
+ * Global namespace for most components `fade` class.
+ */
+const fadeClass = 'fade';
+
+/**
+ * Append an existing `Element` to Popover / Tooltip component or HTML
+ * markup string to be parsed & sanitized to be used as popover / tooltip content.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {HTMLElement | Element | string} content the `Element` to append / string
+ * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
+ */
+function setHtml(element, content, sanitizeFn) {
+  if (typeof content === 'string' && !content.length) return;
+
+  if (typeof content === 'string') {
+    let dirty = content.trim(); // fixing #233
+    if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
+
+    const domParser = new DOMParser();
+    const tempDocument = domParser.parseFromString(dirty, 'text/html');
+    const { body } = tempDocument;
+    const method = body.children.length ? 'innerHTML' : 'innerText';
+    // @ts-ignore
+    element[method] = body[method];
+  } else if (content instanceof HTMLElement) {
+    element.append(content);
+  }
+}
+
+/**
+ * Creates a new tooltip / popover.
+ *
+ * @param {BSN.Popover | BSN.Tooltip} self the `Popover` instance
+ */
+function createTip(self) {
+  const { id, element, options } = self;
+  const {
+    animation, customClass, sanitizeFn, placement, dismissible,
+  } = options;
+  let { title, content } = options;
+  const isTooltip = self.name === tooltipComponent;
+  const tipString = isTooltip ? tooltipString : popoverString;
+  const { template, btnClose } = options;
+  const tipPositions = { ...tipClassPositions };
+
+  if (isRTL(element)) {
+    tipPositions.left = 'end';
+    tipPositions.right = 'start';
+  }
+
+  // set initial popover class
+  const placementClass = `bs-${tipString}-${tipPositions[placement]}`;
+
+  // load template
+  /** @type {(HTMLElement | Element)?} */
+  let popoverTemplate;
+  if ([Element, HTMLElement].some((x) => template instanceof x)) {
+    popoverTemplate = template;
+  } else {
+    const htmlMarkup = getDocument(element).createElement('div');
+    setHtml(htmlMarkup, template, sanitizeFn);
+    popoverTemplate = htmlMarkup.firstElementChild;
+  }
+
+  // set popover markup
+  self.tooltip = popoverTemplate && popoverTemplate.cloneNode(true);
+
+  const { tooltip } = self;
+
+  // set id and role attributes
+  setAttribute(tooltip, 'id', id);
+  setAttribute(tooltip, 'role', tooltipString);
+
+  const bodyClass = isTooltip ? `${tooltipString}-inner` : `${popoverString}-body`;
+  const tooltipHeader = isTooltip ? null : querySelector(`.${popoverString}-header`, tooltip);
+  const tooltipBody = querySelector(`.${bodyClass}`, tooltip);
+
+  // set arrow and enable access for styleTip
+  self.arrow = querySelector(`.${tipString}-arrow`, tooltip);
+
+  // set dismissible button
+  if (dismissible) {
+    if (title) {
+      if (title instanceof HTMLElement) setHtml(title, btnClose, sanitizeFn);
+      else title += btnClose;
+    } else {
+      if (tooltipHeader) tooltipHeader.remove();
+      if (content instanceof HTMLElement) setHtml(content, btnClose, sanitizeFn);
+      else content += btnClose;
+    }
+  }
+
+  // fill the template with content from options / data attributes
+  // also sanitize title && content
+  if (!isTooltip) {
+    if (title && tooltipHeader) setHtml(tooltipHeader, title, sanitizeFn);
+    if (content && tooltipBody) setHtml(tooltipBody, content, sanitizeFn);
+    // @ts-ignore -- set btn
+    self.btn = querySelector('.btn-close', tooltip);
+  } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
+
+  // set popover animation and placement
+  if (!hasClass(tooltip, tipString)) addClass(tooltip, tipString);
+  if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
+  if (customClass && !hasClass(tooltip, customClass)) {
+    addClass(tooltip, customClass);
+  }
+  if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
+}
 
 /**
  * @param {(HTMLElement | Element)?} tip target
@@ -662,321 +1139,6 @@ var tipClassPositions = {
  */
 function isVisibleTip(tip, container) {
   return tip instanceof HTMLElement && container.contains(tip);
-}
-
-/**
- * A global boolean for Gecko browsers. When writing this file,
- * Gecko was not supporting `userAgentData`.
- */
-const isFirefox = userAgent ? userAgent.includes('Firefox') : false;
-
-/**
- * Check if an element is an `<svg>` or any other SVG element.
- * @param {any} element the target element
- * @returns {boolean} the query result
- */
-const isSVGElement = (element) => element instanceof SVGElement;
-
-/**
- * Returns the bounding client rect of a target `HTMLElement`.
- *
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {HTMLElement | Element} element event.target
- * @param {boolean=} includeScale when *true*, the target scale is also computed
- * @returns {SHORTER.BoundingClientRect} the bounding client rect object
- */
-function getBoundingClientRect(element, includeScale) {
-  const {
-    width, height, top, right, bottom, left,
-  } = element.getBoundingClientRect();
-  let scaleX = 1;
-  let scaleY = 1;
-
-  if (includeScale && element instanceof HTMLElement) {
-    const { offsetWidth, offsetHeight } = element;
-    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
-    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
-  }
-
-  return {
-    width: width / scaleX,
-    height: height / scaleY,
-    top: top / scaleY,
-    right: right / scaleX,
-    bottom: bottom / scaleY,
-    left: left / scaleX,
-    x: left / scaleX,
-    y: top / scaleY,
-  };
-}
-
-/**
- * Returns an `{x,y}` object with the target
- * `HTMLElement` / `Node` scroll position.
- *
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {HTMLElement | Element | Window} element target node / element
- * @returns {{x: number, y: number}} the scroll tuple
- */
-function getNodeScroll(element) {
-  const isWin = 'scrollX' in element;
-  const x = isWin ? element.scrollX : element.scrollLeft;
-  const y = isWin ? element.scrollY : element.scrollTop;
-
-  return { x, y };
-}
-
-/**
- * Checks if a target `HTMLElement` is affected by scale.
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {HTMLElement} element target
- * @returns {boolean} the query result
- */
-function isScaledElement(element) {
-  const { width, height } = getBoundingClientRect(element);
-  const { offsetWidth, offsetHeight } = element;
-  return Math.round(width) !== offsetWidth
-    || Math.round(height) !== offsetHeight;
-}
-
-/**
- * Returns the rect relative to an offset parent.
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {HTMLElement | Element} element target
- * @param {HTMLElement | Element | Window} offsetParent the container / offset parent
- * @param {{x: number, y: number}} scroll
- * @returns {SHORTER.OffsetRect}
- */
-function getRectRelativeToOffsetParent(element, offsetParent, scroll) {
-  const isParentAnElement = offsetParent instanceof HTMLElement;
-  const rect = getBoundingClientRect(element, isParentAnElement && isScaledElement(offsetParent));
-  const offsets = { x: 0, y: 0 };
-
-  if (isParentAnElement) {
-    const offsetRect = getBoundingClientRect(offsetParent, true);
-    offsets.x = offsetRect.x + offsetParent.clientLeft;
-    offsets.y = offsetRect.y + offsetParent.clientTop;
-  }
-
-  return {
-    x: rect.left + scroll.x - offsets.x,
-    y: rect.top + scroll.y - offsets.y,
-    width: rect.width,
-    height: rect.height,
-  };
-}
-
-/**
- * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
- * @param  {HTMLElement | Element} element target element
- * @param  {Partial<CSSStyleDeclaration>} styles attribute value
- */
-// @ts-ignore
-const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
-
-/**
- * Style popovers and tooltips.
- * @param {BSN.Tooltip | BSN.Popover} self the `Popover` / `Tooltip` instance
- * @param {PointerEvent=} e event object
- */
-function styleTip(self, e) {
-  const tipClasses = /\b(top|bottom|start|end)+/;
-  // @ts-ignore
-  const tip = self.tooltip || self.popover;
-  const tipPositions = { ...tipClassPositions };
-
-  // reset tip style (top: 0, left: 0 works best)
-  setElementStyle(tip, { top: '0px', left: '0px', right: '' });
-
-  // @ts-ignore
-  const isPopover = !!self.popover;
-  const tipWidth = tip.offsetWidth;
-  const tipHeight = tip.offsetHeight;
-  const {
-    // @ts-ignore
-    element, options, arrow, offsetParent,
-  } = self;
-  const RTL = isRTL(element);
-  if (RTL) {
-    tipPositions.left = 'end';
-    tipPositions.right = 'start';
-  }
-  const documentElement = getDocumentElement(element);
-  const windowWidth = documentElement.clientWidth;
-  const windowHeight = documentElement.clientHeight;
-  const { container } = options;
-  let { placement } = options;
-  const parentIsBody = container.tagName === 'BODY';
-  const { left: parentLeft, right: parentRight } = getBoundingClientRect(container, true);
-  const parentPosition = getElementStyle(container, 'position');
-  // const absoluteParent = parentPosition === 'absolute';
-  const fixedParent = parentPosition === 'fixed';
-  const staticParent = parentPosition === 'static';
-  const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
-  const leftBoundry = 0;
-  const rightBoundry = container.clientWidth + parentLeft + (windowWidth - parentRight) - 1;
-  const {
-    width: elemWidth,
-    height: elemHeight,
-    left: elemRectLeft,
-    right: elemRectRight,
-    top: elemRectTop,
-  } = getBoundingClientRect(element, true);
-  const scroll = getNodeScroll(parentIsBody || staticParent ? getWindow(element) : container);
-  const isSVG = isSVGElement(element);
-  const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
-
-  // reset arrow style
-  setElementStyle(arrow, { top: '', left: '', right: '' });
-  let topPosition;
-  let leftPosition;
-  let rightPosition;
-  let arrowTop;
-  let arrowLeft;
-  let arrowRight;
-
-  const arrowWidth = arrow.offsetWidth || 0;
-  const arrowHeight = arrow.offsetHeight || 0;
-  const arrowAdjust = arrowWidth / 2;
-
-  // check placement
-  let topExceed = elemRectTop - tipHeight - arrowHeight < 0;
-  let bottomExceed = elemRectTop + tipHeight + elemHeight
-    + arrowHeight >= windowHeight;
-  let leftExceed = elemRectLeft - tipWidth - arrowWidth < leftBoundry;
-  let rightExceed = elemRectLeft + tipWidth + elemWidth
-    + arrowWidth >= rightBoundry;
-
-  const horizontal = ['left', 'right'];
-  const vertical = ['top', 'bottom'];
-  topExceed = horizontal.includes(placement)
-    ? elemRectTop + elemHeight / 2 - tipHeight / 2 - arrowHeight < 0
-    : topExceed;
-  bottomExceed = horizontal.includes(placement)
-    ? elemRectTop + tipHeight / 2 + elemHeight / 2 + arrowHeight >= windowHeight
-    : bottomExceed;
-  leftExceed = vertical.includes(placement)
-    ? elemRectLeft + elemWidth / 2 - tipWidth / 2 < leftBoundry
-    : leftExceed;
-  rightExceed = vertical.includes(placement)
-    ? elemRectLeft + tipWidth / 2 + elemWidth / 2 >= rightBoundry
-    : rightExceed;
-
-  // recompute placement
-  // first, when both left and right limits are exceeded, we fall back to top|bottom
-  placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
-  placement = placement === 'top' && topExceed ? 'bottom' : placement;
-  placement = placement === 'bottom' && bottomExceed ? 'top' : placement;
-  placement = placement === 'left' && leftExceed ? 'right' : placement;
-  placement = placement === 'right' && rightExceed ? 'left' : placement;
-
-  // update tooltip/popover class
-  if (!tip.className.includes(placement)) {
-    tip.className = tip.className.replace(tipClasses, tipPositions[placement]);
-  }
-
-  // compute tooltip / popover coordinates
-  if (horizontal.includes(placement)) { // secondary|side positions
-    if (placement === 'left') { // LEFT
-      leftPosition = x - tipWidth - (isPopover ? arrowWidth : 0);
-    } else { // RIGHT
-      leftPosition = x + elemWidth + (isPopover ? arrowWidth : 0);
-    }
-
-    // adjust top and arrow
-    if (topExceed) {
-      topPosition = y;
-      arrowTop = elemHeight / 2 - arrowWidth;
-    } else if (bottomExceed) {
-      topPosition = y - tipHeight + elemHeight;
-      arrowTop = tipHeight - elemHeight / 2 - arrowWidth;
-    } else {
-      topPosition = y - tipHeight / 2 + elemHeight / 2;
-      arrowTop = tipHeight / 2 - arrowHeight / 2;
-    }
-  } else if (vertical.includes(placement)) {
-    if (e && isMedia(element)) {
-      let eX = 0;
-      let eY = 0;
-
-      if (parentIsBody || staticParent) {
-        eX = e.pageX;
-        eY = e.pageY;
-      } else if (['sticky', 'fixed'].includes(parentPosition)) {
-        eX = e.clientX + scroll.x;
-        eY = e.clientY + scroll.y;
-      // parentPosition === 'relative | static | absolute'
-      } else {
-        // @ts-ignore -- Firefix breaks here
-        eX = e.layerX + ((isSVG && !isFirefox) || absoluteTarget ? x : 0);
-        // @ts-ignore -- Firefix breaks here
-        eY = e.layerY + ((isSVG && !isFirefox) || absoluteTarget ? y : 0);
-      }
-      // some weird RTL bug
-      const scrollbarWidth = parentRight - container.clientWidth;
-      eX -= RTL && fixedParent ? scrollbarWidth : 0;
-
-      if (placement === 'top') {
-        topPosition = eY - tipHeight - arrowWidth;
-      } else {
-        topPosition = eY + arrowWidth;
-      }
-
-      // adjust (left | right) and also the arrow
-      if (e.clientX - tipWidth / 2 < leftBoundry) {
-        leftPosition = 0;
-        arrowLeft = eX - arrowAdjust;
-      } else if (e.clientX + tipWidth / 2 > rightBoundry) {
-        leftPosition = 'auto';
-        rightPosition = 0;
-        arrowRight = rightBoundry - eX - arrowAdjust;
-      // normal top/bottom
-      } else {
-        leftPosition = eX - tipWidth / 2;
-        arrowLeft = tipWidth / 2 - arrowAdjust;
-      }
-    } else {
-      if (placement === 'top') {
-        topPosition = y - tipHeight - (isPopover ? arrowHeight : 0);
-      } else { // BOTTOM
-        topPosition = y + elemHeight + (isPopover ? arrowHeight : 0);
-      }
-
-      // adjust left | right and also the arrow
-      if (leftExceed) {
-        leftPosition = 0;
-        arrowLeft = x + elemWidth / 2 - arrowAdjust;
-      } else if (rightExceed) {
-        leftPosition = 'auto';
-        rightPosition = 0;
-        arrowRight = elemWidth / 2 + rightBoundry - elemRectRight - arrowAdjust;
-      } else {
-        leftPosition = x - tipWidth / 2 + elemWidth / 2;
-        arrowLeft = tipWidth / 2 - arrowAdjust;
-      }
-    }
-  }
-
-  // apply style to tooltip/popover
-  setElementStyle(tip, {
-    top: `${topPosition}px`,
-    left: leftPosition === 'auto' ? leftPosition : `${leftPosition}px`,
-    right: rightPosition !== undefined ? `${rightPosition}px` : '',
-  });
-
-  // update arrow placement
-  if (arrowTop !== undefined) {
-    arrow.style.top = `${arrowTop}px`;
-  }
-  if (arrowLeft !== undefined) {
-    arrow.style.left = `${arrowLeft}px`;
-  } else if (arrowRight !== undefined) {
-    arrow.style.right = `${arrowRight}px`;
-  }
 }
 
 /**
@@ -1076,32 +1238,6 @@ function getElementContainer(element, getOffset) {
 }
 
 /**
- * Append an existing `Element` to Popover / Tooltip component or HTML
- * markup string to be parsed & sanitized to be used as popover / tooltip content.
- *
- * @param {HTMLElement | Element} element target
- * @param {HTMLElement | Element | string} content the `Element` to append / string
- * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
- */
-function setHtml(element, content, sanitizeFn) {
-  if (typeof content === 'string' && !content.length) return;
-
-  if (typeof content === 'string') {
-    let dirty = content.trim(); // fixing #233
-    if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
-
-    const domParser = new DOMParser();
-    const tempDocument = domParser.parseFromString(dirty, 'text/html');
-    const { body } = tempDocument;
-    const method = body.children.length ? 'innerHTML' : 'innerText';
-    // @ts-ignore
-    element[method] = body[method];
-  } else if (content instanceof HTMLElement) {
-    element.append(content);
-  }
-}
-
-/**
  * The raw value or a given component option.
  *
  * @typedef {string | HTMLElement | Function | number | boolean | null} niceValue
@@ -1157,10 +1293,11 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   const normalOps = {};
   /** @type {Record<string, any>} */
   const dataOps = {};
+  const title = 'title';
 
   ObjectKeys(data).forEach((k) => {
     const key = ns && k.includes(ns)
-      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
       : k;
 
     dataOps[key] = normalizeValue(data[k]);
@@ -1176,7 +1313,9 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
     } else if (k in dataOps) {
       normalOps[k] = dataOps[k];
     } else {
-      normalOps[k] = defaultOps[k];
+      normalOps[k] = k === title
+        ? getAttribute(element, title)
+        : defaultOps[k];
     }
   });
 
@@ -1243,50 +1382,492 @@ class BaseComponent {
   }
 }
 
+/* Native JavaScript for Bootstrap 5 | Tooltip
+---------------------------------------------- */
+
+// TOOLTIP PRIVATE GC
+// ==================
+const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${tooltipString}"]`;
+const titleAttr = 'title';
+
+/**
+ * Static method which returns an existing `Tooltip` instance associated
+ * to a target `Element`.
+ *
+ * @type {BSN.GetInstance<Tooltip>}
+ */
+let getTooltipInstance = (element) => getInstance(element, tooltipComponent);
+
+/**
+ * A `Tooltip` initialization callback.
+ * @type {BSN.InitCallback<Tooltip>}
+ */
+const tooltipInitCallback = (element) => new Tooltip(element);
+
+// TOOLTIP PRIVATE METHODS
+// =======================
+/**
+ * Removes the tooltip from the DOM.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
+function removeTooltip(self) {
+  const { element, tooltip } = self;
+  removeAttribute(element, ariaDescribedBy);
+  tooltip.remove();
+}
+
+/**
+ * Executes after the instance has been disposed.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
+function disposeTooltipComplete(self) {
+  const { element } = self;
+  toggleTooltipHandlers(self);
+
+  if (element.hasAttribute(dataOriginalTitle) && self.name === tooltipString) {
+    toggleTooltipTitle(self);
+  }
+}
+
+/**
+ * Toggles on/off the special `Tooltip` event listeners.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ * @param {boolean=} add when `true`, event listeners are added
+ */
+function toggleTooltipAction(self, add) {
+  const action = add ? on : off;
+  const { element } = self;
+
+  action(getDocument(element), touchstartEvent, tooltipTouchHandler, passiveHandler);
+
+  if (!isMedia(element)) {
+    [scrollEvent, resizeEvent].forEach((ev) => {
+      // @ts-ignore
+      action(getWindow(element), ev, self.update, passiveHandler);
+    });
+  }
+}
+
+/**
+ * Executes after the tooltip was shown to the user.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
+function tooltipShownAction(self) {
+  const { element } = self;
+  const shownTooltipEvent = OriginalEvent(`shown.bs.${toLowerCase(self.name)}`);
+
+  toggleTooltipAction(self, true);
+  dispatchEvent(element, shownTooltipEvent);
+  Timer.clear(element, 'in');
+}
+
+/**
+ * Executes after the tooltip was hidden to the user.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ */
+function tooltipHiddenAction(self) {
+  const { element } = self;
+  const hiddenTooltipEvent = OriginalEvent(`hidden.bs.${toLowerCase(self.name)}`);
+
+  toggleTooltipAction(self);
+  removeTooltip(self);
+  dispatchEvent(element, hiddenTooltipEvent);
+  Timer.clear(element, 'out');
+}
+
+/**
+ * Toggles on/off the `Tooltip` event listeners.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ * @param {boolean=} add when `true`, event listeners are added
+ */
+function toggleTooltipHandlers(self, add) {
+  const action = add ? on : off;
+  // @ts-ignore -- btn is only for dismissible popover
+  const { element, options, btn } = self;
+  const { trigger, dismissible } = options;
+
+  if (trigger.includes('manual')) return;
+
+  self.enabled = !!add;
+
+  /** @type {string[]} */
+  const triggerOptions = trigger.split(' ');
+  const elemIsMedia = isMedia(element);
+
+  if (elemIsMedia) {
+    action(element, mousemoveEvent, self.update, passiveHandler);
+  }
+
+  triggerOptions.forEach((tr) => {
+    if (elemIsMedia || tr === mousehoverEvent) {
+      action(element, mousedownEvent, self.show);
+      action(element, mouseenterEvent, self.show);
+
+      if (dismissible) {
+        if (btn) action(btn, mouseclickEvent, self.hide);
+      } else {
+        action(element, mouseleaveEvent, self.hide);
+        action(getDocument(element), touchstartEvent, tooltipTouchHandler, passiveHandler);
+      }
+    } else if (tr === mouseclickEvent) {
+      action(element, tr, (!dismissible ? self.toggle : self.show));
+    } else if (tr === focusEvent) {
+      action(element, focusinEvent, self.show);
+      if (!dismissible) action(element, focusoutEvent, self.hide);
+      if (isApple) action(element, mouseclickEvent, () => focus(element));
+    }
+  });
+}
+
+/**
+ * Toggles on/off the `Tooltip` event listeners that hide/update the tooltip.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ * @param {boolean=} add when `true`, event listeners are added
+ */
+function toggleTooltipOpenHandlers(self, add) {
+  const action = add ? on : off;
+  const { element, options } = self;
+  const { container } = options;
+  const { offsetHeight, scrollHeight } = container;
+  const win = getWindow(element);
+  const scrollTarget = offsetHeight !== scrollHeight ? container : win;
+
+  if (!isMedia(element)) {
+    // @ts-ignore
+    action(win, resizeEvent, self.update, passiveHandler);
+    action(scrollTarget, scrollEvent, self.update, passiveHandler);
+  }
+}
+
+/**
+ * Toggles the `title` and `data-original-title` attributes.
+ *
+ * @param {Tooltip} self the `Tooltip` instance
+ * @param {string=} content when `true`, event listeners are added
+ */
+function toggleTooltipTitle(self, content) {
+  // [0 - add, 1 - remove] | [0 - remove, 1 - add]
+  const titleAtt = [dataOriginalTitle, titleAttr];
+  const { element } = self;
+
+  setAttribute(element, titleAtt[content ? 0 : 1],
+    // @ts-ignore
+    (content || getAttribute(element, titleAtt[0])));
+  removeAttribute(element, titleAtt[content ? 1 : 0]);
+}
+
+// TOOLTIP EVENT HANDLERS
+// ======================
+/**
+ * Handles the `touchstart` event listener for `Tooltip`
+ * @this {Tooltip}
+ * @param {TouchEvent} e the `Event` object
+ */
+function tooltipTouchHandler({ target }) {
+  const { tooltip, element } = this;
+  // @ts-ignore
+  if (tooltip.contains(target) || target === element || element.contains(target)) ; else {
+    this.hide();
+  }
+}
+
+// TOOLTIP DEFINITION
+// ==================
+/** Creates a new `Tooltip` instance. */
+class Tooltip extends BaseComponent {
+  /**
+   * @param {HTMLElement | Element | string} target the target element
+   * @param {BSN.Options.Tooltip=} config the instance options
+   */
+  constructor(target, config) {
+    super(target, config);
+
+    // bind
+    const self = this;
+    const { element } = self;
+    const isTooltip = self.name === tooltipComponent;
+    const tipString = isTooltip ? tooltipString : popoverString;
+    const tipComponent = isTooltip ? tooltipComponent : popoverComponent;
+
+    getTooltipInstance = (elem) => getInstance(elem, tipComponent);
+
+    // additional properties
+    /** @type {any} */
+    self.tooltip = {};
+    if (!isTooltip) {
+      /** @type {any?} */
+      // @ts-ignore
+      self.btn = null;
+    }
+    /** @type {any} */
+    self.arrow = {};
+    /** @type {boolean} */
+    self.enabled = true;
+    /** @type {string} Set unique ID for `aria-describedby`. */
+    self.id = `${tipString}-${getUID(element, tipString)}`;
+
+    // instance options
+    const { options } = self;
+
+    // invalidate
+    if ((!options.title && isTooltip) || (!isTooltip && !options.content)) return;
+
+    const container = querySelector(options.container);
+    const idealContainer = getElementContainer(element);
+
+    // bypass container option when its position is static/relative
+    self.options.container = !container || (container
+      && ['static', 'relative'].includes(getElementStyle(container, 'position')))
+      ? idealContainer
+      : container || getDocumentBody(element);
+
+    // reset default options
+    tooltipDefaults[titleAttr] = null;
+
+    // all functions bind
+    tooltipTouchHandler.bind(self);
+    self.update = self.update.bind(self);
+    self.show = self.show.bind(self);
+    self.hide = self.hide.bind(self);
+    self.toggle = self.toggle.bind(self);
+
+    // set title attributes and add event listeners
+    if (element.hasAttribute(titleAttr) && isTooltip) {
+      toggleTooltipTitle(self, options.title);
+    }
+
+    // create tooltip here
+    createTip(self);
+
+    // attach events
+    toggleTooltipHandlers(self, true);
+  }
+
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */
+  get name() { return tooltipComponent; }
+  /**
+   * Returns component default options.
+   * @readonly @static
+   */
+  get defaults() { return tooltipDefaults; }
+  /* eslint-enable */
+
+  // TOOLTIP PUBLIC METHODS
+  // ======================
+  /**
+   * Shows the tooltip.
+   *
+   * @param {Event=} e the `Event` object
+   * @this {Tooltip}
+   */
+  show(e) {
+    const self = this;
+    const {
+      options, tooltip, element, id,
+    } = self;
+    const { container, animation } = options;
+    const outTimer = Timer.get(element, 'out');
+
+    Timer.clear(element, 'out');
+
+    if (tooltip && !outTimer && !isVisibleTip(tooltip, container)) {
+      Timer.set(element, () => {
+        const showTooltipEvent = OriginalEvent(`show.bs.${toLowerCase(self.name)}`);
+        dispatchEvent(element, showTooltipEvent);
+        if (showTooltipEvent.defaultPrevented) return;
+
+        // append to container
+        container.append(tooltip);
+        setAttribute(element, ariaDescribedBy, `#${id}`);
+
+        self.update(e);
+        toggleTooltipOpenHandlers(self, true);
+
+        if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
+        if (animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
+        else tooltipShownAction(self);
+      }, 17, 'in');
+    }
+  }
+
+  /**
+   * Hides the tooltip.
+   *
+   * @this {Tooltip}
+   */
+  hide() {
+    const self = this;
+
+    const { options, tooltip, element } = self;
+    const { container, animation, delay } = options;
+
+    Timer.clear(element, 'in');
+
+    if (tooltip && isVisibleTip(tooltip, container)) {
+      Timer.set(element, () => {
+        const hideTooltipEvent = OriginalEvent(`hide.bs.${toLowerCase(self.name)}`);
+        dispatchEvent(element, hideTooltipEvent);
+        if (hideTooltipEvent.defaultPrevented) return;
+
+        // @ts-ignore
+        removeClass(tooltip, showClass);
+        toggleTooltipOpenHandlers(self);
+
+        if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(self));
+        else tooltipHiddenAction(self);
+      }, delay + 17, 'out');
+    }
+  }
+
+  /**
+   * Updates the tooltip position.
+   *
+   * @param {Event=} e the `Event` object
+   * @this {Tooltip} the `Tooltip` instance
+   */
+  update(e) {
+    // @ts-ignore
+    styleTip(this, e);
+  }
+
+  /**
+   * Toggles the tooltip visibility.
+   *
+   * @param {Event=} e the `Event` object
+   * @this {Tooltip} the instance
+   */
+  toggle(e) {
+    const self = this;
+    const { tooltip, options } = self;
+
+    if (!isVisibleTip(tooltip, options.container)) self.show(e);
+    else self.hide();
+  }
+
+  /** Enables the tooltip. */
+  enable() {
+    const self = this;
+    const { enabled } = self;
+    if (!enabled) {
+      toggleTooltipHandlers(self, true);
+      self.enabled = !enabled;
+    }
+  }
+
+  /** Disables the tooltip. */
+  disable() {
+    const self = this;
+    const {
+      element, tooltip, options, enabled,
+    } = self;
+    const { animation, container, delay } = options;
+    if (enabled) {
+      if (isVisibleTip(tooltip, container) && animation) {
+        self.hide();
+
+        Timer.set(element, () => {
+          toggleTooltipHandlers(self);
+          Timer.clear(element, tooltipString);
+        }, getElementTransitionDuration(tooltip) + delay + 17, tooltipString);
+      } else {
+        toggleTooltipHandlers(self);
+      }
+      self.enabled = !enabled;
+    }
+  }
+
+  /** Toggles the `disabled` property. */
+  toggleEnabled() {
+    const self = this;
+    if (!self.enabled) self.enable();
+    else self.disable();
+  }
+
+  /** Removes the `Tooltip` from the target element. */
+  dispose() {
+    const self = this;
+    const { tooltip, options } = self;
+
+    if (options.animation && isVisibleTip(tooltip, options.container)) {
+      options.delay = 0; // reset delay
+      self.hide();
+      emulateTransitionEnd(tooltip, () => disposeTooltipComplete(self));
+    } else {
+      disposeTooltipComplete(self);
+    }
+    super.dispose();
+  }
+}
+
+ObjectAssign(Tooltip, {
+  selector: tooltipSelector,
+  init: tooltipInitCallback,
+  getInstance: getTooltipInstance,
+  styleTip,
+});
+
 /* Native JavaScript for Bootstrap 5 | Popover
 ---------------------------------------------- */
 
 // POPOVER PRIVATE GC
 // ==================
-const popoverString = 'popover';
-const popoverComponent = 'Popover';
 const popoverSelector = `[${dataBsToggle}="${popoverString}"],[data-tip="${popoverString}"]`;
-const popoverHeaderClass = `${popoverString}-header`;
-const popoverBodyClass = `${popoverString}-body`;
-
-// POPOVER CUSTOM EVENTS
-// =====================
-const showPopoverEvent = bootstrapCustomEvent(`show.bs.${popoverString}`);
-const shownPopoverEvent = bootstrapCustomEvent(`shown.bs.${popoverString}`);
-const hidePopoverEvent = bootstrapCustomEvent(`hide.bs.${popoverString}`);
-const hiddenPopoverEvent = bootstrapCustomEvent(`hidden.bs.${popoverString}`);
 
 const popoverDefaults = {
+  ...tooltipDefaults,
   /** @type {string} */
-  template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-  /** @type {string?} */
-  title: null,
-  /** @type {string?} */
-  content: null,
-  /** @type {string?} */
-  customClass: null,
-  /** @type {string} */
-  trigger: 'hover',
-  /** @type {string} */
-  placement: 'top',
+  template: getTipTemplate(popoverString),
   /** @type {string} */
   btnClose: '<button class="btn-close" aria-label="Close"></button>',
-  /** @type {ReturnType<string>} */
-  sanitizeFn: null,
   /** @type {boolean} */
   dismissible: false,
-  /** @type {boolean} */
-  animation: true,
-  /** @type {number} */
-  delay: 200,
-  /** @type {Element?} */
-  container: null,
+  /** @type {string?} */
+  content: null,
 };
+
+// POPOVER DEFINITION
+// ==================
+/** Returns a new `Popover` instance. */
+class Popover extends Tooltip {
+  /* eslint-disable -- we want to specify Popover Options */
+  /**
+   * @param {HTMLElement | Element | string} target the target element
+   * @param {BSN.Options.Popover=} config the instance options
+   */
+  constructor(target, config) {
+    super(target, config);
+  }
+  /**
+   * Returns component name string.
+   * @readonly @static
+   */ 
+  get name() { return popoverComponent; }
+  /**
+   * Returns component default options.
+   * @readonly @static
+   */
+  get defaults() { return popoverDefaults; }
+  /* eslint-enable */
+
+  /* extend original `show()` */
+  show() {
+    super.show();
+    // @ts-ignore -- btn only exists within dismissible popover
+    const { options, btn } = this;
+    if (options.dismissible && btn) setTimeout(() => focus(btn), 17);
+  }
+}
 
 /**
  * Static method which returns an existing `Popover` instance associated
@@ -1301,425 +1882,6 @@ const getPopoverInstance = (element) => getInstance(element, popoverComponent);
  * @type {BSN.InitCallback<Popover>}
  */
 const popoverInitCallback = (element) => new Popover(element);
-
-// POPOVER EVENT HANDLERS
-// ======================
-/**
- * Handles the `touchstart` event listener for `Popover`
- * @this {Popover}
- * @param {TouchEvent} e the `TouchEvent` object
- */
-function popoverTouchHandler({ target }) {
-  const self = this;
-  const { popover, element } = self;
-  if ((popover && popover.contains(target)) // popover includes touch target
-    || target === element // OR touch target is element
-    // @ts-ignore
-    || element.contains(target)) ; else {
-    self.hide();
-  }
-}
-
-// POPOVER PRIVATE METHODS
-// =======================
-/**
- * Creates a new popover.
- *
- * @param {Popover} self the `Popover` instance
- */
-function createPopover(self) {
-  const { id, element, options } = self;
-  const {
-    animation, customClass, sanitizeFn, placement, dismissible,
-  } = options;
-  let { title, content } = options;
-  const { template, btnClose } = options;
-  const tipPositions = { ...tipClassPositions };
-
-  if (isRTL(element)) {
-    tipPositions.left = 'end';
-    tipPositions.right = 'start';
-  }
-
-  // set initial popover class
-  const placementClass = `bs-${popoverString}-${tipPositions[placement]}`;
-
-  // load template
-  /** @type {(HTMLElement | Element)?} */
-  let popoverTemplate;
-  if ([Element, HTMLElement].some((x) => template instanceof x)) {
-    popoverTemplate = template;
-  } else {
-    const htmlMarkup = getDocument(element).createElement('div');
-    setHtml(htmlMarkup, template, sanitizeFn);
-    popoverTemplate = htmlMarkup.firstElementChild;
-  }
-
-  // set popover markup
-  self.popover = popoverTemplate && popoverTemplate.cloneNode(true);
-
-  const { popover } = self;
-
-  // set id and role attributes
-  setAttribute(popover, 'id', id);
-  setAttribute(popover, 'role', 'tooltip');
-
-  const popoverHeader = querySelector(`.${popoverHeaderClass}`, popover);
-  const popoverBody = querySelector(`.${popoverBodyClass}`, popover);
-
-  // set arrow and enable access for styleTip
-  self.arrow = querySelector(`.${popoverString}-arrow`, popover);
-
-  // set dismissible button
-  if (dismissible) {
-    if (title) {
-      if (title instanceof HTMLElement) setHtml(title, btnClose, sanitizeFn);
-      else title += btnClose;
-    } else {
-      if (popoverHeader) popoverHeader.remove();
-      if (content instanceof HTMLElement) setHtml(content, btnClose, sanitizeFn);
-      else content += btnClose;
-    }
-  }
-
-  // fill the template with content from options / data attributes
-  // also sanitize title && content
-  if (title && popoverHeader) setHtml(popoverHeader, title, sanitizeFn);
-  if (content && popoverBody) setHtml(popoverBody, content, sanitizeFn);
-
-  // set btn and enable access for styleTip
-  [self.btn] = getElementsByClassName('btn-close', popover);
-
-  // set popover animation and placement
-  if (!hasClass(popover, popoverString)) addClass(popover, popoverString);
-  if (animation && !hasClass(popover, fadeClass)) addClass(popover, fadeClass);
-  if (customClass && !hasClass(popover, customClass)) {
-    addClass(popover, customClass);
-  }
-  if (!hasClass(popover, placementClass)) addClass(popover, placementClass);
-}
-
-/**
- * Removes the popover from the DOM.
- *
- * @param {Popover} self the `Popover` instance
- */
-function removePopover(self) {
-  const { element, popover } = self;
-  removeAttribute(element, ariaDescribedBy);
-  popover.remove();
-}
-
-/**
- * Toggles on/off the `Popover` event listeners.
- *
- * @param {Popover} self the `Popover` instance
- * @param {boolean=} add when `true`, event listeners are added
- */
-function togglePopoverHandlers(self, add) {
-  const action = add ? on : off;
-  const { element, options } = self;
-  const { trigger, dismissible } = options;
-  self.enabled = !!add;
-
-  if (trigger === mousehoverEvent) {
-    action(element, mousedownEvent, self.show);
-    action(element, mouseenterEvent, self.show);
-    if (isMedia(element)) action(element, mousemoveEvent, self.update, passiveHandler);
-    if (!dismissible) action(element, mouseleaveEvent, self.hide);
-  } else if (trigger === mouseclickEvent) {
-    action(element, trigger, self.toggle);
-  } else if (trigger === focusEvent) {
-    if (isApple) action(element, mouseclickEvent, () => focus(element));
-    action(element, focusinEvent, self.show);
-  }
-}
-
-/**
- * Toggles on/off the `Popover` event listeners that close popover.
- *
- * @param {Popover} self the `Popover` instance
- * @param {boolean=} add when `true`, event listeners are added
- */
-function dismissHandlerToggle(self, add) {
-  const action = add ? on : off;
-  const { options, element, btn } = self;
-  const { trigger, dismissible } = options;
-
-  if (dismissible) {
-    if (btn) action(btn, mouseclickEvent, self.hide);
-  } else {
-    if (trigger === focusEvent) action(element, focusoutEvent, self.hide);
-    if (trigger === mousehoverEvent) {
-      action(getDocument(element), touchstartEvent, popoverTouchHandler, passiveHandler);
-    }
-  }
-
-  if (!isMedia(element)) {
-    [scrollEvent, resizeEvent].forEach((ev) => {
-      // @ts-ignore
-      action(getWindow(element), ev, self.update, passiveHandler);
-    });
-  }
-}
-
-/**
- * Executes after popover was shown to the user.
- *
- * @param {Popover} self the `Popover` instance
- */
-function popoverShowComplete(self) {
-  const { element } = self;
-  dispatchEvent(element, shownPopoverEvent);
-  Timer.clear(element, 'in');
-}
-
-/**
- * Executes after popover was been hidden from the user.
- *
- * @param {Popover} self the `Popover` instance
- */
-function popoverHideComplete(self) {
-  removePopover(self);
-  const { element } = self;
-  dispatchEvent(element, hiddenPopoverEvent);
-  Timer.clear(element, 'out');
-}
-
-// POPOVER DEFINITION
-// ==================
-/** Returns a new `Popover` instance. */
-class Popover extends BaseComponent {
-  /**
-   * @param {HTMLElement | Element | string} target element with `data-bs-toggle` attribute
-   * @param {BSN.Options.Popover=} config instance options
-   */
-  constructor(target, config) {
-    super(target, config);
-
-    // bind
-    const self = this;
-    const { element } = self;
-
-    // additional instance properties
-    /** @type {any} */
-    self.popover = {};
-    /** @type {(HTMLElement | Element)?} */
-    self.arrow = null;
-    /** @type {(HTMLElement | Element)?} */
-    self.btn = null;
-    /** @type {any} */
-    self.offsetParent = {};
-    /** @type {boolean} */
-    self.enabled = true;
-    /**
-     * Set a unique ID for `aria-describedby`.
-     * @type {string}
-     */
-    self.id = `${popoverString}-${getUID(element, popoverString)}`;
-
-    // set instance options
-    const { options } = self;
-    // invalidate when no content is set
-    if (!options.content) return;
-
-    const container = querySelector(options.container);
-    const idealContainer = getElementContainer(element);
-
-    // first set container
-    // bypass container option when its position is static/relative
-    self.options.container = !container || (container
-      && ['static', 'relative'].includes(getElementStyle(container, 'position')))
-      ? idealContainer
-      : container || getDocumentBody(element);
-
-    // crate popover
-    createPopover(self);
-
-    // bind
-    popoverTouchHandler.bind(self);
-    self.update = self.update.bind(self);
-
-    // attach event listeners
-    togglePopoverHandlers(self, true);
-  }
-
-  /* eslint-disable */
-  /**
-   * Returns component name string.
-   * @readonly @static
-   */ 
-  get name() { return popoverComponent; }
-  /**
-   * Returns component default options.
-   * @readonly @static
-   */
-  get defaults() { return popoverDefaults; }
-  /* eslint-enable */
-
-  /**
-   * Updates the position of the popover. Must use `Event` object.
-   *
-   * @param {Event=} e the `Event` object
-   */
-  update(e) {
-    // @ts-ignore
-    styleTip(this, e);
-  }
-
-  // POPOVER PUBLIC METHODS
-  // ======================
-  /**
-   * Toggles visibility of the popover. Must use `Event` object.
-   *
-   * @param {Event=} e the `Event` object
-   * @this {Popover}
-   */
-  toggle(e) {
-    // @ts-ignore
-    const self = e ? getPopoverInstance(this) : this;
-    if (!self) return;
-    const { popover, options } = self;
-    if (!isVisibleTip(popover, options.container)) self.show();
-    else self.hide();
-  }
-
-  /**
-   * Shows the popover. Must use `Event` object.
-   *
-   * @param {Event=} e the `Event` object
-   * @this {Popover}
-   */
-  show(e) {
-    // @ts-ignore
-    const self = e ? getPopoverInstance(this) : this;
-    if (!self) return;
-    const {
-      element, popover, options, id,
-    } = self;
-    const { container, animation } = options;
-    const outTimer = Timer.get(element, 'out');
-
-    Timer.clear(element, 'out');
-
-    if (popover && !outTimer && !isVisibleTip(popover, container)) {
-      const showCallback = () => {
-        dispatchEvent(element, showPopoverEvent);
-        if (showPopoverEvent.defaultPrevented) return;
-
-        // append to the container
-        container.append(popover);
-        setAttribute(element, ariaDescribedBy, `#${id}`);
-
-        self.offsetParent = getElementContainer(popover, true);
-
-        self.update(e);
-        if (!hasClass(popover, showClass)) addClass(popover, showClass);
-        dismissHandlerToggle(self, true);
-
-        if (animation) emulateTransitionEnd(popover, () => popoverShowComplete(self));
-        else popoverShowComplete(self);
-      };
-      Timer.set(element, showCallback, 17, 'in');
-    }
-  }
-
-  /**
-   * Hides the popover.
-   *
-   * @this {Popover}
-   * @param {Event=} e the `Event` object
-   */
-  hide(e) {
-    /** @type {Popover} */
-    let self;
-    if (e) {
-      // @ts-ignore
-      self = getPopoverInstance(this);
-      if (!self) { // dismissible popover
-        // @ts-ignore
-        const dPopover = this.closest(`.${popoverString}`);
-        const dEl = dPopover && querySelector(`[${ariaDescribedBy}="#${dPopover.id}"]`);
-        // @ts-ignore
-        self = getPopoverInstance(dEl);
-      }
-    } else {
-      self = this;
-    }
-    const { element, popover, options } = self;
-    const { container, animation, delay } = options;
-
-    Timer.clear(element, 'in');
-
-    if (popover && isVisibleTip(popover, container)) {
-      const hideCallback = () => {
-        dispatchEvent(element, hidePopoverEvent);
-        if (hidePopoverEvent.defaultPrevented) return;
-
-        removeClass(popover, showClass);
-        dismissHandlerToggle(self);
-
-        if (animation) emulateTransitionEnd(popover, () => popoverHideComplete(self));
-        else popoverHideComplete(self);
-      };
-      Timer.set(element, hideCallback, delay + 17, 'out');
-    }
-  }
-
-  /** Disables the popover. */
-  enable() {
-    const self = this;
-    const { enabled } = self;
-    if (!enabled) {
-      togglePopoverHandlers(self, true);
-      self.enabled = !enabled;
-    }
-  }
-
-  /** Enables the popover. */
-  disable() {
-    const self = this;
-    const {
-      element, enabled, popover, options,
-    } = self;
-    const { container, animation, delay } = options;
-
-    if (enabled) {
-      if (isVisibleTip(popover, container) && animation) {
-        self.hide();
-        Timer.set(element, () => {
-          togglePopoverHandlers(self);
-          Timer.clear(element, popoverString);
-        }, getElementTransitionDuration(popover) + delay + 17, popoverString);
-      } else {
-        togglePopoverHandlers(self);
-      }
-      self.enabled = !enabled;
-    }
-  }
-
-  /** Toggles the `enabled` property. */
-  toggleEnabled() {
-    const self = this;
-    if (!self.enabled) self.enable();
-    else self.disable();
-  }
-
-  /** Removes the `Popover` from the target element. */
-  dispose() {
-    const self = this;
-    const { popover, options } = self;
-    const { container, animation } = options;
-    if (animation && isVisibleTip(popover, container)) {
-      self.options.delay = 0; // reset delay
-      self.hide();
-      emulateTransitionEnd(popover, () => togglePopoverHandlers(self));
-    } else {
-      togglePopoverHandlers(self);
-    }
-    super.dispose();
-  }
-}
 
 ObjectAssign(Popover, {
   selector: popoverSelector,

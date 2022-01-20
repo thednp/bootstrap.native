@@ -10,6 +10,135 @@
 })(this, (function () { 'use strict';
 
   /**
+   * A global namespace for `click` event.
+   * @type {string}
+   */
+  const mouseclickEvent = 'click';
+
+  /**
+   * A global namespace for `mouseenter` event.
+   * @type {string}
+   */
+  const mouseenterEvent = 'mouseenter';
+
+  /**
+   * A global namespace for `mouseleave` event.
+   * @type {string}
+   */
+  const mouseleaveEvent = 'mouseleave';
+
+  /**
+   * A global namespace for `focusin` event.
+   * @type {string}
+   */
+  const focusinEvent = 'focusin';
+
+  /**
+   * A global namespace for `focusout` event.
+   * @type {string}
+   */
+  const focusoutEvent = 'focusout';
+
+  /**
+   * Add class to `HTMLElement.classList`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} classNAME to add
+   */
+  function addClass(element, classNAME) {
+    element.classList.add(classNAME);
+  }
+
+  /**
+   * Check class in `HTMLElement.classList`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} classNAME to check
+   * @return {boolean}
+   */
+  function hasClass(element, classNAME) {
+    return element.classList.contains(classNAME);
+  }
+
+  /**
+   * Remove class from `HTMLElement.classList`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} classNAME to remove
+   */
+  function removeClass(element, classNAME) {
+    element.classList.remove(classNAME);
+  }
+
+  /**
+   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function on(element, eventName, handler, options) {
+    const ops = options || false;
+    element.addEventListener(eventName, handler, ops);
+  }
+
+  /**
+   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function off(element, eventName, handler, options) {
+    const ops = options || false;
+    element.removeEventListener(eventName, handler, ops);
+  }
+
+  /**
+   * Returns the `document` or the `#document` element.
+   * @see https://github.com/floating-ui/floating-ui
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {Document}
+   */
+  function getDocument(node) {
+    if (node instanceof HTMLElement) return node.ownerDocument;
+    if (node instanceof Window) return node.document;
+    return window.document;
+  }
+
+  /**
+   * A global array of possible `ParentNode`.
+   */
+  const parentNodes = [Document, Node, Element, HTMLElement];
+
+  /**
+   * A global array with `Element` | `HTMLElement`.
+   */
+  const elementNodes = [Element, HTMLElement];
+
+  /**
+   * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
+   * or find one that matches a selector.
+   *
+   * @param {HTMLElement | Element | string} selector the input selector or target element
+   * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+   * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
+   */
+  function querySelector(selector, parent) {
+    const selectorIsString = typeof selector === 'string';
+    const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+      ? parent : getDocument();
+
+    if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+      return selector;
+    }
+    // @ts-ignore -- `ShadowRoot` is also a node
+    return selectorIsString ? lookUp.querySelector(selector) : null;
+  }
+
+  /**
    * Shortcut for the `Element.dispatchEvent(Event)` method.
    *
    * @param {HTMLElement | Element} element is the target
@@ -99,32 +228,6 @@
   }
 
   /**
-   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function on(element, eventName, handler, options) {
-    const ops = options || false;
-    element.addEventListener(eventName, handler, ops);
-  }
-
-  /**
-   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function off(element, eventName, handler, options) {
-    const ops = options || false;
-    element.removeEventListener(eventName, handler, ops);
-  }
-
-  /**
    * Utility to make sure callbacks are consistently
    * called when transition ends.
    *
@@ -156,109 +259,6 @@
     } else {
       handler.apply(element, [endEvent]);
     }
-  }
-
-  /**
-   * Add class to `HTMLElement.classList`.
-   *
-   * @param {HTMLElement | Element} element target
-   * @param {string} classNAME to add
-   */
-  function addClass(element, classNAME) {
-    element.classList.add(classNAME);
-  }
-
-  /**
-   * Check class in `HTMLElement.classList`.
-   *
-   * @param {HTMLElement | Element} element target
-   * @param {string} classNAME to check
-   * @return {boolean}
-   */
-  function hasClass(element, classNAME) {
-    return element.classList.contains(classNAME);
-  }
-
-  /**
-   * Remove class from `HTMLElement.classList`.
-   *
-   * @param {HTMLElement | Element} element target
-   * @param {string} classNAME to remove
-   */
-  function removeClass(element, classNAME) {
-    element.classList.remove(classNAME);
-  }
-
-  /**
-   * A global namespace for `click` event.
-   * @type {string}
-   */
-  const mouseclickEvent = 'click';
-
-  /**
-   * A global namespace for `mouseenter` event.
-   * @type {string}
-   */
-  const mouseenterEvent = 'mouseenter';
-
-  /**
-   * A global namespace for `mouseleave` event.
-   * @type {string}
-   */
-  const mouseleaveEvent = 'mouseleave';
-
-  /**
-   * A global namespace for `focusin` event.
-   * @type {string}
-   */
-  const focusinEvent = 'focusin';
-
-  /**
-   * A global namespace for `focusout` event.
-   * @type {string}
-   */
-  const focusoutEvent = 'focusout';
-
-  /**
-   * Returns the `document` or the `#document` element.
-   * @see https://github.com/floating-ui/floating-ui
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {Document}
-   */
-  function getDocument(node) {
-    if (node instanceof HTMLElement) return node.ownerDocument;
-    if (node instanceof Window) return node.document;
-    return window.document;
-  }
-
-  /**
-   * A global array of possible `ParentNode`.
-   */
-  const parentNodes = [Document, Node, Element, HTMLElement];
-
-  /**
-   * A global array with `Element` | `HTMLElement`.
-   */
-  const elementNodes = [Element, HTMLElement];
-
-  /**
-   * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
-   * or find one that matches a selector.
-   *
-   * @param {HTMLElement | Element | string} selector the input selector or target element
-   * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
-   * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
-   */
-  function querySelector(selector, parent) {
-    const selectorIsString = typeof selector === 'string';
-    const lookUp = parent && parentNodes.some((x) => parent instanceof x)
-      ? parent : getDocument();
-
-    if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
-      return selector;
-    }
-    // @ts-ignore -- `ShadowRoot` is also a node
-    return selectorIsString ? lookUp.querySelector(selector) : null;
   }
 
   /**
@@ -428,6 +428,23 @@
   };
 
   /**
+   * Returns a namespaced `CustomEvent` specific to each component.
+   * @param {string} EventType Event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   * @returns {SHORTER.OriginalEvent} a new namespaced event
+   */
+  function OriginalEvent(EventType, config) {
+    const OriginalCustomEvent = new CustomEvent(EventType, {
+      cancelable: true, bubbles: true,
+    });
+
+    if (config instanceof Object) {
+      ObjectAssign(OriginalCustomEvent, config);
+    }
+    return OriginalCustomEvent;
+  }
+
+  /**
    * Global namespace for most components `fade` class.
    */
   const fadeClass = 'fade';
@@ -442,20 +459,18 @@
    */
   const dataBsDismiss = 'data-bs-dismiss';
 
-  /**
-   * Returns a namespaced `CustomEvent` specific to each component.
-   * @param {string} EventType Event.type
-   * @param {Record<string, any>=} config Event.options | Event.properties
-   * @returns {BSN.OriginalEvent} a new namespaced event
-   */
-  function bootstrapCustomEvent(EventType, config) {
-    const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
+  /** @type {string} */
+  const toastString = 'toast';
 
-    if (config instanceof Object) {
-      ObjectAssign(OriginalCustomEvent, config);
-    }
-    return OriginalCustomEvent;
-  }
+  /** @type {string} */
+  const toastComponent = 'Toast';
+
+  /**
+   * Shortcut for `HTMLElement.getAttribute()` method.
+   * @param  {HTMLElement | Element} element target element
+   * @param  {string} attribute attribute name
+   */
+  const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
   /**
    * The raw value or a given component option.
@@ -498,6 +513,14 @@
   const ObjectKeys = (obj) => Object.keys(obj);
 
   /**
+   * Shortcut for `String.toLowerCase()`.
+   *
+   * @param {string} source input string
+   * @returns {string} lowercase output string
+   */
+  const toLowerCase = (source) => source.toLowerCase();
+
+  /**
    * Utility to normalize component options.
    *
    * @param {HTMLElement | Element} element target
@@ -513,10 +536,11 @@
     const normalOps = {};
     /** @type {Record<string, any>} */
     const dataOps = {};
+    const title = 'title';
 
     ObjectKeys(data).forEach((k) => {
       const key = ns && k.includes(ns)
-        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+        ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
         : k;
 
       dataOps[key] = normalizeValue(data[k]);
@@ -532,7 +556,9 @@
       } else if (k in dataOps) {
         normalOps[k] = dataOps[k];
       } else {
-        normalOps[k] = defaultOps[k];
+        normalOps[k] = k === title
+          ? getAttribute(element, title)
+          : defaultOps[k];
       }
     });
 
@@ -604,8 +630,6 @@
 
   // TOAST PRIVATE GC
   // ================
-  const toastString = 'toast';
-  const toastComponent = 'Toast';
   const toastSelector = `.${toastString}`;
   const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
   const showingClass = 'showing';
@@ -634,10 +658,10 @@
 
   // TOAST CUSTOM EVENTS
   // ===================
-  const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
-  const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
-  const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
-  const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
+  const showToastEvent = OriginalEvent(`show.bs.${toastString}`);
+  const shownToastEvent = OriginalEvent(`shown.bs.${toastString}`);
+  const hideToastEvent = OriginalEvent(`hide.bs.${toastString}`);
+  const hiddenToastEvent = OriginalEvent(`hidden.bs.${toastString}`);
 
   // TOAST PRIVATE METHODS
   // =====================

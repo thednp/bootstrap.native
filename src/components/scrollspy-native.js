@@ -1,35 +1,35 @@
 /* Native JavaScript for Bootstrap 5 | ScrollSpy
 ------------------------------------------------ */
 import getAttribute from 'shorter-js/src/attr/getAttribute';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler';
 import querySelector from 'shorter-js/src/selectors/querySelector';
 import getElementsByTagName from 'shorter-js/src/selectors/getElementsByTagName';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import off from 'shorter-js/src/event/off';
-import on from 'shorter-js/src/event/on';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import scrollEvent from 'shorter-js/src/strings/scrollEvent';
-import { getInstance } from 'shorter-js/src/misc/data';
 import getWindow from 'shorter-js/src/get/getWindow';
 import getDocument from 'shorter-js/src/get/getDocument';
 import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
 import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
 import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
+import off from 'shorter-js/src/event/off';
+import on from 'shorter-js/src/event/on';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import scrollEvent from 'shorter-js/src/strings/scrollEvent';
+import { getInstance } from 'shorter-js/src/misc/data';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
 import activeClass from '../strings/activeClass';
+import scrollspyString from '../strings/scrollspyString';
+import scrollspyComponent from '../strings/scrollspyComponent';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import BaseComponent from './base-component';
 
 // console.log(typeof addEventListener)
 
 // SCROLLSPY PRIVATE GC
 // ====================
-const scrollspyString = 'scrollspy';
-const scrollspyComponent = 'ScrollSpy';
 const scrollspySelector = '[data-bs-spy="scroll"]';
 
 const scrollspyDefaults = {
@@ -53,7 +53,7 @@ const scrollspyInitCallback = (element) => new ScrollSpy(element);
 
 // SCROLLSPY CUSTOM EVENT
 // ======================
-const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`);
+const activateScrollSpy = OriginalEvent(`activate.bs.${scrollspyString}`);
 
 // SCROLLSPY PRIVATE METHODS
 // =========================

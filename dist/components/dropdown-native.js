@@ -10,12 +10,79 @@
 })(this, (function () { 'use strict';
 
   /**
+   * A global namespace for aria-expanded.
+   * @type {string}
+   */
+  const ariaExpanded = 'aria-expanded';
+
+  /**
+   * A global namespace for `focus` event.
+   * @type {string}
+   */
+  const focusEvent = 'focus';
+
+  /**
+   * A global namespace for `keydown` event.
+   * @type {string}
+   */
+  const keydownEvent = 'keydown';
+
+  /**
+   * A global namespace for `keyup` event.
+   * @type {string}
+   */
+  const keyupEvent = 'keyup';
+
+  /**
+   * A global namespace for `scroll` event.
+   * @type {string}
+   */
+  const scrollEvent = 'scroll';
+
+  /**
+   * A global namespace for `resize` event.
+   * @type {string}
+   */
+  const resizeEvent = 'resize';
+
+  /**
+   * A global namespace for `click` event.
+   * @type {string}
+   */
+  const mouseclickEvent = 'click';
+
+  /**
+   * A global namespace for `ArrowUp` key.
+   * @type {string} e.which = 38 equivalent
+   */
+  const keyArrowUp = 'ArrowUp';
+
+  /**
+   * A global namespace for `ArrowDown` key.
+   * @type {string} e.which = 40 equivalent
+   */
+  const keyArrowDown = 'ArrowDown';
+
+  /**
+   * A global namespace for `Escape` key.
+   * @type {string} e.which = 27 equivalent
+   */
+  const keyEscape = 'Escape';
+
+  /**
    * Shortcut for `HTMLElement.setAttribute()` method.
    * @param  {HTMLElement | Element} element target element
    * @param  {string} attribute attribute name
    * @param  {string} value attribute value
    */
   const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
+
+  /**
+   * Shortcut for `HTMLElement.hasAttribute()` method.
+   * @param  {HTMLElement | Element} element target element
+   * @param  {string} attribute attribute name
+   */
+  const hasAttribute = (element, attribute) => element.hasAttribute(attribute);
 
   /**
    * Shortcut for `HTMLElement.closest` method which also works
@@ -97,172 +164,11 @@
   const passiveHandler = { passive: true };
 
   /**
-   * Add class to `HTMLElement.classList`.
-   *
-   * @param {HTMLElement | Element} element target
-   * @param {string} classNAME to add
-   */
-  function addClass(element, classNAME) {
-    element.classList.add(classNAME);
-  }
-
-  /**
-   * Check class in `HTMLElement.classList`.
-   *
-   * @param {HTMLElement | Element} element target
-   * @param {string} classNAME to check
-   * @return {boolean}
-   */
-  function hasClass(element, classNAME) {
-    return element.classList.contains(classNAME);
-  }
-
-  /**
-   * Remove class from `HTMLElement.classList`.
-   *
-   * @param {HTMLElement | Element} element target
-   * @param {string} classNAME to remove
-   */
-  function removeClass(element, classNAME) {
-    element.classList.remove(classNAME);
-  }
-
-  /**
-   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function on(element, eventName, handler, options) {
-    const ops = options || false;
-    element.addEventListener(eventName, handler, ops);
-  }
-
-  /**
-   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function off(element, eventName, handler, options) {
-    const ops = options || false;
-    element.removeEventListener(eventName, handler, ops);
-  }
-
-  /**
-   * A global namespace for aria-expanded.
-   * @type {string}
-   */
-  const ariaExpanded = 'aria-expanded';
-
-  /**
-   * A global namespace for `focus` event.
-   * @type {string}
-   */
-  const focusEvent = 'focus';
-
-  /**
-   * A global namespace for `keydown` event.
-   * @type {string}
-   */
-  const keydownEvent = 'keydown';
-
-  /**
-   * A global namespace for `keyup` event.
-   * @type {string}
-   */
-  const keyupEvent = 'keyup';
-
-  /**
-   * A global namespace for `scroll` event.
-   * @type {string}
-   */
-  const scrollEvent = 'scroll';
-
-  /**
-   * A global namespace for `resize` event.
-   * @type {string}
-   */
-  const resizeEvent = 'resize';
-
-  /**
-   * A global namespace for `click` event.
-   * @type {string}
-   */
-  const mouseclickEvent = 'click';
-
-  /**
-   * A global namespace for `ArrowUp` key.
-   * @type {string} e.which = 38 equivalent
-   */
-  const keyArrowUp = 'ArrowUp';
-
-  /**
-   * A global namespace for `ArrowDown` key.
-   * @type {string} e.which = 40 equivalent
-   */
-  const keyArrowDown = 'ArrowDown';
-
-  /**
-   * A global namespace for `Escape` key.
-   * @type {string} e.which = 27 equivalent
-   */
-  const keyEscape = 'Escape';
-
-  /**
-   * Returns the `document.documentElement` or the `<html>` element.
-   *
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {HTMLElement | HTMLHtmlElement}
-   */
-  function getDocumentElement(node) {
-    return getDocument(node).documentElement;
-  }
-
-  /**
-   * Checks if a page is Right To Left.
-   * @param {(HTMLElement | Element)=} node the target
-   * @returns {boolean} the query result
-   */
-  const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
-
-  /**
-   * Shortcut for the `Element.dispatchEvent(Event)` method.
-   *
-   * @param {HTMLElement | Element} element is the target
-   * @param {Event} event is the `Event` object
-   */
-  const dispatchEvent = (element, event) => element.dispatchEvent(event);
-
-  /**
    * Shortcut for `Object.assign()` static method.
    * @param  {Record<string, any>} obj a target object
    * @param  {Record<string, any>} source a source object
    */
   const ObjectAssign = (obj, source) => Object.assign(obj, source);
-
-  /**
-   * Shortcut for `window.getComputedStyle(element).propertyName`
-   * static method.
-   *
-   * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
-   * throws a `ReferenceError`.
-   *
-   * @param {HTMLElement | Element} element target
-   * @param {string} property the css property
-   * @return {string} the css property value
-   */
-  function getElementStyle(element, property) {
-    const computedStyle = getComputedStyle(element);
-
-    // @ts-ignore -- must use camelcase strings,
-    // or non-camelcase strings with `getPropertyValue`
-    return property in computedStyle ? computedStyle[property] : '';
-  }
 
   /** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
   const componentData = new Map();
@@ -348,6 +254,132 @@
   const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
 
   /**
+   * Shortcut for the `Element.dispatchEvent(Event)` method.
+   *
+   * @param {HTMLElement | Element} element is the target
+   * @param {Event} event is the `Event` object
+   */
+  const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+  /**
+   * Utility to focus an `HTMLElement` target.
+   *
+   * @param {HTMLElement | Element} element is the target
+   */
+  // @ts-ignore -- `Element`s resulted from querySelector can focus too
+  const focus = (element) => element.focus();
+
+  /**
+   * Returns a namespaced `CustomEvent` specific to each component.
+   * @param {string} EventType Event.type
+   * @param {Record<string, any>=} config Event.options | Event.properties
+   * @returns {SHORTER.OriginalEvent} a new namespaced event
+   */
+  function OriginalEvent(EventType, config) {
+    const OriginalCustomEvent = new CustomEvent(EventType, {
+      cancelable: true, bubbles: true,
+    });
+
+    if (config instanceof Object) {
+      ObjectAssign(OriginalCustomEvent, config);
+    }
+    return OriginalCustomEvent;
+  }
+
+  /**
+   * Add class to `HTMLElement.classList`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} classNAME to add
+   */
+  function addClass(element, classNAME) {
+    element.classList.add(classNAME);
+  }
+
+  /**
+   * Check class in `HTMLElement.classList`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} classNAME to check
+   * @return {boolean}
+   */
+  function hasClass(element, classNAME) {
+    return element.classList.contains(classNAME);
+  }
+
+  /**
+   * Remove class from `HTMLElement.classList`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} classNAME to remove
+   */
+  function removeClass(element, classNAME) {
+    element.classList.remove(classNAME);
+  }
+
+  /**
+   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function on(element, eventName, handler, options) {
+    const ops = options || false;
+    element.addEventListener(eventName, handler, ops);
+  }
+
+  /**
+   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+   *
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
+   */
+  function off(element, eventName, handler, options) {
+    const ops = options || false;
+    element.removeEventListener(eventName, handler, ops);
+  }
+
+  /**
+   * Returns the `document.documentElement` or the `<html>` element.
+   *
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {HTMLElement | HTMLHtmlElement}
+   */
+  function getDocumentElement(node) {
+    return getDocument(node).documentElement;
+  }
+
+  /**
+   * Checks if a page is Right To Left.
+   * @param {(HTMLElement | Element)=} node the target
+   * @returns {boolean} the query result
+   */
+  const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
+
+  /**
+   * Shortcut for `window.getComputedStyle(element).propertyName`
+   * static method.
+   *
+   * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
+   * throws a `ReferenceError`.
+   *
+   * @param {HTMLElement | Element} element target
+   * @param {string} property the css property
+   * @return {string} the css property value
+   */
+  function getElementStyle(element, property) {
+    const computedStyle = getComputedStyle(element);
+
+    // @ts-ignore -- must use camelcase strings,
+    // or non-camelcase strings with `getPropertyValue`
+    return property in computedStyle ? computedStyle[property] : '';
+  }
+
+  /**
    * Returns the bounding client rect of a target `HTMLElement`.
    *
    * @see https://github.com/floating-ui/floating-ui
@@ -380,21 +412,6 @@
       y: top / scaleY,
     };
   }
-
-  /**
-   * Utility to focus an `HTMLElement` target.
-   *
-   * @param {HTMLElement | Element} element is the target
-   */
-  // @ts-ignore -- `Element`s resulted from querySelector can focus too
-  const focus = (element) => element.focus();
-
-  /**
-   * Shortcut for `HTMLElement.hasAttribute()` method.
-   * @param  {HTMLElement | Element} element target element
-   * @param  {string} attribute attribute name
-   */
-  const hasAttribute = (element, attribute) => element.hasAttribute(attribute);
 
   /**
    * Returns the `Window` object of a target node.
@@ -432,25 +449,13 @@
    */
   const dropdownMenuClasses = ['dropdown', 'dropup', 'dropstart', 'dropend'];
 
+  /** @type {string} */
+  const dropdownComponent = 'Dropdown';
+
   /**
    * Global namespace for `.dropdown-menu`.
    */
   const dropdownMenuClass = 'dropdown-menu';
-
-  /**
-   * Returns a namespaced `CustomEvent` specific to each component.
-   * @param {string} EventType Event.type
-   * @param {Record<string, any>=} config Event.options | Event.properties
-   * @returns {BSN.OriginalEvent} a new namespaced event
-   */
-  function bootstrapCustomEvent(EventType, config) {
-    const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
-
-    if (config instanceof Object) {
-      ObjectAssign(OriginalCustomEvent, config);
-    }
-    return OriginalCustomEvent;
-  }
 
   /**
    * Checks if an *event.target* or its parent has an `href="#"` value.
@@ -467,6 +472,13 @@
       // @ts-ignore -- OR a child of an anchor with href starts with #
       || (parentAnchor && hasAttribute(parentAnchor, 'href') && parentAnchor.href.slice(-1) === '#'));
   }
+
+  /**
+   * Shortcut for `HTMLElement.getAttribute()` method.
+   * @param  {HTMLElement | Element} element target element
+   * @param  {string} attribute attribute name
+   */
+  const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
   /**
    * The raw value or a given component option.
@@ -509,6 +521,14 @@
   const ObjectKeys = (obj) => Object.keys(obj);
 
   /**
+   * Shortcut for `String.toLowerCase()`.
+   *
+   * @param {string} source input string
+   * @returns {string} lowercase output string
+   */
+  const toLowerCase = (source) => source.toLowerCase();
+
+  /**
    * Utility to normalize component options.
    *
    * @param {HTMLElement | Element} element target
@@ -524,10 +544,11 @@
     const normalOps = {};
     /** @type {Record<string, any>} */
     const dataOps = {};
+    const title = 'title';
 
     ObjectKeys(data).forEach((k) => {
       const key = ns && k.includes(ns)
-        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+        ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
         : k;
 
       dataOps[key] = normalizeValue(data[k]);
@@ -543,7 +564,9 @@
       } else if (k in dataOps) {
         normalOps[k] = dataOps[k];
       } else {
-        normalOps[k] = defaultOps[k];
+        normalOps[k] = k === title
+          ? getAttribute(element, title)
+          : defaultOps[k];
       }
     });
 
@@ -621,7 +644,6 @@
     dropstartString,
     dropendString,
   ] = dropdownMenuClasses;
-  const dropdownComponent = 'Dropdown';
   const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
 
   /**
@@ -652,10 +674,10 @@
 
   // DROPDOWN CUSTOM EVENTS
   // ======================
-  const showDropdownEvent = bootstrapCustomEvent(`show.bs.${dropdownString}`);
-  const shownDropdownEvent = bootstrapCustomEvent(`shown.bs.${dropdownString}`);
-  const hideDropdownEvent = bootstrapCustomEvent(`hide.bs.${dropdownString}`);
-  const hiddenDropdownEvent = bootstrapCustomEvent(`hidden.bs.${dropdownString}`);
+  const showDropdownEvent = OriginalEvent(`show.bs.${dropdownString}`);
+  const shownDropdownEvent = OriginalEvent(`shown.bs.${dropdownString}`);
+  const hideDropdownEvent = OriginalEvent(`hide.bs.${dropdownString}`);
+  const hiddenDropdownEvent = OriginalEvent(`hidden.bs.${dropdownString}`);
 
   // DROPDOWN PRIVATE METHODS
   // ========================
@@ -926,7 +948,7 @@
     const menuItems = getMenuItems(menu);
 
     // arrow up & down
-    if (menuItems && menuItems.length) {
+    if (menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)) {
       let idx = menuItems.indexOf(activeItem);
       if (activeItem === element) {
         idx = 0;

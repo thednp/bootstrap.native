@@ -144,7 +144,6 @@ export {
   ComponentOptions,
   Event,
   Options,
-  OriginalEvent,
 } from './more/types';
 
 declare global {

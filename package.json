@@ -84,7 +84,7 @@
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
     "minifill": "^0.0.17",
-    "shorter-js": "^0.3.0-alpha16"
+    "shorter-js": "^0.3.0-alpha19"
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",

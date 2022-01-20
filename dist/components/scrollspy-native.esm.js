@@ -11,20 +11,6 @@
 const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
 /**
- * Shortcut for the `Element.dispatchEvent(Event)` method.
- *
- * @param {HTMLElement | Element} element is the target
- * @param {Event} event is the `Event` object
- */
-const dispatchEvent = (element, event) => element.dispatchEvent(event);
-
-/**
- * A global namespace for most scroll event listeners.
- * @type {Partial<AddEventListenerOptions>}
- */
-const passiveHandler = { passive: true };
-
-/**
  * Returns the `document` or the `#document` element.
  * @see https://github.com/floating-ui/floating-ui
  * @param {(Node | HTMLElement | Element | globalThis)=} node
@@ -112,6 +98,81 @@ function removeClass(element, classNAME) {
 }
 
 /**
+ * Returns the `Window` object of a target node.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {(Node | HTMLElement | Element | Window)=} node target node
+ * @returns {globalThis}
+ */
+function getWindow(node) {
+  if (node == null) {
+    return window;
+  }
+
+  if (!(node instanceof Window)) {
+    const { ownerDocument } = node;
+    return ownerDocument ? ownerDocument.defaultView || window : window;
+  }
+
+  // @ts-ignore
+  return node;
+}
+
+/**
+ * Returns the `document.documentElement` or the `<html>` element.
+ *
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {HTMLElement | HTMLHtmlElement}
+ */
+function getDocumentElement(node) {
+  return getDocument(node).documentElement;
+}
+
+/**
+ * Returns the `document.body` or the `<body>` element.
+ *
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {HTMLElement | HTMLBodyElement}
+ */
+function getDocumentBody(node) {
+  return getDocument(node).body;
+}
+
+/**
+ * Returns the bounding client rect of a target `HTMLElement`.
+ *
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {HTMLElement | Element} element event.target
+ * @param {boolean=} includeScale when *true*, the target scale is also computed
+ * @returns {SHORTER.BoundingClientRect} the bounding client rect object
+ */
+function getBoundingClientRect(element, includeScale) {
+  const {
+    width, height, top, right, bottom, left,
+  } = element.getBoundingClientRect();
+  let scaleX = 1;
+  let scaleY = 1;
+
+  if (includeScale && element instanceof HTMLElement) {
+    const { offsetWidth, offsetHeight } = element;
+    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
+    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
+  }
+
+  return {
+    width: width / scaleX,
+    height: height / scaleY,
+    top: top / scaleY,
+    right: right / scaleX,
+    bottom: bottom / scaleY,
+    left: left / scaleX,
+    x: left / scaleX,
+    y: top / scaleY,
+  };
+}
+
+/**
  * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
  *
  * @param {HTMLElement | Element | Document | Window} element event.target
@@ -136,6 +197,20 @@ function on(element, eventName, handler, options) {
   const ops = options || false;
   element.addEventListener(eventName, handler, ops);
 }
+
+/**
+ * Shortcut for the `Element.dispatchEvent(Event)` method.
+ *
+ * @param {HTMLElement | Element} element is the target
+ * @param {Event} event is the `Event` object
+ */
+const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+/**
+ * A global namespace for most scroll event listeners.
+ * @type {Partial<AddEventListenerOptions>}
+ */
+const passiveHandler = { passive: true };
 
 /**
  * Shortcut for `Object.assign()` static method.
@@ -226,78 +301,20 @@ const Data = {
 const getInstance = (target, component) => Data.get(target, component);
 
 /**
- * Returns the `Window` object of a target node.
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {(Node | HTMLElement | Element | Window)=} node target node
- * @returns {globalThis}
+ * Returns a namespaced `CustomEvent` specific to each component.
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {SHORTER.OriginalEvent} a new namespaced event
  */
-function getWindow(node) {
-  if (node == null) {
-    return window;
+function OriginalEvent(EventType, config) {
+  const OriginalCustomEvent = new CustomEvent(EventType, {
+    cancelable: true, bubbles: true,
+  });
+
+  if (config instanceof Object) {
+    ObjectAssign(OriginalCustomEvent, config);
   }
-
-  if (!(node instanceof Window)) {
-    const { ownerDocument } = node;
-    return ownerDocument ? ownerDocument.defaultView || window : window;
-  }
-
-  // @ts-ignore
-  return node;
-}
-
-/**
- * Returns the `document.documentElement` or the `<html>` element.
- *
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {HTMLElement | HTMLHtmlElement}
- */
-function getDocumentElement(node) {
-  return getDocument(node).documentElement;
-}
-
-/**
- * Returns the `document.body` or the `<body>` element.
- *
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {HTMLElement | HTMLBodyElement}
- */
-function getDocumentBody(node) {
-  return getDocument(node).body;
-}
-
-/**
- * Returns the bounding client rect of a target `HTMLElement`.
- *
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {HTMLElement | Element} element event.target
- * @param {boolean=} includeScale when *true*, the target scale is also computed
- * @returns {SHORTER.BoundingClientRect} the bounding client rect object
- */
-function getBoundingClientRect(element, includeScale) {
-  const {
-    width, height, top, right, bottom, left,
-  } = element.getBoundingClientRect();
-  let scaleX = 1;
-  let scaleY = 1;
-
-  if (includeScale && element instanceof HTMLElement) {
-    const { offsetWidth, offsetHeight } = element;
-    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
-    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
-  }
-
-  return {
-    width: width / scaleX,
-    height: height / scaleY,
-    top: top / scaleY,
-    right: right / scaleX,
-    bottom: bottom / scaleY,
-    left: left / scaleX,
-    x: left / scaleX,
-    y: top / scaleY,
-  };
+  return OriginalCustomEvent;
 }
 
 /**
@@ -305,20 +322,11 @@ function getBoundingClientRect(element, includeScale) {
  */
 const activeClass = 'active';
 
-/**
- * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} EventType Event.type
- * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {BSN.OriginalEvent} a new namespaced event
- */
-function bootstrapCustomEvent(EventType, config) {
-  const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
+/** @type {string} */
+const scrollspyString = 'scrollspy';
 
-  if (config instanceof Object) {
-    ObjectAssign(OriginalCustomEvent, config);
-  }
-  return OriginalCustomEvent;
-}
+/** @type {string} */
+const scrollspyComponent = 'ScrollSpy';
 
 /**
  * The raw value or a given component option.
@@ -361,6 +369,14 @@ function normalizeValue(value) {
 const ObjectKeys = (obj) => Object.keys(obj);
 
 /**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
  * Utility to normalize component options.
  *
  * @param {HTMLElement | Element} element target
@@ -376,10 +392,11 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   const normalOps = {};
   /** @type {Record<string, any>} */
   const dataOps = {};
+  const title = 'title';
 
   ObjectKeys(data).forEach((k) => {
     const key = ns && k.includes(ns)
-      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
       : k;
 
     dataOps[key] = normalizeValue(data[k]);
@@ -395,7 +412,9 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
     } else if (k in dataOps) {
       normalOps[k] = dataOps[k];
     } else {
-      normalOps[k] = defaultOps[k];
+      normalOps[k] = k === title
+        ? getAttribute(element, title)
+        : defaultOps[k];
     }
   });
 
@@ -469,8 +488,6 @@ class BaseComponent {
 
 // SCROLLSPY PRIVATE GC
 // ====================
-const scrollspyString = 'scrollspy';
-const scrollspyComponent = 'ScrollSpy';
 const scrollspySelector = '[data-bs-spy="scroll"]';
 
 const scrollspyDefaults = {
@@ -494,7 +511,7 @@ const scrollspyInitCallback = (element) => new ScrollSpy(element);
 
 // SCROLLSPY CUSTOM EVENT
 // ======================
-const activateScrollSpy = bootstrapCustomEvent(`activate.bs.${scrollspyString}`);
+const activateScrollSpy = OriginalEvent(`activate.bs.${scrollspyString}`);
 
 // SCROLLSPY PRIVATE METHODS
 // =========================

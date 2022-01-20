@@ -214,6 +214,19 @@ const activeClass = 'active';
  */
 const dataBsToggle = 'data-bs-toggle';
 
+/** @type {string} */
+const buttonString = 'button';
+
+/** @type {string} */
+const buttonComponent = 'Button';
+
+/**
+ * Shortcut for `HTMLElement.getAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ */
+const getAttribute = (element, attribute) => element.getAttribute(attribute);
+
 /**
  * The raw value or a given component option.
  *
@@ -255,6 +268,14 @@ function normalizeValue(value) {
 const ObjectKeys = (obj) => Object.keys(obj);
 
 /**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
  * Utility to normalize component options.
  *
  * @param {HTMLElement | Element} element target
@@ -270,10 +291,11 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   const normalOps = {};
   /** @type {Record<string, any>} */
   const dataOps = {};
+  const title = 'title';
 
   ObjectKeys(data).forEach((k) => {
     const key = ns && k.includes(ns)
-      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
       : k;
 
     dataOps[key] = normalizeValue(data[k]);
@@ -289,7 +311,9 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
     } else if (k in dataOps) {
       normalOps[k] = dataOps[k];
     } else {
-      normalOps[k] = defaultOps[k];
+      normalOps[k] = k === title
+        ? getAttribute(element, title)
+        : defaultOps[k];
     }
   });
 
@@ -361,8 +385,6 @@ class BaseComponent {
 
 // BUTTON PRIVATE GC
 // =================
-const buttonString = 'button';
-const buttonComponent = 'Button';
 const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
 
 /**

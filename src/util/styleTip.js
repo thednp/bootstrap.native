@@ -10,6 +10,7 @@ import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
 import getWindow from 'shorter-js/src/get/getWindow';
 import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 
+import popoverComponent from '../strings/popoverComponent';
 import tipClassPositions from './tipClassPositions';
 
 /**
@@ -19,26 +20,23 @@ import tipClassPositions from './tipClassPositions';
  */
 export default function styleTip(self, e) {
   const tipClasses = /\b(top|bottom|start|end)+/;
-  // @ts-ignore
-  const tip = self.tooltip || self.popover;
+  const {
+    element, tooltip, options, arrow,
+  } = self;
   const tipPositions = { ...tipClassPositions };
 
-  // reset tip style (top: 0, left: 0 works best)
-  setElementStyle(tip, { top: '0px', left: '0px', right: '' });
-
+  // reset tooltip style (top: 0, left: 0 works best)
+  setElementStyle(tooltip, { top: '0px', left: '0px', right: '' });
   // @ts-ignore
-  const isPopover = !!self.popover;
-  const tipWidth = tip.offsetWidth;
-  const tipHeight = tip.offsetHeight;
-  const {
-    // @ts-ignore
-    element, options, arrow, offsetParent,
-  } = self;
+  const isPopover = self.name === popoverComponent;
+  const tipWidth = tooltip.offsetWidth;
+  const tipHeight = tooltip.offsetHeight;
   const RTL = isRTL(element);
   if (RTL) {
     tipPositions.left = 'end';
     tipPositions.right = 'start';
   }
+  const win = getWindow(element);
   const documentElement = getDocumentElement(element);
   const windowWidth = documentElement.clientWidth;
   const windowHeight = documentElement.clientHeight;
@@ -60,9 +58,9 @@ export default function styleTip(self, e) {
     right: elemRectRight,
     top: elemRectTop,
   } = getBoundingClientRect(element, true);
-  const scroll = getNodeScroll(parentIsBody || staticParent ? getWindow(element) : container);
-  const isSVG = isSVGElement(element);
-  const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
+  const scroll = getNodeScroll(parentIsBody || staticParent ? win : container);
+  const isSVG = isSVGElement(element); // @ts-ignore
+  const { x, y } = getRectRelativeToOffsetParent(element, win, scroll);
 
   // reset arrow style
   setElementStyle(arrow, { top: '', left: '', right: '' });
@@ -109,8 +107,8 @@ export default function styleTip(self, e) {
   placement = placement === 'right' && rightExceed ? 'left' : placement;
 
   // update tooltip/popover class
-  if (!tip.className.includes(placement)) {
-    tip.className = tip.className.replace(tipClasses, tipPositions[placement]);
+  if (!tooltip.className.includes(placement)) {
+    tooltip.className = tooltip.className.replace(tipClasses, tipPositions[placement]);
   }
 
   // compute tooltip / popover coordinates
@@ -196,19 +194,21 @@ export default function styleTip(self, e) {
   }
 
   // apply style to tooltip/popover
-  setElementStyle(tip, {
+  setElementStyle(tooltip, {
     top: `${topPosition}px`,
     left: leftPosition === 'auto' ? leftPosition : `${leftPosition}px`,
     right: rightPosition !== undefined ? `${rightPosition}px` : '',
   });
 
   // update arrow placement
-  if (arrowTop !== undefined) {
-    arrow.style.top = `${arrowTop}px`;
-  }
-  if (arrowLeft !== undefined) {
-    arrow.style.left = `${arrowLeft}px`;
-  } else if (arrowRight !== undefined) {
-    arrow.style.right = `${arrowRight}px`;
+  if (arrow instanceof HTMLElement) {
+    if (arrowTop !== undefined) {
+      arrow.style.top = `${arrowTop}px`;
+    }
+    if (arrowLeft !== undefined) {
+      arrow.style.left = `${arrowLeft}px`;
+    } else if (arrowRight !== undefined) {
+      arrow.style.right = `${arrowRight}px`;
+    }
   }
 }

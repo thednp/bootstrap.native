@@ -1,34 +1,34 @@
 /* Native JavaScript for Bootstrap 5 | Toast
 -------------------------------------------- */
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
 import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
 import mouseenterEvent from 'shorter-js/src/strings/mouseenterEvent';
 import mouseleaveEvent from 'shorter-js/src/strings/mouseleaveEvent';
 import focusinEvent from 'shorter-js/src/strings/focusinEvent';
 import focusoutEvent from 'shorter-js/src/strings/focusoutEvent';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
 import querySelector from 'shorter-js/src/selectors/querySelector';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import reflow from 'shorter-js/src/misc/reflow';
 import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
 import dataBsDismiss from '../strings/dataBsDismiss';
+import toastString from '../strings/toastString';
+import toastComponent from '../strings/toastComponent';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import BaseComponent from './base-component';
 
 // TOAST PRIVATE GC
 // ================
-const toastString = 'toast';
-const toastComponent = 'Toast';
 const toastSelector = `.${toastString}`;
 const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
 const showingClass = 'showing';
@@ -57,10 +57,10 @@ const toastInitCallback = (element) => new Toast(element);
 
 // TOAST CUSTOM EVENTS
 // ===================
-const showToastEvent = bootstrapCustomEvent(`show.bs.${toastString}`);
-const shownToastEvent = bootstrapCustomEvent(`shown.bs.${toastString}`);
-const hideToastEvent = bootstrapCustomEvent(`hide.bs.${toastString}`);
-const hiddenToastEvent = bootstrapCustomEvent(`hidden.bs.${toastString}`);
+const showToastEvent = OriginalEvent(`show.bs.${toastString}`);
+const shownToastEvent = OriginalEvent(`shown.bs.${toastString}`);
+const hideToastEvent = OriginalEvent(`hide.bs.${toastString}`);
+const hiddenToastEvent = OriginalEvent(`hidden.bs.${toastString}`);
 
 // TOAST PRIVATE METHODS
 // =====================

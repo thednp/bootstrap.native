@@ -4,6 +4,60 @@
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 /**
+ * A global namespace for `mouseenter` event.
+ * @type {string}
+ */
+const mouseenterEvent = 'mouseenter';
+
+/**
+ * A global namespace for `mouseleave` event.
+ * @type {string}
+ */
+const mouseleaveEvent = 'mouseleave';
+
+/**
+ * A global namespace for `click` event.
+ * @type {string}
+ */
+const mouseclickEvent = 'click';
+
+/**
+ * A global namespace for `keydown` event.
+ * @type {string}
+ */
+const keydownEvent = 'keydown';
+
+/**
+ * A global namespace for `touchmove` event.
+ * @type {string}
+ */
+const touchmoveEvent = 'touchmove';
+
+/**
+ * A global namespace for `touchend` event.
+ * @type {string}
+ */
+const touchendEvent = 'touchend';
+
+/**
+ * A global namespace for `touchstart` event.
+ * @type {string}
+ */
+const touchstartEvent = 'touchstart';
+
+/**
+ * A global namespace for `ArrowLeft` key.
+ * @type {string} e.which = 37 equivalent
+ */
+const keyArrowLeft = 'ArrowLeft';
+
+/**
+ * A global namespace for `ArrowRight` key.
+ * @type {string} e.which = 39 equivalent
+ */
+const keyArrowRight = 'ArrowRight';
+
+/**
  * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
  *
  * @param {HTMLElement | Element | Document | Window} element event.target
@@ -30,10 +84,37 @@ function off(element, eventName, handler, options) {
 }
 
 /**
- * A global namespace for most scroll event listeners.
- * @type {Partial<AddEventListenerOptions>}
+ * Returns the `Window` object of a target node.
+ * @see https://github.com/floating-ui/floating-ui
+ *
+ * @param {(Node | HTMLElement | Element | Window)=} node target node
+ * @returns {globalThis}
  */
-const passiveHandler = { passive: true };
+function getWindow(node) {
+  if (node == null) {
+    return window;
+  }
+
+  if (!(node instanceof Window)) {
+    const { ownerDocument } = node;
+    return ownerDocument ? ownerDocument.defaultView || window : window;
+  }
+
+  // @ts-ignore
+  return node;
+}
+
+/**
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {Document}
+ */
+function getDocument(node) {
+  if (node instanceof HTMLElement) return node.ownerDocument;
+  if (node instanceof Window) return node.document;
+  return window.document;
+}
 
 /**
  * A global namespace for 'transitionDuration' string.
@@ -87,79 +168,6 @@ function getElementTransitionDuration(element) {
 }
 
 /**
- * Utility to force re-paint of an `HTMLElement` target.
- *
- * @param {HTMLElement | Element} element is the target
- * @return {number} the `Element.offsetHeight` value
- */
-// @ts-ignore
-const reflow = (element) => element.offsetHeight;
-
-/**
- * A global namespace for 'transitionend' string.
- * @type {string}
- */
-const transitionEndEvent = 'transitionend';
-
-/**
- * A global namespace for 'transitionDelay' string.
- * @type {string}
- */
-const transitionDelay = 'transitionDelay';
-
-/**
- * Utility to get the computed `transitionDelay`
- * from Element in miliseconds.
- *
- * @param {HTMLElement | Element} element target
- * @return {number} the value in miliseconds
- */
-function getElementTransitionDelay(element) {
-  const propertyValue = getElementStyle(element, transitionProperty);
-  const delayValue = getElementStyle(element, transitionDelay);
-
-  const delayScale = delayValue.includes('ms') ? 1 : 1000;
-  const duration = propertyValue && propertyValue !== 'none'
-    ? parseFloat(delayValue) * delayScale : 0;
-
-  return !Number.isNaN(duration) ? duration : 0;
-}
-
-/**
- * Utility to make sure callbacks are consistently
- * called when transition ends.
- *
- * @param {HTMLElement | Element} element target
- * @param {EventListener} handler `transitionend` callback
- */
-function emulateTransitionEnd(element, handler) {
-  let called = 0;
-  const endEvent = new Event(transitionEndEvent);
-  const duration = getElementTransitionDuration(element);
-  const delay = getElementTransitionDelay(element);
-
-  if (duration) {
-    /**
-     * Wrap the handler in on -> off callback
-     * @param {TransitionEvent} e Event object
-     */
-    const transitionEndWrapper = (e) => {
-      if (e.target === element) {
-        handler.apply(element, [e]);
-        off(element, transitionEndEvent, transitionEndWrapper);
-        called = 1;
-      }
-    };
-    on(element, transitionEndEvent, transitionEndWrapper);
-    setTimeout(() => {
-      if (!called) element.dispatchEvent(endEvent);
-    }, duration + delay + 17);
-  } else {
-    handler.apply(element, [endEvent]);
-  }
-}
-
-/**
  * Returns the bounding client rect of a target `HTMLElement`.
  *
  * @see https://github.com/floating-ui/floating-ui
@@ -194,18 +202,6 @@ function getBoundingClientRect(element, includeScale) {
 }
 
 /**
- * Returns the `document` or the `#document` element.
- * @see https://github.com/floating-ui/floating-ui
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {Document}
- */
-function getDocument(node) {
-  if (node instanceof HTMLElement) return node.ownerDocument;
-  if (node instanceof Window) return node.document;
-  return window.document;
-}
-
-/**
  * Returns the `document.documentElement` or the `<html>` element.
  *
  * @param {(Node | HTMLElement | Element | globalThis)=} node
@@ -228,6 +224,13 @@ const isElementInScrollRange = (element) => {
   // checks bottom && top
   return top <= clientHeight && bottom >= 0;
 };
+
+/**
+ * Checks if a page is Right To Left.
+ * @param {(HTMLElement | Element)=} node the target
+ * @returns {boolean} the query result
+ */
+const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
 
 /**
  * Shortcut for `HTMLElement.closest` method which also works
@@ -305,79 +308,11 @@ function getElementsByClassName(selector, parent) {
 }
 
 /**
- * Shortcut for `Object.assign()` static method.
- * @param  {Record<string, any>} obj a target object
- * @param  {Record<string, any>} source a source object
- */
-const ObjectAssign = (obj, source) => Object.assign(obj, source);
-
-/**
- * A global namespace for `mouseenter` event.
- * @type {string}
- */
-const mouseenterEvent = 'mouseenter';
-
-/**
- * A global namespace for `mouseleave` event.
- * @type {string}
- */
-const mouseleaveEvent = 'mouseleave';
-
-/**
- * A global namespace for `click` event.
- * @type {string}
- */
-const mouseclickEvent = 'click';
-
-/**
- * A global namespace for `keydown` event.
- * @type {string}
- */
-const keydownEvent = 'keydown';
-
-/**
- * A global namespace for `touchmove` event.
- * @type {string}
- */
-const touchmoveEvent = 'touchmove';
-
-/**
- * A global namespace for `touchend` event.
- * @type {string}
- */
-const touchendEvent = 'touchend';
-
-/**
- * A global namespace for `touchstart` event.
- * @type {string}
- */
-const touchstartEvent = 'touchstart';
-
-/**
  * Shortcut for `HTMLElement.getAttribute()` method.
  * @param  {HTMLElement | Element} element target element
  * @param  {string} attribute attribute name
  */
 const getAttribute = (element, attribute) => element.getAttribute(attribute);
-
-/**
- * A global namespace for `ArrowLeft` key.
- * @type {string} e.which = 37 equivalent
- */
-const keyArrowLeft = 'ArrowLeft';
-
-/**
- * A global namespace for `ArrowRight` key.
- * @type {string} e.which = 39 equivalent
- */
-const keyArrowRight = 'ArrowRight';
-
-/**
- * Checks if a page is Right To Left.
- * @param {(HTMLElement | Element)=} node the target
- * @returns {boolean} the query result
- */
-const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
 
 /** @type {Map<HTMLElement | Element, any>} */
 const TimeCache = new Map();
@@ -455,64 +390,98 @@ const Timer = {
 };
 
 /**
+ * Utility to force re-paint of an `HTMLElement` target.
+ *
+ * @param {HTMLElement | Element} element is the target
+ * @return {number} the `Element.offsetHeight` value
+ */
+// @ts-ignore
+const reflow = (element) => element.offsetHeight;
+
+/**
+ * A global namespace for most scroll event listeners.
+ * @type {Partial<AddEventListenerOptions>}
+ */
+const passiveHandler = { passive: true };
+
+/**
+ * A global namespace for 'transitionend' string.
+ * @type {string}
+ */
+const transitionEndEvent = 'transitionend';
+
+/**
+ * A global namespace for 'transitionDelay' string.
+ * @type {string}
+ */
+const transitionDelay = 'transitionDelay';
+
+/**
+ * Utility to get the computed `transitionDelay`
+ * from Element in miliseconds.
+ *
+ * @param {HTMLElement | Element} element target
+ * @return {number} the value in miliseconds
+ */
+function getElementTransitionDelay(element) {
+  const propertyValue = getElementStyle(element, transitionProperty);
+  const delayValue = getElementStyle(element, transitionDelay);
+
+  const delayScale = delayValue.includes('ms') ? 1 : 1000;
+  const duration = propertyValue && propertyValue !== 'none'
+    ? parseFloat(delayValue) * delayScale : 0;
+
+  return !Number.isNaN(duration) ? duration : 0;
+}
+
+/**
+ * Utility to make sure callbacks are consistently
+ * called when transition ends.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {EventListener} handler `transitionend` callback
+ */
+function emulateTransitionEnd(element, handler) {
+  let called = 0;
+  const endEvent = new Event(transitionEndEvent);
+  const duration = getElementTransitionDuration(element);
+  const delay = getElementTransitionDelay(element);
+
+  if (duration) {
+    /**
+     * Wrap the handler in on -> off callback
+     * @param {TransitionEvent} e Event object
+     */
+    const transitionEndWrapper = (e) => {
+      if (e.target === element) {
+        handler.apply(element, [e]);
+        off(element, transitionEndEvent, transitionEndWrapper);
+        called = 1;
+      }
+    };
+    on(element, transitionEndEvent, transitionEndWrapper);
+    setTimeout(() => {
+      if (!called) element.dispatchEvent(endEvent);
+    }, duration + delay + 17);
+  } else {
+    handler.apply(element, [endEvent]);
+  }
+}
+
+/**
+ * Shortcut for `Object.assign()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @param  {Record<string, any>} source a source object
+ */
+const ObjectAssign = (obj, source) => Object.assign(obj, source);
+
+/**
  * Shortcut for the `Element.dispatchEvent(Event)` method.
  *
  * @param {HTMLElement | Element} element is the target
  * @param {Event} event is the `Event` object
  */
 const dispatchEvent = (element, event) => element.dispatchEvent(event);
-
-/**
- * Returns the `Window` object of a target node.
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {(Node | HTMLElement | Element | Window)=} node target node
- * @returns {globalThis}
- */
-function getWindow(node) {
-  if (node == null) {
-    return window;
-  }
-
-  if (!(node instanceof Window)) {
-    const { ownerDocument } = node;
-    return ownerDocument ? ownerDocument.defaultView || window : window;
-  }
-
-  // @ts-ignore
-  return node;
-}
-
-/**
- * Add class to `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to add
- */
-function addClass(element, classNAME) {
-  element.classList.add(classNAME);
-}
-
-/**
- * Check class in `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to check
- * @return {boolean}
- */
-function hasClass(element, classNAME) {
-  return element.classList.contains(classNAME);
-}
-
-/**
- * Remove class from `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to remove
- */
-function removeClass(element, classNAME) {
-  element.classList.remove(classNAME);
-}
 
 /** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
 const componentData = new Map();
@@ -593,10 +562,12 @@ const getInstance = (target, component) => Data.get(target, component);
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {BSN.OriginalEvent} a new namespaced event
+ * @returns {SHORTER.OriginalEvent} a new namespaced event
  */
-function bootstrapCustomEvent(EventType, config) {
-  const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
+function OriginalEvent(EventType, config) {
+  const OriginalCustomEvent = new CustomEvent(EventType, {
+    cancelable: true, bubbles: true,
+  });
 
   if (config instanceof Object) {
     ObjectAssign(OriginalCustomEvent, config);
@@ -605,9 +576,81 @@ function bootstrapCustomEvent(EventType, config) {
 }
 
 /**
+ * Add class to `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to add
+ */
+function addClass(element, classNAME) {
+  element.classList.add(classNAME);
+}
+
+/**
+ * Check class in `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to check
+ * @return {boolean}
+ */
+function hasClass(element, classNAME) {
+  return element.classList.contains(classNAME);
+}
+
+/**
+ * Remove class from `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to remove
+ */
+function removeClass(element, classNAME) {
+  element.classList.remove(classNAME);
+}
+
+/**
  * Global namespace for most components active class.
  */
 const activeClass = 'active';
+
+/**
+ * Global namespace for most components `target` option.
+ */
+const dataBsTarget = 'data-bs-target';
+
+/** @type {string} */
+const carouselString = 'carousel';
+
+/** @type {string} */
+const carouselComponent = 'Carousel';
+
+/**
+ * Global namespace for most components `parent` option.
+ */
+const dataBsParent = 'data-bs-parent';
+
+/**
+ * Global namespace for most components `container` option.
+ */
+const dataBsContainer = 'data-bs-container';
+
+/**
+ * Returns the `Element` that THIS one targets
+ * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
+ *
+ * @param {HTMLElement | Element} element the target element
+ * @returns {(HTMLElement | Element)?} the query result
+ */
+function getTargetElement(element) {
+  const targetAttr = [dataBsTarget, dataBsParent, dataBsContainer, 'href'];
+  const doc = getDocument(element);
+
+  return targetAttr.map((att) => {
+    const attValue = getAttribute(element, att);
+    if (attValue) {
+      return att === dataBsParent ? closest(element, attValue) : querySelector(attValue, doc);
+    }
+    return null;
+  }).filter((x) => x)[0];
+}
 
 /**
  * The raw value or a given component option.
@@ -650,6 +693,14 @@ function normalizeValue(value) {
 const ObjectKeys = (obj) => Object.keys(obj);
 
 /**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
  * Utility to normalize component options.
  *
  * @param {HTMLElement | Element} element target
@@ -665,10 +716,11 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   const normalOps = {};
   /** @type {Record<string, any>} */
   const dataOps = {};
+  const title = 'title';
 
   ObjectKeys(data).forEach((k) => {
     const key = ns && k.includes(ns)
-      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
       : k;
 
     dataOps[key] = normalizeValue(data[k]);
@@ -684,7 +736,9 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
     } else if (k in dataOps) {
       normalOps[k] = dataOps[k];
     } else {
-      normalOps[k] = defaultOps[k];
+      normalOps[k] = k === title
+        ? getAttribute(element, title)
+        : defaultOps[k];
     }
   });
 
@@ -751,48 +805,11 @@ class BaseComponent {
   }
 }
 
-/**
- * Global namespace for most components `target` option.
- */
-const dataBsTarget = 'data-bs-target';
-
-/**
- * Global namespace for most components `parent` option.
- */
-const dataBsParent = 'data-bs-parent';
-
-/**
- * Global namespace for most components `container` option.
- */
-const dataBsContainer = 'data-bs-container';
-
-/**
- * Returns the `Element` that THIS one targets
- * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
- *
- * @param {HTMLElement | Element} element the target element
- * @returns {(HTMLElement | Element)?} the query result
- */
-function getTargetElement(element) {
-  const targetAttr = [dataBsTarget, dataBsParent, dataBsContainer, 'href'];
-  const doc = getDocument(element);
-
-  return targetAttr.map((att) => {
-    const attValue = getAttribute(element, att);
-    if (attValue) {
-      return att === dataBsParent ? closest(element, attValue) : querySelector(attValue, doc);
-    }
-    return null;
-  }).filter((x) => x)[0];
-}
-
 /* Native JavaScript for Bootstrap 5 | Carousel
 ----------------------------------------------- */
 
 // CAROUSEL PRIVATE GC
 // ===================
-const carouselString = 'carousel';
-const carouselComponent = 'Carousel';
 const carouselSelector = `[data-bs-ride="${carouselString}"]`;
 const carouselItem = `${carouselString}-item`;
 const dataBsSlideTo = 'data-bs-slide-to';
@@ -827,8 +844,8 @@ let endX = 0;
 
 // CAROUSEL CUSTOM EVENTS
 // ======================
-const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`);
-const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`);
+const carouselSlideEvent = OriginalEvent(`slide.bs.${carouselString}`);
+const carouselSlidEvent = OriginalEvent(`slid.bs.${carouselString}`);
 
 // CAROUSEL EVENT HANDLERS
 // =======================
@@ -869,15 +886,14 @@ function carouselTransitionEndHandler(self) {
  * Handles the `mouseenter` / `touchstart` events when *options.pause*
  * is set to `hover`.
  *
- * @param {MouseEvent} e the `Event` object
+ * @this {HTMLElement | Element}
  */
-function carouselPauseHandler(e) {
-  const eventTarget = e.target;
-  // @ts-ignore
-  const self = getCarouselInstance(closest(eventTarget, carouselSelector));
+function carouselPauseHandler() {
+  const element = this;
+  const self = getCarouselInstance(element);
 
-  if (self && !self.isPaused) {
-    self.pause();
+  if (self && !self.isPaused && !Timer.get(element, pausedClass)) {
+    addClass(element, pausedClass);
   }
 }
 
@@ -885,17 +901,13 @@ function carouselPauseHandler(e) {
  * Handles the `mouseleave` / `touchend` events when *options.pause*
  * is set to `hover`.
  *
- * @param {MouseEvent} e the `Event` object
+ * @this {HTMLElement | Element}
  */
-function carouselResumeHandler(e) {
-  const { target } = e;
-  // @ts-ignore
-  const self = getCarouselInstance(closest(target, carouselSelector));
-  if (!self) return;
-  const { element } = self;
+function carouselResumeHandler() {
+  const element = this;
+  const self = getCarouselInstance(element);
 
-  if (self.isPaused) {
-    removeClass(element, pausedClass);
+  if (self && self.isPaused && !Timer.get(element, pausedClass)) {
     self.cycle();
   }
 }
@@ -1223,9 +1235,13 @@ class Carousel extends BaseComponent {
   /** Slide automatically through items. */
   cycle() {
     const self = this;
-    const { element, options } = self;
+    const { element, options, isPaused } = self;
 
     Timer.clear(element, carouselString);
+    if (isPaused) {
+      Timer.clear(element, pausedClass);
+      removeClass(element, pausedClass);
+    }
 
     Timer.set(element, () => {
       if (!self.isPaused && isElementInScrollRange(element)) {
@@ -1241,6 +1257,7 @@ class Carousel extends BaseComponent {
     const { element, options } = self;
     if (!self.isPaused && options.interval) {
       addClass(element, pausedClass);
+      Timer.set(element, () => {}, 1, pausedClass);
     }
   }
 

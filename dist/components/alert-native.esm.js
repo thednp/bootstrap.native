@@ -321,6 +321,23 @@ const Data = {
 const getInstance = (target, component) => Data.get(target, component);
 
 /**
+ * Returns a namespaced `CustomEvent` specific to each component.
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {SHORTER.OriginalEvent} a new namespaced event
+ */
+function OriginalEvent(EventType, config) {
+  const OriginalCustomEvent = new CustomEvent(EventType, {
+    cancelable: true, bubbles: true,
+  });
+
+  if (config instanceof Object) {
+    ObjectAssign(OriginalCustomEvent, config);
+  }
+  return OriginalCustomEvent;
+}
+
+/**
  * Global namespace for most components `fade` class.
  */
 const fadeClass = 'fade';
@@ -335,20 +352,18 @@ const showClass = 'show';
  */
 const dataBsDismiss = 'data-bs-dismiss';
 
-/**
- * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} EventType Event.type
- * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {BSN.OriginalEvent} a new namespaced event
- */
-function bootstrapCustomEvent(EventType, config) {
-  const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
+/** @type {string} */
+const alertString = 'alert';
 
-  if (config instanceof Object) {
-    ObjectAssign(OriginalCustomEvent, config);
-  }
-  return OriginalCustomEvent;
-}
+/** @type {string} */
+const alertComponent = 'Alert';
+
+/**
+ * Shortcut for `HTMLElement.getAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ */
+const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
 /**
  * The raw value or a given component option.
@@ -391,6 +406,14 @@ function normalizeValue(value) {
 const ObjectKeys = (obj) => Object.keys(obj);
 
 /**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
  * Utility to normalize component options.
  *
  * @param {HTMLElement | Element} element target
@@ -406,10 +429,11 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   const normalOps = {};
   /** @type {Record<string, any>} */
   const dataOps = {};
+  const title = 'title';
 
   ObjectKeys(data).forEach((k) => {
     const key = ns && k.includes(ns)
-      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
       : k;
 
     dataOps[key] = normalizeValue(data[k]);
@@ -425,7 +449,9 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
     } else if (k in dataOps) {
       normalOps[k] = dataOps[k];
     } else {
-      normalOps[k] = defaultOps[k];
+      normalOps[k] = k === title
+        ? getAttribute(element, title)
+        : defaultOps[k];
     }
   });
 
@@ -497,8 +523,6 @@ class BaseComponent {
 
 // ALERT PRIVATE GC
 // ================
-const alertString = 'alert';
-const alertComponent = 'Alert';
 const alertSelector = `.${alertString}`;
 const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
 
@@ -518,8 +542,8 @@ const alertInitCallback = (element) => new Alert(element);
 
 // ALERT CUSTOM EVENTS
 // ===================
-const closeAlertEvent = bootstrapCustomEvent(`close.bs.${alertString}`);
-const closedAlertEvent = bootstrapCustomEvent(`closed.bs.${alertString}`);
+const closeAlertEvent = OriginalEvent(`close.bs.${alertString}`);
+const closedAlertEvent = OriginalEvent(`closed.bs.${alertString}`);
 
 // ALERT EVENT HANDLER
 // ===================

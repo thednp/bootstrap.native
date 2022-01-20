@@ -172,32 +172,19 @@ nav.border-bottom {
   border-color: transparent
 }
 
-/* DROPDOWN */
-/* .dropdown-menu-end {
-  right: 0;
-  left: auto;
-} */
-
-/* .dropdown .dropdown-menu {
-  top: 100%;
+.absolute-img {
+  top: calc(50% - 22px);
+  right: calc(85px + 1rem);
 }
 
-.dropup .dropdown-menu {
-  top: auto;
-  bottom: 100%;
+.absolute-svg {
+  top: calc(50% - 22px);
+  right: 1rem;
 }
 
-.dropend .dropdown-menu {
-  left: 100%;
-  right: auto;
+[dir="rtl"] .absolute-img {
+  left: calc(85px + 1rem); right: auto
 }
-
-.dropstart .dropdown-menu {
-  left: auto;
-  right: 100%;
-} */
-
-/* .dropstart .dropdown-menu,
-.dropend .dropdown-menu {
-  top: -1px;
-} */
+[dir="rtl"] .absolute-svg {
+  left: 1rem; right: auto
+}

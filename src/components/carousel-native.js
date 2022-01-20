@@ -1,17 +1,5 @@
 /* Native JavaScript for Bootstrap 5 | Carousel
 ----------------------------------------------- */
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
-import reflow from 'shorter-js/src/misc/reflow';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import isElementInScrollRange from 'shorter-js/src/is/isElementInScrollRange';
-import closest from 'shorter-js/src/selectors/closest';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
-import getElementsByClassName from 'shorter-js/src/selectors/getElementsByClassName';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import mouseenterEvent from 'shorter-js/src/strings/mouseenterEvent';
 import mouseleaveEvent from 'shorter-js/src/strings/mouseleaveEvent';
 import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
@@ -19,30 +7,42 @@ import keydownEvent from 'shorter-js/src/strings/keydownEvent';
 import touchmoveEvent from 'shorter-js/src/strings/touchmoveEvent';
 import touchendEvent from 'shorter-js/src/strings/touchendEvent';
 import touchstartEvent from 'shorter-js/src/strings/touchstartEvent';
-import getAttribute from 'shorter-js/src/attr/getAttribute';
 import keyArrowLeft from 'shorter-js/src/strings/keyArrowLeft';
 import keyArrowRight from 'shorter-js/src/strings/keyArrowRight';
-import isRTL from 'shorter-js/src/is/isRTL';
-import Timer from 'shorter-js/src/misc/timer';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
 import getWindow from 'shorter-js/src/get/getWindow';
 import getDocument from 'shorter-js/src/get/getDocument';
+import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
+import isElementInScrollRange from 'shorter-js/src/is/isElementInScrollRange';
+import isRTL from 'shorter-js/src/is/isRTL';
+import closest from 'shorter-js/src/selectors/closest';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
+import getElementsByClassName from 'shorter-js/src/selectors/getElementsByClassName';
+import getAttribute from 'shorter-js/src/attr/getAttribute';
+import Timer from 'shorter-js/src/misc/timer';
+import reflow from 'shorter-js/src/misc/reflow';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import { getInstance } from 'shorter-js/src/misc/data';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import { getInstance } from 'shorter-js/src/misc/data';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import activeClass from '../strings/activeClass';
-import BaseComponent from './base-component';
 import dataBsTarget from '../strings/dataBsTarget';
+import carouselString from '../strings/carouselString';
+import carouselComponent from '../strings/carouselComponent';
 import getTargetElement from '../util/getTargetElement';
+import BaseComponent from './base-component';
 
 // CAROUSEL PRIVATE GC
 // ===================
-const carouselString = 'carousel';
-const carouselComponent = 'Carousel';
 const carouselSelector = `[data-bs-ride="${carouselString}"]`;
 const carouselItem = `${carouselString}-item`;
 const dataBsSlideTo = 'data-bs-slide-to';
@@ -77,8 +77,8 @@ let endX = 0;
 
 // CAROUSEL CUSTOM EVENTS
 // ======================
-const carouselSlideEvent = bootstrapCustomEvent(`slide.bs.${carouselString}`);
-const carouselSlidEvent = bootstrapCustomEvent(`slid.bs.${carouselString}`);
+const carouselSlideEvent = OriginalEvent(`slide.bs.${carouselString}`);
+const carouselSlidEvent = OriginalEvent(`slid.bs.${carouselString}`);
 
 // CAROUSEL EVENT HANDLERS
 // =======================
@@ -119,15 +119,14 @@ function carouselTransitionEndHandler(self) {
  * Handles the `mouseenter` / `touchstart` events when *options.pause*
  * is set to `hover`.
  *
- * @param {MouseEvent} e the `Event` object
+ * @this {HTMLElement | Element}
  */
-function carouselPauseHandler(e) {
-  const eventTarget = e.target;
-  // @ts-ignore
-  const self = getCarouselInstance(closest(eventTarget, carouselSelector));
+function carouselPauseHandler() {
+  const element = this;
+  const self = getCarouselInstance(element);
 
-  if (self && !self.isPaused) {
-    self.pause();
+  if (self && !self.isPaused && !Timer.get(element, pausedClass)) {
+    addClass(element, pausedClass);
   }
 }
 
@@ -135,17 +134,13 @@ function carouselPauseHandler(e) {
  * Handles the `mouseleave` / `touchend` events when *options.pause*
  * is set to `hover`.
  *
- * @param {MouseEvent} e the `Event` object
+ * @this {HTMLElement | Element}
  */
-function carouselResumeHandler(e) {
-  const { target } = e;
-  // @ts-ignore
-  const self = getCarouselInstance(closest(target, carouselSelector));
-  if (!self) return;
-  const { element } = self;
+function carouselResumeHandler() {
+  const element = this;
+  const self = getCarouselInstance(element);
 
-  if (self.isPaused) {
-    removeClass(element, pausedClass);
+  if (self && self.isPaused && !Timer.get(element, pausedClass)) {
     self.cycle();
   }
 }
@@ -473,9 +468,13 @@ export default class Carousel extends BaseComponent {
   /** Slide automatically through items. */
   cycle() {
     const self = this;
-    const { element, options } = self;
+    const { element, options, isPaused } = self;
 
     Timer.clear(element, carouselString);
+    if (isPaused) {
+      Timer.clear(element, pausedClass);
+      removeClass(element, pausedClass);
+    }
 
     Timer.set(element, () => {
       if (!self.isPaused && isElementInScrollRange(element)) {
@@ -491,6 +490,7 @@ export default class Carousel extends BaseComponent {
     const { element, options } = self;
     if (!self.isPaused && options.interval) {
       addClass(element, pausedClass);
+      Timer.set(element, () => {}, 1, pausedClass);
     }
   }
 

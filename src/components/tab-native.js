@@ -1,22 +1,23 @@
 /* Native JavaScript for Bootstrap 5 | Tab
 ------------------------------------------ */
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import ariaSelected from 'shorter-js/src/strings/ariaSelected';
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
+import setAttribute from 'shorter-js/src/attr/setAttribute';
+import closest from 'shorter-js/src/selectors/closest';
 import getElementsByClassName from 'shorter-js/src/selectors/getElementsByClassName';
 import querySelector from 'shorter-js/src/selectors/querySelector';
-import reflow from 'shorter-js/src/misc/reflow';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import ariaSelected from 'shorter-js/src/strings/ariaSelected';
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import reflow from 'shorter-js/src/misc/reflow';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
-import closest from 'shorter-js/src/selectors/closest';
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
 import collapsingClass from '../strings/collapsingClass';
 import activeClass from '../strings/activeClass';
@@ -25,15 +26,14 @@ import showClass from '../strings/showClass';
 import dropdownClasses from '../strings/dropdownClasses';
 import dropdownMenuClass from '../strings/dropdownMenuClass';
 import dataBsToggle from '../strings/dataBsToggle';
+import tabString from '../strings/tabString';
+import tabComponent from '../strings/tabComponent';
 
 import getTargetElement from '../util/getTargetElement';
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import BaseComponent from './base-component';
 
 // TAB PRIVATE GC
 // ================
-const tabString = 'tab';
-const tabComponent = 'Tab';
 const tabSelector = `[${dataBsToggle}="${tabString}"]`;
 
 /**
@@ -52,10 +52,10 @@ const tabInitCallback = (element) => new Tab(element);
 
 // TAB CUSTOM EVENTS
 // =================
-const showTabEvent = bootstrapCustomEvent(`show.bs.${tabString}`);
-const shownTabEvent = bootstrapCustomEvent(`shown.bs.${tabString}`);
-const hideTabEvent = bootstrapCustomEvent(`hide.bs.${tabString}`);
-const hiddenTabEvent = bootstrapCustomEvent(`hidden.bs.${tabString}`);
+const showTabEvent = OriginalEvent(`show.bs.${tabString}`);
+const shownTabEvent = OriginalEvent(`shown.bs.${tabString}`);
+const hideTabEvent = OriginalEvent(`hide.bs.${tabString}`);
+const hiddenTabEvent = OriginalEvent(`hidden.bs.${tabString}`);
 
 /**
  * @type {Map<(HTMLElement | Element), any>}

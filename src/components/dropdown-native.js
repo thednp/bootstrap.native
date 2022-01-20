@@ -1,15 +1,5 @@
 /* Native JavaScript for Bootstrap 5 | Dropdown
 ----------------------------------------------- */
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import closest from 'shorter-js/src/selectors/closest';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import getElementsByClassName from 'shorter-js/src/selectors/getElementsByClassName';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
 import ariaExpanded from 'shorter-js/src/strings/ariaExpanded';
 import focusEvent from 'shorter-js/src/strings/focusEvent';
 import keydownEvent from 'shorter-js/src/strings/keydownEvent';
@@ -20,24 +10,36 @@ import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
 import keyArrowUp from 'shorter-js/src/strings/keyArrowUp';
 import keyArrowDown from 'shorter-js/src/strings/keyArrowDown';
 import keyEscape from 'shorter-js/src/strings/keyEscape';
-import isRTL from 'shorter-js/src/is/isRTL';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
-import { getInstance } from 'shorter-js/src/misc/data';
-import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
-import setElementStyle from 'shorter-js/src/misc/setElementStyle';
-import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
-import focus from 'shorter-js/src/misc/focus';
+import setAttribute from 'shorter-js/src/attr/setAttribute';
 import hasAttribute from 'shorter-js/src/attr/hasAttribute';
+import closest from 'shorter-js/src/selectors/closest';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import getElementsByClassName from 'shorter-js/src/selectors/getElementsByClassName';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import { getInstance } from 'shorter-js/src/misc/data';
+import setElementStyle from 'shorter-js/src/misc/setElementStyle';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import focus from 'shorter-js/src/misc/focus';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
+import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
+import isRTL from 'shorter-js/src/is/isRTL';
+import getElementStyle from 'shorter-js/src/get/getElementStyle';
+import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
+import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
 import getDocument from 'shorter-js/src/get/getDocument';
 import getWindow from 'shorter-js/src/get/getWindow';
+
 import showClass from '../strings/showClass';
 import dataBsToggle from '../strings/dataBsToggle';
 import dropdownClasses from '../strings/dropdownClasses';
+import dropdownComponent from '../strings/dropdownComponent';
 import dropdownMenuClass from '../strings/dropdownMenuClass';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import isEmptyAnchor from '../util/isEmptyAnchor';
 import BaseComponent from './base-component';
 
@@ -49,7 +51,6 @@ const [
   dropstartString,
   dropendString,
 ] = dropdownClasses;
-const dropdownComponent = 'Dropdown';
 const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
 
 /**
@@ -80,10 +81,10 @@ const dropdownDefaults = {
 
 // DROPDOWN CUSTOM EVENTS
 // ======================
-const showDropdownEvent = bootstrapCustomEvent(`show.bs.${dropdownString}`);
-const shownDropdownEvent = bootstrapCustomEvent(`shown.bs.${dropdownString}`);
-const hideDropdownEvent = bootstrapCustomEvent(`hide.bs.${dropdownString}`);
-const hiddenDropdownEvent = bootstrapCustomEvent(`hidden.bs.${dropdownString}`);
+const showDropdownEvent = OriginalEvent(`show.bs.${dropdownString}`);
+const shownDropdownEvent = OriginalEvent(`shown.bs.${dropdownString}`);
+const hideDropdownEvent = OriginalEvent(`hide.bs.${dropdownString}`);
+const hiddenDropdownEvent = OriginalEvent(`hidden.bs.${dropdownString}`);
 
 // DROPDOWN PRIVATE METHODS
 // ========================
@@ -356,7 +357,7 @@ function dropdownKeyHandler(e) {
   const menuItems = getMenuItems(menu);
 
   // arrow up & down
-  if (menuItems && menuItems.length) {
+  if (menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)) {
     let idx = menuItems.indexOf(activeItem);
     if (activeItem === element) {
       idx = 0;

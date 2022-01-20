@@ -4,6 +4,156 @@
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
 /**
+ * A global namespace for aria-selected.
+ * @type {string}
+ */
+const ariaSelected = 'aria-selected';
+
+/**
+ * A global namespace for `click` event.
+ * @type {string}
+ */
+const mouseclickEvent = 'click';
+
+/**
+ * Shortcut for `HTMLElement.setAttribute()` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {string} attribute attribute name
+ * @param  {string} value attribute value
+ */
+const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
+
+/**
+ * Shortcut for `HTMLElement.closest` method which also works
+ * with children of `ShadowRoot`. The order of the parameters
+ * is intentional since they're both required.
+ *
+ * @see https://stackoverflow.com/q/54520554/803358
+ *
+ * @param {HTMLElement | Element} element Element to look into
+ * @param {string} selector the selector name
+ * @return {(HTMLElement | Element)?} the query result
+ */
+function closest(element, selector) {
+  return element ? (element.closest(selector)
+    // @ts-ignore -- break out of `ShadowRoot`
+    || closest(element.getRootNode().host, selector)) : null;
+}
+
+/**
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @returns {Document}
+ */
+function getDocument(node) {
+  if (node instanceof HTMLElement) return node.ownerDocument;
+  if (node instanceof Window) return node.document;
+  return window.document;
+}
+
+/**
+ * A global array of possible `ParentNode`.
+ */
+const parentNodes = [Document, Node, Element, HTMLElement];
+
+/**
+ * Shortcut for `HTMLElement.getElementsByClassName` method. Some `Node` elements
+ * like `ShadowRoot` do not support `getElementsByClassName`.
+ *
+ * @param {string} selector the class name
+ * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
+ * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
+ */
+function getElementsByClassName(selector, parent) {
+  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+    ? parent : getDocument();
+  return lookUp.getElementsByClassName(selector);
+}
+
+/**
+ * A global array with `Element` | `HTMLElement`.
+ */
+const elementNodes = [Element, HTMLElement];
+
+/**
+ * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
+ * or find one that matches a selector.
+ *
+ * @param {HTMLElement | Element | string} selector the input selector or target element
+ * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+ * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
+ */
+function querySelector(selector, parent) {
+  const selectorIsString = typeof selector === 'string';
+  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+    ? parent : getDocument();
+
+  if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+    return selector;
+  }
+  // @ts-ignore -- `ShadowRoot` is also a node
+  return selectorIsString ? lookUp.querySelector(selector) : null;
+}
+
+/**
+ * Add class to `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to add
+ */
+function addClass(element, classNAME) {
+  element.classList.add(classNAME);
+}
+
+/**
+ * Check class in `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to check
+ * @return {boolean}
+ */
+function hasClass(element, classNAME) {
+  return element.classList.contains(classNAME);
+}
+
+/**
+ * Remove class from `HTMLElement.classList`.
+ *
+ * @param {HTMLElement | Element} element target
+ * @param {string} classNAME to remove
+ */
+function removeClass(element, classNAME) {
+  element.classList.remove(classNAME);
+}
+
+/**
+ * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function on(element, eventName, handler, options) {
+  const ops = options || false;
+  element.addEventListener(eventName, handler, ops);
+}
+
+/**
+ * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function off(element, eventName, handler, options) {
+  const ops = options || false;
+  element.removeEventListener(eventName, handler, ops);
+}
+
+/**
  * Shortcut for the `Element.dispatchEvent(Event)` method.
  *
  * @param {HTMLElement | Element} element is the target
@@ -93,32 +243,6 @@ function getElementTransitionDuration(element) {
 }
 
 /**
- * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
- *
- * @param {HTMLElement | Element | Document | Window} element event.target
- * @param {string} eventName event.type
- * @param {EventListenerObject['handleEvent']} handler callback
- * @param {(EventListenerOptions | boolean)=} options other event options
- */
-function on(element, eventName, handler, options) {
-  const ops = options || false;
-  element.addEventListener(eventName, handler, ops);
-}
-
-/**
- * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
- *
- * @param {HTMLElement | Element | Document | Window} element event.target
- * @param {string} eventName event.type
- * @param {EventListenerObject['handleEvent']} handler callback
- * @param {(EventListenerOptions | boolean)=} options other event options
- */
-function off(element, eventName, handler, options) {
-  const ops = options || false;
-  element.removeEventListener(eventName, handler, ops);
-}
-
-/**
  * Utility to make sure callbacks are consistently
  * called when transition ends.
  *
@@ -153,62 +277,6 @@ function emulateTransitionEnd(element, handler) {
 }
 
 /**
- * Returns the `document` or the `#document` element.
- * @see https://github.com/floating-ui/floating-ui
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {Document}
- */
-function getDocument(node) {
-  if (node instanceof HTMLElement) return node.ownerDocument;
-  if (node instanceof Window) return node.document;
-  return window.document;
-}
-
-/**
- * A global array of possible `ParentNode`.
- */
-const parentNodes = [Document, Node, Element, HTMLElement];
-
-/**
- * Shortcut for `HTMLElement.getElementsByClassName` method. Some `Node` elements
- * like `ShadowRoot` do not support `getElementsByClassName`.
- *
- * @param {string} selector the class name
- * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
- * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
- */
-function getElementsByClassName(selector, parent) {
-  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
-  return lookUp.getElementsByClassName(selector);
-}
-
-/**
- * A global array with `Element` | `HTMLElement`.
- */
-const elementNodes = [Element, HTMLElement];
-
-/**
- * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
- * or find one that matches a selector.
- *
- * @param {HTMLElement | Element | string} selector the input selector or target element
- * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
- * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
- */
-function querySelector(selector, parent) {
-  const selectorIsString = typeof selector === 'string';
-  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
-
-  if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
-    return selector;
-  }
-  // @ts-ignore -- `ShadowRoot` is also a node
-  return selectorIsString ? lookUp.querySelector(selector) : null;
-}
-
-/**
  * Utility to force re-paint of an `HTMLElement` target.
  *
  * @param {HTMLElement | Element} element is the target
@@ -216,49 +284,6 @@ function querySelector(selector, parent) {
  */
 // @ts-ignore
 const reflow = (element) => element.offsetHeight;
-
-/**
- * Add class to `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to add
- */
-function addClass(element, classNAME) {
-  element.classList.add(classNAME);
-}
-
-/**
- * Check class in `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to check
- * @return {boolean}
- */
-function hasClass(element, classNAME) {
-  return element.classList.contains(classNAME);
-}
-
-/**
- * Remove class from `HTMLElement.classList`.
- *
- * @param {HTMLElement | Element} element target
- * @param {string} classNAME to remove
- */
-function removeClass(element, classNAME) {
-  element.classList.remove(classNAME);
-}
-
-/**
- * A global namespace for aria-selected.
- * @type {string}
- */
-const ariaSelected = 'aria-selected';
-
-/**
- * A global namespace for `click` event.
- * @type {string}
- */
-const mouseclickEvent = 'click';
 
 /**
  * Shortcut for `Object.assign()` static method.
@@ -418,29 +443,21 @@ const Timer = {
 };
 
 /**
- * Shortcut for `HTMLElement.closest` method which also works
- * with children of `ShadowRoot`. The order of the parameters
- * is intentional since they're both required.
- *
- * @see https://stackoverflow.com/q/54520554/803358
- *
- * @param {HTMLElement | Element} element Element to look into
- * @param {string} selector the selector name
- * @return {(HTMLElement | Element)?} the query result
+ * Returns a namespaced `CustomEvent` specific to each component.
+ * @param {string} EventType Event.type
+ * @param {Record<string, any>=} config Event.options | Event.properties
+ * @returns {SHORTER.OriginalEvent} a new namespaced event
  */
-function closest(element, selector) {
-  return element ? (element.closest(selector)
-    // @ts-ignore -- break out of `ShadowRoot`
-    || closest(element.getRootNode().host, selector)) : null;
-}
+function OriginalEvent(EventType, config) {
+  const OriginalCustomEvent = new CustomEvent(EventType, {
+    cancelable: true, bubbles: true,
+  });
 
-/**
- * Shortcut for `HTMLElement.setAttribute()` method.
- * @param  {HTMLElement | Element} element target element
- * @param  {string} attribute attribute name
- * @param  {string} value attribute value
- */
-const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
+  if (config instanceof Object) {
+    ObjectAssign(OriginalCustomEvent, config);
+  }
+  return OriginalCustomEvent;
+}
 
 /**
  * Global namespace for most components `collapsing` class.
@@ -477,6 +494,12 @@ const dropdownMenuClass = 'dropdown-menu';
  * Global namespace for most components `toggle` option.
  */
 const dataBsToggle = 'data-bs-toggle';
+
+/** @type {string} */
+const tabString = 'tab';
+
+/** @type {string} */
+const tabComponent = 'Tab';
 
 /**
  * Shortcut for `HTMLElement.getAttribute()` method.
@@ -521,21 +544,6 @@ function getTargetElement(element) {
 }
 
 /**
- * Returns a namespaced `CustomEvent` specific to each component.
- * @param {string} EventType Event.type
- * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {BSN.OriginalEvent} a new namespaced event
- */
-function bootstrapCustomEvent(EventType, config) {
-  const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
-
-  if (config instanceof Object) {
-    ObjectAssign(OriginalCustomEvent, config);
-  }
-  return OriginalCustomEvent;
-}
-
-/**
  * The raw value or a given component option.
  *
  * @typedef {string | HTMLElement | Function | number | boolean | null} niceValue
@@ -576,6 +584,14 @@ function normalizeValue(value) {
 const ObjectKeys = (obj) => Object.keys(obj);
 
 /**
+ * Shortcut for `String.toLowerCase()`.
+ *
+ * @param {string} source input string
+ * @returns {string} lowercase output string
+ */
+const toLowerCase = (source) => source.toLowerCase();
+
+/**
  * Utility to normalize component options.
  *
  * @param {HTMLElement | Element} element target
@@ -591,10 +607,11 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   const normalOps = {};
   /** @type {Record<string, any>} */
   const dataOps = {};
+  const title = 'title';
 
   ObjectKeys(data).forEach((k) => {
     const key = ns && k.includes(ns)
-      ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+      ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
       : k;
 
     dataOps[key] = normalizeValue(data[k]);
@@ -610,7 +627,9 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
     } else if (k in dataOps) {
       normalOps[k] = dataOps[k];
     } else {
-      normalOps[k] = defaultOps[k];
+      normalOps[k] = k === title
+        ? getAttribute(element, title)
+        : defaultOps[k];
     }
   });
 
@@ -682,8 +701,6 @@ class BaseComponent {
 
 // TAB PRIVATE GC
 // ================
-const tabString = 'tab';
-const tabComponent = 'Tab';
 const tabSelector = `[${dataBsToggle}="${tabString}"]`;
 
 /**
@@ -702,10 +719,10 @@ const tabInitCallback = (element) => new Tab(element);
 
 // TAB CUSTOM EVENTS
 // =================
-const showTabEvent = bootstrapCustomEvent(`show.bs.${tabString}`);
-const shownTabEvent = bootstrapCustomEvent(`shown.bs.${tabString}`);
-const hideTabEvent = bootstrapCustomEvent(`hide.bs.${tabString}`);
-const hiddenTabEvent = bootstrapCustomEvent(`hidden.bs.${tabString}`);
+const showTabEvent = OriginalEvent(`show.bs.${tabString}`);
+const shownTabEvent = OriginalEvent(`shown.bs.${tabString}`);
+const hideTabEvent = OriginalEvent(`hide.bs.${tabString}`);
+const hiddenTabEvent = OriginalEvent(`hidden.bs.${tabString}`);
 
 /**
  * @type {Map<(HTMLElement | Element), any>}

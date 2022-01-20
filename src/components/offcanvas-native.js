@@ -1,37 +1,40 @@
 /* Native JavaScript for Bootstrap 5 | OffCanvas
 ------------------------------------------------ */
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import removeAttribute from 'shorter-js/src/attr/removeAttribute';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
-import hasClass from 'shorter-js/src/class/hasClass';
-import addClass from 'shorter-js/src/class/addClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import getDocument from 'shorter-js/src/get/getDocument';
-import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
-import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
-import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
 import ariaHidden from 'shorter-js/src/strings/ariaHidden';
 import ariaModal from 'shorter-js/src/strings/ariaModal';
 import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
 import keydownEvent from 'shorter-js/src/strings/keydownEvent';
 import ariaExpanded from 'shorter-js/src/strings/ariaExpanded';
 import keyEscape from 'shorter-js/src/strings/keyEscape';
+import setAttribute from 'shorter-js/src/attr/setAttribute';
+import removeAttribute from 'shorter-js/src/attr/removeAttribute';
+import querySelector from 'shorter-js/src/selectors/querySelector';
+import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
+import closest from 'shorter-js/src/selectors/closest';
+import on from 'shorter-js/src/event/on';
+import off from 'shorter-js/src/event/off';
+import hasClass from 'shorter-js/src/class/hasClass';
+import addClass from 'shorter-js/src/class/addClass';
+import removeClass from 'shorter-js/src/class/removeClass';
+import getDocument from 'shorter-js/src/get/getDocument';
+import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
+import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
+import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import { getInstance } from 'shorter-js/src/misc/data';
 import focus from 'shorter-js/src/misc/focus';
-import closest from 'shorter-js/src/selectors/closest';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
-import getTargetElement from '../util/getTargetElement';
-import getElementContainer from '../util/getElementContainer';
 import dataBsDismiss from '../strings/dataBsDismiss';
 import dataBsToggle from '../strings/dataBsToggle';
 import showClass from '../strings/showClass';
+import offcanvasString from '../strings/offcanvasString';
+import offcanvasComponent from '../strings/offcanvasComponent';
+
+import getTargetElement from '../util/getTargetElement';
+import getElementContainer from '../util/getElementContainer';
 import isVisible from '../util/isVisible';
 import { setScrollbar } from '../util/scrollbar';
 import {
@@ -48,8 +51,6 @@ import BaseComponent from './base-component';
 
 // OFFCANVAS PRIVATE GC
 // ====================
-const offcanvasString = 'offcanvas';
-const offcanvasComponent = 'Offcanvas';
 const offcanvasSelector = `.${offcanvasString}`;
 const offcanvasToggleSelector = `[${dataBsToggle}="${offcanvasString}"]`;
 const offcanvasDismissSelector = `[${dataBsDismiss}="${offcanvasString}"]`;
@@ -77,10 +78,10 @@ const offcanvasInitCallback = (element) => new Offcanvas(element);
 
 // OFFCANVAS CUSTOM EVENTS
 // =======================
-const showOffcanvasEvent = bootstrapCustomEvent(`show.bs.${offcanvasString}`);
-const shownOffcanvasEvent = bootstrapCustomEvent(`shown.bs.${offcanvasString}`);
-const hideOffcanvasEvent = bootstrapCustomEvent(`hide.bs.${offcanvasString}`);
-const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`);
+const showOffcanvasEvent = OriginalEvent(`show.bs.${offcanvasString}`);
+const shownOffcanvasEvent = OriginalEvent(`shown.bs.${offcanvasString}`);
+const hideOffcanvasEvent = OriginalEvent(`hide.bs.${offcanvasString}`);
+const hiddenOffcanvasEvent = OriginalEvent(`hidden.bs.${offcanvasString}`);
 
 // OFFCANVAS PRIVATE METHODS
 // =========================

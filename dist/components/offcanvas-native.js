@@ -10,6 +10,42 @@
 })(this, (function () { 'use strict';
 
   /**
+   * A global namespace for aria-hidden.
+   * @type {string}
+   */
+  const ariaHidden = 'aria-hidden';
+
+  /**
+   * A global namespace for aria-modal.
+   * @type {string}
+   */
+  const ariaModal = 'aria-modal';
+
+  /**
+   * A global namespace for `click` event.
+   * @type {string}
+   */
+  const mouseclickEvent = 'click';
+
+  /**
+   * A global namespace for `keydown` event.
+   * @type {string}
+   */
+  const keydownEvent = 'keydown';
+
+  /**
+   * A global namespace for aria-expanded.
+   * @type {string}
+   */
+  const ariaExpanded = 'aria-expanded';
+
+  /**
+   * A global namespace for `Escape` key.
+   * @type {string} e.which = 27 equivalent
+   */
+  const keyEscape = 'Escape';
+
+  /**
    * Shortcut for `HTMLElement.setAttribute()` method.
    * @param  {HTMLElement | Element} element target element
    * @param  {string} attribute attribute name
@@ -81,6 +117,23 @@
   }
 
   /**
+   * Shortcut for `HTMLElement.closest` method which also works
+   * with children of `ShadowRoot`. The order of the parameters
+   * is intentional since they're both required.
+   *
+   * @see https://stackoverflow.com/q/54520554/803358
+   *
+   * @param {HTMLElement | Element} element Element to look into
+   * @param {string} selector the selector name
+   * @return {(HTMLElement | Element)?} the query result
+   */
+  function closest(element, selector) {
+    return element ? (element.closest(selector)
+      // @ts-ignore -- break out of `ShadowRoot`
+      || closest(element.getRootNode().host, selector)) : null;
+  }
+
+  /**
    * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
    *
    * @param {HTMLElement | Element | Document | Window} element event.target
@@ -138,24 +191,30 @@
   }
 
   /**
-   * Shortcut for the `Element.dispatchEvent(Event)` method.
+   * Returns the `document.documentElement` or the `<html>` element.
    *
-   * @param {HTMLElement | Element} element is the target
-   * @param {Event} event is the `Event` object
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {HTMLElement | HTMLHtmlElement}
    */
-  const dispatchEvent = (element, event) => element.dispatchEvent(event);
+  function getDocumentElement(node) {
+    return getDocument(node).documentElement;
+  }
 
   /**
-   * A global namespace for 'transitionend' string.
-   * @type {string}
+   * Returns the `document.body` or the `<body>` element.
+   *
+   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @returns {HTMLElement | HTMLBodyElement}
    */
-  const transitionEndEvent = 'transitionend';
+  function getDocumentBody(node) {
+    return getDocument(node).body;
+  }
 
   /**
-   * A global namespace for 'transitionDelay' string.
+   * A global namespace for 'transitionDuration' string.
    * @type {string}
    */
-  const transitionDelay = 'transitionDelay';
+  const transitionDuration = 'transitionDuration';
 
   /**
    * A global namespace for:
@@ -186,6 +245,43 @@
   }
 
   /**
+   * Utility to get the computed `transitionDuration`
+   * from Element in miliseconds.
+   *
+   * @param {HTMLElement | Element} element target
+   * @return {number} the value in miliseconds
+   */
+  function getElementTransitionDuration(element) {
+    const propertyValue = getElementStyle(element, transitionProperty);
+    const durationValue = getElementStyle(element, transitionDuration);
+    const durationScale = durationValue.includes('ms') ? 1 : 1000;
+    const duration = propertyValue && propertyValue !== 'none'
+      ? parseFloat(durationValue) * durationScale : 0;
+
+    return !Number.isNaN(duration) ? duration : 0;
+  }
+
+  /**
+   * Shortcut for the `Element.dispatchEvent(Event)` method.
+   *
+   * @param {HTMLElement | Element} element is the target
+   * @param {Event} event is the `Event` object
+   */
+  const dispatchEvent = (element, event) => element.dispatchEvent(event);
+
+  /**
+   * A global namespace for 'transitionend' string.
+   * @type {string}
+   */
+  const transitionEndEvent = 'transitionend';
+
+  /**
+   * A global namespace for 'transitionDelay' string.
+   * @type {string}
+   */
+  const transitionDelay = 'transitionDelay';
+
+  /**
    * Utility to get the computed `transitionDelay`
    * from Element in miliseconds.
    *
@@ -199,29 +295,6 @@
     const delayScale = delayValue.includes('ms') ? 1 : 1000;
     const duration = propertyValue && propertyValue !== 'none'
       ? parseFloat(delayValue) * delayScale : 0;
-
-    return !Number.isNaN(duration) ? duration : 0;
-  }
-
-  /**
-   * A global namespace for 'transitionDuration' string.
-   * @type {string}
-   */
-  const transitionDuration = 'transitionDuration';
-
-  /**
-   * Utility to get the computed `transitionDuration`
-   * from Element in miliseconds.
-   *
-   * @param {HTMLElement | Element} element target
-   * @return {number} the value in miliseconds
-   */
-  function getElementTransitionDuration(element) {
-    const propertyValue = getElementStyle(element, transitionProperty);
-    const durationValue = getElementStyle(element, transitionDuration);
-    const durationScale = durationValue.includes('ms') ? 1 : 1000;
-    const duration = propertyValue && propertyValue !== 'none'
-      ? parseFloat(durationValue) * durationScale : 0;
 
     return !Number.isNaN(duration) ? duration : 0;
   }
@@ -259,62 +332,6 @@
       handler.apply(element, [endEvent]);
     }
   }
-
-  /**
-   * Returns the `document.documentElement` or the `<html>` element.
-   *
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {HTMLElement | HTMLHtmlElement}
-   */
-  function getDocumentElement(node) {
-    return getDocument(node).documentElement;
-  }
-
-  /**
-   * Returns the `document.body` or the `<body>` element.
-   *
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
-   * @returns {HTMLElement | HTMLBodyElement}
-   */
-  function getDocumentBody(node) {
-    return getDocument(node).body;
-  }
-
-  /**
-   * A global namespace for aria-hidden.
-   * @type {string}
-   */
-  const ariaHidden = 'aria-hidden';
-
-  /**
-   * A global namespace for aria-modal.
-   * @type {string}
-   */
-  const ariaModal = 'aria-modal';
-
-  /**
-   * A global namespace for `click` event.
-   * @type {string}
-   */
-  const mouseclickEvent = 'click';
-
-  /**
-   * A global namespace for `keydown` event.
-   * @type {string}
-   */
-  const keydownEvent = 'keydown';
-
-  /**
-   * A global namespace for aria-expanded.
-   * @type {string}
-   */
-  const ariaExpanded = 'aria-expanded';
-
-  /**
-   * A global namespace for `Escape` key.
-   * @type {string} e.which = 27 equivalent
-   */
-  const keyEscape = 'Escape';
 
   /**
    * Shortcut for `Object.assign()` static method.
@@ -407,36 +424,42 @@
   const focus = (element) => element.focus();
 
   /**
-   * Shortcut for `HTMLElement.closest` method which also works
-   * with children of `ShadowRoot`. The order of the parameters
-   * is intentional since they're both required.
-   *
-   * @see https://stackoverflow.com/q/54520554/803358
-   *
-   * @param {HTMLElement | Element} element Element to look into
-   * @param {string} selector the selector name
-   * @return {(HTMLElement | Element)?} the query result
-   */
-  function closest(element, selector) {
-    return element ? (element.closest(selector)
-      // @ts-ignore -- break out of `ShadowRoot`
-      || closest(element.getRootNode().host, selector)) : null;
-  }
-
-  /**
    * Returns a namespaced `CustomEvent` specific to each component.
    * @param {string} EventType Event.type
    * @param {Record<string, any>=} config Event.options | Event.properties
-   * @returns {BSN.OriginalEvent} a new namespaced event
+   * @returns {SHORTER.OriginalEvent} a new namespaced event
    */
-  function bootstrapCustomEvent(EventType, config) {
-    const OriginalCustomEvent = new CustomEvent(EventType, { cancelable: true, bubbles: true });
+  function OriginalEvent(EventType, config) {
+    const OriginalCustomEvent = new CustomEvent(EventType, {
+      cancelable: true, bubbles: true,
+    });
 
     if (config instanceof Object) {
       ObjectAssign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
   }
+
+  /**
+   * Global namespace for most components `dismiss` option.
+   */
+  const dataBsDismiss = 'data-bs-dismiss';
+
+  /**
+   * Global namespace for most components `toggle` option.
+   */
+  const dataBsToggle = 'data-bs-toggle';
+
+  /**
+   * Global namespace for most components `show` class.
+   */
+  const showClass = 'show';
+
+  /** @type {string} */
+  const offcanvasString = 'offcanvas';
+
+  /** @type {string} */
+  const offcanvasComponent = 'Offcanvas';
 
   /**
    * Shortcut for `HTMLElement.getAttribute()` method.
@@ -598,21 +621,6 @@
   }
 
   /**
-   * Global namespace for most components `dismiss` option.
-   */
-  const dataBsDismiss = 'data-bs-dismiss';
-
-  /**
-   * Global namespace for most components `toggle` option.
-   */
-  const dataBsToggle = 'data-bs-toggle';
-
-  /**
-   * Global namespace for most components `show` class.
-   */
-  const showClass = 'show';
-
-  /**
    * @param {HTMLElement | Element} element target
    * @returns {boolean}
    */
@@ -758,10 +766,14 @@
    */
   const fadeClass = 'fade';
 
-  const modalBackdropClass = 'modal-backdrop';
-  const offcanvasBackdropClass = 'offcanvas-backdrop';
-  const modalActiveSelector = `.modal.${showClass}`;
-  const offcanvasActiveSelector = `.offcanvas.${showClass}`;
+  /** @type {string} */
+  const modalString = 'modal';
+
+  const backdropString = 'backdrop';
+  const modalBackdropClass = `${modalString}-${backdropString}`;
+  const offcanvasBackdropClass = `${offcanvasString}-${backdropString}`;
+  const modalActiveSelector = `.${modalString}.${showClass}`;
+  const offcanvasActiveSelector = `.${offcanvasString}.${showClass}`;
 
   // any document would suffice
   const overlay = getDocument().createElement('div');
@@ -867,6 +879,14 @@
   const ObjectKeys = (obj) => Object.keys(obj);
 
   /**
+   * Shortcut for `String.toLowerCase()`.
+   *
+   * @param {string} source input string
+   * @returns {string} lowercase output string
+   */
+  const toLowerCase = (source) => source.toLowerCase();
+
+  /**
    * Utility to normalize component options.
    *
    * @param {HTMLElement | Element} element target
@@ -882,10 +902,11 @@
     const normalOps = {};
     /** @type {Record<string, any>} */
     const dataOps = {};
+    const title = 'title';
 
     ObjectKeys(data).forEach((k) => {
       const key = ns && k.includes(ns)
-        ? k.replace(ns, '').replace(/[A-Z]/, (match) => match.toLowerCase())
+        ? k.replace(ns, '').replace(/[A-Z]/, (match) => toLowerCase(match))
         : k;
 
       dataOps[key] = normalizeValue(data[k]);
@@ -901,7 +922,9 @@
       } else if (k in dataOps) {
         normalOps[k] = dataOps[k];
       } else {
-        normalOps[k] = defaultOps[k];
+        normalOps[k] = k === title
+          ? getAttribute(element, title)
+          : defaultOps[k];
       }
     });
 
@@ -973,8 +996,6 @@
 
   // OFFCANVAS PRIVATE GC
   // ====================
-  const offcanvasString = 'offcanvas';
-  const offcanvasComponent = 'Offcanvas';
   const offcanvasSelector = `.${offcanvasString}`;
   const offcanvasToggleSelector = `[${dataBsToggle}="${offcanvasString}"]`;
   const offcanvasDismissSelector = `[${dataBsDismiss}="${offcanvasString}"]`;
@@ -1002,10 +1023,10 @@
 
   // OFFCANVAS CUSTOM EVENTS
   // =======================
-  const showOffcanvasEvent = bootstrapCustomEvent(`show.bs.${offcanvasString}`);
-  const shownOffcanvasEvent = bootstrapCustomEvent(`shown.bs.${offcanvasString}`);
-  const hideOffcanvasEvent = bootstrapCustomEvent(`hide.bs.${offcanvasString}`);
-  const hiddenOffcanvasEvent = bootstrapCustomEvent(`hidden.bs.${offcanvasString}`);
+  const showOffcanvasEvent = OriginalEvent(`show.bs.${offcanvasString}`);
+  const shownOffcanvasEvent = OriginalEvent(`shown.bs.${offcanvasString}`);
+  const hideOffcanvasEvent = OriginalEvent(`hide.bs.${offcanvasString}`);
+  const hiddenOffcanvasEvent = OriginalEvent(`hidden.bs.${offcanvasString}`);
 
   // OFFCANVAS PRIVATE METHODS
   // =========================

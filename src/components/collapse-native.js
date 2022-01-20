@@ -17,19 +17,19 @@ import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import collapsingClass from '../strings/collapsingClass';
 import showClass from '../strings/showClass';
+import collapseString from '../strings/collapseString';
+import collapseComponent from '../strings/collapseComponent';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import getTargetElement from '../util/getTargetElement';
 import BaseComponent from './base-component';
 
 // COLLAPSE GC
 // ===========
-const collapseString = 'collapse';
-const collapseComponent = 'Collapse';
 const collapseSelector = `.${collapseString}`;
 const collapseToggleSelector = `[${dataBsToggle}="${collapseString}"]`;
 const collapseDefaults = { parent: null };
@@ -50,10 +50,10 @@ const collapseInitCallback = (element) => new Collapse(element);
 
 // COLLAPSE CUSTOM EVENTS
 // ======================
-const showCollapseEvent = bootstrapCustomEvent(`show.bs.${collapseString}`);
-const shownCollapseEvent = bootstrapCustomEvent(`shown.bs.${collapseString}`);
-const hideCollapseEvent = bootstrapCustomEvent(`hide.bs.${collapseString}`);
-const hiddenCollapseEvent = bootstrapCustomEvent(`hidden.bs.${collapseString}`);
+const showCollapseEvent = OriginalEvent(`show.bs.${collapseString}`);
+const shownCollapseEvent = OriginalEvent(`shown.bs.${collapseString}`);
+const hideCollapseEvent = OriginalEvent(`hide.bs.${collapseString}`);
+const hiddenCollapseEvent = OriginalEvent(`hidden.bs.${collapseString}`);
 
 // COLLAPSE PRIVATE METHODS
 // ========================

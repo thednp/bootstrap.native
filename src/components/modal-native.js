@@ -1,11 +1,13 @@
 /* Native JavaScript for Bootstrap 5 | Modal
 -------------------------------------------- */
+import keyEscape from 'shorter-js/src/strings/keyEscape';
+import ariaHidden from 'shorter-js/src/strings/ariaHidden';
+import ariaModal from 'shorter-js/src/strings/ariaModal';
+import resizeEvent from 'shorter-js/src/strings/resizeEvent';
+import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
+import keydownEvent from 'shorter-js/src/strings/keydownEvent';
 import setAttribute from 'shorter-js/src/attr/setAttribute';
 import removeAttribute from 'shorter-js/src/attr/removeAttribute';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
 import getWindow from 'shorter-js/src/get/getWindow';
 import getDocument from 'shorter-js/src/get/getDocument';
@@ -17,25 +19,25 @@ import closest from 'shorter-js/src/selectors/closest';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import keyEscape from 'shorter-js/src/strings/keyEscape';
 import on from 'shorter-js/src/event/on';
 import off from 'shorter-js/src/event/off';
-import ariaHidden from 'shorter-js/src/strings/ariaHidden';
-import ariaModal from 'shorter-js/src/strings/ariaModal';
-import resizeEvent from 'shorter-js/src/strings/resizeEvent';
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import keydownEvent from 'shorter-js/src/strings/keydownEvent';
 import isRTL from 'shorter-js/src/is/isRTL';
 import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
 import focus from 'shorter-js/src/misc/focus';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
+import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
+import passiveHandler from 'shorter-js/src/misc/passiveHandler';
+import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
+import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import dataBsDismiss from '../strings/dataBsDismiss';
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
+import modalString from '../strings/modalString';
+import modalComponent from '../strings/modalComponent';
 
-import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
 import getElementContainer from '../util/getElementContainer';
 import getTargetElement from '../util/getTargetElement';
 import { setScrollbar, measureScrollbar } from '../util/scrollbar';
@@ -54,8 +56,6 @@ import BaseComponent from './base-component';
 
 // MODAL PRIVATE GC
 // ================
-const modalString = 'modal';
-const modalComponent = 'Modal';
 const modalSelector = `.${modalString}`;
 const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
 const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
@@ -82,10 +82,10 @@ const modalInitCallback = (element) => new Modal(element);
 
 // MODAL CUSTOM EVENTS
 // ===================
-const showModalEvent = bootstrapCustomEvent(`show.bs.${modalString}`);
-const shownModalEvent = bootstrapCustomEvent(`shown.bs.${modalString}`);
-const hideModalEvent = bootstrapCustomEvent(`hide.bs.${modalString}`);
-const hiddenModalEvent = bootstrapCustomEvent(`hidden.bs.${modalString}`);
+const showModalEvent = OriginalEvent(`show.bs.${modalString}`);
+const shownModalEvent = OriginalEvent(`shown.bs.${modalString}`);
+const hideModalEvent = OriginalEvent(`hide.bs.${modalString}`);
+const hiddenModalEvent = OriginalEvent(`hidden.bs.${modalString}`);
 
 // MODAL PRIVATE METHODS
 // =====================
@@ -283,11 +283,10 @@ function modalDismissHandler(e) {
   const dismiss = target && closest(target, modalDismissSelector);
 
   if (isStatic && !targetInsideDialog) {
-    const dismissCallback = () => {
+    Timer.set(element, () => {
       addClass(element, modalStaticClass);
       emulateTransitionEnd(modalDialog, () => staticTransitionEnd(self));
-    };
-    Timer.set(element, dismissCallback, 17);
+    }, 17);
   } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)) {
     self.relatedTarget = dismiss || null;
     self.hide();

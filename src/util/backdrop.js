@@ -6,12 +6,15 @@ import getDocument from 'shorter-js/src/get/getDocument';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
+import modalString from '../strings/modalString';
+import offcanvasString from '../strings/offcanvasString';
 import { resetScrollbar } from './scrollbar';
 
-const modalBackdropClass = 'modal-backdrop';
-const offcanvasBackdropClass = 'offcanvas-backdrop';
-const modalActiveSelector = `.modal.${showClass}`;
-const offcanvasActiveSelector = `.offcanvas.${showClass}`;
+const backdropString = 'backdrop';
+const modalBackdropClass = `${modalString}-${backdropString}`;
+const offcanvasBackdropClass = `${offcanvasString}-${backdropString}`;
+const modalActiveSelector = `.${modalString}.${showClass}`;
+const offcanvasActiveSelector = `.${offcanvasString}.${showClass}`;
 
 // any document would suffice
 const overlay = getDocument().createElement('div');
