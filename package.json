@@ -7,12 +7,9 @@
   "module": "dist/bootstrap-native.esm.js",
   "jsnext": "src/index.js",
   "files": [
-    "dist/*.{js,map}",
-    "dist/**/*.{js,map}",
-    "types/*.{ts,map}",
-    "types/**/*.{ts,map}",
-    "src/*.{js,map}",
-    "src/**/*.{js,map}"
+    "dist",
+    "types",
+    "src"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
