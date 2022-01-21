@@ -1,13 +1,10 @@
 import isMedia from 'shorter-js/src/is/isMedia';
 import isRTL from 'shorter-js/src/is/isRTL';
-import isFirefox from 'shorter-js/src/boolean/isFirefox';
-import isSVGElement from 'shorter-js/src/is/isSVGElement';
 import getElementStyle from 'shorter-js/src/get/getElementStyle';
 import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
 import getNodeScroll from 'shorter-js/src/get/getNodeScroll';
 import getRectRelativeToOffsetParent from 'shorter-js/src/get/getRectRelativeToOffsetParent';
 import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
-import getWindow from 'shorter-js/src/get/getWindow';
 import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 
 import popoverComponent from '../strings/popoverComponent';
@@ -21,7 +18,7 @@ import tipClassPositions from './tipClassPositions';
 export default function styleTip(self, e) {
   const tipClasses = /\b(top|bottom|start|end)+/;
   const {
-    element, tooltip, options, arrow,
+    element, tooltip, options, arrow, offsetParent,
   } = self;
   const tipPositions = { ...tipClassPositions };
 
@@ -41,15 +38,18 @@ export default function styleTip(self, e) {
   const windowHeight = documentElement.clientHeight;
   const { container } = options;
   let { placement } = options;
-  const parentIsBody = container.tagName === 'BODY';
+  // const parentIsBody = container.tagName === 'BODY';
   const { left: parentLeft, right: parentRight } = getBoundingClientRect(container, true);
+  const parentWidth = container.clientWidth;
   const parentPosition = getElementStyle(container, 'position');
   // const absoluteParent = parentPosition === 'absolute';
-  const fixedParent = parentPosition === 'fixed';
+  // const fixedParent = parentPosition === 'fixed';
+  // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
   const staticParent = parentPosition === 'static';
-  const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
+  const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
   const leftBoundry = 0;
-  const rightBoundry = container.clientWidth + parentLeft + (windowWidth - parentRight) - 1;
+  const rightBoundry = stickyFixedParent ? parentWidth + parentLeft
+    : parentWidth + parentLeft + (windowWidth - parentRight) - 1;
   const {
     width: elemWidth,
     height: elemHeight,
@@ -57,11 +57,9 @@ export default function styleTip(self, e) {
     right: elemRectRight,
     top: elemRectTop,
   } = getBoundingClientRect(element, true);
-  const offsetParent = parentIsBody || staticParent ? getWindow(element) : container;
-  const scroll = getNodeScroll(offsetParent);
-  const isSVG = isSVGElement(element);
-  const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
 
+  const scroll = getNodeScroll(offsetParent);
+  const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
   // reset arrow style
   setElementStyle(arrow, { top: '', left: '', right: '' });
   let topPosition;
@@ -134,23 +132,17 @@ export default function styleTip(self, e) {
     if (e && isMedia(element)) {
       let eX = 0;
       let eY = 0;
-
-      if (parentIsBody || staticParent) {
+      if (staticParent) {
         eX = e.pageX;
         eY = e.pageY;
-      } else if (['sticky', 'fixed'].includes(parentPosition)) {
-        eX = e.clientX + scroll.x;
-        eY = e.clientY + scroll.y;
-      // parentPosition === 'relative | static | absolute'
       } else {
-        // @ts-ignore -- Firefix breaks here
-        eX = e.layerX + ((isSVG && !isFirefox) || absoluteTarget ? x : 0);
-        // @ts-ignore -- Firefix breaks here
-        eY = e.layerY + ((isSVG && !isFirefox) || absoluteTarget ? y : 0);
+        eX = e.clientX - container.offsetLeft + scroll.x;
+        eY = e.clientY - container.offsetTop + scroll.y;
       }
+
       // some weird RTL bug
-      const scrollbarWidth = parentRight - container.clientWidth;
-      eX -= RTL && fixedParent ? scrollbarWidth : 0;
+      const scrollbarWidth = parentRight - parentWidth;
+      eX -= RTL && stickyFixedParent ? scrollbarWidth : 0;
 
       if (placement === 'top') {
         topPosition = eY - tipHeight - arrowWidth;

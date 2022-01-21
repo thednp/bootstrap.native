@@ -310,10 +310,15 @@ declare module "bootstrap.native/src/util/getElementContainer" {
      * Returns an `HTMLElement` to be used as default value for *options.container*
      * for `Tooltip` / `Popover` components.
      *
+     * When `getOffset` is *true*, it returns the `offsetParent` for tooltip/popover
+     * offsets computation similar to **floating-ui**.
+     * @see https://github.com/floating-ui/floating-ui
+     *
      * @param {HTMLElement | Element} element the target
-     * @returns {HTMLElement | HTMLBodyElement} the query result
+     * @param {boolean=} getOffset when *true* it will return an `offsetParent`
+     * @returns {HTMLElement | HTMLBodyElement | Window | globalThis} the query result
      */
-    export default function getElementContainer(element: HTMLElement | Element): HTMLElement | HTMLBodyElement;
+    export default function getElementContainer(element: HTMLElement | Element, getOffset?: boolean | undefined): HTMLElement | HTMLBodyElement | Window | typeof globalThis;
 }
 declare module "bootstrap.native/src/strings/fixedTopClass" {
     export default fixedTopClass;
@@ -582,6 +587,8 @@ declare module "bootstrap.native/src/components/tooltip-native" {
         tooltip: any;
         /** @type {any} */
         arrow: any;
+        /** @type {any} */
+        offsetParent: any;
         /** @type {boolean} */
         enabled: boolean;
         /** @type {string} Set unique ID for `aria-describedby`. */

@@ -21,6 +21,7 @@ import getDocument from 'shorter-js/src/get/getDocument';
 import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
 import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
 import getElementStyle from 'shorter-js/src/get/getElementStyle';
+import closest from 'shorter-js/src/selectors/closest';
 import querySelector from 'shorter-js/src/selectors/querySelector';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
@@ -47,6 +48,8 @@ import tooltipString from '../strings/tooltipString';
 import tooltipComponent from '../strings/tooltipComponent';
 import popoverString from '../strings/popoverString';
 import popoverComponent from '../strings/popoverComponent';
+import modalString from '../strings/modalString';
+import offcanvasString from '../strings/offcanvasString';
 
 import styleTip from '../util/styleTip';
 import createTip from '../util/createTip';
@@ -179,8 +182,8 @@ function toggleTooltipHandlers(self, add) {
       action(element, mousedownEvent, self.show);
       action(element, mouseenterEvent, self.show);
 
-      if (dismissible) {
-        if (btn) action(btn, mouseclickEvent, self.hide);
+      if (dismissible && btn) {
+        action(btn, mouseclickEvent, self.hide);
       } else {
         action(element, mouseleaveEvent, self.hide);
         action(getDocument(element), touchstartEvent, tooltipTouchHandler, passiveHandler);
@@ -203,17 +206,24 @@ function toggleTooltipHandlers(self, add) {
  */
 function toggleTooltipOpenHandlers(self, add) {
   const action = add ? on : off;
-  const { element, options } = self;
+  const { element, options, offsetParent } = self;
   const { container } = options;
   const { offsetHeight, scrollHeight } = container;
-  const win = getWindow(element);
-  const scrollTarget = offsetHeight !== scrollHeight ? container : win;
+  const parentModal = closest(element, `.${modalString}`);
+  const parentOffcanvas = closest(element, `.${offcanvasString}`);
 
   if (!isMedia(element)) {
+    const win = getWindow(element);
+    const overflow = offsetHeight !== scrollHeight;
+    const scrollTarget = overflow || offsetParent !== win ? container : win;
     // @ts-ignore
     action(win, resizeEvent, self.update, passiveHandler);
     action(scrollTarget, scrollEvent, self.update, passiveHandler);
   }
+
+  // dismiss tooltips inside modal / offcanvas
+  if (parentModal) on(parentModal, `hide.bs.${modalString}`, self.hide);
+  if (parentOffcanvas) on(parentOffcanvas, `hide.bs.${offcanvasString}`, self.hide);
 }
 
 /**
@@ -280,6 +290,8 @@ export default class Tooltip extends BaseComponent {
     }
     /** @type {any} */
     self.arrow = {};
+    /** @type {any} */
+    self.offsetParent = {};
     /** @type {boolean} */
     self.enabled = true;
     /** @type {string} Set unique ID for `aria-describedby`. */
@@ -362,6 +374,8 @@ export default class Tooltip extends BaseComponent {
         // append to container
         container.append(tooltip);
         setAttribute(element, ariaDescribedBy, `#${id}`);
+        // set offsetParent
+        self.offsetParent = getElementContainer(tooltip, true);
 
         self.update(e);
         toggleTooltipOpenHandlers(self, true);
@@ -380,7 +394,6 @@ export default class Tooltip extends BaseComponent {
    */
   hide() {
     const self = this;
-
     const { options, tooltip, element } = self;
     const { container, animation, delay } = options;
 
@@ -390,6 +403,7 @@ export default class Tooltip extends BaseComponent {
       Timer.set(element, () => {
         const hideTooltipEvent = OriginalEvent(`hide.bs.${toLowerCase(self.name)}`);
         dispatchEvent(element, hideTooltipEvent);
+
         if (hideTooltipEvent.defaultPrevented) return;
 
         // @ts-ignore

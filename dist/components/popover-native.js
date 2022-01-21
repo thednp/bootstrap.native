@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Popover v4.1.0alpha1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Popover v4.1.0alpha2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -199,26 +199,6 @@
    */
   const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
 
-  const { userAgent: userAgentString } = navigator;
-
-  /**
-   * A global namespace for `navigator.userAgent` string.
-   */
-  const userAgent = userAgentString;
-
-  /**
-   * A global boolean for Gecko browsers. When writing this file,
-   * Gecko was not supporting `userAgentData`.
-   */
-  const isFirefox = userAgent ? userAgent.includes('Firefox') : false;
-
-  /**
-   * Check if an element is an `<svg>` or any other SVG element.
-   * @param {any} element the target element
-   * @returns {boolean} the query result
-   */
-  const isSVGElement = (element) => element instanceof SVGElement;
-
   /**
    * Shortcut for `window.getComputedStyle(element).propertyName`
    * static method.
@@ -332,27 +312,6 @@
   }
 
   /**
-   * Returns the `Window` object of a target node.
-   * @see https://github.com/floating-ui/floating-ui
-   *
-   * @param {(Node | HTMLElement | Element | Window)=} node target node
-   * @returns {globalThis}
-   */
-  function getWindow(node) {
-    if (node == null) {
-      return window;
-    }
-
-    if (!(node instanceof Window)) {
-      const { ownerDocument } = node;
-      return ownerDocument ? ownerDocument.defaultView || window : window;
-    }
-
-    // @ts-ignore
-    return node;
-  }
-
-  /**
    * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
    * @param  {HTMLElement | Element} element target element
    * @param  {Partial<CSSStyleDeclaration>} styles attribute value
@@ -376,7 +335,7 @@
   function styleTip(self, e) {
     const tipClasses = /\b(top|bottom|start|end)+/;
     const {
-      element, tooltip, options, arrow,
+      element, tooltip, options, arrow, offsetParent,
     } = self;
     const tipPositions = { ...tipClassPositions };
 
@@ -396,15 +355,18 @@
     const windowHeight = documentElement.clientHeight;
     const { container } = options;
     let { placement } = options;
-    const parentIsBody = container.tagName === 'BODY';
+    // const parentIsBody = container.tagName === 'BODY';
     const { left: parentLeft, right: parentRight } = getBoundingClientRect(container, true);
+    const parentWidth = container.clientWidth;
     const parentPosition = getElementStyle(container, 'position');
     // const absoluteParent = parentPosition === 'absolute';
-    const fixedParent = parentPosition === 'fixed';
+    // const fixedParent = parentPosition === 'fixed';
+    // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
     const staticParent = parentPosition === 'static';
-    const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
+    const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
     const leftBoundry = 0;
-    const rightBoundry = container.clientWidth + parentLeft + (windowWidth - parentRight) - 1;
+    const rightBoundry = stickyFixedParent ? parentWidth + parentLeft
+      : parentWidth + parentLeft + (windowWidth - parentRight) - 1;
     const {
       width: elemWidth,
       height: elemHeight,
@@ -412,11 +374,9 @@
       right: elemRectRight,
       top: elemRectTop,
     } = getBoundingClientRect(element, true);
-    const offsetParent = parentIsBody || staticParent ? getWindow(element) : container;
-    const scroll = getNodeScroll(offsetParent);
-    const isSVG = isSVGElement(element);
-    const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
 
+    const scroll = getNodeScroll(offsetParent);
+    const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
     // reset arrow style
     setElementStyle(arrow, { top: '', left: '', right: '' });
     let topPosition;
@@ -489,23 +449,17 @@
       if (e && isMedia(element)) {
         let eX = 0;
         let eY = 0;
-
-        if (parentIsBody || staticParent) {
+        if (staticParent) {
           eX = e.pageX;
           eY = e.pageY;
-        } else if (['sticky', 'fixed'].includes(parentPosition)) {
-          eX = e.clientX + scroll.x;
-          eY = e.clientY + scroll.y;
-        // parentPosition === 'relative | static | absolute'
         } else {
-          // @ts-ignore -- Firefix breaks here
-          eX = e.layerX + ((isSVG && !isFirefox) || absoluteTarget ? x : 0);
-          // @ts-ignore -- Firefix breaks here
-          eY = e.layerY + ((isSVG && !isFirefox) || absoluteTarget ? y : 0);
+          eX = e.clientX - container.offsetLeft + scroll.x;
+          eY = e.clientY - container.offsetTop + scroll.y;
         }
+
         // some weird RTL bug
-        const scrollbarWidth = parentRight - container.clientWidth;
-        eX -= RTL && fixedParent ? scrollbarWidth : 0;
+        const scrollbarWidth = parentRight - parentWidth;
+        eX -= RTL && stickyFixedParent ? scrollbarWidth : 0;
 
         if (placement === 'top') {
           topPosition = eY - tipHeight - arrowWidth;
@@ -690,6 +644,27 @@
   const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
 
   /**
+   * Returns the `Window` object of a target node.
+   * @see https://github.com/floating-ui/floating-ui
+   *
+   * @param {(Node | HTMLElement | Element | Window)=} node target node
+   * @returns {globalThis}
+   */
+  function getWindow(node) {
+    if (node == null) {
+      return window;
+    }
+
+    if (!(node instanceof Window)) {
+      const { ownerDocument } = node;
+      return ownerDocument ? ownerDocument.defaultView || window : window;
+    }
+
+    // @ts-ignore
+    return node;
+  }
+
+  /**
    * Returns the `document.body` or the `<body>` element.
    *
    * @param {(Node | HTMLElement | Element | globalThis)=} node
@@ -729,6 +704,23 @@
       ? parseFloat(durationValue) * durationScale : 0;
 
     return !Number.isNaN(duration) ? duration : 0;
+  }
+
+  /**
+   * Shortcut for `HTMLElement.closest` method which also works
+   * with children of `ShadowRoot`. The order of the parameters
+   * is intentional since they're both required.
+   *
+   * @see https://stackoverflow.com/q/54520554/803358
+   *
+   * @param {HTMLElement | Element} element Element to look into
+   * @param {string} selector the selector name
+   * @return {(HTMLElement | Element)?} the query result
+   */
+  function closest(element, selector) {
+    return element ? (element.closest(selector)
+      // @ts-ignore -- break out of `ShadowRoot`
+      || closest(element.getRootNode().host, selector)) : null;
   }
 
   /**
@@ -795,6 +787,13 @@
    * A global namespace for `userAgentData` object.
    */
   const userAgentData = uaDATA;
+
+  const { userAgent: userAgentString } = navigator;
+
+  /**
+   * A global namespace for `navigator.userAgent` string.
+   */
+  const userAgent = userAgentString;
 
   const appleBrands = /(iPhone|iPod|iPad)/;
 
@@ -1026,6 +1025,12 @@
   /** @type {string} */
   const tooltipComponent = 'Tooltip';
 
+  /** @type {string} */
+  const modalString = 'modal';
+
+  /** @type {string} */
+  const offcanvasString = 'offcanvas';
+
   /**
    * Global namespace for most components `fade` class.
    */
@@ -1188,14 +1193,47 @@
   const isTableElement = (element) => ['TABLE', 'TD', 'TH'].includes(element.tagName);
 
   /**
+   * Checks if an element is an `HTMLElement`.
+   *
+   * @param {any} element the target object
+   * @returns {boolean} the query result
+   */
+  const isHTMLElement = (element) => element instanceof HTMLElement;
+
+  /**
    * Returns an `HTMLElement` to be used as default value for *options.container*
    * for `Tooltip` / `Popover` components.
    *
+   * When `getOffset` is *true*, it returns the `offsetParent` for tooltip/popover
+   * offsets computation similar to **floating-ui**.
+   * @see https://github.com/floating-ui/floating-ui
+   *
    * @param {HTMLElement | Element} element the target
-   * @returns {HTMLElement | HTMLBodyElement} the query result
+   * @param {boolean=} getOffset when *true* it will return an `offsetParent`
+   * @returns {HTMLElement | HTMLBodyElement | Window | globalThis} the query result
    */
-  function getElementContainer(element) {
+  function getElementContainer(element, getOffset) {
     const majorBlockTags = ['HTML', 'BODY'];
+
+    if (getOffset) {
+      /** @type {any} */
+      let { offsetParent } = element;
+      const win = getWindow(element);
+      // const { innerWidth } = getDocumentElement(element);
+
+      while (offsetParent && (isTableElement(offsetParent)
+        || (isHTMLElement(offsetParent)
+          && getElementStyle(offsetParent, 'position') !== 'fixed'))) {
+        offsetParent = offsetParent.offsetParent;
+      }
+
+      if (!offsetParent || (offsetParent
+        && (majorBlockTags.includes(offsetParent.tagName)
+          || getElementStyle(offsetParent, 'position') === 'static'))) {
+        offsetParent = win;
+      }
+      return offsetParent;
+    }
 
     /** @type {(HTMLElement)[]} */
     const containers = [];
@@ -1304,7 +1342,7 @@
     return normalOps;
   }
 
-  var version = "4.1.0alpha1";
+  var version = "4.1.0alpha2";
 
   const Version = version;
 
@@ -1491,8 +1529,8 @@
         action(element, mousedownEvent, self.show);
         action(element, mouseenterEvent, self.show);
 
-        if (dismissible) {
-          if (btn) action(btn, mouseclickEvent, self.hide);
+        if (dismissible && btn) {
+          action(btn, mouseclickEvent, self.hide);
         } else {
           action(element, mouseleaveEvent, self.hide);
           action(getDocument(element), touchstartEvent, tooltipTouchHandler, passiveHandler);
@@ -1515,17 +1553,24 @@
    */
   function toggleTooltipOpenHandlers(self, add) {
     const action = add ? on : off;
-    const { element, options } = self;
+    const { element, options, offsetParent } = self;
     const { container } = options;
     const { offsetHeight, scrollHeight } = container;
-    const win = getWindow(element);
-    const scrollTarget = offsetHeight !== scrollHeight ? container : win;
+    const parentModal = closest(element, `.${modalString}`);
+    const parentOffcanvas = closest(element, `.${offcanvasString}`);
 
     if (!isMedia(element)) {
+      const win = getWindow(element);
+      const overflow = offsetHeight !== scrollHeight;
+      const scrollTarget = overflow || offsetParent !== win ? container : win;
       // @ts-ignore
       action(win, resizeEvent, self.update, passiveHandler);
       action(scrollTarget, scrollEvent, self.update, passiveHandler);
     }
+
+    // dismiss tooltips inside modal / offcanvas
+    if (parentModal) on(parentModal, `hide.bs.${modalString}`, self.hide);
+    if (parentOffcanvas) on(parentOffcanvas, `hide.bs.${offcanvasString}`, self.hide);
   }
 
   /**
@@ -1590,6 +1635,8 @@
       }
       /** @type {any} */
       self.arrow = {};
+      /** @type {any} */
+      self.offsetParent = {};
       /** @type {boolean} */
       self.enabled = true;
       /** @type {string} Set unique ID for `aria-describedby`. */
@@ -1672,6 +1719,8 @@
           // append to container
           container.append(tooltip);
           setAttribute(element, ariaDescribedBy, `#${id}`);
+          // set offsetParent
+          self.offsetParent = getElementContainer(tooltip, true);
 
           self.update(e);
           toggleTooltipOpenHandlers(self, true);
@@ -1690,7 +1739,6 @@
      */
     hide() {
       const self = this;
-
       const { options, tooltip, element } = self;
       const { container, animation, delay } = options;
 
@@ -1700,6 +1748,7 @@
         Timer.set(element, () => {
           const hideTooltipEvent = OriginalEvent(`hide.bs.${toLowerCase(self.name)}`);
           dispatchEvent(element, hideTooltipEvent);
+
           if (hideTooltipEvent.defaultPrevented) return;
 
           // @ts-ignore

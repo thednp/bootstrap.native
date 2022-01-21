@@ -188,3 +188,13 @@ nav.border-bottom {
 [dir="rtl"] .absolute-svg {
   left: 1rem; right: auto
 }
+
+.img-tip-modal,
+.svg-tip-modal {
+  position: absolute; top:250px; 
+}
+.img-tip-modal {right:0}
+.svg-tip-modal {right:90px}
+
+[dir="rtl"] .img-tip-modal { right: auto; left: 0 }
+[dir="rtl"] .svg-tip-modal { right: auto; left: 90px }

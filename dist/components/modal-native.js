@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Modal v4.1.0alpha1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Modal v4.1.0alpha2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -616,14 +616,47 @@
   const isTableElement = (element) => ['TABLE', 'TD', 'TH'].includes(element.tagName);
 
   /**
+   * Checks if an element is an `HTMLElement`.
+   *
+   * @param {any} element the target object
+   * @returns {boolean} the query result
+   */
+  const isHTMLElement = (element) => element instanceof HTMLElement;
+
+  /**
    * Returns an `HTMLElement` to be used as default value for *options.container*
    * for `Tooltip` / `Popover` components.
    *
+   * When `getOffset` is *true*, it returns the `offsetParent` for tooltip/popover
+   * offsets computation similar to **floating-ui**.
+   * @see https://github.com/floating-ui/floating-ui
+   *
    * @param {HTMLElement | Element} element the target
-   * @returns {HTMLElement | HTMLBodyElement} the query result
+   * @param {boolean=} getOffset when *true* it will return an `offsetParent`
+   * @returns {HTMLElement | HTMLBodyElement | Window | globalThis} the query result
    */
-  function getElementContainer(element) {
+  function getElementContainer(element, getOffset) {
     const majorBlockTags = ['HTML', 'BODY'];
+
+    if (getOffset) {
+      /** @type {any} */
+      let { offsetParent } = element;
+      const win = getWindow(element);
+      // const { innerWidth } = getDocumentElement(element);
+
+      while (offsetParent && (isTableElement(offsetParent)
+        || (isHTMLElement(offsetParent)
+          && getElementStyle(offsetParent, 'position') !== 'fixed'))) {
+        offsetParent = offsetParent.offsetParent;
+      }
+
+      if (!offsetParent || (offsetParent
+        && (majorBlockTags.includes(offsetParent.tagName)
+          || getElementStyle(offsetParent, 'position') === 'static'))) {
+        offsetParent = win;
+      }
+      return offsetParent;
+    }
 
     /** @type {(HTMLElement)[]} */
     const containers = [];
@@ -995,7 +1028,7 @@
     return normalOps;
   }
 
-  var version = "4.1.0alpha1";
+  var version = "4.1.0alpha2";
 
   const Version = version;
 
