@@ -3833,7 +3833,7 @@
           eX = e.pageX;
           eY = e.pageY;
         } else {
-          eX = e.clientX - container.offsetLeft + scroll.x;
+          eX = e.clientX - (RTL ? 0 : container.offsetLeft) + scroll.x;
           eY = e.clientY - container.offsetTop + scroll.y;
         }
 
