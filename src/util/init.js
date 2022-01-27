@@ -1,8 +1,9 @@
+import one from 'shorter-js/src/event/one';
 import Data from 'shorter-js/src/misc/data';
 import ObjectKeys from 'shorter-js/src/misc/ObjectKeys';
 import parentNodes from 'shorter-js/src/selectors/parentNodes';
-import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
-import getCustomElements from 'shorter-js/src/selectors/getCustomElements';
+import getElementsByTagName from 'shorter-js/src/selectors/getElementsByTagName';
+import matches from 'shorter-js/src/selectors/matches';
 
 import Alert from '../components/alert-native';
 import Button from '../components/button-native';
@@ -33,12 +34,10 @@ const componentsList = {
   Tooltip,
 };
 
-const componentsKeys = ObjectKeys(componentsList);
-
 /**
  * Initialize all matched `Element`s for one component.
- * @param {BSN.InitCallback<any>} callback the component callback
- * @param {NodeListOf<HTMLElement | Element>} collection the matched collection
+ * @param {BSN.InitCallback<any>} callback
+ * @param {NodeListOf<HTMLElement | Element> | (HTMLElement | Element)[]} collection
  */
 function initComponentDataAPI(callback, collection) {
   [...collection].forEach((x) => callback(x));
@@ -67,14 +66,11 @@ function removeComponentDataAPI(component, context) {
 export function initCallback(context) {
   const lookUp = context && parentNodes.some((x) => context instanceof x)
     ? context : undefined;
-  const customElementList = getCustomElements(lookUp);
+  const elemCollection = [...getElementsByTagName('*', lookUp)];
 
-  componentsKeys.forEach((comp) => {
+  ObjectKeys(componentsList).forEach((comp) => {
     const { init, selector } = componentsList[comp];
-    initComponentDataAPI(init, querySelectorAll(selector, lookUp));
-    customElementList
-      // @ts-ignore -- initialize anything inside `CustomElement.shadowRoot`
-      .forEach((ce) => initComponentDataAPI(init, querySelectorAll(selector, ce.shadowRoot)));
+    initComponentDataAPI(init, elemCollection.filter((item) => matches(item, selector)));
   });
 }
 
@@ -85,17 +81,14 @@ export function initCallback(context) {
 export function removeDataAPI(context) {
   const lookUp = context && parentNodes.some((x) => context instanceof x)
     ? context : undefined;
-  const customElementList = getCustomElements(lookUp);
 
-  componentsKeys.forEach((comp) => {
+  ObjectKeys(componentsList).forEach((comp) => {
     removeComponentDataAPI(comp, lookUp);
-    // @ts-ignore -- allow `Element.shadowRoot` to initialize
-    customElementList.forEach((ce) => removeComponentDataAPI(comp, ce.shadowRoot));
   });
 }
 
 // bulk initialize all components
 if (document.body) initCallback();
 else {
-  document.addEventListener('DOMContentLoaded', () => initCallback(), { once: true });
+  one(document, 'DOMContentLoaded', () => initCallback());
 }

@@ -1,0 +1,29 @@
+.btn-icon {
+  width: auto;
+  height: 1.5em;
+  margin-top: -0.25rem;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.btn-popover,
+.btn-popover:hover,
+.btn-popover:focus,
+.btn-tooltip,
+.btn-tooltip:hover,
+.btn-tooltip:focus{ color: white }
+
+.btn-popover {
+  background-color: rgb(204, 85, 85);
+}
+.btn-popover:hover,
+.btn-popover:focus {
+  background-color: rgb(182, 69, 69);
+}
+.btn-tooltip {
+  background-color: rgb(226, 67, 115);
+}
+.btn-tooltip:hover,
+.btn-tooltip:focus {
+  background-color: rgb(197, 55, 97);
+}

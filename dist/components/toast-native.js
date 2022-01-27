@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Toast v4.1.0alpha2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Toast v4.1.0alpha3 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -131,7 +131,7 @@
     const lookUp = parent && parentNodes.some((x) => parent instanceof x)
       ? parent : getDocument();
 
-    if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+    if (!selectorIsString && elementNodes.some((x) => selector instanceof x)) {
       return selector;
     }
     // @ts-ignore -- `ShadowRoot` is also a node
@@ -565,7 +565,7 @@
     return normalOps;
   }
 
-  var version = "4.1.0alpha2";
+  var version = "4.1.0alpha3";
 
   const Version = version;
 

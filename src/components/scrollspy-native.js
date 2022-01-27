@@ -93,7 +93,7 @@ function updateSpyTargets(self) {
 
       if (targetItem) {
         self.items.push(link);
-        rect = targetItem.getBoundingClientRect();
+        rect = getBoundingClientRect(targetItem);
         // @ts-ignore
         self.offsets.push((isWin ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
       }

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Popover v4.1.0alpha2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Popover v4.1.0alpha3 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -53,7 +53,7 @@ function querySelector(selector, parent) {
   const lookUp = parent && parentNodes.some((x) => parent instanceof x)
     ? parent : getDocument();
 
-  if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+  if (!selectorIsString && elementNodes.some((x) => selector instanceof x)) {
     return selector;
   }
   // @ts-ignore -- `ShadowRoot` is also a node
@@ -349,17 +349,21 @@ function styleTip(self, e) {
   const windowHeight = documentElement.clientHeight;
   const { container } = options;
   let { placement } = options;
-  // const parentIsBody = container.tagName === 'BODY';
-  const { left: parentLeft, right: parentRight } = getBoundingClientRect(container, true);
+  const {
+    left: parentLeft, right: parentRight, top: parentTop,
+  } = getBoundingClientRect(container, true);
   const parentWidth = container.clientWidth;
+  const scrollbarWidth = Math.abs(parentWidth - container.offsetWidth);
   const parentPosition = getElementStyle(container, 'position');
   // const absoluteParent = parentPosition === 'absolute';
-  // const fixedParent = parentPosition === 'fixed';
-  // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
+  const fixedParent = parentPosition === 'fixed';
   const staticParent = parentPosition === 'static';
-  const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
-  const leftBoundry = 0;
-  const rightBoundry = stickyFixedParent ? parentWidth + parentLeft
+  const stickyParent = parentPosition === 'sticky';
+  const isSticky = stickyParent && parentTop === parseFloat(getElementStyle(container, 'top'));
+  // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
+  // const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
+  const leftBoundry = RTL && fixedParent ? scrollbarWidth : 0;
+  const rightBoundry = fixedParent ? parentWidth + parentLeft + (RTL ? scrollbarWidth : 0)
     : parentWidth + parentLeft + (windowWidth - parentRight) - 1;
   const {
     width: elemWidth,
@@ -431,12 +435,18 @@ function styleTip(self, e) {
     // adjust top and arrow
     if (topExceed) {
       topPosition = y;
+      topPosition += (isSticky ? -parentTop - scroll.y : 0);
+
       arrowTop = elemHeight / 2 - arrowWidth;
     } else if (bottomExceed) {
       topPosition = y - tipHeight + elemHeight;
+      topPosition += (isSticky ? -parentTop - scroll.y : 0);
+
       arrowTop = tipHeight - elemHeight / 2 - arrowWidth;
     } else {
       topPosition = y - tipHeight / 2 + elemHeight / 2;
+      topPosition += (isSticky ? -parentTop - scroll.y : 0);
+
       arrowTop = tipHeight / 2 - arrowHeight / 2;
     }
   } else if (vertical.includes(placement)) {
@@ -446,14 +456,13 @@ function styleTip(self, e) {
       if (staticParent) {
         eX = e.pageX;
         eY = e.pageY;
-      } else {
-        eX = e.clientX - (RTL ? 0 : container.offsetLeft) + scroll.x;
-        eY = e.clientY - container.offsetTop + scroll.y;
+      } else { // fixedParent | stickyParent
+        eX = e.clientX - parentLeft + (fixedParent ? scroll.x : 0);
+        eY = e.clientY - parentTop + (fixedParent ? scroll.y : 0);
       }
 
       // some weird RTL bug
-      const scrollbarWidth = parentRight - parentWidth;
-      eX -= RTL && stickyFixedParent ? scrollbarWidth : 0;
+      eX -= RTL && fixedParent && scrollbarWidth ? scrollbarWidth : 0;
 
       if (placement === 'top') {
         topPosition = eY - tipHeight - arrowWidth;
@@ -469,6 +478,8 @@ function styleTip(self, e) {
         leftPosition = 'auto';
         rightPosition = 0;
         arrowRight = rightBoundry - eX - arrowAdjust;
+        arrowRight -= fixedParent ? parentLeft + (RTL ? scrollbarWidth : 0) : 0;
+
       // normal top/bottom
       } else {
         leftPosition = eX - tipWidth / 2;
@@ -1217,7 +1228,8 @@ function getElementContainer(element, getOffset) {
 
     while (offsetParent && (isTableElement(offsetParent)
       || (isHTMLElement(offsetParent)
-        && getElementStyle(offsetParent, 'position') !== 'fixed'))) {
+        // we must count for both fixed & sticky
+        && !['sticky', 'fixed'].includes(getElementStyle(offsetParent, 'position'))))) {
       offsetParent = offsetParent.offsetParent;
     }
 
@@ -1336,7 +1348,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.0alpha2";
+var version = "4.1.0alpha3";
 
 const Version = version;
 

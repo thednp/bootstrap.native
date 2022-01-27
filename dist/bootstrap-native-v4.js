@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.0alpha2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.0alpha3 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -169,7 +169,7 @@
     var lookUp = parent && parentNodes.some(function (x) { return parent instanceof x; })
       ? parent : getDocument();
 
-    if (!selectorIsString && [].concat( elementNodes ).some(function (x) { return selector instanceof x; })) {
+    if (!selectorIsString && elementNodes.some(function (x) { return selector instanceof x; })) {
       return selector;
     }
     // @ts-ignore -- `ShadowRoot` is also a node
@@ -2585,7 +2585,7 @@
     });
   }
 
-  var version = "4.1.0alpha2";
+  var version = "4.1.0alpha3";
 
   var Version = version;
 

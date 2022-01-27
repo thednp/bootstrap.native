@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.0alpha2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.0alpha3 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -191,7 +191,7 @@
     const lookUp = parent && parentNodes.some((x) => parent instanceof x)
       ? parent : getDocument();
 
-    if (!selectorIsString && [...elementNodes].some((x) => selector instanceof x)) {
+    if (!selectorIsString && elementNodes.some((x) => selector instanceof x)) {
       return selector;
     }
     // @ts-ignore -- `ShadowRoot` is also a node
@@ -464,7 +464,7 @@
     return normalOps;
   }
 
-  var version = "4.1.0alpha2";
+  var version = "4.1.0alpha3";
 
   const Version = version;
 
@@ -2595,7 +2595,8 @@
 
       while (offsetParent && (isTableElement(offsetParent)
         || (isHTMLElement(offsetParent)
-          && getElementStyle(offsetParent, 'position') !== 'fixed'))) {
+          // we must count for both fixed & sticky
+          && !['sticky', 'fixed'].includes(getElementStyle(offsetParent, 'position'))))) {
         offsetParent = offsetParent.offsetParent;
       }
 
@@ -3735,17 +3736,21 @@
     const windowHeight = documentElement.clientHeight;
     const { container } = options;
     let { placement } = options;
-    // const parentIsBody = container.tagName === 'BODY';
-    const { left: parentLeft, right: parentRight } = getBoundingClientRect(container, true);
+    const {
+      left: parentLeft, right: parentRight, top: parentTop,
+    } = getBoundingClientRect(container, true);
     const parentWidth = container.clientWidth;
+    const scrollbarWidth = Math.abs(parentWidth - container.offsetWidth);
     const parentPosition = getElementStyle(container, 'position');
     // const absoluteParent = parentPosition === 'absolute';
-    // const fixedParent = parentPosition === 'fixed';
-    // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
+    const fixedParent = parentPosition === 'fixed';
     const staticParent = parentPosition === 'static';
-    const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
-    const leftBoundry = 0;
-    const rightBoundry = stickyFixedParent ? parentWidth + parentLeft
+    const stickyParent = parentPosition === 'sticky';
+    const isSticky = stickyParent && parentTop === parseFloat(getElementStyle(container, 'top'));
+    // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
+    // const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
+    const leftBoundry = RTL && fixedParent ? scrollbarWidth : 0;
+    const rightBoundry = fixedParent ? parentWidth + parentLeft + (RTL ? scrollbarWidth : 0)
       : parentWidth + parentLeft + (windowWidth - parentRight) - 1;
     const {
       width: elemWidth,
@@ -3817,12 +3822,18 @@
       // adjust top and arrow
       if (topExceed) {
         topPosition = y;
+        topPosition += (isSticky ? -parentTop - scroll.y : 0);
+
         arrowTop = elemHeight / 2 - arrowWidth;
       } else if (bottomExceed) {
         topPosition = y - tipHeight + elemHeight;
+        topPosition += (isSticky ? -parentTop - scroll.y : 0);
+
         arrowTop = tipHeight - elemHeight / 2 - arrowWidth;
       } else {
         topPosition = y - tipHeight / 2 + elemHeight / 2;
+        topPosition += (isSticky ? -parentTop - scroll.y : 0);
+
         arrowTop = tipHeight / 2 - arrowHeight / 2;
       }
     } else if (vertical.includes(placement)) {
@@ -3832,14 +3843,13 @@
         if (staticParent) {
           eX = e.pageX;
           eY = e.pageY;
-        } else {
-          eX = e.clientX - (RTL ? 0 : container.offsetLeft) + scroll.x;
-          eY = e.clientY - container.offsetTop + scroll.y;
+        } else { // fixedParent | stickyParent
+          eX = e.clientX - parentLeft + (fixedParent ? scroll.x : 0);
+          eY = e.clientY - parentTop + (fixedParent ? scroll.y : 0);
         }
 
         // some weird RTL bug
-        const scrollbarWidth = parentRight - parentWidth;
-        eX -= RTL && stickyFixedParent ? scrollbarWidth : 0;
+        eX -= RTL && fixedParent && scrollbarWidth ? scrollbarWidth : 0;
 
         if (placement === 'top') {
           topPosition = eY - tipHeight - arrowWidth;
@@ -3855,6 +3865,8 @@
           leftPosition = 'auto';
           rightPosition = 0;
           arrowRight = rightBoundry - eX - arrowAdjust;
+          arrowRight -= fixedParent ? parentLeft + (RTL ? scrollbarWidth : 0) : 0;
+
         // normal top/bottom
         } else {
           leftPosition = eX - tipWidth / 2;
@@ -4746,7 +4758,7 @@
 
         if (targetItem) {
           self.items.push(link);
-          rect = targetItem.getBoundingClientRect();
+          rect = getBoundingClientRect(targetItem);
           // @ts-ignore
           self.offsets.push((isWin ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
         }
@@ -5486,26 +5498,37 @@
   });
 
   /**
-   * Checks if an object is a `CustomElement`.
+   * Add an `eventListener` to an `Element` | `HTMLElement` | `Document` | `Window`
+   * target and remove it once callback is called.
    *
-   * @param {any} element the target object
-   * @returns {boolean} the query result
+   * @param {HTMLElement | Element | Document | Window} element event.target
+   * @param {string} eventName event.type
+   * @param {EventListenerObject['handleEvent']} handler callback
+   * @param {(EventListenerOptions | boolean)=} options other event options
    */
-  const isCustomElement = (element) => element && !!element.shadowRoot;
+  function one(element, eventName, handler, options) {
+  /**
+   * Wrap the handler for easy on -> off
+   * @type {EventListenerObject['handleEvent']}
+   */
+    const handlerWrapper = (e) => {
+      if (e.target === element) {
+        handler.apply(element, [e]);
+        off(element, eventName, handlerWrapper, options);
+      }
+    };
+    on(element, eventName, handlerWrapper, options);
+  }
 
   /**
-   * Returns an `Array` of `Node` elements that are registered as
-   * `CustomElement`.
-   * @see https://stackoverflow.com/questions/27334365/how-to-get-list-of-registered-custom-elements
+   * Check if element matches a CSS selector.
    *
-   * @param {(HTMLElement | Element | Node | Document)=} parent parent to look into
-   * @returns {(HTMLElement | Element)[]} the query result
+   * @param {HTMLElement | Element} target
+   * @param {string} selector
+   * @returns {boolean}
    */
-  function getCustomElements(parent) {
-    const lookUp = parent && parentNodes.some((x) => parent instanceof x)
-      ? parent : getDocument();
-    // @ts-ignore -- look inside `shadowRoot` node too
-    return [...lookUp.querySelectorAll('*')].filter(isCustomElement);
+  function matches(target, selector) {
+    return target.matches(selector);
   }
 
   /** @type {Record<string, any>} */
@@ -5524,12 +5547,10 @@
     Tooltip,
   };
 
-  const componentsKeys = ObjectKeys(componentsList);
-
   /**
    * Initialize all matched `Element`s for one component.
-   * @param {BSN.InitCallback<any>} callback the component callback
-   * @param {NodeListOf<HTMLElement | Element>} collection the matched collection
+   * @param {BSN.InitCallback<any>} callback
+   * @param {NodeListOf<HTMLElement | Element> | (HTMLElement | Element)[]} collection
    */
   function initComponentDataAPI(callback, collection) {
     [...collection].forEach((x) => callback(x));
@@ -5558,14 +5579,11 @@
   function initCallback(context) {
     const lookUp = context && parentNodes.some((x) => context instanceof x)
       ? context : undefined;
-    const customElementList = getCustomElements(lookUp);
+    const elemCollection = [...getElementsByTagName('*', lookUp)];
 
-    componentsKeys.forEach((comp) => {
+    ObjectKeys(componentsList).forEach((comp) => {
       const { init, selector } = componentsList[comp];
-      initComponentDataAPI(init, querySelectorAll(selector, lookUp));
-      customElementList
-        // @ts-ignore -- initialize anything inside `CustomElement.shadowRoot`
-        .forEach((ce) => initComponentDataAPI(init, querySelectorAll(selector, ce.shadowRoot)));
+      initComponentDataAPI(init, elemCollection.filter((item) => matches(item, selector)));
     });
   }
 
@@ -5576,19 +5594,16 @@
   function removeDataAPI(context) {
     const lookUp = context && parentNodes.some((x) => context instanceof x)
       ? context : undefined;
-    const customElementList = getCustomElements(lookUp);
 
-    componentsKeys.forEach((comp) => {
+    ObjectKeys(componentsList).forEach((comp) => {
       removeComponentDataAPI(comp, lookUp);
-      // @ts-ignore -- allow `Element.shadowRoot` to initialize
-      customElementList.forEach((ce) => removeComponentDataAPI(comp, ce.shadowRoot));
     });
   }
 
   // bulk initialize all components
   if (document.body) initCallback();
   else {
-    document.addEventListener('DOMContentLoaded', () => initCallback(), { once: true });
+    one(document, 'DOMContentLoaded', () => initCallback());
   }
 
   const BSN = {

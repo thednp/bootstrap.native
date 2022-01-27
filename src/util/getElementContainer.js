@@ -29,7 +29,8 @@ export default function getElementContainer(element, getOffset) {
 
     while (offsetParent && (isTableElement(offsetParent)
       || (isHTMLElement(offsetParent)
-        && getElementStyle(offsetParent, 'position') !== 'fixed'))) {
+        // we must count for both fixed & sticky
+        && !['sticky', 'fixed'].includes(getElementStyle(offsetParent, 'position'))))) {
       offsetParent = offsetParent.offsetParent;
     }
 
