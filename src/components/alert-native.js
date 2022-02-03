@@ -10,8 +10,9 @@ import removeClass from 'shorter-js/src/class/removeClass';
 import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import { getInstance } from 'shorter-js/src/misc/data';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
+// import on from 'shorter-js/src/event/on';
+// import off from 'shorter-js/src/event/off';
+import EventListener from 'event-listener.js';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -25,6 +26,7 @@ import BaseComponent from './base-component';
 // ================
 const alertSelector = `.${alertString}`;
 const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
+const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Alert` instance associated

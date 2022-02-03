@@ -9,8 +9,8 @@ import touchendEvent from 'shorter-js/src/strings/touchendEvent';
 import touchstartEvent from 'shorter-js/src/strings/touchstartEvent';
 import keyArrowLeft from 'shorter-js/src/strings/keyArrowLeft';
 import keyArrowRight from 'shorter-js/src/strings/keyArrowRight';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
+// import on from 'shorter-js/src/event/on';
+// import off from 'shorter-js/src/event/off';
 import getWindow from 'shorter-js/src/get/getWindow';
 import getDocument from 'shorter-js/src/get/getDocument';
 import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
@@ -34,6 +34,8 @@ import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 
+import EventListener from 'event-listener.js';
+
 import activeClass from '../strings/activeClass';
 import dataBsTarget from '../strings/dataBsTarget';
 import carouselString from '../strings/carouselString';
@@ -47,7 +49,7 @@ const carouselSelector = `[data-bs-ride="${carouselString}"]`;
 const carouselItem = `${carouselString}-item`;
 const dataBsSlideTo = 'data-bs-slide-to';
 const dataBsSlide = 'data-bs-slide';
-
+const { on, off } = EventListener;
 const pausedClass = 'paused';
 
 const carouselDefaults = {
@@ -98,10 +100,10 @@ function carouselTransitionEndHandler(self) {
     const directionClass = direction === 'left' ? 'start' : 'end';
 
     addClass(slides[index], activeClass);
-    removeClass(slides[activeItem], activeClass);
-
     removeClass(slides[index], `${carouselItem}-${orientation}`);
     removeClass(slides[index], `${carouselItem}-${directionClass}`);
+
+    removeClass(slides[activeItem], activeClass);
     removeClass(slides[activeItem], `${carouselItem}-${directionClass}`);
 
     dispatchEvent(element, carouselSlidEvent);

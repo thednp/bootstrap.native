@@ -158,3 +158,4 @@ declare global {
 
 // dependency
 export * as SHORTER from "shorter-js";
+export * as EventListener from "event-listener.js";

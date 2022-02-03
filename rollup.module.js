@@ -31,7 +31,7 @@ const OUTPUT = {
 
 const PLUGINS = [
   json(),
-  node({mainFields: ['jsnext','module'], dedupe: ['shorter-js']}),
+  node({mainFields: ['jsnext','module'], dedupe: ['shorter-js','event-listener.js']}),
 ]
 
 if (MIN){

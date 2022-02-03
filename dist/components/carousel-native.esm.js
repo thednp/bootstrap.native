@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Carousel v4.1.0alpha3 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Carousel v4.1.0alpha4 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -56,32 +56,6 @@ const keyArrowLeft = 'ArrowLeft';
  * @type {string} e.which = 39 equivalent
  */
 const keyArrowRight = 'ArrowRight';
-
-/**
- * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
- *
- * @param {HTMLElement | Element | Document | Window} element event.target
- * @param {string} eventName event.type
- * @param {EventListenerObject['handleEvent']} handler callback
- * @param {(EventListenerOptions | boolean)=} options other event options
- */
-function on(element, eventName, handler, options) {
-  const ops = options || false;
-  element.addEventListener(eventName, handler, ops);
-}
-
-/**
- * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
- *
- * @param {HTMLElement | Element | Document | Window} element event.target
- * @param {string} eventName event.type
- * @param {EventListenerObject['handleEvent']} handler callback
- * @param {(EventListenerOptions | boolean)=} options other event options
- */
-function off(element, eventName, handler, options) {
-  const ops = options || false;
-  element.removeEventListener(eventName, handler, ops);
-}
 
 /**
  * Returns the `Window` object of a target node.
@@ -435,6 +409,32 @@ function getElementTransitionDelay(element) {
 }
 
 /**
+ * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function on$1(element, eventName, handler, options) {
+  const ops = options || false;
+  element.addEventListener(eventName, handler, ops);
+}
+
+/**
+ * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
+ *
+ * @param {HTMLElement | Element | Document | Window} element event.target
+ * @param {string} eventName event.type
+ * @param {EventListenerObject['handleEvent']} handler callback
+ * @param {(EventListenerOptions | boolean)=} options other event options
+ */
+function off$1(element, eventName, handler, options) {
+  const ops = options || false;
+  element.removeEventListener(eventName, handler, ops);
+}
+
+/**
  * Utility to make sure callbacks are consistently
  * called when transition ends.
  *
@@ -455,11 +455,11 @@ function emulateTransitionEnd(element, handler) {
     const transitionEndWrapper = (e) => {
       if (e.target === element) {
         handler.apply(element, [e]);
-        off(element, transitionEndEvent, transitionEndWrapper);
+        off$1(element, transitionEndEvent, transitionEndWrapper);
         called = 1;
       }
     };
-    on(element, transitionEndEvent, transitionEndWrapper);
+    on$1(element, transitionEndEvent, transitionEndWrapper);
     setTimeout(() => {
       if (!called) element.dispatchEvent(endEvent);
     }, duration + delay + 17);
@@ -606,6 +606,114 @@ function removeClass(element, classNAME) {
   element.classList.remove(classNAME);
 }
 
+/** @type {Record<string, any>} */
+const EventRegistry = {};
+
+/**
+ * The global event listener.
+ *
+ * @this {Element | HTMLElement | Window | Document}
+ * @param {Event} e
+ * @returns {void}
+ */
+function globalListener(e) {
+  const that = this;
+  const { type } = e;
+  const oneEvMap = EventRegistry[type] ? [...EventRegistry[type]] : [];
+
+  oneEvMap.forEach((elementsMap) => {
+    const [element, listenersMap] = elementsMap;
+    [...listenersMap].forEach((listenerMap) => {
+      if (element === that) {
+        const [listener, options] = listenerMap;
+        listener.apply(element, [e]);
+
+        if (options && options.once) {
+          removeListener(element, type, listener, options);
+        }
+      }
+    });
+  });
+}
+
+/**
+ * Register a new listener with its options and attach the `globalListener`
+ * to the target if this is the first listener.
+ *
+ * @param {Element | HTMLElement | Window | Document} element
+ * @param {string} eventType
+ * @param {EventListenerObject['handleEvent']} listener
+ * @param {AddEventListenerOptions=} options
+ */
+const addListener = (element, eventType, listener, options) => {
+  // get element listeners first
+  if (!EventRegistry[eventType]) {
+    EventRegistry[eventType] = new Map();
+  }
+  const oneEventMap = EventRegistry[eventType];
+
+  if (!oneEventMap.has(element)) {
+    oneEventMap.set(element, new Map());
+  }
+  const oneElementMap = oneEventMap.get(element);
+
+  // get listeners size
+  const { size } = oneElementMap;
+
+  // register listener with its options
+  if (oneElementMap) {
+    oneElementMap.set(listener, options);
+  }
+
+  // add listener last
+  if (!size) {
+    element.addEventListener(eventType, globalListener, options);
+  }
+};
+
+/**
+ * Remove a listener from registry and detach the `globalListener`
+ * if no listeners are found in the registry.
+ *
+ * @param {Element | HTMLElement | Window | Document} element
+ * @param {string} eventType
+ * @param {EventListenerObject['handleEvent']} listener
+ * @param {AddEventListenerOptions=} options
+ */
+const removeListener = (element, eventType, listener, options) => {
+  // get listener first
+  const oneEventMap = EventRegistry[eventType];
+  const oneElementMap = oneEventMap && oneEventMap.get(element);
+  const savedOptions = oneElementMap && oneElementMap.get(listener);
+  // also recover initial options
+  const { options: eventOptions } = savedOptions !== undefined
+    ? savedOptions
+    : { options };
+
+  // unsubscribe second, remove from registry
+  if (oneElementMap && oneElementMap.has(listener)) oneElementMap.delete(listener);
+  if (oneEventMap && (!oneElementMap || !oneElementMap.size)) oneEventMap.delete(element);
+  if (!oneEventMap || !oneEventMap.size) delete EventRegistry[eventType];
+
+  // remove listener last
+  if (!oneElementMap || !oneElementMap.size) {
+    element.removeEventListener(eventType, globalListener, eventOptions);
+  }
+};
+
+/**
+ * Advanced event listener based on subscribe / publish pattern.
+ * @see https://www.patterns.dev/posts/classic-design-patterns/#observerpatternjavascript
+ * @see https://gist.github.com/shystruk/d16c0ee7ac7d194da9644e5d740c8338#file-subpub-js
+ * @see https://hackernoon.com/do-you-still-register-window-event-listeners-in-each-component-react-in-example-31a4b1f6f1c8
+ */
+const EventListener = {
+  on: addListener,
+  off: removeListener,
+  globalListener,
+  registry: EventRegistry,
+};
+
 /**
  * Global namespace for most components active class.
  */
@@ -745,7 +853,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.0alpha3";
+var version = "4.1.0alpha4";
 
 const Version = version;
 
@@ -814,7 +922,7 @@ const carouselSelector = `[data-bs-ride="${carouselString}"]`;
 const carouselItem = `${carouselString}-item`;
 const dataBsSlideTo = 'data-bs-slide-to';
 const dataBsSlide = 'data-bs-slide';
-
+const { on, off } = EventListener;
 const pausedClass = 'paused';
 
 const carouselDefaults = {
@@ -865,10 +973,10 @@ function carouselTransitionEndHandler(self) {
     const directionClass = direction === 'left' ? 'start' : 'end';
 
     addClass(slides[index], activeClass);
-    removeClass(slides[activeItem], activeClass);
-
     removeClass(slides[index], `${carouselItem}-${orientation}`);
     removeClass(slides[index], `${carouselItem}-${directionClass}`);
+
+    removeClass(slides[activeItem], activeClass);
     removeClass(slides[activeItem], `${carouselItem}-${directionClass}`);
 
     dispatchEvent(element, carouselSlidEvent);

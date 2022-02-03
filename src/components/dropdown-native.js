@@ -25,14 +25,16 @@ import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
+// import on from 'shorter-js/src/event/on';
+// import off from 'shorter-js/src/event/off';
 import isRTL from 'shorter-js/src/is/isRTL';
 import getElementStyle from 'shorter-js/src/get/getElementStyle';
 import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
 import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
 import getDocument from 'shorter-js/src/get/getDocument';
 import getWindow from 'shorter-js/src/get/getWindow';
+
+import EventListener from 'event-listener.js';
 
 import showClass from '../strings/showClass';
 import dataBsToggle from '../strings/dataBsToggle';
@@ -52,6 +54,7 @@ const [
   dropendString,
 ] = dropdownClasses;
 const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
+const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Dropdown` instance associated

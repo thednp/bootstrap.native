@@ -9,8 +9,9 @@ import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 import { getInstance } from 'shorter-js/src/misc/data';
 
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
+// import on from 'shorter-js/src/event/on';
+// import off from 'shorter-js/src/event/off';
+import EventListener from 'event-listener.js';
 
 import activeClass from '../strings/activeClass';
 import dataBsToggle from '../strings/dataBsToggle';
@@ -22,6 +23,7 @@ import BaseComponent from './base-component';
 // BUTTON PRIVATE GC
 // =================
 const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
+const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Button` instance associated

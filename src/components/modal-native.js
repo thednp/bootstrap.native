@@ -19,8 +19,8 @@ import closest from 'shorter-js/src/selectors/closest';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
+// import on from 'shorter-js/src/event/on';
+// import off from 'shorter-js/src/event/off';
 import isRTL from 'shorter-js/src/is/isRTL';
 import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
@@ -30,6 +30,8 @@ import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
+
+import EventListener from 'event-listener.js';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import dataBsDismiss from '../strings/dataBsDismiss';
@@ -60,6 +62,7 @@ const modalSelector = `.${modalString}`;
 const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
 const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
 const modalStaticClass = `${modalString}-static`;
+const { on, off } = EventListener;
 
 const modalDefaults = {
   backdrop: true, // boolean|string

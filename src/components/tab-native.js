@@ -9,8 +9,8 @@ import querySelector from 'shorter-js/src/selectors/querySelector';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-import on from 'shorter-js/src/event/on';
-import off from 'shorter-js/src/event/off';
+// import on from 'shorter-js/src/event/on';
+// import off from 'shorter-js/src/event/off';
 import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import reflow from 'shorter-js/src/misc/reflow';
@@ -18,6 +18,8 @@ import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
+
+import EventListener from 'event-listener.js';
 
 import collapsingClass from '../strings/collapsingClass';
 import activeClass from '../strings/activeClass';
@@ -35,6 +37,7 @@ import BaseComponent from './base-component';
 // TAB PRIVATE GC
 // ================
 const tabSelector = `[${dataBsToggle}="${tabString}"]`;
+const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Tab` instance associated
