@@ -11,8 +11,6 @@ import getDocument from 'shorter-js/src/get/getDocument';
 import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
 import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
 import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
-// import off from 'shorter-js/src/event/off';
-// import on from 'shorter-js/src/event/on';
 import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
@@ -20,7 +18,7 @@ import scrollEvent from 'shorter-js/src/strings/scrollEvent';
 import { getInstance } from 'shorter-js/src/misc/data';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import activeClass from '../strings/activeClass';
 import scrollspyString from '../strings/scrollspyString';
@@ -33,7 +31,6 @@ import BaseComponent from './base-component';
 // SCROLLSPY PRIVATE GC
 // ====================
 const scrollspySelector = '[data-bs-spy="scroll"]';
-const { on, off } = EventListener;
 
 const scrollspyDefaults = {
   offset: 10,
@@ -179,7 +176,7 @@ function activate(self, item) {
  * @param {boolean=} add when `true`, listener is added
  */
 function toggleSpyHandlers(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   // @ts-ignore
   action(self.scrollTarget, scrollEvent, self.refresh, passiveHandler);
 }

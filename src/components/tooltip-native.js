@@ -26,8 +26,6 @@ import querySelector from 'shorter-js/src/selectors/querySelector';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-// import on from 'shorter-js/src/event/on';
-// import off from 'shorter-js/src/event/off';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import { getInstance } from 'shorter-js/src/misc/data';
 import isMedia from 'shorter-js/src/is/isMedia';
@@ -41,7 +39,7 @@ import focus from 'shorter-js/src/misc/focus';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 import toLowerCase from 'shorter-js/src/misc/toLowerCase';
 
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import dataOriginalTitle from '../strings/dataOriginalTitle';
@@ -64,7 +62,6 @@ import BaseComponent from './base-component';
 // ==================
 const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${tooltipString}"]`;
 const titleAttr = 'title';
-const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Tooltip` instance associated
@@ -114,7 +111,7 @@ function disposeTooltipComplete(self) {
  * @param {boolean=} add when `true`, event listeners are added
  */
 function toggleTooltipAction(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   const { element } = self;
 
   action(getDocument(element), touchstartEvent, tooltipTouchHandler, passiveHandler);
@@ -163,7 +160,7 @@ function tooltipHiddenAction(self) {
  * @param {boolean=} add when `true`, event listeners are added
  */
 function toggleTooltipHandlers(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   // @ts-ignore -- btn is only for dismissible popover
   const { element, options, btn } = self;
   const { trigger, dismissible } = options;
@@ -208,7 +205,7 @@ function toggleTooltipHandlers(self, add) {
  * @param {boolean=} add when `true`, event listeners are added
  */
 function toggleTooltipOpenHandlers(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   const { element, options, offsetParent } = self;
   const { container } = options;
   const { offsetHeight, scrollHeight } = container;
@@ -225,8 +222,8 @@ function toggleTooltipOpenHandlers(self, add) {
   }
 
   // dismiss tooltips inside modal / offcanvas
-  if (parentModal) on(parentModal, `hide.bs.${modalString}`, self.hide);
-  if (parentOffcanvas) on(parentOffcanvas, `hide.bs.${offcanvasString}`, self.hide);
+  if (parentModal) action(parentModal, `hide.bs.${modalString}`, self.hide);
+  if (parentOffcanvas) action(parentOffcanvas, `hide.bs.${offcanvasString}`, self.hide);
 }
 
 /**

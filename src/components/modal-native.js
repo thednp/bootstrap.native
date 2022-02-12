@@ -19,8 +19,6 @@ import closest from 'shorter-js/src/selectors/closest';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-// import on from 'shorter-js/src/event/on';
-// import off from 'shorter-js/src/event/off';
 import isRTL from 'shorter-js/src/is/isRTL';
 import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
@@ -31,7 +29,7 @@ import passiveHandler from 'shorter-js/src/misc/passiveHandler';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import dataBsDismiss from '../strings/dataBsDismiss';
@@ -62,7 +60,6 @@ const modalSelector = `.${modalString}`;
 const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
 const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
 const modalStaticClass = `${modalString}-static`;
-const { on, off } = EventListener;
 
 const modalDefaults = {
   backdrop: true, // boolean|string
@@ -120,7 +117,7 @@ function setModalScrollbar(self) {
  * @param {boolean=} add when `true`, event listeners are added
  */
 function toggleModalDismiss(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   const { element } = self;
   action(element, mouseclickEvent, modalDismissHandler);
   // @ts-ignore
@@ -134,7 +131,7 @@ function toggleModalDismiss(self, add) {
  * @param {boolean=} add when `true`, event listener is added
  */
 function toggleModalHandler(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   const { triggers } = self;
 
   if (triggers.length) {

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.0alpha4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.0alpha5 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -149,7 +149,7 @@
   /**
    * A global array of possible `ParentNode`.
    */
-  var parentNodes = [Document, Node, Element, HTMLElement];
+  var parentNodes = [Document, Element, HTMLElement];
 
   /**
    * A global array with `Element` | `HTMLElement`.
@@ -161,19 +161,17 @@
    * or find one that matches a selector.
    *
    * @param {HTMLElement | Element | string} selector the input selector or target element
-   * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+   * @param {(HTMLElement | Element | Document)=} parent optional node to look into
    * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
    */
   function querySelector(selector, parent) {
-    var selectorIsString = typeof selector === 'string';
-    var lookUp = parent && parentNodes.some(function (x) { return parent instanceof x; })
+    var lookUp = parentNodes.some(function (x) { return parent instanceof x; })
       ? parent : getDocument();
 
-    if (!selectorIsString && elementNodes.some(function (x) { return selector instanceof x; })) {
-      return selector;
-    }
-    // @ts-ignore -- `ShadowRoot` is also a node
-    return selectorIsString ? lookUp.querySelector(selector) : null;
+    // @ts-ignore
+    return elementNodes.some(function (x) { return selector instanceof x; })
+      // @ts-ignore
+      ? selector : lookUp.querySelector(selector);
   }
 
   /** BSN v4 custom event */
@@ -2585,7 +2583,7 @@
     });
   }
 
-  var version = "4.1.0alpha4";
+  var version = "4.1.0alpha5";
 
   var Version = version;
 

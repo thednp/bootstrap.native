@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.0alpha4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.0alpha5 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -8,6 +8,115 @@
   typeof define === 'function' && define.amd ? define(factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.BSN = factory());
 })(this, (function () { 'use strict';
+
+  /** @type {Record<string, any>} */
+  const EventRegistry = {};
+
+  /**
+   * The global event listener.
+   *
+   * @this {Element | HTMLElement | Window | Document}
+   * @param {Event} e
+   * @returns {void}
+   */
+  function globalListener(e) {
+    const that = this;
+    const { type } = e;
+    const oneEvMap = EventRegistry[type] ? [...EventRegistry[type]] : [];
+
+    oneEvMap.forEach((elementsMap) => {
+      const [element, listenersMap] = elementsMap;
+      [...listenersMap].forEach((listenerMap) => {
+        if (element === that) {
+          const [listener, options] = listenerMap;
+          listener.apply(element, [e]);
+
+          if (options && options.once) {
+            removeListener(element, type, listener, options);
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * Register a new listener with its options and attach the `globalListener`
+   * to the target if this is the first listener.
+   *
+   * @param {Element | HTMLElement | Window | Document} element
+   * @param {string} eventType
+   * @param {EventListenerObject['handleEvent']} listener
+   * @param {AddEventListenerOptions=} options
+   */
+  const addListener = (element, eventType, listener, options) => {
+    // get element listeners first
+    if (!EventRegistry[eventType]) {
+      EventRegistry[eventType] = new Map();
+    }
+    const oneEventMap = EventRegistry[eventType];
+
+    if (!oneEventMap.has(element)) {
+      oneEventMap.set(element, new Map());
+    }
+    const oneElementMap = oneEventMap.get(element);
+
+    // get listeners size
+    const { size } = oneElementMap;
+
+    // register listener with its options
+    if (oneElementMap) {
+      oneElementMap.set(listener, options);
+    }
+
+    // add listener last
+    if (!size) {
+      element.addEventListener(eventType, globalListener, options);
+    }
+  };
+
+  /**
+   * Remove a listener from registry and detach the `globalListener`
+   * if no listeners are found in the registry.
+   *
+   * @param {Element | HTMLElement | Window | Document} element
+   * @param {string} eventType
+   * @param {EventListenerObject['handleEvent']} listener
+   * @param {AddEventListenerOptions=} options
+   */
+  const removeListener = (element, eventType, listener, options) => {
+    // get listener first
+    const oneEventMap = EventRegistry[eventType];
+    const oneElementMap = oneEventMap && oneEventMap.get(element);
+    const savedOptions = oneElementMap && oneElementMap.get(listener);
+
+    // also recover initial options
+    const { options: eventOptions } = savedOptions !== undefined
+      ? savedOptions
+      : { options };
+
+    // unsubscribe second, remove from registry
+    if (oneElementMap && oneElementMap.has(listener)) oneElementMap.delete(listener);
+    if (oneEventMap && (!oneElementMap || !oneElementMap.size)) oneEventMap.delete(element);
+    if (!oneEventMap || !oneEventMap.size) delete EventRegistry[eventType];
+
+    // remove listener last
+    if (!oneElementMap || !oneElementMap.size) {
+      element.removeEventListener(eventType, globalListener, eventOptions);
+    }
+  };
+
+  /**
+   * Advanced event listener based on subscribe / publish pattern.
+   * @see https://www.patterns.dev/posts/classic-design-patterns/#observerpatternjavascript
+   * @see https://gist.github.com/shystruk/d16c0ee7ac7d194da9644e5d740c8338#file-subpub-js
+   * @see https://hackernoon.com/do-you-still-register-window-event-listeners-in-each-component-react-in-example-31a4b1f6f1c8
+   */
+  const EventListener = {
+    on: addListener,
+    off: removeListener,
+    globalListener,
+    registry: EventRegistry,
+  };
 
   /**
    * A global namespace for `click` event.
@@ -97,32 +206,6 @@
   }
 
   /**
-   * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function on$b(element, eventName, handler, options) {
-    const ops = options || false;
-    element.addEventListener(eventName, handler, ops);
-  }
-
-  /**
-   * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function off$b(element, eventName, handler, options) {
-    const ops = options || false;
-    element.removeEventListener(eventName, handler, ops);
-  }
-
-  /**
    * Utility to make sure callbacks are consistently
    * called when transition ends.
    *
@@ -138,16 +221,16 @@
     if (duration) {
       /**
        * Wrap the handler in on -> off callback
-       * @param {TransitionEvent} e Event object
+       * @type {EventListenerObject['handleEvent']} e Event object
        */
       const transitionEndWrapper = (e) => {
         if (e.target === element) {
           handler.apply(element, [e]);
-          off$b(element, transitionEndEvent, transitionEndWrapper);
+          element.removeEventListener(transitionEndEvent, transitionEndWrapper);
           called = 1;
         }
       };
-      on$b(element, transitionEndEvent, transitionEndWrapper);
+      element.addEventListener(transitionEndEvent, transitionEndWrapper);
       setTimeout(() => {
         if (!called) element.dispatchEvent(endEvent);
       }, duration + delay + 17);
@@ -171,7 +254,7 @@
   /**
    * A global array of possible `ParentNode`.
    */
-  const parentNodes = [Document, Node, Element, HTMLElement];
+  const parentNodes = [Document, Element, HTMLElement];
 
   /**
    * A global array with `Element` | `HTMLElement`.
@@ -183,19 +266,17 @@
    * or find one that matches a selector.
    *
    * @param {HTMLElement | Element | string} selector the input selector or target element
-   * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+   * @param {(HTMLElement | Element | Document)=} parent optional node to look into
    * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
    */
   function querySelector(selector, parent) {
-    const selectorIsString = typeof selector === 'string';
-    const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+    const lookUp = parentNodes.some((x) => parent instanceof x)
       ? parent : getDocument();
 
-    if (!selectorIsString && elementNodes.some((x) => selector instanceof x)) {
-      return selector;
-    }
-    // @ts-ignore -- `ShadowRoot` is also a node
-    return selectorIsString ? lookUp.querySelector(selector) : null;
+    // @ts-ignore
+    return elementNodes.some((x) => selector instanceof x)
+      // @ts-ignore
+      ? selector : lookUp.querySelector(selector);
   }
 
   /**
@@ -343,114 +424,6 @@
     return OriginalCustomEvent;
   }
 
-  /** @type {Record<string, any>} */
-  const EventRegistry = {};
-
-  /**
-   * The global event listener.
-   *
-   * @this {Element | HTMLElement | Window | Document}
-   * @param {Event} e
-   * @returns {void}
-   */
-  function globalListener(e) {
-    const that = this;
-    const { type } = e;
-    const oneEvMap = EventRegistry[type] ? [...EventRegistry[type]] : [];
-
-    oneEvMap.forEach((elementsMap) => {
-      const [element, listenersMap] = elementsMap;
-      [...listenersMap].forEach((listenerMap) => {
-        if (element === that) {
-          const [listener, options] = listenerMap;
-          listener.apply(element, [e]);
-
-          if (options && options.once) {
-            removeListener(element, type, listener, options);
-          }
-        }
-      });
-    });
-  }
-
-  /**
-   * Register a new listener with its options and attach the `globalListener`
-   * to the target if this is the first listener.
-   *
-   * @param {Element | HTMLElement | Window | Document} element
-   * @param {string} eventType
-   * @param {EventListenerObject['handleEvent']} listener
-   * @param {AddEventListenerOptions=} options
-   */
-  const addListener = (element, eventType, listener, options) => {
-    // get element listeners first
-    if (!EventRegistry[eventType]) {
-      EventRegistry[eventType] = new Map();
-    }
-    const oneEventMap = EventRegistry[eventType];
-
-    if (!oneEventMap.has(element)) {
-      oneEventMap.set(element, new Map());
-    }
-    const oneElementMap = oneEventMap.get(element);
-
-    // get listeners size
-    const { size } = oneElementMap;
-
-    // register listener with its options
-    if (oneElementMap) {
-      oneElementMap.set(listener, options);
-    }
-
-    // add listener last
-    if (!size) {
-      element.addEventListener(eventType, globalListener, options);
-    }
-  };
-
-  /**
-   * Remove a listener from registry and detach the `globalListener`
-   * if no listeners are found in the registry.
-   *
-   * @param {Element | HTMLElement | Window | Document} element
-   * @param {string} eventType
-   * @param {EventListenerObject['handleEvent']} listener
-   * @param {AddEventListenerOptions=} options
-   */
-  const removeListener = (element, eventType, listener, options) => {
-    // get listener first
-    const oneEventMap = EventRegistry[eventType];
-    const oneElementMap = oneEventMap && oneEventMap.get(element);
-    const savedOptions = oneElementMap && oneElementMap.get(listener);
-    // also recover initial options
-    const { options: eventOptions } = savedOptions !== undefined
-      ? savedOptions
-      : { options };
-
-    // unsubscribe second, remove from registry
-    if (oneElementMap && oneElementMap.has(listener)) oneElementMap.delete(listener);
-    if (oneEventMap && (!oneElementMap || !oneElementMap.size)) oneEventMap.delete(element);
-    if (!oneEventMap || !oneEventMap.size) delete EventRegistry[eventType];
-
-    // remove listener last
-    if (!oneElementMap || !oneElementMap.size) {
-      element.removeEventListener(eventType, globalListener, eventOptions);
-    }
-  };
-
-  /**
-   * Advanced event listener based on subscribe / publish pattern.
-   * @see https://www.patterns.dev/posts/classic-design-patterns/#observerpatternjavascript
-   * @see https://gist.github.com/shystruk/d16c0ee7ac7d194da9644e5d740c8338#file-subpub-js
-   * @see https://hackernoon.com/do-you-still-register-window-event-listeners-in-each-component-react-in-example-31a4b1f6f1c8
-   */
-  const EventListener = {
-    on: addListener,
-    off: removeListener,
-    globalListener,
-    registry: EventRegistry,
-  };
-
   /**
    * Global namespace for most components `fade` class.
    */
@@ -572,7 +545,7 @@
     return normalOps;
   }
 
-  var version = "4.1.0alpha4";
+  var version = "4.1.0alpha5";
 
   const Version = version;
 
@@ -639,7 +612,6 @@
   // ================
   const alertSelector = `.${alertString}`;
   const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
-  const { on: on$a, off: off$a } = EventListener;
 
   /**
    * Static method which returns an existing `Alert` instance associated
@@ -684,7 +656,7 @@
    * @param {boolean=} add when `true`, event listener is added
    */
   function toggleAlertHandler(self, add) {
-    const action = add ? on$a : off$a;
+    const action = add ? addListener : removeListener;
     const { dismiss } = self;
     if (dismiss) action(dismiss, mouseclickEvent, self.close);
   }
@@ -805,7 +777,6 @@
   // BUTTON PRIVATE GC
   // =================
   const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
-  const { on: on$9, off: off$9 } = EventListener;
 
   /**
    * Static method which returns an existing `Button` instance associated
@@ -829,7 +800,7 @@
    * @param {boolean=} add when `true`, event listener is added
    */
   function toggleButtonHandler(self, add) {
-    const action = add ? on$9 : off$9;
+    const action = add ? addListener : removeListener;
     action(self.element, mouseclickEvent, self.toggle);
   }
 
@@ -1202,7 +1173,6 @@
   const carouselItem = `${carouselString}-item`;
   const dataBsSlideTo = 'data-bs-slide-to';
   const dataBsSlide = 'data-bs-slide';
-  const { on: on$8, off: off$8 } = EventListener;
   const pausedClass = 'paused';
 
   const carouselDefaults = {
@@ -1464,7 +1434,7 @@
    */
   function toggleCarouselTouchHandlers(self, add) {
     const { element } = self;
-    const action = add ? on$8 : off$8;
+    const action = add ? addListener : removeListener;
     action(element, touchmoveEvent, carouselTouchMoveHandler, passiveHandler);
     action(element, touchendEvent, carouselTouchEndHandler, passiveHandler);
   }
@@ -1481,7 +1451,7 @@
     const {
       touch, pause, interval, keyboard,
     } = options;
-    const action = add ? on$8 : off$8;
+    const action = add ? addListener : removeListener;
 
     if (pause && interval) {
       action(element, mouseenterEvent, carouselPauseHandler);
@@ -1785,7 +1755,6 @@
   const collapseSelector = `.${collapseString}`;
   const collapseToggleSelector = `[${dataBsToggle}="${collapseString}"]`;
   const collapseDefaults = { parent: null };
-  const { on: on$7, off: off$7 } = EventListener;
 
   /**
    * Static method which returns an existing `Collapse` instance associated
@@ -1898,7 +1867,7 @@
    * @param {boolean=} add when `true`, the event listener is added
    */
   function toggleCollapseHandler(self, add) {
-    const action = add ? on$7 : off$7;
+    const action = add ? addListener : removeListener;
     const { triggers } = self;
 
     if (triggers.length) {
@@ -2138,7 +2107,6 @@
     dropendString,
   ] = dropdownMenuClasses;
   const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
-  const { on: on$6, off: off$6 } = EventListener;
 
   /**
    * Static method which returns an existing `Dropdown` instance associated
@@ -2314,7 +2282,7 @@
    */
   function toggleDropdownDismiss(self) {
     const { element } = self;
-    const action = self.open ? on$6 : off$6;
+    const action = self.open ? addListener : removeListener;
     const doc = getDocument(element);
 
     action(doc, mouseclickEvent, dropdownDismissHandler);
@@ -2337,7 +2305,7 @@
    * @param {boolean=} add when `true`, it will add the event listener
    */
   function toggleDropdownHandler(self, add) {
-    const action = add ? on$6 : off$6;
+    const action = add ? addListener : removeListener;
     action(self.element, mouseclickEvent, dropdownClickHandler);
   }
 
@@ -2933,7 +2901,6 @@
   const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
   const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
   const modalStaticClass = `${modalString}-static`;
-  const { on: on$5, off: off$5 } = EventListener;
 
   const modalDefaults = {
     backdrop: true, // boolean|string
@@ -2991,7 +2958,7 @@
    * @param {boolean=} add when `true`, event listeners are added
    */
   function toggleModalDismiss(self, add) {
-    const action = add ? on$5 : off$5;
+    const action = add ? addListener : removeListener;
     const { element } = self;
     action(element, mouseclickEvent, modalDismissHandler);
     // @ts-ignore
@@ -3005,7 +2972,7 @@
    * @param {boolean=} add when `true`, event listener is added
    */
   function toggleModalHandler(self, add) {
-    const action = add ? on$5 : off$5;
+    const action = add ? addListener : removeListener;
     const { triggers } = self;
 
     if (triggers.length) {
@@ -3351,7 +3318,6 @@
   const offcanvasToggleSelector = `[${dataBsToggle}="${offcanvasString}"]`;
   const offcanvasDismissSelector = `[${dataBsDismiss}="${offcanvasString}"]`;
   const offcanvasTogglingClass = `${offcanvasString}-toggling`;
-  const { on: on$4, off: off$4 } = EventListener;
 
   const offcanvasDefaults = {
     backdrop: true, // boolean
@@ -3401,7 +3367,7 @@
    * @param {boolean=} add when *true*, listeners are added
    */
   function toggleOffcanvasEvents(self, add) {
-    const action = add ? on$4 : off$4;
+    const action = add ? addListener : removeListener;
     self.triggers.forEach((btn) => action(btn, mouseclickEvent, offcanvasTriggerHandler));
   }
 
@@ -3412,7 +3378,7 @@
    * @param {boolean=} add when *true* listeners are added
    */
   function toggleOffCanvasDismiss(self, add) {
-    const action = add ? on$4 : off$4;
+    const action = add ? addListener : removeListener;
     const doc = getDocument(self.element);
     action(doc, keydownEvent, offcanvasKeyDismissHandler);
     action(doc, mouseclickEvent, offcanvasDismissHandler);
@@ -4276,7 +4242,6 @@
   // ==================
   const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${tooltipString}"]`;
   const titleAttr = 'title';
-  const { on: on$3, off: off$3 } = EventListener;
 
   /**
    * Static method which returns an existing `Tooltip` instance associated
@@ -4326,7 +4291,7 @@
    * @param {boolean=} add when `true`, event listeners are added
    */
   function toggleTooltipAction(self, add) {
-    const action = add ? on$3 : off$3;
+    const action = add ? addListener : removeListener;
     const { element } = self;
 
     action(getDocument(element), touchstartEvent, tooltipTouchHandler, passiveHandler);
@@ -4375,7 +4340,7 @@
    * @param {boolean=} add when `true`, event listeners are added
    */
   function toggleTooltipHandlers(self, add) {
-    const action = add ? on$3 : off$3;
+    const action = add ? addListener : removeListener;
     // @ts-ignore -- btn is only for dismissible popover
     const { element, options, btn } = self;
     const { trigger, dismissible } = options;
@@ -4420,7 +4385,7 @@
    * @param {boolean=} add when `true`, event listeners are added
    */
   function toggleTooltipOpenHandlers(self, add) {
-    const action = add ? on$3 : off$3;
+    const action = add ? addListener : removeListener;
     const { element, options, offsetParent } = self;
     const { container } = options;
     const { offsetHeight, scrollHeight } = container;
@@ -4437,8 +4402,8 @@
     }
 
     // dismiss tooltips inside modal / offcanvas
-    if (parentModal) on$3(parentModal, `hide.bs.${modalString}`, self.hide);
-    if (parentOffcanvas) on$3(parentOffcanvas, `hide.bs.${offcanvasString}`, self.hide);
+    if (parentModal) action(parentModal, `hide.bs.${modalString}`, self.hide);
+    if (parentOffcanvas) action(parentOffcanvas, `hide.bs.${offcanvasString}`, self.hide);
   }
 
   /**
@@ -4817,7 +4782,6 @@
   // SCROLLSPY PRIVATE GC
   // ====================
   const scrollspySelector = '[data-bs-spy="scroll"]';
-  const { on: on$2, off: off$2 } = EventListener;
 
   const scrollspyDefaults = {
     offset: 10,
@@ -4963,7 +4927,7 @@
    * @param {boolean=} add when `true`, listener is added
    */
   function toggleSpyHandlers(self, add) {
-    const action = add ? on$2 : off$2;
+    const action = add ? addListener : removeListener;
     // @ts-ignore
     action(self.scrollTarget, scrollEvent, self.refresh, passiveHandler);
   }
@@ -5107,7 +5071,6 @@
   // TAB PRIVATE GC
   // ================
   const tabSelector = `[${dataBsToggle}="${tabString}"]`;
-  const { on: on$1, off: off$1 } = EventListener;
 
   /**
    * Static method which returns an existing `Tab` instance associated
@@ -5256,7 +5219,7 @@
    * @param {boolean=} add when `true`, event listener is added
    */
   function toggleTabHandler(self, add) {
-    const action = add ? on$1 : off$1;
+    const action = add ? addListener : removeListener;
     action(self.element, mouseclickEvent, tabClickHandler);
   }
 
@@ -5388,7 +5351,6 @@
   const showingClass = 'showing';
   /** @deprecated */
   const hideClass = 'hide';
-  const { on, off } = EventListener;
 
   const toastDefaults = {
     animation: true,
@@ -5489,7 +5451,7 @@
    * @param {boolean=} add when `true`, it will add the listener
    */
   function toggleToastHandlers(self, add) {
-    const action = add ? on : off;
+    const action = add ? addListener : removeListener;
     const { element, dismiss, options } = self;
     if (dismiss) {
       action(dismiss, mouseclickEvent, self.hide);
@@ -5622,29 +5584,6 @@
   });
 
   /**
-   * Add an `eventListener` to an `Element` | `HTMLElement` | `Document` | `Window`
-   * target and remove it once callback is called.
-   *
-   * @param {HTMLElement | Element | Document | Window} element event.target
-   * @param {string} eventName event.type
-   * @param {EventListenerObject['handleEvent']} handler callback
-   * @param {(EventListenerOptions | boolean)=} options other event options
-   */
-  function one(element, eventName, handler, options) {
-  /**
-   * Wrap the handler for easy on -> off
-   * @type {EventListenerObject['handleEvent']}
-   */
-    const handlerWrapper = (e) => {
-      if (e.target === element) {
-        handler.apply(element, [e]);
-        off$b(element, eventName, handlerWrapper, options);
-      }
-    };
-    on$b(element, eventName, handlerWrapper, options);
-  }
-
-  /**
    * Check if element matches a CSS selector.
    *
    * @param {HTMLElement | Element} target
@@ -5727,7 +5666,7 @@
   // bulk initialize all components
   if (document.body) initCallback();
   else {
-    one(document, 'DOMContentLoaded', () => initCallback());
+    addListener(document, 'DOMContentLoaded', () => initCallback(), { once: true });
   }
 
   const BSN = {
@@ -5747,6 +5686,7 @@
     initCallback,
     removeDataAPI,
     Version,
+    EventListener,
   };
 
   return BSN;

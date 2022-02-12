@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Tab v4.1.0alpha4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Tab v4.1.0alpha5 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -55,7 +55,7 @@ function getDocument(node) {
 /**
  * A global array of possible `ParentNode`.
  */
-const parentNodes = [Document, Node, Element, HTMLElement];
+const parentNodes = [Document, Element, HTMLElement];
 
 /**
  * Shortcut for `HTMLElement.getElementsByClassName` method. Some `Node` elements
@@ -81,19 +81,17 @@ const elementNodes = [Element, HTMLElement];
  * or find one that matches a selector.
  *
  * @param {HTMLElement | Element | string} selector the input selector or target element
- * @param {(HTMLElement | Element | Node | Document)=} parent optional node to look into
+ * @param {(HTMLElement | Element | Document)=} parent optional node to look into
  * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
  */
 function querySelector(selector, parent) {
-  const selectorIsString = typeof selector === 'string';
-  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
+  const lookUp = parentNodes.some((x) => parent instanceof x)
     ? parent : getDocument();
 
-  if (!selectorIsString && elementNodes.some((x) => selector instanceof x)) {
-    return selector;
-  }
-  // @ts-ignore -- `ShadowRoot` is also a node
-  return selectorIsString ? lookUp.querySelector(selector) : null;
+  // @ts-ignore
+  return elementNodes.some((x) => selector instanceof x)
+    // @ts-ignore
+    ? selector : lookUp.querySelector(selector);
 }
 
 /**
@@ -217,32 +215,6 @@ function getElementTransitionDuration(element) {
 }
 
 /**
- * Add eventListener to an `Element` | `HTMLElement` | `Document` target.
- *
- * @param {HTMLElement | Element | Document | Window} element event.target
- * @param {string} eventName event.type
- * @param {EventListenerObject['handleEvent']} handler callback
- * @param {(EventListenerOptions | boolean)=} options other event options
- */
-function on$1(element, eventName, handler, options) {
-  const ops = options || false;
-  element.addEventListener(eventName, handler, ops);
-}
-
-/**
- * Remove eventListener from an `Element` | `HTMLElement` | `Document` | `Window` target.
- *
- * @param {HTMLElement | Element | Document | Window} element event.target
- * @param {string} eventName event.type
- * @param {EventListenerObject['handleEvent']} handler callback
- * @param {(EventListenerOptions | boolean)=} options other event options
- */
-function off$1(element, eventName, handler, options) {
-  const ops = options || false;
-  element.removeEventListener(eventName, handler, ops);
-}
-
-/**
  * Utility to make sure callbacks are consistently
  * called when transition ends.
  *
@@ -258,16 +230,16 @@ function emulateTransitionEnd(element, handler) {
   if (duration) {
     /**
      * Wrap the handler in on -> off callback
-     * @param {TransitionEvent} e Event object
+     * @type {EventListenerObject['handleEvent']} e Event object
      */
     const transitionEndWrapper = (e) => {
       if (e.target === element) {
         handler.apply(element, [e]);
-        off$1(element, transitionEndEvent, transitionEndWrapper);
+        element.removeEventListener(transitionEndEvent, transitionEndWrapper);
         called = 1;
       }
     };
-    on$1(element, transitionEndEvent, transitionEndWrapper);
+    element.addEventListener(transitionEndEvent, transitionEndWrapper);
     setTimeout(() => {
       if (!called) element.dispatchEvent(endEvent);
     }, duration + delay + 17);
@@ -538,6 +510,7 @@ const removeListener = (element, eventType, listener, options) => {
   const oneEventMap = EventRegistry[eventType];
   const oneElementMap = oneEventMap && oneEventMap.get(element);
   const savedOptions = oneElementMap && oneElementMap.get(listener);
+
   // also recover initial options
   const { options: eventOptions } = savedOptions !== undefined
     ? savedOptions
@@ -552,19 +525,6 @@ const removeListener = (element, eventType, listener, options) => {
   if (!oneElementMap || !oneElementMap.size) {
     element.removeEventListener(eventType, globalListener, eventOptions);
   }
-};
-
-/**
- * Advanced event listener based on subscribe / publish pattern.
- * @see https://www.patterns.dev/posts/classic-design-patterns/#observerpatternjavascript
- * @see https://gist.github.com/shystruk/d16c0ee7ac7d194da9644e5d740c8338#file-subpub-js
- * @see https://hackernoon.com/do-you-still-register-window-event-listeners-in-each-component-react-in-example-31a4b1f6f1c8
- */
-const EventListener = {
-  on: addListener,
-  off: removeListener,
-  globalListener,
-  registry: EventRegistry,
 };
 
 /**
@@ -744,7 +704,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.0alpha4";
+var version = "4.1.0alpha5";
 
 const Version = version;
 
@@ -810,7 +770,6 @@ class BaseComponent {
 // TAB PRIVATE GC
 // ================
 const tabSelector = `[${dataBsToggle}="${tabString}"]`;
-const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Tab` instance associated
@@ -959,7 +918,7 @@ function getActiveTab(self) {
  * @param {boolean=} add when `true`, event listener is added
  */
 function toggleTabHandler(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   action(self.element, mouseclickEvent, tabClickHandler);
 }
 

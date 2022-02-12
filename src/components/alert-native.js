@@ -12,7 +12,7 @@ import { getInstance } from 'shorter-js/src/misc/data';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 // import on from 'shorter-js/src/event/on';
 // import off from 'shorter-js/src/event/off';
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -26,7 +26,6 @@ import BaseComponent from './base-component';
 // ================
 const alertSelector = `.${alertString}`;
 const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
-const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Alert` instance associated
@@ -71,7 +70,7 @@ function alertTransitionEnd(self) {
  * @param {boolean=} add when `true`, event listener is added
  */
 function toggleAlertHandler(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   const { dismiss } = self;
   if (dismiss) action(dismiss, mouseclickEvent, self.close);
 }

@@ -11,8 +11,6 @@ import removeAttribute from 'shorter-js/src/attr/removeAttribute';
 import querySelector from 'shorter-js/src/selectors/querySelector';
 import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
 import closest from 'shorter-js/src/selectors/closest';
-// import on from 'shorter-js/src/event/on';
-// import off from 'shorter-js/src/event/off';
 import hasClass from 'shorter-js/src/class/hasClass';
 import addClass from 'shorter-js/src/class/addClass';
 import removeClass from 'shorter-js/src/class/removeClass';
@@ -27,7 +25,7 @@ import { getInstance } from 'shorter-js/src/misc/data';
 import focus from 'shorter-js/src/misc/focus';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import dataBsDismiss from '../strings/dataBsDismiss';
 import dataBsToggle from '../strings/dataBsToggle';
@@ -57,7 +55,6 @@ const offcanvasSelector = `.${offcanvasString}`;
 const offcanvasToggleSelector = `[${dataBsToggle}="${offcanvasString}"]`;
 const offcanvasDismissSelector = `[${dataBsDismiss}="${offcanvasString}"]`;
 const offcanvasTogglingClass = `${offcanvasString}-toggling`;
-const { on, off } = EventListener;
 
 const offcanvasDefaults = {
   backdrop: true, // boolean
@@ -107,7 +104,7 @@ function setOffCanvasScrollbar(self) {
  * @param {boolean=} add when *true*, listeners are added
  */
 function toggleOffcanvasEvents(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   self.triggers.forEach((btn) => action(btn, mouseclickEvent, offcanvasTriggerHandler));
 }
 
@@ -118,7 +115,7 @@ function toggleOffcanvasEvents(self, add) {
  * @param {boolean=} add when *true* listeners are added
  */
 function toggleOffCanvasDismiss(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   const doc = getDocument(self.element);
   action(doc, keydownEvent, offcanvasKeyDismissHandler);
   action(doc, mouseclickEvent, offcanvasDismissHandler);

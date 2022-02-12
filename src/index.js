@@ -1,3 +1,5 @@
+import EventListener from 'event-listener.js/src/event-listener';
+
 import Alert from './components/alert-native';
 import Button from './components/button-native';
 import Carousel from './components/carousel-native';
@@ -31,6 +33,7 @@ const BSN = {
   initCallback,
   removeDataAPI,
   Version,
+  EventListener,
 };
 
 export default BSN;

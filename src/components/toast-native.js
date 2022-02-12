@@ -8,8 +8,6 @@ import focusoutEvent from 'shorter-js/src/strings/focusoutEvent';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-// import on from 'shorter-js/src/event/on';
-// import off from 'shorter-js/src/event/off';
 import querySelector from 'shorter-js/src/selectors/querySelector';
 import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
@@ -19,7 +17,7 @@ import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -36,7 +34,6 @@ const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
 const showingClass = 'showing';
 /** @deprecated */
 const hideClass = 'hide';
-const { on, off } = EventListener;
 
 const toastDefaults = {
   animation: true,
@@ -137,7 +134,7 @@ function showToast(self) {
  * @param {boolean=} add when `true`, it will add the listener
  */
 function toggleToastHandlers(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   const { element, dismiss, options } = self;
   if (dismiss) {
     action(dismiss, mouseclickEvent, self.hide);

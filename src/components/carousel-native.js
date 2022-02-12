@@ -9,8 +9,6 @@ import touchendEvent from 'shorter-js/src/strings/touchendEvent';
 import touchstartEvent from 'shorter-js/src/strings/touchstartEvent';
 import keyArrowLeft from 'shorter-js/src/strings/keyArrowLeft';
 import keyArrowRight from 'shorter-js/src/strings/keyArrowRight';
-// import on from 'shorter-js/src/event/on';
-// import off from 'shorter-js/src/event/off';
 import getWindow from 'shorter-js/src/get/getWindow';
 import getDocument from 'shorter-js/src/get/getDocument';
 import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
@@ -34,7 +32,7 @@ import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import activeClass from '../strings/activeClass';
 import dataBsTarget from '../strings/dataBsTarget';
@@ -49,7 +47,6 @@ const carouselSelector = `[data-bs-ride="${carouselString}"]`;
 const carouselItem = `${carouselString}-item`;
 const dataBsSlideTo = 'data-bs-slide-to';
 const dataBsSlide = 'data-bs-slide';
-const { on, off } = EventListener;
 const pausedClass = 'paused';
 
 const carouselDefaults = {
@@ -311,7 +308,7 @@ function activateCarouselIndicator(self, pageIndex) {
  */
 function toggleCarouselTouchHandlers(self, add) {
   const { element } = self;
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   action(element, touchmoveEvent, carouselTouchMoveHandler, passiveHandler);
   action(element, touchendEvent, carouselTouchEndHandler, passiveHandler);
 }
@@ -328,7 +325,7 @@ function toggleCarouselHandlers(self, add) {
   const {
     touch, pause, interval, keyboard,
   } = options;
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
 
   if (pause && interval) {
     action(element, mouseenterEvent, carouselPauseHandler);

@@ -9,8 +9,6 @@ import reflow from 'shorter-js/src/misc/reflow';
 import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
-// import on from 'shorter-js/src/event/on';
-// import off from 'shorter-js/src/event/off';
 import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
 import ariaExpanded from 'shorter-js/src/strings/ariaExpanded';
 import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
@@ -19,7 +17,7 @@ import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import collapsingClass from '../strings/collapsingClass';
@@ -35,7 +33,6 @@ import BaseComponent from './base-component';
 const collapseSelector = `.${collapseString}`;
 const collapseToggleSelector = `[${dataBsToggle}="${collapseString}"]`;
 const collapseDefaults = { parent: null };
-const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Collapse` instance associated
@@ -148,7 +145,7 @@ function collapseContent(self) {
  * @param {boolean=} add when `true`, the event listener is added
  */
 function toggleCollapseHandler(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   const { triggers } = self;
 
   if (triggers.length) {

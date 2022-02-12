@@ -9,9 +9,7 @@ import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 import { getInstance } from 'shorter-js/src/misc/data';
 
-// import on from 'shorter-js/src/event/on';
-// import off from 'shorter-js/src/event/off';
-import EventListener from 'event-listener.js';
+import { addListener, removeListener } from 'event-listener.js';
 
 import activeClass from '../strings/activeClass';
 import dataBsToggle from '../strings/dataBsToggle';
@@ -23,7 +21,6 @@ import BaseComponent from './base-component';
 // BUTTON PRIVATE GC
 // =================
 const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
-const { on, off } = EventListener;
 
 /**
  * Static method which returns an existing `Button` instance associated
@@ -47,7 +44,7 @@ const buttonInitCallback = (element) => new Button(element);
  * @param {boolean=} add when `true`, event listener is added
  */
 function toggleButtonHandler(self, add) {
-  const action = add ? on : off;
+  const action = add ? addListener : removeListener;
   action(self.element, mouseclickEvent, self.toggle);
 }
 
