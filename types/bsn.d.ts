@@ -594,6 +594,12 @@ declare module "bootstrap.native/src/components/tooltip-native" {
         /** @type {string} Set unique ID for `aria-describedby`. */
         id: string;
         /**
+         * Handles the `touchstart` event listener for `Tooltip`
+         * @this {Tooltip}
+         * @param {TouchEvent} e the `Event` object
+         */
+        handleTouch({ target }: TouchEvent): void;
+        /**
          * Updates the tooltip position.
          *
          * @param {Event=} e the `Event` object

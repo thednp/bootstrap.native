@@ -114,7 +114,7 @@ function toggleTooltipAction(self, add) {
   const action = add ? addListener : removeListener;
   const { element } = self;
 
-  action(getDocument(element), touchstartEvent, tooltipTouchHandler, passiveHandler);
+  action(getDocument(element), touchstartEvent, self.handleTouch, passiveHandler);
 
   if (!isMedia(element)) {
     [scrollEvent, resizeEvent].forEach((ev) => {
@@ -186,7 +186,7 @@ function toggleTooltipHandlers(self, add) {
         action(btn, mouseclickEvent, self.hide);
       } else {
         action(element, mouseleaveEvent, self.hide);
-        action(getDocument(element), touchstartEvent, tooltipTouchHandler, passiveHandler);
+        action(getDocument(element), touchstartEvent, self.handleTouch, passiveHandler);
       }
     } else if (tr === mouseclickEvent) {
       action(element, tr, (!dismissible ? self.toggle : self.show));
@@ -241,23 +241,6 @@ function toggleTooltipTitle(self, content) {
     // @ts-ignore
     (content || getAttribute(element, titleAtt[0])));
   removeAttribute(element, titleAtt[content ? 1 : 0]);
-}
-
-// TOOLTIP EVENT HANDLERS
-// ======================
-/**
- * Handles the `touchstart` event listener for `Tooltip`
- * @this {Tooltip}
- * @param {TouchEvent} e the `Event` object
- */
-function tooltipTouchHandler({ target }) {
-  const { tooltip, element } = this;
-  // @ts-ignore
-  if (tooltip.contains(target) || target === element || element.contains(target)) {
-    // smile for ESLint
-  } else {
-    this.hide();
-  }
 }
 
 // TOOLTIP DEFINITION
@@ -316,7 +299,7 @@ export default class Tooltip extends BaseComponent {
     tooltipDefaults[titleAttr] = null;
 
     // all functions bind
-    tooltipTouchHandler.bind(self);
+    self.handleTouch = self.handleTouch.bind(self);
     self.update = self.update.bind(self);
     self.show = self.show.bind(self);
     self.hide = self.hide.bind(self);
@@ -478,6 +461,23 @@ export default class Tooltip extends BaseComponent {
     const self = this;
     if (!self.enabled) self.enable();
     else self.disable();
+  }
+
+  /**
+   * Handles the `touchstart` event listener for `Tooltip`
+   * @this {Tooltip}
+   * @param {TouchEvent} e the `Event` object
+   */
+  handleTouch({ target }) {
+    const { tooltip, element } = this;
+
+    if (tooltip.contains(target) || target === element
+      // @ts-ignore
+      || (target && element.contains(target))) {
+      // smile for ESLint
+    } else {
+      this.hide();
+    }
   }
 
   /** Removes the `Tooltip` from the target element. */
