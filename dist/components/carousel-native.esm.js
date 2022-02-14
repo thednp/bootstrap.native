@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Carousel v4.1.0alpha6 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Carousel v4.1.0alpha7 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -97,9 +97,7 @@ function getDocument(node) {
 const transitionDuration = 'transitionDuration';
 
 /**
- * A global namespace for:
- * * `transitionProperty` string for Firefox,
- * * `transition` property for all other browsers.
+ * A global namespace for `transitionProperty` string for modern browsers.
  *
  * @type {string}
  */
@@ -281,8 +279,9 @@ function getElementsByClassName(selector, parent) {
 
 /**
  * Shortcut for `HTMLElement.getAttribute()` method.
- * @param  {HTMLElement | Element} element target element
- * @param  {string} attribute attribute name
+ * @param {HTMLElement | Element} element target element
+ * @param {string} attribute attribute name
+ * @returns {string?} attribute value
  */
 const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
@@ -298,7 +297,7 @@ const Timer = {
    * @param {HTMLElement | Element | string} target target element
    * @param {ReturnType<TimerHandler>} callback the callback
    * @param {number} delay the execution delay
-   * @param {string=} key a unique
+   * @param {string=} key a unique key
    */
   set: (target, callback, delay, key) => {
     const element = querySelector(target);
@@ -422,7 +421,7 @@ function emulateTransitionEnd(element, handler) {
   if (duration) {
     /**
      * Wrap the handler in on -> off callback
-     * @type {EventListenerObject['handleEvent']} e Event object
+     * @type {EventListener} e Event object
      */
     const transitionEndWrapper = (e) => {
       if (e.target === element) {
@@ -552,6 +551,7 @@ function OriginalEvent(EventType, config) {
  *
  * @param {HTMLElement | Element} element target
  * @param {string} classNAME to add
+ * @returns {void}
  */
 function addClass(element, classNAME) {
   element.classList.add(classNAME);
@@ -562,7 +562,7 @@ function addClass(element, classNAME) {
  *
  * @param {HTMLElement | Element} element target
  * @param {string} classNAME to check
- * @return {boolean}
+ * @returns {boolean}
  */
 function hasClass(element, classNAME) {
   return element.classList.contains(classNAME);
@@ -573,6 +573,7 @@ function hasClass(element, classNAME) {
  *
  * @param {HTMLElement | Element} element target
  * @param {string} classNAME to remove
+ * @returns {void}
  */
 function removeClass(element, classNAME) {
   element.classList.remove(classNAME);
@@ -813,7 +814,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.0alpha6";
+var version = "4.1.0alpha7";
 
 const Version = version;
 

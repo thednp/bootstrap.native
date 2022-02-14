@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Alert v4.1.0alpha6 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Alert v4.1.0alpha7 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -28,9 +28,7 @@
   const transitionDelay = 'transitionDelay';
 
   /**
-   * A global namespace for:
-   * * `transitionProperty` string for Firefox,
-   * * `transition` property for all other browsers.
+   * A global namespace for `transitionProperty` string for modern browsers.
    *
    * @type {string}
    */
@@ -112,7 +110,7 @@
     if (duration) {
       /**
        * Wrap the handler in on -> off callback
-       * @type {EventListenerObject['handleEvent']} e Event object
+       * @type {EventListener} e Event object
        */
       const transitionEndWrapper = (e) => {
         if (e.target === element) {
@@ -199,7 +197,7 @@
    *
    * @param {HTMLElement | Element} element target
    * @param {string} classNAME to check
-   * @return {boolean}
+   * @returns {boolean}
    */
   function hasClass(element, classNAME) {
     return element.classList.contains(classNAME);
@@ -210,6 +208,7 @@
    *
    * @param {HTMLElement | Element} element target
    * @param {string} classNAME to remove
+   * @returns {void}
    */
   function removeClass(element, classNAME) {
     element.classList.remove(classNAME);
@@ -434,8 +433,9 @@
 
   /**
    * Shortcut for `HTMLElement.getAttribute()` method.
-   * @param  {HTMLElement | Element} element target element
-   * @param  {string} attribute attribute name
+   * @param {HTMLElement | Element} element target element
+   * @param {string} attribute attribute name
+   * @returns {string?} attribute value
    */
   const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
@@ -532,7 +532,7 @@
     return normalOps;
   }
 
-  var version = "4.1.0alpha6";
+  var version = "4.1.0alpha7";
 
   const Version = version;
 

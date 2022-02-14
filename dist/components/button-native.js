@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Button v4.1.0alpha6 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Button v4.1.0alpha7 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -26,6 +26,7 @@
    * @param  {HTMLElement | Element} element target element
    * @param  {string} attribute attribute name
    * @param  {string} value attribute value
+   * @returns {void}
    */
   const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
 
@@ -41,6 +42,7 @@
    *
    * @param {HTMLElement | Element} element target
    * @param {string} classNAME to add
+   * @returns {void}
    */
   function addClass(element, classNAME) {
     element.classList.add(classNAME);
@@ -51,7 +53,7 @@
    *
    * @param {HTMLElement | Element} element target
    * @param {string} classNAME to check
-   * @return {boolean}
+   * @returns {boolean}
    */
   function hasClass(element, classNAME) {
     return element.classList.contains(classNAME);
@@ -62,6 +64,7 @@
    *
    * @param {HTMLElement | Element} element target
    * @param {string} classNAME to remove
+   * @returns {void}
    */
   function removeClass(element, classNAME) {
     element.classList.remove(classNAME);
@@ -296,8 +299,9 @@
 
   /**
    * Shortcut for `HTMLElement.getAttribute()` method.
-   * @param  {HTMLElement | Element} element target element
-   * @param  {string} attribute attribute name
+   * @param {HTMLElement | Element} element target element
+   * @param {string} attribute attribute name
+   * @returns {string?} attribute value
    */
   const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
@@ -394,7 +398,7 @@
     return normalOps;
   }
 
-  var version = "4.1.0alpha6";
+  var version = "4.1.0alpha7";
 
   const Version = version;
 

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Popover v4.1.0alpha6 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Popover v4.1.0alpha7 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -629,13 +629,15 @@ const touchstartEvent = 'touchstart';
  * @param  {HTMLElement | Element} element target element
  * @param  {string} attribute attribute name
  * @param  {string} value attribute value
+ * @returns {void}
  */
 const setAttribute = (element, attribute, value) => element.setAttribute(attribute, value);
 
 /**
  * Shortcut for `HTMLElement.getAttribute()` method.
- * @param  {HTMLElement | Element} element target element
- * @param  {string} attribute attribute name
+ * @param {HTMLElement | Element} element target element
+ * @param {string} attribute attribute name
+ * @returns {string?} attribute value
  */
 const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
@@ -643,6 +645,7 @@ const getAttribute = (element, attribute) => element.getAttribute(attribute);
  * Shortcut for `HTMLElement.removeAttribute()` method.
  * @param  {HTMLElement | Element} element target element
  * @param  {string} attribute attribute name
+ * @returns {void}
  */
 const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
 
@@ -684,9 +687,7 @@ function getDocumentBody(node) {
 const transitionDuration = 'transitionDuration';
 
 /**
- * A global namespace for:
- * * `transitionProperty` string for Firefox,
- * * `transition` property for all other browsers.
+ * A global namespace for `transitionProperty` string for modern browsers.
  *
  * @type {string}
  */
@@ -707,6 +708,42 @@ function getElementTransitionDuration(element) {
     ? parseFloat(durationValue) * durationScale : 0;
 
   return !Number.isNaN(duration) ? duration : 0;
+}
+
+let elementUID = 1;
+const elementIDMap = new Map();
+
+/**
+ * Returns a unique identifier for popover, tooltip, scrollspy.
+ *
+ * @param {HTMLElement | Element} element target element
+ * @param {string=} key predefined key
+ * @returns {number} an existing or new unique ID
+ */
+function getUID(element, key) {
+  elementUID += 1;
+  let elMap = elementIDMap.get(element);
+  let result = elementUID;
+
+  if (key && key.length) {
+    if (elMap) {
+      const elMapId = elMap.get(key);
+      if (!Number.isNaN(elMapId)) {
+        result = elMapId;
+      } else {
+        elMap.set(key, result);
+      }
+    } else {
+      elementIDMap.set(element, new Map());
+      elMap = elementIDMap.get(element);
+      elMap.set(key, result);
+    }
+  } else if (!Number.isNaN(elMap)) {
+    result = elMap;
+  } else {
+    elementIDMap.set(element, result);
+  }
+  return result;
 }
 
 /**
@@ -731,6 +768,7 @@ function closest(element, selector) {
  *
  * @param {HTMLElement | Element} element target
  * @param {string} classNAME to add
+ * @returns {void}
  */
 function addClass(element, classNAME) {
   element.classList.add(classNAME);
@@ -741,7 +779,7 @@ function addClass(element, classNAME) {
  *
  * @param {HTMLElement | Element} element target
  * @param {string} classNAME to check
- * @return {boolean}
+ * @returns {boolean}
  */
 function hasClass(element, classNAME) {
   return element.classList.contains(classNAME);
@@ -752,6 +790,7 @@ function hasClass(element, classNAME) {
  *
  * @param {HTMLElement | Element} element target
  * @param {string} classNAME to remove
+ * @returns {void}
  */
 function removeClass(element, classNAME) {
   element.classList.remove(classNAME);
@@ -841,7 +880,7 @@ function emulateTransitionEnd(element, handler) {
   if (duration) {
     /**
      * Wrap the handler in on -> off callback
-     * @type {EventListenerObject['handleEvent']} e Event object
+     * @type {EventListener} e Event object
      */
     const transitionEndWrapper = (e) => {
       if (e.target === element) {
@@ -871,7 +910,7 @@ const Timer = {
    * @param {HTMLElement | Element | string} target target element
    * @param {ReturnType<TimerHandler>} callback the callback
    * @param {number} delay the execution delay
-   * @param {string=} key a unique
+   * @param {string=} key a unique key
    */
   set: (target, callback, delay, key) => {
     const element = querySelector(target);
@@ -933,42 +972,6 @@ const Timer = {
     }
   },
 };
-
-let elementUID = 1;
-const elementIDMap = new Map();
-
-/**
- * Returns a unique identifier for popover, tooltip, scrollspy.
- *
- * @param {HTMLElement | Element} element target element
- * @param {string=} key predefined key
- * @returns {number} an existing or new unique ID
- */
-function getUID(element, key) {
-  elementUID += 1;
-  let elMap = elementIDMap.get(element);
-  let result = elementUID;
-
-  if (key && key.length) {
-    if (elMap) {
-      const elMapId = elMap.get(key);
-      if (!Number.isNaN(elMapId)) {
-        result = elMapId;
-      } else {
-        elMap.set(key, result);
-      }
-    } else {
-      elementIDMap.set(element, new Map());
-      elMap = elementIDMap.get(element);
-      elMap.set(key, result);
-    }
-  } else if (!Number.isNaN(elMap)) {
-    result = elMap;
-  } else {
-    elementIDMap.set(element, result);
-  }
-  return result;
-}
 
 /**
  * Returns a namespaced `CustomEvent` specific to each component.
@@ -1422,7 +1425,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.0alpha6";
+var version = "4.1.0alpha7";
 
 const Version = version;
 

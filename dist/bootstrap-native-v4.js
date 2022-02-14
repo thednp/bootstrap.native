@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.0alpha6 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.0alpha7 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -34,9 +34,9 @@
 
   /**
    * A global namespace for:
-   * * `transitionProperty` string for Firefox,
-   * * `webkitTransition` for older Chrome / Safari browsers,
-   * * `transition` property for all other browsers.
+   * * `transitionProperty` string for modern brosers,
+   * * `webkitTransition` for legacy Chrome / Safari browsers
+   *
    * @type {string}
    */
   var transitionProperty = 'webkitTransition' in documentHead.style ? 'webkitTransitionProperty' : 'transitionProperty';
@@ -2583,7 +2583,7 @@
     });
   }
 
-  var version = "4.1.0alpha6";
+  var version = "4.1.0alpha7";
 
   var Version = version;
 
