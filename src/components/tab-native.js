@@ -301,4 +301,5 @@ export default class Tab extends BaseComponent {
 ObjectAssign(Tab, {
   selector: tabSelector,
   init: tabInitCallback,
+  getInstance: getTabInstance,
 });
