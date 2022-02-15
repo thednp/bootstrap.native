@@ -73,8 +73,10 @@ function triggerTabEnd(self) {
 
   if (tabContent) {
     // @ts-ignore
-    tabContent.style.height = '';
-    removeClass(tabContent, collapsingClass);
+    if (hasClass(tabContent, collapsingClass)) {
+      tabContent.style.height = '';
+      removeClass(tabContent, collapsingClass);
+    }
   }
 
   if (nav) Timer.clear(nav);
@@ -89,7 +91,7 @@ function triggerTabShow(self) {
   const { currentHeight, nextHeight } = tabPrivate.get(element);
   const { tab } = nav && tabPrivate.get(nav);
 
-  if (tabContent) { // height animation
+  if (tabContent && tabContent.dataset.bsCollapse) { // height animation
     if (currentHeight === nextHeight) {
       triggerTabEnd(self);
     } else {
@@ -134,10 +136,13 @@ function triggerTabHide(self) {
     const nextHeight = nextContent.scrollHeight;
     tabPrivate.set(element, { currentHeight, nextHeight });
 
-    addClass(tabContent, collapsingClass);
-    // @ts-ignore -- height animation
-    tabContent.style.height = `${currentHeight}px`;
-    reflow(tabContent);
+    if(tabContent.dataset.bsCollapse) {
+      addClass(tabContent, collapsingClass);
+      // @ts-ignore -- height animation
+      tabContent.style.height = `${currentHeight}px`;
+      reflow(tabContent);
+    }
+  
     [content, nextContent].forEach((c) => removeClass(c, 'overflow-hidden'));
   }
 
@@ -296,5 +301,4 @@ export default class Tab extends BaseComponent {
 ObjectAssign(Tab, {
   selector: tabSelector,
   init: tabInitCallback,
-  getInstance: getTabInstance,
 });
