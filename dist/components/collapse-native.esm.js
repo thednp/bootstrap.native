@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Collapse v4.1.0alpha7 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Collapse v4.1.0 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -686,7 +686,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.0alpha7";
+var version = "4.1.0";
 
 const Version = version;
 
