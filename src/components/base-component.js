@@ -4,6 +4,7 @@
 import querySelector from 'shorter-js/src/selectors/querySelector';
 import normalizeOptions from 'shorter-js/src/misc/normalizeOptions';
 import Data from 'shorter-js/src/misc/data';
+import {getInstance as getBaseInstance} from 'shorter-js/src/misc/data';
 import ObjectKeys from 'shorter-js/src/misc/ObjectKeys';
 
 import Version from '../version';
@@ -36,6 +37,16 @@ export default class BaseComponent {
     }
 
     Data.set(element, self.name, self);
+  }
+
+  /** @static */
+  static getInstance(element) {
+    return getBaseInstance(element, this.name)
+  }
+
+  /** @static */
+  static getOrCreateInstance(element, config = {}) {
+    return this.getInstance(element) || new this(element, typeof config === 'object' ? config : null)
   }
 
   /* eslint-disable */
