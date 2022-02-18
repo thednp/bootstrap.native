@@ -87,11 +87,11 @@ function triggerTabEnd(self) {
  * @param {Tab} self the `Tab` instance
  */
 function triggerTabShow(self) {
-  const { element, tabContent, nav } = self;
+  const { element, content: nextContent, tabContent, nav } = self;
   const { currentHeight, nextHeight } = tabPrivate.get(element);
   const { tab, content } = nav && tabPrivate.get(nav);
 
-  if (tabContent && !hasClass(content, fadeClass)) { // height animation if no fade class
+  if (tabContent && !hasClass(nextContent, fadeClass)) { // height animation if no fade class
     if (currentHeight === nextHeight) {
       triggerTabEnd(self);
     } else {
@@ -137,7 +137,7 @@ function triggerTabHide(self) {
     tabPrivate.set(element, { currentHeight, nextHeight });
 
     // Height animation if no fade animation
-    if(!hasClass(content, fadeClass)) {
+    if(!hasClass(nextContent, fadeClass)) {
       addClass(tabContent, collapsingClass);
       // @ts-ignore -- height animation
       tabContent.style.height = `${currentHeight}px`;
