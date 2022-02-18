@@ -89,9 +89,9 @@ function triggerTabEnd(self) {
 function triggerTabShow(self) {
   const { element, tabContent, nav } = self;
   const { currentHeight, nextHeight } = tabPrivate.get(element);
-  const { tab } = nav && tabPrivate.get(nav);
+  const { tab, content } = nav && tabPrivate.get(nav);
 
-  if (tabContent && tabContent.dataset.bsCollapse) { // height animation
+  if (tabContent && !hasClass(content, fadeClass)) { // height animation if no fade class
     if (currentHeight === nextHeight) {
       triggerTabEnd(self);
     } else {
@@ -136,7 +136,8 @@ function triggerTabHide(self) {
     const nextHeight = nextContent.scrollHeight;
     tabPrivate.set(element, { currentHeight, nextHeight });
 
-    if(tabContent.dataset.bsCollapse) {
+    // Height animation if no fade animation
+    if(!hasClass(content, fadeClass)) {
       addClass(tabContent, collapsingClass);
       // @ts-ignore -- height animation
       tabContent.style.height = `${currentHeight}px`;
@@ -301,5 +302,4 @@ export default class Tab extends BaseComponent {
 ObjectAssign(Tab, {
   selector: tabSelector,
   init: tabInitCallback,
-  getInstance: getTabInstance,
 });
