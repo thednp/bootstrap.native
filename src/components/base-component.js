@@ -4,10 +4,19 @@
 import querySelector from 'shorter-js/src/selectors/querySelector';
 import normalizeOptions from 'shorter-js/src/misc/normalizeOptions';
 import Data from 'shorter-js/src/misc/data';
-import {getInstance as getBaseInstance} from 'shorter-js/src/misc/data';
+import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
 import ObjectKeys from 'shorter-js/src/misc/ObjectKeys';
-
 import Version from '../version';
+
+/**
+ * Static method which returns an existing `BaseComponent` instance associated
+ * to a target `Element` or create it.
+ *
+ * @type {BSN.GetInstance<BaseComponent>}
+ */
+ const getOrCreateInstance = function (element, config = {}) {
+  return this.getInstance(element) || new this(element, typeof config === 'object' ? config : null)
+}
 
 /** Returns a new `BaseComponent` instance. */
 export default class BaseComponent {
@@ -39,16 +48,6 @@ export default class BaseComponent {
     Data.set(element, self.name, self);
   }
 
-  /** @static */
-  static getInstance(element) {
-    return getBaseInstance(element, this.name)
-  }
-
-  /** @static */
-  static getOrCreateInstance(element, config = {}) {
-    return this.getInstance(element) || new this(element, typeof config === 'object' ? config : null)
-  }
-
   /* eslint-disable */
   /** @static */
   get version() { return Version; }
@@ -71,3 +70,7 @@ export default class BaseComponent {
     ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }
+
+ObjectAssign(BaseComponent, {
+  getOrCreateInstance: getOrCreateInstance
+});
