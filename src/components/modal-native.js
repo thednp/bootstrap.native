@@ -398,14 +398,15 @@ export default class Modal extends BaseComponent {
     }
 
     if (backdrop) {
-      if (!currentOpen && !hasClass(overlay, showClass)) {
+      if (!container.contains(overlay)) {
         appendOverlay(container, hasFade, true);
       } else {
         toggleOverlayType(true);
       }
+
       overlayDelay = getElementTransitionDuration(overlay);
 
-      if (!hasClass(overlay, showClass)) showOverlay();
+      showOverlay();
       setTimeout(() => beforeModalShow(self), overlayDelay);
     } else {
       beforeModalShow(self);

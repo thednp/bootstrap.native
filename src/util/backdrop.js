@@ -1,8 +1,10 @@
 import querySelector from 'shorter-js/src/selectors/querySelector';
 import addClass from 'shorter-js/src/class/addClass';
+import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 import reflow from 'shorter-js/src/misc/reflow';
 import getDocument from 'shorter-js/src/get/getDocument';
+import createElement from 'shorter-js/src/misc/createElement';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -17,7 +19,7 @@ const modalActiveSelector = `.${modalString}.${showClass}`;
 const offcanvasActiveSelector = `.${offcanvasString}.${showClass}`;
 
 // any document would suffice
-const overlay = getDocument().createElement('div');
+const overlay = createElement('div');
 
 /**
  * Returns the current active modal / offcancas element.
@@ -56,8 +58,10 @@ function appendOverlay(container, hasFade, isModal) {
  * Shows the overlay to the user.
  */
 function showOverlay() {
-  addClass(overlay, showClass);
-  reflow(overlay);
+  if (!hasClass(overlay, showClass)) {
+    addClass(overlay, showClass);
+    reflow(overlay);
+  }
 }
 
 /**

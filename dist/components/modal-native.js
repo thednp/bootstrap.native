@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Modal v4.1.0 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Modal v4.1.1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -925,6 +925,29 @@
   // @ts-ignore
   const reflow = (element) => element.offsetHeight;
 
+  /**
+   * This is a shortie for `document.createElement` method
+   * which allows you to create a new `HTMLElement` for a given `tagName`
+   * or based on an object with specific non-readonly attributes:
+   * `id`, `className`, `textContent`, `style`, etc.
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
+   *
+   * @param {Record<string, string> | string} param `tagName` or object
+   * @return {HTMLElement | Element} a new `HTMLElement` or `Element`
+   */
+  function createElement(param) {
+    if (typeof param === 'string') {
+      return getDocument().createElement(param);
+    }
+
+    const { tagName } = param;
+    const attr = { ...param };
+    const newElement = createElement(tagName);
+    delete attr.tagName;
+    ObjectAssign(newElement, attr);
+    return newElement;
+  }
+
   /** @type {string} */
   const offcanvasString = 'offcanvas';
 
@@ -935,7 +958,7 @@
   const offcanvasActiveSelector = `.${offcanvasString}.${showClass}`;
 
   // any document would suffice
-  const overlay = getDocument().createElement('div');
+  const overlay = createElement('div');
 
   /**
    * Returns the current active modal / offcancas element.
@@ -974,8 +997,10 @@
    * Shows the overlay to the user.
    */
   function showOverlay() {
-    addClass(overlay, showClass);
-    reflow(overlay);
+    if (!hasClass(overlay, showClass)) {
+      addClass(overlay, showClass);
+      reflow(overlay);
+    }
   }
 
   /**
@@ -1100,7 +1125,7 @@
     return normalOps;
   }
 
-  var version = "4.1.0";
+  var version = "4.1.1";
 
   const Version = version;
 
@@ -1507,14 +1532,15 @@
       }
 
       if (backdrop) {
-        if (!currentOpen && !hasClass(overlay, showClass)) {
+        if (!container.contains(overlay)) {
           appendOverlay(container, hasFade, true);
         } else {
           toggleOverlayType(true);
         }
+
         overlayDelay = getElementTransitionDuration(overlay);
 
-        if (!hasClass(overlay, showClass)) showOverlay();
+        showOverlay();
         setTimeout(() => beforeModalShow(self), overlayDelay);
       } else {
         beforeModalShow(self);

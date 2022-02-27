@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.0 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -539,7 +539,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.0";
+var version = "4.1.1";
 
 const Version = version;
 
@@ -2808,6 +2808,29 @@ function setScrollbar(element, overflow) {
   }
 }
 
+/**
+ * This is a shortie for `document.createElement` method
+ * which allows you to create a new `HTMLElement` for a given `tagName`
+ * or based on an object with specific non-readonly attributes:
+ * `id`, `className`, `textContent`, `style`, etc.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
+ *
+ * @param {Record<string, string> | string} param `tagName` or object
+ * @return {HTMLElement | Element} a new `HTMLElement` or `Element`
+ */
+function createElement(param) {
+  if (typeof param === 'string') {
+    return getDocument().createElement(param);
+  }
+
+  const { tagName } = param;
+  const attr = { ...param };
+  const newElement = createElement(tagName);
+  delete attr.tagName;
+  ObjectAssign(newElement, attr);
+  return newElement;
+}
+
 /** @type {string} */
 const offcanvasString = 'offcanvas';
 
@@ -2818,7 +2841,7 @@ const modalActiveSelector = `.${modalString}.${showClass}`;
 const offcanvasActiveSelector = `.${offcanvasString}.${showClass}`;
 
 // any document would suffice
-const overlay = getDocument().createElement('div');
+const overlay = createElement('div');
 
 /**
  * Returns the current active modal / offcancas element.
@@ -2857,8 +2880,10 @@ function appendOverlay(container, hasFade, isModal) {
  * Shows the overlay to the user.
  */
 function showOverlay() {
-  addClass(overlay, showClass);
-  reflow(overlay);
+  if (!hasClass(overlay, showClass)) {
+    addClass(overlay, showClass);
+    reflow(overlay);
+  }
 }
 
 /**
@@ -3237,14 +3262,15 @@ class Modal extends BaseComponent {
     }
 
     if (backdrop) {
-      if (!currentOpen && !hasClass(overlay, showClass)) {
+      if (!container.contains(overlay)) {
         appendOverlay(container, hasFade, true);
       } else {
         toggleOverlayType(true);
       }
+
       overlayDelay = getElementTransitionDuration(overlay);
 
-      if (!hasClass(overlay, showClass)) showOverlay();
+      showOverlay();
       setTimeout(() => beforeModalShow(self), overlayDelay);
     } else {
       beforeModalShow(self);
@@ -3628,13 +3654,14 @@ class Offcanvas extends BaseComponent {
     }
 
     if (options.backdrop) {
-      if (!currentOpen) {
+      if (!container.contains(overlay)) {
         appendOverlay(container, true);
       } else {
         toggleOverlayType();
       }
+
       overlayDelay = getElementTransitionDuration(overlay);
-      if (!hasClass(overlay, showClass)) showOverlay();
+      showOverlay();
 
       setTimeout(() => beforeOffcanvasShow(self), overlayDelay);
     } else {
@@ -5105,7 +5132,7 @@ const tabPrivate = new Map();
 function triggerTabEnd(self) {
   const { tabContent, nav } = self;
 
-  if (tabContent) {
+  if (tabContent && hasClass(tabContent, collapsingClass)) {
     // @ts-ignore
     tabContent.style.height = '';
     removeClass(tabContent, collapsingClass);
@@ -5119,11 +5146,13 @@ function triggerTabEnd(self) {
  * @param {Tab} self the `Tab` instance
  */
 function triggerTabShow(self) {
-  const { element, tabContent, nav } = self;
-  const { currentHeight, nextHeight } = tabPrivate.get(element);
+  const {
+    element, tabContent, content: nextContent, nav,
+  } = self;
   const { tab } = nav && tabPrivate.get(nav);
 
-  if (tabContent) { // height animation
+  if (tabContent && hasClass(nextContent, fadeClass)) { // height animation
+    const { currentHeight, nextHeight } = tabPrivate.get(element);
     if (currentHeight === nextHeight) {
       triggerTabEnd(self);
     } else {
@@ -5135,6 +5164,7 @@ function triggerTabShow(self) {
       }, 50);
     }
   } else if (nav) Timer.clear(nav);
+
   shownTabEvent.relatedTarget = tab;
   dispatchEvent(element, shownTabEvent);
 }
@@ -5150,9 +5180,11 @@ function triggerTabHide(self) {
   const { tab, content } = nav && tabPrivate.get(nav);
   let currentHeight = 0;
 
-  if (tabContent) {
-    [content, nextContent].forEach((c) => addClass(c, 'overflow-hidden'));
-    currentHeight = content.scrollHeight;
+  if (tabContent && hasClass(nextContent, fadeClass)) {
+    [content, nextContent].forEach((c) => {
+      addClass(c, 'overflow-hidden');
+    });
+    currentHeight = content ? content.scrollHeight : 0;
   }
 
   // update relatedTarget and dispatch event
@@ -5164,7 +5196,7 @@ function triggerTabHide(self) {
   addClass(nextContent, activeClass);
   removeClass(content, activeClass);
 
-  if (tabContent) {
+  if (tabContent && hasClass(nextContent, fadeClass)) {
     const nextHeight = nextContent.scrollHeight;
     tabPrivate.set(element, { currentHeight, nextHeight });
 
@@ -5172,7 +5204,9 @@ function triggerTabHide(self) {
     // @ts-ignore -- height animation
     tabContent.style.height = `${currentHeight}px`;
     reflow(tabContent);
-    [content, nextContent].forEach((c) => removeClass(c, 'overflow-hidden'));
+    [content, nextContent].forEach((c) => {
+      removeClass(c, 'overflow-hidden');
+    });
   }
 
   if (nextContent && hasClass(nextContent, fadeClass)) {
@@ -5181,10 +5215,13 @@ function triggerTabHide(self) {
       emulateTransitionEnd(nextContent, () => {
         triggerTabShow(self);
       });
-    }, 17);
-  } else { triggerTabShow(self); }
+    }, 1);
+  } else {
+    addClass(nextContent, showClass);
+    triggerTabShow(self);
+  }
 
-  dispatchEvent(tab, hiddenTabEvent);
+  if (tab) dispatchEvent(tab, hiddenTabEvent);
 }
 
 /**
@@ -5269,6 +5306,21 @@ class Tab extends BaseComponent {
     /** @type {(HTMLElement | Element)?} */
     self.dropdown = nav && querySelector(`.${dropdownMenuClasses[0]}-toggle`, nav);
 
+    // show first Tab instance of none is shown
+    // suggested on #4632
+    const { tab } = getActiveTab(self);
+    if (nav && !tab) {
+      const firstTab = querySelector(tabSelector, nav);
+      const firstTabContent = firstTab && getTargetElement(firstTab);
+
+      if (firstTabContent) {
+        addClass(firstTab, activeClass);
+        addClass(firstTabContent, showClass);
+        addClass(firstTabContent, activeClass);
+        setAttribute(element, ariaSelected, 'true');
+      }
+    }
+
     // add event listener
     toggleTabHandler(self, true);
   }
@@ -5295,14 +5347,20 @@ class Tab extends BaseComponent {
 
       // update relatedTarget and dispatch
       hideTabEvent.relatedTarget = element;
-      dispatchEvent(tab, hideTabEvent);
-      if (hideTabEvent.defaultPrevented) return;
+      if (tab) {
+        dispatchEvent(tab, hideTabEvent);
+        if (hideTabEvent.defaultPrevented) return;
+      }
 
-      if (nav) Timer.set(nav, () => {}, 17);
-      removeClass(tab, activeClass);
-      setAttribute(tab, ariaSelected, 'false');
       addClass(element, activeClass);
       setAttribute(element, ariaSelected, 'true');
+
+      if (nav && tab) {
+        Timer.set(nav, () => {
+          removeClass(tab, activeClass);
+          setAttribute(tab, ariaSelected, 'false');
+        }, 1);
+      }
 
       if (dropdown) {
         // @ts-ignore

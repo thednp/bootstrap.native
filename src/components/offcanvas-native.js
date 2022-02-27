@@ -367,13 +367,14 @@ export default class Offcanvas extends BaseComponent {
     }
 
     if (options.backdrop) {
-      if (!currentOpen) {
+      if (!container.contains(overlay)) {
         appendOverlay(container, true);
       } else {
         toggleOverlayType();
       }
+
       overlayDelay = getElementTransitionDuration(overlay);
-      if (!hasClass(overlay, showClass)) showOverlay();
+      showOverlay();
 
       setTimeout(() => beforeOffcanvasShow(self), overlayDelay);
     } else {
