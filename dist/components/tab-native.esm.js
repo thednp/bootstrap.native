@@ -555,11 +555,6 @@ const showClass = 'show';
 const dropdownMenuClasses = ['dropdown', 'dropup', 'dropstart', 'dropend'];
 
 /**
- * Global namespace for `.dropdown-menu`.
- */
-const dropdownMenuClass = 'dropdown-menu';
-
-/**
  * Global namespace for most components `toggle` option.
  */
 const dataBsToggle = 'data-bs-toggle';
@@ -897,7 +892,7 @@ function triggerTabHide(self) {
     triggerTabShow(self);
   }
 
-  if (tab) dispatchEvent(tab, hiddenTabEvent);
+  dispatchEvent(tab, hiddenTabEvent);
 }
 
 /**
@@ -922,6 +917,16 @@ function getActiveTab(self) {
   const content = tab ? getTargetElement(tab) : null;
   // @ts-ignore
   return { tab, content };
+}
+
+/**
+ * Returns a parent dropdown.
+ * @param {HTMLElement | Element} element the `Tab` element
+ * @returns {(HTMLElement | Element)?} add when `true`, event listener is added
+ */
+function getParentDropdown(element) {
+  const dropdown = closest(element, `.${dropdownMenuClasses.join(',.')}`);
+  return dropdown ? querySelector(`.${dropdownMenuClasses[0]}-toggle`, dropdown) : null;
 }
 
 /**
@@ -980,7 +985,7 @@ class Tab extends BaseComponent {
 
     // event targets
     /** @type {(HTMLElement | Element)?} */
-    self.dropdown = nav && querySelector(`.${dropdownMenuClasses[0]}-toggle`, nav);
+    self.dropdown = getParentDropdown(element);
 
     // show first Tab instance of none is shown
     // suggested on #4632
@@ -1023,26 +1028,24 @@ class Tab extends BaseComponent {
 
       // update relatedTarget and dispatch
       hideTabEvent.relatedTarget = element;
-      if (tab) {
-        dispatchEvent(tab, hideTabEvent);
-        if (hideTabEvent.defaultPrevented) return;
-      }
+
+      dispatchEvent(tab, hideTabEvent);
+      if (hideTabEvent.defaultPrevented) return;
 
       addClass(element, activeClass);
       setAttribute(element, ariaSelected, 'true');
 
-      if (nav && tab) {
+      const activeDropdown = getParentDropdown(tab);
+      if (activeDropdown && hasClass(activeDropdown, activeClass)) {
+        removeClass(activeDropdown, activeClass);
+      }
+
+      if (nav) {
         Timer.set(nav, () => {
           removeClass(tab, activeClass);
           setAttribute(tab, ariaSelected, 'false');
+          if (dropdown && !hasClass(dropdown, activeClass)) addClass(dropdown, activeClass);
         }, 1);
-      }
-
-      if (dropdown) {
-        // @ts-ignore
-        if (!hasClass(element.parentNode, dropdownMenuClass)) {
-          if (hasClass(dropdown, activeClass)) removeClass(dropdown, activeClass);
-        } else if (!hasClass(dropdown, activeClass)) addClass(dropdown, activeClass);
       }
 
       if (hasClass(content, fadeClass)) {
