@@ -928,7 +928,7 @@
   /**
    * Returns a parent dropdown.
    * @param {HTMLElement | Element} element the `Tab` element
-   * @returns {(HTMLElement | Element)?} add when `true`, event listener is added
+   * @returns {(HTMLElement | Element)?} the parent dropdown
    */
   function getParentDropdown(element) {
     const dropdown = closest(element, `.${dropdownMenuClasses.join(',.')}`);
