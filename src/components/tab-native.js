@@ -57,6 +57,8 @@ const hideTabEvent = OriginalEvent(`hide.bs.${tabString}`);
 const hiddenTabEvent = OriginalEvent(`hidden.bs.${tabString}`);
 
 /**
+ * Stores the current active tab and its content
+ * for a given `.nav` element.
  * @type {Map<(HTMLElement | Element), any>}
  */
 const tabPrivate = new Map();
@@ -122,7 +124,7 @@ function triggerTabHide(self) {
     [content, nextContent].forEach((c) => {
       addClass(c, 'overflow-hidden');
     });
-    currentHeight = content ? content.scrollHeight : 0;
+    currentHeight = content.scrollHeight || 0;
   }
 
   // update relatedTarget and dispatch event
@@ -255,7 +257,7 @@ export default class Tab extends BaseComponent {
     self.dropdown = getParentDropdown(element);
 
     // show first Tab instance of none is shown
-    // suggested on #4632
+    // suggested on #432
     const { tab } = getActiveTab(self);
     if (nav && !tab) {
       const firstTab = querySelector(tabSelector, nav);
