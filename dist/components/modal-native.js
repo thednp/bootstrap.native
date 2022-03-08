@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Modal v4.1.1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Modal v4.1.2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -523,6 +523,14 @@
     return OriginalCustomEvent;
   }
 
+  /**
+   * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
+   * @param  {HTMLElement | Element} element target element
+   * @param  {Partial<CSSStyleDeclaration>} styles attribute value
+   */
+  // @ts-ignore
+  const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
+
   /** @type {Record<string, any>} */
   const EventRegistry = {};
 
@@ -807,14 +815,6 @@
       ? parent : getDocument();
     return lookUp.getElementsByClassName(selector);
   }
-
-  /**
-   * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
-   * @param  {HTMLElement | Element} element target element
-   * @param  {Partial<CSSStyleDeclaration>} styles attribute value
-   */
-  // @ts-ignore
-  const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
 
   /**
    * Global namespace for components `fixed-top` class.
@@ -1125,7 +1125,7 @@
     return normalOps;
   }
 
-  var version = "4.1.1";
+  var version = "4.1.2";
 
   const Version = version;
 
@@ -1238,7 +1238,7 @@
 
     if (!modalOverflow && scrollbarWidth) {
       const pad = isRTL(element) ? 'paddingLeft' : 'paddingRight';
-      // @ts-ignore
+      // @ts-ignore -- cannot use `setElementStyle`
       element.style[pad] = `${scrollbarWidth}px`;
     }
     setScrollbar(element, (modalOverflow || clientHeight !== scrollHeight));
@@ -1278,15 +1278,16 @@
    * @param {Modal} self the `Modal` instance
    */
   function afterModalHide(self) {
-    const { triggers, element } = self;
+    const { triggers, element, relatedTarget } = self;
     removeOverlay(element);
-    // @ts-ignore
-    element.style.paddingRight = '';
+    setElementStyle(element, { paddingRight: '' });
+    toggleModalDismiss(self);
 
-    if (triggers.length) {
-      const visibleTrigger = triggers.find((x) => isVisible(x));
-      if (visibleTrigger) focus(visibleTrigger);
-    }
+    const focusElement = showModalEvent.relatedTarget || triggers.find(isVisible);
+    if (focusElement) focus(focusElement);
+
+    hiddenModalEvent.relatedTarget = relatedTarget;
+    dispatchEvent(element, hiddenModalEvent);
   }
 
   /**
@@ -1308,12 +1309,11 @@
    */
   function beforeModalShow(self) {
     const { element, hasFade } = self;
-    // @ts-ignore
-    element.style.display = 'block';
+    setElementStyle(element, { display: 'block' });
 
     setModalScrollbar(self);
     if (!getCurrentOpen(element)) {
-      getDocumentBody(element).style.overflow = 'hidden';
+      setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
     }
 
     addClass(element, showClass);
@@ -1331,11 +1331,10 @@
    */
   function beforeModalHide(self, force) {
     const {
-      element, options, relatedTarget, hasFade,
+      element, options, hasFade,
     } = self;
 
-    // @ts-ignore
-    element.style.display = '';
+    setElementStyle(element, { display: '' });
 
     // force can also be the transitionEvent object, we wanna make sure it's not
     // call is not forced and overlay is visible
@@ -1346,11 +1345,6 @@
     } else {
       afterModalHide(self);
     }
-
-    toggleModalDismiss(self);
-
-    hiddenModalEvent.relatedTarget = relatedTarget;
-    dispatchEvent(element, hiddenModalEvent);
   }
 
   // MODAL EVENT HANDLERS

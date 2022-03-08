@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Dropdown v4.1.1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Dropdown v4.1.2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -640,7 +640,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.1";
+var version = "4.1.2";
 
 const Version = version;
 

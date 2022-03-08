@@ -28,6 +28,7 @@ import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import passiveHandler from 'shorter-js/src/misc/passiveHandler';
 import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
+import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 
 import { addListener, removeListener } from 'event-listener.js';
 
@@ -104,7 +105,7 @@ function setModalScrollbar(self) {
 
   if (!modalOverflow && scrollbarWidth) {
     const pad = isRTL(element) ? 'paddingLeft' : 'paddingRight';
-    // @ts-ignore
+    // @ts-ignore -- cannot use `setElementStyle`
     element.style[pad] = `${scrollbarWidth}px`;
   }
   setScrollbar(element, (modalOverflow || clientHeight !== scrollHeight));
@@ -144,15 +145,16 @@ function toggleModalHandler(self, add) {
  * @param {Modal} self the `Modal` instance
  */
 function afterModalHide(self) {
-  const { triggers, element } = self;
+  const { triggers, element, relatedTarget } = self;
   removeOverlay(element);
-  // @ts-ignore
-  element.style.paddingRight = '';
+  setElementStyle(element, { paddingRight: '' });
+  toggleModalDismiss(self);
 
-  if (triggers.length) {
-    const visibleTrigger = triggers.find((x) => isVisible(x));
-    if (visibleTrigger) focus(visibleTrigger);
-  }
+  const focusElement = showModalEvent.relatedTarget || triggers.find(isVisible);
+  if (focusElement) focus(focusElement);
+
+  hiddenModalEvent.relatedTarget = relatedTarget;
+  dispatchEvent(element, hiddenModalEvent);
 }
 
 /**
@@ -174,12 +176,11 @@ function afterModalShow(self) {
  */
 function beforeModalShow(self) {
   const { element, hasFade } = self;
-  // @ts-ignore
-  element.style.display = 'block';
+  setElementStyle(element, { display: 'block' });
 
   setModalScrollbar(self);
   if (!getCurrentOpen(element)) {
-    getDocumentBody(element).style.overflow = 'hidden';
+    setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
   }
 
   addClass(element, showClass);
@@ -197,11 +198,10 @@ function beforeModalShow(self) {
  */
 function beforeModalHide(self, force) {
   const {
-    element, options, relatedTarget, hasFade,
+    element, options, hasFade,
   } = self;
 
-  // @ts-ignore
-  element.style.display = '';
+  setElementStyle(element, { display: '' });
 
   // force can also be the transitionEvent object, we wanna make sure it's not
   // call is not forced and overlay is visible
@@ -212,11 +212,6 @@ function beforeModalHide(self, force) {
   } else {
     afterModalHide(self);
   }
-
-  toggleModalDismiss(self);
-
-  hiddenModalEvent.relatedTarget = relatedTarget;
-  dispatchEvent(element, hiddenModalEvent);
 }
 
 // MODAL EVENT HANDLERS

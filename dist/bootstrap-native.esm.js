@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -539,7 +539,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.1";
+var version = "4.1.2";
 
 const Version = version;
 
@@ -2968,7 +2968,7 @@ function setModalScrollbar(self) {
 
   if (!modalOverflow && scrollbarWidth) {
     const pad = isRTL(element) ? 'paddingLeft' : 'paddingRight';
-    // @ts-ignore
+    // @ts-ignore -- cannot use `setElementStyle`
     element.style[pad] = `${scrollbarWidth}px`;
   }
   setScrollbar(element, (modalOverflow || clientHeight !== scrollHeight));
@@ -3008,15 +3008,16 @@ function toggleModalHandler(self, add) {
  * @param {Modal} self the `Modal` instance
  */
 function afterModalHide(self) {
-  const { triggers, element } = self;
+  const { triggers, element, relatedTarget } = self;
   removeOverlay(element);
-  // @ts-ignore
-  element.style.paddingRight = '';
+  setElementStyle(element, { paddingRight: '' });
+  toggleModalDismiss(self);
 
-  if (triggers.length) {
-    const visibleTrigger = triggers.find((x) => isVisible(x));
-    if (visibleTrigger) focus(visibleTrigger);
-  }
+  const focusElement = showModalEvent.relatedTarget || triggers.find(isVisible);
+  if (focusElement) focus(focusElement);
+
+  hiddenModalEvent.relatedTarget = relatedTarget;
+  dispatchEvent(element, hiddenModalEvent);
 }
 
 /**
@@ -3038,12 +3039,11 @@ function afterModalShow(self) {
  */
 function beforeModalShow(self) {
   const { element, hasFade } = self;
-  // @ts-ignore
-  element.style.display = 'block';
+  setElementStyle(element, { display: 'block' });
 
   setModalScrollbar(self);
   if (!getCurrentOpen(element)) {
-    getDocumentBody(element).style.overflow = 'hidden';
+    setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
   }
 
   addClass(element, showClass);
@@ -3061,11 +3061,10 @@ function beforeModalShow(self) {
  */
 function beforeModalHide(self, force) {
   const {
-    element, options, relatedTarget, hasFade,
+    element, options, hasFade,
   } = self;
 
-  // @ts-ignore
-  element.style.display = '';
+  setElementStyle(element, { display: '' });
 
   // force can also be the transitionEvent object, we wanna make sure it's not
   // call is not forced and overlay is visible
@@ -3076,11 +3075,6 @@ function beforeModalHide(self, force) {
   } else {
     afterModalHide(self);
   }
-
-  toggleModalDismiss(self);
-
-  hiddenModalEvent.relatedTarget = relatedTarget;
-  dispatchEvent(element, hiddenModalEvent);
 }
 
 // MODAL EVENT HANDLERS
@@ -3418,13 +3412,12 @@ function beforeOffcanvasShow(self) {
 
   if (!options.scroll) {
     setOffCanvasScrollbar(self);
-    getDocumentBody(element).style.overflow = 'hidden';
+    setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
   }
 
   addClass(element, offcanvasTogglingClass);
   addClass(element, showClass);
-  // @ts-ignore
-  element.style.visibility = 'visible';
+  setElementStyle(element, { visibility: 'visible' });
 
   emulateTransitionEnd(element, () => showOffcanvasComplete(self));
 }
@@ -3529,16 +3522,12 @@ function offcanvasKeyDismissHandler({ code }) {
  * @param {Offcanvas} self the `Offcanvas` instance
  */
 function showOffcanvasComplete(self) {
-  const { element, triggers } = self;
+  const { element } = self;
   removeClass(element, offcanvasTogglingClass);
 
   removeAttribute(element, ariaHidden);
   setAttribute(element, ariaModal, 'true');
   setAttribute(element, 'role', 'dialog');
-
-  if (triggers.length) {
-    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'true'));
-  }
 
   dispatchEvent(element, shownOffcanvasEvent);
 
@@ -3557,14 +3546,10 @@ function hideOffcanvasComplete(self) {
   setAttribute(element, ariaHidden, 'true');
   removeAttribute(element, ariaModal);
   removeAttribute(element, 'role');
-  // @ts-ignore
-  element.style.visibility = '';
+  setElementStyle(element, { visibility: '' });
 
-  if (triggers.length) {
-    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'false'));
-    const visibleTrigger = triggers.find((x) => isVisible(x));
-    if (visibleTrigger) focus(visibleTrigger);
-  }
+  const visibleTrigger = showOffcanvasEvent.relatedTarget || triggers.find((x) => isVisible(x));
+  if (visibleTrigger) focus(visibleTrigger);
 
   removeOverlay(element);
 
@@ -4076,7 +4061,8 @@ const focusoutEvent = 'focusout';
  */
 const mousehoverEvent = 'hover';
 
-let elementUID = 1;
+let elementUID = 0;
+let elementMapUID = 0;
 const elementIDMap = new Map();
 
 /**
@@ -4087,27 +4073,25 @@ const elementIDMap = new Map();
  * @returns {number} an existing or new unique ID
  */
 function getUID(element, key) {
-  elementUID += 1;
-  let elMap = elementIDMap.get(element);
-  let result = elementUID;
+  let result = key ? elementUID : elementMapUID;
 
-  if (key && key.length) {
-    if (elMap) {
-      const elMapId = elMap.get(key);
-      if (!Number.isNaN(elMapId)) {
-        result = elMapId;
-      } else {
-        elMap.set(key, result);
-      }
-    } else {
-      elementIDMap.set(element, new Map());
-      elMap = elementIDMap.get(element);
-      elMap.set(key, result);
+  if (key) {
+    const elID = getUID(element);
+    const elMap = elementIDMap.get(elID) || new Map();
+    if (!elementIDMap.has(elID)) {
+      elementIDMap.set(elID, elMap);
     }
-  } else if (!Number.isNaN(elMap)) {
-    result = elMap;
+    if (!elMap.has(key)) {
+      elMap.set(key, result);
+      elementUID += 1;
+    } else result = elMap.get(key);
   } else {
-    elementIDMap.set(element, result);
+    const elkey = element.id || element;
+
+    if (!elementIDMap.has(elkey)) {
+      elementIDMap.set(elkey, result);
+      elementMapUID += 1;
+    } else result = elementIDMap.get(elkey);
   }
   return result;
 }

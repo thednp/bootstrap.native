@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Offcanvas v4.1.1 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Offcanvas v4.1.2 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -26,12 +26,6 @@ const mouseclickEvent = 'click';
  * @type {string}
  */
 const keydownEvent = 'keydown';
-
-/**
- * A global namespace for aria-expanded.
- * @type {string}
- */
-const ariaExpanded = 'aria-expanded';
 
 /**
  * A global namespace for `Escape` key.
@@ -408,6 +402,14 @@ function OriginalEvent(EventType, config) {
   return OriginalCustomEvent;
 }
 
+/**
+ * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
+ * @param  {HTMLElement | Element} element target element
+ * @param  {Partial<CSSStyleDeclaration>} styles attribute value
+ */
+// @ts-ignore
+const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
+
 /** @type {Record<string, any>} */
 const EventRegistry = {};
 
@@ -720,14 +722,6 @@ function getElementsByClassName(selector, parent) {
 }
 
 /**
- * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
- * @param  {HTMLElement | Element} element target element
- * @param  {Partial<CSSStyleDeclaration>} styles attribute value
- */
-// @ts-ignore
-const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
-
-/**
  * Global namespace for components `fixed-top` class.
  */
 const fixedTopClass = 'fixed-top';
@@ -1031,7 +1025,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.1";
+var version = "4.1.2";
 
 const Version = version;
 
@@ -1176,13 +1170,12 @@ function beforeOffcanvasShow(self) {
 
   if (!options.scroll) {
     setOffCanvasScrollbar(self);
-    getDocumentBody(element).style.overflow = 'hidden';
+    setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
   }
 
   addClass(element, offcanvasTogglingClass);
   addClass(element, showClass);
-  // @ts-ignore
-  element.style.visibility = 'visible';
+  setElementStyle(element, { visibility: 'visible' });
 
   emulateTransitionEnd(element, () => showOffcanvasComplete(self));
 }
@@ -1287,16 +1280,12 @@ function offcanvasKeyDismissHandler({ code }) {
  * @param {Offcanvas} self the `Offcanvas` instance
  */
 function showOffcanvasComplete(self) {
-  const { element, triggers } = self;
+  const { element } = self;
   removeClass(element, offcanvasTogglingClass);
 
   removeAttribute(element, ariaHidden);
   setAttribute(element, ariaModal, 'true');
   setAttribute(element, 'role', 'dialog');
-
-  if (triggers.length) {
-    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'true'));
-  }
 
   dispatchEvent(element, shownOffcanvasEvent);
 
@@ -1315,14 +1304,10 @@ function hideOffcanvasComplete(self) {
   setAttribute(element, ariaHidden, 'true');
   removeAttribute(element, ariaModal);
   removeAttribute(element, 'role');
-  // @ts-ignore
-  element.style.visibility = '';
+  setElementStyle(element, { visibility: '' });
 
-  if (triggers.length) {
-    triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'false'));
-    const visibleTrigger = triggers.find((x) => isVisible(x));
-    if (visibleTrigger) focus(visibleTrigger);
-  }
+  const visibleTrigger = showOffcanvasEvent.relatedTarget || triggers.find((x) => isVisible(x));
+  if (visibleTrigger) focus(visibleTrigger);
 
   removeOverlay(element);
 
