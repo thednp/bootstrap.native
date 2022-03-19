@@ -20,11 +20,12 @@ const miniBanner = `// Native JavaScript for Bootstrap Polyfill v${pkg.version} 
 
 // set config
 const MIN = process.env.MIN === 'true' // true/false|unset
+const OUT = process.env.OUTPUTFILE // true/false|unset
 const FORMAT = 'esm' // umd|iife|esm|cjs
 
 // INPUTFILE:src/util/polyfill.js,OUTPUTFILE:dist/polyfill.js
 const INPUTFILE = 'src/util/polyfill.js'
-const OUTPUTFILE = './dist/polyfill'+(MIN?'.min':'')+'.js'
+const OUTPUTFILE = OUT ? OUT : './dist/polyfill'+(MIN?'.min':'')+'.js'
 
 const OUTPUT = {
   file: OUTPUTFILE,

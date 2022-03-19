@@ -3,6 +3,7 @@
 assets/
 node_modules/
 experiments/
+docs/
 CONTRIBUTING.md
 package-lock.json
 index.html

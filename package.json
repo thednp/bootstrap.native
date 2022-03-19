@@ -14,7 +14,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "help": "rollup --help",
-    "build": "npm run lint:js && npm-run-all --parallel build-* && npm-run-all --parallel module-*",
+    "build": "npm run lint:js && npm-run-all --parallel build-* && npm-run-all --parallel module-* && npm-run-all --parallel copy-*",
     "custom": "rollup -c --environment",
     "fix:js": "eslint src/ --config .eslintrc --fix",
     "lint:js": "eslint src/ --config .eslintrc",
@@ -26,6 +26,8 @@
     "build-esm-min": "rollup --environment FORMAT:esm,MIN:true -c",
     "build-umd": "rollup --environment FORMAT:umd,MIN:false -c",
     "build-umd-min": "rollup --environment FORMAT:umd,MIN:true -c",
+    "copy-v4-umd": "rollup --environment INPUTFILE:./src/index-v4.js,OUTPUTFILE:./docs/assets/js/bootstrap-native-v4.js,FORMAT:umd,MIN:false -c",
+    "copy-umd": "rollup --environment FORMAT:umd,MIN:false,OUTPUTFILE:./docs/assets/js/bootstrap-native.js -c",
     "build:ts": "tsc -d",
     "modules": "npm-run-all --parallel module-*",
     "module-alert-esm": "rollup --environment MODULE:alert,FORMAT:esm,MIN:false -c rollup.module.js",
@@ -52,9 +54,10 @@
     "module-tab-umd": "rollup --environment MODULE:tab,FORMAT:umd,MIN:false -c rollup.module.js",
     "module-toast-umd": "rollup --environment MODULE:toast,FORMAT:umd,MIN:false -c rollup.module.js",
     "module-tooltip-umd": "rollup --environment MODULE:tooltip,FORMAT:umd,MIN:false -c rollup.module.js",
-    "polyfill": "npm-run-all --parallel polyfill-unminified polyfill-minified",
+    "polyfill": "npm-run-all --parallel polyfill-*",
     "polyfill-unminified": "rollup --environment MIN:false -c rollup.polyfill.js",
     "polyfill-minified": "rollup --environment MIN:true -c rollup.polyfill.js",
+    "polyfill-demo": "rollup --environment MIN:false,OUTPUTFILE:./docs/assets/js/polyfill.js -c rollup.polyfill.js",
     "watch": "rollup --environment FORMAT:umd,MIN:false -c -w"
   },
   "browserslist": [
