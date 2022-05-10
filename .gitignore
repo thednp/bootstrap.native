@@ -1,6 +1,4 @@
-package-lock.json
 .npmignore
-.vscode/
-node_modules/
-experiments/
-demo.html
+.vscode
+node_modules
+experiments

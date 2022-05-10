@@ -1,10 +1,7 @@
+.github
 .gitignore
-.vscode/
-assets/
-node_modules/
-experiments/
-docs/
-CONTRIBUTING.md
-package-lock.json
-index.html
-demo.html
+.vscode
+assets
+node_modules
+experiments
+docs
