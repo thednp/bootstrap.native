@@ -9,12 +9,12 @@
     "allowJs": true,
     "checkJs": true,
     "rootDir": "../",
-    "outFile": "types/bsn.d.ts", // comment after generate
+    // "outFile": "types/bsn.d.ts", // comment after generate
     "outDir": "types"
   },
   "files": [
     "types/index.d.ts",
-    // "types/bsn.d.ts", // comment to generate, delete file
-    "types/more/bsn.ts",
+    "types/bsn.d.ts", // comment to generate, delete file
+    // "types/more/bsn.ts",
   ]
 }

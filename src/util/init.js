@@ -4,7 +4,7 @@ import parentNodes from 'shorter-js/src/selectors/parentNodes';
 import getElementsByTagName from 'shorter-js/src/selectors/getElementsByTagName';
 import matches from 'shorter-js/src/selectors/matches';
 
-import { addListener } from 'event-listener.js';
+import { addListener } from '@thednp/event-listener/src/event-listener';
 
 import Alert from '../components/alert-native';
 import Button from '../components/button-native';
@@ -47,7 +47,7 @@ function initComponentDataAPI(callback, collection) {
 /**
  * Remove one component from a target container element or all in the page.
  * @param {string} component the component name
- * @param {(Element | HTMLElement | Document)=} context parent `Element`
+ * @param {(Element | HTMLElement | Document)} context parent `Element`
  */
 function removeComponentDataAPI(component, context) {
   const compData = Data.getAllFor(component);
@@ -55,7 +55,7 @@ function removeComponentDataAPI(component, context) {
   if (compData) {
     [...compData].forEach((x) => {
       const [element, instance] = x;
-      if (context && context.contains(element)) instance.dispose();
+      if (context.contains(element)) instance.dispose();
     });
   }
 }
@@ -81,7 +81,7 @@ export function initCallback(context) {
  */
 export function removeDataAPI(context) {
   const lookUp = context && parentNodes.some((x) => context instanceof x)
-    ? context : undefined;
+    ? context : document;
 
   ObjectKeys(componentsList).forEach((comp) => {
     removeComponentDataAPI(comp, lookUp);

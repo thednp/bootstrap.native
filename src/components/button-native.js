@@ -9,7 +9,7 @@ import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 import { getInstance } from 'shorter-js/src/misc/data';
 
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import activeClass from '../strings/activeClass';
 import dataBsToggle from '../strings/dataBsToggle';

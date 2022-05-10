@@ -32,7 +32,7 @@ import addClass from 'shorter-js/src/class/addClass';
 import hasClass from 'shorter-js/src/class/hasClass';
 import removeClass from 'shorter-js/src/class/removeClass';
 
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import activeClass from '../strings/activeClass';
 import dataBsTarget from '../strings/dataBsTarget';
@@ -476,7 +476,9 @@ export default class Carousel extends BaseComponent {
     }
 
     Timer.set(element, () => {
-      if (!self.isPaused && isElementInScrollRange(element)) {
+      // it's very important to check self.element
+      // where instance might have been disposed
+      if (self.element && !self.isPaused && isElementInScrollRange(element)) {
         self.index += 1;
         self.to(self.index);
       }

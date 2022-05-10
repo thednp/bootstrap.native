@@ -30,7 +30,7 @@ import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import dataBsDismiss from '../strings/dataBsDismiss';

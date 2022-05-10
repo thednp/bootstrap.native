@@ -32,7 +32,7 @@ import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
 import getDocument from 'shorter-js/src/get/getDocument';
 import getWindow from 'shorter-js/src/get/getWindow';
 
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import showClass from '../strings/showClass';
 import dataBsToggle from '../strings/dataBsToggle';

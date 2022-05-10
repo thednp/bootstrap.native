@@ -17,7 +17,7 @@ import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import collapsingClass from '../strings/collapsingClass';
 import activeClass from '../strings/activeClass';
@@ -96,8 +96,8 @@ function triggerTabShow(self) {
     if (currentHeight === nextHeight) {
       triggerTabEnd(self);
     } else {
-      setTimeout(() => { // enables height animation
-        // @ts-ignore
+      setTimeout(() => {
+        // enables height animation
         tabContent.style.height = `${nextHeight}px`; // height animation
         reflow(tabContent);
         emulateTransitionEnd(tabContent, () => triggerTabEnd(self));
@@ -184,7 +184,6 @@ function getActiveTab(self) {
     tab = activeTabs[activeTabs.length - 1];
   }
   const content = tab ? getTargetElement(tab) : null;
-  // @ts-ignore
   return { tab, content };
 }
 

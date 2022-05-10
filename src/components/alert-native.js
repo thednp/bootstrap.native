@@ -10,7 +10,7 @@ import removeClass from 'shorter-js/src/class/removeClass';
 import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
 import { getInstance } from 'shorter-js/src/misc/data';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';

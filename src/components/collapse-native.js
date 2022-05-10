@@ -17,7 +17,7 @@ import { getInstance } from 'shorter-js/src/misc/data';
 import Timer from 'shorter-js/src/misc/timer';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import collapsingClass from '../strings/collapsingClass';

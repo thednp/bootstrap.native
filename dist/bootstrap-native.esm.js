@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap v4.1.2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap v4.1.4 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -9,27 +9,26 @@ const EventRegistry = {};
 /**
  * The global event listener.
  *
- * @this {Element | HTMLElement | Window | Document}
- * @param {Event} e
- * @returns {void}
+ * @type {EventListener}
+ * @this {EventTarget}
  */
 function globalListener(e) {
   const that = this;
   const { type } = e;
-  const oneEvMap = EventRegistry[type] ? [...EventRegistry[type]] : [];
 
-  oneEvMap.forEach((elementsMap) => {
+  [...EventRegistry[type]].forEach((elementsMap) => {
     const [element, listenersMap] = elementsMap;
-    [...listenersMap].forEach((listenerMap) => {
-      if (element === that) {
+    /* istanbul ignore else */
+    if (element === that) {
+      [...listenersMap].forEach((listenerMap) => {
         const [listener, options] = listenerMap;
         listener.apply(element, [e]);
 
         if (options && options.once) {
           removeListener(element, type, listener, options);
         }
-      }
-    });
+      });
+    }
   });
 }
 
@@ -37,10 +36,7 @@ function globalListener(e) {
  * Register a new listener with its options and attach the `globalListener`
  * to the target if this is the first listener.
  *
- * @param {Element | HTMLElement | Window | Document} element
- * @param {string} eventType
- * @param {EventListenerObject['handleEvent']} listener
- * @param {AddEventListenerOptions=} options
+ * @type {Listener.ListenerAction<EventTarget>}
  */
 const addListener = (element, eventType, listener, options) => {
   // get element listeners first
@@ -58,9 +54,7 @@ const addListener = (element, eventType, listener, options) => {
   const { size } = oneElementMap;
 
   // register listener with its options
-  if (oneElementMap) {
-    oneElementMap.set(listener, options);
-  }
+  oneElementMap.set(listener, options);
 
   // add listener last
   if (!size) {
@@ -72,10 +66,7 @@ const addListener = (element, eventType, listener, options) => {
  * Remove a listener from registry and detach the `globalListener`
  * if no listeners are found in the registry.
  *
- * @param {Element | HTMLElement | Window | Document} element
- * @param {string} eventType
- * @param {EventListenerObject['handleEvent']} listener
- * @param {AddEventListenerOptions=} options
+ * @type {Listener.ListenerAction<EventTarget>}
  */
 const removeListener = (element, eventType, listener, options) => {
   // get listener first
@@ -94,6 +85,7 @@ const removeListener = (element, eventType, listener, options) => {
   if (!oneEventMap || !oneEventMap.size) delete EventRegistry[eventType];
 
   // remove listener last
+  /* istanbul ignore else */
   if (!oneElementMap || !oneElementMap.size) {
     element.removeEventListener(eventType, globalListener, eventOptions);
   }
@@ -105,7 +97,7 @@ const removeListener = (element, eventType, listener, options) => {
  * @see https://gist.github.com/shystruk/d16c0ee7ac7d194da9644e5d740c8338#file-subpub-js
  * @see https://hackernoon.com/do-you-still-register-window-event-listeners-in-each-component-react-in-example-31a4b1f6f1c8
  */
-const EventListener = {
+const Listener = {
   on: addListener,
   off: removeListener,
   globalListener,
@@ -539,7 +531,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.2";
+var version = "4.1.4";
 
 const Version = version;
 
@@ -1598,7 +1590,9 @@ class Carousel extends BaseComponent {
     }
 
     Timer.set(element, () => {
-      if (!self.isPaused && isElementInScrollRange(element)) {
+      // it's very important to check self.element
+      // where instance might have been disposed
+      if (self.element && !self.isPaused && isElementInScrollRange(element)) {
         self.index += 1;
         self.to(self.index);
       }
@@ -5672,7 +5666,7 @@ function initComponentDataAPI(callback, collection) {
 /**
  * Remove one component from a target container element or all in the page.
  * @param {string} component the component name
- * @param {(Element | HTMLElement | Document)=} context parent `Element`
+ * @param {(Element | HTMLElement | Document)} context parent `Element`
  */
 function removeComponentDataAPI(component, context) {
   const compData = Data.getAllFor(component);
@@ -5680,7 +5674,7 @@ function removeComponentDataAPI(component, context) {
   if (compData) {
     [...compData].forEach((x) => {
       const [element, instance] = x;
-      if (context && context.contains(element)) instance.dispose();
+      if (context.contains(element)) instance.dispose();
     });
   }
 }
@@ -5706,7 +5700,7 @@ function initCallback(context) {
  */
 function removeDataAPI(context) {
   const lookUp = context && parentNodes.some((x) => context instanceof x)
-    ? context : undefined;
+    ? context : document;
 
   ObjectKeys(componentsList).forEach((comp) => {
     removeComponentDataAPI(comp, lookUp);
@@ -5736,7 +5730,7 @@ const BSN = {
   initCallback,
   removeDataAPI,
   Version,
-  EventListener,
+  EventListener: Listener,
 };
 
 export { BSN as default };

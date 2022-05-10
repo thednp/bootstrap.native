@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Dropdown v4.1.2 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Dropdown v4.1.4 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -416,27 +416,26 @@
   /**
    * The global event listener.
    *
-   * @this {Element | HTMLElement | Window | Document}
-   * @param {Event} e
-   * @returns {void}
+   * @type {EventListener}
+   * @this {EventTarget}
    */
   function globalListener(e) {
     const that = this;
     const { type } = e;
-    const oneEvMap = EventRegistry[type] ? [...EventRegistry[type]] : [];
 
-    oneEvMap.forEach((elementsMap) => {
+    [...EventRegistry[type]].forEach((elementsMap) => {
       const [element, listenersMap] = elementsMap;
-      [...listenersMap].forEach((listenerMap) => {
-        if (element === that) {
+      /* istanbul ignore else */
+      if (element === that) {
+        [...listenersMap].forEach((listenerMap) => {
           const [listener, options] = listenerMap;
           listener.apply(element, [e]);
 
           if (options && options.once) {
             removeListener(element, type, listener, options);
           }
-        }
-      });
+        });
+      }
     });
   }
 
@@ -444,10 +443,7 @@
    * Register a new listener with its options and attach the `globalListener`
    * to the target if this is the first listener.
    *
-   * @param {Element | HTMLElement | Window | Document} element
-   * @param {string} eventType
-   * @param {EventListenerObject['handleEvent']} listener
-   * @param {AddEventListenerOptions=} options
+   * @type {Listener.ListenerAction<EventTarget>}
    */
   const addListener = (element, eventType, listener, options) => {
     // get element listeners first
@@ -465,9 +461,7 @@
     const { size } = oneElementMap;
 
     // register listener with its options
-    if (oneElementMap) {
-      oneElementMap.set(listener, options);
-    }
+    oneElementMap.set(listener, options);
 
     // add listener last
     if (!size) {
@@ -479,10 +473,7 @@
    * Remove a listener from registry and detach the `globalListener`
    * if no listeners are found in the registry.
    *
-   * @param {Element | HTMLElement | Window | Document} element
-   * @param {string} eventType
-   * @param {EventListenerObject['handleEvent']} listener
-   * @param {AddEventListenerOptions=} options
+   * @type {Listener.ListenerAction<EventTarget>}
    */
   const removeListener = (element, eventType, listener, options) => {
     // get listener first
@@ -501,6 +492,7 @@
     if (!oneEventMap || !oneEventMap.size) delete EventRegistry[eventType];
 
     // remove listener last
+    /* istanbul ignore else */
     if (!oneElementMap || !oneElementMap.size) {
       element.removeEventListener(eventType, globalListener, eventOptions);
     }
@@ -646,7 +638,7 @@
     return normalOps;
   }
 
-  var version = "4.1.2";
+  var version = "4.1.4";
 
   const Version = version;
 

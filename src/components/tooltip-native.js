@@ -39,7 +39,7 @@ import focus from 'shorter-js/src/misc/focus';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 import toLowerCase from 'shorter-js/src/misc/toLowerCase';
 
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import dataOriginalTitle from '../strings/dataOriginalTitle';

@@ -1,4 +1,4 @@
-import EventListener from 'event-listener.js/src/event-listener';
+import EventListener from '@thednp/event-listener';
 
 import Alert from './components/alert-native';
 import Button from './components/button-native';

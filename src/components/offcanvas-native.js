@@ -25,7 +25,7 @@ import focus from 'shorter-js/src/misc/focus';
 import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
 import setElementStyle from 'shorter-js/src/misc/setElementStyle';
 
-import { addListener, removeListener } from 'event-listener.js';
+import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import dataBsDismiss from '../strings/dataBsDismiss';
 import dataBsToggle from '../strings/dataBsToggle';
