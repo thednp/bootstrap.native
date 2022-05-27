@@ -59,36 +59,36 @@ describe('Dropdown Class Tests', () => {
       .get('[data-bs-toggle="dropdown"]').eq(1).then(($element) => {
         cy.wrap(new Dropdown($element[0])).as('click_instance');
       })
-      .log('open and dismiss via **click** on element').then(() => {
+      // .log('open and dismiss via **click** on element').then(() => {
         cy.get('@click_instance').its('element').click()
-        cy.wait(50)
+        cy.wait(100)
         cy.get('@click_instance').its('menu').should('have.class', 'show')
-        cy.wait(50)
+        cy.wait(100)
         cy.get('@click_instance').its('element').click()
-        cy.wait(50)
+        cy.wait(100)
         cy.get('@click_instance').its('menu').should('not.have.class', 'show')
-        cy.wait(50)
-      })
-      .log('open and dismiss via **click** on empty menu item').then(() => {
+        cy.wait(100)
+      // })
+      // .log('open and dismiss via **click** on empty menu item').then(() => {
         cy.get('@click_instance').its('element').click()
-        cy.wait(50)
+        cy.wait(100)
         cy.get('@click_instance').its('menu').should('have.class', 'show')
-        cy.wait(50)
+        cy.wait(100)
         cy.get('@click_instance').its('menu').find('.dropdown-item').eq(0).click()
-        cy.wait(50)
+        cy.wait(100)
         cy.get('@click_instance').its('menu').should('not.have.class', 'show')
-        cy.wait(50)
-      })
-      .log('open and dismiss via **click** on body').then(() => {
+        cy.wait(100)
+      // })
+      // .log('open and dismiss via **click** on body').then(() => {
         cy.get('@click_instance').its('element').click()
-        cy.wait(50)
+        cy.wait(100)
         cy.get('@click_instance').its('menu').should('have.class', 'show')
-        cy.wait(50)
+        cy.wait(100)
         cy.document().its('body').click()
-        cy.wait(50)
+        cy.wait(100)
         cy.get('@click_instance').its('menu').should('not.have.class', 'show')
-        cy.wait(50)
-      })
+        cy.wait(100)
+      // })
   });
 
   it('Can handle keyboard navigation', () => {
