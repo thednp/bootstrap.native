@@ -37,14 +37,14 @@ declare module "bootstrap.native/src/components/base-component" {
     /** Returns a new `BaseComponent` instance. */
     export default class BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target `Element` or selector string
+         * @param {HTMLElement | string} target `Element` or selector string
          * @param {BSN.ComponentOptions=} config component instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.ComponentOptions | undefined);
+        constructor(target: HTMLElement | string, config?: BSN.ComponentOptions | undefined);
         /** @static @type {BSN.ComponentOptions} */
         options: BSN.ComponentOptions;
-        /** @type {HTMLElement | Element} */
-        element: HTMLElement | Element;
+        /** @type {HTMLElement} */
+        element: HTMLElement;
         /** @static */
         get version(): string;
         /** @static */
@@ -60,10 +60,10 @@ declare module "bootstrap.native/src/components/base-component" {
 declare module "bootstrap.native/src/components/alert-native" {
     /** Creates a new Alert instance. */
     export default class Alert extends BaseComponent {
-        /** @param {HTMLElement | Element | string} target element or selector */
-        constructor(target: HTMLElement | Element | string);
-        /** @static @type {(HTMLElement | Element)?} */
-        dismiss: (HTMLElement | Element) | null;
+        /** @param {HTMLElement | string} target element or selector */
+        constructor(target: HTMLElement | string);
+        /** @static @type {HTMLElement?} */
+        dismiss: HTMLElement | null;
         /**
          * Public method that hides the `.alert` element from the user,
          * disposes the instance once animation is complete, then
@@ -72,7 +72,7 @@ declare module "bootstrap.native/src/components/alert-native" {
          * @param {Event=} e most likely the `click` event
          * @this {Alert} the `Alert` instance or `EventTarget`
          */
-        close(e?: Event | undefined): void;
+        close(this: Alert, e?: Event | undefined): void;
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
@@ -104,9 +104,9 @@ declare module "bootstrap.native/src/components/button-native" {
     /** Creates a new `Button` instance. */
     export default class Button extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target usually a `.btn` element
+         * @param {HTMLElement | string} target usually a `.btn` element
          */
-        constructor(target: HTMLElement | Element | string);
+        constructor(target: HTMLElement | string);
         /** @type {boolean} */
         isActive: boolean;
         /**
@@ -153,31 +153,41 @@ declare module "bootstrap.native/src/util/getTargetElement" {
      * Returns the `Element` that THIS one targets
      * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
      *
-     * @param {HTMLElement | Element} element the target element
-     * @returns {(HTMLElement | Element)?} the query result
+     * @param {HTMLElement} element the target element
+     * @returns {HTMLElement?} the query result
      */
-    export default function getTargetElement(element: HTMLElement | Element): (HTMLElement | Element) | null;
+    export default function getTargetElement(element: HTMLElement): HTMLElement | null;
 }
 declare module "bootstrap.native/src/components/carousel-native" {
     /** Creates a new `Carousel` instance. */
     export default class Carousel extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target mostly a `.carousel` element
+         * @param {HTMLElement | string} target mostly a `.carousel` element
          * @param {BSN.Options.Carousel=} config instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.Carousel | undefined);
-        /** @type {string} */
-        direction: string;
+        constructor(target: HTMLElement | string, config?: BSN.Options.Carousel | undefined);
+        /** @type {right|left} */
+        direction: right | left;
         /** @type {number} */
         index: number;
         /** @type {boolean} */
         isTouch: boolean;
-        slides: HTMLCollectionOf<Element | HTMLElement>;
-        controls: Element[];
-        /** @type {(HTMLElement | Element)?} */
-        indicator: (HTMLElement | Element) | null;
-        /** @type {(HTMLElement | Element)[]} */
-        indicators: (HTMLElement | Element)[];
+        slides: any;
+        controls: any[];
+        /** @type {HTMLElement?} */
+        indicator: HTMLElement | null;
+        /** @type {HTMLElement[]} */
+        indicators: HTMLElement[];
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            pause: string;
+            keyboard: boolean;
+            touch: boolean;
+            interval: number;
+        };
         /**
          * Check if instance is paused.
          * @returns {boolean}
@@ -226,14 +236,21 @@ declare module "bootstrap.native/src/components/collapse-native" {
     /** Returns a new `Colapse` instance. */
     export default class Collapse extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target and `Element` that matches the selector
+         * @param {HTMLElement | string} target and `Element` that matches the selector
          * @param {BSN.Options.Collapse=} config instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.Collapse | undefined);
-        /** @type {(HTMLElement | Element)[]} */
-        triggers: (HTMLElement | Element)[];
-        /** @type {(HTMLElement | Element)?} */
-        parent: (HTMLElement | Element) | null;
+        constructor(target: HTMLElement | string, config?: BSN.Options.Collapse | undefined);
+        /** @type {HTMLElement[]} */
+        triggers: HTMLElement[];
+        /** @type {HTMLElement?} */
+        parent: HTMLElement | null;
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            parent: null;
+        };
         /** Toggles the visibility of the collapse. */
         toggle(): void;
         /** Hides the collapse. */
@@ -267,25 +284,33 @@ declare module "bootstrap.native/src/util/isEmptyAnchor" {
      * Checks if an *event.target* or its parent has an `href="#"` value.
      * We need to prevent jumping around onclick, don't we?
      *
-     * @param {HTMLElement | HTMLAnchorElement | EventTarget} element the target element
+     * @param {Node} element the target element
      * @returns {boolean} the query result
      */
-    export default function isEmptyAnchor(element: HTMLElement | HTMLAnchorElement | EventTarget): boolean;
+    export default function isEmptyAnchor(element: Node): boolean;
 }
 declare module "bootstrap.native/src/components/dropdown-native" {
     /** Returns a new Dropdown instance. */
     export default class Dropdown extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target Element or string selector
+         * @param {HTMLElement | string} target Element or string selector
          * @param {BSN.Options.Dropdown=} config the instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.Dropdown | undefined);
+        constructor(target: HTMLElement | string, config?: BSN.Options.Dropdown | undefined);
         /** @type {(Element | HTMLElement)} */
         parentElement: (Element | HTMLElement);
         /** @type {(Element | HTMLElement)} */
         menu: (Element | HTMLElement);
         /** @type {boolean} */
         open: boolean;
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            offset: number;
+            display: string;
+        };
         /** Shows/hides the dropdown menu to the user. */
         toggle(): void;
         /** Shows the dropdown menu to the user. */
@@ -314,11 +339,11 @@ declare module "bootstrap.native/src/util/getElementContainer" {
      * offsets computation similar to **floating-ui**.
      * @see https://github.com/floating-ui/floating-ui
      *
-     * @param {HTMLElement | Element} element the target
+     * @param {HTMLElement} element the target
      * @param {boolean=} getOffset when *true* it will return an `offsetParent`
-     * @returns {HTMLElement | HTMLBodyElement | Window | globalThis} the query result
+     * @returns {ParentNode | Window} the query result
      */
-    export default function getElementContainer(element: HTMLElement | Element, getOffset?: boolean | undefined): HTMLElement | HTMLBodyElement | Window | typeof globalThis;
+    export default function getElementContainer(element: HTMLElement, getOffset?: boolean | undefined): ParentNode | Window;
 }
 declare module "bootstrap.native/src/strings/fixedTopClass" {
     export default fixedTopClass;
@@ -352,24 +377,24 @@ declare module "bootstrap.native/src/util/scrollbar" {
     /**
      * Removes *padding* and *overflow* from the `<body>`
      * and all spacing from fixed items.
-     * @param {(HTMLElement | Element)=} element the target modal/offcanvas
+     * @param {HTMLElement=} element the target modal/offcanvas
      */
-    export function resetScrollbar(element?: (HTMLElement | Element) | undefined): void;
+    export function resetScrollbar(element?: HTMLElement | undefined): void;
     /**
      * Returns the scrollbar width if the body does overflow
      * the window.
-     * @param {(HTMLElement | Element)=} element
+     * @param {HTMLElement=} element
      * @returns {number} the value
      */
-    export function measureScrollbar(element?: (HTMLElement | Element) | undefined): number;
+    export function measureScrollbar(element?: HTMLElement | undefined): number;
     /**
      * Sets the `<body>` and fixed items style when modal / offcanvas
      * is shown to the user.
      *
-     * @param {HTMLElement | Element} element the target modal/offcanvas
+     * @param {HTMLElement} element the target modal/offcanvas
      * @param {boolean=} overflow body does overflow or not
      */
-    export function setScrollbar(element: HTMLElement | Element, overflow?: boolean | undefined): void;
+    export function setScrollbar(element: HTMLElement, overflow?: boolean | undefined): void;
 }
 declare module "bootstrap.native/src/strings/offcanvasString" {
     export default offcanvasString;
@@ -377,7 +402,7 @@ declare module "bootstrap.native/src/strings/offcanvasString" {
     const offcanvasString: string;
 }
 declare module "bootstrap.native/src/util/backdrop" {
-    export const overlay: HTMLDivElement;
+    export const overlay: any;
     export const offcanvasBackdropClass: string;
     export const modalBackdropClass: string;
     export const modalActiveSelector: string;
@@ -389,11 +414,11 @@ declare module "bootstrap.native/src/util/backdrop" {
     export function toggleOverlayType(isModal?: boolean | undefined): void;
     /**
      * Append the overlay to DOM.
-     * @param {HTMLElement | Element} container
+     * @param {HTMLElement} container
      * @param {boolean} hasFade
      * @param {boolean=} isModal
      */
-    export function appendOverlay(container: HTMLElement | Element, hasFade: boolean, isModal?: boolean | undefined): void;
+    export function appendOverlay(container: HTMLElement, hasFade: boolean, isModal?: boolean | undefined): void;
     /**
      * Shows the overlay to the user.
      */
@@ -404,54 +429,65 @@ declare module "bootstrap.native/src/util/backdrop" {
     export function hideOverlay(): void;
     /**
      * Returns the current active modal / offcancas element.
-     * @param {(HTMLElement | Element)=} element the context element
-     * @returns {(HTMLElement | Element)?} the requested element
+     * @param {HTMLElement=} element the context element
+     * @returns {HTMLElement?} the requested element
      */
-    export function getCurrentOpen(element?: (HTMLElement | Element) | undefined): (HTMLElement | Element) | null;
+    export function getCurrentOpen(element?: HTMLElement | undefined): HTMLElement | null;
     /**
      * Removes the overlay from DOM.
-     * @param {(HTMLElement | Element)=} element
+     * @param {HTMLElement=} element
      */
-    export function removeOverlay(element?: (HTMLElement | Element) | undefined): void;
+    export function removeOverlay(element?: HTMLElement | undefined): void;
 }
 declare module "bootstrap.native/src/util/isVisible" {
     /**
-     * @param {HTMLElement | Element} element target
+     * @param {HTMLElement} element target
      * @returns {boolean}
      */
-    export default function isVisible(element: HTMLElement | Element): boolean;
+    export default function isVisible(element: HTMLElement): boolean;
 }
 declare module "bootstrap.native/src/components/modal-native" {
     /** Returns a new `Modal` instance. */
     export default class Modal extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target usually the `.modal` element
+         * @param {HTMLElement | string} target usually the `.modal` element
          * @param {BSN.Options.Modal=} config instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.Modal | undefined);
-        /** @type {(HTMLElement | Element)} */
-        modalDialog: (HTMLElement | Element);
-        /** @type {(HTMLElement | Element)[]} */
-        triggers: (HTMLElement | Element)[];
+        constructor(target: HTMLElement | string, config?: BSN.Options.Modal | undefined);
+        /** @type {(HTMLElement)} */
+        modalDialog: (HTMLElement);
+        /** @type {(HTMLElement)[]} */
+        triggers: (HTMLElement)[];
         /** @type {boolean} */
         isStatic: boolean;
         /** @type {boolean} */
         hasFade: boolean;
-        /** @type {(HTMLElement | Element)?} */
-        relatedTarget: (HTMLElement | Element) | null;
-        /** @type {HTMLBodyElement | HTMLElement | Element} */
-        container: HTMLBodyElement | HTMLElement | Element;
-        /** Updates the modal layout. */
-        update(): void;
+        /** @type {HTMLElement?} */
+        relatedTarget: HTMLElement | null;
+        /** @type {HTMLBodyElement | HTMLElement} */
+        container: HTMLBodyElement | HTMLElement;
+        /**
+         * Updates the modal layout.
+         * @this {Modal} the modal instance
+         */
+        update(this: Modal): void;
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            backdrop: boolean;
+            keyboard: boolean;
+        };
         /** Toggles the visibility of the modal. */
         toggle(): void;
         /** Shows the modal to the user. */
         show(): void;
         /**
          * Hide the modal from the user.
-         * @param {boolean=} force when `true` it will skip animation
+         * @param {Function=} callback when defined it will skip animation
          */
-        hide(force?: boolean | undefined): void;
+        hide(callback?: Function | undefined): void;
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
@@ -464,25 +500,34 @@ declare module "bootstrap.native/src/components/offcanvas-native" {
     /** Returns a new `Offcanvas` instance. */
     export default class Offcanvas extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target usually an `.offcanvas` element
+         * @param {HTMLElement | string} target usually an `.offcanvas` element
          * @param {BSN.Options.Offcanvas=} config instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.Offcanvas | undefined);
-        /** @type {(HTMLElement | Element)[]} */
-        triggers: (HTMLElement | Element)[];
-        /** @type {HTMLBodyElement | HTMLElement | Element} */
-        container: HTMLBodyElement | HTMLElement | Element;
-        /** @type {(HTMLElement | Element)?} */
-        relatedTarget: (HTMLElement | Element) | null;
+        constructor(target: HTMLElement | string, config?: BSN.Options.Offcanvas | undefined);
+        /** @type {HTMLElement[]} */
+        triggers: HTMLElement[];
+        /** @type {HTMLBodyElement | HTMLElement} */
+        container: HTMLBodyElement | HTMLElement;
+        /** @type {HTMLElement?} */
+        relatedTarget: HTMLElement | null;
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            backdrop: boolean;
+            keyboard: boolean;
+            scroll: boolean;
+        };
         /** Shows or hides the offcanvas from the user. */
         toggle(): void;
         /** Shows the offcanvas to the user. */
         show(): void;
         /**
          * Hides the offcanvas from the user.
-         * @param {boolean=} force when `true` it will skip animation
+         * @param {Function=} callback when `true` it will skip animation
          */
-        hide(force?: boolean | undefined): void;
+        hide(callback?: Function | undefined): void;
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
@@ -511,7 +556,7 @@ declare module "bootstrap.native/src/util/getTipTemplate" {
     export default function getTipTemplate(tipType: string): string;
 }
 declare module "bootstrap.native/src/util/tipClassPositions" {
-    var _default: Record<string, string>;
+    const _default: Record<string, string>;
     export default _default;
 }
 declare module "bootstrap.native/src/util/styleTip" {
@@ -533,7 +578,7 @@ declare module "bootstrap.native/src/util/tooltipDefaults" {
         const sanitizeFn: ((c: string) => string) | null;
         const animation: boolean;
         const delay: number;
-        const container: (HTMLElement | Element) | null;
+        const container: HTMLElement | null;
     }
 }
 declare module "bootstrap.native/src/strings/dataOriginalTitle" {
@@ -553,36 +598,36 @@ declare module "bootstrap.native/src/util/setHtml" {
      * Append an existing `Element` to Popover / Tooltip component or HTML
      * markup string to be parsed & sanitized to be used as popover / tooltip content.
      *
-     * @param {HTMLElement | Element} element target
-     * @param {HTMLElement | Element | string} content the `Element` to append / string
-     * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
+     * @param {HTMLElement} element target
+     * @param {Node | string} content the `Element` to append / string
+     * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
      */
-    export default function setHtml(element: HTMLElement | Element, content: HTMLElement | Element | string, sanitizeFn: ReturnType<any>): void;
+    export default function setHtml(element: HTMLElement, content: Node | string, sanitizeFn: ReturnType<string>): void;
 }
 declare module "bootstrap.native/src/util/createTip" {
     /**
      * Creates a new tooltip / popover.
      *
-     * @param {BSN.Popover | BSN.Tooltip} self the `Popover` instance
+     * @param {BSN.Popover | BSN.Tooltip} self the `Tooltip` / `Popover` instance
      */
     export default function createTip(self: BSN.Popover | BSN.Tooltip): void;
 }
 declare module "bootstrap.native/src/util/isVisibleTip" {
     /**
-     * @param {(HTMLElement | Element)?} tip target
-     * @param {HTMLElement | ParentNode} container parent container
+     * @param {HTMLElement} tip target
+     * @param {ParentNode} container parent container
      * @returns {boolean}
      */
-    export default function isVisibleTip(tip: (HTMLElement | Element) | null, container: HTMLElement | ParentNode): boolean;
+    export default function isVisibleTip(tip: HTMLElement, container: ParentNode): boolean;
 }
 declare module "bootstrap.native/src/components/tooltip-native" {
     /** Creates a new `Tooltip` instance. */
     export default class Tooltip extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target the target element
+         * @param {HTMLElement | string} target the target element
          * @param {BSN.Options.Tooltip=} config the instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.Tooltip | undefined);
+        constructor(target: HTMLElement | string, config?: BSN.Options.Tooltip | undefined);
         /** @type {any} */
         tooltip: any;
         /** @type {any} */
@@ -598,34 +643,50 @@ declare module "bootstrap.native/src/components/tooltip-native" {
          * @this {Tooltip}
          * @param {TouchEvent} e the `Event` object
          */
-        handleTouch({ target }: TouchEvent): void;
+        handleTouch(this: Tooltip, { target }: TouchEvent): void;
         /**
          * Updates the tooltip position.
          *
          * @param {Event=} e the `Event` object
          * @this {Tooltip} the `Tooltip` instance
          */
-        update(e?: Event | undefined): void;
+        update(this: Tooltip, e?: Event | undefined): void;
         /**
          * Shows the tooltip.
          *
          * @param {Event=} e the `Event` object
          * @this {Tooltip}
          */
-        show(e?: Event | undefined): void;
+        show(this: Tooltip, e?: Event | undefined): void;
         /**
          * Hides the tooltip.
          *
-         * @this {Tooltip}
+         * @this {Tooltip} the Tooltip instance
+         * @param {Function=} callback the dispose callback
          */
-        hide(): void;
+        hide(this: Tooltip, callback?: Function | undefined): void;
         /**
          * Toggles the tooltip visibility.
          *
          * @param {Event=} e the `Event` object
          * @this {Tooltip} the instance
          */
-        toggle(e?: Event | undefined): void;
+        toggle(this: Tooltip, e?: Event | undefined): void;
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            template: string;
+            title: string | null;
+            customClass: string | null;
+            trigger: string;
+            placement: string | null;
+            sanitizeFn: ((c: string) => string) | null;
+            animation: boolean;
+            delay: number;
+            container: HTMLElement | null;
+        };
         /** Enables the tooltip. */
         enable(): void;
         /** Disables the tooltip. */
@@ -639,10 +700,33 @@ declare module "bootstrap.native/src/components/popover-native" {
     /** Returns a new `Popover` instance. */
     export default class Popover extends Tooltip {
         /**
-         * @param {HTMLElement | Element | string} target the target element
+         * @param {HTMLElement | string} target the target element
          * @param {BSN.Options.Popover=} config the instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.Popover | undefined);
+        constructor(target: HTMLElement | string, config?: BSN.Options.Popover | undefined);
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            /** @type {string} */
+            template: string;
+            /** @type {string} */
+            btnClose: string;
+            /** @type {boolean} */
+            dismissible: boolean;
+            /** @type {string?} */
+            content: string | null;
+            title: string | null;
+            customClass: string | null;
+            trigger: string;
+            placement: string | null;
+            sanitizeFn: ((c: string) => string) | null;
+            animation: boolean;
+            delay: number;
+            container: HTMLElement | null;
+        };
+        show(): void;
     }
     import Tooltip from "bootstrap.native/src/components/tooltip-native";
 }
@@ -660,30 +744,38 @@ declare module "bootstrap.native/src/components/scrollspy-native" {
     /** Returns a new `ScrollSpy` instance. */
     export default class ScrollSpy extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target the target element
+         * @param {HTMLElement | string} target the target element
          * @param {BSN.Options.ScrollSpy=} config the instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.ScrollSpy | undefined);
-        /** @type {(HTMLElement | Element)?} */
-        target: (HTMLElement | Element) | null;
-        /** @type {HTMLElement | Element | Window | globalThis} */
-        scrollTarget: HTMLElement | Element | Window | typeof globalThis;
+        constructor(target: HTMLElement | string, config?: BSN.Options.ScrollSpy | undefined);
+        /** @type {HTMLElement?} */
+        target: HTMLElement | null;
+        /** @type {HTMLElement | Window} */
+        scrollTarget: HTMLElement | Window;
         /** @type {number} */
         scrollTop: number;
         /** @type {number} */
         maxScroll: number;
         /** @type {number} */
         scrollHeight: number;
-        /** @type {(HTMLElement | Element)?} */
-        activeItem: (HTMLElement | Element) | null;
-        /** @type {(HTMLElement | Element)[]} */
-        items: (HTMLElement | Element)[];
+        /** @type {HTMLElement?} */
+        activeItem: HTMLElement | null;
+        /** @type {HTMLElement[]} */
+        items: HTMLElement[];
         /** @type {number} */
         itemsLength: number;
         /** @type {number[]} */
         offsets: number[];
         /** Updates all items. */
         refresh(): void;
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            offset: number;
+            target: null;
+        };
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
@@ -701,17 +793,17 @@ declare module "bootstrap.native/src/components/tab-native" {
     /** Creates a new `Tab` instance. */
     export default class Tab extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target the target element
+         * @param {HTMLElement | string} target the target element
          */
-        constructor(target: HTMLElement | Element | string);
-        /** @type {(HTMLElement | Element)?} */
-        nav: (HTMLElement | Element) | null;
-        /** @type {HTMLElement | Element} */
-        content: HTMLElement | Element;
-        /** @type {(HTMLElement | Element)?} */
-        tabContent: (HTMLElement | Element) | null;
-        /** @type {(HTMLElement | Element)?} */
-        dropdown: (HTMLElement | Element) | null;
+        constructor(target: HTMLElement | string);
+        /** @type {HTMLElement?} */
+        nav: HTMLElement | null;
+        /** @type {HTMLElement} */
+        content: HTMLElement;
+        /** @type {HTMLElement?} */
+        tabContent: HTMLElement | null;
+        /** @type {HTMLElement?} */
+        dropdown: HTMLElement | null;
         /** Shows the tab to the user. */
         show(): void;
     }
@@ -731,30 +823,39 @@ declare module "bootstrap.native/src/components/toast-native" {
     /** Creates a new `Toast` instance. */
     export default class Toast extends BaseComponent {
         /**
-         * @param {HTMLElement | Element | string} target the target `.toast` element
+         * @param {HTMLElement | string} target the target `.toast` element
          * @param {BSN.Options.Toast=} config the instance options
          */
-        constructor(target: HTMLElement | Element | string, config?: BSN.Options.Toast | undefined);
-        /** @type {(HTMLElement | Element)?} */
-        dismiss: (HTMLElement | Element) | null;
+        constructor(target: HTMLElement | string, config?: BSN.Options.Toast | undefined);
+        /** @type {HTMLElement?} */
+        dismiss: HTMLElement | null;
         /** Shows the toast. */
         show(): void;
         /** Hides the toast. */
         hide(): void;
+        /**
+         * Returns component default options.
+         * @readonly @static
+         */
+        readonly get defaults(): {
+            animation: boolean;
+            autohide: boolean;
+            delay: number;
+        };
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }
 declare module "bootstrap.native/src/util/init" {
     /**
      * Initialize all BSN components for a target container.
-     * @param {(Element | HTMLElement | Document)=} context parent `Element`
+     * @param {ParentNode=} context parent `Node`
      */
-    export function initCallback(context?: (Element | HTMLElement | Document) | undefined): void;
+    export function initCallback(context?: ParentNode | undefined): void;
     /**
      * Remove all BSN components for a target container.
-     * @param {(Element | HTMLElement | Document)=} context parent `Element`
+     * @param {ParentNode=} context parent `Node`
      */
-    export function removeDataAPI(context?: (Element | HTMLElement | Document) | undefined): void;
+    export function removeDataAPI(context?: ParentNode | undefined): void;
 }
 declare module "bootstrap.native/types/more/bsn" {
     export { default as Alert } from "bootstrap.native/src/components/alert-native";

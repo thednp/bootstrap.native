@@ -1,6 +1,5 @@
 export as namespace BSN;
 
-import './bsn';
 export {default as Alert} from "bootstrap.native/src/components/alert-native";
 export {default as Button} from "bootstrap.native/src/components/button-native";
 export {default as Carousel} from "bootstrap.native/src/components/carousel-native";
@@ -155,7 +154,3 @@ declare global {
     ): void;
   }
 }
-
-// dependency
-export * as SHORTER from "shorter-js";
-export * as EventListener from "event-listener.js";

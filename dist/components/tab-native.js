@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Tab v4.1.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Tab v4.2.0alpha1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -23,7 +23,7 @@
 
   /**
    * Shortcut for `HTMLElement.setAttribute()` method.
-   * @param  {HTMLElement | Element} element target element
+   * @param  {HTMLElement} element target element
    * @param  {string} attribute attribute name
    * @param  {string} value attribute value
    * @returns {void}
@@ -37,74 +37,90 @@
    *
    * @see https://stackoverflow.com/q/54520554/803358
    *
-   * @param {HTMLElement | Element} element Element to look into
+   * @param {HTMLElement} element Element to look into
    * @param {string} selector the selector name
-   * @return {(HTMLElement | Element)?} the query result
+   * @return {HTMLElement?} the query result
    */
   function closest(element, selector) {
     return element ? (element.closest(selector)
-      // @ts-ignore -- break out of `ShadowRoot`
+      // break out of `ShadowRoot`
       || closest(element.getRootNode().host, selector)) : null;
   }
 
   /**
+   * Checks if an object is a `Document`.
+   * @see https://dom.spec.whatwg.org/#node
+   *
+   * @param {any} object the target object
+   * @returns {boolean} the query result
+   */
+  const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+  /**
+   * Checks if an object is a `Node`.
+   *
+   * @param {any} node the target object
+   * @returns {boolean} the query result
+   */
+  const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    .some((x) => +element.nodeType === x)) || false;
+
+  /**
+   * Check if a target object is `Window`.
+   * => equivalent to `object instanceof Window`
+   *
+   * @param {any} object the target object
+   * @returns {boolean} the query result
+   */
+  const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
+
+  /**
    * Returns the `document` or the `#document` element.
    * @see https://github.com/floating-ui/floating-ui
-   * @param {(Node | HTMLElement | Element | globalThis)=} node
+   * @param {(ParentNode | Window)=} node
    * @returns {Document}
    */
   function getDocument(node) {
-    if (node instanceof HTMLElement) return node.ownerDocument;
-    if (node instanceof Window) return node.document;
+    if (isDocument(node)) return node;
+    if (isNode(node)) return node.ownerDocument;
+    if (isWindow(node)) return node.document;
     return window.document;
   }
-
-  /**
-   * A global array of possible `ParentNode`.
-   */
-  const parentNodes = [Document, Element, HTMLElement];
 
   /**
    * Shortcut for `HTMLElement.getElementsByClassName` method. Some `Node` elements
    * like `ShadowRoot` do not support `getElementsByClassName`.
    *
    * @param {string} selector the class name
-   * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
-   * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
+   * @param {ParentNode=} parent optional Element to look into
+   * @return {HTMLCollectionOf<HTMLElement>} the 'HTMLCollection'
    */
   function getElementsByClassName(selector, parent) {
-    const lookUp = parent && parentNodes.some((x) => parent instanceof x)
-      ? parent : getDocument();
+    const lookUp = isNode(parent) ? parent : getDocument();
     return lookUp.getElementsByClassName(selector);
   }
-
-  /**
-   * A global array with `Element` | `HTMLElement`.
-   */
-  const elementNodes = [Element, HTMLElement];
 
   /**
    * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
    * or find one that matches a selector.
    *
-   * @param {HTMLElement | Element | string} selector the input selector or target element
-   * @param {(HTMLElement | Element | Document)=} parent optional node to look into
-   * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
+   * @param {Node | string} selector the input selector or target element
+   * @param {ParentNode=} parent optional node to look into
+   * @return {HTMLElement?} the `HTMLElement` or `querySelector` result
    */
   function querySelector(selector, parent) {
-    const lookUp = parentNodes.some((x) => parent instanceof x)
-      ? parent : getDocument();
+    if (isNode(selector)) {
+      return selector;
+    }
+    const lookUp = isNode(parent) ? parent : getDocument();
 
-    // @ts-ignore
-    return elementNodes.some((x) => selector instanceof x)
-      // @ts-ignore
-      ? selector : lookUp.querySelector(selector);
+    return lookUp.querySelector(selector);
   }
 
   /**
    * Add class to `HTMLElement.classList`.
    *
-   * @param {HTMLElement | Element} element target
+   * @param {HTMLElement} element target
    * @param {string} classNAME to add
    * @returns {void}
    */
@@ -115,7 +131,7 @@
   /**
    * Check class in `HTMLElement.classList`.
    *
-   * @param {HTMLElement | Element} element target
+   * @param {HTMLElement} element target
    * @param {string} classNAME to check
    * @returns {boolean}
    */
@@ -126,7 +142,7 @@
   /**
    * Remove class from `HTMLElement.classList`.
    *
-   * @param {HTMLElement | Element} element target
+   * @param {HTMLElement} element target
    * @param {string} classNAME to remove
    * @returns {void}
    */
@@ -137,7 +153,7 @@
   /**
    * Shortcut for the `Element.dispatchEvent(Event)` method.
    *
-   * @param {HTMLElement | Element} element is the target
+   * @param {HTMLElement} element is the target
    * @param {Event} event is the `Event` object
    */
   const dispatchEvent = (element, event) => element.dispatchEvent(event);
@@ -168,34 +184,35 @@
    * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
    * throws a `ReferenceError`.
    *
-   * @param {HTMLElement | Element} element target
+   * @param {HTMLElement} element target
    * @param {string} property the css property
    * @return {string} the css property value
    */
   function getElementStyle(element, property) {
     const computedStyle = getComputedStyle(element);
 
-    // @ts-ignore -- must use camelcase strings,
+    // must use camelcase strings,
     // or non-camelcase strings with `getPropertyValue`
-    return property in computedStyle ? computedStyle[property] : '';
+    return property.includes('--')
+      ? computedStyle.getPropertyValue(property)
+      : computedStyle[property];
   }
 
   /**
    * Utility to get the computed `transitionDelay`
    * from Element in miliseconds.
    *
-   * @param {HTMLElement | Element} element target
+   * @param {HTMLElement} element target
    * @return {number} the value in miliseconds
    */
   function getElementTransitionDelay(element) {
     const propertyValue = getElementStyle(element, transitionProperty);
     const delayValue = getElementStyle(element, transitionDelay);
-
-    const delayScale = delayValue.includes('ms') ? 1 : 1000;
+    const delayScale = delayValue.includes('ms') ? /* istanbul ignore next */1 : 1000;
     const duration = propertyValue && propertyValue !== 'none'
       ? parseFloat(delayValue) * delayScale : 0;
 
-    return !Number.isNaN(duration) ? duration : 0;
+    return !Number.isNaN(duration) ? duration : /* istanbul ignore next */0;
   }
 
   /**
@@ -208,24 +225,24 @@
    * Utility to get the computed `transitionDuration`
    * from Element in miliseconds.
    *
-   * @param {HTMLElement | Element} element target
+   * @param {HTMLElement} element target
    * @return {number} the value in miliseconds
    */
   function getElementTransitionDuration(element) {
     const propertyValue = getElementStyle(element, transitionProperty);
     const durationValue = getElementStyle(element, transitionDuration);
-    const durationScale = durationValue.includes('ms') ? 1 : 1000;
+    const durationScale = durationValue.includes('ms') ? /* istanbul ignore next */1 : 1000;
     const duration = propertyValue && propertyValue !== 'none'
       ? parseFloat(durationValue) * durationScale : 0;
 
-    return !Number.isNaN(duration) ? duration : 0;
+    return !Number.isNaN(duration) ? duration : /* istanbul ignore next */0;
   }
 
   /**
    * Utility to make sure callbacks are consistently
    * called when transition ends.
    *
-   * @param {HTMLElement | Element} element target
+   * @param {HTMLElement} element target
    * @param {EventListener} handler `transitionend` callback
    */
   function emulateTransitionEnd(element, handler) {
@@ -240,6 +257,7 @@
        * @type {EventListener} e Event object
        */
       const transitionEndWrapper = (e) => {
+        /* istanbul ignore else */
         if (e.target === element) {
           handler.apply(element, [e]);
           element.removeEventListener(transitionEndEvent, transitionEndWrapper);
@@ -248,7 +266,8 @@
       };
       element.addEventListener(transitionEndEvent, transitionEndWrapper);
       setTimeout(() => {
-        if (!called) element.dispatchEvent(endEvent);
+        /* istanbul ignore next */
+        if (!called) dispatchEvent(element, endEvent);
       }, duration + delay + 17);
     } else {
       handler.apply(element, [endEvent]);
@@ -258,10 +277,9 @@
   /**
    * Utility to force re-paint of an `HTMLElement` target.
    *
-   * @param {HTMLElement | Element} element is the target
+   * @param {HTMLElement} element is the target
    * @return {number} the `Element.offsetHeight` value
    */
-  // @ts-ignore
   const reflow = (element) => element.offsetHeight;
 
   /**
@@ -271,7 +289,16 @@
    */
   const ObjectAssign = (obj, source) => Object.assign(obj, source);
 
-  /** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
+  /**
+   * Checks if an element is an `HTMLElement`.
+   * @see https://dom.spec.whatwg.org/#node
+   *
+   * @param {any} element the target object
+   * @returns {boolean} the query result
+   */
+  const isHTMLElement = (element) => (element && element.nodeType === 1) || false;
+
+  /** @type {Map<string, Map<HTMLElement, Record<string, any>>>} */
   const componentData = new Map();
   /**
    * An interface for web components background data.
@@ -280,27 +307,27 @@
   const Data = {
     /**
      * Sets web components data.
-     * @param {HTMLElement | Element | string} target target element
+     * @param {HTMLElement} element target element
      * @param {string} component the component's name or a unique key
      * @param {Record<string, any>} instance the component instance
      */
-    set: (target, component, instance) => {
-      const element = querySelector(target);
-      if (!element) return;
+    set: (element, component, instance) => {
+      if (!isHTMLElement(element)) return;
 
+      /* istanbul ignore else */
       if (!componentData.has(component)) {
         componentData.set(component, new Map());
       }
 
       const instanceMap = componentData.get(component);
-      // @ts-ignore - not undefined, but defined right above
+      // not undefined, but defined right above
       instanceMap.set(element, instance);
     },
 
     /**
      * Returns all instances for specified component.
      * @param {string} component the component's name or a unique key
-     * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
+     * @returns {Map<HTMLElement, Record<string, any>>?} all the component instances
      */
     getAllFor: (component) => {
       const instanceMap = componentData.get(component);
@@ -310,12 +337,12 @@
 
     /**
      * Returns the instance associated with the target.
-     * @param {HTMLElement | Element | string} target target element
+     * @param {HTMLElement} element target element
      * @param {string} component the component's name or a unique key
      * @returns {Record<string, any>?} the instance
      */
-    get: (target, component) => {
-      const element = querySelector(target);
+    get: (element, component) => {
+      if (!isHTMLElement(element) || !component) return null;
       const allForC = Data.getAllFor(component);
       const instance = element && allForC && allForC.get(element);
 
@@ -324,16 +351,16 @@
 
     /**
      * Removes web components data.
-     * @param {HTMLElement | Element | string} target target element
+     * @param {HTMLElement} element target element
      * @param {string} component the component's name or a unique key
      */
-    remove: (target, component) => {
-      const element = querySelector(target);
+    remove: (element, component) => {
       const instanceMap = componentData.get(component);
-      if (!instanceMap || !element) return;
+      if (!instanceMap || !isHTMLElement(element)) return;
 
       instanceMap.delete(element);
 
+      /* istanbul ignore else */
       if (instanceMap.size === 0) {
         componentData.delete(component);
       }
@@ -342,11 +369,11 @@
 
   /**
    * An alias for `Data.get()`.
-   * @type {SHORTER.getInstance<any>}
+   * @type {SHORTY.getInstance<any>}
    */
   const getInstance = (target, component) => Data.get(target, component);
 
-  /** @type {Map<HTMLElement | Element, any>} */
+  /** @type {Map<HTMLElement, any>} */
   const TimeCache = new Map();
   /**
    * An interface for one or more `TimerHandler`s per `Element`.
@@ -355,17 +382,17 @@
   const Timer = {
     /**
      * Sets a new timeout timer for an element, or element -> key association.
-     * @param {HTMLElement | Element | string} target target element
+     * @param {HTMLElement} element target element
      * @param {ReturnType<TimerHandler>} callback the callback
      * @param {number} delay the execution delay
      * @param {string=} key a unique key
      */
-    set: (target, callback, delay, key) => {
-      const element = querySelector(target);
+    set: (element, callback, delay, key) => {
+      if (!isHTMLElement(element)) return;
 
-      if (!element) return;
-
+      /* istanbul ignore else */
       if (key && key.length) {
+        /* istanbul ignore else */
         if (!TimeCache.has(element)) {
           TimeCache.set(element, new Map());
         }
@@ -378,38 +405,35 @@
 
     /**
      * Returns the timer associated with the target.
-     * @param {HTMLElement | Element | string} target target element
+     * @param {HTMLElement} element target element
      * @param {string=} key a unique
      * @returns {number?} the timer
      */
-    get: (target, key) => {
-      const element = querySelector(target);
-
-      if (!element) return null;
+    get: (element, key) => {
+      if (!isHTMLElement(element)) return null;
       const keyTimers = TimeCache.get(element);
 
       if (key && key.length && keyTimers && keyTimers.get) {
-        return keyTimers.get(key) || null;
+        return keyTimers.get(key) || /* istanbul ignore next */null;
       }
       return keyTimers || null;
     },
 
     /**
      * Clears the element's timer.
-     * @param {HTMLElement | Element | string} target target element
+     * @param {HTMLElement} element target element
      * @param {string=} key a unique key
      */
-    clear: (target, key) => {
-      const element = querySelector(target);
-
-      if (!element) return;
+    clear: (element, key) => {
+      if (!isHTMLElement(element)) return;
 
       if (key && key.length) {
         const keyTimers = TimeCache.get(element);
-
+        /* istanbul ignore else */
         if (keyTimers && keyTimers.get) {
           clearTimeout(keyTimers.get(key));
           keyTimers.delete(key);
+          /* istanbul ignore else */
           if (keyTimers.size === 0) {
             TimeCache.delete(element);
           }
@@ -425,13 +449,14 @@
    * Returns a namespaced `CustomEvent` specific to each component.
    * @param {string} EventType Event.type
    * @param {Record<string, any>=} config Event.options | Event.properties
-   * @returns {SHORTER.OriginalEvent} a new namespaced event
+   * @returns {SHORTY.OriginalEvent} a new namespaced event
    */
   function OriginalEvent(EventType, config) {
     const OriginalCustomEvent = new CustomEvent(EventType, {
       cancelable: true, bubbles: true,
     });
 
+    /* istanbul ignore else */
     if (config instanceof Object) {
       ObjectAssign(OriginalCustomEvent, config);
     }
@@ -565,7 +590,7 @@
 
   /**
    * Shortcut for `HTMLElement.getAttribute()` method.
-   * @param {HTMLElement | Element} element target element
+   * @param {HTMLElement} element target element
    * @param {string} attribute attribute name
    * @returns {string?} attribute value
    */
@@ -590,8 +615,8 @@
    * Returns the `Element` that THIS one targets
    * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
    *
-   * @param {HTMLElement | Element} element the target element
-   * @returns {(HTMLElement | Element)?} the query result
+   * @param {HTMLElement} element the target element
+   * @returns {HTMLElement?} the query result
    */
   function getTargetElement(element) {
     const targetAttr = [dataBsTarget, dataBsParent, dataBsContainer, 'href'];
@@ -619,20 +644,22 @@
    * @return {niceValue} the normalized value
    */
   function normalizeValue(value) {
-    if (value === 'true') { // boolean
+    if (['true', true].includes(value)) { // boolean
+    // if ('true' === value) { // boolean
       return true;
     }
 
-    if (value === 'false') { // boolean
+    if (['false', false].includes(value)) { // boolean
+    // if ('false' === value) { // boolean
       return false;
-    }
-
-    if (!Number.isNaN(+value)) { // number
-      return +value;
     }
 
     if (value === '' || value === 'null') { // null
       return null;
+    }
+
+    if (value !== '' && !Number.isNaN(+value)) { // number
+      return +value;
     }
 
     // string / function / HTMLElement / object
@@ -657,14 +684,13 @@
   /**
    * Utility to normalize component options.
    *
-   * @param {HTMLElement | Element} element target
+   * @param {HTMLElement} element target
    * @param {Record<string, any>} defaultOps component default options
    * @param {Record<string, any>} inputOps component instance options
    * @param {string=} ns component namespace
    * @return {Record<string, any>} normalized component options object
    */
   function normalizeOptions(element, defaultOps, inputOps, ns) {
-    // @ts-ignore -- our targets are always `HTMLElement`
     const data = { ...element.dataset };
     /** @type {Record<string, any>} */
     const normalOps = {};
@@ -685,6 +711,7 @@
     });
 
     ObjectKeys(defaultOps).forEach((k) => {
+      /* istanbul ignore else */
       if (k in inputOps) {
         normalOps[k] = inputOps[k];
       } else if (k in dataOps) {
@@ -699,7 +726,7 @@
     return normalOps;
   }
 
-  var version = "4.1.4";
+  var version = "4.2.0alpha1";
 
   const Version = version;
 
@@ -709,7 +736,7 @@
   /** Returns a new `BaseComponent` instance. */
   class BaseComponent {
     /**
-     * @param {HTMLElement | Element | string} target `Element` or selector string
+     * @param {HTMLElement | string} target `Element` or selector string
      * @param {BSN.ComponentOptions=} config component instance options
      */
     constructor(target, config) {
@@ -726,10 +753,11 @@
       const prevInstance = Data.get(element, self.name);
       if (prevInstance) prevInstance.dispose();
 
-      /** @type {HTMLElement | Element} */
+      /** @type {HTMLElement} */
       self.element = element;
 
-      if (self.defaults && Object.keys(self.defaults).length) {
+      /* istanbul ignore else */
+      if (self.defaults && ObjectKeys(self.defaults).length) {
         self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
       }
 
@@ -737,15 +765,17 @@
     }
 
     /* eslint-disable */
+    /* istanbul ignore next */
     /** @static */
     get version() { return Version; }
-    /* eslint-enable */
 
+    /* eslint-enable */
+    /* istanbul ignore next */
     /** @static */
     get name() { return this.constructor.name; }
 
+    /* istanbul ignore next */
     /** @static */
-    // @ts-ignore
     get defaults() { return this.constructor.defaults; }
 
     /**
@@ -754,7 +784,6 @@
     dispose() {
       const self = this;
       Data.remove(self.element, self.name);
-      // @ts-ignore
       ObjectKeys(self).forEach((prop) => { self[prop] = null; });
     }
   }
@@ -790,7 +819,7 @@
   /**
    * Stores the current active tab and its content
    * for a given `.nav` element.
-   * @type {Map<(HTMLElement | Element), any>}
+   * @type {Map<HTMLElement, any>}
    */
   const tabPrivate = new Map();
 
@@ -803,12 +832,13 @@
   function triggerTabEnd(self) {
     const { tabContent, nav } = self;
 
+    /* istanbul ignore else */
     if (tabContent && hasClass(tabContent, collapsingClass)) {
-      // @ts-ignore
       tabContent.style.height = '';
       removeClass(tabContent, collapsingClass);
     }
 
+    /* istanbul ignore else */
     if (nav) Timer.clear(nav);
   }
 
@@ -822,14 +852,15 @@
     } = self;
     const { tab } = nav && tabPrivate.get(nav);
 
-    if (tabContent && hasClass(nextContent, fadeClass)) { // height animation
+    /* istanbul ignore else */
+    if (tabContent && hasClass(nextContent, fadeClass)) {
       const { currentHeight, nextHeight } = tabPrivate.get(element);
       if (currentHeight === nextHeight) {
         triggerTabEnd(self);
       } else {
-        setTimeout(() => { // enables height animation
-          // @ts-ignore
-          tabContent.style.height = `${nextHeight}px`; // height animation
+        // enables height animation
+        setTimeout(() => {
+          tabContent.style.height = `${nextHeight}px`;
           reflow(tabContent);
           emulateTransitionEnd(tabContent, () => triggerTabEnd(self));
         }, 50);
@@ -851,11 +882,12 @@
     const { tab, content } = nav && tabPrivate.get(nav);
     let currentHeight = 0;
 
+    /* istanbul ignore else */
     if (tabContent && hasClass(nextContent, fadeClass)) {
       [content, nextContent].forEach((c) => {
         addClass(c, 'overflow-hidden');
       });
-      currentHeight = content.scrollHeight || 0;
+      currentHeight = content.scrollHeight || /* istanbul ignore next */0;
     }
 
     // update relatedTarget and dispatch event
@@ -867,12 +899,12 @@
     addClass(nextContent, activeClass);
     removeClass(content, activeClass);
 
+    /* istanbul ignore else */
     if (tabContent && hasClass(nextContent, fadeClass)) {
       const nextHeight = nextContent.scrollHeight;
       tabPrivate.set(element, { currentHeight, nextHeight });
 
       addClass(tabContent, collapsingClass);
-      // @ts-ignore -- height animation
       tabContent.style.height = `${currentHeight}px`;
       reflow(tabContent);
       [content, nextContent].forEach((c) => {
@@ -903,26 +935,24 @@
   function getActiveTab(self) {
     const { nav } = self;
 
-    // @ts-ignore
     const activeTabs = getElementsByClassName(activeClass, nav);
-    /** @type {(HTMLElement | Element)=} */
+    /** @type {(HTMLElement)=} */
     let tab;
+    /* istanbul ignore else */
     if (activeTabs.length === 1
-      // @ts-ignore
       && !dropdownMenuClasses.some((c) => hasClass(activeTabs[0].parentElement, c))) {
       [tab] = activeTabs;
     } else if (activeTabs.length > 1) {
       tab = activeTabs[activeTabs.length - 1];
     }
     const content = tab ? getTargetElement(tab) : null;
-    // @ts-ignore
     return { tab, content };
   }
 
   /**
    * Returns a parent dropdown.
-   * @param {HTMLElement | Element} element the `Tab` element
-   * @returns {(HTMLElement | Element)?} the parent dropdown
+   * @param {HTMLElement} element the `Tab` element
+   * @returns {HTMLElement?} the parent dropdown
    */
   function getParentDropdown(element) {
     const dropdown = closest(element, `.${dropdownMenuClasses.join(',.')}`);
@@ -943,11 +973,12 @@
   // =================
   /**
    * Handles the `click` event listener.
-   * @this {HTMLElement | Element}
+   * @this {HTMLElement}
    * @param {MouseEvent} e the `Event` object
    */
   function tabClickHandler(e) {
     const self = getTabInstance(this);
+    /* istanbul ignore next: must filter */
     if (!self) return;
     e.preventDefault();
 
@@ -959,7 +990,7 @@
   /** Creates a new `Tab` instance. */
   class Tab extends BaseComponent {
     /**
-     * @param {HTMLElement | Element | string} target the target element
+     * @param {HTMLElement | string} target the target element
      */
     constructor(target) {
       super(target);
@@ -976,15 +1007,15 @@
       const nav = closest(element, '.nav');
       const container = closest(content, '.tab-content');
 
-      /** @type {(HTMLElement | Element)?} */
+      /** @type {HTMLElement?} */
       self.nav = nav;
-      /** @type {HTMLElement | Element} */
+      /** @type {HTMLElement} */
       self.content = content;
-      /** @type {(HTMLElement | Element)?} */
+      /** @type {HTMLElement?} */
       self.tabContent = container;
 
       // event targets
-      /** @type {(HTMLElement | Element)?} */
+      /** @type {HTMLElement?} */
       self.dropdown = getParentDropdown(element);
 
       // show first Tab instance of none is shown
@@ -994,6 +1025,7 @@
         const firstTab = querySelector(tabSelector, nav);
         const firstTabContent = firstTab && getTargetElement(firstTab);
 
+        /* istanbul ignore else */
         if (firstTabContent) {
           addClass(firstTab, activeClass);
           addClass(firstTabContent, showClass);
@@ -1019,11 +1051,15 @@
     /** Shows the tab to the user. */
     show() {
       const self = this;
-      const { element, nav, dropdown } = self;
+      const {
+        element, content: nextContent, nav, dropdown,
+      } = self;
 
+      /* istanbul ignore else */
       if (!(nav && Timer.get(nav)) && !hasClass(element, activeClass)) {
         const { tab, content } = getActiveTab(self);
 
+        /* istanbul ignore else */
         if (nav) tabPrivate.set(nav, { tab, content });
 
         // update relatedTarget and dispatch
@@ -1040,16 +1076,21 @@
           removeClass(activeDropdown, activeClass);
         }
 
+        /* istanbul ignore else */
         if (nav) {
-          Timer.set(nav, () => {
+          const toggleTab = () => {
             removeClass(tab, activeClass);
             setAttribute(tab, ariaSelected, 'false');
             if (dropdown && !hasClass(dropdown, activeClass)) addClass(dropdown, activeClass);
-          }, 1);
+          };
+
+          if (hasClass(content, fadeClass) || hasClass(nextContent, fadeClass)) {
+            Timer.set(nav, toggleTab, 1);
+          } else toggleTab();
         }
 
+        removeClass(content, showClass);
         if (hasClass(content, fadeClass)) {
-          removeClass(content, showClass);
           emulateTransitionEnd(content, () => triggerTabHide(self));
         } else {
           triggerTabHide(self);

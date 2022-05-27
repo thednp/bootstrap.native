@@ -1,5 +1,5 @@
-# BSN stands for Native JavaScript for Bootstrap
-The faster, lighter and more compact set of JavaScript components for **Bootstrap 5** and **Bootstrap 4**, developed on modern ES6+ standards.
+# BSN
+The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, developed on modern ES6+ standards.
 The **bootstrap.native** library is available on npm, CDN and comes packed with build tools and lots of goodies.
 
 [![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg?style=flat-square)](https://www.npmjs.com/package/bootstrap.native)
@@ -9,7 +9,7 @@ The **bootstrap.native** library is available on npm, CDN and comes packed with 
 
  The library is around ***30Kb*** minified (V5 ***38Kb***) and around ***10Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">the demo</a> for components guidelines and examples, or the [Wiki/How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) on how to use the library or create custom builds.
 
-# BSN Wiki
+# Wiki
 Please check the `bootstrap.native` Wiki pages, they're updated with almost every new commit:
 * [Acknowledgements](https://github.com/thednp/bootstrap.native/wiki/Acknowledgements) - there are similarities and differences with the original jQuery plugins, good to know for maximizing your workflow.
 * [How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) - An in depth guide on how to use the library.
@@ -26,8 +26,8 @@ Please check the `bootstrap.native` Wiki pages, they're updated with almost ever
 * [FAQs](https://github.com/thednp/bootstrap.native/wiki/FAQs) - A short list of frequent asked questions regarding the use of the library.
 * [About](https://github.com/thednp/bootstrap.native/wiki/About) - Learn about the `bootstrap.native` project inception, goals and motivations.
 
-# BSN Contributors
+# Contributors
 * Full contributors list [here](https://github.com/thednp/bootstrap.native/graphs/contributors). Thanks!
 
-# BSN License
+# License
 The BSN library is released under the [MIT license](https://github.com/thednp/bootstrap.native/blob/master/LICENSE).

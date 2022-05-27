@@ -1,43 +1,45 @@
 /* Native JavaScript for Bootstrap 5 | Tooltip
 ---------------------------------------------- */
-import ariaDescribedBy from 'shorter-js/src/strings/ariaDescribedBy';
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import mousedownEvent from 'shorter-js/src/strings/mousedownEvent';
-import mouseenterEvent from 'shorter-js/src/strings/mouseenterEvent';
-import mouseleaveEvent from 'shorter-js/src/strings/mouseleaveEvent';
-import mousemoveEvent from 'shorter-js/src/strings/mousemoveEvent';
-import focusEvent from 'shorter-js/src/strings/focusEvent';
-import focusinEvent from 'shorter-js/src/strings/focusinEvent';
-import focusoutEvent from 'shorter-js/src/strings/focusoutEvent';
-import mousehoverEvent from 'shorter-js/src/strings/mousehoverEvent';
-import scrollEvent from 'shorter-js/src/strings/scrollEvent';
-import resizeEvent from 'shorter-js/src/strings/resizeEvent';
-import touchstartEvent from 'shorter-js/src/strings/touchstartEvent';
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import getAttribute from 'shorter-js/src/attr/getAttribute';
-import removeAttribute from 'shorter-js/src/attr/removeAttribute';
-import getWindow from 'shorter-js/src/get/getWindow';
-import getDocument from 'shorter-js/src/get/getDocument';
-import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
-import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
-import getUID from 'shorter-js/src/get/getUID';
-import closest from 'shorter-js/src/selectors/closest';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import { getInstance } from 'shorter-js/src/misc/data';
-import isMedia from 'shorter-js/src/is/isMedia';
-import isApple from 'shorter-js/src/boolean/isApple';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import Timer from 'shorter-js/src/misc/timer';
-import focus from 'shorter-js/src/misc/focus';
-import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
-import toLowerCase from 'shorter-js/src/misc/toLowerCase';
+import ariaDescribedBy from '@thednp/shorty/src/strings/ariaDescribedBy';
+import mouseclickEvent from '@thednp/shorty/src/strings/mouseclickEvent';
+import mousedownEvent from '@thednp/shorty/src/strings/mousedownEvent';
+import mouseenterEvent from '@thednp/shorty/src/strings/mouseenterEvent';
+import mouseleaveEvent from '@thednp/shorty/src/strings/mouseleaveEvent';
+import mousemoveEvent from '@thednp/shorty/src/strings/mousemoveEvent';
+import focusEvent from '@thednp/shorty/src/strings/focusEvent';
+import focusinEvent from '@thednp/shorty/src/strings/focusinEvent';
+import focusoutEvent from '@thednp/shorty/src/strings/focusoutEvent';
+import mousehoverEvent from '@thednp/shorty/src/strings/mousehoverEvent';
+import scrollEvent from '@thednp/shorty/src/strings/scrollEvent';
+import resizeEvent from '@thednp/shorty/src/strings/resizeEvent';
+import touchstartEvent from '@thednp/shorty/src/strings/touchstartEvent';
+import hasAttribute from '@thednp/shorty/src/attr/hasAttribute';
+import setAttribute from '@thednp/shorty/src/attr/setAttribute';
+import getAttribute from '@thednp/shorty/src/attr/getAttribute';
+import removeAttribute from '@thednp/shorty/src/attr/removeAttribute';
+import getWindow from '@thednp/shorty/src/get/getWindow';
+import getDocument from '@thednp/shorty/src/get/getDocument';
+import getDocumentBody from '@thednp/shorty/src/get/getDocumentBody';
+// import getElementTransitionDuration from '@thednp/shorty/src/get/getElementTransitionDuration';
+import getElementStyle from '@thednp/shorty/src/get/getElementStyle';
+import getUID from '@thednp/shorty/src/get/getUID';
+import closest from '@thednp/shorty/src/selectors/closest';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import addClass from '@thednp/shorty/src/class/addClass';
+import hasClass from '@thednp/shorty/src/class/hasClass';
+import removeClass from '@thednp/shorty/src/class/removeClass';
+import ObjectAssign from '@thednp/shorty/src/misc/ObjectAssign';
+import { getInstance } from '@thednp/shorty/src/misc/data';
+import isFunction from '@thednp/shorty/src/is/isFunction';
+import isMedia from '@thednp/shorty/src/is/isMedia';
+import isApple from '@thednp/shorty/src/boolean/isApple';
+import dispatchEvent from '@thednp/shorty/src/misc/dispatchEvent';
+import passiveHandler from '@thednp/shorty/src/misc/passiveHandler';
+import emulateTransitionEnd from '@thednp/shorty/src/misc/emulateTransitionEnd';
+import Timer from '@thednp/shorty/src/misc/timer';
+import focus from '@thednp/shorty/src/misc/focus';
+import OriginalEvent from '@thednp/shorty/src/misc/OriginalEvent';
+import toLowerCase from '@thednp/shorty/src/misc/toLowerCase';
 
 import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
@@ -94,14 +96,18 @@ function removeTooltip(self) {
  * Executes after the instance has been disposed.
  *
  * @param {Tooltip} self the `Tooltip` instance
+ * @param {Function=} callback the parent dispose callback
  */
-function disposeTooltipComplete(self) {
+function disposeTooltipComplete(self, callback) {
   const { element } = self;
   toggleTooltipHandlers(self);
 
-  if (element.hasAttribute(dataOriginalTitle) && self.name === tooltipString) {
+  /* istanbul ignore else */
+  if (hasAttribute(element, dataOriginalTitle) && self.name === tooltipComponent) {
     toggleTooltipTitle(self);
   }
+  /* istanbul ignore else */
+  if (callback) callback();
 }
 
 /**
@@ -116,9 +122,9 @@ function toggleTooltipAction(self, add) {
 
   action(getDocument(element), touchstartEvent, self.handleTouch, passiveHandler);
 
+  /* istanbul ignore else */
   if (!isMedia(element)) {
     [scrollEvent, resizeEvent].forEach((ev) => {
-      // @ts-ignore
       action(getWindow(element), ev, self.update, passiveHandler);
     });
   }
@@ -142,14 +148,16 @@ function tooltipShownAction(self) {
  * Executes after the tooltip was hidden to the user.
  *
  * @param {Tooltip} self the `Tooltip` instance
+ * @param {Function=} callback the dispose callback
  */
-function tooltipHiddenAction(self) {
+function tooltipHiddenAction(self, callback) {
   const { element } = self;
   const hiddenTooltipEvent = OriginalEvent(`hidden.bs.${toLowerCase(self.name)}`);
 
   toggleTooltipAction(self);
   removeTooltip(self);
   dispatchEvent(element, hiddenTooltipEvent);
+  if (isFunction(callback)) callback();
   Timer.clear(element, 'out');
 }
 
@@ -161,7 +169,7 @@ function tooltipHiddenAction(self) {
  */
 function toggleTooltipHandlers(self, add) {
   const action = add ? addListener : removeListener;
-  // @ts-ignore -- btn is only for dismissible popover
+  // btn is only for dismissible popover
   const { element, options, btn } = self;
   const { trigger, dismissible } = options;
 
@@ -178,10 +186,12 @@ function toggleTooltipHandlers(self, add) {
   }
 
   triggerOptions.forEach((tr) => {
+    /* istanbul ignore else */
     if (elemIsMedia || tr === mousehoverEvent) {
       action(element, mousedownEvent, self.show);
       action(element, mouseenterEvent, self.show);
 
+      /* istanbul ignore else */
       if (dismissible && btn) {
         action(btn, mouseclickEvent, self.hide);
       } else {
@@ -192,8 +202,12 @@ function toggleTooltipHandlers(self, add) {
       action(element, tr, (!dismissible ? self.toggle : self.show));
     } else if (tr === focusEvent) {
       action(element, focusinEvent, self.show);
+      /* istanbul ignore else */
       if (!dismissible) action(element, focusoutEvent, self.hide);
-      if (isApple) action(element, mouseclickEvent, () => focus(element));
+      /* istanbul ignore else */
+      if (isApple) {
+        action(element, mouseclickEvent, () => focus(element));
+      }
     }
   });
 }
@@ -212,11 +226,11 @@ function toggleTooltipOpenHandlers(self, add) {
   const parentModal = closest(element, `.${modalString}`);
   const parentOffcanvas = closest(element, `.${offcanvasString}`);
 
+  /* istanbul ignore else */
   if (!isMedia(element)) {
     const win = getWindow(element);
     const overflow = offsetHeight !== scrollHeight;
     const scrollTarget = overflow || offsetParent !== win ? container : win;
-    // @ts-ignore
     action(win, resizeEvent, self.update, passiveHandler);
     action(scrollTarget, scrollEvent, self.update, passiveHandler);
   }
@@ -238,7 +252,6 @@ function toggleTooltipTitle(self, content) {
   const { element } = self;
 
   setAttribute(element, titleAtt[content ? 0 : 1],
-    // @ts-ignore
     (content || getAttribute(element, titleAtt[0])));
   removeAttribute(element, titleAtt[content ? 1 : 0]);
 }
@@ -248,7 +261,7 @@ function toggleTooltipTitle(self, content) {
 /** Creates a new `Tooltip` instance. */
 export default class Tooltip extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target the target element
+   * @param {HTMLElement | string} target the target element
    * @param {BSN.Options.Tooltip=} config the instance options
    */
   constructor(target, config) {
@@ -261,6 +274,7 @@ export default class Tooltip extends BaseComponent {
     const tipString = isTooltip ? tooltipString : popoverString;
     const tipComponent = isTooltip ? tooltipComponent : popoverComponent;
 
+    /* istanbul ignore next: this is to set Popover too */
     getTooltipInstance = (elem) => getInstance(elem, tipComponent);
 
     // additional properties
@@ -268,7 +282,6 @@ export default class Tooltip extends BaseComponent {
     self.tooltip = {};
     if (!isTooltip) {
       /** @type {any?} */
-      // @ts-ignore
       self.btn = null;
     }
     /** @type {any} */
@@ -284,16 +297,19 @@ export default class Tooltip extends BaseComponent {
     const { options } = self;
 
     // invalidate
-    if ((!options.title && isTooltip) || (!isTooltip && !options.content)) return;
+    if ((!options.title && isTooltip) || (!isTooltip && !options.content)) {
+      // throw Error(`${this.name} Error: target has no content set.`);
+      return;
+    }
 
-    const container = querySelector(options.container);
+    const container = querySelector(options.container, getDocument(element));
     const idealContainer = getElementContainer(element);
 
     // bypass container option when its position is static/relative
     self.options.container = !container || (container
       && ['static', 'relative'].includes(getElementStyle(container, 'position')))
       ? idealContainer
-      : container || getDocumentBody(element);
+      : /* istanbul ignore next */container || getDocumentBody(element);
 
     // reset default options
     tooltipDefaults[titleAttr] = null;
@@ -306,7 +322,8 @@ export default class Tooltip extends BaseComponent {
     self.toggle = self.toggle.bind(self);
 
     // set title attributes and add event listeners
-    if (element.hasAttribute(titleAttr) && isTooltip) {
+    /* istanbul ignore else */
+    if (hasAttribute(element, titleAttr) && isTooltip) {
       toggleTooltipTitle(self, options.title);
     }
 
@@ -363,7 +380,9 @@ export default class Tooltip extends BaseComponent {
         self.update(e);
         toggleTooltipOpenHandlers(self, true);
 
+        /* istanbul ignore else */
         if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
+        /* istanbul ignore else */
         if (animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
         else tooltipShownAction(self);
       }, 17, 'in');
@@ -373,15 +392,17 @@ export default class Tooltip extends BaseComponent {
   /**
    * Hides the tooltip.
    *
-   * @this {Tooltip}
+   * @this {Tooltip} the Tooltip instance
+   * @param {Function=} callback the dispose callback
    */
-  hide() {
+  hide(callback) {
     const self = this;
     const { options, tooltip, element } = self;
     const { container, animation, delay } = options;
 
     Timer.clear(element, 'in');
 
+    /* istanbul ignore else */
     if (tooltip && isVisibleTip(tooltip, container)) {
       Timer.set(element, () => {
         const hideTooltipEvent = OriginalEvent(`hide.bs.${toLowerCase(self.name)}`);
@@ -389,12 +410,12 @@ export default class Tooltip extends BaseComponent {
 
         if (hideTooltipEvent.defaultPrevented) return;
 
-        // @ts-ignore
         removeClass(tooltip, showClass);
         toggleTooltipOpenHandlers(self);
 
-        if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(self));
-        else tooltipHiddenAction(self);
+        /* istanbul ignore else */
+        if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(self, callback));
+        else tooltipHiddenAction(self, callback);
       }, delay + 17, 'out');
     }
   }
@@ -406,7 +427,6 @@ export default class Tooltip extends BaseComponent {
    * @this {Tooltip} the `Tooltip` instance
    */
   update(e) {
-    // @ts-ignore
     styleTip(this, e);
   }
 
@@ -428,6 +448,7 @@ export default class Tooltip extends BaseComponent {
   enable() {
     const self = this;
     const { enabled } = self;
+    /* istanbul ignore else */
     if (!enabled) {
       toggleTooltipHandlers(self, true);
       self.enabled = !enabled;
@@ -438,17 +459,13 @@ export default class Tooltip extends BaseComponent {
   disable() {
     const self = this;
     const {
-      element, tooltip, options, enabled,
+      tooltip, options, enabled,
     } = self;
-    const { animation, container, delay } = options;
+    const { animation, container } = options;
+    /* istanbul ignore else */
     if (enabled) {
       if (isVisibleTip(tooltip, container) && animation) {
-        self.hide();
-
-        Timer.set(element, () => {
-          toggleTooltipHandlers(self);
-          Timer.clear(element, tooltipString);
-        }, getElementTransitionDuration(tooltip) + delay + 17, tooltipString);
+        self.hide(() => toggleTooltipHandlers(self));
       } else {
         toggleTooltipHandlers(self);
       }
@@ -471,8 +488,8 @@ export default class Tooltip extends BaseComponent {
   handleTouch({ target }) {
     const { tooltip, element } = this;
 
+    /* istanbul ignore next */
     if (tooltip.contains(target) || target === element
-      // @ts-ignore
       || (target && element.contains(target))) {
       // smile for ESLint
     } else {
@@ -484,15 +501,14 @@ export default class Tooltip extends BaseComponent {
   dispose() {
     const self = this;
     const { tooltip, options } = self;
+    const callback = () => disposeTooltipComplete(self, () => super.dispose());
 
     if (options.animation && isVisibleTip(tooltip, options.container)) {
-      options.delay = 0; // reset delay
-      self.hide();
-      emulateTransitionEnd(tooltip, () => disposeTooltipComplete(self));
+      self.options.delay = 0; // reset delay
+      self.hide(callback);
     } else {
-      disposeTooltipComplete(self);
+      callback();
     }
-    super.dispose();
   }
 }
 

@@ -1,21 +1,23 @@
 /* Native JavaScript for Bootstrap 5 | Collapse
 ----------------------------------------------- */
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import closest from 'shorter-js/src/selectors/closest';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
-import reflow from 'shorter-js/src/misc/reflow';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import ariaExpanded from 'shorter-js/src/strings/ariaExpanded';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import { getInstance } from 'shorter-js/src/misc/data';
-import Timer from 'shorter-js/src/misc/timer';
-import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
+import setAttribute from '@thednp/shorty/src/attr/setAttribute';
+import getDocument from '@thednp/shorty/src/get/getDocument';
+import closest from '@thednp/shorty/src/selectors/closest';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import querySelectorAll from '@thednp/shorty/src/selectors/querySelectorAll';
+import addClass from '@thednp/shorty/src/class/addClass';
+import hasClass from '@thednp/shorty/src/class/hasClass';
+import removeClass from '@thednp/shorty/src/class/removeClass';
+import mouseclickEvent from '@thednp/shorty/src/strings/mouseclickEvent';
+import ariaExpanded from '@thednp/shorty/src/strings/ariaExpanded';
+import emulateTransitionEnd from '@thednp/shorty/src/misc/emulateTransitionEnd';
+import reflow from '@thednp/shorty/src/misc/reflow';
+import ObjectAssign from '@thednp/shorty/src/misc/ObjectAssign';
+import dispatchEvent from '@thednp/shorty/src/misc/dispatchEvent';
+import setElementStyle from '@thednp/shorty/src/misc/setElementStyle';
+import { getInstance } from '@thednp/shorty/src/misc/data';
+import Timer from '@thednp/shorty/src/misc/timer';
+import OriginalEvent from '@thednp/shorty/src/misc/OriginalEvent';
 
 import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
@@ -75,8 +77,7 @@ function expandCollapse(self) {
   addClass(element, collapsingClass);
   removeClass(element, collapseString);
 
-  // @ts-ignore
-  element.style.height = `${element.scrollHeight}px`;
+  setElementStyle(element, { height: `${element.scrollHeight}px` });
 
   emulateTransitionEnd(element, () => {
     Timer.clear(element);
@@ -88,8 +89,7 @@ function expandCollapse(self) {
     addClass(element, collapseString);
     addClass(element, showClass);
 
-    // @ts-ignore
-    element.style.height = '';
+    setElementStyle(element, { height: '' });
 
     dispatchEvent(element, shownCollapseEvent);
   });
@@ -101,7 +101,6 @@ function expandCollapse(self) {
  */
 function collapseContent(self) {
   const {
-    // @ts-ignore
     element, parent, triggers,
   } = self;
 
@@ -112,19 +111,18 @@ function collapseContent(self) {
   Timer.set(element, () => {}, 17);
   if (parent) Timer.set(parent, () => {}, 17);
 
-  // @ts-ignore
-  element.style.height = `${element.scrollHeight}px`;
+  setElementStyle(element, { height: `${element.scrollHeight}px` });
 
   removeClass(element, collapseString);
   removeClass(element, showClass);
   addClass(element, collapsingClass);
 
   reflow(element);
-  // @ts-ignore
-  element.style.height = '0px';
+  setElementStyle(element, { height: '0px' });
 
   emulateTransitionEnd(element, () => {
     Timer.clear(element);
+    /* istanbul ignore else */
     if (parent) Timer.clear(parent);
 
     triggers.forEach((btn) => setAttribute(btn, ariaExpanded, 'false'));
@@ -132,8 +130,7 @@ function collapseContent(self) {
     removeClass(element, collapsingClass);
     addClass(element, collapseString);
 
-    // @ts-ignore
-    element.style.height = '';
+    setElementStyle(element, { height: '' });
 
     dispatchEvent(element, hiddenCollapseEvent);
   });
@@ -148,6 +145,7 @@ function toggleCollapseHandler(self, add) {
   const action = add ? addListener : removeListener;
   const { triggers } = self;
 
+  /* istanbul ignore else */
   if (triggers.length) {
     triggers.forEach((btn) => action(btn, mouseclickEvent, collapseClickHandler));
   }
@@ -160,10 +158,11 @@ function toggleCollapseHandler(self, add) {
  * @param {MouseEvent} e the `Event` object
  */
 function collapseClickHandler(e) {
-  const { target } = e; // @ts-ignore - our target is `HTMLElement`
+  const { target } = e; // our target is `HTMLElement`
   const trigger = target && closest(target, collapseToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getCollapseInstance(element);
+  /* istanbul ignore else */
   if (self) self.toggle();
 
   // event target is anchor link #398
@@ -176,7 +175,7 @@ function collapseClickHandler(e) {
 /** Returns a new `Colapse` instance. */
 export default class Collapse extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target and `Element` that matches the selector
+   * @param {HTMLElement | string} target and `Element` that matches the selector
    * @param {BSN.Options.Collapse=} config instance options
    */
   constructor(target, config) {
@@ -186,15 +185,16 @@ export default class Collapse extends BaseComponent {
 
     // initialization element
     const { element, options } = self;
+    const doc = getDocument(element);
 
     // set triggering elements
-    /** @type {(HTMLElement | Element)[]} */
-    self.triggers = [...querySelectorAll(collapseToggleSelector)]
+    /** @type {HTMLElement[]} */
+    self.triggers = [...querySelectorAll(collapseToggleSelector, doc)]
       .filter((btn) => getTargetElement(btn) === element);
 
     // set parent accordion
-    /** @type {(HTMLElement | Element)?} */
-    self.parent = querySelector(options.parent);
+    /** @type {HTMLElement?} */
+    self.parent = querySelector(options.parent, doc);
 
     // add event listeners
     toggleCollapseHandler(self, true);
@@ -229,6 +229,7 @@ export default class Collapse extends BaseComponent {
     if (Timer.get(element)) return;
 
     collapseContent(self);
+    /* istanbul ignore else */
     if (triggers.length) {
       triggers.forEach((btn) => addClass(btn, `${collapseString}d`));
     }
@@ -258,6 +259,7 @@ export default class Collapse extends BaseComponent {
       }
 
       expandCollapse(self);
+      /* istanbul ignore else */
       if (triggers.length) {
         triggers.forEach((btn) => removeClass(btn, `${collapseString}d`));
       }

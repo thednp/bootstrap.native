@@ -1,25 +1,30 @@
+import getWindow from '@thednp/shorty/src/get/getWindow';
+import isHTMLElement from '@thednp/shorty/src/is/isHTMLElement';
+import isString from '@thednp/shorty/src/is/isString';
+import isFunction from '@thednp/shorty/src/is/isFunction';
+
 /**
  * Append an existing `Element` to Popover / Tooltip component or HTML
  * markup string to be parsed & sanitized to be used as popover / tooltip content.
  *
- * @param {HTMLElement | Element} element target
- * @param {HTMLElement | Element | string} content the `Element` to append / string
- * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
+ * @param {HTMLElement} element target
+ * @param {Node | string} content the `Element` to append / string
+ * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
  */
 export default function setHtml(element, content, sanitizeFn) {
-  if (typeof content === 'string' && !content.length) return;
+  if (isString(content) && !content.length) return;
 
-  if (typeof content === 'string') {
+  if (isString(content)) {
     let dirty = content.trim(); // fixing #233
-    if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
+    if (isFunction(sanitizeFn)) dirty = sanitizeFn(dirty);
 
-    const domParser = new DOMParser();
+    const win = getWindow(element);
+    const domParser = new win.DOMParser();
     const tempDocument = domParser.parseFromString(dirty, 'text/html');
     const { body } = tempDocument;
     const method = body.children.length ? 'innerHTML' : 'innerText';
-    // @ts-ignore
     element[method] = body[method];
-  } else if (content instanceof HTMLElement) {
+  } else if (isHTMLElement(content)) {
     element.append(content);
   }
 }

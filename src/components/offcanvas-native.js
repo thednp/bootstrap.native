@@ -1,29 +1,29 @@
 /* Native JavaScript for Bootstrap 5 | OffCanvas
 ------------------------------------------------ */
-import ariaHidden from 'shorter-js/src/strings/ariaHidden';
-import ariaModal from 'shorter-js/src/strings/ariaModal';
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import keydownEvent from 'shorter-js/src/strings/keydownEvent';
-import keyEscape from 'shorter-js/src/strings/keyEscape';
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import removeAttribute from 'shorter-js/src/attr/removeAttribute';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import querySelectorAll from 'shorter-js/src/selectors/querySelectorAll';
-import closest from 'shorter-js/src/selectors/closest';
-import hasClass from 'shorter-js/src/class/hasClass';
-import addClass from 'shorter-js/src/class/addClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import getDocument from 'shorter-js/src/get/getDocument';
-import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
-import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
-import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import { getInstance } from 'shorter-js/src/misc/data';
-import focus from 'shorter-js/src/misc/focus';
-import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
-import setElementStyle from 'shorter-js/src/misc/setElementStyle';
+import ariaHidden from '@thednp/shorty/src/strings/ariaHidden';
+import ariaModal from '@thednp/shorty/src/strings/ariaModal';
+import mouseclickEvent from '@thednp/shorty/src/strings/mouseclickEvent';
+import keydownEvent from '@thednp/shorty/src/strings/keydownEvent';
+import keyEscape from '@thednp/shorty/src/strings/keyEscape';
+import setAttribute from '@thednp/shorty/src/attr/setAttribute';
+import removeAttribute from '@thednp/shorty/src/attr/removeAttribute';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import querySelectorAll from '@thednp/shorty/src/selectors/querySelectorAll';
+import closest from '@thednp/shorty/src/selectors/closest';
+import hasClass from '@thednp/shorty/src/class/hasClass';
+import addClass from '@thednp/shorty/src/class/addClass';
+import removeClass from '@thednp/shorty/src/class/removeClass';
+import getDocument from '@thednp/shorty/src/get/getDocument';
+import getDocumentElement from '@thednp/shorty/src/get/getDocumentElement';
+import getDocumentBody from '@thednp/shorty/src/get/getDocumentBody';
+import getElementTransitionDuration from '@thednp/shorty/src/get/getElementTransitionDuration';
+import dispatchEvent from '@thednp/shorty/src/misc/dispatchEvent';
+import emulateTransitionEnd from '@thednp/shorty/src/misc/emulateTransitionEnd';
+import ObjectAssign from '@thednp/shorty/src/misc/ObjectAssign';
+import { getInstance } from '@thednp/shorty/src/misc/data';
+import focus from '@thednp/shorty/src/misc/focus';
+import OriginalEvent from '@thednp/shorty/src/misc/OriginalEvent';
+import setElementStyle from '@thednp/shorty/src/misc/setElementStyle';
 
 import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
@@ -129,6 +129,7 @@ function toggleOffCanvasDismiss(self, add) {
 function beforeOffcanvasShow(self) {
   const { element, options } = self;
 
+  /* istanbul ignore else */
   if (!options.scroll) {
     setOffCanvasScrollbar(self);
     setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
@@ -145,18 +146,18 @@ function beforeOffcanvasShow(self) {
  * Executes before hiding the offcanvas.
  *
  * @param {Offcanvas} self the `Offcanvas` instance
+ * @param {Function=} callback the hide callback
  */
-function beforeOffcanvasHide(self) {
+function beforeOffcanvasHide(self, callback) {
   const { element, options } = self;
   const currentOpen = getCurrentOpen(element);
 
-  // @ts-ignore
   element.blur();
 
   if (!currentOpen && options.backdrop && hasClass(overlay, showClass)) {
     hideOverlay();
-    emulateTransitionEnd(overlay, () => hideOffcanvasComplete(self));
-  } else hideOffcanvasComplete(self);
+    emulateTransitionEnd(overlay, () => hideOffcanvasComplete(self, callback));
+  } else hideOffcanvasComplete(self, callback);
 }
 
 // OFFCANVAS EVENT HANDLERS
@@ -164,7 +165,7 @@ function beforeOffcanvasHide(self) {
 /**
  * Handles the `click` event listeners.
  *
- * @this {HTMLElement | Element}
+ * @this {HTMLElement}
  * @param {MouseEvent} e the `Event` object
  */
 function offcanvasTriggerHandler(e) {
@@ -172,9 +173,11 @@ function offcanvasTriggerHandler(e) {
   const element = trigger && getTargetElement(trigger);
   const self = element && getOffcanvasInstance(element);
 
+  /* istanbul ignore else */
   if (self) {
     self.relatedTarget = trigger;
     self.toggle();
+    /* istanbul ignore else */
     if (trigger && trigger.tagName === 'A') {
       e.preventDefault();
     }
@@ -184,35 +187,31 @@ function offcanvasTriggerHandler(e) {
 /**
  * Handles the event listeners that close the offcanvas.
  *
- * @this {Document}
  * @param {MouseEvent} e the `Event` object
  */
 function offcanvasDismissHandler(e) {
-  const element = querySelector(offcanvasActiveSelector, this);
-  if (!element) return;
-
+  const { target } = e;
+  const element = querySelector(offcanvasActiveSelector, getDocument(target));
   const offCanvasDismiss = querySelector(offcanvasDismissSelector, element);
   const self = getOffcanvasInstance(element);
 
+  /* istanbul ignore next: must have a filter */
   if (!self) return;
 
   const { options, triggers } = self;
-  const { target } = e;
-  // @ts-ignore -- `EventTarget` is `HTMLElement`
   const trigger = closest(target, offcanvasToggleSelector);
   const selection = getDocument(element).getSelection();
 
+  /* istanbul ignore else */
   if (!(selection && selection.toString().length)
-    // @ts-ignore
     && ((!element.contains(target) && options.backdrop
-    && (!trigger || (trigger && !triggers.includes(trigger))))
-    // @ts-ignore
+    && /* istanbul ignore next */(!trigger || (trigger && !triggers.includes(trigger))))
     || (offCanvasDismiss && offCanvasDismiss.contains(target)))) {
-    // @ts-ignore
     self.relatedTarget = offCanvasDismiss && offCanvasDismiss.contains(target)
       ? offCanvasDismiss : null;
     self.hide();
   }
+  /* istanbul ignore next */
   if (trigger && trigger.tagName === 'A') e.preventDefault();
 }
 
@@ -221,15 +220,17 @@ function offcanvasDismissHandler(e) {
  * to hide it when user type the `ESC` key.
  *
  * @param {KeyboardEvent} e the `Event` object
- * @this {Document}
  */
-function offcanvasKeyDismissHandler({ code }) {
-  const element = querySelector(offcanvasActiveSelector, this);
-  if (!element) return;
+function offcanvasKeyDismissHandler({ code, target }) {
+  const element = querySelector(offcanvasActiveSelector, getDocument(target));
 
   const self = getOffcanvasInstance(element);
 
-  if (self && self.options.keyboard && code === keyEscape) {
+  /* istanbul ignore next: must filter */
+  if (!self) return;
+
+  /* istanbul ignore else */
+  if (self.options.keyboard && code === keyEscape) {
     self.relatedTarget = null;
     self.hide();
   }
@@ -258,8 +259,9 @@ function showOffcanvasComplete(self) {
  * Handles the `transitionend` when hiding the offcanvas.
  *
  * @param {Offcanvas} self the `Offcanvas` instance
+ * @param {Function} callback the hide callback
  */
-function hideOffcanvasComplete(self) {
+function hideOffcanvasComplete(self, callback) {
   const { element, triggers } = self;
 
   setAttribute(element, ariaHidden, 'true');
@@ -268,6 +270,7 @@ function hideOffcanvasComplete(self) {
   setElementStyle(element, { visibility: '' });
 
   const visibleTrigger = showOffcanvasEvent.relatedTarget || triggers.find((x) => isVisible(x));
+  /* istanbul ignore else */
   if (visibleTrigger) focus(visibleTrigger);
 
   removeOverlay(element);
@@ -279,6 +282,8 @@ function hideOffcanvasComplete(self) {
   if (!getCurrentOpen(element)) {
     toggleOffCanvasDismiss(self);
   }
+  // callback
+  if (callback) callback();
 }
 
 // OFFCANVAS DEFINITION
@@ -286,7 +291,7 @@ function hideOffcanvasComplete(self) {
 /** Returns a new `Offcanvas` instance. */
 export default class Offcanvas extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target usually an `.offcanvas` element
+   * @param {HTMLElement | string} target usually an `.offcanvas` element
    * @param {BSN.Options.Offcanvas=} config instance options
    */
   constructor(target, config) {
@@ -297,15 +302,14 @@ export default class Offcanvas extends BaseComponent {
     const { element } = self;
 
     // all the triggering buttons
-    /** @type {(HTMLElement | Element)[]} */
-    self.triggers = [...querySelectorAll(offcanvasToggleSelector)]
+    /** @type {HTMLElement[]} */
+    self.triggers = [...querySelectorAll(offcanvasToggleSelector, getDocument(element))]
       .filter((btn) => getTargetElement(btn) === element);
 
     // additional instance property
-    /** @type {HTMLBodyElement | HTMLElement | Element} */
-    // @ts-ignore
+    /** @type {HTMLBodyElement | HTMLElement} */
     self.container = getElementContainer(element);
-    /** @type {(HTMLElement | Element)?} */
+    /** @type {HTMLElement?} */
     self.relatedTarget = null;
 
     // attach event listeners
@@ -353,7 +357,8 @@ export default class Offcanvas extends BaseComponent {
     const currentOpen = getCurrentOpen(element);
     if (currentOpen && currentOpen !== element) {
       const this1 = getOffcanvasInstance(currentOpen);
-      const that1 = this1 || getInstance(currentOpen, 'Modal');
+      const that1 = this1
+        || /* istanbul ignore next */getInstance(currentOpen, 'Modal');
       that1.hide();
     }
 
@@ -370,6 +375,7 @@ export default class Offcanvas extends BaseComponent {
       setTimeout(() => beforeOffcanvasShow(self), overlayDelay);
     } else {
       beforeOffcanvasShow(self);
+      /* istanbul ignore else */
       if (currentOpen && hasClass(overlay, showClass)) {
         hideOverlay();
       }
@@ -378,9 +384,9 @@ export default class Offcanvas extends BaseComponent {
 
   /**
    * Hides the offcanvas from the user.
-   * @param {boolean=} force when `true` it will skip animation
+   * @param {Function=} callback when `true` it will skip animation
    */
-  hide(force) {
+  hide(callback) {
     const self = this;
     const { element, relatedTarget } = self;
 
@@ -394,17 +400,16 @@ export default class Offcanvas extends BaseComponent {
     addClass(element, offcanvasTogglingClass);
     removeClass(element, showClass);
 
-    if (!force) {
-      emulateTransitionEnd(element, () => beforeOffcanvasHide(self));
-    } else beforeOffcanvasHide(self);
+    if (!callback) {
+      emulateTransitionEnd(element, () => beforeOffcanvasHide(self, callback));
+    } else beforeOffcanvasHide(self, callback);
   }
 
   /** Removes the `Offcanvas` from the target element. */
   dispose() {
     const self = this;
-    self.hide(true);
     toggleOffcanvasEvents(self);
-    super.dispose();
+    self.hide(() => super.dispose());
   }
 }
 

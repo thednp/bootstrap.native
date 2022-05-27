@@ -1,9 +1,11 @@
-import isRTL from 'shorter-js/src/is/isRTL';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import hasClass from 'shorter-js/src/class/hasClass';
-import addClass from 'shorter-js/src/class/addClass';
-import getDocument from 'shorter-js/src/get/getDocument';
+import isRTL from '@thednp/shorty/src/is/isRTL';
+import isHTMLElement from '@thednp/shorty/src/is/isHTMLElement';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import setAttribute from '@thednp/shorty/src/attr/setAttribute';
+import hasClass from '@thednp/shorty/src/class/hasClass';
+import addClass from '@thednp/shorty/src/class/addClass';
+import getDocument from '@thednp/shorty/src/get/getDocument';
+
 import tooltipComponent from '../strings/tooltipComponent';
 import tooltipString from '../strings/tooltipString';
 import popoverString from '../strings/popoverString';
@@ -14,7 +16,7 @@ import setHtml from './setHtml';
 /**
  * Creates a new tooltip / popover.
  *
- * @param {BSN.Popover | BSN.Tooltip} self the `Popover` instance
+ * @param {BSN.Popover | BSN.Tooltip} self the `Tooltip` / `Popover` instance
  */
 export default function createTip(self) {
   const { id, element, options } = self;
@@ -36,9 +38,9 @@ export default function createTip(self) {
   const placementClass = `bs-${tipString}-${tipPositions[placement]}`;
 
   // load template
-  /** @type {(HTMLElement | Element)?} */
+  /** @type {HTMLElement?} */
   let popoverTemplate;
-  if ([Element, HTMLElement].some((x) => template instanceof x)) {
+  if (isHTMLElement(template)) {
     popoverTemplate = template;
   } else {
     const htmlMarkup = getDocument(element).createElement('div');
@@ -47,7 +49,7 @@ export default function createTip(self) {
   }
 
   // set popover markup
-  self.tooltip = popoverTemplate && popoverTemplate.cloneNode(true);
+  self.tooltip = isHTMLElement(popoverTemplate) && popoverTemplate.cloneNode(true);
 
   const { tooltip } = self;
 
@@ -65,11 +67,11 @@ export default function createTip(self) {
   // set dismissible button
   if (dismissible) {
     if (title) {
-      if (title instanceof HTMLElement) setHtml(title, btnClose, sanitizeFn);
+      if (isHTMLElement(title)) setHtml(title, btnClose, sanitizeFn);
       else title += btnClose;
     } else {
       if (tooltipHeader) tooltipHeader.remove();
-      if (content instanceof HTMLElement) setHtml(content, btnClose, sanitizeFn);
+      if (isHTMLElement(content)) setHtml(content, btnClose, sanitizeFn);
       else content += btnClose;
     }
   }
@@ -79,7 +81,7 @@ export default function createTip(self) {
   if (!isTooltip) {
     if (title && tooltipHeader) setHtml(tooltipHeader, title, sanitizeFn);
     if (content && tooltipBody) setHtml(tooltipBody, content, sanitizeFn);
-    // @ts-ignore -- set btn
+    // set btn
     self.btn = querySelector('.btn-close', tooltip);
   } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
 

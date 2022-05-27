@@ -1,8 +1,7 @@
-import Data from 'shorter-js/src/misc/data';
-import ObjectKeys from 'shorter-js/src/misc/ObjectKeys';
-import parentNodes from 'shorter-js/src/selectors/parentNodes';
-import getElementsByTagName from 'shorter-js/src/selectors/getElementsByTagName';
-import matches from 'shorter-js/src/selectors/matches';
+import Data from '@thednp/shorty/src/misc/data';
+import ObjectKeys from '@thednp/shorty/src/misc/ObjectKeys';
+import getElementsByTagName from '@thednp/shorty/src/selectors/getElementsByTagName';
+import matches from '@thednp/shorty/src/selectors/matches';
 
 import { addListener } from '@thednp/event-listener/src/event-listener';
 
@@ -38,7 +37,7 @@ const componentsList = {
 /**
  * Initialize all matched `Element`s for one component.
  * @param {BSN.InitCallback<any>} callback
- * @param {NodeListOf<HTMLElement | Element> | (HTMLElement | Element)[]} collection
+ * @param {NodeList | Node[]} collection
  */
 function initComponentDataAPI(callback, collection) {
   [...collection].forEach((x) => callback(x));
@@ -47,7 +46,7 @@ function initComponentDataAPI(callback, collection) {
 /**
  * Remove one component from a target container element or all in the page.
  * @param {string} component the component name
- * @param {(Element | HTMLElement | Document)} context parent `Element`
+ * @param {ParentNode} context parent `Node`
  */
 function removeComponentDataAPI(component, context) {
   const compData = Data.getAllFor(component);
@@ -62,11 +61,10 @@ function removeComponentDataAPI(component, context) {
 
 /**
  * Initialize all BSN components for a target container.
- * @param {(Element | HTMLElement | Document)=} context parent `Element`
+ * @param {ParentNode=} context parent `Node`
  */
 export function initCallback(context) {
-  const lookUp = context && parentNodes.some((x) => context instanceof x)
-    ? context : undefined;
+  const lookUp = context && context.nodeName ? context : document;
   const elemCollection = [...getElementsByTagName('*', lookUp)];
 
   ObjectKeys(componentsList).forEach((comp) => {
@@ -77,11 +75,10 @@ export function initCallback(context) {
 
 /**
  * Remove all BSN components for a target container.
- * @param {(Element | HTMLElement | Document)=} context parent `Element`
+ * @param {ParentNode=} context parent `Node`
  */
 export function removeDataAPI(context) {
-  const lookUp = context && parentNodes.some((x) => context instanceof x)
-    ? context : document;
+  const lookUp = context && context.nodeName ? context : document;
 
   ObjectKeys(componentsList).forEach((comp) => {
     removeComponentDataAPI(comp, lookUp);

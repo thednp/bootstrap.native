@@ -18,7 +18,7 @@ const tooltipDefaults = {
   animation: true, // bool
   /** @type {number} */
   delay: 200, // number
-  /** @type {(HTMLElement | Element)?} */
+  /** @type {HTMLElement?} */
   container: null,
 };
 export default tooltipDefaults;

@@ -1,8 +1,10 @@
+import isHTMLElement from '@thednp/shorty/src/is/isHTMLElement';
+
 /**
- * @param {(HTMLElement | Element)?} tip target
- * @param {HTMLElement | ParentNode} container parent container
+ * @param {HTMLElement} tip target
+ * @param {ParentNode} container parent container
  * @returns {boolean}
  */
 export default function isVisibleTip(tip, container) {
-  return tip instanceof HTMLElement && container.contains(tip);
+  return isHTMLElement(tip) && container.contains(tip);
 }

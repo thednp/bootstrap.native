@@ -1,13 +1,13 @@
 /* Native JavaScript for Bootstrap 5 | Button
 ---------------------------------------------*/
-import ariaPressed from 'shorter-js/src/strings/ariaPressed';
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import { getInstance } from 'shorter-js/src/misc/data';
+import ariaPressed from '@thednp/shorty/src/strings/ariaPressed';
+import mouseclickEvent from '@thednp/shorty/src/strings/mouseclickEvent';
+import setAttribute from '@thednp/shorty/src/attr/setAttribute';
+import ObjectAssign from '@thednp/shorty/src/misc/ObjectAssign';
+import addClass from '@thednp/shorty/src/class/addClass';
+import hasClass from '@thednp/shorty/src/class/hasClass';
+import removeClass from '@thednp/shorty/src/class/removeClass';
+import { getInstance } from '@thednp/shorty/src/misc/data';
 
 import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
@@ -53,7 +53,7 @@ function toggleButtonHandler(self, add) {
 /** Creates a new `Button` instance. */
 export default class Button extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target usually a `.btn` element
+   * @param {HTMLElement | string} target usually a `.btn` element
    */
   constructor(target) {
     super(target);
@@ -87,19 +87,16 @@ export default class Button extends BaseComponent {
    */
   toggle(e) {
     if (e) e.preventDefault();
-    // @ts-ignore
     const self = e ? getButtonInstance(this) : this;
-    if (!self) return;
-    const { element } = self;
+    if (!self.element) return;
+    const { element, isActive } = self;
 
     if (hasClass(element, 'disabled')) return;
-    self.isActive = hasClass(element, activeClass);
-    const { isActive } = self;
 
     const action = isActive ? removeClass : addClass;
-
     action(element, activeClass);
     setAttribute(element, ariaPressed, isActive ? 'false' : 'true');
+    self.isActive = hasClass(element, activeClass);
   }
 
   /** Removes the `Button` component from the target element. */

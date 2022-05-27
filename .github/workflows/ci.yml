@@ -15,9 +15,9 @@ jobs:
       - uses: bahmutov/npm-install@v1
       - run: npm run lint:js
       - run: npm run build-esm
-      # - run: npm run test
+      - run: npm run test
 
-      # - name: Upload coverage report on Node 16 to coveralls.io...
-      #   uses: coverallsapp/github-action@v1.1.2
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload coverage report on Node 16 to coveralls.io...
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

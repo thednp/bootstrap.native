@@ -1,22 +1,24 @@
 /* Native JavaScript for Bootstrap 5 | ScrollSpy
 ------------------------------------------------ */
-import getAttribute from 'shorter-js/src/attr/getAttribute';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import getElementsByTagName from 'shorter-js/src/selectors/getElementsByTagName';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import getWindow from 'shorter-js/src/get/getWindow';
-import getDocument from 'shorter-js/src/get/getDocument';
-import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
-import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
-import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import scrollEvent from 'shorter-js/src/strings/scrollEvent';
-import { getInstance } from 'shorter-js/src/misc/data';
-import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
+import getAttribute from '@thednp/shorty/src/attr/getAttribute';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import getElementsByTagName from '@thednp/shorty/src/selectors/getElementsByTagName';
+import addClass from '@thednp/shorty/src/class/addClass';
+import hasClass from '@thednp/shorty/src/class/hasClass';
+import removeClass from '@thednp/shorty/src/class/removeClass';
+import getWindow from '@thednp/shorty/src/get/getWindow';
+import getDocument from '@thednp/shorty/src/get/getDocument';
+import getDocumentElement from '@thednp/shorty/src/get/getDocumentElement';
+import getDocumentBody from '@thednp/shorty/src/get/getDocumentBody';
+import getBoundingClientRect from '@thednp/shorty/src/get/getBoundingClientRect';
+import dispatchEvent from '@thednp/shorty/src/misc/dispatchEvent';
+import passiveHandler from '@thednp/shorty/src/misc/passiveHandler';
+import ObjectAssign from '@thednp/shorty/src/misc/ObjectAssign';
+import scrollEvent from '@thednp/shorty/src/strings/scrollEvent';
+import { getInstance } from '@thednp/shorty/src/misc/data';
+import OriginalEvent from '@thednp/shorty/src/misc/OriginalEvent';
+import isWindow from '@thednp/shorty/src/is/isWindow';
+import isHTMLElement from '@thednp/shorty/src/is/isHTMLElement';
 
 import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
@@ -66,12 +68,11 @@ function updateSpyTargets(self) {
     target, scrollTarget, options, itemsLength, scrollHeight, element,
   } = self;
   const { offset } = options;
-  const isWin = scrollTarget instanceof Window;
+  const isWin = isWindow(scrollTarget);
 
   const links = target && getElementsByTagName('A', target);
   const scrollHEIGHT = scrollTarget && getScrollHeight(scrollTarget);
 
-  // @ts-ignore
   self.scrollTop = isWin ? scrollTarget.scrollY : scrollTarget.scrollTop;
 
   // only update items/offsets once or with each mutation
@@ -94,7 +95,6 @@ function updateSpyTargets(self) {
       if (targetItem) {
         self.items.push(link);
         rect = getBoundingClientRect(targetItem);
-        // @ts-ignore
         self.offsets.push((isWin ? rect.top + self.scrollTop : targetItem.offsetTop) - offset);
       }
     });
@@ -104,12 +104,12 @@ function updateSpyTargets(self) {
 
 /**
  * Returns the `scrollHeight` property of the scrolling element.
- * @param {HTMLElement | Element | Window | globalThis} scrollTarget the `ScrollSpy` instance
+ * @param {Node | Window} scrollTarget the `ScrollSpy` instance
  * @return {number} `scrollTarget` height
  */
 function getScrollHeight(scrollTarget) {
-  return scrollTarget instanceof HTMLElement
-    ? scrollTarget.scrollHeight // @ts-ignore
+  return isHTMLElement(scrollTarget)
+    ? scrollTarget.scrollHeight
     : getDocumentElement(scrollTarget).scrollHeight;
 }
 
@@ -119,14 +119,14 @@ function getScrollHeight(scrollTarget) {
  * @returns {number}
  */
 function getOffsetHeight({ element, scrollTarget }) {
-  return (scrollTarget instanceof Window)
+  return (isWindow(scrollTarget))
     ? scrollTarget.innerHeight
     : getBoundingClientRect(element).height;
 }
 
 /**
  * Clear all items of the target.
- * @param {HTMLElement | Element} target a single item
+ * @param {HTMLElement} target a single item
  */
 function clear(target) {
   [...getElementsByTagName('A', target)].forEach((item) => {
@@ -137,13 +137,11 @@ function clear(target) {
 /**
  * Activates a new item.
  * @param {ScrollSpy} self the `ScrollSpy` instance
- * @param {HTMLElement | Element} item a single item
+ * @param {HTMLElement} item a single item
  */
 function activate(self, item) {
   const { target, element } = self;
-  // @ts-ignore
   clear(target);
-  // @ts-ignore
   self.activeItem = item;
   addClass(item, activeClass);
 
@@ -151,13 +149,12 @@ function activate(self, item) {
   const parents = [];
   let parentItem = item;
   while (parentItem !== getDocumentBody(element)) {
-    // @ts-ignore
     parentItem = parentItem.parentElement;
     if (hasClass(parentItem, 'nav') || hasClass(parentItem, 'dropdown-menu')) parents.push(parentItem);
   }
 
   parents.forEach((menuItem) => {
-    /** @type {(HTMLElement | Element)?} */
+    /** @type {HTMLElement?} */
     const parentLink = menuItem.previousElementSibling;
 
     if (parentLink && !hasClass(parentLink, activeClass)) {
@@ -177,7 +174,6 @@ function activate(self, item) {
  */
 function toggleSpyHandlers(self, add) {
   const action = add ? addListener : removeListener;
-  // @ts-ignore
   action(self.scrollTarget, scrollEvent, self.refresh, passiveHandler);
 }
 
@@ -186,7 +182,7 @@ function toggleSpyHandlers(self, add) {
 /** Returns a new `ScrollSpy` instance. */
 export default class ScrollSpy extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target the target element
+   * @param {HTMLElement | string} target the target element
    * @param {BSN.Options.ScrollSpy=} config the instance options
    */
   constructor(target, config) {
@@ -198,7 +194,7 @@ export default class ScrollSpy extends BaseComponent {
     const { element, options } = self;
 
     // additional properties
-    /** @type {(HTMLElement | Element)?} */
+    /** @type {HTMLElement?} */
     self.target = querySelector(options.target, getDocument(element));
 
     // invalidate
@@ -207,7 +203,7 @@ export default class ScrollSpy extends BaseComponent {
     const win = getWindow(element);
 
     // set initial state
-    /** @type {HTMLElement | Element | Window | globalThis} */
+    /** @type {HTMLElement | Window} */
     self.scrollTarget = element.clientHeight < element.scrollHeight ? element : win;
     /** @type {number} */
     self.scrollTop = 0;
@@ -215,9 +211,9 @@ export default class ScrollSpy extends BaseComponent {
     self.maxScroll = 0;
     /** @type {number} */
     self.scrollHeight = 0;
-    /** @type {(HTMLElement | Element)?} */
+    /** @type {HTMLElement?} */
     self.activeItem = null;
-    /** @type {(HTMLElement | Element)[]} */
+    /** @type {HTMLElement[]} */
     self.items = [];
     /** @type {number} */
     self.itemsLength = 0;
@@ -254,7 +250,6 @@ export default class ScrollSpy extends BaseComponent {
     const { target } = self;
 
     // check if target is visible and invalidate
-    // @ts-ignore
     if (target.offsetHeight === 0) return;
 
     updateSpyTargets(self);
@@ -276,7 +271,6 @@ export default class ScrollSpy extends BaseComponent {
 
     if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
       self.activeItem = null;
-      // @ts-ignore
       clear(target);
       return;
     }

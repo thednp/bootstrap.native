@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Carousel v4.1.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Carousel v4.2.0alpha1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -28,24 +28,6 @@ const mouseclickEvent = 'click';
 const keydownEvent = 'keydown';
 
 /**
- * A global namespace for `touchmove` event.
- * @type {string}
- */
-const touchmoveEvent = 'touchmove';
-
-/**
- * A global namespace for `touchend` event.
- * @type {string}
- */
-const touchendEvent = 'touchend';
-
-/**
- * A global namespace for `touchstart` event.
- * @type {string}
- */
-const touchstartEvent = 'touchstart';
-
-/**
  * A global namespace for `ArrowLeft` key.
  * @type {string} e.which = 37 equivalent
  */
@@ -58,35 +40,60 @@ const keyArrowLeft = 'ArrowLeft';
 const keyArrowRight = 'ArrowRight';
 
 /**
- * Returns the `Window` object of a target node.
- * @see https://github.com/floating-ui/floating-ui
- *
- * @param {(Node | HTMLElement | Element | Window)=} node target node
- * @returns {globalThis}
+ * A global namespace for `pointerdown` event.
+ * @type {string}
  */
-function getWindow(node) {
-  if (node == null) {
-    return window;
-  }
+const pointerdownEvent = 'pointerdown';
 
-  if (!(node instanceof Window)) {
-    const { ownerDocument } = node;
-    return ownerDocument ? ownerDocument.defaultView || window : window;
-  }
+/**
+ * A global namespace for `pointermove` event.
+ * @type {string}
+ */
+const pointermoveEvent = 'pointermove';
 
-  // @ts-ignore
-  return node;
-}
+/**
+ * A global namespace for `pointerup` event.
+ * @type {string}
+ */
+const pointerupEvent = 'pointerup';
+
+/**
+ * Checks if an object is a `Document`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+/**
+ * Checks if an object is a `Node`.
+ *
+ * @param {any} node the target object
+ * @returns {boolean} the query result
+ */
+const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  .some((x) => +element.nodeType === x)) || false;
+
+/**
+ * Check if a target object is `Window`.
+ * => equivalent to `object instanceof Window`
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
 
 /**
  * Returns the `document` or the `#document` element.
  * @see https://github.com/floating-ui/floating-ui
- * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @param {(ParentNode | Window)=} node
  * @returns {Document}
  */
 function getDocument(node) {
-  if (node instanceof HTMLElement) return node.ownerDocument;
-  if (node instanceof Window) return node.document;
+  if (isDocument(node)) return node;
+  if (isNode(node)) return node.ownerDocument;
+  if (isWindow(node)) return node.document;
   return window.document;
 }
 
@@ -110,43 +117,54 @@ const transitionProperty = 'transitionProperty';
  * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
  * throws a `ReferenceError`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} property the css property
  * @return {string} the css property value
  */
 function getElementStyle(element, property) {
   const computedStyle = getComputedStyle(element);
 
-  // @ts-ignore -- must use camelcase strings,
+  // must use camelcase strings,
   // or non-camelcase strings with `getPropertyValue`
-  return property in computedStyle ? computedStyle[property] : '';
+  return property.includes('--')
+    ? computedStyle.getPropertyValue(property)
+    : computedStyle[property];
 }
 
 /**
  * Utility to get the computed `transitionDuration`
  * from Element in miliseconds.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDuration(element) {
   const propertyValue = getElementStyle(element, transitionProperty);
   const durationValue = getElementStyle(element, transitionDuration);
-  const durationScale = durationValue.includes('ms') ? 1 : 1000;
+  const durationScale = durationValue.includes('ms') ? /* istanbul ignore next */1 : 1000;
   const duration = propertyValue && propertyValue !== 'none'
     ? parseFloat(durationValue) * durationScale : 0;
 
-  return !Number.isNaN(duration) ? duration : 0;
+  return !Number.isNaN(duration) ? duration : /* istanbul ignore next */0;
 }
+
+/**
+ * Checks if an element is an `HTMLElement`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} element the target object
+ * @returns {boolean} the query result
+ */
+const isHTMLElement = (element) => (element && element.nodeType === 1) || false;
 
 /**
  * Returns the bounding client rect of a target `HTMLElement`.
  *
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {HTMLElement | Element} element event.target
+ * @param {HTMLElement} element event.target
  * @param {boolean=} includeScale when *true*, the target scale is also computed
- * @returns {SHORTER.BoundingClientRect} the bounding client rect object
+ * @returns {SHORTY.BoundingClientRect} the bounding client rect object
  */
 function getBoundingClientRect(element, includeScale) {
   const {
@@ -155,10 +173,12 @@ function getBoundingClientRect(element, includeScale) {
   let scaleX = 1;
   let scaleY = 1;
 
-  if (includeScale && element instanceof HTMLElement) {
+  if (includeScale && isHTMLElement(element)) {
     const { offsetWidth, offsetHeight } = element;
-    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
-    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
+    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth
+      : /* istanbul ignore next */1;
+    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight
+      : /* istanbul ignore next */1;
   }
 
   return {
@@ -176,8 +196,8 @@ function getBoundingClientRect(element, includeScale) {
 /**
  * Returns the `document.documentElement` or the `<html>` element.
  *
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {HTMLElement | HTMLHtmlElement}
+ * @param {(ParentNode | Window)=} node
+ * @returns {HTMLHtmlElement}
  */
 function getDocumentElement(node) {
   return getDocument(node).documentElement;
@@ -187,19 +207,20 @@ function getDocumentElement(node) {
  * Utility to determine if an `HTMLElement`
  * is partially visible in viewport.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @return {boolean} the query result
  */
 const isElementInScrollRange = (element) => {
+  if (!element || !isNode(element)) return false;
+
   const { top, bottom } = getBoundingClientRect(element);
   const { clientHeight } = getDocumentElement(element);
-  // checks bottom && top
   return top <= clientHeight && bottom >= 0;
 };
 
 /**
  * Checks if a page is Right To Left.
- * @param {(HTMLElement | Element)=} node the target
+ * @param {HTMLElement=} node the target
  * @returns {boolean} the query result
  */
 const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
@@ -211,55 +232,42 @@ const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
  *
  * @see https://stackoverflow.com/q/54520554/803358
  *
- * @param {HTMLElement | Element} element Element to look into
+ * @param {HTMLElement} element Element to look into
  * @param {string} selector the selector name
- * @return {(HTMLElement | Element)?} the query result
+ * @return {HTMLElement?} the query result
  */
 function closest(element, selector) {
   return element ? (element.closest(selector)
-    // @ts-ignore -- break out of `ShadowRoot`
+    // break out of `ShadowRoot`
     || closest(element.getRootNode().host, selector)) : null;
 }
-
-/**
- * A global array of possible `ParentNode`.
- */
-const parentNodes = [Document, Element, HTMLElement];
-
-/**
- * A global array with `Element` | `HTMLElement`.
- */
-const elementNodes = [Element, HTMLElement];
 
 /**
  * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
  * or find one that matches a selector.
  *
- * @param {HTMLElement | Element | string} selector the input selector or target element
- * @param {(HTMLElement | Element | Document)=} parent optional node to look into
- * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
+ * @param {Node | string} selector the input selector or target element
+ * @param {ParentNode=} parent optional node to look into
+ * @return {HTMLElement?} the `HTMLElement` or `querySelector` result
  */
 function querySelector(selector, parent) {
-  const lookUp = parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
+  if (isNode(selector)) {
+    return selector;
+  }
+  const lookUp = isNode(parent) ? parent : getDocument();
 
-  // @ts-ignore
-  return elementNodes.some((x) => selector instanceof x)
-    // @ts-ignore
-    ? selector : lookUp.querySelector(selector);
+  return lookUp.querySelector(selector);
 }
 
 /**
  * A shortcut for `(document|Element).querySelectorAll`.
  *
  * @param {string} selector the input selector
- * @param {(HTMLElement | Element | Document | Node)=} parent optional node to look into
- * @return {NodeListOf<HTMLElement | Element>} the query result
+ * @param {ParentNode=} parent optional node to look into
+ * @return {NodeListOf<HTMLElement>} the query result
  */
 function querySelectorAll(selector, parent) {
-  const lookUp = parent && parentNodes
-    .some((x) => parent instanceof x) ? parent : getDocument();
-  // @ts-ignore -- `ShadowRoot` is also a node
+  const lookUp = isNode(parent) ? parent : getDocument();
   return lookUp.querySelectorAll(selector);
 }
 
@@ -268,24 +276,23 @@ function querySelectorAll(selector, parent) {
  * like `ShadowRoot` do not support `getElementsByClassName`.
  *
  * @param {string} selector the class name
- * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
- * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
+ * @param {ParentNode=} parent optional Element to look into
+ * @return {HTMLCollectionOf<HTMLElement>} the 'HTMLCollection'
  */
 function getElementsByClassName(selector, parent) {
-  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
+  const lookUp = isNode(parent) ? parent : getDocument();
   return lookUp.getElementsByClassName(selector);
 }
 
 /**
  * Shortcut for `HTMLElement.getAttribute()` method.
- * @param {HTMLElement | Element} element target element
+ * @param {HTMLElement} element target element
  * @param {string} attribute attribute name
  * @returns {string?} attribute value
  */
 const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
-/** @type {Map<HTMLElement | Element, any>} */
+/** @type {Map<HTMLElement, any>} */
 const TimeCache = new Map();
 /**
  * An interface for one or more `TimerHandler`s per `Element`.
@@ -294,17 +301,17 @@ const TimeCache = new Map();
 const Timer = {
   /**
    * Sets a new timeout timer for an element, or element -> key association.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {ReturnType<TimerHandler>} callback the callback
    * @param {number} delay the execution delay
    * @param {string=} key a unique key
    */
-  set: (target, callback, delay, key) => {
-    const element = querySelector(target);
+  set: (element, callback, delay, key) => {
+    if (!isHTMLElement(element)) return;
 
-    if (!element) return;
-
+    /* istanbul ignore else */
     if (key && key.length) {
+      /* istanbul ignore else */
       if (!TimeCache.has(element)) {
         TimeCache.set(element, new Map());
       }
@@ -317,38 +324,35 @@ const Timer = {
 
   /**
    * Returns the timer associated with the target.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string=} key a unique
    * @returns {number?} the timer
    */
-  get: (target, key) => {
-    const element = querySelector(target);
-
-    if (!element) return null;
+  get: (element, key) => {
+    if (!isHTMLElement(element)) return null;
     const keyTimers = TimeCache.get(element);
 
     if (key && key.length && keyTimers && keyTimers.get) {
-      return keyTimers.get(key) || null;
+      return keyTimers.get(key) || /* istanbul ignore next */null;
     }
     return keyTimers || null;
   },
 
   /**
    * Clears the element's timer.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string=} key a unique key
    */
-  clear: (target, key) => {
-    const element = querySelector(target);
-
-    if (!element) return;
+  clear: (element, key) => {
+    if (!isHTMLElement(element)) return;
 
     if (key && key.length) {
       const keyTimers = TimeCache.get(element);
-
+      /* istanbul ignore else */
       if (keyTimers && keyTimers.get) {
         clearTimeout(keyTimers.get(key));
         keyTimers.delete(key);
+        /* istanbul ignore else */
         if (keyTimers.size === 0) {
           TimeCache.delete(element);
         }
@@ -363,10 +367,9 @@ const Timer = {
 /**
  * Utility to force re-paint of an `HTMLElement` target.
  *
- * @param {HTMLElement | Element} element is the target
+ * @param {HTMLElement} element is the target
  * @return {number} the `Element.offsetHeight` value
  */
-// @ts-ignore
 const reflow = (element) => element.offsetHeight;
 
 /**
@@ -391,25 +394,32 @@ const transitionDelay = 'transitionDelay';
  * Utility to get the computed `transitionDelay`
  * from Element in miliseconds.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDelay(element) {
   const propertyValue = getElementStyle(element, transitionProperty);
   const delayValue = getElementStyle(element, transitionDelay);
-
-  const delayScale = delayValue.includes('ms') ? 1 : 1000;
+  const delayScale = delayValue.includes('ms') ? /* istanbul ignore next */1 : 1000;
   const duration = propertyValue && propertyValue !== 'none'
     ? parseFloat(delayValue) * delayScale : 0;
 
-  return !Number.isNaN(duration) ? duration : 0;
+  return !Number.isNaN(duration) ? duration : /* istanbul ignore next */0;
 }
+
+/**
+ * Shortcut for the `Element.dispatchEvent(Event)` method.
+ *
+ * @param {HTMLElement} element is the target
+ * @param {Event} event is the `Event` object
+ */
+const dispatchEvent = (element, event) => element.dispatchEvent(event);
 
 /**
  * Utility to make sure callbacks are consistently
  * called when transition ends.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {EventListener} handler `transitionend` callback
  */
 function emulateTransitionEnd(element, handler) {
@@ -424,6 +434,7 @@ function emulateTransitionEnd(element, handler) {
      * @type {EventListener} e Event object
      */
     const transitionEndWrapper = (e) => {
+      /* istanbul ignore else */
       if (e.target === element) {
         handler.apply(element, [e]);
         element.removeEventListener(transitionEndEvent, transitionEndWrapper);
@@ -432,7 +443,8 @@ function emulateTransitionEnd(element, handler) {
     };
     element.addEventListener(transitionEndEvent, transitionEndWrapper);
     setTimeout(() => {
-      if (!called) element.dispatchEvent(endEvent);
+      /* istanbul ignore next */
+      if (!called) dispatchEvent(element, endEvent);
     }, duration + delay + 17);
   } else {
     handler.apply(element, [endEvent]);
@@ -446,15 +458,7 @@ function emulateTransitionEnd(element, handler) {
  */
 const ObjectAssign = (obj, source) => Object.assign(obj, source);
 
-/**
- * Shortcut for the `Element.dispatchEvent(Event)` method.
- *
- * @param {HTMLElement | Element} element is the target
- * @param {Event} event is the `Event` object
- */
-const dispatchEvent = (element, event) => element.dispatchEvent(event);
-
-/** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
+/** @type {Map<string, Map<HTMLElement, Record<string, any>>>} */
 const componentData = new Map();
 /**
  * An interface for web components background data.
@@ -463,27 +467,27 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @param {Record<string, any>} instance the component instance
    */
-  set: (target, component, instance) => {
-    const element = querySelector(target);
-    if (!element) return;
+  set: (element, component, instance) => {
+    if (!isHTMLElement(element)) return;
 
+    /* istanbul ignore else */
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    // @ts-ignore - not undefined, but defined right above
+    // not undefined, but defined right above
     instanceMap.set(element, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
+   * @returns {Map<HTMLElement, Record<string, any>>?} all the component instances
    */
   getAllFor: (component) => {
     const instanceMap = componentData.get(component);
@@ -493,12 +497,12 @@ const Data = {
 
   /**
    * Returns the instance associated with the target.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @returns {Record<string, any>?} the instance
    */
-  get: (target, component) => {
-    const element = querySelector(target);
+  get: (element, component) => {
+    if (!isHTMLElement(element) || !component) return null;
     const allForC = Data.getAllFor(component);
     const instance = element && allForC && allForC.get(element);
 
@@ -507,16 +511,16 @@ const Data = {
 
   /**
    * Removes web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    */
-  remove: (target, component) => {
-    const element = querySelector(target);
+  remove: (element, component) => {
     const instanceMap = componentData.get(component);
-    if (!instanceMap || !element) return;
+    if (!instanceMap || !isHTMLElement(element)) return;
 
     instanceMap.delete(element);
 
+    /* istanbul ignore else */
     if (instanceMap.size === 0) {
       componentData.delete(component);
     }
@@ -525,7 +529,7 @@ const Data = {
 
 /**
  * An alias for `Data.get()`.
- * @type {SHORTER.getInstance<any>}
+ * @type {SHORTY.getInstance<any>}
  */
 const getInstance = (target, component) => Data.get(target, component);
 
@@ -533,13 +537,14 @@ const getInstance = (target, component) => Data.get(target, component);
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {SHORTER.OriginalEvent} a new namespaced event
+ * @returns {SHORTY.OriginalEvent} a new namespaced event
  */
 function OriginalEvent(EventType, config) {
   const OriginalCustomEvent = new CustomEvent(EventType, {
     cancelable: true, bubbles: true,
   });
 
+  /* istanbul ignore else */
   if (config instanceof Object) {
     ObjectAssign(OriginalCustomEvent, config);
   }
@@ -549,7 +554,7 @@ function OriginalEvent(EventType, config) {
 /**
  * Add class to `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to add
  * @returns {void}
  */
@@ -560,7 +565,7 @@ function addClass(element, classNAME) {
 /**
  * Check class in `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to check
  * @returns {boolean}
  */
@@ -571,7 +576,7 @@ function hasClass(element, classNAME) {
 /**
  * Remove class from `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to remove
  * @returns {void}
  */
@@ -697,8 +702,8 @@ const dataBsContainer = 'data-bs-container';
  * Returns the `Element` that THIS one targets
  * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
  *
- * @param {HTMLElement | Element} element the target element
- * @returns {(HTMLElement | Element)?} the query result
+ * @param {HTMLElement} element the target element
+ * @returns {HTMLElement?} the query result
  */
 function getTargetElement(element) {
   const targetAttr = [dataBsTarget, dataBsParent, dataBsContainer, 'href'];
@@ -726,20 +731,22 @@ function getTargetElement(element) {
  * @return {niceValue} the normalized value
  */
 function normalizeValue(value) {
-  if (value === 'true') { // boolean
+  if (['true', true].includes(value)) { // boolean
+  // if ('true' === value) { // boolean
     return true;
   }
 
-  if (value === 'false') { // boolean
+  if (['false', false].includes(value)) { // boolean
+  // if ('false' === value) { // boolean
     return false;
-  }
-
-  if (!Number.isNaN(+value)) { // number
-    return +value;
   }
 
   if (value === '' || value === 'null') { // null
     return null;
+  }
+
+  if (value !== '' && !Number.isNaN(+value)) { // number
+    return +value;
   }
 
   // string / function / HTMLElement / object
@@ -764,14 +771,13 @@ const toLowerCase = (source) => source.toLowerCase();
 /**
  * Utility to normalize component options.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {Record<string, any>} defaultOps component default options
  * @param {Record<string, any>} inputOps component instance options
  * @param {string=} ns component namespace
  * @return {Record<string, any>} normalized component options object
  */
 function normalizeOptions(element, defaultOps, inputOps, ns) {
-  // @ts-ignore -- our targets are always `HTMLElement`
   const data = { ...element.dataset };
   /** @type {Record<string, any>} */
   const normalOps = {};
@@ -792,6 +798,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   });
 
   ObjectKeys(defaultOps).forEach((k) => {
+    /* istanbul ignore else */
     if (k in inputOps) {
       normalOps[k] = inputOps[k];
     } else if (k in dataOps) {
@@ -806,7 +813,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.4";
+var version = "4.2.0alpha1";
 
 const Version = version;
 
@@ -816,7 +823,7 @@ const Version = version;
 /** Returns a new `BaseComponent` instance. */
 class BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target `Element` or selector string
+   * @param {HTMLElement | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
@@ -833,10 +840,11 @@ class BaseComponent {
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {HTMLElement | Element} */
+    /** @type {HTMLElement} */
     self.element = element;
 
-    if (self.defaults && Object.keys(self.defaults).length) {
+    /* istanbul ignore else */
+    if (self.defaults && ObjectKeys(self.defaults).length) {
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
@@ -844,15 +852,17 @@ class BaseComponent {
   }
 
   /* eslint-disable */
+  /* istanbul ignore next */
   /** @static */
   get version() { return Version; }
-  /* eslint-enable */
 
+  /* eslint-enable */
+  /* istanbul ignore next */
   /** @static */
   get name() { return this.constructor.name; }
 
+  /* istanbul ignore next */
   /** @static */
-  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -861,7 +871,6 @@ class BaseComponent {
   dispose() {
     const self = this;
     Data.remove(self.element, self.name);
-    // @ts-ignore
     ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -919,6 +928,7 @@ function carouselTransitionEndHandler(self) {
   } = self;
 
   // discontinue disposed instances
+  /* istanbul ignore else */
   if (self.isAnimating && getCarouselInstance(element)) {
     const activeItem = getActiveIndex(self);
     const orientation = direction === 'left' ? 'next' : 'prev';
@@ -943,30 +953,30 @@ function carouselTransitionEndHandler(self) {
 }
 
 /**
- * Handles the `mouseenter` / `touchstart` events when *options.pause*
+ * Handles the `mouseenter` events when *options.pause*
  * is set to `hover`.
  *
- * @this {HTMLElement | Element}
+ * @this {HTMLElement}
  */
 function carouselPauseHandler() {
   const element = this;
   const self = getCarouselInstance(element);
-
+  /* istanbul ignore else */
   if (self && !self.isPaused && !Timer.get(element, pausedClass)) {
     addClass(element, pausedClass);
   }
 }
 
 /**
- * Handles the `mouseleave` / `touchend` events when *options.pause*
+ * Handles the `mouseleave` events when *options.pause*
  * is set to `hover`.
  *
- * @this {HTMLElement | Element}
+ * @this {HTMLElement}
  */
 function carouselResumeHandler() {
   const element = this;
   const self = getCarouselInstance(element);
-
+  /* istanbul ignore else */
   if (self && self.isPaused && !Timer.get(element, pausedClass)) {
     self.cycle();
   }
@@ -982,12 +992,10 @@ function carouselIndicatorHandler(e) {
   e.preventDefault();
   const indicator = this;
   const element = closest(indicator, carouselSelector) || getTargetElement(indicator);
-  if (!element) return;
   const self = getCarouselInstance(element);
 
   if (!self || self.isAnimating) return;
 
-  // @ts-ignore
   const newIndex = +getAttribute(indicator, dataBsSlideTo);
 
   if (indicator && !hasClass(indicator, activeClass) // event target is not active
@@ -1006,10 +1014,12 @@ function carouselControlsHandler(e) {
   e.preventDefault();
   const control = this;
   const element = closest(control, carouselSelector) || getTargetElement(control);
-  const self = element && getCarouselInstance(element);
+  const self = getCarouselInstance(element);
+
   if (!self || self.isAnimating) return;
   const orientation = getAttribute(control, dataBsSlide);
 
+  /* istanbul ignore else */
   if (orientation === 'next') {
     self.next();
   } else if (orientation === 'prev') {
@@ -1022,16 +1032,19 @@ function carouselControlsHandler(e) {
  *
  * @param {KeyboardEvent} e the `Event` object
  */
-function carouselKeyHandler({ code }) {
-  const [element] = [...querySelectorAll(carouselSelector)]
+function carouselKeyHandler({ code, target }) {
+  const doc = getDocument(target);
+  const [element] = [...querySelectorAll(carouselSelector, doc)]
     .filter((x) => isElementInScrollRange(x));
-
   const self = getCarouselInstance(element);
-  if (!self) return;
-  const RTL = isRTL();
+
+  /* istanbul ignore next */
+  if (!self || self.isAnimating || /textarea|input/i.test(target.tagName)) return;
+  const RTL = isRTL(element);
   const arrowKeyNext = !RTL ? keyArrowRight : keyArrowLeft;
   const arrowKeyPrev = !RTL ? keyArrowLeft : keyArrowRight;
 
+  /* istanbul ignore else */
   if (code === arrowKeyPrev) self.prev();
   else if (code === arrowKeyNext) self.next();
 }
@@ -1039,80 +1052,95 @@ function carouselKeyHandler({ code }) {
 // CAROUSEL TOUCH HANDLERS
 // =======================
 /**
- * Handles the `touchdown` event for the `Carousel` element.
+ * Handles the `pointerdown` event for the `Carousel` element.
  *
- * @this {HTMLElement | Element}
- * @param {TouchEvent} e the `Event` object
+ * @this {HTMLElement}
+ * @param {PointerEvent} e the `Event` object
  */
-function carouselTouchDownHandler(e) {
+function carouselPointerDownHandler(e) {
   const element = this;
+  const { target } = e;
   const self = getCarouselInstance(element);
 
-  if (!self || self.isTouch) { return; }
+  // filter pointer event on controls & indicators
+  const { controls, indicators } = self;
+  if ([...controls, ...indicators].some((el) => (el === target || el.contains(target)))) {
+    return;
+  }
 
-  startX = e.changedTouches[0].pageX;
+  if (!self || self.isAnimating || self.isTouch) { return; }
 
-  // @ts-ignore
-  if (element.contains(e.target)) {
+  startX = e.pageX;
+
+  /* istanbul ignore else */
+  if (element.contains(target)) {
     self.isTouch = true;
     toggleCarouselTouchHandlers(self, true);
   }
 }
 
 /**
- * Handles the `touchmove` event for the `Carousel` element.
+ * Handles the `pointermove` event for the `Carousel` element.
  *
- * @this {HTMLElement | Element}
- * @param {TouchEvent} e
+ * @this {HTMLElement}
+ * @param {PointerEvent} e
  */
-function carouselTouchMoveHandler(e) {
-  const { changedTouches, type } = e;
-  const self = getCarouselInstance(this);
+function carouselPointerMoveHandler(e) {
+  // const self = getCarouselInstance(this);
 
-  if (!self || !self.isTouch) { return; }
+  // if (!self || !self.isTouch) { return; }
 
-  currentX = changedTouches[0].pageX;
-
-  // cancel touch if more than one changedTouches detected
-  if (type === touchmoveEvent && changedTouches.length > 1) {
-    e.preventDefault();
-  }
+  currentX = e.pageX;
 }
 
 /**
- * Handles the `touchend` event for the `Carousel` element.
+ * Handles the `pointerup` event for the `Carousel` element.
  *
- * @this {HTMLElement | Element}
+ * @this {HTMLElement}
 
- * @param {TouchEvent} e
+ * @param {PointerEvent} e
  */
-function carouselTouchEndHandler(e) {
-  const element = this;
-  const self = getCarouselInstance(element);
+function carouselPointerUpHandler(e) {
+  const { target } = e;
+  const doc = getDocument(target);
+  const self = [...querySelectorAll(carouselSelector, doc)]
+    .map((c) => getCarouselInstance(c)).find((i) => i.isTouch);
 
-  if (!self || !self.isTouch) { return; }
+  // impossible to satisfy
+  /* istanbul ignore next */
+  if (!self) { return; }
 
-  endX = currentX || e.changedTouches[0].pageX;
+  const { element, index } = self;
+  const RTL = isRTL(target);
 
-  if (self.isTouch) {
-    // the event target is outside the carousel OR carousel doens't include the related target
-    // @ts-ignore
-    if ((!element.contains(e.target) || !element.contains(e.relatedTarget))
-      && Math.abs(startX - endX) < 75) { // AND swipe distance is less than 75px
-      // when the above conditions are satisfied, no need to continue
-      return;
-    } // OR determine next index to slide to
-    if (currentX < startX) {
-      self.index += 1;
-    } else if (currentX > startX) {
-      self.index -= 1;
-    }
+  self.isTouch = false;
+  toggleCarouselTouchHandlers(self);
 
-    self.isTouch = false;
-    self.to(self.index); // do the slide
-
-    toggleCarouselTouchHandlers(self); // remove touch events handlers
+  if (doc.getSelection().toString().length) {
+    // reset pointer position
+    startX = 0; currentX = 0; endX = 0;
+    return;
   }
+
+  endX = e.pageX;
+
+  // the event target is outside the carousel context
+  // OR swipe distance is less than 120px
+  /* istanbul ignore else */
+  if (!element.contains(target) || Math.abs(startX - endX) < 120) {
+    // reset pointer position
+    startX = 0; currentX = 0; endX = 0;
+    return;
+  }
+  // OR determine next index to slide to
+  /* istanbul ignore else */
+  if (currentX < startX) {
+    self.to(index + (RTL ? -1 : 1));
+  } else if (currentX > startX) {
+    self.to(index + (RTL ? 1 : -1));
+  }
+  // reset pointer position
+  startX = 0; currentX = 0; endX = 0;
 }
 
 // CAROUSEL PRIVATE METHODS
@@ -1126,19 +1154,20 @@ function activateCarouselIndicator(self, pageIndex) {
   const { indicators } = self;
   [...indicators].forEach((x) => removeClass(x, activeClass));
 
+  /* istanbul ignore else */
   if (self.indicators[pageIndex]) addClass(indicators[pageIndex], activeClass);
 }
 
 /**
- * Toggles the touch event listeners for a given `Carousel` instance.
+ * Toggles the pointer event listeners for a given `Carousel` instance.
  * @param {Carousel} self the `Carousel` instance
  * @param {boolean=} add when `TRUE` event listeners are added
  */
 function toggleCarouselTouchHandlers(self, add) {
   const { element } = self;
   const action = add ? addListener : removeListener;
-  action(element, touchmoveEvent, carouselTouchMoveHandler, passiveHandler);
-  action(element, touchendEvent, carouselTouchEndHandler, passiveHandler);
+  action(getDocument(element), pointermoveEvent, carouselPointerMoveHandler, passiveHandler);
+  action(getDocument(element), pointerupEvent, carouselPointerUpHandler, passiveHandler);
 }
 
 /**
@@ -1158,27 +1187,28 @@ function toggleCarouselHandlers(self, add) {
   if (pause && interval) {
     action(element, mouseenterEvent, carouselPauseHandler);
     action(element, mouseleaveEvent, carouselResumeHandler);
-    action(element, touchstartEvent, carouselPauseHandler, passiveHandler);
-    action(element, touchendEvent, carouselResumeHandler, passiveHandler);
   }
 
-  if (touch && slides.length > 1) {
-    action(element, touchstartEvent, carouselTouchDownHandler, passiveHandler);
+  if (touch && slides.length > 2) {
+    action(element, pointerdownEvent, carouselPointerDownHandler, passiveHandler);
   }
 
+  /* istanbul ignore else */
   if (controls.length) {
     controls.forEach((arrow) => {
+      /* istanbul ignore else */
       if (arrow) action(arrow, mouseclickEvent, carouselControlsHandler);
     });
   }
 
+  /* istanbul ignore else */
   if (indicators.length) {
     indicators.forEach((indicator) => {
       action(indicator, mouseclickEvent, carouselIndicatorHandler);
     });
   }
-  // @ts-ignore
-  if (keyboard) action(getWindow(element), keydownEvent, carouselKeyHandler);
+
+  if (keyboard) action(getDocument(element), keydownEvent, carouselKeyHandler);
 }
 
 /**
@@ -1189,7 +1219,6 @@ function toggleCarouselHandlers(self, add) {
 function getActiveIndex(self) {
   const { slides, element } = self;
   const activeItem = querySelector(`.${carouselItem}.${activeClass}`, element);
-  // @ts-ignore
   return [...slides].indexOf(activeItem);
 }
 
@@ -1198,24 +1227,24 @@ function getActiveIndex(self) {
 /** Creates a new `Carousel` instance. */
 class Carousel extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target mostly a `.carousel` element
+   * @param {HTMLElement | string} target mostly a `.carousel` element
    * @param {BSN.Options.Carousel=} config instance options
    */
   constructor(target, config) {
     super(target, config);
     // bind
     const self = this;
+    // initialization element
+    const { element } = self;
 
     // additional properties
-    /** @type {string} */
-    self.direction = isRTL() ? 'right' : 'left';
+    /** @type {right|left} */
+    self.direction = isRTL(element) ? 'right' : 'left';
     /** @type {number} */
     self.index = 0;
     /** @type {boolean} */
     self.isTouch = false;
 
-    // initialization element
-    const { element } = self;
     // carousel elements
     // a LIVE collection is prefferable
     self.slides = getElementsByClassName(carouselItem, element);
@@ -1224,20 +1253,22 @@ class Carousel extends BaseComponent {
     // invalidate when not enough items
     // no need to go further
     if (slides.length < 2) { return; }
+    // external controls must be within same document context
+    const doc = getDocument(element);
 
     self.controls = [
       ...querySelectorAll(`[${dataBsSlide}]`, element),
-      ...querySelectorAll(`[${dataBsSlide}][${dataBsTarget}="#${element.id}"]`),
+      ...querySelectorAll(`[${dataBsSlide}][${dataBsTarget}="#${element.id}"]`, doc),
     ];
 
-    /** @type {(HTMLElement | Element)?} */
+    /** @type {HTMLElement?} */
     self.indicator = querySelector(`.${carouselString}-indicators`, element);
 
     // a LIVE collection is prefferable
-    /** @type {(HTMLElement | Element)[]} */
+    /** @type {HTMLElement[]} */
     self.indicators = [
       ...(self.indicator ? querySelectorAll(`[${dataBsSlideTo}]`, self.indicator) : []),
-      ...querySelectorAll(`[${dataBsSlideTo}][${dataBsTarget}="#${element.id}"]`),
+      ...querySelectorAll(`[${dataBsSlideTo}][${dataBsTarget}="#${element.id}"]`, doc),
     ];
 
     // set JavaScript and DATA API options
@@ -1249,8 +1280,10 @@ class Carousel extends BaseComponent {
       : options.interval;
 
     // set first slide active if none
+    /* istanbul ignore else */
     if (getActiveIndex(self) < 0) {
-      if (slides.length) addClass(slides[0], activeClass);
+      addClass(slides[0], activeClass);
+      /* istanbul ignore else */
       if (self.indicators.length) activateCarouselIndicator(self, 0);
     }
 
@@ -1295,7 +1328,9 @@ class Carousel extends BaseComponent {
   /** Slide automatically through items. */
   cycle() {
     const self = this;
-    const { element, options, isPaused } = self;
+    const {
+      element, options, isPaused, index,
+    } = self;
 
     Timer.clear(element, carouselString);
     if (isPaused) {
@@ -1306,9 +1341,10 @@ class Carousel extends BaseComponent {
     Timer.set(element, () => {
       // it's very important to check self.element
       // where instance might have been disposed
-      if (self.element && !self.isPaused && isElementInScrollRange(element)) {
-        self.index += 1;
-        self.to(self.index);
+      /* istanbul ignore else */
+      if (self.element && !self.isPaused && !self.isTouch
+        && isElementInScrollRange(element)) {
+        self.to(index + 1);
       }
     }, options.interval, carouselString);
   }
@@ -1317,6 +1353,7 @@ class Carousel extends BaseComponent {
   pause() {
     const self = this;
     const { element, options } = self;
+    /* istanbul ignore else */
     if (!self.isPaused && options.interval) {
       addClass(element, pausedClass);
       Timer.set(element, () => {}, 1, pausedClass);
@@ -1326,13 +1363,15 @@ class Carousel extends BaseComponent {
   /** Slide to the next item. */
   next() {
     const self = this;
-    if (!self.isAnimating) { self.index += 1; self.to(self.index); }
+    /* istanbul ignore else */
+    if (!self.isAnimating) { self.to(self.index + 1); }
   }
 
   /** Slide to the previous item. */
   prev() {
     const self = this;
-    if (!self.isAnimating) { self.index -= 1; self.to(self.index); }
+    /* istanbul ignore else */
+    if (!self.isAnimating) { self.to(self.index - 1); }
   }
 
   /**
@@ -1345,14 +1384,16 @@ class Carousel extends BaseComponent {
       element, slides, options,
     } = self;
     const activeItem = getActiveIndex(self);
-    const RTL = isRTL();
+    const RTL = isRTL(element);
     let next = idx;
 
     // when controled via methods, make sure to check again
     // first return if we're on the same item #227
-    if (self.isAnimating || activeItem === next) return;
+    // `to()` must be SPAM protected by Timer
+    if (self.isAnimating || activeItem === next || Timer.get(element, dataBsSlide)) return;
 
     // determine transition direction
+    /* istanbul ignore else */
     if ((activeItem < next) || (activeItem === 0 && next === slides.length - 1)) {
       self.direction = RTL ? 'right' : 'left'; // next
     } else if ((activeItem > next) || (activeItem === slides.length - 1 && next === 0)) {
@@ -1394,7 +1435,7 @@ class Carousel extends BaseComponent {
         addClass(slides[activeItem], `${carouselItem}-${directionClass}`);
 
         emulateTransitionEnd(slides[next], () => carouselTransitionEndHandler(self));
-      }, 17, dataBsSlide);
+      }, 0, dataBsSlide);
     } else {
       addClass(slides[next], activeClass);
       removeClass(slides[activeItem], activeClass);
@@ -1402,12 +1443,13 @@ class Carousel extends BaseComponent {
       Timer.set(element, () => {
         Timer.clear(element, dataBsSlide);
         // check for element, might have been disposed
+        /* istanbul ignore else */
         if (element && options.interval && !self.isPaused) {
           self.cycle();
         }
 
         dispatchEvent(element, carouselSlidEvent);
-      }, 17, dataBsSlide);
+      }, 0, dataBsSlide);
     }
   }
 

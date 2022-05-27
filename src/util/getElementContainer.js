@@ -1,10 +1,10 @@
-import getParentNode from 'shorter-js/src/get/getParentNode';
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
-import isTableElement from 'shorter-js/src/is/isTableElement';
-import isShadowRoot from 'shorter-js/src/is/isShadowRoot';
-import isHTMLElement from 'shorter-js/src/is/isHTMLElement';
-import getWindow from 'shorter-js/src/get/getWindow';
-import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
+import getParentNode from '@thednp/shorty/src/get/getParentNode';
+import getElementStyle from '@thednp/shorty/src/get/getElementStyle';
+import isTableElement from '@thednp/shorty/src/is/isTableElement';
+import isShadowRoot from '@thednp/shorty/src/is/isShadowRoot';
+import isHTMLElement from '@thednp/shorty/src/is/isHTMLElement';
+import getWindow from '@thednp/shorty/src/get/getWindow';
+import getDocumentBody from '@thednp/shorty/src/get/getDocumentBody';
 
 /**
  * Returns an `HTMLElement` to be used as default value for *options.container*
@@ -14,9 +14,9 @@ import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
  * offsets computation similar to **floating-ui**.
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {HTMLElement | Element} element the target
+ * @param {HTMLElement} element the target
  * @param {boolean=} getOffset when *true* it will return an `offsetParent`
- * @returns {HTMLElement | HTMLBodyElement | Window | globalThis} the query result
+ * @returns {ParentNode | Window} the query result
  */
 export default function getElementContainer(element, getOffset) {
   const majorBlockTags = ['HTML', 'BODY'];
@@ -42,9 +42,9 @@ export default function getElementContainer(element, getOffset) {
     return offsetParent;
   }
 
-  /** @type {(HTMLElement)[]} */
+  /** @type {HTMLElement[]} */
   const containers = [];
-  /** @type {any} */
+  /** @type {ParentNode} */
   let { parentNode } = element;
 
   while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {

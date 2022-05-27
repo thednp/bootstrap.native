@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Button v4.1.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Button v4.2.0alpha1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -17,7 +17,7 @@ const mouseclickEvent = 'click';
 
 /**
  * Shortcut for `HTMLElement.setAttribute()` method.
- * @param  {HTMLElement | Element} element target element
+ * @param  {HTMLElement} element target element
  * @param  {string} attribute attribute name
  * @param  {string} value attribute value
  * @returns {void}
@@ -34,7 +34,7 @@ const ObjectAssign = (obj, source) => Object.assign(obj, source);
 /**
  * Add class to `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to add
  * @returns {void}
  */
@@ -45,7 +45,7 @@ function addClass(element, classNAME) {
 /**
  * Check class in `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to check
  * @returns {boolean}
  */
@@ -56,7 +56,7 @@ function hasClass(element, classNAME) {
 /**
  * Remove class from `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to remove
  * @returns {void}
  */
@@ -65,46 +65,15 @@ function removeClass(element, classNAME) {
 }
 
 /**
- * Returns the `document` or the `#document` element.
- * @see https://github.com/floating-ui/floating-ui
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {Document}
- */
-function getDocument(node) {
-  if (node instanceof HTMLElement) return node.ownerDocument;
-  if (node instanceof Window) return node.document;
-  return window.document;
-}
-
-/**
- * A global array of possible `ParentNode`.
- */
-const parentNodes = [Document, Element, HTMLElement];
-
-/**
- * A global array with `Element` | `HTMLElement`.
- */
-const elementNodes = [Element, HTMLElement];
-
-/**
- * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
- * or find one that matches a selector.
+ * Checks if an element is an `HTMLElement`.
+ * @see https://dom.spec.whatwg.org/#node
  *
- * @param {HTMLElement | Element | string} selector the input selector or target element
- * @param {(HTMLElement | Element | Document)=} parent optional node to look into
- * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
+ * @param {any} element the target object
+ * @returns {boolean} the query result
  */
-function querySelector(selector, parent) {
-  const lookUp = parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
+const isHTMLElement = (element) => (element && element.nodeType === 1) || false;
 
-  // @ts-ignore
-  return elementNodes.some((x) => selector instanceof x)
-    // @ts-ignore
-    ? selector : lookUp.querySelector(selector);
-}
-
-/** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
+/** @type {Map<string, Map<HTMLElement, Record<string, any>>>} */
 const componentData = new Map();
 /**
  * An interface for web components background data.
@@ -113,27 +82,27 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @param {Record<string, any>} instance the component instance
    */
-  set: (target, component, instance) => {
-    const element = querySelector(target);
-    if (!element) return;
+  set: (element, component, instance) => {
+    if (!isHTMLElement(element)) return;
 
+    /* istanbul ignore else */
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    // @ts-ignore - not undefined, but defined right above
+    // not undefined, but defined right above
     instanceMap.set(element, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
+   * @returns {Map<HTMLElement, Record<string, any>>?} all the component instances
    */
   getAllFor: (component) => {
     const instanceMap = componentData.get(component);
@@ -143,12 +112,12 @@ const Data = {
 
   /**
    * Returns the instance associated with the target.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @returns {Record<string, any>?} the instance
    */
-  get: (target, component) => {
-    const element = querySelector(target);
+  get: (element, component) => {
+    if (!isHTMLElement(element) || !component) return null;
     const allForC = Data.getAllFor(component);
     const instance = element && allForC && allForC.get(element);
 
@@ -157,16 +126,16 @@ const Data = {
 
   /**
    * Removes web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    */
-  remove: (target, component) => {
-    const element = querySelector(target);
+  remove: (element, component) => {
     const instanceMap = componentData.get(component);
-    if (!instanceMap || !element) return;
+    if (!instanceMap || !isHTMLElement(element)) return;
 
     instanceMap.delete(element);
 
+    /* istanbul ignore else */
     if (instanceMap.size === 0) {
       componentData.delete(component);
     }
@@ -175,7 +144,7 @@ const Data = {
 
 /**
  * An alias for `Data.get()`.
- * @type {SHORTER.getInstance<any>}
+ * @type {SHORTY.getInstance<any>}
  */
 const getInstance = (target, component) => Data.get(target, component);
 
@@ -284,8 +253,65 @@ const buttonString = 'button';
 const buttonComponent = 'Button';
 
 /**
+ * Checks if an object is a `Document`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+/**
+ * Checks if an object is a `Node`.
+ *
+ * @param {any} node the target object
+ * @returns {boolean} the query result
+ */
+const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  .some((x) => +element.nodeType === x)) || false;
+
+/**
+ * Check if a target object is `Window`.
+ * => equivalent to `object instanceof Window`
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
+
+/**
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(ParentNode | Window)=} node
+ * @returns {Document}
+ */
+function getDocument(node) {
+  if (isDocument(node)) return node;
+  if (isNode(node)) return node.ownerDocument;
+  if (isWindow(node)) return node.document;
+  return window.document;
+}
+
+/**
+ * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
+ * or find one that matches a selector.
+ *
+ * @param {Node | string} selector the input selector or target element
+ * @param {ParentNode=} parent optional node to look into
+ * @return {HTMLElement?} the `HTMLElement` or `querySelector` result
+ */
+function querySelector(selector, parent) {
+  if (isNode(selector)) {
+    return selector;
+  }
+  const lookUp = isNode(parent) ? parent : getDocument();
+
+  return lookUp.querySelector(selector);
+}
+
+/**
  * Shortcut for `HTMLElement.getAttribute()` method.
- * @param {HTMLElement | Element} element target element
+ * @param {HTMLElement} element target element
  * @param {string} attribute attribute name
  * @returns {string?} attribute value
  */
@@ -304,20 +330,22 @@ const getAttribute = (element, attribute) => element.getAttribute(attribute);
  * @return {niceValue} the normalized value
  */
 function normalizeValue(value) {
-  if (value === 'true') { // boolean
+  if (['true', true].includes(value)) { // boolean
+  // if ('true' === value) { // boolean
     return true;
   }
 
-  if (value === 'false') { // boolean
+  if (['false', false].includes(value)) { // boolean
+  // if ('false' === value) { // boolean
     return false;
-  }
-
-  if (!Number.isNaN(+value)) { // number
-    return +value;
   }
 
   if (value === '' || value === 'null') { // null
     return null;
+  }
+
+  if (value !== '' && !Number.isNaN(+value)) { // number
+    return +value;
   }
 
   // string / function / HTMLElement / object
@@ -342,14 +370,13 @@ const toLowerCase = (source) => source.toLowerCase();
 /**
  * Utility to normalize component options.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {Record<string, any>} defaultOps component default options
  * @param {Record<string, any>} inputOps component instance options
  * @param {string=} ns component namespace
  * @return {Record<string, any>} normalized component options object
  */
 function normalizeOptions(element, defaultOps, inputOps, ns) {
-  // @ts-ignore -- our targets are always `HTMLElement`
   const data = { ...element.dataset };
   /** @type {Record<string, any>} */
   const normalOps = {};
@@ -370,6 +397,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   });
 
   ObjectKeys(defaultOps).forEach((k) => {
+    /* istanbul ignore else */
     if (k in inputOps) {
       normalOps[k] = inputOps[k];
     } else if (k in dataOps) {
@@ -384,7 +412,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.4";
+var version = "4.2.0alpha1";
 
 const Version = version;
 
@@ -394,7 +422,7 @@ const Version = version;
 /** Returns a new `BaseComponent` instance. */
 class BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target `Element` or selector string
+   * @param {HTMLElement | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
@@ -411,10 +439,11 @@ class BaseComponent {
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {HTMLElement | Element} */
+    /** @type {HTMLElement} */
     self.element = element;
 
-    if (self.defaults && Object.keys(self.defaults).length) {
+    /* istanbul ignore else */
+    if (self.defaults && ObjectKeys(self.defaults).length) {
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
@@ -422,15 +451,17 @@ class BaseComponent {
   }
 
   /* eslint-disable */
+  /* istanbul ignore next */
   /** @static */
   get version() { return Version; }
-  /* eslint-enable */
 
+  /* eslint-enable */
+  /* istanbul ignore next */
   /** @static */
   get name() { return this.constructor.name; }
 
+  /* istanbul ignore next */
   /** @static */
-  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -439,7 +470,6 @@ class BaseComponent {
   dispose() {
     const self = this;
     Data.remove(self.element, self.name);
-    // @ts-ignore
     ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -482,7 +512,7 @@ function toggleButtonHandler(self, add) {
 /** Creates a new `Button` instance. */
 class Button extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target usually a `.btn` element
+   * @param {HTMLElement | string} target usually a `.btn` element
    */
   constructor(target) {
     super(target);
@@ -516,19 +546,16 @@ class Button extends BaseComponent {
    */
   toggle(e) {
     if (e) e.preventDefault();
-    // @ts-ignore
     const self = e ? getButtonInstance(this) : this;
-    if (!self) return;
-    const { element } = self;
+    if (!self.element) return;
+    const { element, isActive } = self;
 
     if (hasClass(element, 'disabled')) return;
-    self.isActive = hasClass(element, activeClass);
-    const { isActive } = self;
 
     const action = isActive ? removeClass : addClass;
-
     action(element, activeClass);
     setAttribute(element, ariaPressed, isActive ? 'false' : 'true');
+    self.isActive = hasClass(element, activeClass);
   }
 
   /** Removes the `Button` component from the target element. */

@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Alert v4.1.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Alert v4.2.0alpha1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -35,34 +35,35 @@ const transitionProperty = 'transitionProperty';
  * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
  * throws a `ReferenceError`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} property the css property
  * @return {string} the css property value
  */
 function getElementStyle(element, property) {
   const computedStyle = getComputedStyle(element);
 
-  // @ts-ignore -- must use camelcase strings,
+  // must use camelcase strings,
   // or non-camelcase strings with `getPropertyValue`
-  return property in computedStyle ? computedStyle[property] : '';
+  return property.includes('--')
+    ? computedStyle.getPropertyValue(property)
+    : computedStyle[property];
 }
 
 /**
  * Utility to get the computed `transitionDelay`
  * from Element in miliseconds.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDelay(element) {
   const propertyValue = getElementStyle(element, transitionProperty);
   const delayValue = getElementStyle(element, transitionDelay);
-
-  const delayScale = delayValue.includes('ms') ? 1 : 1000;
+  const delayScale = delayValue.includes('ms') ? /* istanbul ignore next */1 : 1000;
   const duration = propertyValue && propertyValue !== 'none'
     ? parseFloat(delayValue) * delayScale : 0;
 
-  return !Number.isNaN(duration) ? duration : 0;
+  return !Number.isNaN(duration) ? duration : /* istanbul ignore next */0;
 }
 
 /**
@@ -75,24 +76,32 @@ const transitionDuration = 'transitionDuration';
  * Utility to get the computed `transitionDuration`
  * from Element in miliseconds.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDuration(element) {
   const propertyValue = getElementStyle(element, transitionProperty);
   const durationValue = getElementStyle(element, transitionDuration);
-  const durationScale = durationValue.includes('ms') ? 1 : 1000;
+  const durationScale = durationValue.includes('ms') ? /* istanbul ignore next */1 : 1000;
   const duration = propertyValue && propertyValue !== 'none'
     ? parseFloat(durationValue) * durationScale : 0;
 
-  return !Number.isNaN(duration) ? duration : 0;
+  return !Number.isNaN(duration) ? duration : /* istanbul ignore next */0;
 }
+
+/**
+ * Shortcut for the `Element.dispatchEvent(Event)` method.
+ *
+ * @param {HTMLElement} element is the target
+ * @param {Event} event is the `Event` object
+ */
+const dispatchEvent = (element, event) => element.dispatchEvent(event);
 
 /**
  * Utility to make sure callbacks are consistently
  * called when transition ends.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {EventListener} handler `transitionend` callback
  */
 function emulateTransitionEnd(element, handler) {
@@ -107,6 +116,7 @@ function emulateTransitionEnd(element, handler) {
      * @type {EventListener} e Event object
      */
     const transitionEndWrapper = (e) => {
+      /* istanbul ignore else */
       if (e.target === element) {
         handler.apply(element, [e]);
         element.removeEventListener(transitionEndEvent, transitionEndWrapper);
@@ -115,7 +125,8 @@ function emulateTransitionEnd(element, handler) {
     };
     element.addEventListener(transitionEndEvent, transitionEndWrapper);
     setTimeout(() => {
-      if (!called) element.dispatchEvent(endEvent);
+      /* istanbul ignore next */
+      if (!called) dispatchEvent(element, endEvent);
     }, duration + delay + 17);
   } else {
     handler.apply(element, [endEvent]);
@@ -123,43 +134,60 @@ function emulateTransitionEnd(element, handler) {
 }
 
 /**
+ * Checks if an object is a `Document`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+/**
+ * Checks if an object is a `Node`.
+ *
+ * @param {any} node the target object
+ * @returns {boolean} the query result
+ */
+const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  .some((x) => +element.nodeType === x)) || false;
+
+/**
+ * Check if a target object is `Window`.
+ * => equivalent to `object instanceof Window`
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
+
+/**
  * Returns the `document` or the `#document` element.
  * @see https://github.com/floating-ui/floating-ui
- * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @param {(ParentNode | Window)=} node
  * @returns {Document}
  */
 function getDocument(node) {
-  if (node instanceof HTMLElement) return node.ownerDocument;
-  if (node instanceof Window) return node.document;
+  if (isDocument(node)) return node;
+  if (isNode(node)) return node.ownerDocument;
+  if (isWindow(node)) return node.document;
   return window.document;
 }
-
-/**
- * A global array of possible `ParentNode`.
- */
-const parentNodes = [Document, Element, HTMLElement];
-
-/**
- * A global array with `Element` | `HTMLElement`.
- */
-const elementNodes = [Element, HTMLElement];
 
 /**
  * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
  * or find one that matches a selector.
  *
- * @param {HTMLElement | Element | string} selector the input selector or target element
- * @param {(HTMLElement | Element | Document)=} parent optional node to look into
- * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
+ * @param {Node | string} selector the input selector or target element
+ * @param {ParentNode=} parent optional node to look into
+ * @return {HTMLElement?} the `HTMLElement` or `querySelector` result
  */
 function querySelector(selector, parent) {
-  const lookUp = parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
+  if (isNode(selector)) {
+    return selector;
+  }
+  const lookUp = isNode(parent) ? parent : getDocument();
 
-  // @ts-ignore
-  return elementNodes.some((x) => selector instanceof x)
-    // @ts-ignore
-    ? selector : lookUp.querySelector(selector);
+  return lookUp.querySelector(selector);
 }
 
 /**
@@ -169,13 +197,13 @@ function querySelector(selector, parent) {
  *
  * @see https://stackoverflow.com/q/54520554/803358
  *
- * @param {HTMLElement | Element} element Element to look into
+ * @param {HTMLElement} element Element to look into
  * @param {string} selector the selector name
- * @return {(HTMLElement | Element)?} the query result
+ * @return {HTMLElement?} the query result
  */
 function closest(element, selector) {
   return element ? (element.closest(selector)
-    // @ts-ignore -- break out of `ShadowRoot`
+    // break out of `ShadowRoot`
     || closest(element.getRootNode().host, selector)) : null;
 }
 
@@ -189,7 +217,7 @@ const ObjectAssign = (obj, source) => Object.assign(obj, source);
 /**
  * Check class in `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to check
  * @returns {boolean}
  */
@@ -200,7 +228,7 @@ function hasClass(element, classNAME) {
 /**
  * Remove class from `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to remove
  * @returns {void}
  */
@@ -209,14 +237,15 @@ function removeClass(element, classNAME) {
 }
 
 /**
- * Shortcut for the `Element.dispatchEvent(Event)` method.
+ * Checks if an element is an `HTMLElement`.
+ * @see https://dom.spec.whatwg.org/#node
  *
- * @param {HTMLElement | Element} element is the target
- * @param {Event} event is the `Event` object
+ * @param {any} element the target object
+ * @returns {boolean} the query result
  */
-const dispatchEvent = (element, event) => element.dispatchEvent(event);
+const isHTMLElement = (element) => (element && element.nodeType === 1) || false;
 
-/** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
+/** @type {Map<string, Map<HTMLElement, Record<string, any>>>} */
 const componentData = new Map();
 /**
  * An interface for web components background data.
@@ -225,27 +254,27 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @param {Record<string, any>} instance the component instance
    */
-  set: (target, component, instance) => {
-    const element = querySelector(target);
-    if (!element) return;
+  set: (element, component, instance) => {
+    if (!isHTMLElement(element)) return;
 
+    /* istanbul ignore else */
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    // @ts-ignore - not undefined, but defined right above
+    // not undefined, but defined right above
     instanceMap.set(element, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
+   * @returns {Map<HTMLElement, Record<string, any>>?} all the component instances
    */
   getAllFor: (component) => {
     const instanceMap = componentData.get(component);
@@ -255,12 +284,12 @@ const Data = {
 
   /**
    * Returns the instance associated with the target.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @returns {Record<string, any>?} the instance
    */
-  get: (target, component) => {
-    const element = querySelector(target);
+  get: (element, component) => {
+    if (!isHTMLElement(element) || !component) return null;
     const allForC = Data.getAllFor(component);
     const instance = element && allForC && allForC.get(element);
 
@@ -269,16 +298,16 @@ const Data = {
 
   /**
    * Removes web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    */
-  remove: (target, component) => {
-    const element = querySelector(target);
+  remove: (element, component) => {
     const instanceMap = componentData.get(component);
-    if (!instanceMap || !element) return;
+    if (!instanceMap || !isHTMLElement(element)) return;
 
     instanceMap.delete(element);
 
+    /* istanbul ignore else */
     if (instanceMap.size === 0) {
       componentData.delete(component);
     }
@@ -287,7 +316,7 @@ const Data = {
 
 /**
  * An alias for `Data.get()`.
- * @type {SHORTER.getInstance<any>}
+ * @type {SHORTY.getInstance<any>}
  */
 const getInstance = (target, component) => Data.get(target, component);
 
@@ -295,13 +324,14 @@ const getInstance = (target, component) => Data.get(target, component);
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {SHORTER.OriginalEvent} a new namespaced event
+ * @returns {SHORTY.OriginalEvent} a new namespaced event
  */
 function OriginalEvent(EventType, config) {
   const OriginalCustomEvent = new CustomEvent(EventType, {
     cancelable: true, bubbles: true,
   });
 
+  /* istanbul ignore else */
   if (config instanceof Object) {
     ObjectAssign(OriginalCustomEvent, config);
   }
@@ -419,7 +449,7 @@ const alertComponent = 'Alert';
 
 /**
  * Shortcut for `HTMLElement.getAttribute()` method.
- * @param {HTMLElement | Element} element target element
+ * @param {HTMLElement} element target element
  * @param {string} attribute attribute name
  * @returns {string?} attribute value
  */
@@ -438,20 +468,22 @@ const getAttribute = (element, attribute) => element.getAttribute(attribute);
  * @return {niceValue} the normalized value
  */
 function normalizeValue(value) {
-  if (value === 'true') { // boolean
+  if (['true', true].includes(value)) { // boolean
+  // if ('true' === value) { // boolean
     return true;
   }
 
-  if (value === 'false') { // boolean
+  if (['false', false].includes(value)) { // boolean
+  // if ('false' === value) { // boolean
     return false;
-  }
-
-  if (!Number.isNaN(+value)) { // number
-    return +value;
   }
 
   if (value === '' || value === 'null') { // null
     return null;
+  }
+
+  if (value !== '' && !Number.isNaN(+value)) { // number
+    return +value;
   }
 
   // string / function / HTMLElement / object
@@ -476,14 +508,13 @@ const toLowerCase = (source) => source.toLowerCase();
 /**
  * Utility to normalize component options.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {Record<string, any>} defaultOps component default options
  * @param {Record<string, any>} inputOps component instance options
  * @param {string=} ns component namespace
  * @return {Record<string, any>} normalized component options object
  */
 function normalizeOptions(element, defaultOps, inputOps, ns) {
-  // @ts-ignore -- our targets are always `HTMLElement`
   const data = { ...element.dataset };
   /** @type {Record<string, any>} */
   const normalOps = {};
@@ -504,6 +535,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   });
 
   ObjectKeys(defaultOps).forEach((k) => {
+    /* istanbul ignore else */
     if (k in inputOps) {
       normalOps[k] = inputOps[k];
     } else if (k in dataOps) {
@@ -518,7 +550,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.4";
+var version = "4.2.0alpha1";
 
 const Version = version;
 
@@ -528,7 +560,7 @@ const Version = version;
 /** Returns a new `BaseComponent` instance. */
 class BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target `Element` or selector string
+   * @param {HTMLElement | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
@@ -545,10 +577,11 @@ class BaseComponent {
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {HTMLElement | Element} */
+    /** @type {HTMLElement} */
     self.element = element;
 
-    if (self.defaults && Object.keys(self.defaults).length) {
+    /* istanbul ignore else */
+    if (self.defaults && ObjectKeys(self.defaults).length) {
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
@@ -556,15 +589,17 @@ class BaseComponent {
   }
 
   /* eslint-disable */
+  /* istanbul ignore next */
   /** @static */
   get version() { return Version; }
-  /* eslint-enable */
 
+  /* eslint-enable */
+  /* istanbul ignore next */
   /** @static */
   get name() { return this.constructor.name; }
 
+  /* istanbul ignore next */
   /** @static */
-  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -573,7 +608,6 @@ class BaseComponent {
   dispose() {
     const self = this;
     Data.remove(self.element, self.name);
-    // @ts-ignore
     ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -631,6 +665,7 @@ function alertTransitionEnd(self) {
 function toggleAlertHandler(self, add) {
   const action = add ? addListener : removeListener;
   const { dismiss } = self;
+  /* istanbul ignore else */
   if (dismiss) action(dismiss, mouseclickEvent, self.close);
 }
 
@@ -638,7 +673,7 @@ function toggleAlertHandler(self, add) {
 // ================
 /** Creates a new Alert instance. */
 class Alert extends BaseComponent {
-  /** @param {HTMLElement | Element | string} target element or selector */
+  /** @param {HTMLElement | string} target element or selector */
   constructor(target) {
     super(target);
     // bind
@@ -648,7 +683,7 @@ class Alert extends BaseComponent {
     const { element } = self;
 
     // the dismiss button
-    /** @static @type {(HTMLElement | Element)?} */
+    /** @static @type {HTMLElement?} */
     self.dismiss = querySelector(alertDismissSelector, element);
 
     // add event listener
@@ -674,12 +709,11 @@ class Alert extends BaseComponent {
    * @this {Alert} the `Alert` instance or `EventTarget`
    */
   close(e) {
-    // @ts-ignore
     const self = e ? getAlertInstance(closest(this, alertSelector)) : this;
-    if (!self) return;
     const { element } = self;
 
-    if (hasClass(element, showClass)) {
+    /* istanbul ignore else */
+    if (element && hasClass(element, showClass)) {
       dispatchEvent(element, closeAlertEvent);
       if (closeAlertEvent.defaultPrevented) return;
 

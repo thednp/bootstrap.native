@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Popover v4.1.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Popover v4.2.0alpha1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -13,52 +13,20 @@ const ObjectAssign = (obj, source) => Object.assign(obj, source);
 /**
  * Utility to focus an `HTMLElement` target.
  *
- * @param {HTMLElement | Element} element is the target
+ * @param {HTMLElement} element is the target
  */
-// @ts-ignore -- `Element`s resulted from querySelector can focus too
 const focus = (element) => element.focus();
 
 /**
- * Returns the `document` or the `#document` element.
- * @see https://github.com/floating-ui/floating-ui
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {Document}
- */
-function getDocument(node) {
-  if (node instanceof HTMLElement) return node.ownerDocument;
-  if (node instanceof Window) return node.document;
-  return window.document;
-}
-
-/**
- * A global array of possible `ParentNode`.
- */
-const parentNodes = [Document, Element, HTMLElement];
-
-/**
- * A global array with `Element` | `HTMLElement`.
- */
-const elementNodes = [Element, HTMLElement];
-
-/**
- * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
- * or find one that matches a selector.
+ * Checks if an element is an `HTMLElement`.
+ * @see https://dom.spec.whatwg.org/#node
  *
- * @param {HTMLElement | Element | string} selector the input selector or target element
- * @param {(HTMLElement | Element | Document)=} parent optional node to look into
- * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
+ * @param {any} element the target object
+ * @returns {boolean} the query result
  */
-function querySelector(selector, parent) {
-  const lookUp = parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
+const isHTMLElement = (element) => (element && element.nodeType === 1) || false;
 
-  // @ts-ignore
-  return elementNodes.some((x) => selector instanceof x)
-    // @ts-ignore
-    ? selector : lookUp.querySelector(selector);
-}
-
-/** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
+/** @type {Map<string, Map<HTMLElement, Record<string, any>>>} */
 const componentData = new Map();
 /**
  * An interface for web components background data.
@@ -67,27 +35,27 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @param {Record<string, any>} instance the component instance
    */
-  set: (target, component, instance) => {
-    const element = querySelector(target);
-    if (!element) return;
+  set: (element, component, instance) => {
+    if (!isHTMLElement(element)) return;
 
+    /* istanbul ignore else */
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    // @ts-ignore - not undefined, but defined right above
+    // not undefined, but defined right above
     instanceMap.set(element, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
+   * @returns {Map<HTMLElement, Record<string, any>>?} all the component instances
    */
   getAllFor: (component) => {
     const instanceMap = componentData.get(component);
@@ -97,12 +65,12 @@ const Data = {
 
   /**
    * Returns the instance associated with the target.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @returns {Record<string, any>?} the instance
    */
-  get: (target, component) => {
-    const element = querySelector(target);
+  get: (element, component) => {
+    if (!isHTMLElement(element) || !component) return null;
     const allForC = Data.getAllFor(component);
     const instance = element && allForC && allForC.get(element);
 
@@ -111,16 +79,16 @@ const Data = {
 
   /**
    * Removes web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    */
-  remove: (target, component) => {
-    const element = querySelector(target);
+  remove: (element, component) => {
     const instanceMap = componentData.get(component);
-    if (!instanceMap || !element) return;
+    if (!instanceMap || !isHTMLElement(element)) return;
 
     instanceMap.delete(element);
 
+    /* istanbul ignore else */
     if (instanceMap.size === 0) {
       componentData.delete(component);
     }
@@ -129,7 +97,7 @@ const Data = {
 
 /**
  * An alias for `Data.get()`.
- * @type {SHORTER.getInstance<any>}
+ * @type {SHORTY.getInstance<any>}
  */
 const getInstance = (target, component) => Data.get(target, component);
 
@@ -170,15 +138,57 @@ function getTipTemplate(tipType) {
  * @param {any} element the target element
  * @returns {boolean} the query result
  */
-const isMedia = (element) => element
-  && [SVGElement, HTMLImageElement, HTMLVideoElement]
-    .some((mediaType) => element instanceof mediaType);
+
+const isMedia = (element) => (
+  element
+  && element.nodeType === 1
+  && ['SVG', 'Image', 'Video'].some((s) => element.constructor.name.includes(s))) || false;
+
+/**
+ * Checks if an object is a `Document`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+/**
+ * Checks if an object is a `Node`.
+ *
+ * @param {any} node the target object
+ * @returns {boolean} the query result
+ */
+const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  .some((x) => +element.nodeType === x)) || false;
+
+/**
+ * Check if a target object is `Window`.
+ * => equivalent to `object instanceof Window`
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
+
+/**
+ * Returns the `document` or the `#document` element.
+ * @see https://github.com/floating-ui/floating-ui
+ * @param {(ParentNode | Window)=} node
+ * @returns {Document}
+ */
+function getDocument(node) {
+  if (isDocument(node)) return node;
+  if (isNode(node)) return node.ownerDocument;
+  if (isWindow(node)) return node.document;
+  return window.document;
+}
 
 /**
  * Returns the `document.documentElement` or the `<html>` element.
  *
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {HTMLElement | HTMLHtmlElement}
+ * @param {(ParentNode | Window)=} node
+ * @returns {HTMLHtmlElement}
  */
 function getDocumentElement(node) {
   return getDocument(node).documentElement;
@@ -186,7 +196,7 @@ function getDocumentElement(node) {
 
 /**
  * Checks if a page is Right To Left.
- * @param {(HTMLElement | Element)=} node the target
+ * @param {HTMLElement=} node the target
  * @returns {boolean} the query result
  */
 const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
@@ -198,16 +208,18 @@ const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
  * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
  * throws a `ReferenceError`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} property the css property
  * @return {string} the css property value
  */
 function getElementStyle(element, property) {
   const computedStyle = getComputedStyle(element);
 
-  // @ts-ignore -- must use camelcase strings,
+  // must use camelcase strings,
   // or non-camelcase strings with `getPropertyValue`
-  return property in computedStyle ? computedStyle[property] : '';
+  return property.includes('--')
+    ? computedStyle.getPropertyValue(property)
+    : computedStyle[property];
 }
 
 /**
@@ -215,9 +227,9 @@ function getElementStyle(element, property) {
  *
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {HTMLElement | Element} element event.target
+ * @param {HTMLElement} element event.target
  * @param {boolean=} includeScale when *true*, the target scale is also computed
- * @returns {SHORTER.BoundingClientRect} the bounding client rect object
+ * @returns {SHORTY.BoundingClientRect} the bounding client rect object
  */
 function getBoundingClientRect(element, includeScale) {
   const {
@@ -226,10 +238,12 @@ function getBoundingClientRect(element, includeScale) {
   let scaleX = 1;
   let scaleY = 1;
 
-  if (includeScale && element instanceof HTMLElement) {
+  if (includeScale && isHTMLElement(element)) {
     const { offsetWidth, offsetHeight } = element;
-    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
-    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
+    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth
+      : /* istanbul ignore next */1;
+    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight
+      : /* istanbul ignore next */1;
   }
 
   return {
@@ -250,7 +264,7 @@ function getBoundingClientRect(element, includeScale) {
  *
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {HTMLElement | Element | Window} element target node / element
+ * @param {HTMLElement | Window} element target node / element
  * @returns {{x: number, y: number}} the scroll tuple
  */
 function getNodeScroll(element) {
@@ -269,6 +283,7 @@ function getNodeScroll(element) {
  * @returns {boolean} the query result
  */
 function isScaledElement(element) {
+  if (!element || !isHTMLElement(element)) return false;
   const { width, height } = getBoundingClientRect(element);
   const { offsetWidth, offsetHeight } = element;
   return Math.round(width) !== offsetWidth
@@ -279,16 +294,17 @@ function isScaledElement(element) {
  * Returns the rect relative to an offset parent.
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {HTMLElement | Element} element target
- * @param {HTMLElement | Element | Window} offsetParent the container / offset parent
- * @param {{x: number, y: number}} scroll
- * @returns {SHORTER.OffsetRect}
+ * @param {HTMLElement} element target
+ * @param {ParentNode | Window} offsetParent the container / offset parent
+ * @param {{x: number, y: number}} scroll the offsetParent scroll position
+ * @returns {SHORTY.OffsetRect}
  */
 function getRectRelativeToOffsetParent(element, offsetParent, scroll) {
-  const isParentAnElement = offsetParent instanceof HTMLElement;
+  const isParentAnElement = isHTMLElement(offsetParent);
   const rect = getBoundingClientRect(element, isParentAnElement && isScaledElement(offsetParent));
   const offsets = { x: 0, y: 0 };
 
+  /* istanbul ignore next */
   if (isParentAnElement) {
     const offsetRect = getBoundingClientRect(offsetParent, true);
     offsets.x = offsetRect.x + offsetParent.clientLeft;
@@ -304,12 +320,27 @@ function getRectRelativeToOffsetParent(element, offsetParent, scroll) {
 }
 
 /**
+ * Shortcut for `Object.entries()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @returns {[string, any][]}
+ */
+const ObjectEntries = (obj) => Object.entries(obj);
+
+/**
  * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
- * @param  {HTMLElement | Element} element target element
+ * @param  {HTMLElement} element target element
  * @param  {Partial<CSSStyleDeclaration>} styles attribute value
  */
-// @ts-ignore
-const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
+const setElementStyle = (element, styles) => {
+  ObjectEntries(styles).forEach(([key, value]) => {
+    if (key.includes('--')) {
+      element.style.setProperty(key, value);
+    } else {
+      const propObject = {}; propObject[key] = value;
+      ObjectAssign(element.style, propObject);
+    }
+  });
+};
 
 /** @type {Record<string, string>} */
 var tipClassPositions = {
@@ -330,28 +361,32 @@ function styleTip(self, e) {
     element, tooltip, options, arrow, offsetParent,
   } = self;
   const tipPositions = { ...tipClassPositions };
-
-  // reset tooltip style (top: 0, left: 0 works best)
-  setElementStyle(tooltip, { top: '0px', left: '0px', right: '' });
-  // @ts-ignore
-  const isPopover = self.name === popoverComponent;
-  const tipWidth = tooltip.offsetWidth;
-  const tipHeight = tooltip.offsetHeight;
   const RTL = isRTL(element);
   if (RTL) {
     tipPositions.left = 'end';
     tipPositions.right = 'start';
   }
-  const documentElement = getDocumentElement(element);
-  const windowWidth = documentElement.clientWidth;
-  const windowHeight = documentElement.clientHeight;
+
+  // reset tooltip style (top: 0, left: 0 works best)
+  setElementStyle(tooltip, {
+    top: '0px', left: '0px', right: '', bottom: '',
+  });
+  const isPopover = self.name === popoverComponent;
+  const {
+    offsetWidth: tipWidth, offsetHeight: tipHeight,
+  } = tooltip;
+  const {
+    clientWidth: htmlcw, clientHeight: htmlch,
+  } = getDocumentElement(element);
   const { container } = options;
   let { placement } = options;
   const {
     left: parentLeft, right: parentRight, top: parentTop,
   } = getBoundingClientRect(container, true);
-  const parentWidth = container.clientWidth;
-  const scrollbarWidth = Math.abs(parentWidth - container.offsetWidth);
+  const {
+    clientWidth: parentCWidth, offsetWidth: parentOWidth,
+  } = container;
+  const scrollbarWidth = Math.abs(parentCWidth - parentOWidth);
   const parentPosition = getElementStyle(container, 'position');
   // const absoluteParent = parentPosition === 'absolute';
   const fixedParent = parentPosition === 'fixed';
@@ -361,8 +396,8 @@ function styleTip(self, e) {
   // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
   // const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
   const leftBoundry = RTL && fixedParent ? scrollbarWidth : 0;
-  const rightBoundry = fixedParent ? parentWidth + parentLeft + (RTL ? scrollbarWidth : 0)
-    : parentWidth + parentLeft + (windowWidth - parentRight) - 1;
+  const rightBoundry = fixedParent ? parentCWidth + parentLeft + (RTL ? scrollbarWidth : 0)
+    : parentCWidth + parentLeft + (htmlcw - parentRight) - 1;
   const {
     width: elemWidth,
     height: elemHeight,
@@ -374,7 +409,9 @@ function styleTip(self, e) {
   const scroll = getNodeScroll(offsetParent);
   const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
   // reset arrow style
-  setElementStyle(arrow, { top: '', left: '', right: '' });
+  setElementStyle(arrow, {
+    top: '', left: '', right: '', bottom: '',
+  });
   let topPosition;
   let leftPosition;
   let rightPosition;
@@ -389,18 +426,23 @@ function styleTip(self, e) {
   // check placement
   let topExceed = elemRectTop - tipHeight - arrowHeight < 0;
   let bottomExceed = elemRectTop + tipHeight + elemHeight
-    + arrowHeight >= windowHeight;
+    + arrowHeight >= htmlch;
   let leftExceed = elemRectLeft - tipWidth - arrowWidth < leftBoundry;
   let rightExceed = elemRectLeft + tipWidth + elemWidth
     + arrowWidth >= rightBoundry;
 
   const horizontal = ['left', 'right'];
   const vertical = ['top', 'bottom'];
+
+  // first remove side positions if both left and right limits are exceeded
+  // we usually fall back to top|bottom
+  placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
+
   topExceed = horizontal.includes(placement)
     ? elemRectTop + elemHeight / 2 - tipHeight / 2 - arrowHeight < 0
     : topExceed;
   bottomExceed = horizontal.includes(placement)
-    ? elemRectTop + tipHeight / 2 + elemHeight / 2 + arrowHeight >= windowHeight
+    ? elemRectTop + tipHeight / 2 + elemHeight / 2 + arrowHeight >= htmlch
     : bottomExceed;
   leftExceed = vertical.includes(placement)
     ? elemRectLeft + elemWidth / 2 - tipWidth / 2 < leftBoundry
@@ -409,9 +451,7 @@ function styleTip(self, e) {
     ? elemRectLeft + tipWidth / 2 + elemWidth / 2 >= rightBoundry
     : rightExceed;
 
-  // recompute placement
-  // first, when both left and right limits are exceeded, we fall back to top|bottom
-  placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
+  // second, recompute placement
   placement = placement === 'top' && topExceed ? 'bottom' : placement;
   placement = placement === 'bottom' && bottomExceed ? 'top' : placement;
   placement = placement === 'left' && leftExceed ? 'right' : placement;
@@ -423,6 +463,7 @@ function styleTip(self, e) {
   }
 
   // compute tooltip / popover coordinates
+  /* istanbul ignore else */
   if (horizontal.includes(placement)) { // secondary|side positions
     if (placement === 'left') { // LEFT
       leftPosition = x - tipWidth - (isPopover ? arrowWidth : 0);
@@ -513,7 +554,8 @@ function styleTip(self, e) {
   });
 
   // update arrow placement
-  if (arrow instanceof HTMLElement) {
+  /* istanbul ignore else */
+  if (isHTMLElement(arrow)) {
     if (arrowTop !== undefined) {
       arrow.style.top = `${arrowTop}px`;
     }
@@ -542,7 +584,7 @@ const tooltipDefaults = {
   animation: true, // bool
   /** @type {number} */
   delay: 200, // number
-  /** @type {(HTMLElement | Element)?} */
+  /** @type {HTMLElement?} */
   container: null,
 };
 
@@ -625,8 +667,16 @@ const resizeEvent = 'resize';
 const touchstartEvent = 'touchstart';
 
 /**
+ * Shortcut for `HTMLElement.hasAttribute()` method.
+ * @param  {HTMLElement} element target element
+ * @param  {string} attribute attribute name
+ * @returns {boolean} the query result
+ */
+const hasAttribute = (element, attribute) => element.hasAttribute(attribute);
+
+/**
  * Shortcut for `HTMLElement.setAttribute()` method.
- * @param  {HTMLElement | Element} element target element
+ * @param  {HTMLElement} element target element
  * @param  {string} attribute attribute name
  * @param  {string} value attribute value
  * @returns {void}
@@ -635,7 +685,7 @@ const setAttribute = (element, attribute, value) => element.setAttribute(attribu
 
 /**
  * Shortcut for `HTMLElement.getAttribute()` method.
- * @param {HTMLElement | Element} element target element
+ * @param {HTMLElement} element target element
  * @param {string} attribute attribute name
  * @returns {string?} attribute value
  */
@@ -643,7 +693,7 @@ const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
 /**
  * Shortcut for `HTMLElement.removeAttribute()` method.
- * @param  {HTMLElement | Element} element target element
+ * @param  {HTMLElement} element target element
  * @param  {string} attribute attribute name
  * @returns {void}
  */
@@ -653,61 +703,37 @@ const removeAttribute = (element, attribute) => element.removeAttribute(attribut
  * Returns the `Window` object of a target node.
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {(Node | HTMLElement | Element | Window)=} node target node
- * @returns {globalThis}
+ * @param {(Node | Window)=} node target node
+ * @returns {Window} the `Window` object
  */
 function getWindow(node) {
-  if (node == null) {
+  // node is undefined | NULL
+  if (!node) {
     return window;
   }
 
-  if (!(node instanceof Window)) {
-    const { ownerDocument } = node;
-    return ownerDocument ? ownerDocument.defaultView || window : window;
+  // node instanceof Document
+  if (isDocument(node)) {
+    return node.defaultView;
   }
 
-  // @ts-ignore
+  // node instanceof Node
+  if (isNode(node)) {
+    return node.ownerDocument.defaultView;
+  }
+
+  // node is instanceof Window
   return node;
 }
 
 /**
  * Returns the `document.body` or the `<body>` element.
  *
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {HTMLElement | HTMLBodyElement}
+ * @param {(ParentNode | Window)=} node
+ * @returns {HTMLBodyElement}
  */
 function getDocumentBody(node) {
   return getDocument(node).body;
-}
-
-/**
- * A global namespace for 'transitionDuration' string.
- * @type {string}
- */
-const transitionDuration = 'transitionDuration';
-
-/**
- * A global namespace for `transitionProperty` string for modern browsers.
- *
- * @type {string}
- */
-const transitionProperty = 'transitionProperty';
-
-/**
- * Utility to get the computed `transitionDuration`
- * from Element in miliseconds.
- *
- * @param {HTMLElement | Element} element target
- * @return {number} the value in miliseconds
- */
-function getElementTransitionDuration(element) {
-  const propertyValue = getElementStyle(element, transitionProperty);
-  const durationValue = getElementStyle(element, transitionDuration);
-  const durationScale = durationValue.includes('ms') ? 1 : 1000;
-  const duration = propertyValue && propertyValue !== 'none'
-    ? parseFloat(durationValue) * durationScale : 0;
-
-  return !Number.isNaN(duration) ? duration : 0;
 }
 
 let elementUID = 0;
@@ -717,7 +743,7 @@ const elementIDMap = new Map();
 /**
  * Returns a unique identifier for popover, tooltip, scrollspy.
  *
- * @param {HTMLElement | Element} element target element
+ * @param {HTMLElement} element target element
  * @param {string=} key predefined key
  * @returns {number} an existing or new unique ID
  */
@@ -752,20 +778,37 @@ function getUID(element, key) {
  *
  * @see https://stackoverflow.com/q/54520554/803358
  *
- * @param {HTMLElement | Element} element Element to look into
+ * @param {HTMLElement} element Element to look into
  * @param {string} selector the selector name
- * @return {(HTMLElement | Element)?} the query result
+ * @return {HTMLElement?} the query result
  */
 function closest(element, selector) {
   return element ? (element.closest(selector)
-    // @ts-ignore -- break out of `ShadowRoot`
+    // break out of `ShadowRoot`
     || closest(element.getRootNode().host, selector)) : null;
+}
+
+/**
+ * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
+ * or find one that matches a selector.
+ *
+ * @param {Node | string} selector the input selector or target element
+ * @param {ParentNode=} parent optional node to look into
+ * @return {HTMLElement?} the `HTMLElement` or `querySelector` result
+ */
+function querySelector(selector, parent) {
+  if (isNode(selector)) {
+    return selector;
+  }
+  const lookUp = isNode(parent) ? parent : getDocument();
+
+  return lookUp.querySelector(selector);
 }
 
 /**
  * Add class to `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to add
  * @returns {void}
  */
@@ -776,7 +819,7 @@ function addClass(element, classNAME) {
 /**
  * Check class in `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to check
  * @returns {boolean}
  */
@@ -787,7 +830,7 @@ function hasClass(element, classNAME) {
 /**
  * Remove class from `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to remove
  * @returns {void}
  */
@@ -795,7 +838,14 @@ function removeClass(element, classNAME) {
   element.classList.remove(classNAME);
 }
 
-// @ts-ignore
+/**
+ * Checks if an object is a `Function`.
+ *
+ * @param {any} fn the target object
+ * @returns {boolean} the query result
+ */
+const isFunction = (fn) => (fn && fn.constructor.name === 'Function') || false;
+
 const { userAgentData: uaDATA } = navigator;
 
 /**
@@ -816,13 +866,13 @@ const appleBrands = /(iPhone|iPod|iPad)/;
  * A global `boolean` for Apple browsers.
  * @type {boolean}
  */
-const isApple = !userAgentData ? appleBrands.test(userAgent)
-  : userAgentData.brands.some((/** @type {Record<string, any>} */x) => appleBrands.test(x.brand));
+const isApple = userAgentData ? userAgentData.brands.some((x) => appleBrands.test(x.brand))
+  : /* istanbul ignore next */appleBrands.test(userAgent);
 
 /**
  * Shortcut for the `Element.dispatchEvent(Event)` method.
  *
- * @param {HTMLElement | Element} element is the target
+ * @param {HTMLElement} element is the target
  * @param {Event} event is the `Event` object
  */
 const dispatchEvent = (element, event) => element.dispatchEvent(event);
@@ -846,28 +896,57 @@ const transitionEndEvent = 'transitionend';
 const transitionDelay = 'transitionDelay';
 
 /**
+ * A global namespace for `transitionProperty` string for modern browsers.
+ *
+ * @type {string}
+ */
+const transitionProperty = 'transitionProperty';
+
+/**
  * Utility to get the computed `transitionDelay`
  * from Element in miliseconds.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @return {number} the value in miliseconds
  */
 function getElementTransitionDelay(element) {
   const propertyValue = getElementStyle(element, transitionProperty);
   const delayValue = getElementStyle(element, transitionDelay);
-
-  const delayScale = delayValue.includes('ms') ? 1 : 1000;
+  const delayScale = delayValue.includes('ms') ? /* istanbul ignore next */1 : 1000;
   const duration = propertyValue && propertyValue !== 'none'
     ? parseFloat(delayValue) * delayScale : 0;
 
-  return !Number.isNaN(duration) ? duration : 0;
+  return !Number.isNaN(duration) ? duration : /* istanbul ignore next */0;
+}
+
+/**
+ * A global namespace for 'transitionDuration' string.
+ * @type {string}
+ */
+const transitionDuration = 'transitionDuration';
+
+/**
+ * Utility to get the computed `transitionDuration`
+ * from Element in miliseconds.
+ *
+ * @param {HTMLElement} element target
+ * @return {number} the value in miliseconds
+ */
+function getElementTransitionDuration(element) {
+  const propertyValue = getElementStyle(element, transitionProperty);
+  const durationValue = getElementStyle(element, transitionDuration);
+  const durationScale = durationValue.includes('ms') ? /* istanbul ignore next */1 : 1000;
+  const duration = propertyValue && propertyValue !== 'none'
+    ? parseFloat(durationValue) * durationScale : 0;
+
+  return !Number.isNaN(duration) ? duration : /* istanbul ignore next */0;
 }
 
 /**
  * Utility to make sure callbacks are consistently
  * called when transition ends.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {EventListener} handler `transitionend` callback
  */
 function emulateTransitionEnd(element, handler) {
@@ -882,6 +961,7 @@ function emulateTransitionEnd(element, handler) {
      * @type {EventListener} e Event object
      */
     const transitionEndWrapper = (e) => {
+      /* istanbul ignore else */
       if (e.target === element) {
         handler.apply(element, [e]);
         element.removeEventListener(transitionEndEvent, transitionEndWrapper);
@@ -890,14 +970,15 @@ function emulateTransitionEnd(element, handler) {
     };
     element.addEventListener(transitionEndEvent, transitionEndWrapper);
     setTimeout(() => {
-      if (!called) element.dispatchEvent(endEvent);
+      /* istanbul ignore next */
+      if (!called) dispatchEvent(element, endEvent);
     }, duration + delay + 17);
   } else {
     handler.apply(element, [endEvent]);
   }
 }
 
-/** @type {Map<HTMLElement | Element, any>} */
+/** @type {Map<HTMLElement, any>} */
 const TimeCache = new Map();
 /**
  * An interface for one or more `TimerHandler`s per `Element`.
@@ -906,17 +987,17 @@ const TimeCache = new Map();
 const Timer = {
   /**
    * Sets a new timeout timer for an element, or element -> key association.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {ReturnType<TimerHandler>} callback the callback
    * @param {number} delay the execution delay
    * @param {string=} key a unique key
    */
-  set: (target, callback, delay, key) => {
-    const element = querySelector(target);
+  set: (element, callback, delay, key) => {
+    if (!isHTMLElement(element)) return;
 
-    if (!element) return;
-
+    /* istanbul ignore else */
     if (key && key.length) {
+      /* istanbul ignore else */
       if (!TimeCache.has(element)) {
         TimeCache.set(element, new Map());
       }
@@ -929,38 +1010,35 @@ const Timer = {
 
   /**
    * Returns the timer associated with the target.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string=} key a unique
    * @returns {number?} the timer
    */
-  get: (target, key) => {
-    const element = querySelector(target);
-
-    if (!element) return null;
+  get: (element, key) => {
+    if (!isHTMLElement(element)) return null;
     const keyTimers = TimeCache.get(element);
 
     if (key && key.length && keyTimers && keyTimers.get) {
-      return keyTimers.get(key) || null;
+      return keyTimers.get(key) || /* istanbul ignore next */null;
     }
     return keyTimers || null;
   },
 
   /**
    * Clears the element's timer.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string=} key a unique key
    */
-  clear: (target, key) => {
-    const element = querySelector(target);
-
-    if (!element) return;
+  clear: (element, key) => {
+    if (!isHTMLElement(element)) return;
 
     if (key && key.length) {
       const keyTimers = TimeCache.get(element);
-
+      /* istanbul ignore else */
       if (keyTimers && keyTimers.get) {
         clearTimeout(keyTimers.get(key));
         keyTimers.delete(key);
+        /* istanbul ignore else */
         if (keyTimers.size === 0) {
           TimeCache.delete(element);
         }
@@ -976,13 +1054,14 @@ const Timer = {
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {SHORTER.OriginalEvent} a new namespaced event
+ * @returns {SHORTY.OriginalEvent} a new namespaced event
  */
 function OriginalEvent(EventType, config) {
   const OriginalCustomEvent = new CustomEvent(EventType, {
     cancelable: true, bubbles: true,
   });
 
+  /* istanbul ignore else */
   if (config instanceof Object) {
     ObjectAssign(OriginalCustomEvent, config);
   }
@@ -1110,27 +1189,35 @@ const offcanvasString = 'offcanvas';
 const fadeClass = 'fade';
 
 /**
+ * Shortcut for `typeof SOMETHING === "string"`.
+ *
+ * @param  {any} str input value
+ * @returns {boolean} the query result
+ */
+const isString = (str) => typeof str === 'string';
+
+/**
  * Append an existing `Element` to Popover / Tooltip component or HTML
  * markup string to be parsed & sanitized to be used as popover / tooltip content.
  *
- * @param {HTMLElement | Element} element target
- * @param {HTMLElement | Element | string} content the `Element` to append / string
- * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
+ * @param {HTMLElement} element target
+ * @param {Node | string} content the `Element` to append / string
+ * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
  */
 function setHtml(element, content, sanitizeFn) {
-  if (typeof content === 'string' && !content.length) return;
+  if (isString(content) && !content.length) return;
 
-  if (typeof content === 'string') {
+  if (isString(content)) {
     let dirty = content.trim(); // fixing #233
-    if (typeof sanitizeFn === 'function') dirty = sanitizeFn(dirty);
+    if (isFunction(sanitizeFn)) dirty = sanitizeFn(dirty);
 
-    const domParser = new DOMParser();
+    const win = getWindow(element);
+    const domParser = new win.DOMParser();
     const tempDocument = domParser.parseFromString(dirty, 'text/html');
     const { body } = tempDocument;
     const method = body.children.length ? 'innerHTML' : 'innerText';
-    // @ts-ignore
     element[method] = body[method];
-  } else if (content instanceof HTMLElement) {
+  } else if (isHTMLElement(content)) {
     element.append(content);
   }
 }
@@ -1138,7 +1225,7 @@ function setHtml(element, content, sanitizeFn) {
 /**
  * Creates a new tooltip / popover.
  *
- * @param {BSN.Popover | BSN.Tooltip} self the `Popover` instance
+ * @param {BSN.Popover | BSN.Tooltip} self the `Tooltip` / `Popover` instance
  */
 function createTip(self) {
   const { id, element, options } = self;
@@ -1160,9 +1247,9 @@ function createTip(self) {
   const placementClass = `bs-${tipString}-${tipPositions[placement]}`;
 
   // load template
-  /** @type {(HTMLElement | Element)?} */
+  /** @type {HTMLElement?} */
   let popoverTemplate;
-  if ([Element, HTMLElement].some((x) => template instanceof x)) {
+  if (isHTMLElement(template)) {
     popoverTemplate = template;
   } else {
     const htmlMarkup = getDocument(element).createElement('div');
@@ -1171,7 +1258,7 @@ function createTip(self) {
   }
 
   // set popover markup
-  self.tooltip = popoverTemplate && popoverTemplate.cloneNode(true);
+  self.tooltip = isHTMLElement(popoverTemplate) && popoverTemplate.cloneNode(true);
 
   const { tooltip } = self;
 
@@ -1189,11 +1276,11 @@ function createTip(self) {
   // set dismissible button
   if (dismissible) {
     if (title) {
-      if (title instanceof HTMLElement) setHtml(title, btnClose, sanitizeFn);
+      if (isHTMLElement(title)) setHtml(title, btnClose, sanitizeFn);
       else title += btnClose;
     } else {
       if (tooltipHeader) tooltipHeader.remove();
-      if (content instanceof HTMLElement) setHtml(content, btnClose, sanitizeFn);
+      if (isHTMLElement(content)) setHtml(content, btnClose, sanitizeFn);
       else content += btnClose;
     }
   }
@@ -1203,7 +1290,7 @@ function createTip(self) {
   if (!isTooltip) {
     if (title && tooltipHeader) setHtml(tooltipHeader, title, sanitizeFn);
     if (content && tooltipBody) setHtml(tooltipBody, content, sanitizeFn);
-    // @ts-ignore -- set btn
+    // set btn
     self.btn = querySelector('.btn-close', tooltip);
   } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
 
@@ -1217,12 +1304,12 @@ function createTip(self) {
 }
 
 /**
- * @param {(HTMLElement | Element)?} tip target
- * @param {HTMLElement | ParentNode} container parent container
+ * @param {HTMLElement} tip target
+ * @param {ParentNode} container parent container
  * @returns {boolean}
  */
 function isVisibleTip(tip, container) {
-  return tip instanceof HTMLElement && container.contains(tip);
+  return isHTMLElement(tip) && container.contains(tip);
 }
 
 /**
@@ -1231,17 +1318,15 @@ function isVisibleTip(tip, container) {
  * @param {any} element target
  * @returns {boolean} the query result
  */
-const isShadowRoot = (element) => {
-  const OwnElement = getWindow(element).ShadowRoot;
-  return element instanceof OwnElement || element instanceof ShadowRoot;
-};
+const isShadowRoot = (element) => (element && element.constructor.name === 'ShadowRoot')
+  || false;
 
 /**
  * Returns the `parentNode` also going through `ShadowRoot`.
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {Node | HTMLElement | Element} node the target node
- * @returns {Node | HTMLElement | Element} the apropriate parent node
+ * @param {Node} node the target node
+ * @returns {Node} the apropriate parent node
  */
 function getParentNode(node) {
   if (node.nodeName === 'HTML') {
@@ -1250,28 +1335,23 @@ function getParentNode(node) {
 
   // this is a quicker (but less type safe) way to save quite some bytes from the bundle
   return (
-    // @ts-ignore
     node.assignedSlot // step into the shadow DOM of the parent of a slotted node
-    || node.parentNode // @ts-ignore DOM Element detected
-    || (isShadowRoot(node) ? node.host : null) // ShadowRoot detected
+    || node.parentNode // DOM Element detected
+    || (isShadowRoot(node) && node.host) // ShadowRoot detected
     || getDocumentElement(node) // fallback
   );
 }
 
 /**
  * Check if a target element is a `<table>`, `<td>` or `<th>`.
+ * This specific check is important for determining
+ * the `offsetParent` of a given element.
+ *
  * @param {any} element the target element
  * @returns {boolean} the query result
  */
-const isTableElement = (element) => ['TABLE', 'TD', 'TH'].includes(element.tagName);
-
-/**
- * Checks if an element is an `HTMLElement`.
- *
- * @param {any} element the target object
- * @returns {boolean} the query result
- */
-const isHTMLElement = (element) => element instanceof HTMLElement;
+const isTableElement = (element) => (element && ['TABLE', 'TD', 'TH'].includes(element.tagName))
+  || false;
 
 /**
  * Returns an `HTMLElement` to be used as default value for *options.container*
@@ -1281,9 +1361,9 @@ const isHTMLElement = (element) => element instanceof HTMLElement;
  * offsets computation similar to **floating-ui**.
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {HTMLElement | Element} element the target
+ * @param {HTMLElement} element the target
  * @param {boolean=} getOffset when *true* it will return an `offsetParent`
- * @returns {HTMLElement | HTMLBodyElement | Window | globalThis} the query result
+ * @returns {ParentNode | Window} the query result
  */
 function getElementContainer(element, getOffset) {
   const majorBlockTags = ['HTML', 'BODY'];
@@ -1309,9 +1389,9 @@ function getElementContainer(element, getOffset) {
     return offsetParent;
   }
 
-  /** @type {(HTMLElement)[]} */
+  /** @type {HTMLElement[]} */
   const containers = [];
-  /** @type {any} */
+  /** @type {ParentNode} */
   let { parentNode } = element;
 
   while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
@@ -1344,20 +1424,22 @@ function getElementContainer(element, getOffset) {
  * @return {niceValue} the normalized value
  */
 function normalizeValue(value) {
-  if (value === 'true') { // boolean
+  if (['true', true].includes(value)) { // boolean
+  // if ('true' === value) { // boolean
     return true;
   }
 
-  if (value === 'false') { // boolean
+  if (['false', false].includes(value)) { // boolean
+  // if ('false' === value) { // boolean
     return false;
-  }
-
-  if (!Number.isNaN(+value)) { // number
-    return +value;
   }
 
   if (value === '' || value === 'null') { // null
     return null;
+  }
+
+  if (value !== '' && !Number.isNaN(+value)) { // number
+    return +value;
   }
 
   // string / function / HTMLElement / object
@@ -1374,14 +1456,13 @@ const ObjectKeys = (obj) => Object.keys(obj);
 /**
  * Utility to normalize component options.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {Record<string, any>} defaultOps component default options
  * @param {Record<string, any>} inputOps component instance options
  * @param {string=} ns component namespace
  * @return {Record<string, any>} normalized component options object
  */
 function normalizeOptions(element, defaultOps, inputOps, ns) {
-  // @ts-ignore -- our targets are always `HTMLElement`
   const data = { ...element.dataset };
   /** @type {Record<string, any>} */
   const normalOps = {};
@@ -1402,6 +1483,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   });
 
   ObjectKeys(defaultOps).forEach((k) => {
+    /* istanbul ignore else */
     if (k in inputOps) {
       normalOps[k] = inputOps[k];
     } else if (k in dataOps) {
@@ -1416,7 +1498,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.4";
+var version = "4.2.0alpha1";
 
 const Version = version;
 
@@ -1426,7 +1508,7 @@ const Version = version;
 /** Returns a new `BaseComponent` instance. */
 class BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target `Element` or selector string
+   * @param {HTMLElement | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
@@ -1443,10 +1525,11 @@ class BaseComponent {
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {HTMLElement | Element} */
+    /** @type {HTMLElement} */
     self.element = element;
 
-    if (self.defaults && Object.keys(self.defaults).length) {
+    /* istanbul ignore else */
+    if (self.defaults && ObjectKeys(self.defaults).length) {
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
@@ -1454,15 +1537,17 @@ class BaseComponent {
   }
 
   /* eslint-disable */
+  /* istanbul ignore next */
   /** @static */
   get version() { return Version; }
-  /* eslint-enable */
 
+  /* eslint-enable */
+  /* istanbul ignore next */
   /** @static */
   get name() { return this.constructor.name; }
 
+  /* istanbul ignore next */
   /** @static */
-  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -1471,7 +1556,6 @@ class BaseComponent {
   dispose() {
     const self = this;
     Data.remove(self.element, self.name);
-    // @ts-ignore
     ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -1515,14 +1599,18 @@ function removeTooltip(self) {
  * Executes after the instance has been disposed.
  *
  * @param {Tooltip} self the `Tooltip` instance
+ * @param {Function=} callback the parent dispose callback
  */
-function disposeTooltipComplete(self) {
+function disposeTooltipComplete(self, callback) {
   const { element } = self;
   toggleTooltipHandlers(self);
 
-  if (element.hasAttribute(dataOriginalTitle) && self.name === tooltipString) {
+  /* istanbul ignore else */
+  if (hasAttribute(element, dataOriginalTitle) && self.name === tooltipComponent) {
     toggleTooltipTitle(self);
   }
+  /* istanbul ignore else */
+  if (callback) callback();
 }
 
 /**
@@ -1537,9 +1625,9 @@ function toggleTooltipAction(self, add) {
 
   action(getDocument(element), touchstartEvent, self.handleTouch, passiveHandler);
 
+  /* istanbul ignore else */
   if (!isMedia(element)) {
     [scrollEvent, resizeEvent].forEach((ev) => {
-      // @ts-ignore
       action(getWindow(element), ev, self.update, passiveHandler);
     });
   }
@@ -1563,14 +1651,16 @@ function tooltipShownAction(self) {
  * Executes after the tooltip was hidden to the user.
  *
  * @param {Tooltip} self the `Tooltip` instance
+ * @param {Function=} callback the dispose callback
  */
-function tooltipHiddenAction(self) {
+function tooltipHiddenAction(self, callback) {
   const { element } = self;
   const hiddenTooltipEvent = OriginalEvent(`hidden.bs.${toLowerCase(self.name)}`);
 
   toggleTooltipAction(self);
   removeTooltip(self);
   dispatchEvent(element, hiddenTooltipEvent);
+  if (isFunction(callback)) callback();
   Timer.clear(element, 'out');
 }
 
@@ -1582,7 +1672,7 @@ function tooltipHiddenAction(self) {
  */
 function toggleTooltipHandlers(self, add) {
   const action = add ? addListener : removeListener;
-  // @ts-ignore -- btn is only for dismissible popover
+  // btn is only for dismissible popover
   const { element, options, btn } = self;
   const { trigger, dismissible } = options;
 
@@ -1599,10 +1689,12 @@ function toggleTooltipHandlers(self, add) {
   }
 
   triggerOptions.forEach((tr) => {
+    /* istanbul ignore else */
     if (elemIsMedia || tr === mousehoverEvent) {
       action(element, mousedownEvent, self.show);
       action(element, mouseenterEvent, self.show);
 
+      /* istanbul ignore else */
       if (dismissible && btn) {
         action(btn, mouseclickEvent, self.hide);
       } else {
@@ -1613,8 +1705,12 @@ function toggleTooltipHandlers(self, add) {
       action(element, tr, (!dismissible ? self.toggle : self.show));
     } else if (tr === focusEvent) {
       action(element, focusinEvent, self.show);
+      /* istanbul ignore else */
       if (!dismissible) action(element, focusoutEvent, self.hide);
-      if (isApple) action(element, mouseclickEvent, () => focus(element));
+      /* istanbul ignore else */
+      if (isApple) {
+        action(element, mouseclickEvent, () => focus(element));
+      }
     }
   });
 }
@@ -1633,11 +1729,11 @@ function toggleTooltipOpenHandlers(self, add) {
   const parentModal = closest(element, `.${modalString}`);
   const parentOffcanvas = closest(element, `.${offcanvasString}`);
 
+  /* istanbul ignore else */
   if (!isMedia(element)) {
     const win = getWindow(element);
     const overflow = offsetHeight !== scrollHeight;
     const scrollTarget = overflow || offsetParent !== win ? container : win;
-    // @ts-ignore
     action(win, resizeEvent, self.update, passiveHandler);
     action(scrollTarget, scrollEvent, self.update, passiveHandler);
   }
@@ -1659,7 +1755,6 @@ function toggleTooltipTitle(self, content) {
   const { element } = self;
 
   setAttribute(element, titleAtt[content ? 0 : 1],
-    // @ts-ignore
     (content || getAttribute(element, titleAtt[0])));
   removeAttribute(element, titleAtt[content ? 1 : 0]);
 }
@@ -1669,7 +1764,7 @@ function toggleTooltipTitle(self, content) {
 /** Creates a new `Tooltip` instance. */
 class Tooltip extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target the target element
+   * @param {HTMLElement | string} target the target element
    * @param {BSN.Options.Tooltip=} config the instance options
    */
   constructor(target, config) {
@@ -1682,6 +1777,7 @@ class Tooltip extends BaseComponent {
     const tipString = isTooltip ? tooltipString : popoverString;
     const tipComponent = isTooltip ? tooltipComponent : popoverComponent;
 
+    /* istanbul ignore next: this is to set Popover too */
     getTooltipInstance = (elem) => getInstance(elem, tipComponent);
 
     // additional properties
@@ -1689,7 +1785,6 @@ class Tooltip extends BaseComponent {
     self.tooltip = {};
     if (!isTooltip) {
       /** @type {any?} */
-      // @ts-ignore
       self.btn = null;
     }
     /** @type {any} */
@@ -1705,16 +1800,19 @@ class Tooltip extends BaseComponent {
     const { options } = self;
 
     // invalidate
-    if ((!options.title && isTooltip) || (!isTooltip && !options.content)) return;
+    if ((!options.title && isTooltip) || (!isTooltip && !options.content)) {
+      // throw Error(`${this.name} Error: target has no content set.`);
+      return;
+    }
 
-    const container = querySelector(options.container);
+    const container = querySelector(options.container, getDocument(element));
     const idealContainer = getElementContainer(element);
 
     // bypass container option when its position is static/relative
     self.options.container = !container || (container
       && ['static', 'relative'].includes(getElementStyle(container, 'position')))
       ? idealContainer
-      : container || getDocumentBody(element);
+      : /* istanbul ignore next */container || getDocumentBody(element);
 
     // reset default options
     tooltipDefaults[titleAttr] = null;
@@ -1727,7 +1825,8 @@ class Tooltip extends BaseComponent {
     self.toggle = self.toggle.bind(self);
 
     // set title attributes and add event listeners
-    if (element.hasAttribute(titleAttr) && isTooltip) {
+    /* istanbul ignore else */
+    if (hasAttribute(element, titleAttr) && isTooltip) {
       toggleTooltipTitle(self, options.title);
     }
 
@@ -1784,7 +1883,9 @@ class Tooltip extends BaseComponent {
         self.update(e);
         toggleTooltipOpenHandlers(self, true);
 
+        /* istanbul ignore else */
         if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
+        /* istanbul ignore else */
         if (animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
         else tooltipShownAction(self);
       }, 17, 'in');
@@ -1794,15 +1895,17 @@ class Tooltip extends BaseComponent {
   /**
    * Hides the tooltip.
    *
-   * @this {Tooltip}
+   * @this {Tooltip} the Tooltip instance
+   * @param {Function=} callback the dispose callback
    */
-  hide() {
+  hide(callback) {
     const self = this;
     const { options, tooltip, element } = self;
     const { container, animation, delay } = options;
 
     Timer.clear(element, 'in');
 
+    /* istanbul ignore else */
     if (tooltip && isVisibleTip(tooltip, container)) {
       Timer.set(element, () => {
         const hideTooltipEvent = OriginalEvent(`hide.bs.${toLowerCase(self.name)}`);
@@ -1810,12 +1913,12 @@ class Tooltip extends BaseComponent {
 
         if (hideTooltipEvent.defaultPrevented) return;
 
-        // @ts-ignore
         removeClass(tooltip, showClass);
         toggleTooltipOpenHandlers(self);
 
-        if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(self));
-        else tooltipHiddenAction(self);
+        /* istanbul ignore else */
+        if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(self, callback));
+        else tooltipHiddenAction(self, callback);
       }, delay + 17, 'out');
     }
   }
@@ -1827,7 +1930,6 @@ class Tooltip extends BaseComponent {
    * @this {Tooltip} the `Tooltip` instance
    */
   update(e) {
-    // @ts-ignore
     styleTip(this, e);
   }
 
@@ -1849,6 +1951,7 @@ class Tooltip extends BaseComponent {
   enable() {
     const self = this;
     const { enabled } = self;
+    /* istanbul ignore else */
     if (!enabled) {
       toggleTooltipHandlers(self, true);
       self.enabled = !enabled;
@@ -1859,17 +1962,13 @@ class Tooltip extends BaseComponent {
   disable() {
     const self = this;
     const {
-      element, tooltip, options, enabled,
+      tooltip, options, enabled,
     } = self;
-    const { animation, container, delay } = options;
+    const { animation, container } = options;
+    /* istanbul ignore else */
     if (enabled) {
       if (isVisibleTip(tooltip, container) && animation) {
-        self.hide();
-
-        Timer.set(element, () => {
-          toggleTooltipHandlers(self);
-          Timer.clear(element, tooltipString);
-        }, getElementTransitionDuration(tooltip) + delay + 17, tooltipString);
+        self.hide(() => toggleTooltipHandlers(self));
       } else {
         toggleTooltipHandlers(self);
       }
@@ -1892,8 +1991,8 @@ class Tooltip extends BaseComponent {
   handleTouch({ target }) {
     const { tooltip, element } = this;
 
+    /* istanbul ignore next */
     if (tooltip.contains(target) || target === element
-      // @ts-ignore
       || (target && element.contains(target))) ; else {
       this.hide();
     }
@@ -1903,15 +2002,14 @@ class Tooltip extends BaseComponent {
   dispose() {
     const self = this;
     const { tooltip, options } = self;
+    const callback = () => disposeTooltipComplete(self, () => super.dispose());
 
     if (options.animation && isVisibleTip(tooltip, options.container)) {
-      options.delay = 0; // reset delay
-      self.hide();
-      emulateTransitionEnd(tooltip, () => disposeTooltipComplete(self));
+      self.options.delay = 0; // reset delay
+      self.hide(callback);
     } else {
-      disposeTooltipComplete(self);
+      callback();
     }
-    super.dispose();
   }
 }
 
@@ -1947,7 +2045,7 @@ const popoverDefaults = {
 class Popover extends Tooltip {
   /* eslint-disable -- we want to specify Popover Options */
   /**
-   * @param {HTMLElement | Element | string} target the target element
+   * @param {HTMLElement | string} target the target element
    * @param {BSN.Options.Popover=} config the instance options
    */
   constructor(target, config) {
@@ -1968,8 +2066,9 @@ class Popover extends Tooltip {
   /* extend original `show()` */
   show() {
     super.show();
-    // @ts-ignore -- btn only exists within dismissible popover
+    // btn only exists within dismissible popover
     const { options, btn } = this;
+    /* istanbul ignore else */
     if (options.dismissible && btn) setTimeout(() => focus(btn), 17);
   }
 }

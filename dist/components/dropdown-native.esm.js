@@ -1,5 +1,5 @@
 /*!
-  * Native JavaScript for Bootstrap - Dropdown v4.1.4 (https://thednp.github.io/bootstrap.native/)
+  * Native JavaScript for Bootstrap - Dropdown v4.2.0alpha1 (https://thednp.github.io/bootstrap.native/)
   * Copyright 2015-2022 © dnp_theme
   * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
   */
@@ -65,7 +65,7 @@ const keyEscape = 'Escape';
 
 /**
  * Shortcut for `HTMLElement.setAttribute()` method.
- * @param  {HTMLElement | Element} element target element
+ * @param  {HTMLElement} element target element
  * @param  {string} attribute attribute name
  * @param  {string} value attribute value
  * @returns {void}
@@ -74,7 +74,7 @@ const setAttribute = (element, attribute, value) => element.setAttribute(attribu
 
 /**
  * Shortcut for `HTMLElement.hasAttribute()` method.
- * @param  {HTMLElement | Element} element target element
+ * @param  {HTMLElement} element target element
  * @param  {string} attribute attribute name
  * @returns {boolean} the query result
  */
@@ -87,54 +87,71 @@ const hasAttribute = (element, attribute) => element.hasAttribute(attribute);
  *
  * @see https://stackoverflow.com/q/54520554/803358
  *
- * @param {HTMLElement | Element} element Element to look into
+ * @param {HTMLElement} element Element to look into
  * @param {string} selector the selector name
- * @return {(HTMLElement | Element)?} the query result
+ * @return {HTMLElement?} the query result
  */
 function closest(element, selector) {
   return element ? (element.closest(selector)
-    // @ts-ignore -- break out of `ShadowRoot`
+    // break out of `ShadowRoot`
     || closest(element.getRootNode().host, selector)) : null;
 }
 
 /**
+ * Checks if an object is a `Document`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+/**
+ * Checks if an object is a `Node`.
+ *
+ * @param {any} node the target object
+ * @returns {boolean} the query result
+ */
+const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  .some((x) => +element.nodeType === x)) || false;
+
+/**
+ * Check if a target object is `Window`.
+ * => equivalent to `object instanceof Window`
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
+
+/**
  * Returns the `document` or the `#document` element.
  * @see https://github.com/floating-ui/floating-ui
- * @param {(Node | HTMLElement | Element | globalThis)=} node
+ * @param {(ParentNode | Window)=} node
  * @returns {Document}
  */
 function getDocument(node) {
-  if (node instanceof HTMLElement) return node.ownerDocument;
-  if (node instanceof Window) return node.document;
+  if (isDocument(node)) return node;
+  if (isNode(node)) return node.ownerDocument;
+  if (isWindow(node)) return node.document;
   return window.document;
 }
-
-/**
- * A global array of possible `ParentNode`.
- */
-const parentNodes = [Document, Element, HTMLElement];
-
-/**
- * A global array with `Element` | `HTMLElement`.
- */
-const elementNodes = [Element, HTMLElement];
 
 /**
  * Utility to check if target is typeof `HTMLElement`, `Element`, `Node`
  * or find one that matches a selector.
  *
- * @param {HTMLElement | Element | string} selector the input selector or target element
- * @param {(HTMLElement | Element | Document)=} parent optional node to look into
- * @return {(HTMLElement | Element)?} the `HTMLElement` or `querySelector` result
+ * @param {Node | string} selector the input selector or target element
+ * @param {ParentNode=} parent optional node to look into
+ * @return {HTMLElement?} the `HTMLElement` or `querySelector` result
  */
 function querySelector(selector, parent) {
-  const lookUp = parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
+  if (isNode(selector)) {
+    return selector;
+  }
+  const lookUp = isNode(parent) ? parent : getDocument();
 
-  // @ts-ignore
-  return elementNodes.some((x) => selector instanceof x)
-    // @ts-ignore
-    ? selector : lookUp.querySelector(selector);
+  return lookUp.querySelector(selector);
 }
 
 /**
@@ -142,12 +159,11 @@ function querySelector(selector, parent) {
  * like `ShadowRoot` do not support `getElementsByClassName`.
  *
  * @param {string} selector the class name
- * @param {(HTMLElement | Element | Document)=} parent optional Element to look into
- * @return {HTMLCollectionOf<HTMLElement | Element>} the 'HTMLCollection'
+ * @param {ParentNode=} parent optional Element to look into
+ * @return {HTMLCollectionOf<HTMLElement>} the 'HTMLCollection'
  */
 function getElementsByClassName(selector, parent) {
-  const lookUp = parent && parentNodes.some((x) => parent instanceof x)
-    ? parent : getDocument();
+  const lookUp = isNode(parent) ? parent : getDocument();
   return lookUp.getElementsByClassName(selector);
 }
 
@@ -164,7 +180,16 @@ const passiveHandler = { passive: true };
  */
 const ObjectAssign = (obj, source) => Object.assign(obj, source);
 
-/** @type {Map<string, Map<HTMLElement | Element, Record<string, any>>>} */
+/**
+ * Checks if an element is an `HTMLElement`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} element the target object
+ * @returns {boolean} the query result
+ */
+const isHTMLElement = (element) => (element && element.nodeType === 1) || false;
+
+/** @type {Map<string, Map<HTMLElement, Record<string, any>>>} */
 const componentData = new Map();
 /**
  * An interface for web components background data.
@@ -173,27 +198,27 @@ const componentData = new Map();
 const Data = {
   /**
    * Sets web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @param {Record<string, any>} instance the component instance
    */
-  set: (target, component, instance) => {
-    const element = querySelector(target);
-    if (!element) return;
+  set: (element, component, instance) => {
+    if (!isHTMLElement(element)) return;
 
+    /* istanbul ignore else */
     if (!componentData.has(component)) {
       componentData.set(component, new Map());
     }
 
     const instanceMap = componentData.get(component);
-    // @ts-ignore - not undefined, but defined right above
+    // not undefined, but defined right above
     instanceMap.set(element, instance);
   },
 
   /**
    * Returns all instances for specified component.
    * @param {string} component the component's name or a unique key
-   * @returns {Map<HTMLElement | Element, Record<string, any>>?} all the component instances
+   * @returns {Map<HTMLElement, Record<string, any>>?} all the component instances
    */
   getAllFor: (component) => {
     const instanceMap = componentData.get(component);
@@ -203,12 +228,12 @@ const Data = {
 
   /**
    * Returns the instance associated with the target.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    * @returns {Record<string, any>?} the instance
    */
-  get: (target, component) => {
-    const element = querySelector(target);
+  get: (element, component) => {
+    if (!isHTMLElement(element) || !component) return null;
     const allForC = Data.getAllFor(component);
     const instance = element && allForC && allForC.get(element);
 
@@ -217,16 +242,16 @@ const Data = {
 
   /**
    * Removes web components data.
-   * @param {HTMLElement | Element | string} target target element
+   * @param {HTMLElement} element target element
    * @param {string} component the component's name or a unique key
    */
-  remove: (target, component) => {
-    const element = querySelector(target);
+  remove: (element, component) => {
     const instanceMap = componentData.get(component);
-    if (!instanceMap || !element) return;
+    if (!instanceMap || !isHTMLElement(element)) return;
 
     instanceMap.delete(element);
 
+    /* istanbul ignore else */
     if (instanceMap.size === 0) {
       componentData.delete(component);
     }
@@ -235,22 +260,37 @@ const Data = {
 
 /**
  * An alias for `Data.get()`.
- * @type {SHORTER.getInstance<any>}
+ * @type {SHORTY.getInstance<any>}
  */
 const getInstance = (target, component) => Data.get(target, component);
 
 /**
+ * Shortcut for `Object.entries()` static method.
+ * @param  {Record<string, any>} obj a target object
+ * @returns {[string, any][]}
+ */
+const ObjectEntries = (obj) => Object.entries(obj);
+
+/**
  * Shortcut for multiple uses of `HTMLElement.style.propertyName` method.
- * @param  {HTMLElement | Element} element target element
+ * @param  {HTMLElement} element target element
  * @param  {Partial<CSSStyleDeclaration>} styles attribute value
  */
-// @ts-ignore
-const setElementStyle = (element, styles) => { ObjectAssign(element.style, styles); };
+const setElementStyle = (element, styles) => {
+  ObjectEntries(styles).forEach(([key, value]) => {
+    if (key.includes('--')) {
+      element.style.setProperty(key, value);
+    } else {
+      const propObject = {}; propObject[key] = value;
+      ObjectAssign(element.style, propObject);
+    }
+  });
+};
 
 /**
  * Shortcut for the `Element.dispatchEvent(Event)` method.
  *
- * @param {HTMLElement | Element} element is the target
+ * @param {HTMLElement} element is the target
  * @param {Event} event is the `Event` object
  */
 const dispatchEvent = (element, event) => element.dispatchEvent(event);
@@ -258,22 +298,22 @@ const dispatchEvent = (element, event) => element.dispatchEvent(event);
 /**
  * Utility to focus an `HTMLElement` target.
  *
- * @param {HTMLElement | Element} element is the target
+ * @param {HTMLElement} element is the target
  */
-// @ts-ignore -- `Element`s resulted from querySelector can focus too
 const focus = (element) => element.focus();
 
 /**
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
- * @returns {SHORTER.OriginalEvent} a new namespaced event
+ * @returns {SHORTY.OriginalEvent} a new namespaced event
  */
 function OriginalEvent(EventType, config) {
   const OriginalCustomEvent = new CustomEvent(EventType, {
     cancelable: true, bubbles: true,
   });
 
+  /* istanbul ignore else */
   if (config instanceof Object) {
     ObjectAssign(OriginalCustomEvent, config);
   }
@@ -283,7 +323,7 @@ function OriginalEvent(EventType, config) {
 /**
  * Add class to `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to add
  * @returns {void}
  */
@@ -294,7 +334,7 @@ function addClass(element, classNAME) {
 /**
  * Check class in `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to check
  * @returns {boolean}
  */
@@ -305,7 +345,7 @@ function hasClass(element, classNAME) {
 /**
  * Remove class from `HTMLElement.classList`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} classNAME to remove
  * @returns {void}
  */
@@ -316,8 +356,8 @@ function removeClass(element, classNAME) {
 /**
  * Returns the `document.documentElement` or the `<html>` element.
  *
- * @param {(Node | HTMLElement | Element | globalThis)=} node
- * @returns {HTMLElement | HTMLHtmlElement}
+ * @param {(ParentNode | Window)=} node
+ * @returns {HTMLHtmlElement}
  */
 function getDocumentElement(node) {
   return getDocument(node).documentElement;
@@ -325,7 +365,7 @@ function getDocumentElement(node) {
 
 /**
  * Checks if a page is Right To Left.
- * @param {(HTMLElement | Element)=} node the target
+ * @param {HTMLElement=} node the target
  * @returns {boolean} the query result
  */
 const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
@@ -337,16 +377,18 @@ const isRTL = (node) => getDocumentElement(node).dir === 'rtl';
  * * If `element` parameter is not an `HTMLElement`, `getComputedStyle`
  * throws a `ReferenceError`.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {string} property the css property
  * @return {string} the css property value
  */
 function getElementStyle(element, property) {
   const computedStyle = getComputedStyle(element);
 
-  // @ts-ignore -- must use camelcase strings,
+  // must use camelcase strings,
   // or non-camelcase strings with `getPropertyValue`
-  return property in computedStyle ? computedStyle[property] : '';
+  return property.includes('--')
+    ? computedStyle.getPropertyValue(property)
+    : computedStyle[property];
 }
 
 /**
@@ -354,9 +396,9 @@ function getElementStyle(element, property) {
  *
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {HTMLElement | Element} element event.target
+ * @param {HTMLElement} element event.target
  * @param {boolean=} includeScale when *true*, the target scale is also computed
- * @returns {SHORTER.BoundingClientRect} the bounding client rect object
+ * @returns {SHORTY.BoundingClientRect} the bounding client rect object
  */
 function getBoundingClientRect(element, includeScale) {
   const {
@@ -365,10 +407,12 @@ function getBoundingClientRect(element, includeScale) {
   let scaleX = 1;
   let scaleY = 1;
 
-  if (includeScale && element instanceof HTMLElement) {
+  if (includeScale && isHTMLElement(element)) {
     const { offsetWidth, offsetHeight } = element;
-    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth || 1 : 1;
-    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight || 1 : 1;
+    scaleX = offsetWidth > 0 ? Math.round(width) / offsetWidth
+      : /* istanbul ignore next */1;
+    scaleY = offsetHeight > 0 ? Math.round(height) / offsetHeight
+      : /* istanbul ignore next */1;
   }
 
   return {
@@ -387,20 +431,26 @@ function getBoundingClientRect(element, includeScale) {
  * Returns the `Window` object of a target node.
  * @see https://github.com/floating-ui/floating-ui
  *
- * @param {(Node | HTMLElement | Element | Window)=} node target node
- * @returns {globalThis}
+ * @param {(Node | Window)=} node target node
+ * @returns {Window} the `Window` object
  */
 function getWindow(node) {
-  if (node == null) {
+  // node is undefined | NULL
+  if (!node) {
     return window;
   }
 
-  if (!(node instanceof Window)) {
-    const { ownerDocument } = node;
-    return ownerDocument ? ownerDocument.defaultView || window : window;
+  // node instanceof Document
+  if (isDocument(node)) {
+    return node.defaultView;
   }
 
-  // @ts-ignore
+  // node instanceof Node
+  if (isNode(node)) {
+    return node.ownerDocument.defaultView;
+  }
+
+  // node is instanceof Window
   return node;
 }
 
@@ -519,21 +569,23 @@ const dropdownMenuClass = 'dropdown-menu';
  * Checks if an *event.target* or its parent has an `href="#"` value.
  * We need to prevent jumping around onclick, don't we?
  *
- * @param {HTMLElement | HTMLAnchorElement | EventTarget} element the target element
+ * @param {Node} element the target element
  * @returns {boolean} the query result
  */
 function isEmptyAnchor(element) {
-  // @ts-ignore -- `EventTarget` must be `HTMLElement`
+  // `EventTarget` must be `HTMLElement`
   const parentAnchor = closest(element, 'A');
-  // @ts-ignore -- anchor href starts with #
-  return element && ((hasAttribute(element, 'href') && element.href.slice(-1) === '#')
-    // @ts-ignore -- OR a child of an anchor with href starts with #
-    || (parentAnchor && hasAttribute(parentAnchor, 'href') && parentAnchor.href.slice(-1) === '#'));
+  return isHTMLElement(element)
+    // anchor href starts with #
+    && ((hasAttribute(element, 'href') && element.href.slice(-1) === '#')
+    // OR a child of an anchor with href starts with #
+    || (parentAnchor && hasAttribute(parentAnchor, 'href')
+    && parentAnchor.href.slice(-1) === '#'));
 }
 
 /**
  * Shortcut for `HTMLElement.getAttribute()` method.
- * @param {HTMLElement | Element} element target element
+ * @param {HTMLElement} element target element
  * @param {string} attribute attribute name
  * @returns {string?} attribute value
  */
@@ -552,20 +604,22 @@ const getAttribute = (element, attribute) => element.getAttribute(attribute);
  * @return {niceValue} the normalized value
  */
 function normalizeValue(value) {
-  if (value === 'true') { // boolean
+  if (['true', true].includes(value)) { // boolean
+  // if ('true' === value) { // boolean
     return true;
   }
 
-  if (value === 'false') { // boolean
+  if (['false', false].includes(value)) { // boolean
+  // if ('false' === value) { // boolean
     return false;
-  }
-
-  if (!Number.isNaN(+value)) { // number
-    return +value;
   }
 
   if (value === '' || value === 'null') { // null
     return null;
+  }
+
+  if (value !== '' && !Number.isNaN(+value)) { // number
+    return +value;
   }
 
   // string / function / HTMLElement / object
@@ -590,14 +644,13 @@ const toLowerCase = (source) => source.toLowerCase();
 /**
  * Utility to normalize component options.
  *
- * @param {HTMLElement | Element} element target
+ * @param {HTMLElement} element target
  * @param {Record<string, any>} defaultOps component default options
  * @param {Record<string, any>} inputOps component instance options
  * @param {string=} ns component namespace
  * @return {Record<string, any>} normalized component options object
  */
 function normalizeOptions(element, defaultOps, inputOps, ns) {
-  // @ts-ignore -- our targets are always `HTMLElement`
   const data = { ...element.dataset };
   /** @type {Record<string, any>} */
   const normalOps = {};
@@ -618,6 +671,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   });
 
   ObjectKeys(defaultOps).forEach((k) => {
+    /* istanbul ignore else */
     if (k in inputOps) {
       normalOps[k] = inputOps[k];
     } else if (k in dataOps) {
@@ -632,7 +686,7 @@ function normalizeOptions(element, defaultOps, inputOps, ns) {
   return normalOps;
 }
 
-var version = "4.1.4";
+var version = "4.2.0alpha1";
 
 const Version = version;
 
@@ -642,7 +696,7 @@ const Version = version;
 /** Returns a new `BaseComponent` instance. */
 class BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target `Element` or selector string
+   * @param {HTMLElement | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
@@ -659,10 +713,11 @@ class BaseComponent {
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {HTMLElement | Element} */
+    /** @type {HTMLElement} */
     self.element = element;
 
-    if (self.defaults && Object.keys(self.defaults).length) {
+    /* istanbul ignore else */
+    if (self.defaults && ObjectKeys(self.defaults).length) {
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
@@ -670,15 +725,17 @@ class BaseComponent {
   }
 
   /* eslint-disable */
+  /* istanbul ignore next */
   /** @static */
   get version() { return Version; }
-  /* eslint-enable */
 
+  /* eslint-enable */
+  /* istanbul ignore next */
   /** @static */
   get name() { return this.constructor.name; }
 
+  /* istanbul ignore next */
   /** @static */
-  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -687,7 +744,6 @@ class BaseComponent {
   dispose() {
     const self = this;
     Data.remove(self.element, self.name);
-    // @ts-ignore
     ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }
@@ -721,6 +777,7 @@ const dropdownInitCallback = (element) => new Dropdown(element);
 
 // DROPDOWN PRIVATE GC
 // ===================
+// const dropdownMenuStartClass = `${dropdownMenuClass}-start`;
 const dropdownMenuEndClass = `${dropdownMenuClass}-end`;
 const verticalClass = [dropdownString, dropupString];
 const horizontalClass = [dropstartString, dropendString];
@@ -753,19 +810,22 @@ function styleDropdown(self) {
   const { offset } = options;
 
   // don't apply any style on mobile view
+  /* istanbul ignore next: this test requires a navbar */
   if (getElementStyle(menu, 'position') === 'static') return;
 
   const RTL = isRTL(element);
-  const menuEnd = hasClass(parentElement, dropdownMenuEndClass);
+  // const menuStart = hasClass(menu, dropdownMenuStartClass);
+  const menuEnd = hasClass(menu, dropdownMenuEndClass);
 
   // reset menu offset and position
   const resetProps = ['margin', 'top', 'bottom', 'left', 'right'];
-  // @ts-ignore
   resetProps.forEach((p) => { menu.style[p] = ''; });
 
   // set initial position class
   // take into account .btn-group parent as .dropdown
-  let positionClass = dropdownMenuClasses.find((c) => hasClass(parentElement, c)) || dropdownString;
+  // this requires navbar/btn-group/input-group
+  let positionClass = dropdownMenuClasses.find((c) => hasClass(parentElement, c))
+    || /* istanbul ignore next: fallback position */ dropdownString;
 
   /** @type {Record<string, Record<string, any>>} */
   let dropdownMargin = {
@@ -781,10 +841,10 @@ function styleDropdown(self) {
     dropup: { top: 'auto', bottom: '100%' },
     dropstart: RTL ? { left: '100%', right: 'auto' } : { left: 'auto', right: '100%' },
     dropend: RTL ? { left: 'auto', right: '100%' } : { left: '100%', right: 'auto' },
+    menuStart: RTL ? { right: 0, left: 'auto' } : { right: 'auto', left: 0 },
     menuEnd: RTL ? { right: 'auto', left: 0 } : { right: 0, left: 'auto' },
   };
 
-  // @ts-ignore
   const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menu;
 
   const { clientWidth, clientHeight } = getDocumentElement(element);
@@ -826,41 +886,47 @@ function styleDropdown(self) {
   if (positionClass === dropdownString && bottomFullExceed && !topExceed) {
     positionClass = dropupString;
   }
+
   // override position for horizontal classes
   if (horizontalClass.includes(positionClass) && bottomExceed) {
     ObjectAssign(dropdownPosition[positionClass], {
       top: 'auto', bottom: 0,
     });
   }
+
   // override position for vertical classes
   if (verticalClass.includes(positionClass) && (leftExceed || rightExceed)) {
     // don't realign when menu is wider than window
     // in both RTL and non-RTL readability is KING
-    if (targetLeft + targetWidth + Math.abs(menuWidth - targetWidth) + offset < clientWidth) {
-      ObjectAssign(dropdownPosition[positionClass],
-        leftExceed ? { left: 0, right: 'auto' } : { left: 'auto', right: 0 });
-    }
+    let posAjust;
+    if (!leftExceed && rightExceed && !RTL) posAjust = { left: 'auto', right: 0 };
+    if (leftExceed && !rightExceed && RTL) posAjust = { left: 0, right: 'auto' };
+    if (posAjust) ObjectAssign(dropdownPosition[positionClass], posAjust);
   }
 
   dropdownMargin = dropdownMargin[positionClass];
-  // @ts-ignore
-  menu.style.margin = `${dropdownMargin.map((x) => (x ? `${x}px` : x)).join(' ')}`;
+  setElementStyle(menu, {
+    ...dropdownPosition[positionClass],
+    margin: `${dropdownMargin.map((x) => (x ? `${x}px` : x)).join(' ')}`,
+  });
 
-  setElementStyle(menu, dropdownPosition[positionClass]);
-
-  // update dropdown-menu-end
-  if (hasClass(menu, dropdownMenuEndClass)) {
-    setElementStyle(menu, dropdownPosition.menuEnd);
+  // override dropdown-menu-start | dropdown-menu-end
+  if (verticalClass.includes(positionClass) && menuEnd) {
+    /* istanbul ignore else */
+    if (menuEnd) {
+      const endAdjust = (!RTL && leftExceed) || (RTL && rightExceed)
+        ? 'menuStart' : /* istanbul ignore next */'menuEnd';
+      setElementStyle(menu, dropdownPosition[endAdjust]);
+    }
   }
 }
 
 /**
  * Returns an `Array` of focusable items in the given dropdown-menu.
- * @param {HTMLElement | Element} menu
- * @returns {(HTMLElement | Element)[]}
+ * @param {HTMLElement} menu
+ * @returns {HTMLElement[]}
  */
 function getMenuItems(menu) {
-  // @ts-ignore
   return [...menu.children].map((c) => {
     if (c && menuFocusTags.includes(c.tagName)) return c;
     const { firstElementChild } = c;
@@ -878,7 +944,7 @@ function getMenuItems(menu) {
  * @param {Dropdown} self the `Dropdown` instance
  */
 function toggleDropdownDismiss(self) {
-  const { element } = self;
+  const { element, options } = self;
   const action = self.open ? addListener : removeListener;
   const doc = getDocument(element);
 
@@ -887,9 +953,9 @@ function toggleDropdownDismiss(self) {
   action(doc, keydownEvent, dropdownPreventScroll);
   action(doc, keyupEvent, dropdownKeyHandler);
 
-  if (self.options.display === 'dynamic') {
+  /* istanbul ignore else */
+  if (options.display === 'dynamic') {
     [scrollEvent, resizeEvent].forEach((ev) => {
-      // @ts-ignore
       action(getWindow(element), ev, dropdownLayoutHandler, passiveHandler);
     });
   }
@@ -909,16 +975,15 @@ function toggleDropdownHandler(self, add) {
 /**
  * Returns the currently open `.dropdown` element.
  *
- * @param {(Document | HTMLElement | Element | globalThis)=} element target
+ * @param {(Node | Window)=} element target
  * @returns {HTMLElement?} the query result
  */
 function getCurrentOpenDropdown(element) {
   const currentParent = [...dropdownMenuClasses, 'btn-group', 'input-group']
-    .map((c) => getElementsByClassName(`${c} ${showClass}`), getDocument(element))
+    .map((c) => getElementsByClassName(`${c} ${showClass}`, getDocument(element)))
     .find((x) => x.length);
 
   if (currentParent && currentParent.length) {
-    // @ts-ignore -- HTMLElement is also Element
     return [...currentParent[0].children]
       .find((x) => hasAttribute(x, dataBsToggle));
   }
@@ -935,34 +1000,31 @@ function getCurrentOpenDropdown(element) {
  */
 function dropdownDismissHandler(e) {
   const { target, type } = e;
-  // @ts-ignore
+
+  /* istanbul ignore next: impossible to satisfy */
   if (!target || !target.closest) return; // some weird FF bug #409
 
-  // @ts-ignore
   const element = getCurrentOpenDropdown(target);
-  if (!element) return;
-
   const self = getDropdownInstance(element);
+
+  /* istanbul ignore next */
   if (!self) return;
 
   const { parentElement, menu } = self;
 
-  // @ts-ignore
   const hasData = closest(target, dropdownSelector) !== null;
-  // @ts-ignore
   const isForm = parentElement && parentElement.contains(target)
-    // @ts-ignore
     && (target.tagName === 'form' || closest(target, 'form') !== null);
 
-  // @ts-ignore
   if (type === mouseclickEvent && isEmptyAnchor(target)) {
     e.preventDefault();
   }
-  if (type === focusEvent // @ts-ignore
+  if (type === focusEvent
     && (target === element || target === menu || menu.contains(target))) {
     return;
   }
 
+  /* istanbul ignore else */
   if (isForm || hasData) ; else if (self) {
     self.hide();
   }
@@ -970,7 +1032,7 @@ function dropdownDismissHandler(e) {
 
 /**
  * Handles `click` event listener for `Dropdown`.
- * @this {HTMLElement | Element}
+ * @this {HTMLElement}
  * @param {MouseEvent} e event object
  */
 function dropdownClickHandler(e) {
@@ -978,8 +1040,10 @@ function dropdownClickHandler(e) {
   const { target } = e;
   const self = getDropdownInstance(element);
 
+  /* istanbul ignore else */
   if (self) {
     self.toggle();
+    /* istanbul ignore else */
     if (target && isEmptyAnchor(target)) e.preventDefault();
   }
 }
@@ -989,6 +1053,7 @@ function dropdownClickHandler(e) {
  * @param {KeyboardEvent} e event object
  */
 function dropdownPreventScroll(e) {
+  /* istanbul ignore else */
   if ([keyArrowDown, keyArrowUp].includes(e.code)) e.preventDefault();
 }
 
@@ -1001,21 +1066,24 @@ function dropdownKeyHandler(e) {
   const { code } = e;
   const element = getCurrentOpenDropdown(this);
   const self = element && getDropdownInstance(element);
-  const activeItem = element && getDocument(element).activeElement;
-  if (!self || !activeItem) return;
+  const { activeElement } = element && getDocument(element);
+  /* istanbul ignore next: impossible to satisfy */
+  if (!self || !activeElement) return;
   const { menu, open } = self;
   const menuItems = getMenuItems(menu);
 
   // arrow up & down
   if (menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)) {
-    let idx = menuItems.indexOf(activeItem);
-    if (activeItem === element) {
+    let idx = menuItems.indexOf(activeElement);
+    /* istanbul ignore else */
+    if (activeElement === element) {
       idx = 0;
     } else if (code === keyArrowUp) {
       idx = idx > 1 ? idx - 1 : 0;
     } else if (code === keyArrowDown) {
       idx = idx < menuItems.length - 1 ? idx + 1 : idx;
     }
+    /* istanbul ignore else */
     if (menuItems[idx]) focus(menuItems[idx]);
   }
 
@@ -1033,6 +1101,7 @@ function dropdownLayoutHandler() {
   const element = getCurrentOpenDropdown(this);
   const self = element && getDropdownInstance(element);
 
+  /* istanbul ignore else */
   if (self && self.open) styleDropdown(self);
 }
 
@@ -1041,7 +1110,7 @@ function dropdownLayoutHandler() {
 /** Returns a new Dropdown instance. */
 class Dropdown extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target Element or string selector
+   * @param {HTMLElement | string} target Element or string selector
    * @param {BSN.Options.Dropdown=} config the instance options
    */
   constructor(target, config) {
@@ -1055,10 +1124,8 @@ class Dropdown extends BaseComponent {
 
     // set targets
     /** @type {(Element | HTMLElement)} */
-    // @ts-ignore
     self.parentElement = parentElement;
     /** @type {(Element | HTMLElement)} */
-    // @ts-ignore
     self.menu = querySelector(`.${dropdownMenuClass}`, parentElement);
 
     // set initial state to closed
@@ -1099,12 +1166,17 @@ class Dropdown extends BaseComponent {
       element, open, menu, parentElement,
     } = self;
 
+    /* istanbul ignore next */
+    if (open) return;
+
     const currentElement = getCurrentOpenDropdown(element);
     const currentInstance = currentElement && getDropdownInstance(currentElement);
     if (currentInstance) currentInstance.hide();
 
-    // dispatch
-    [showDropdownEvent, shownDropdownEvent].forEach((e) => { e.relatedTarget = element; });
+    // dispatch event
+    [showDropdownEvent, shownDropdownEvent].forEach((e) => {
+      e.relatedTarget = element;
+    });
     dispatchEvent(parentElement, showDropdownEvent);
     if (showDropdownEvent.defaultPrevented) return;
 
@@ -1117,11 +1189,9 @@ class Dropdown extends BaseComponent {
 
     self.open = !open;
 
-    setTimeout(() => {
-      focus(element); // focus the element
-      toggleDropdownDismiss(self);
-      dispatchEvent(parentElement, shownDropdownEvent);
-    }, 1);
+    focus(element); // focus the element
+    toggleDropdownDismiss(self);
+    dispatchEvent(parentElement, shownDropdownEvent);
   }
 
   /** Hides the dropdown menu from the user. */
@@ -1130,8 +1200,13 @@ class Dropdown extends BaseComponent {
     const {
       element, open, menu, parentElement,
     } = self;
-    [hideDropdownEvent, hiddenDropdownEvent].forEach((e) => { e.relatedTarget = element; });
 
+    /* istanbul ignore next */
+    if (!open) return;
+
+    [hideDropdownEvent, hiddenDropdownEvent].forEach((e) => {
+      e.relatedTarget = element;
+    });
     dispatchEvent(parentElement, hideDropdownEvent);
     if (hideDropdownEvent.defaultPrevented) return;
 
@@ -1140,19 +1215,15 @@ class Dropdown extends BaseComponent {
     setAttribute(element, ariaExpanded, 'false');
 
     self.open = !open;
-
     // only re-attach handler if the instance is not disposed
-    setTimeout(() => toggleDropdownDismiss(self), 1);
-
+    toggleDropdownDismiss(self);
     dispatchEvent(parentElement, hiddenDropdownEvent);
   }
 
   /** Removes the `Dropdown` component from the target element. */
   dispose() {
     const self = this;
-    const { parentElement } = self;
-
-    if (hasClass(parentElement, showClass) && self.open) self.hide();
+    if (self.open) self.hide();
 
     toggleDropdownHandler(self);
 

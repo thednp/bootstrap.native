@@ -1,21 +1,21 @@
 /* Native JavaScript for Bootstrap 5 | Toast
 -------------------------------------------- */
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import mouseenterEvent from 'shorter-js/src/strings/mouseenterEvent';
-import mouseleaveEvent from 'shorter-js/src/strings/mouseleaveEvent';
-import focusinEvent from 'shorter-js/src/strings/focusinEvent';
-import focusoutEvent from 'shorter-js/src/strings/focusoutEvent';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import reflow from 'shorter-js/src/misc/reflow';
-import { getInstance } from 'shorter-js/src/misc/data';
-import Timer from 'shorter-js/src/misc/timer';
-import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
+import mouseclickEvent from '@thednp/shorty/src/strings/mouseclickEvent';
+import mouseenterEvent from '@thednp/shorty/src/strings/mouseenterEvent';
+import mouseleaveEvent from '@thednp/shorty/src/strings/mouseleaveEvent';
+import focusinEvent from '@thednp/shorty/src/strings/focusinEvent';
+import focusoutEvent from '@thednp/shorty/src/strings/focusoutEvent';
+import addClass from '@thednp/shorty/src/class/addClass';
+import hasClass from '@thednp/shorty/src/class/hasClass';
+import removeClass from '@thednp/shorty/src/class/removeClass';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import dispatchEvent from '@thednp/shorty/src/misc/dispatchEvent';
+import emulateTransitionEnd from '@thednp/shorty/src/misc/emulateTransitionEnd';
+import ObjectAssign from '@thednp/shorty/src/misc/ObjectAssign';
+import reflow from '@thednp/shorty/src/misc/reflow';
+import { getInstance } from '@thednp/shorty/src/misc/data';
+import Timer from '@thednp/shorty/src/misc/timer';
+import OriginalEvent from '@thednp/shorty/src/misc/OriginalEvent';
 
 import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
@@ -74,6 +74,7 @@ function showToastComplete(self) {
   Timer.clear(element, showingClass);
 
   dispatchEvent(element, shownToastEvent);
+  /* istanbul ignore else */
   if (options.autohide) {
     Timer.set(element, () => self.hide(), options.delay, toastString);
   }
@@ -136,9 +137,11 @@ function showToast(self) {
 function toggleToastHandlers(self, add) {
   const action = add ? addListener : removeListener;
   const { element, dismiss, options } = self;
+  /* istanbul ignore else */
   if (dismiss) {
     action(dismiss, mouseclickEvent, self.hide);
   }
+  /* istanbul ignore else */
   if (options.autohide) {
     [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent]
       .forEach((e) => action(element, e, interactiveToastHandler));
@@ -160,14 +163,15 @@ function completeDisposeToast(self) {
  * Executes when user interacts with the toast without closing it,
  * usually by hovering or focusing it.
  *
- * @this {HTMLElement | Element}
+ * @this {HTMLElement}
  * @param {MouseEvent} e the `Toast` instance
  */
 function interactiveToastHandler(e) {
   const element = this;
   const self = getToastInstance(element);
   const { type, relatedTarget } = e;
-  // @ts-ignore
+
+  /* istanbul ignore next: a solid filter is required */
   if (!self || (element === relatedTarget || element.contains(relatedTarget))) return;
 
   if ([mouseenterEvent, focusinEvent].includes(type)) {
@@ -182,7 +186,7 @@ function interactiveToastHandler(e) {
 /** Creates a new `Toast` instance. */
 export default class Toast extends BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target the target `.toast` element
+   * @param {HTMLElement | string} target the target `.toast` element
    * @param {BSN.Options.Toast=} config the instance options
    */
   constructor(target, config) {
@@ -195,7 +199,7 @@ export default class Toast extends BaseComponent {
     if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
     else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
     // dismiss button
-    /** @type {(HTMLElement | Element)?} */
+    /** @type {HTMLElement?} */
     self.dismiss = querySelector(toastDismissSelector, element);
 
     // bind
@@ -225,6 +229,7 @@ export default class Toast extends BaseComponent {
   show() {
     const self = this;
     const { element } = self;
+    /* istanbul ignore else */
     if (element && !hasClass(element, showClass)) {
       dispatchEvent(element, showToastEvent);
       if (showToastEvent.defaultPrevented) return;
@@ -238,6 +243,7 @@ export default class Toast extends BaseComponent {
     const self = this;
     const { element } = self;
 
+    /* istanbul ignore else */
     if (element && hasClass(element, showClass)) {
       dispatchEvent(element, hideToastEvent);
       if (hideToastEvent.defaultPrevented) return;
@@ -250,6 +256,7 @@ export default class Toast extends BaseComponent {
     const self = this;
     const { element } = self;
 
+    /* istanbul ignore else */
     if (hasClass(element, showClass)) {
       removeClass(element, showClass);
     }

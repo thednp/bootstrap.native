@@ -1,8 +1,8 @@
 /* Native JavaScript for Bootstrap 5 | Popover
 ---------------------------------------------- */
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import focus from 'shorter-js/src/misc/focus';
-import { getInstance } from 'shorter-js/src/misc/data';
+import ObjectAssign from '@thednp/shorty/src/misc/ObjectAssign';
+import focus from '@thednp/shorty/src/misc/focus';
+import { getInstance } from '@thednp/shorty/src/misc/data';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import popoverString from '../strings/popoverString';
@@ -35,7 +35,7 @@ const popoverDefaults = {
 export default class Popover extends Tooltip {
   /* eslint-disable -- we want to specify Popover Options */
   /**
-   * @param {HTMLElement | Element | string} target the target element
+   * @param {HTMLElement | string} target the target element
    * @param {BSN.Options.Popover=} config the instance options
    */
   constructor(target, config) {
@@ -56,8 +56,9 @@ export default class Popover extends Tooltip {
   /* extend original `show()` */
   show() {
     super.show();
-    // @ts-ignore -- btn only exists within dismissible popover
+    // btn only exists within dismissible popover
     const { options, btn } = this;
+    /* istanbul ignore else */
     if (options.dismissible && btn) setTimeout(() => focus(btn), 17);
   }
 }

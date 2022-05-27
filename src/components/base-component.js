@@ -1,17 +1,17 @@
 /* Native JavaScript for Bootstrap 5 | Base Component
 ----------------------------------------------------- */
 
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import normalizeOptions from 'shorter-js/src/misc/normalizeOptions';
-import Data from 'shorter-js/src/misc/data';
-import ObjectKeys from 'shorter-js/src/misc/ObjectKeys';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import normalizeOptions from '@thednp/shorty/src/misc/normalizeOptions';
+import Data from '@thednp/shorty/src/misc/data';
+import ObjectKeys from '@thednp/shorty/src/misc/ObjectKeys';
 
 import Version from '../version';
 
 /** Returns a new `BaseComponent` instance. */
 export default class BaseComponent {
   /**
-   * @param {HTMLElement | Element | string} target `Element` or selector string
+   * @param {HTMLElement | string} target `Element` or selector string
    * @param {BSN.ComponentOptions=} config component instance options
    */
   constructor(target, config) {
@@ -28,10 +28,11 @@ export default class BaseComponent {
     const prevInstance = Data.get(element, self.name);
     if (prevInstance) prevInstance.dispose();
 
-    /** @type {HTMLElement | Element} */
+    /** @type {HTMLElement} */
     self.element = element;
 
-    if (self.defaults && Object.keys(self.defaults).length) {
+    /* istanbul ignore else */
+    if (self.defaults && ObjectKeys(self.defaults).length) {
       self.options = normalizeOptions(element, self.defaults, (config || {}), 'bs');
     }
 
@@ -39,15 +40,17 @@ export default class BaseComponent {
   }
 
   /* eslint-disable */
+  /* istanbul ignore next */
   /** @static */
   get version() { return Version; }
-  /* eslint-enable */
 
+  /* eslint-enable */
+  /* istanbul ignore next */
   /** @static */
   get name() { return this.constructor.name; }
 
+  /* istanbul ignore next */
   /** @static */
-  // @ts-ignore
   get defaults() { return this.constructor.defaults; }
 
   /**
@@ -56,7 +59,6 @@ export default class BaseComponent {
   dispose() {
     const self = this;
     Data.remove(self.element, self.name);
-    // @ts-ignore
     ObjectKeys(self).forEach((prop) => { self[prop] = null; });
   }
 }

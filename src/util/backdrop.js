@@ -1,10 +1,10 @@
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import reflow from 'shorter-js/src/misc/reflow';
-import getDocument from 'shorter-js/src/get/getDocument';
-import createElement from 'shorter-js/src/misc/createElement';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import addClass from '@thednp/shorty/src/class/addClass';
+import hasClass from '@thednp/shorty/src/class/hasClass';
+import removeClass from '@thednp/shorty/src/class/removeClass';
+import reflow from '@thednp/shorty/src/misc/reflow';
+import getDocument from '@thednp/shorty/src/get/getDocument';
+import createElement from '@thednp/shorty/src/misc/createElement';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -23,8 +23,8 @@ const overlay = createElement('div');
 
 /**
  * Returns the current active modal / offcancas element.
- * @param {(HTMLElement | Element)=} element the context element
- * @returns {(HTMLElement | Element)?} the requested element
+ * @param {HTMLElement=} element the context element
+ * @returns {HTMLElement?} the requested element
  */
 function getCurrentOpen(element) {
   return querySelector(`${modalActiveSelector},${offcanvasActiveSelector}`, getDocument(element));
@@ -44,7 +44,7 @@ function toggleOverlayType(isModal) {
 
 /**
  * Append the overlay to DOM.
- * @param {HTMLElement | Element} container
+ * @param {HTMLElement} container
  * @param {boolean} hasFade
  * @param {boolean=} isModal
  */
@@ -73,7 +73,7 @@ function hideOverlay() {
 
 /**
  * Removes the overlay from DOM.
- * @param {(HTMLElement | Element)=} element
+ * @param {HTMLElement=} element
  */
 function removeOverlay(element) {
   if (!getCurrentOpen(element)) {
