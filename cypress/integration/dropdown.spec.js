@@ -60,22 +60,28 @@ describe('Dropdown Class Tests', () => {
         cy.wrap(new Dropdown($element[0])).as('instance');
       })
       .log('open and dismiss via **click** on element').then(() => {
-        cy.get('@instance').its('element').click()
-          .get('@instance').its('menu').should('have.class', 'show')
-          .get('@instance').its('element').click()
-          .get('@instance').its('menu').should('not.have.class', 'show')
+        cy.get('@instance').its('element').click().then(() => {
+          cy.get('@instance').its('menu').should('have.class', 'show')
+        })
+        cy.get('@instance').its('element').click().then(() => {
+          cy.get('@instance').its('menu').should('not.have.class', 'show')
+        })
       })
-      .log('open and dismiss via **click** on empty menu link').then(() => {
-        cy.get('@instance').its('element').click()
-          .get('@instance').its('menu').should('have.class', 'show')
-          .get('@instance').its('menu').find('.dropdown-item').eq(0).click()
-          .get('@instance').its('menu').should('not.have.class', 'show')
+      .log('open and dismiss via **click** on empty menu item').then(() => {
+        cy.get('@instance').its('element').click().then(() => {
+          cy.get('@instance').its('menu').should('have.class', 'show')
+        })
+        cy.get('@instance').its('menu').find('.dropdown-item').eq(0).click().then(() => {
+          cy.get('@instance').its('menu').should('not.have.class', 'show')
+        })
       })
       .log('open and dismiss via **click** on body').then(() => {
-        cy.get('@instance').its('element').click()
-          .get('@instance').its('menu').should('have.class', 'show')
-          .document().its('body').click()
-          .get('@instance').its('menu').should('not.have.class', 'show')
+        cy.get('@instance').its('element').click().then(() => {
+          cy.get('@instance').its('menu').should('have.class', 'show')
+        })
+        cy.document().its('body').click().then(() => {
+          cy.get('@instance').its('menu').should('not.have.class', 'show')
+        })
       })
   });
 
