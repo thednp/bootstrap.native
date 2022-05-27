@@ -57,31 +57,37 @@ describe('Dropdown Class Tests', () => {
   it('Can handle click()', () => {
     cy.wait('@dropdown-page')
       .get('[data-bs-toggle="dropdown"]').eq(1).then(($element) => {
-        cy.wrap(new Dropdown($element[0])).as('instance');
+        cy.wrap(new Dropdown($element[0])).as('click_instance');
       })
       .log('open and dismiss via **click** on element').then(() => {
-        cy.get('@instance').its('element').click().then(() => {
-          cy.get('@instance').its('menu').should('have.class', 'show')
-        })
-        cy.get('@instance').its('element').click().then(() => {
-          cy.get('@instance').its('menu').should('not.have.class', 'show')
-        })
+        cy.get('@click_instance').its('element').click()
+        cy.wait(50)
+        cy.get('@click_instance').its('menu').should('have.class', 'show')
+        cy.wait(50)
+        cy.get('@click_instance').its('element').click()
+        cy.wait(50)
+        cy.get('@click_instance').its('menu').should('not.have.class', 'show')
+        cy.wait(50)
       })
       .log('open and dismiss via **click** on empty menu item').then(() => {
-        cy.get('@instance').its('element').click().then(() => {
-          cy.get('@instance').its('menu').should('have.class', 'show')
-        })
-        cy.get('@instance').its('menu').find('.dropdown-item').eq(0).click().then(() => {
-          cy.get('@instance').its('menu').should('not.have.class', 'show')
-        })
+        cy.get('@click_instance').its('element').click()
+        cy.wait(50)
+        cy.get('@click_instance').its('menu').should('have.class', 'show')
+        cy.wait(50)
+        cy.get('@click_instance').its('menu').find('.dropdown-item').eq(0).click()
+        cy.wait(50)
+        cy.get('@click_instance').its('menu').should('not.have.class', 'show')
+        cy.wait(50)
       })
       .log('open and dismiss via **click** on body').then(() => {
-        cy.get('@instance').its('element').click().then(() => {
-          cy.get('@instance').its('menu').should('have.class', 'show')
-        })
-        cy.document().its('body').click().then(() => {
-          cy.get('@instance').its('menu').should('not.have.class', 'show')
-        })
+        cy.get('@click_instance').its('element').click()
+        cy.wait(50)
+        cy.get('@click_instance').its('menu').should('have.class', 'show')
+        cy.wait(50)
+        cy.document().its('body').click()
+        cy.wait(50)
+        cy.get('@click_instance').its('menu').should('not.have.class', 'show')
+        cy.wait(50)
       })
   });
 
