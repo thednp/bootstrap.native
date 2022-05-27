@@ -1,4 +1,4 @@
-# BSN
+# BSN ![cypress version](https://img.shields.io/badge/cypress-9.7.0-brightgreen) ![typescript version](https://img.shields.io/badge/typescript-4.5.2-brightgreen)
 The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, developed on modern ES6+ standards.
 The **bootstrap.native** library is available on npm, CDN and comes packed with build tools and lots of goodies.
 
