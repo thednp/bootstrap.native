@@ -1,11 +1,16 @@
-# BSN ![cypress version](https://img.shields.io/badge/cypress-9.7.0-brightgreen) ![typescript version](https://img.shields.io/badge/typescript-4.5.2-brightgreen)
+# BSN
+[![ci](https://github.com/thednp/bootstrap.native/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/bootstrap.native/actions/workflows/ci.yml)
+[![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg)](https://www.npmjs.com/package/bootstrap.native)
+[![NPM Downloads](https://img.shields.io/npm/dm/bootstrap.native.svg)](http://npm-stat.com/charts.html?package=bootstrap.native)
+[![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hw/@thednp/shorty)](https://www.jsdelivr.com/package/npm/@thednp/shorty)
+[![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/bootstrap.native)](https://www.jsdelivr.com/package/npm/bootstrap.native)
+[![CDNJS](https://img.shields.io/cdnjs/v/bootstrap.native.svg)](https://cdnjs.com/libraries/bootstrap.native)
+![cypress version](https://img.shields.io/badge/cypress-9.7.0-brightgreen)
+![typescript version](https://img.shields.io/badge/typescript-4.5.2-brightgreen)
+
 The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, developed on modern ES6+ standards.
 The **bootstrap.native** library is available on npm, CDN and comes packed with build tools and lots of goodies.
 
-[![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg?style=flat-square)](https://www.npmjs.com/package/bootstrap.native)
-[![NPM Downloads](https://img.shields.io/npm/dm/bootstrap.native.svg?style=flat-square)](http://npm-stat.com/charts.html?package=bootstrap.native)
-[![jsDeliver](https://data.jsdelivr.com/v1/package/npm/bootstrap.native/badge)](https://www.jsdelivr.com/package/npm/bootstrap.native)
-[![CDNJS](https://img.shields.io/cdnjs/v/bootstrap.native.svg?style=flat-square)](https://cdnjs.com/libraries/bootstrap.native)
 
  The library is around ***30Kb*** minified (V5 ***38Kb***) and around ***10Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">the demo</a> for components guidelines and examples, or the [Wiki/How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) on how to use the library or create custom builds.
 
