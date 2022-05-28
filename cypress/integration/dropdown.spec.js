@@ -201,15 +201,16 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropup1');
         cy.get('@dropup1').invoke('show')
-          .get('@dropup1').its('menu').should('have.class', 'show').and('be.visible')
-          .get('@dropup1').its('menu.style.cssText').should('contain', 'top: auto')
+        cy.get('@dropup1').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropup1').its('menu.style.cssText').should('contain', 'top: auto')
+        cy.wait(200)
         cy.scrollTo('bottomLeft', {duration: 0})
-          .wait(200)
-          .get('@dropup1').its('menu.style.cssText').should('contain', 'top: 100%')
+        cy.wait(200)
+        cy.get('@dropup1').its('menu.style.cssText').should('contain', 'top: 100%')
         cy.scrollTo('topLeft', {duration: 0})
-          .get('@dropup1').invoke('dispose')
-          .wait(200)
-        });
+        cy.get('@dropup1').invoke('dispose')
+        cy.wait(200)
+      });
 
       cy.log('test **dropdown** in **bottomLeft** position').then(() => {
         Object.assign(body.style, bodyPads.bottom);
@@ -219,15 +220,16 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropdown1');
         cy.get('@dropdown1').invoke('show')
-          .get('@dropdown1').its('menu').should('have.class', 'show').and('be.visible')
-          .get('@dropdown1').its('menu.style.cssText').should('contain', 'top: auto')
+        cy.get('@dropdown1').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropdown1').its('menu.style.cssText').should('contain', 'top: auto')
+        cy.wait(200)
         cy.scrollTo('bottomLeft', {duration: 0})
-          .wait(200)
-          .get('@dropdown1').its('menu.style.cssText').should('contain', 'top: 100%')
+        cy.wait(200)
+        cy.get('@dropdown1').its('menu.style.cssText').should('contain', 'top: 100%')
         cy.scrollTo('topLeft', {duration: 0})
-          .get('@dropdown1').invoke('dispose')
-          .wait(200)
-        });
+        cy.get('@dropdown1').invoke('dispose')
+        cy.wait(200)
+      });
 
       cy.log('test **dropdown** in **topRight** position').then(() => {
         Object.assign(body.style, {paddingTop: '3rem', paddingBottom: '', paddingLeft: '95%', paddingRight: '10%'});
@@ -235,17 +237,18 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropdown2');
         cy.scrollTo('topRight', {duration: 0})
-          .wait(200)
-          .get('@dropdown2').invoke('show')
-          .get('@dropdown2').its('menu').should('have.class', 'show').and('be.visible')
-          .get('@dropdown2').its('menu.style.cssText').should('contain', 'top: 100%')
+        cy.wait(200)
+        cy.get('@dropdown2').invoke('show')
+        cy.get('@dropdown2').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropdown2').its('menu.style.cssText').should('contain', 'top: 100%')
+        cy.wait(200)
         cy.scrollTo('topLeft', {duration: 0})
-          .wait(200)
-          .get('@dropdown2').its('menu.style.cssText').should('contain', 'right: 0px')
-          .wait(100)
-          .get('@dropdown2').invoke('dispose')
-          .wait(200)
-        });
+        cy.wait(200)
+        cy.get('@dropdown2').its('menu.style.cssText').should('contain', 'right: 0px')
+        cy.wait(200)
+        cy.get('@dropdown2').invoke('dispose')
+        cy.wait(200)
+      });
 
       cy.log('test **dropstart** in **topLeft** position').then(() => {
         Object.assign(body.style, {...bodyPads.left, paddingTop: '3rem', paddingBottom: ''});
@@ -256,16 +259,17 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropstart1');
         cy.get('@dropstart1').invoke('show')
-          .get('@dropstart1').its('menu').should('have.class', 'show').and('be.visible')
-          .get('@dropstart1').its('menu.style.cssText').should('contain', 'left: auto')
+        cy.get('@dropstart1').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropstart1').its('menu.style.cssText').should('contain', 'left: auto')
+        cy.wait(200)
         cy.scrollTo('topRight', {duration: 0})
-          .wait(200)
-          .get('@dropstart1').its('menu.style.cssText').should('contain', 'left: 100%')
-          .wait(100)
+        cy.wait(200)
+        cy.get('@dropstart1').its('menu.style.cssText').should('contain', 'left: 100%')
+        cy.wait(200)
         cy.scrollTo('topLeft', {duration: 0})
-          .get('@dropstart1').invoke('dispose')
-          .wait(200)
-        });
+        cy.get('@dropstart1').invoke('dispose')
+        cy.wait(200)
+      });
 
       cy.log('test **dropend** in **topRight** position').then(() => {
         Object.assign(body.style, {...bodyPads.right, paddingTop: '3rem', paddingBottom: ''});
@@ -276,16 +280,17 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropend1');
         cy.get('@dropend1').invoke('show')
-          .get('@dropend1').its('menu').should('have.class', 'show').and('be.visible')
-          .get('@dropend1').its('menu.style.cssText').should('contain', 'left: auto')
+        cy.get('@dropend1').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropend1').its('menu.style.cssText').should('contain', 'left: auto')
+        cy.wait(200)
         cy.scrollTo('topRight', {duration: 0})
-          .wait(200)
-          .get('@dropend1').its('menu.style.cssText').should('contain', 'left: 100%')
-          .wait(100)
+        cy.wait(200)
+        cy.get('@dropend1').its('menu.style.cssText').should('contain', 'left: 100%')
+        cy.wait(200)
         cy.scrollTo('topLeft', {duration: 0})
-          .get('@dropend1').invoke('dispose')
-          .wait(200)
-        });
+        cy.get('@dropend1').invoke('dispose')
+        cy.wait(200)
+      });
 
       cy.log('test **dropend** in **bottomLeft** position').then(() => {
         Object.assign(body.style, {paddingLeft: '5rem', paddingRight: '', paddingTop: '85vh', paddingBottom: '25vh'});
@@ -293,20 +298,20 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropend2');
         cy.scrollTo('bottomLeft', {duration: 0})
-          .wait(200)
-          .get('@dropend2').invoke('show')
-          .get('@dropend2').its('menu').should('have.class', 'show').and('be.visible')
-          .get('@dropend2').its('menu.style.cssText').should('not.contain', 'bottom: 0px')
-          .wait(100)
+        cy.wait(200)
+        cy.get('@dropend2').invoke('show')
+        cy.get('@dropend2').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropend2').its('menu.style.cssText').should('not.contain', 'bottom: 0px')
+        cy.wait(200)
         cy.scrollTo('topLeft', {duration: 0})
-          .wait(200)
-          .get('@dropend2').its('menu.style.cssText').should('contain', 'inset: auto auto 0px 100%')
+        cy.wait(200)
+        cy.get('@dropend2').its('menu.style.cssText').should('contain', 'inset: auto auto 0px 100%')
           // .should('contain', 'bottom: 0px')
-          .wait(100)
-          .get('@dropend2').invoke('dispose')
-          .wait(200)
-        });
-      })
+        cy.wait(200)
+        cy.get('@dropend2').invoke('dispose')
+        cy.wait(200)
+      });
+    })
   });
 
   it('Can do automatic position on scroll RTL', function() {
@@ -329,19 +334,19 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropup');
         cy.get('@dropup').invoke('show')
-          .get('@dropup').its('menu').should('have.class', 'show')
-          .get('@dropup').its('menu.style.cssText')
-            .should('contain', 'top: auto')
+        cy.get('@dropup').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropup').its('menu.style.cssText').should('contain', 'top: auto')
             // .and('contain', 'bottom: 100%') // this check is not required for "dropup"
-          .window().scrollTo('bottomLeft', {duration: 0})
-          .wait(100)
-          .get('@dropup').its('menu.style.cssText')
-            .should('contain', 'top: 100%')
+        cy.wait(200)
+        cy.scrollTo('bottomLeft', {duration: 0})
+        cy.wait(200)
+        cy.get('@dropup').its('menu.style.cssText').should('contain', 'top: 100%')
             // .and('contain', 'bottom: auto') // this check is not required for "dropup"
-          .window().scrollTo('topLeft', {duration: 0})
-          .get('@dropup').invoke('dispose')
-          .wait(100)
-        });
+        cy.scrollTo('topLeft', {duration: 0})
+        cy.wait(200)
+        cy.get('@dropup').invoke('dispose')
+        cy.wait(200)
+      });
 
       cy.log('test **dropdown** in **bottomLeft** position').then(() => {
         Object.assign(body.style, bodyPads.bottom);
@@ -351,39 +356,40 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropdown');
         cy.get('@dropdown').invoke('show')
-          .get('@dropdown').its('menu').should('have.class', 'show')
-          .get('@dropdown').its('menu.style.cssText')
-            .should('contain', 'top: auto')
+        cy.get('@dropdown').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropdown').its('menu.style.cssText').should('contain', 'top: auto')
             // .and('contain', 'bottom: 100%') // this check is not required for "dropdown" / "dropup"
-          .window().scrollTo('bottomLeft', {duration: 0})
-          .wait(200)
-          .get('@dropdown').its('menu.style.cssText')
-            .should('contain', 'top: 100%')
+        cy.wait(200)
+        cy.scrollTo('bottomLeft', {duration: 0})
+        cy.wait(200)
+        cy.get('@dropdown').its('menu.style.cssText').should('contain', 'top: 100%')
             // .and('contain', 'bottom: auto') // this check is not required for "dropdown" / "dropup"
-          .window().scrollTo('topLeft', {duration: 0})
-          .get('@dropdown').invoke('dispose')
-          .wait(100)
-        });
+        cy.wait(200)
+        cy.scrollTo('topLeft', {duration: 0})
+        cy.get('@dropdown').invoke('dispose')
+        cy.wait(200)
+      });
 
       cy.log('test **dropdown** in **topLeft** position').then(() => {
         Object.assign(body.style, {paddingTop: '3rem', paddingBottom: '', paddingRight: '95%', paddingLeft: '10%'});
         toolbar.className = toolbarPositions.end;
 
         cy.wrap(new Dropdown(element)).as('dropdown');
-        cy.window().scrollTo('topRight', {duration: 0})
-          .wait(100)
-          .get('@dropdown').invoke('show')
-          .get('@dropdown').its('menu').should('have.class', 'show')
-          .get('@dropdown').its('menu.style.cssText')
-            .should('contain', 'top: 100%')
-          .window().scrollTo('topLeft', {duration: 0})
-          .wait(200)
-          .get('@dropdown').its('menu.style.cssText')
-            .should('contain', 'left: 0px')
-            .and('contain', 'right: auto') // this check is not required for "dropdown" / "dropup"
-          .get('@dropdown').invoke('dispose')
-          .wait(100)
-        });
+        cy.scrollTo('topRight', {duration: 0})
+        cy.wait(200)
+        cy.get('@dropdown').invoke('show')
+        cy.get('@dropdown').its('menu').should('have.class', 'show').and('be.visible')
+        cy.wait(200)
+        cy.get('@dropdown').its('menu.style.cssText').should('contain', 'top: 100%')
+        cy.wait(200)
+        cy.scrollTo('topLeft', {duration: 0})
+        cy.wait(200)
+        cy.get('@dropdown').its('menu.style.cssText').should('contain', 'left: 0px')
+        // .and('contain', 'right: auto') // this check is not required for "dropdown" / "dropup"
+        cy.wait(200)
+        cy.get('@dropdown').invoke('dispose')
+        cy.wait(200)
+      });
 
       cy.log('test **dropstart** in **topLeft** position').then(() => {
         Object.assign(body.style, {...bodyPads.left, paddingTop: '3rem', paddingBottom: ''});
@@ -394,12 +400,11 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropstart');
         cy.get('@dropstart').invoke('show')
-          .get('@dropstart').its('menu').should('have.class', 'show')
-          .get('@dropstart').its('menu.style.cssText')
-            .should('contain', 'left: 100%')
-            .and('contain', 'right: auto')
-          .wait(100)
-        });
+        cy.get('@dropstart').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropstart').its('menu.style.cssText').should('contain', 'left: 100%')
+            // .and('contain', 'right: auto')
+        cy.wait(200)
+      });
 
       cy.log('test **dropend** in **topLeft** position').then(() => {
         Object.assign(body.style, {...bodyPads.left, paddingTop: '3rem', paddingBottom: ''});
@@ -410,12 +415,11 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropend');
         cy.get('@dropend').invoke('show')
-          .get('@dropend').its('menu').should('have.class', 'show')
-          .get('@dropend').its('menu.style.cssText')
-            .should('contain', 'left: 100%')
-            .and('contain', 'right: auto')
-          .wait(100)
-        });
+        cy.get('@dropend').its('menu').should('have.class', 'show').and('be.visible')
+        cy.get('@dropend').its('menu.style.cssText').should('contain', 'left: 100%')
+            // .and('contain', 'right: auto')
+        cy.wait(200)
+      });
 
       cy.log('test **dropend** in **bottomRight** position').then(() => {
         Object.assign(body.style, {paddingLeft: '5rem', paddingRight: '', paddingTop: '85vh', paddingBottom: '25vh'});
@@ -423,18 +427,18 @@ describe('Dropdown Class Tests', () => {
 
         cy.wrap(new Dropdown(element)).as('dropend');
         cy.window().scrollTo('bottomLeft', {duration: 0})
-          .wait(100)
-          .get('@dropend').invoke('show')
-          .get('@dropend').its('menu').should('have.class', 'show')
-          .get('@dropend').its('menu.style.cssText')
-            .should('not.contain', 'bottom: 0px')
-          .window().scrollTo('topLeft', {duration: 0})
-          .wait(100)
-          .get('@dropend').its('menu.style.cssText')
-            .should('contain', 'inset: auto 100% 0px auto')
-          .get('@dropend').invoke('dispose')
-        });
-      })
+        cy.wait(200)
+        cy.get('@dropend').invoke('show')
+        cy.get('@dropend').its('menu').should('have.class', 'show')
+        cy.get('@dropend').its('menu.style.cssText').should('not.contain', 'bottom: 0px')
+        cy.wait(200)
+        cy.scrollTo('topLeft', {duration: 0})
+        cy.wait(200)
+        cy.get('@dropend').its('menu.style.cssText').should('contain', 'inset: auto 100% 0px auto')
+        cy.get('@dropend').invoke('dispose')
+        cy.wait(200)
+      });
+    })
   });
 
   it('Can handle click()', () => {
