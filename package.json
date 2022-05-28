@@ -50,10 +50,6 @@
     "module-tab-umd": "rollup --environment MODULE:tab,FORMAT:umd,MIN:false -c rollup.module.js",
     "module-toast-umd": "rollup --environment MODULE:toast,FORMAT:umd,MIN:false -c rollup.module.js",
     "module-tooltip-umd": "rollup --environment MODULE:tooltip,FORMAT:umd,MIN:false -c rollup.module.js",
-    "polyfill": "npm-run-all --parallel polyfill-*",
-    "polyfill-unminified": "rollup --environment MIN:false -c rollup.polyfill.js",
-    "polyfill-minified": "rollup --environment MIN:true -c rollup.polyfill.js",
-    "polyfill-demo": "rollup --environment MIN:false,OUTPUTFILE:./docs/assets/js/polyfill.js -c rollup.polyfill.js",
     "watch": "rollup --environment FORMAT:umd,MIN:false -c -w"
   },
   "browserslist": [
@@ -79,7 +75,6 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
-    "minifill": "^0.0.17",
     "@thednp/event-listener": "^1.0.4",
     "@thednp/shorty": "^1.0.2"
   },

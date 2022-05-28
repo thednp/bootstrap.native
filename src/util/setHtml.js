@@ -14,6 +14,7 @@ import isFunction from '@thednp/shorty/src/is/isFunction';
 export default function setHtml(element, content, sanitizeFn) {
   if (isString(content) && !content.length) return;
 
+  /* istanbul ignore else */
   if (isString(content)) {
     let dirty = content.trim(); // fixing #233
     if (isFunction(sanitizeFn)) dirty = sanitizeFn(dirty);

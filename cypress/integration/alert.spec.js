@@ -20,25 +20,23 @@ describe('Alert Class Tests', () => {
 
   it('Init with target element', () => {
     cy.wait('@alert-page')
-      .window().then((win) => {
-        cy.get('[data-cy="alert"]').then(($element) => {
-            const element = $element.get(0);
-            const instance = new Alert(element);
-            expect(instance.element).to.be.instanceOf(win.HTMLDivElement);
-            expect(instance.element).to.equal(element);
-            expect(instance.name).to.eq('Alert');
-            expect(instance.options).to.be.empty;
-            expect(instance.defaults).to.be.undefined;
-            expect(instance.version).to.be.string;
-          });
-        });
+      .get('[data-cy="alert"]').then(($element) => {
+        const element = $element[0];
+        const instance = new Alert(element);
+        expect(instance.element).to.equal(element);
+        expect(instance.name).to.eq('Alert');
+        expect(instance.options).to.be.empty;
+        expect(instance.defaults).to.be.undefined;
+        expect(instance.version).to.be.string;
+      });
   });
 
   it('Can do close() - removes target from DOM', () => {
     cy.wait('@alert-page')
       .get('[data-cy="alert"]').then(($element) => {
-        const instance = Alert.init($element.get(0));
-        cy.wrap(instance).as('instance');
+        Alert.init($element[0]);
+        // re-init for code coverage
+        cy.wrap(Alert.init($element[0])).as('instance');
       })
       .get('@instance').invoke('close').then(() => {
         cy.get('[data-cy="alert"]').should('not.exist');
@@ -48,7 +46,7 @@ describe('Alert Class Tests', () => {
   it('Can do dispose() - keeps target in DOM', () => {
     cy.wait('@alert-page')
       .get('[data-cy="alert"]').then(($element) => {
-        const instance = new Alert($element.get(0));
+        const instance = new Alert($element[0]);
         cy.wrap(instance).as('instance');
       })
       .get('@instance').invoke('dispose').then(() => {
@@ -60,7 +58,7 @@ describe('Alert Class Tests', () => {
   it('Can be dismissed via click', () => {
     cy.wait('@alert-page')
       .get('[data-cy="alert"]').then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         element.classList.remove('fade');
         const instance = new Alert(element);
         cy.wrap(instance).as('instance');
@@ -72,7 +70,7 @@ describe('Alert Class Tests', () => {
   it('CustomEvent can be prevented', () => {
     cy.wait('@alert-page')
       .get('[data-cy="alert"]').then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const instance = new Alert(element);
         element.addEventListener('close.bs.alert', function(e){
           if (element.innerText.includes('Holy')) {

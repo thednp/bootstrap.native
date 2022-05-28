@@ -21,7 +21,7 @@ describe('Offcanvas Class Tests', () => {
   it('Init with target element', () => {
     cy.wait('@offcanvas-page')
     cy.get('[data-cy="offcanvas"]').then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const instance = new Offcanvas(element);
         expect(instance.element).to.equal(element);
         expect(instance.name).to.eq('Offcanvas');
@@ -124,7 +124,7 @@ describe('Offcanvas Class Tests', () => {
   it('Can work with CustomEvent hide', function() {
     cy.wait('@offcanvas-page')
       .get('[data-cy="offcanvas"]').eq(0).then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const instance = new Offcanvas(element);
         element.addEventListener('hide.bs.offcanvas', function(e){
         if (!element.innerText.includes('Holy')) {
@@ -143,7 +143,7 @@ describe('Offcanvas Class Tests', () => {
   it('Can work with CustomEvent show', function() {
       cy.wait('@offcanvas-page')
         .get('[data-cy="offcanvas"]').eq(0).then(($element) => {
-          const element = $element.get(0);
+          const element = $element[0];
           const instance = new Offcanvas(element);
           element.addEventListener('show.bs.offcanvas', function(e){
           if (!element.innerText.includes('Holy')) {

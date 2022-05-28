@@ -63,6 +63,7 @@ export default function createTip(self) {
 
   // set arrow and enable access for styleTip
   self.arrow = querySelector(`.${tipString}-arrow`, tooltip);
+  const { arrow } = self;
 
   // set dismissible button
   if (dismissible) {
@@ -78,18 +79,29 @@ export default function createTip(self) {
 
   // fill the template with content from options / data attributes
   // also sanitize title && content
+  /* istanbul ignore else */
   if (!isTooltip) {
+    /* istanbul ignore else */
     if (title && tooltipHeader) setHtml(tooltipHeader, title, sanitizeFn);
+    /* istanbul ignore else */
     if (content && tooltipBody) setHtml(tooltipBody, content, sanitizeFn);
     // set btn
     self.btn = querySelector('.btn-close', tooltip);
   } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
 
+  // Bootstrap 5.2.x
+  addClass(tooltip, 'position-absolute');
+  addClass(arrow, 'position-absolute');
+
   // set popover animation and placement
+  /* istanbul ignore else */
   if (!hasClass(tooltip, tipString)) addClass(tooltip, tipString);
+  /* istanbul ignore else */
   if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
+  /* istanbul ignore else */
   if (customClass && !hasClass(tooltip, customClass)) {
     addClass(tooltip, customClass);
   }
+  /* istanbul ignore else */
   if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
 }

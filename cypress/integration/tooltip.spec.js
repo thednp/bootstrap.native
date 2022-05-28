@@ -69,7 +69,6 @@ describe('Tooltip Class Tests', () => {
     cy.scrollTo('topLeft')
     cy.wait(200)
     cy.viewport(200, 600);
-    cy.wait(17);
     cy.window().trigger('resize', { force: true })
     cy.wait(200)
     cy.get('@resize').its('tooltip').should('have.class', 'bs-tooltip-top');
@@ -123,7 +122,7 @@ describe('Tooltip Class Tests', () => {
   it('Can handle various trigger events', () => {
     cy.wait('@tooltip-page')
       .get('[data-cy="tooltip"]').eq(1).then(($element) => {
-          const element = $element.get(0);
+          const element = $element[0];
           const body = element.ownerDocument.body; // used for custom container option
           const instance = new Tooltip(element, { trigger: 'hover focus click', container: body });
           expect(Tooltip.getInstance(element)).to.be.instanceOf(Tooltip); // coverage
@@ -256,8 +255,6 @@ describe('Tooltip Class Tests', () => {
       })
       .get('@rtl').invoke('show')
       .get('@rtl').its('tooltip').should('have.class', 'show').and('be.visible')
-      // .get('@rtl').its('tooltip.style.cssText').should('include', 'left: 71');
-
     cy.wait(200)
   });
 

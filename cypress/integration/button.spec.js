@@ -22,7 +22,7 @@ describe('Button Class Tests', () => {
     cy.wait('@button-page')
       .window().then((win) => {
         cy.get('[data-cy="button"]').then(($element) => {
-            const element = $element.get(0);
+            const element = $element[0];
             const instance = Button.init(element);
             expect(instance.element, 'element').to.be.instanceOf(win.HTMLButtonElement);
             expect(instance.element, 'element').to.equal(element);
@@ -52,7 +52,7 @@ describe('Button Class Tests', () => {
   it('Can handle click()', () => {
     cy.wait('@button-page')
       .get('[data-cy="button"]').then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const instance = new Button(element);
         cy.wrap(instance).as('instance');
       })
@@ -67,7 +67,7 @@ describe('Button Class Tests', () => {
   it('Can handle disabled elements', () => {
     cy.wait('@button-page')
       .get('[data-cy="button"]').then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         element.setAttribute('disabled', 'true');
         element.classList.add('disabled');
         const instance = new Button(element);
@@ -88,7 +88,7 @@ describe('Button Class Tests', () => {
   it('Can dispose()', () => {
     cy.wait('@button-page')
       .get('[data-cy="button"]').then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const instance = new Button(element);
         cy.wrap(instance).as('instance');
       })

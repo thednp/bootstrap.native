@@ -42,7 +42,7 @@ export default function getElementContainer(element, getOffset) {
     return offsetParent;
   }
 
-  /** @type {HTMLElement[]} */
+  /** @type {ParentNode[]} */
   const containers = [];
   /** @type {ParentNode} */
   let { parentNode } = element;

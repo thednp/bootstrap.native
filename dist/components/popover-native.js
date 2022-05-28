@@ -349,7 +349,7 @@
   };
 
   /** @type {Record<string, string>} */
-  var tipClassPositions = {
+  const tipClassPositions = {
     top: 'top',
     bottom: 'bottom',
     left: 'start',
@@ -367,6 +367,7 @@
       element, tooltip, options, arrow, offsetParent,
     } = self;
     const tipPositions = { ...tipClassPositions };
+
     const RTL = isRTL(element);
     if (RTL) {
       tipPositions.left = 'end';
@@ -375,7 +376,8 @@
 
     // reset tooltip style (top: 0, left: 0 works best)
     setElementStyle(tooltip, {
-      top: '0px', left: '0px', right: '', bottom: '',
+      // top: '0px', left: '0px', right: '', bottom: '',
+      top: '', left: '', right: '', bottom: '',
     });
     const isPopover = self.name === popoverComponent;
     const {
@@ -393,6 +395,7 @@
       clientWidth: parentCWidth, offsetWidth: parentOWidth,
     } = container;
     const scrollbarWidth = Math.abs(parentCWidth - parentOWidth);
+    // const tipAbsolute = getElementStyle(tooltip, 'position') === 'absolute';
     const parentPosition = getElementStyle(container, 'position');
     // const absoluteParent = parentPosition === 'absolute';
     const fixedParent = parentPosition === 'fixed';
@@ -440,10 +443,6 @@
     const horizontal = ['left', 'right'];
     const vertical = ['top', 'bottom'];
 
-    // first remove side positions if both left and right limits are exceeded
-    // we usually fall back to top|bottom
-    placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
-
     topExceed = horizontal.includes(placement)
       ? elemRectTop + elemHeight / 2 - tipHeight / 2 - arrowHeight < 0
       : topExceed;
@@ -457,6 +456,9 @@
       ? elemRectLeft + tipWidth / 2 + elemWidth / 2 >= rightBoundry
       : rightExceed;
 
+    // first remove side positions if both left and right limits are exceeded
+    // we usually fall back to top|bottom
+    placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
     // second, recompute placement
     placement = placement === 'top' && topExceed ? 'bottom' : placement;
     placement = placement === 'bottom' && bottomExceed ? 'top' : placement;
@@ -1213,6 +1215,7 @@
   function setHtml(element, content, sanitizeFn) {
     if (isString(content) && !content.length) return;
 
+    /* istanbul ignore else */
     if (isString(content)) {
       let dirty = content.trim(); // fixing #233
       if (isFunction(sanitizeFn)) dirty = sanitizeFn(dirty);
@@ -1278,6 +1281,7 @@
 
     // set arrow and enable access for styleTip
     self.arrow = querySelector(`.${tipString}-arrow`, tooltip);
+    const { arrow } = self;
 
     // set dismissible button
     if (dismissible) {
@@ -1299,6 +1303,10 @@
       // set btn
       self.btn = querySelector('.btn-close', tooltip);
     } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
+
+    // Bootstrap 5.2.x
+    addClass(tooltip, 'position-absolute');
+    addClass(arrow, 'position-absolute');
 
     // set popover animation and placement
     if (!hasClass(tooltip, tipString)) addClass(tooltip, tipString);
@@ -1395,7 +1403,7 @@
       return offsetParent;
     }
 
-    /** @type {HTMLElement[]} */
+    /** @type {ParentNode[]} */
     const containers = [];
     /** @type {ParentNode} */
     let { parentNode } = element;

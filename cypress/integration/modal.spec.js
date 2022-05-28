@@ -21,7 +21,7 @@ describe('Modal Class Tests', () => {
   it('Init with target element', () => {
     cy.wait('@modal-page')
     cy.get('[data-cy="modal"]').then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const instance = new Modal(element);
         expect(instance.element).to.equal(element);
         expect(instance.name).to.eq('Modal');
@@ -102,11 +102,15 @@ describe('Modal Class Tests', () => {
       .get('@resize_test').invoke('show')
       .get('@resize_test').its('element').should('have.class', 'show')
       .get('@resize_test').its('element').should('be.visible');
+    cy.wait(200)
     cy.viewport(320,600)
     cy.window().trigger('resize')
     cy.get('@resize_test').its('element').should('have.class', 'show').and('be.visible')
       .get('@resize_test').invoke('update') // force calling the method
       .document().its('body.style.cssText').should('contain', 'overflow: hidden')
+    cy.wait(200)
+    cy.viewport(1000,600)
+    cy.wait(200)
   });
   
   it('Can be dismissed via Escape', function() {
@@ -137,7 +141,7 @@ describe('Modal Class Tests', () => {
   it('Can work with CustomEvent hide', function() {
     cy.wait('@modal-page')
       .get('[data-cy="modal"]').eq(0).then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const instance = new Modal(element);
         element.addEventListener('hide.bs.modal', function(e){
         if (!element.innerText.includes('Holy')) {
@@ -155,7 +159,7 @@ describe('Modal Class Tests', () => {
   it('Can work with CustomEvent show', function() {
       cy.wait('@modal-page')
         .get('[data-cy="modal"]').eq(1).then(($element) => {
-          const element = $element.get(0);
+          const element = $element[0];
           const instance = new Modal(element);
           element.addEventListener('show.bs.modal', function(e){
           if (!element.innerText.includes('Holy')) {

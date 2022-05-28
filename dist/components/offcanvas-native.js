@@ -714,7 +714,7 @@
       return offsetParent;
     }
 
-    /** @type {HTMLElement[]} */
+    /** @type {ParentNode[]} */
     const containers = [];
     /** @type {ParentNode} */
     let { parentNode } = element;
@@ -838,6 +838,7 @@
     const sbWidth = isOpen && bodyPad ? 0 : measureScrollbar(element);
     const fixedItems = getFixedItems(bd);
 
+    /* istanbul ignore else */
     if (overflow) {
       setElementStyle(bd, {
         overflow: 'hidden',

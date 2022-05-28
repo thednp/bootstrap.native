@@ -35,7 +35,7 @@ describe('Dropdown Class Tests', () => {
   it('Can do toggle()', () => {
     cy.wait('@dropdown-page')
       cy.get('[data-bs-toggle="dropdown"]').each(($element, i) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const instance = Dropdown.init(element);
         expect(instance.element, 'element').to.equal(element);
         expect(instance.menu, 'menu').to.exist;
@@ -124,7 +124,7 @@ describe('Dropdown Class Tests', () => {
   it('Can do automatic position on resize', () => {
     cy.wait('@dropdown-page')
       .get('[data-bs-toggle="dropdown"]').eq(1).then(($element) => {
-        const element = $element.get(0);
+        const element = $element[0];
         const body = element.ownerDocument.body;
         const h3 = body.querySelector('h3');
         const toolbar = body.querySelector('.btn-toolbar');
@@ -145,15 +145,15 @@ describe('Dropdown Class Tests', () => {
           cy.wrap(new Dropdown(element)).as('dropstart')
             .get('@dropstart').invoke('show')
             .get('@dropstart').its('menu').should('have.class', 'show')
-            .get('@dropstart').its('menu.style.cssText')
-              .should('contain', 'left: auto')
-              .and('contain', 'right: 100%')
-          cy.viewport('iphone-6');
+            .get('@dropstart').its('menu.style.cssText').should('contain', 'left: auto')
+              // .and('contain', 'right: 100%')
+          cy.viewport(200, 600);
           cy.wait(17);
           cy.window().trigger('resize');
-          cy.get('@dropstart').its('menu.style.cssText')
-              .should('contain', 'top: 100%')
-          cy.viewport(1000,660);
+          cy.wait(50);
+          cy.get('@dropstart').its('menu.style.cssText').should('contain', 'top: 100%')
+          cy.wait(200);
+          cy.viewport(1000,600);
           cy.window().trigger('resize');
           cy.get('@dropstart').invoke('dispose')
             .wait(100)
@@ -167,17 +167,17 @@ describe('Dropdown Class Tests', () => {
           cy.wrap(new Dropdown(element)).as('dropend')
             .get('@dropend').invoke('show')
             .get('@dropend').its('menu').should('have.class', 'show')
-            .get('@dropend').its('menu.style.cssText')
-              .should('contain', 'left: 100%')
-              .and('contain', 'right: auto')
-          cy.viewport('iphone-6');
+            .get('@dropend').its('menu.style.cssText').should('contain', 'left: 100%')
+              // .and('contain', 'right: auto')
+          cy.wait(100);
+          cy.viewport(200, 600);
           cy.wait(17);
           cy.window().trigger('resize');
-          cy.get('@dropend').its('menu.style.cssText')
-              .should('contain', 'top: 100%')
-          cy.viewport(1000,660);
+          cy.get('@dropend').its('menu.style.cssText').should('contain', 'top: 100%')
+          cy.viewport(1000, 600);
           cy.window().trigger('resize');
           cy.get('@dropend').invoke('dispose')
+            .wait(200)
         })
       });
   });
@@ -490,7 +490,7 @@ describe('Dropdown Class Tests', () => {
     cy.wait('@dropdown-page')
       .log('should work with **closed** menu').then(() => {
         cy.get('[data-bs-toggle="dropdown"]').eq(0).then(($element) => {
-            const element = $element.get(0);
+            const element = $element[0];
             const instance = new Dropdown(element);
             cy.wrap(instance).as('instance1');
           })
@@ -499,7 +499,7 @@ describe('Dropdown Class Tests', () => {
       })
       .log('should work with **open** menu').then(() => {
         cy.get('[data-bs-toggle="dropdown"]').eq(0).then(($element) => {
-            const element = $element.get(0);
+            const element = $element[0];
             const instance = new Dropdown(element);
             cy.wrap(instance).as('instance2');
           })

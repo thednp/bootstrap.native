@@ -70,6 +70,7 @@ export function setScrollbar(element, overflow) {
   const sbWidth = isOpen && bodyPad ? 0 : measureScrollbar(element);
   const fixedItems = getFixedItems(bd);
 
+  /* istanbul ignore else */
   if (overflow) {
     setElementStyle(bd, {
       overflow: 'hidden',

@@ -22,6 +22,7 @@ export default function styleTip(self, e) {
     element, tooltip, options, arrow, offsetParent,
   } = self;
   const tipPositions = { ...tipClassPositions };
+
   const RTL = isRTL(element);
   if (RTL) {
     tipPositions.left = 'end';
@@ -30,7 +31,8 @@ export default function styleTip(self, e) {
 
   // reset tooltip style (top: 0, left: 0 works best)
   setElementStyle(tooltip, {
-    top: '0px', left: '0px', right: '', bottom: '',
+    // top: '0px', left: '0px', right: '', bottom: '',
+    top: '', left: '', right: '', bottom: '',
   });
   const isPopover = self.name === popoverComponent;
   const {
@@ -48,6 +50,7 @@ export default function styleTip(self, e) {
     clientWidth: parentCWidth, offsetWidth: parentOWidth,
   } = container;
   const scrollbarWidth = Math.abs(parentCWidth - parentOWidth);
+  // const tipAbsolute = getElementStyle(tooltip, 'position') === 'absolute';
   const parentPosition = getElementStyle(container, 'position');
   // const absoluteParent = parentPosition === 'absolute';
   const fixedParent = parentPosition === 'fixed';
@@ -95,10 +98,6 @@ export default function styleTip(self, e) {
   const horizontal = ['left', 'right'];
   const vertical = ['top', 'bottom'];
 
-  // first remove side positions if both left and right limits are exceeded
-  // we usually fall back to top|bottom
-  placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
-
   topExceed = horizontal.includes(placement)
     ? elemRectTop + elemHeight / 2 - tipHeight / 2 - arrowHeight < 0
     : topExceed;
@@ -112,6 +111,9 @@ export default function styleTip(self, e) {
     ? elemRectLeft + tipWidth / 2 + elemWidth / 2 >= rightBoundry
     : rightExceed;
 
+  // first remove side positions if both left and right limits are exceeded
+  // we usually fall back to top|bottom
+  placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
   // second, recompute placement
   placement = placement === 'top' && topExceed ? 'bottom' : placement;
   placement = placement === 'bottom' && bottomExceed ? 'top' : placement;
