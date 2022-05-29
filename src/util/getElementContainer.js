@@ -25,7 +25,6 @@ export default function getElementContainer(element, getOffset) {
     /** @type {any} */
     let { offsetParent } = element;
     const win = getWindow(element);
-    // const { innerWidth } = getDocumentElement(element);
 
     while (offsetParent && (isTableElement(offsetParent)
       || (isHTMLElement(offsetParent)
@@ -34,9 +33,8 @@ export default function getElementContainer(element, getOffset) {
       offsetParent = offsetParent.offsetParent;
     }
 
-    if (!offsetParent || (offsetParent
-      && (majorBlockTags.includes(offsetParent.tagName)
-        || getElementStyle(offsetParent, 'position') === 'static'))) {
+    if (!offsetParent || (majorBlockTags.includes(offsetParent.tagName)
+        || getElementStyle(offsetParent, 'position') === 'static')) {
       offsetParent = win;
     }
     return offsetParent;

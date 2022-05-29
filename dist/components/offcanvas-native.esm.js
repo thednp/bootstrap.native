@@ -51,15 +51,6 @@ const setAttribute = (element, attribute, value) => element.setAttribute(attribu
 const removeAttribute = (element, attribute) => element.removeAttribute(attribute);
 
 /**
- * Checks if an object is a `Document`.
- * @see https://dom.spec.whatwg.org/#node
- *
- * @param {any} object the target object
- * @returns {boolean} the query result
- */
-const isDocument = (object) => (object && object.nodeType === 9) || false;
-
-/**
  * Checks if an object is a `Node`.
  *
  * @param {any} node the target object
@@ -78,15 +69,28 @@ const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
 
 /**
+ * Checks if an object is a `Document`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+/**
  * Returns the `document` or the `#document` element.
  * @see https://github.com/floating-ui/floating-ui
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {Document}
  */
 function getDocument(node) {
+  // node instanceof Document
   if (isDocument(node)) return node;
+  // node instanceof Node
   if (isNode(node)) return node.ownerDocument;
+  // node instanceof Window
   if (isWindow(node)) return node.document;
+  // node is undefined | NULL
   return window.document;
 }
 
@@ -172,7 +176,7 @@ function removeClass(element, classNAME) {
 /**
  * Returns the `document.documentElement` or the `<html>` element.
  *
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {HTMLHtmlElement}
  */
 function getDocumentElement(node) {
@@ -182,7 +186,7 @@ function getDocumentElement(node) {
 /**
  * Returns the `document.body` or the `<body>` element.
  *
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {HTMLBodyElement}
  */
 function getDocumentBody(node) {
@@ -412,6 +416,14 @@ const getInstance = (target, component) => Data.get(target, component);
 const focus = (element) => element.focus();
 
 /**
+ * Checks if an object is an `Object`.
+ *
+ * @param {any} obj the target object
+ * @returns {boolean} the query result
+ */
+const isObject = (obj) => (typeof obj === 'object') || false;
+
+/**
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
@@ -423,7 +435,7 @@ function OriginalEvent(EventType, config) {
   });
 
   /* istanbul ignore else */
-  if (config instanceof Object) {
+  if (isObject(config)) {
     ObjectAssign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
@@ -654,20 +666,11 @@ const isTableElement = (element) => (element && ['TABLE', 'TD', 'TH'].includes(e
  */
 function getWindow(node) {
   // node is undefined | NULL
-  if (!node) {
-    return window;
-  }
-
+  if (!node) return window;
   // node instanceof Document
-  if (isDocument(node)) {
-    return node.defaultView;
-  }
-
+  if (isDocument(node)) return node.defaultView;
   // node instanceof Node
-  if (isNode(node)) {
-    return node.ownerDocument.defaultView;
-  }
-
+  if (isNode(node)) return node.ownerDocument.defaultView;
   // node is instanceof Window
   return node;
 }
@@ -691,7 +694,6 @@ function getElementContainer(element, getOffset) {
     /** @type {any} */
     let { offsetParent } = element;
     const win = getWindow(element);
-    // const { innerWidth } = getDocumentElement(element);
 
     while (offsetParent && (isTableElement(offsetParent)
       || (isHTMLElement(offsetParent)
@@ -700,9 +702,8 @@ function getElementContainer(element, getOffset) {
       offsetParent = offsetParent.offsetParent;
     }
 
-    if (!offsetParent || (offsetParent
-      && (majorBlockTags.includes(offsetParent.tagName)
-        || getElementStyle(offsetParent, 'position') === 'static'))) {
+    if (!offsetParent || (majorBlockTags.includes(offsetParent.tagName)
+        || getElementStyle(offsetParent, 'position') === 'static')) {
       offsetParent = win;
     }
     return offsetParent;
@@ -839,10 +840,12 @@ function setScrollbar(element, overflow) {
       paddingRight: `${bodyPad + sbWidth}px`,
     });
 
+    /* istanbul ignore else */
     if (fixedItems.length) {
       fixedItems.forEach((fixed) => {
         const itemPadValue = getElementStyle(fixed, 'paddingRight');
         fixed.style.paddingRight = `${parseInt(itemPadValue, 10) + sbWidth}px`;
+        /* istanbul ignore else */
         if ([stickyTopClass, positionStickyClass].some((c) => hasClass(fixed, c))) {
           const itemMValue = getElementStyle(fixed, 'marginRight');
           fixed.style.marginRight = `${parseInt(itemMValue, 10) - sbWidth}px`;

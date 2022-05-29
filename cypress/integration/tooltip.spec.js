@@ -104,18 +104,19 @@ describe('Tooltip Class Tests', () => {
         .get('@toggleEnable').invoke('toggleEnabled')
         .get('@toggleEnable').its('enabled').should('be.true')
         .get('@toggleEnable').invoke('toggle')
-        .get('@toggleEnable').its('tooltip').should('have.class', 'show')
+        .get('@toggleEnable').its('tooltip').should('have.class', 'show').and('be.visible')
+        // .wait(300)
         .get('@toggleEnable').invoke('toggleEnabled')
-        // .wait(200)
         .get('@toggleEnable').its('enabled').should('be.false')
-        .get('@toggleEnable').invoke('toggle')
-        .get('@toggleEnable').its('tooltip').should('be.hidden')
         // .wait(200)
-        .get('@toggleEnable').invoke('toggleEnabled')
-        .wait(200)
-        .get('@toggleEnable').its('enabled').should('be.true')
         .get('@toggleEnable').invoke('toggle')
-        .get('@toggleEnable').its('tooltip').should('have.class', 'show')
+        .get('@toggleEnable').its('tooltip').should('not.exist')
+        // .wait(300)
+        .get('@toggleEnable').invoke('toggleEnabled')
+        .get('@toggleEnable').its('enabled').should('be.true')
+        // .wait(300)
+        .get('@toggleEnable').invoke('toggle')
+        .get('@toggleEnable').its('tooltip').should('have.class', 'show').and('be.visible')
         .wait(200)
   });
 
@@ -210,10 +211,11 @@ describe('Tooltip Class Tests', () => {
       .get('@tooltip_offcanvas').its('tooltip').should('not.have.class', 'show').and('be.hidden')
   });
 
-  it('Can work with popover', () => {
+  it('Can work with popover, template and sanitizeFn', () => {
     cy.wait('@tooltip-page')
       .document().then((doc) => {
         const popoverTarget = doc.createElement('button');
+        popoverTarget.className = 'btn btn-primary';
         popoverTarget.innerText = 'Popover Demo';
         popoverTarget.setAttribute('data-bs-title', 'Popover demo title');
         popoverTarget.setAttribute('data-bs-content', 'Popover demo content');
@@ -224,12 +226,95 @@ describe('Tooltip Class Tests', () => {
       .get('[data-bs-toggle="popover"]').then(($element) => {
         const element = $element[0];
         const HTML = element.ownerDocument.documentElement;
+        const template = element.ownerDocument.createElement('div');
+        template.innerHTML = `<div class="popover fade bs-popover-top" role="tooltip">
+        <h3 class="popover-header"></h3>
+        <div class="popover-arrow"></div>
+        <div class="popover-body"></div>
+        </div>`;
         // add another container for code coverage
-        cy.wrap(new Popover(element, {container: HTML})).as('popover');
+        cy.wrap(new Popover(element, {template: template.firstChild, container: HTML, sanitizeFn: (c) => c.trim()})).as('popover');
       })
       .get('@popover').invoke('show')
       .get('@popover').its('tooltip').should('have.class', 'show').and('be.visible')
       // .wait(200)
+  });
+
+  it('Can work with popover and micro-template', () => {
+    cy.wait('@tooltip-page')
+      .document().then((doc) => {
+        const popoverTarget = doc.createElement('button');
+        popoverTarget.className = 'btn btn-primary';
+        popoverTarget.innerText = 'Popover Demo';
+        popoverTarget.setAttribute('data-bs-toggle', 'popover');
+        popoverTarget.setAttribute('data-bs-dismissible', 'true');
+        doc.querySelector('.btn-toolbar').append(popoverTarget);
+      })
+      .get('[data-bs-toggle="popover"]').then(($element) => {
+        const element = $element[0];
+        const doc = element.ownerDocument;
+        const title = doc.createElement('div');
+        title.innerHTML = `<span class="my-header">My Header Micro-Template</span>`;
+        const content = doc.createElement('div');
+        content.innerHTML = `<p class="my-content"><b class="lead">My Content</b> Micro-Template</p>`;
+        const btnClose = doc.createElement('div');
+        btnClose.innerHTML = '<button class="btn-close" aria-label="Close"></button>';
+        // add another container for code coverage
+        cy.wrap(new Popover(element, {
+          title: title.firstChild,
+          content: content.firstChild,
+          btnClose: btnClose.firstChild,
+          customClass: 'custom-class'
+        })).as('popover');
+      })
+      .get('@popover').invoke('show')
+      .get('@popover').its('tooltip').should('have.class', 'custom-class').and('have.class', 'show').and('be.visible')
+  });
+
+  it('Can work with popover without title 1', () => {
+    cy.wait('@tooltip-page')
+      .document().then((doc) => {
+        const popoverTarget = doc.createElement('button');
+        popoverTarget.className = 'btn btn-primary';
+        popoverTarget.innerText = 'Popover Demo';
+        popoverTarget.setAttribute('data-bs-toggle', 'popover');
+        popoverTarget.setAttribute('data-bs-dismissible', 'true');
+        doc.querySelector('.btn-toolbar').append(popoverTarget);
+      })
+      .get('[data-bs-toggle="popover"]').then(($element) => {
+        const element = $element[0];
+        // add another container for code coverage
+        cy.wrap(new Popover(element, {
+          content: `<p class="m-0"><b class="lead">My Content</b> Micro-Template</p>`,
+          btnClose: '<button class="btn-close text-primary" aria-label="Close"></button>',
+        })).as('popover1');
+      })
+      .get('@popover1').invoke('show')
+      .get('@popover1').its('tooltip').should('have.class', 'show').and('be.visible')
+  });
+
+  it('Can work with popover without title 2', () => {
+    cy.wait('@tooltip-page')
+      .document().then((doc) => {
+        const popoverTarget = doc.createElement('button');
+        popoverTarget.className = 'btn btn-primary';
+        popoverTarget.innerText = 'Popover Demo';
+        popoverTarget.setAttribute('data-bs-toggle', 'popover');
+        popoverTarget.setAttribute('data-bs-dismissible', 'true');
+        doc.querySelector('.btn-toolbar').append(popoverTarget);
+      })
+      .get('[data-bs-toggle="popover"]').then(($element) => {
+        const element = $element[0];
+        // add another container for code coverage
+        const btnClose = element.ownerDocument.createElement('div');
+        btnClose.innerHTML = '<button class="btn-close" aria-label="Close"></button>';
+        cy.wrap(new Popover(element, {
+          content: `<p class="m-0"><b class="lead">My Content</b> Micro-Template</p>`,
+          btnClose: btnClose.firstChild,
+        })).as('popover2');
+      })
+      .get('@popover2').invoke('show')
+      .get('@popover2').its('tooltip').should('have.class', 'show').and('be.visible')
   });
 
   it('Can be dismissed via touch events', () => {
@@ -250,8 +335,8 @@ describe('Tooltip Class Tests', () => {
     cy.wait('@tooltip-page')
       .get('[data-cy="tooltip"]').eq(3).then(($element) => {
         const element = $element[0];
-        changeDirection(element, 'rtl');
-        cy.wrap(new Tooltip(element)).as('rtl');
+        changeDirection(element, 'rtl'); // added template without tooltip class for coverage
+        cy.wrap(new Tooltip(element, {template: '<div role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'})).as('rtl');
       })
       .get('@rtl').invoke('show')
       .get('@rtl').its('tooltip').should('have.class', 'show').and('be.visible')

@@ -76,7 +76,7 @@
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
     "@thednp/event-listener": "^1.0.4",
-    "@thednp/shorty": "^1.0.2"
+    "@thednp/shorty": "^1.0.3"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.1.3",

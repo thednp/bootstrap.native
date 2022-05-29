@@ -250,7 +250,7 @@ export default class Collapse extends BaseComponent {
       activeCollapseInstance = activeCollapse && getCollapseInstance(activeCollapse);
     }
 
-    if ((!parent || (parent && !Timer.get(parent))) && !Timer.get(element)) {
+    if ((!parent || !Timer.get(parent)) && !Timer.get(element)) {
       if (activeCollapseInstance && activeCollapse !== element) {
         collapseContent(activeCollapseInstance);
         activeCollapseInstance.triggers.forEach((btn) => {

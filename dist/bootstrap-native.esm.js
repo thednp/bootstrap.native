@@ -235,15 +235,6 @@ function emulateTransitionEnd(element, handler) {
 }
 
 /**
- * Checks if an object is a `Document`.
- * @see https://dom.spec.whatwg.org/#node
- *
- * @param {any} object the target object
- * @returns {boolean} the query result
- */
-const isDocument = (object) => (object && object.nodeType === 9) || false;
-
-/**
  * Checks if an object is a `Node`.
  *
  * @param {any} node the target object
@@ -262,15 +253,28 @@ const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
 
 /**
+ * Checks if an object is a `Document`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+/**
  * Returns the `document` or the `#document` element.
  * @see https://github.com/floating-ui/floating-ui
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {Document}
  */
 function getDocument(node) {
+  // node instanceof Document
   if (isDocument(node)) return node;
+  // node instanceof Node
   if (isNode(node)) return node.ownerDocument;
+  // node instanceof Window
   if (isWindow(node)) return node.document;
+  // node is undefined | NULL
   return window.document;
 }
 
@@ -422,6 +426,14 @@ const Data = {
 const getInstance = (target, component) => Data.get(target, component);
 
 /**
+ * Checks if an object is an `Object`.
+ *
+ * @param {any} obj the target object
+ * @returns {boolean} the query result
+ */
+const isObject = (obj) => (typeof obj === 'object') || false;
+
+/**
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
@@ -433,7 +445,7 @@ function OriginalEvent(EventType, config) {
   });
 
   /* istanbul ignore else */
-  if (config instanceof Object) {
+  if (isObject(config)) {
     ObjectAssign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
@@ -977,7 +989,7 @@ function getBoundingClientRect(element, includeScale) {
 /**
  * Returns the `document.documentElement` or the `<html>` element.
  *
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {HTMLHtmlElement}
  */
 function getDocumentElement(node) {
@@ -2022,7 +2034,7 @@ class Collapse extends BaseComponent {
       activeCollapseInstance = activeCollapse && getCollapseInstance(activeCollapse);
     }
 
-    if ((!parent || (parent && !Timer.get(parent))) && !Timer.get(element)) {
+    if ((!parent || !Timer.get(parent)) && !Timer.get(element)) {
       if (activeCollapseInstance && activeCollapse !== element) {
         collapseContent(activeCollapseInstance);
         activeCollapseInstance.triggers.forEach((btn) => {
@@ -2119,20 +2131,11 @@ const focus = (element) => element.focus();
  */
 function getWindow(node) {
   // node is undefined | NULL
-  if (!node) {
-    return window;
-  }
-
+  if (!node) return window;
   // node instanceof Document
-  if (isDocument(node)) {
-    return node.defaultView;
-  }
-
+  if (isDocument(node)) return node.defaultView;
   // node instanceof Node
-  if (isNode(node)) {
-    return node.ownerDocument.defaultView;
-  }
-
+  if (isNode(node)) return node.ownerDocument.defaultView;
   // node is instanceof Window
   return node;
 }
@@ -2680,7 +2683,7 @@ const removeAttribute = (element, attribute) => element.removeAttribute(attribut
 /**
  * Returns the `document.body` or the `<body>` element.
  *
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {HTMLBodyElement}
  */
 function getDocumentBody(node) {
@@ -2753,7 +2756,6 @@ function getElementContainer(element, getOffset) {
     /** @type {any} */
     let { offsetParent } = element;
     const win = getWindow(element);
-    // const { innerWidth } = getDocumentElement(element);
 
     while (offsetParent && (isTableElement(offsetParent)
       || (isHTMLElement(offsetParent)
@@ -2762,9 +2764,8 @@ function getElementContainer(element, getOffset) {
       offsetParent = offsetParent.offsetParent;
     }
 
-    if (!offsetParent || (offsetParent
-      && (majorBlockTags.includes(offsetParent.tagName)
-        || getElementStyle(offsetParent, 'position') === 'static'))) {
+    if (!offsetParent || (majorBlockTags.includes(offsetParent.tagName)
+        || getElementStyle(offsetParent, 'position') === 'static')) {
       offsetParent = win;
     }
     return offsetParent;
@@ -2878,10 +2879,12 @@ function setScrollbar(element, overflow) {
       paddingRight: `${bodyPad + sbWidth}px`,
     });
 
+    /* istanbul ignore else */
     if (fixedItems.length) {
       fixedItems.forEach((fixed) => {
         const itemPadValue = getElementStyle(fixed, 'paddingRight');
         fixed.style.paddingRight = `${parseInt(itemPadValue, 10) + sbWidth}px`;
+        /* istanbul ignore else */
         if ([stickyTopClass, positionStickyClass].some((c) => hasClass(fixed, c))) {
           const itemMValue = getElementStyle(fixed, 'marginRight');
           fixed.style.marginRight = `${parseInt(itemMValue, 10) - sbWidth}px`;
@@ -4257,12 +4260,29 @@ const dataOriginalTitle = 'data-original-title';
 const tooltipComponent = 'Tooltip';
 
 /**
+ * Checks if an object is a `NodeList`.
+ * => equivalent to `object instanceof NodeList`
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isNodeList = (object) => (object && object.constructor.name === 'NodeList') || false;
+
+/**
  * Shortcut for `typeof SOMETHING === "string"`.
  *
  * @param  {any} str input value
  * @returns {boolean} the query result
  */
 const isString = (str) => typeof str === 'string';
+
+/**
+ * Shortcut for `Array.isArray()` static method.
+ *
+ * @param  {any} arr array-like iterable object
+ * @returns {boolean} the query result
+ */
+const isArray = (arr) => Array.isArray(arr);
 
 /**
  * Append an existing `Element` to Popover / Tooltip component or HTML
@@ -4273,7 +4293,8 @@ const isString = (str) => typeof str === 'string';
  * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
  */
 function setHtml(element, content, sanitizeFn) {
-  if (isString(content) && !content.length) return;
+  /* istanbul ignore next */
+  if (!isHTMLElement(element) || (isString(content) && !content.length)) return;
 
   /* istanbul ignore else */
   if (isString(content)) {
@@ -4283,11 +4304,12 @@ function setHtml(element, content, sanitizeFn) {
     const win = getWindow(element);
     const domParser = new win.DOMParser();
     const tempDocument = domParser.parseFromString(dirty, 'text/html');
-    const { body } = tempDocument;
-    const method = body.children.length ? 'innerHTML' : 'innerText';
-    element[method] = body[method];
+    element.append(...[...tempDocument.body.childNodes]);
   } else if (isHTMLElement(content)) {
     element.append(content);
+  } else if (isNodeList(content)
+    || (isArray(content) && content.every(isNode))) {
+    element.append(...[...content]);
   }
 }
 
@@ -4300,12 +4322,13 @@ function createTip(self) {
   const { id, element, options } = self;
   const {
     animation, customClass, sanitizeFn, placement, dismissible,
+    title, content, template, btnClose,
   } = options;
-  let { title, content } = options;
   const isTooltip = self.name === tooltipComponent;
   const tipString = isTooltip ? tooltipString : popoverString;
-  const { template, btnClose } = options;
   const tipPositions = { ...tipClassPositions };
+  let titleParts = [];
+  let contentParts = [];
 
   if (isRTL(element)) {
     tipPositions.left = 'end';
@@ -4317,17 +4340,17 @@ function createTip(self) {
 
   // load template
   /** @type {HTMLElement?} */
-  let popoverTemplate;
+  let tooltipTemplate;
   if (isHTMLElement(template)) {
-    popoverTemplate = template;
+    tooltipTemplate = template;
   } else {
-    const htmlMarkup = getDocument(element).createElement('div');
+    const htmlMarkup = createElement('div');
     setHtml(htmlMarkup, template, sanitizeFn);
-    popoverTemplate = htmlMarkup.firstElementChild;
+    tooltipTemplate = htmlMarkup.firstChild;
   }
 
   // set popover markup
-  self.tooltip = isHTMLElement(popoverTemplate) && popoverTemplate.cloneNode(true);
+  self.tooltip = isHTMLElement(tooltipTemplate) && tooltipTemplate.cloneNode(true);
 
   const { tooltip } = self;
 
@@ -4343,23 +4366,49 @@ function createTip(self) {
   self.arrow = querySelector(`.${tipString}-arrow`, tooltip);
   const { arrow } = self;
 
+  if (isHTMLElement(title)) titleParts = [title.cloneNode(true)];
+  else {
+    const tempTitle = createElement('div');
+    setHtml(tempTitle, title, sanitizeFn);
+    titleParts = [...[...tempTitle.childNodes]];
+  }
+
+  if (isHTMLElement(content)) contentParts = [content.cloneNode(true)];
+  else {
+    const tempContent = createElement('div');
+    setHtml(tempContent, content, sanitizeFn);
+    contentParts = [...[...tempContent.childNodes]];
+  }
+
   // set dismissible button
   if (dismissible) {
     if (title) {
-      if (isHTMLElement(title)) setHtml(title, btnClose, sanitizeFn);
-      else title += btnClose;
+      if (isHTMLElement(btnClose)) titleParts = [...titleParts, btnClose.cloneNode(true)];
+      else {
+        const tempBtn = createElement('div');
+        setHtml(tempBtn, btnClose, sanitizeFn);
+        titleParts = [...titleParts, tempBtn.firstChild];
+      }
     } else {
+      /* istanbul ignore else */
       if (tooltipHeader) tooltipHeader.remove();
-      if (isHTMLElement(content)) setHtml(content, btnClose, sanitizeFn);
-      else content += btnClose;
+      if (isHTMLElement(btnClose)) contentParts = [...contentParts, btnClose.cloneNode(true)];
+      else {
+        const tempBtn = createElement('div');
+        setHtml(tempBtn, btnClose, sanitizeFn);
+        contentParts = [...contentParts, tempBtn.firstChild];
+      }
     }
   }
 
   // fill the template with content from options / data attributes
   // also sanitize title && content
+  /* istanbul ignore else */
   if (!isTooltip) {
-    if (title && tooltipHeader) setHtml(tooltipHeader, title, sanitizeFn);
-    if (content && tooltipBody) setHtml(tooltipBody, content, sanitizeFn);
+    /* istanbul ignore else */
+    if (title && tooltipHeader) setHtml(tooltipHeader, titleParts, sanitizeFn);
+    /* istanbul ignore else */
+    if (content && tooltipBody) setHtml(tooltipBody, contentParts, sanitizeFn);
     // set btn
     self.btn = querySelector('.btn-close', tooltip);
   } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
@@ -4369,11 +4418,15 @@ function createTip(self) {
   addClass(arrow, 'position-absolute');
 
   // set popover animation and placement
+  /* istanbul ignore else */
   if (!hasClass(tooltip, tipString)) addClass(tooltip, tipString);
+  /* istanbul ignore else */
   if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
+  /* istanbul ignore else */
   if (customClass && !hasClass(tooltip, customClass)) {
     addClass(tooltip, customClass);
   }
+  /* istanbul ignore else */
   if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
 }
 
@@ -4942,8 +4995,6 @@ const scrollspyComponent = 'ScrollSpy';
 /* Native JavaScript for Bootstrap 5 | ScrollSpy
 ------------------------------------------------ */
 
-// console.log(typeof addEventListener)
-
 // SCROLLSPY PRIVATE GC
 // ====================
 const scrollspySelector = '[data-bs-spy="scroll"]';
@@ -4990,6 +5041,7 @@ function updateSpyTargets(self) {
   self.scrollTop = isWin ? scrollTarget.scrollY : scrollTarget.scrollTop;
 
   // only update items/offsets once or with each mutation
+  /* istanbul ignore else */
   if (links && (itemsLength !== links.length || scrollHEIGHT !== scrollHeight)) {
     let href;
     let targetItem;
@@ -5071,6 +5123,7 @@ function activate(self, item) {
     /** @type {HTMLElement?} */
     const parentLink = menuItem.previousElementSibling;
 
+    /* istanbul ignore else */
     if (parentLink && !hasClass(parentLink, activeClass)) {
       addClass(parentLink, activeClass);
     }
@@ -5114,11 +5167,10 @@ class ScrollSpy extends BaseComponent {
     // invalidate
     if (!self.target) return;
 
-    const win = getWindow(element);
-
     // set initial state
     /** @type {HTMLElement | Window} */
-    self.scrollTarget = element.clientHeight < element.scrollHeight ? element : win;
+    self.scrollTarget = element.clientHeight < element.scrollHeight
+      ? element : getWindow(element);
     /** @type {number} */
     self.scrollTop = 0;
     /** @type {number} */
@@ -5164,6 +5216,7 @@ class ScrollSpy extends BaseComponent {
     const { target } = self;
 
     // check if target is visible and invalidate
+    /* istanbul ignore next */
     if (target.offsetHeight === 0) return;
 
     updateSpyTargets(self);
@@ -5175,6 +5228,7 @@ class ScrollSpy extends BaseComponent {
     if (scrollTop >= maxScroll) {
       const newActiveItem = items[itemsLength - 1];
 
+      /* istanbul ignore else */
       if (activeItem !== newActiveItem) {
         activate(self, newActiveItem);
       }

@@ -18,15 +18,6 @@
   const getAttribute = (element, attribute) => element.getAttribute(attribute);
 
   /**
-   * Checks if an object is a `Document`.
-   * @see https://dom.spec.whatwg.org/#node
-   *
-   * @param {any} object the target object
-   * @returns {boolean} the query result
-   */
-  const isDocument = (object) => (object && object.nodeType === 9) || false;
-
-  /**
    * Checks if an object is a `Node`.
    *
    * @param {any} node the target object
@@ -45,15 +36,28 @@
   const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
 
   /**
+   * Checks if an object is a `Document`.
+   * @see https://dom.spec.whatwg.org/#node
+   *
+   * @param {any} object the target object
+   * @returns {boolean} the query result
+   */
+  const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+  /**
    * Returns the `document` or the `#document` element.
    * @see https://github.com/floating-ui/floating-ui
-   * @param {(ParentNode | Window)=} node
+   * @param {(Node | Window)=} node
    * @returns {Document}
    */
   function getDocument(node) {
+    // node instanceof Document
     if (isDocument(node)) return node;
+    // node instanceof Node
     if (isNode(node)) return node.ownerDocument;
+    // node instanceof Window
     if (isWindow(node)) return node.document;
+    // node is undefined | NULL
     return window.document;
   }
 
@@ -129,20 +133,11 @@
    */
   function getWindow(node) {
     // node is undefined | NULL
-    if (!node) {
-      return window;
-    }
-
+    if (!node) return window;
     // node instanceof Document
-    if (isDocument(node)) {
-      return node.defaultView;
-    }
-
+    if (isDocument(node)) return node.defaultView;
     // node instanceof Node
-    if (isNode(node)) {
-      return node.ownerDocument.defaultView;
-    }
-
+    if (isNode(node)) return node.ownerDocument.defaultView;
     // node is instanceof Window
     return node;
   }
@@ -150,7 +145,7 @@
   /**
    * Returns the `document.documentElement` or the `<html>` element.
    *
-   * @param {(ParentNode | Window)=} node
+   * @param {(Node | Window)=} node
    * @returns {HTMLHtmlElement}
    */
   function getDocumentElement(node) {
@@ -160,7 +155,7 @@
   /**
    * Returns the `document.body` or the `<body>` element.
    *
-   * @param {(ParentNode | Window)=} node
+   * @param {(Node | Window)=} node
    * @returns {HTMLBodyElement}
    */
   function getDocumentBody(node) {
@@ -315,6 +310,14 @@
   const getInstance = (target, component) => Data.get(target, component);
 
   /**
+   * Checks if an object is an `Object`.
+   *
+   * @param {any} obj the target object
+   * @returns {boolean} the query result
+   */
+  const isObject = (obj) => (typeof obj === 'object') || false;
+
+  /**
    * Returns a namespaced `CustomEvent` specific to each component.
    * @param {string} EventType Event.type
    * @param {Record<string, any>=} config Event.options | Event.properties
@@ -326,7 +329,7 @@
     });
 
     /* istanbul ignore else */
-    if (config instanceof Object) {
+    if (isObject(config)) {
       ObjectAssign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
@@ -591,8 +594,6 @@
   /* Native JavaScript for Bootstrap 5 | ScrollSpy
   ------------------------------------------------ */
 
-  // console.log(typeof addEventListener)
-
   // SCROLLSPY PRIVATE GC
   // ====================
   const scrollspySelector = '[data-bs-spy="scroll"]';
@@ -639,6 +640,7 @@
     self.scrollTop = isWin ? scrollTarget.scrollY : scrollTarget.scrollTop;
 
     // only update items/offsets once or with each mutation
+    /* istanbul ignore else */
     if (links && (itemsLength !== links.length || scrollHEIGHT !== scrollHeight)) {
       let href;
       let targetItem;
@@ -720,6 +722,7 @@
       /** @type {HTMLElement?} */
       const parentLink = menuItem.previousElementSibling;
 
+      /* istanbul ignore else */
       if (parentLink && !hasClass(parentLink, activeClass)) {
         addClass(parentLink, activeClass);
       }
@@ -763,11 +766,10 @@
       // invalidate
       if (!self.target) return;
 
-      const win = getWindow(element);
-
       // set initial state
       /** @type {HTMLElement | Window} */
-      self.scrollTarget = element.clientHeight < element.scrollHeight ? element : win;
+      self.scrollTarget = element.clientHeight < element.scrollHeight
+        ? element : getWindow(element);
       /** @type {number} */
       self.scrollTop = 0;
       /** @type {number} */
@@ -813,6 +815,7 @@
       const { target } = self;
 
       // check if target is visible and invalidate
+      /* istanbul ignore next */
       if (target.offsetHeight === 0) return;
 
       updateSpyTargets(self);
@@ -824,6 +827,7 @@
       if (scrollTop >= maxScroll) {
         const newActiveItem = items[itemsLength - 1];
 
+        /* istanbul ignore else */
         if (activeItem !== newActiveItem) {
           activate(self, newActiveItem);
         }

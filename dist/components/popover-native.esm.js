@@ -145,15 +145,6 @@ const isMedia = (element) => (
   && ['SVG', 'Image', 'Video'].some((s) => element.constructor.name.includes(s))) || false;
 
 /**
- * Checks if an object is a `Document`.
- * @see https://dom.spec.whatwg.org/#node
- *
- * @param {any} object the target object
- * @returns {boolean} the query result
- */
-const isDocument = (object) => (object && object.nodeType === 9) || false;
-
-/**
  * Checks if an object is a `Node`.
  *
  * @param {any} node the target object
@@ -172,22 +163,35 @@ const isNode = (element) => (element && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
 
 /**
+ * Checks if an object is a `Document`.
+ * @see https://dom.spec.whatwg.org/#node
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+/**
  * Returns the `document` or the `#document` element.
  * @see https://github.com/floating-ui/floating-ui
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {Document}
  */
 function getDocument(node) {
+  // node instanceof Document
   if (isDocument(node)) return node;
+  // node instanceof Node
   if (isNode(node)) return node.ownerDocument;
+  // node instanceof Window
   if (isWindow(node)) return node.document;
+  // node is undefined | NULL
   return window.document;
 }
 
 /**
  * Returns the `document.documentElement` or the `<html>` element.
  *
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {HTMLHtmlElement}
  */
 function getDocumentElement(node) {
@@ -710,20 +714,11 @@ const removeAttribute = (element, attribute) => element.removeAttribute(attribut
  */
 function getWindow(node) {
   // node is undefined | NULL
-  if (!node) {
-    return window;
-  }
-
+  if (!node) return window;
   // node instanceof Document
-  if (isDocument(node)) {
-    return node.defaultView;
-  }
-
+  if (isDocument(node)) return node.defaultView;
   // node instanceof Node
-  if (isNode(node)) {
-    return node.ownerDocument.defaultView;
-  }
-
+  if (isNode(node)) return node.ownerDocument.defaultView;
   // node is instanceof Window
   return node;
 }
@@ -731,7 +726,7 @@ function getWindow(node) {
 /**
  * Returns the `document.body` or the `<body>` element.
  *
- * @param {(ParentNode | Window)=} node
+ * @param {(Node | Window)=} node
  * @returns {HTMLBodyElement}
  */
 function getDocumentBody(node) {
@@ -1053,6 +1048,14 @@ const Timer = {
 };
 
 /**
+ * Checks if an object is an `Object`.
+ *
+ * @param {any} obj the target object
+ * @returns {boolean} the query result
+ */
+const isObject = (obj) => (typeof obj === 'object') || false;
+
+/**
  * Returns a namespaced `CustomEvent` specific to each component.
  * @param {string} EventType Event.type
  * @param {Record<string, any>=} config Event.options | Event.properties
@@ -1064,7 +1067,7 @@ function OriginalEvent(EventType, config) {
   });
 
   /* istanbul ignore else */
-  if (config instanceof Object) {
+  if (isObject(config)) {
     ObjectAssign(OriginalCustomEvent, config);
   }
   return OriginalCustomEvent;
@@ -1186,9 +1189,43 @@ const modalString = 'modal';
 const offcanvasString = 'offcanvas';
 
 /**
+ * This is a shortie for `document.createElement` method
+ * which allows you to create a new `HTMLElement` for a given `tagName`
+ * or based on an object with specific non-readonly attributes:
+ * `id`, `className`, `textContent`, `style`, etc.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
+ *
+ * @param {Record<string, string> | string} param `tagName` or object
+ * @return {HTMLElement} a new `HTMLElement` or `Element`
+ */
+function createElement(param) {
+  if (!param) return null;
+
+  if (typeof param === 'string') {
+    return getDocument().createElement(param);
+  }
+
+  const { tagName } = param;
+  const attr = { ...param };
+  const newElement = createElement(tagName);
+  delete attr.tagName;
+  ObjectAssign(newElement, attr);
+  return newElement;
+}
+
+/**
  * Global namespace for most components `fade` class.
  */
 const fadeClass = 'fade';
+
+/**
+ * Checks if an object is a `NodeList`.
+ * => equivalent to `object instanceof NodeList`
+ *
+ * @param {any} object the target object
+ * @returns {boolean} the query result
+ */
+const isNodeList = (object) => (object && object.constructor.name === 'NodeList') || false;
 
 /**
  * Shortcut for `typeof SOMETHING === "string"`.
@@ -1199,6 +1236,14 @@ const fadeClass = 'fade';
 const isString = (str) => typeof str === 'string';
 
 /**
+ * Shortcut for `Array.isArray()` static method.
+ *
+ * @param  {any} arr array-like iterable object
+ * @returns {boolean} the query result
+ */
+const isArray = (arr) => Array.isArray(arr);
+
+/**
  * Append an existing `Element` to Popover / Tooltip component or HTML
  * markup string to be parsed & sanitized to be used as popover / tooltip content.
  *
@@ -1207,7 +1252,8 @@ const isString = (str) => typeof str === 'string';
  * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
  */
 function setHtml(element, content, sanitizeFn) {
-  if (isString(content) && !content.length) return;
+  /* istanbul ignore next */
+  if (!isHTMLElement(element) || (isString(content) && !content.length)) return;
 
   /* istanbul ignore else */
   if (isString(content)) {
@@ -1217,11 +1263,12 @@ function setHtml(element, content, sanitizeFn) {
     const win = getWindow(element);
     const domParser = new win.DOMParser();
     const tempDocument = domParser.parseFromString(dirty, 'text/html');
-    const { body } = tempDocument;
-    const method = body.children.length ? 'innerHTML' : 'innerText';
-    element[method] = body[method];
+    element.append(...[...tempDocument.body.childNodes]);
   } else if (isHTMLElement(content)) {
     element.append(content);
+  } else if (isNodeList(content)
+    || (isArray(content) && content.every(isNode))) {
+    element.append(...[...content]);
   }
 }
 
@@ -1234,12 +1281,13 @@ function createTip(self) {
   const { id, element, options } = self;
   const {
     animation, customClass, sanitizeFn, placement, dismissible,
+    title, content, template, btnClose,
   } = options;
-  let { title, content } = options;
   const isTooltip = self.name === tooltipComponent;
   const tipString = isTooltip ? tooltipString : popoverString;
-  const { template, btnClose } = options;
   const tipPositions = { ...tipClassPositions };
+  let titleParts = [];
+  let contentParts = [];
 
   if (isRTL(element)) {
     tipPositions.left = 'end';
@@ -1251,17 +1299,17 @@ function createTip(self) {
 
   // load template
   /** @type {HTMLElement?} */
-  let popoverTemplate;
+  let tooltipTemplate;
   if (isHTMLElement(template)) {
-    popoverTemplate = template;
+    tooltipTemplate = template;
   } else {
-    const htmlMarkup = getDocument(element).createElement('div');
+    const htmlMarkup = createElement('div');
     setHtml(htmlMarkup, template, sanitizeFn);
-    popoverTemplate = htmlMarkup.firstElementChild;
+    tooltipTemplate = htmlMarkup.firstChild;
   }
 
   // set popover markup
-  self.tooltip = isHTMLElement(popoverTemplate) && popoverTemplate.cloneNode(true);
+  self.tooltip = isHTMLElement(tooltipTemplate) && tooltipTemplate.cloneNode(true);
 
   const { tooltip } = self;
 
@@ -1277,23 +1325,49 @@ function createTip(self) {
   self.arrow = querySelector(`.${tipString}-arrow`, tooltip);
   const { arrow } = self;
 
+  if (isHTMLElement(title)) titleParts = [title.cloneNode(true)];
+  else {
+    const tempTitle = createElement('div');
+    setHtml(tempTitle, title, sanitizeFn);
+    titleParts = [...[...tempTitle.childNodes]];
+  }
+
+  if (isHTMLElement(content)) contentParts = [content.cloneNode(true)];
+  else {
+    const tempContent = createElement('div');
+    setHtml(tempContent, content, sanitizeFn);
+    contentParts = [...[...tempContent.childNodes]];
+  }
+
   // set dismissible button
   if (dismissible) {
     if (title) {
-      if (isHTMLElement(title)) setHtml(title, btnClose, sanitizeFn);
-      else title += btnClose;
+      if (isHTMLElement(btnClose)) titleParts = [...titleParts, btnClose.cloneNode(true)];
+      else {
+        const tempBtn = createElement('div');
+        setHtml(tempBtn, btnClose, sanitizeFn);
+        titleParts = [...titleParts, tempBtn.firstChild];
+      }
     } else {
+      /* istanbul ignore else */
       if (tooltipHeader) tooltipHeader.remove();
-      if (isHTMLElement(content)) setHtml(content, btnClose, sanitizeFn);
-      else content += btnClose;
+      if (isHTMLElement(btnClose)) contentParts = [...contentParts, btnClose.cloneNode(true)];
+      else {
+        const tempBtn = createElement('div');
+        setHtml(tempBtn, btnClose, sanitizeFn);
+        contentParts = [...contentParts, tempBtn.firstChild];
+      }
     }
   }
 
   // fill the template with content from options / data attributes
   // also sanitize title && content
+  /* istanbul ignore else */
   if (!isTooltip) {
-    if (title && tooltipHeader) setHtml(tooltipHeader, title, sanitizeFn);
-    if (content && tooltipBody) setHtml(tooltipBody, content, sanitizeFn);
+    /* istanbul ignore else */
+    if (title && tooltipHeader) setHtml(tooltipHeader, titleParts, sanitizeFn);
+    /* istanbul ignore else */
+    if (content && tooltipBody) setHtml(tooltipBody, contentParts, sanitizeFn);
     // set btn
     self.btn = querySelector('.btn-close', tooltip);
   } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
@@ -1303,11 +1377,15 @@ function createTip(self) {
   addClass(arrow, 'position-absolute');
 
   // set popover animation and placement
+  /* istanbul ignore else */
   if (!hasClass(tooltip, tipString)) addClass(tooltip, tipString);
+  /* istanbul ignore else */
   if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
+  /* istanbul ignore else */
   if (customClass && !hasClass(tooltip, customClass)) {
     addClass(tooltip, customClass);
   }
+  /* istanbul ignore else */
   if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
 }
 
@@ -1380,7 +1458,6 @@ function getElementContainer(element, getOffset) {
     /** @type {any} */
     let { offsetParent } = element;
     const win = getWindow(element);
-    // const { innerWidth } = getDocumentElement(element);
 
     while (offsetParent && (isTableElement(offsetParent)
       || (isHTMLElement(offsetParent)
@@ -1389,9 +1466,8 @@ function getElementContainer(element, getOffset) {
       offsetParent = offsetParent.offsetParent;
     }
 
-    if (!offsetParent || (offsetParent
-      && (majorBlockTags.includes(offsetParent.tagName)
-        || getElementStyle(offsetParent, 'position') === 'static'))) {
+    if (!offsetParent || (majorBlockTags.includes(offsetParent.tagName)
+        || getElementStyle(offsetParent, 'position') === 'static')) {
       offsetParent = win;
     }
     return offsetParent;

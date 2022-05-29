@@ -77,10 +77,12 @@ export function setScrollbar(element, overflow) {
       paddingRight: `${bodyPad + sbWidth}px`,
     });
 
+    /* istanbul ignore else */
     if (fixedItems.length) {
       fixedItems.forEach((fixed) => {
         const itemPadValue = getElementStyle(fixed, 'paddingRight');
         fixed.style.paddingRight = `${parseInt(itemPadValue, 10) + sbWidth}px`;
+        /* istanbul ignore else */
         if ([stickyTopClass, positionStickyClass].some((c) => hasClass(fixed, c))) {
           const itemMValue = getElementStyle(fixed, 'marginRight');
           fixed.style.marginRight = `${parseInt(itemMValue, 10) - sbWidth}px`;

@@ -4,7 +4,7 @@ import querySelector from '@thednp/shorty/src/selectors/querySelector';
 import setAttribute from '@thednp/shorty/src/attr/setAttribute';
 import hasClass from '@thednp/shorty/src/class/hasClass';
 import addClass from '@thednp/shorty/src/class/addClass';
-import getDocument from '@thednp/shorty/src/get/getDocument';
+import createElement from '@thednp/shorty/src/misc/createElement';
 
 import tooltipComponent from '../strings/tooltipComponent';
 import tooltipString from '../strings/tooltipString';
@@ -22,12 +22,13 @@ export default function createTip(self) {
   const { id, element, options } = self;
   const {
     animation, customClass, sanitizeFn, placement, dismissible,
+    title, content, template, btnClose,
   } = options;
-  let { title, content } = options;
   const isTooltip = self.name === tooltipComponent;
   const tipString = isTooltip ? tooltipString : popoverString;
-  const { template, btnClose } = options;
   const tipPositions = { ...tipClassPositions };
+  let titleParts = [];
+  let contentParts = [];
 
   if (isRTL(element)) {
     tipPositions.left = 'end';
@@ -39,17 +40,17 @@ export default function createTip(self) {
 
   // load template
   /** @type {HTMLElement?} */
-  let popoverTemplate;
+  let tooltipTemplate;
   if (isHTMLElement(template)) {
-    popoverTemplate = template;
+    tooltipTemplate = template;
   } else {
-    const htmlMarkup = getDocument(element).createElement('div');
+    const htmlMarkup = createElement('div');
     setHtml(htmlMarkup, template, sanitizeFn);
-    popoverTemplate = htmlMarkup.firstElementChild;
+    tooltipTemplate = htmlMarkup.firstChild;
   }
 
   // set popover markup
-  self.tooltip = isHTMLElement(popoverTemplate) && popoverTemplate.cloneNode(true);
+  self.tooltip = isHTMLElement(tooltipTemplate) && tooltipTemplate.cloneNode(true);
 
   const { tooltip } = self;
 
@@ -65,15 +66,38 @@ export default function createTip(self) {
   self.arrow = querySelector(`.${tipString}-arrow`, tooltip);
   const { arrow } = self;
 
+  if (isHTMLElement(title)) titleParts = [title.cloneNode(true)];
+  else {
+    const tempTitle = createElement('div');
+    setHtml(tempTitle, title, sanitizeFn);
+    titleParts = [...[...tempTitle.childNodes]];
+  }
+
+  if (isHTMLElement(content)) contentParts = [content.cloneNode(true)];
+  else {
+    const tempContent = createElement('div');
+    setHtml(tempContent, content, sanitizeFn);
+    contentParts = [...[...tempContent.childNodes]];
+  }
+
   // set dismissible button
   if (dismissible) {
     if (title) {
-      if (isHTMLElement(title)) setHtml(title, btnClose, sanitizeFn);
-      else title += btnClose;
+      if (isHTMLElement(btnClose)) titleParts = [...titleParts, btnClose.cloneNode(true)];
+      else {
+        const tempBtn = createElement('div');
+        setHtml(tempBtn, btnClose, sanitizeFn);
+        titleParts = [...titleParts, tempBtn.firstChild];
+      }
     } else {
+      /* istanbul ignore else */
       if (tooltipHeader) tooltipHeader.remove();
-      if (isHTMLElement(content)) setHtml(content, btnClose, sanitizeFn);
-      else content += btnClose;
+      if (isHTMLElement(btnClose)) contentParts = [...contentParts, btnClose.cloneNode(true)];
+      else {
+        const tempBtn = createElement('div');
+        setHtml(tempBtn, btnClose, sanitizeFn);
+        contentParts = [...contentParts, tempBtn.firstChild];
+      }
     }
   }
 
@@ -82,9 +106,9 @@ export default function createTip(self) {
   /* istanbul ignore else */
   if (!isTooltip) {
     /* istanbul ignore else */
-    if (title && tooltipHeader) setHtml(tooltipHeader, title, sanitizeFn);
+    if (title && tooltipHeader) setHtml(tooltipHeader, titleParts, sanitizeFn);
     /* istanbul ignore else */
-    if (content && tooltipBody) setHtml(tooltipBody, content, sanitizeFn);
+    if (content && tooltipBody) setHtml(tooltipBody, contentParts, sanitizeFn);
     // set btn
     self.btn = querySelector('.btn-close', tooltip);
   } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);

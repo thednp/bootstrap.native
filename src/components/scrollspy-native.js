@@ -28,8 +28,6 @@ import scrollspyComponent from '../strings/scrollspyComponent';
 
 import BaseComponent from './base-component';
 
-// console.log(typeof addEventListener)
-
 // SCROLLSPY PRIVATE GC
 // ====================
 const scrollspySelector = '[data-bs-spy="scroll"]';
@@ -76,6 +74,7 @@ function updateSpyTargets(self) {
   self.scrollTop = isWin ? scrollTarget.scrollY : scrollTarget.scrollTop;
 
   // only update items/offsets once or with each mutation
+  /* istanbul ignore else */
   if (links && (itemsLength !== links.length || scrollHEIGHT !== scrollHeight)) {
     let href;
     let targetItem;
@@ -157,6 +156,7 @@ function activate(self, item) {
     /** @type {HTMLElement?} */
     const parentLink = menuItem.previousElementSibling;
 
+    /* istanbul ignore else */
     if (parentLink && !hasClass(parentLink, activeClass)) {
       addClass(parentLink, activeClass);
     }
@@ -200,11 +200,10 @@ export default class ScrollSpy extends BaseComponent {
     // invalidate
     if (!self.target) return;
 
-    const win = getWindow(element);
-
     // set initial state
     /** @type {HTMLElement | Window} */
-    self.scrollTarget = element.clientHeight < element.scrollHeight ? element : win;
+    self.scrollTarget = element.clientHeight < element.scrollHeight
+      ? element : getWindow(element);
     /** @type {number} */
     self.scrollTop = 0;
     /** @type {number} */
@@ -250,6 +249,7 @@ export default class ScrollSpy extends BaseComponent {
     const { target } = self;
 
     // check if target is visible and invalidate
+    /* istanbul ignore next */
     if (target.offsetHeight === 0) return;
 
     updateSpyTargets(self);
@@ -261,6 +261,7 @@ export default class ScrollSpy extends BaseComponent {
     if (scrollTop >= maxScroll) {
       const newActiveItem = items[itemsLength - 1];
 
+      /* istanbul ignore else */
       if (activeItem !== newActiveItem) {
         activate(self, newActiveItem);
       }

@@ -64,15 +64,6 @@
   const pointerupEvent = 'pointerup';
 
   /**
-   * Checks if an object is a `Document`.
-   * @see https://dom.spec.whatwg.org/#node
-   *
-   * @param {any} object the target object
-   * @returns {boolean} the query result
-   */
-  const isDocument = (object) => (object && object.nodeType === 9) || false;
-
-  /**
    * Checks if an object is a `Node`.
    *
    * @param {any} node the target object
@@ -91,15 +82,28 @@
   const isWindow = (object) => (object && object.constructor.name === 'Window') || false;
 
   /**
+   * Checks if an object is a `Document`.
+   * @see https://dom.spec.whatwg.org/#node
+   *
+   * @param {any} object the target object
+   * @returns {boolean} the query result
+   */
+  const isDocument = (object) => (object && object.nodeType === 9) || false;
+
+  /**
    * Returns the `document` or the `#document` element.
    * @see https://github.com/floating-ui/floating-ui
-   * @param {(ParentNode | Window)=} node
+   * @param {(Node | Window)=} node
    * @returns {Document}
    */
   function getDocument(node) {
+    // node instanceof Document
     if (isDocument(node)) return node;
+    // node instanceof Node
     if (isNode(node)) return node.ownerDocument;
+    // node instanceof Window
     if (isWindow(node)) return node.document;
+    // node is undefined | NULL
     return window.document;
   }
 
@@ -202,7 +206,7 @@
   /**
    * Returns the `document.documentElement` or the `<html>` element.
    *
-   * @param {(ParentNode | Window)=} node
+   * @param {(Node | Window)=} node
    * @returns {HTMLHtmlElement}
    */
   function getDocumentElement(node) {
@@ -540,6 +544,14 @@
   const getInstance = (target, component) => Data.get(target, component);
 
   /**
+   * Checks if an object is an `Object`.
+   *
+   * @param {any} obj the target object
+   * @returns {boolean} the query result
+   */
+  const isObject = (obj) => (typeof obj === 'object') || false;
+
+  /**
    * Returns a namespaced `CustomEvent` specific to each component.
    * @param {string} EventType Event.type
    * @param {Record<string, any>=} config Event.options | Event.properties
@@ -551,7 +563,7 @@
     });
 
     /* istanbul ignore else */
-    if (config instanceof Object) {
+    if (isObject(config)) {
       ObjectAssign(OriginalCustomEvent, config);
     }
     return OriginalCustomEvent;
