@@ -1,4 +1,5 @@
 # BSN
+[![Coverage Status](https://coveralls.io/repos/github/thednp/bootstrap.native/badge.svg)](https://coveralls.io/github/thednp/bootstrap.native)
 [![ci](https://github.com/thednp/bootstrap.native/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/bootstrap.native/actions/workflows/ci.yml)
 [![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg)](https://www.npmjs.com/package/bootstrap.native)
 [![NPM Downloads](https://img.shields.io/npm/dm/bootstrap.native.svg)](http://npm-stat.com/charts.html?package=bootstrap.native)
