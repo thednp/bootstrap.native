@@ -2,7 +2,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/thednp/bootstrap.native/badge.svg)](https://coveralls.io/github/thednp/bootstrap.native)
 [![ci](https://github.com/thednp/bootstrap.native/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/bootstrap.native/actions/workflows/ci.yml)
 [![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg)](https://www.npmjs.com/package/bootstrap.native)
-[![NPM Downloads](https://img.shields.io/npm/dm/bootstrap.native.svg)](http://npm-stat.com/charts.html?package=bootstrap.native)
 [![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/bootstrap.native)](https://www.jsdelivr.com/package/npm/bootstrap.native)
 [![CDNJS](https://img.shields.io/cdnjs/v/bootstrap.native.svg)](https://cdnjs.com/libraries/bootstrap.native)
 ![cypress version](https://img.shields.io/badge/cypress-9.7.0-brightgreen)
