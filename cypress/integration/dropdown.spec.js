@@ -6,8 +6,8 @@ import changeDirection from '../fixtures/changeDirection';
 const bodyPads = {
   top: {paddingTop: '35vh', paddingBottom: '70vh'},
   bottom: {paddingTop: '70vh', paddingBottom: '35vh'},
-  left: {paddingLeft: '20vw', paddingRight: '90vw'},
-  right: {paddingLeft: '90vw', paddingRight: '20vw'},
+  left: {paddingLeft: '22vw', paddingRight: '90vw'},
+  right: {paddingLeft: '90vw', paddingRight: '22vw'},
 }
 const toolbarPositions = {
   start: 'btn-toolbar',

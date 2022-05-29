@@ -60,7 +60,6 @@ describe('ScrollSpy Class Tests', () => {
     cy.wait('@scrollspy-page')
       .document().then((doc) => {
         const content = doc.querySelector('.col-md-9 .row').cloneNode(true);
-        // cy.log(content)
         doc.body.innerHTML = '';
         doc.body.append(content);
         Object.assign(doc.body.style, {padding: '5rem'});
