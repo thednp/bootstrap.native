@@ -15,6 +15,6 @@
   "files": [
     "types/index.d.ts",
     "types/bsn.d.ts", // comment to generate, delete file
-    // "types/more/bsn.ts",
+    // "types/more/bsn.ts", // un-comment to generate
   ]
 }

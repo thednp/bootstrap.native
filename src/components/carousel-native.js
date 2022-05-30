@@ -9,7 +9,6 @@ import keyArrowRight from '@thednp/shorty/src/strings/keyArrowRight';
 import pointerdownEvent from '@thednp/shorty/src/strings/pointerdownEvent';
 import pointermoveEvent from '@thednp/shorty/src/strings/pointermoveEvent';
 import pointerupEvent from '@thednp/shorty/src/strings/pointerupEvent';
-// import getWindow from '@thednp/shorty/src/get/getWindow';
 import getDocument from '@thednp/shorty/src/get/getDocument';
 import getElementTransitionDuration from '@thednp/shorty/src/get/getElementTransitionDuration';
 import isElementInScrollRange from '@thednp/shorty/src/is/isElementInScrollRange';
@@ -401,7 +400,7 @@ export default class Carousel extends BaseComponent {
     const { element } = self;
 
     // additional properties
-    /** @type {right|left} */
+    /** @type {string} */
     self.direction = isRTL(element) ? 'right' : 'left';
     /** @type {number} */
     self.index = 0;
@@ -460,12 +459,10 @@ export default class Carousel extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return carouselComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return carouselDefaults; }
   /* eslint-enable */

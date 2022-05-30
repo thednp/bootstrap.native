@@ -337,12 +337,10 @@ export default class Tooltip extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return tooltipComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return tooltipDefaults; }
   /* eslint-enable */

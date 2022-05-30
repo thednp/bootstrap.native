@@ -716,6 +716,7 @@ function getElementContainer(element, getOffset) {
 
   while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
     parentNode = getParentNode(parentNode);
+    /* istanbul ignore else */
     if (!(isShadowRoot(parentNode) || !!parentNode.shadowRoot
       || isTableElement(parentNode))) {
       containers.push(parentNode);
@@ -1397,12 +1398,10 @@ class Offcanvas extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return offcanvasComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return offcanvasDefaults; }
   /* eslint-enable */

@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="The faster, lighter and more compact version of the Bootstrap JavaScript components.">
-    <meta name="keywords" content="JavaScript,Native JavaScript,native,Bootstrap,plugins,jQuery">
+    <meta name="keywords" content="JavaScript,Bootstrap,jQuery">
     <meta name="author" content="thednp">
     <link rel="shortcut icon" href="./assets/img/favicon.ico">
     <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
 
-    <title>Native JavaScript for Bootstrap</title>
+    <title>BSN - Native JavaScript for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
     <!-- <link id="bsCSS" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"> -->
@@ -163,6 +163,29 @@
       <div class="row">
         <div class="col-md-9" data-bs-spy="scroll" data-bs-target="#side-nav">
 
+          <section id="componentBase">
+            <h2>BaseComponent</h2>
+            <section id="baseInfo">
+              <h3>Info</h3>
+              <p>Following the development of the original library, we implemented the same solution to remove most repetitive actions common
+                to all components; the <b>BaseComponent</b> provides basic functionality generally focused around determining the specific 
+                <code>HTMLElement</code> target or setting instance options.</p>
+                <p>It also throws an error when no target <code>HTMLElement</code> is found and removes existing instances which is important
+                  to prevent memory overflow or breaking the component functionality.</p>
+            </section>
+            <section id="baseMethods">
+              <h3>Base Properties And Methods</h3>
+              <p>The <b>BaseComponent</b> component exposes some getters for all components to use:</p>
+              <h4>instance.name</h4>
+              <p>Returns the name of the component used to initialize the current instance.</p>
+              <h4>instance.defaults</h4>
+              <p>Returns the component default options values.</p>
+              <h4>instance.version</h4>
+              <p>Returns the library version.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element. Components generally extend this method with additional specific functionality.</p>
+            </section>
+          </section>
           <section id="componentAlert">
             <h2>Alert</h2>
             <p>The <b>Alert</b> component covers the specific original events and public methods, but just like the original plugin, does not provide any
@@ -177,7 +200,6 @@
               <h4>instance.dispose()</h4>
               <p>Removes the component from target element. If the alert has been closed, calling this method
                 should produce no effect, since the alert was already removed from the DOM.</p>
-              <div class="table-responsive">
               <h4>Alert.getInstance()</h4>
               <p>A <i>static</i> method that allows you to access an Alert instance associated to a DOM element.</p>
             </section>
@@ -571,7 +593,7 @@ var myButtonINIT = BSN.Button.getInstance('#myButton');
               <h3>Carousel DATA API</h3>
               <p>The component covers most of the original implementation in regards to DATA API, except that you can ignore
                 some of the attributes for the controls, but they must have at least their specific class in order to work. 
-                This is a basic template markup followed by a complete attribute breakdown:</p>
+                This is a basic template markup followed by a complete attributes breakdown:</p>
           
 <pre><code class="language-markup">&lt;!-- the Carousel component --&gt;
 &lt;div id="myCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-touch="true" data-bs-pause="hover"&gt;
@@ -882,7 +904,8 @@ mySpecialCarouselInit.cycle();
             <section id="collapseDATA">
               <h3>Collapse DATA API</h3>
               <p>In the following markup, the component will initialize the two <code>.btn</code> elements with the
-                <code>data-bs-toggle="collapse"</code> attribute, both refferencing the same collapsible element via specific atttributes.</p>
+                <code>data-bs-toggle="collapse"</code> attribute, both refferencing the same collapsible element via
+                specific <code>HTMLElement</code> attributes.</p>
           
 <pre><code class="language-markup">&lt;!-- toggle collapse via link with HREF reference --&gt;
 &lt;a id="collapseLink" class="btn btn-primary" role="button" aria-expanded="false" aria-controls="collapseExample"
@@ -904,7 +927,7 @@ mySpecialCarouselInit.cycle();
 &lt;/div&gt;
 </code></pre>
           
-              <p>Now if we stack multiple collapsible elements and wrap them into one parent with an ID attribute and some helper
+              <p>Now if we stack multiple collapsible elements and wrap them into one parent with an ID attribute and / or some helper
                 CSS classes, we can easily create an accordion.</p>
           
 <pre><code class="language-markup">&lt;!-- accordion template --&gt;
@@ -1109,11 +1132,11 @@ myCollapseInit.toggle();
             <h2>Dropdown</h2>
             <p>The <b>Dropdown</b> component covers most of the functionality from the original plugin in terms of original events,
               instance methods and options, but also offers some additional functionality without using any third party library.</p>
-            <p>To get on par with the original plugin, our component now sports automatic repositioning without the use of Popper.js.</p>
+            <p>To get on par with the original plugin, our component now sports automatic repositioning but without the use of Popper.js.</p>
             <p>Here's how it works:</p>
             <ul>
-              <li>when showing the dropdown menu to the user, the component will calculate all possible scenarios and update the 
-                its position so that the it's always displayed fully into the viewport;</li>
+              <li>when showing the dropdown menu to the user, the component will calculate all possible positions and update the menu 
+                position so that the it's always displayed fully into the viewport;</li>
               <li>while the dropdown menu is visible to the user, event listeners will update the position for the dropdown menu,
                 just like when showing it again to the user.</li>
             </ul>
@@ -1160,7 +1183,9 @@ myCollapseInit.toggle();
                       <td><code>offset</code></td>
                       <td><em>number</em></td>
                       <td><em>5</em></td>
-                      <td>Option to set the spacing required for the <code>.dropdown-menu</code> relative to the toggle button.</td>
+                      <td>Option to set the spacing required for the <code>.dropdown-menu</code> relative to the toggle button.
+                        Unlike the original plugin, this unique value is used to distance the menu away from its triggering element
+                        for all vertical and horizontal position variations.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1168,6 +1193,9 @@ myCollapseInit.toggle();
               <p>The previously featured <code>persist</code> options has been deprecated. The <code>.dropdown-menu</code> can be or
                 contain a <code>&lt;form&gt;</code> element, in which case the component will not dismiss it when the user would click
                 or focus inside, but allow the user to interact with it.</p>
+              <p>Thanks to its built in functionality independent from Popper.js, our Dropdown component does't require the following
+                original plugin options: <code>boundary</code>, <code>reference</code> and <code>popperConfig</code>;
+                the <code>autoClose</code> option is not implemented yet.</p>
             </section>
 
             <section id="dropdownMethods">
@@ -1524,6 +1552,8 @@ myDropdownInit.dispose();
               </div>
               <p>If the modal is opened via JavaScript methods, or by clicking on another element that is not a modal triggering 
                 element, the <code>event.relatedTarget</code> is <em>null</em>.</p>
+              <p>In contrast with the original library, BSN doesn't support the <code>hidePrevented.bs.modal</code> event which
+                would require adding one or more additional event listeners just to trigger this event.</p>
             </section>
 
             <section id="modalDATA">
@@ -1952,13 +1982,15 @@ var findModalInitJS = BSN.Modal.getInstance(myModal);
                 </table>
               </div>
               <p>Similar to the Modal component, if the offcanvas is opened/closed via JavaScript methods, or is dismissed
-                by clicking on another element outside the offcanvas, the <code>event.relatedTarget</code> is <em>null</em>.</p>
+                by clicking on another element outside the offcanvas, the <code>event.relatedTarget</code> is <em>null</em>.
+                Also the Offcanvas component doesn't support the <code>hidePrevented.bs.offcanvas</code> event for the exact
+                same reason as for the Modal component.</p>
             </section>
             <section id="offcanvasDATA">
               <h3 id="offcanvasDataAPI">Offcanvas DATA API</h3>
               <p>You can initialize <b>Offcanvas</b> without writing any code as long as you have an offcanvas and a trigger button
                 with the <code>data-bs-target</code> attribute or a link with <code>href</code> referencing that offcanvas.
-                The component will initialize all elements with <code>&lt;div class="offcanvas"&gt;</code> found in the DOM.</p>
+                The component will initialize all <code>&lt;div class="offcanvas"&gt;</code> elements found in the DOM.</p>
           
 <pre><code class="language-markup">&lt;!-- provide a trigger button --&gt;
 &lt;button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
@@ -2251,27 +2283,30 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                     </tr>
                     <tr>
                       <td><code>btnClose</code></td>
-                      <td><em>string</em></td>
+                      <td><em>string</em><br><em>HTMLElement</em></td>
                       <td><em>markup</em> (see description)</td>
                       <td>Option to set a custom close button for dismissible popovers. This option is useful for labelling the button for WAI-ARIA
                         compliant and multi-language applications as well as for using custom icons. The default button markup is:<br>
                         <code>&lt;button class="btn-close" aria-label="Close"&gt;&lt;/button&gt;</code><br>
+                        This option allows you to set an <code>HTMLElement</code> to be cloned and used as the <code>dismiss</code> button.<br>
                         <b>This option is JavaScript API only.</b></td>
                     </tr>                    
                     <tr>
                       <td><code>container</code></td>
-                      <td><em>selector</em> | <em>HTMLElement</em></td>
+                      <td><em>selector</em><br><em>HTMLElement</em></td>
                       <td><code>&lt;body&gt;</code></td>
                       <td>The container where your popovers are appended to. You can set the option via JavaScript or the
                         <code>data-bs-container="#elementID"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>content</code></td>
-                      <td><em>string</em> | <em>HTMLElement</em></td>
+                      <td><em>string</em><br><em>HTMLElement</em></td>
                       <td></td>
                       <td>Option to set the <b>content</b> of the popover via JavaScript or the <code>data-bs-content="CONTENT"</code> 
                         attribute. You can also specify a DOM node to serve as your popover content. This option is <b>required</b> via
-                        DATA API initialization or JavaScript initialization in order to validate.</td>
+                        DATA API initialization or JavaScript initialization in order to validate.<br>
+                        This option allows you to set an <code>HTMLElement</code> to be cloned and used as the <code>content</code> filler for your Popover.
+                      </td>
                     </tr>
                     <tr>
                       <td><code>customClass</code></td>
@@ -2325,6 +2360,7 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                         The contents from the <code>title</code> option or the <code>data-bs-title</code> attribute will fill in the template's 
                         <code>.popover-header</code> element, while the contents of the <code>data-bs-content</code> attribute will fill in 
                         the <code>.popover-body</code> element.<br>
+                        This option allows you to set an <code>HTMLElement</code> to be cloned and used as the <code>template</code> for your Popover.<br>
                         <b>This option is JavaScript API only.</b></td>
                     </tr>
                     <tr>
@@ -2332,7 +2368,9 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                       <td><em>string</em> | <em>HTMLElement</em></td>
                       <td></td>
                       <td>Option to set the <b>title</b> of the popover via JavaScript or the <code>data-bs-title="TITLE"</code>
-                        attribute. You can also specify a DOM node to serve as your popover title.</td>
+                        attribute. You can also specify a DOM node to serve as your popover title.<br>
+                        This option allows you to set an <code>HTMLElement</code> to be cloned and used as the <code>title</code> filler for your Popover.<br>
+                      </td>
                     </tr>
                     <tr>
                       <td><code>trigger</code></td>
@@ -3337,6 +3375,8 @@ myLastTab.addEventListener('show.bs.tab', function(event){
               <h4>instance.dispose()</h4>
               <p>Removes the component from target element without calling any of the 
                 above methods. Also the toast is not removed from the DOM.</p>
+              <h4>instance.isShown <small>getter</small></h4>
+              <p>Checks if the toast is visible to the user and returns <code>boolean</code>.</p>
               <h4>Toast.getInstance()</h4>
               <p>A <i>static</i> method that allows you to access a Toast instance associated to a DOM element.</p>
 
@@ -3382,10 +3422,21 @@ myLastTab.addEventListener('show.bs.tab', function(event){
             <section id="toastDATA">
               <h3>Toast DATA API</h3>
               <p>The component will initialize all elements with proper markup and the specific DATA API attributes found in
-                the DOM. Note that the <code>data-bs-dismiss="toast"</code> attribute is required for the triggering button.</p>
+                the DOM. Similar to <b>Modal</b> or <b>Offcanvas</b> components, <b>Toast</b> can also work with trigger elements
+                as shown in the sample markup below:</p>
           
-<pre><code class="language-markup">&lt;!-- notice the &lt;button&gt; with the data-bs-dismiss="toast" attribute --&gt;
-&lt;div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+<pre><code class="language-markup">&lt;!-- provide a trigger button --&gt;
+&lt;button class="btn btn-primary" data-bs-toggle="toast" data-bs-target="#tastyToast" aria-controls="tastyToast">
+  Button with data-bs-target
+&lt;/button&gt;
+  
+&lt;!-- or an anchor link --&gt;
+&lt;a class="btn btn-primary" data-bs-toggle="toast" href="#tastyToast" role="button" aria-controls="tastyToast"&gt;
+  Link with href
+&lt;/a&gt;
+
+&lt;!-- and the toast itself --&gt;
+&lt;div id="tastyToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
   &lt;div class="toast-header">
     &lt;img src="..." class="rounded mr-2" alt="...">
     &lt;strong class="mr-auto">Bootstrap&lt;/strong>
@@ -3397,7 +3448,9 @@ myLastTab.addEventListener('show.bs.tab', function(event){
   &lt;/div>
 &lt;/div>
 </code></pre>
-
+            <p>Note that the <code>data-bs-dismiss="toast"</code> attribute is required for the button which dismisses the toast
+              as well as the <code>data-bs-toggle="toast"</code> and <code>data-bs-target="#toastID"</code> attributes are
+              required for the trigger elements.</p>
             </section>
 
             <section id="toastJS">
@@ -3406,31 +3459,33 @@ myLastTab.addEventListener('show.bs.tab', function(event){
                 above markup, you can do the following:</p>
           
 <pre><code class="language-javascript">// initialize
-var myTastyToast = new BSN.Toast('#myTastyToast');
+var myTastyToast = new BSN.Toast('#tastyToast');
 </code></pre>
           
               <p>Also attach listeners to the original events:</p>
           
 <pre><code class="language-javascript">// show.bs.toast
-myTastyToast.closest('.toast').addEventListener('show.bs.toast', function(event){
+tastyToast.addEventListener('show.bs.toast', function(event){
   // do something cool
+  // this event can be default prevented
   // event.target is &lt;div class="toast"&gt;
 }, false);
 
 // shown.bs.toast
-myTastyToast.closest('.toast').addEventListener('shown.bs.toast', function(event){
+tastyToast.addEventListener('shown.bs.toast', function(event){
   // do something cool
   // event.target is &lt;div class="toast"&gt;
 }, false);
 
 // hide.bs.toast
-myTastyToast.closest('.toast').addEventListener('hide.bs.toast', function(event){
+tastyToast.addEventListener('hide.bs.toast', function(event){
   // do something cool
+  // this event can be default prevented
   // event.target is &lt;div class="toast"&gt;
 }, false);
 
 // hidden.bs.toast
-myTastyToast.closest('.toast').addEventListener('hidden.bs.toast', function(event){
+tastyToast.addEventListener('hidden.bs.toast', function(event){
   // do something cool
   // event.target is &lt;div class="toast"&gt;
 }, false);
@@ -3456,24 +3511,43 @@ myToastInit.dispose();
           
             <section id="toastExamples">
               <h3>Toast Example</h3>
-              <p>This toast has some listeners attached to all its original events, so check your console.</p>
+
+              <div class="btn-toolbar mb-3">
+                <button class="btn btn-outline-secondary me-1" data-bs-toggle="toast" data-bs-target="#liveToast1">Button Trigger Toast</button>
+                <a href="#liveToast2" class="btn btn-outline-secondary" data-bs-toggle="toast">Anchor Trigger Toast</a>
+              </div>
 
               <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-                <div id="liveToast" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-animation="true">
+                <div id="liveToast1" class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-animation="true">
                   <div class="toast-header">
                     <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
                       <rect fill="#007aff" width="100%" height="100%"></rect>
                     </svg>
-                    <strong class="me-auto">Bootstrap</strong>
+                    <strong class="me-auto">BSN</strong>
                     <small>11 mins ago</small>
                     <button id="myTastyToastBTN" type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                   </div>
                   <div class="toast-body">
-                    Hello, world! This is a toast message.
+                    <b>Hello, world! This is a toast message.</b><br>
+                    <span class="text-info">This toast has some listeners attached to all its original events, so check your console.</span>
+                  </div>
+                </div>
+
+                <div id="liveToast2" class="toast mt-1 fade" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-animation="true">
+                  <div class="toast-header">
+                    <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                      <rect fill="#007aff" width="100%" height="100%"></rect>
+                    </svg>
+                    <strong class="me-auto">BSN</strong>
+                    <small>11 mins ago</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+                  <div class="toast-body">
+                    <b>Hello, there! This is another toast message.</b><br>
+                    <span class="text-warning">This toast should showcase the stacking of multiple toasts.</span>
                   </div>
                 </div>
               </div>
-              <p><button class="btn btn-primary" id="showToastBTN">Show Toast</button></p>
 
             </section>
           </section>
@@ -3551,7 +3625,7 @@ myToastInit.dispose();
                     </tr>
                     <tr>
                       <td><code>template</code></td>
-                      <td colspan="2"><em>string</em> | <em>HTMLElement</em><br>(see description)</td>
+                      <td colspan="2"><em>string</em><br><em>HTMLElement</em><br>(see description)</td>
                       <td>Allows you to set a custom template for your tooltips and overrides the default one. 
                         You can also specify a DOM node to serve as your template.
                         The following markup is the default template for tooltips:<br>
@@ -3563,15 +3637,20 @@ myToastInit.dispose();
 </code>
                         
                         The <code>title=""</code> or <code>data-bs-title=""</code> attribute will fill in for the 
-                        <code>.tooltip-inner</code> element.<br><b>This option is JavaScript API only.</b></td>
+                        <code>.tooltip-inner</code> element.<br>
+                        This option allows you to set an <code>HTMLElement</code> to be cloned and used as the <code>template</code> for your Tooltip.<br>
+                        <b>This option is JavaScript API only.</b>
+                      </td>
                     </tr>
                     <tr>
                       <td><code>title</code></td>
-                      <td><em>string</em> | <em>HTMLElement</em></td>
+                      <td><em>string</em><br><em>HTMLElement</em></td>
                       <td>null</td>
                       <td>Allows you to set a custom title to be used for your tooltip; when used via JavaScript
                         API, it will override both the <code>title=""</code> and <code>data-bs-title=""</code> 
-                        attributes. You can also specify an <code>HTMLElement</code> to serve as your tooltip title.</td>
+                        attributes.<br>
+                        This option allows you to set an <code>HTMLElement</code> to be cloned and used as the <code>title</code> filler for your Tooltip.<br>
+                      </td>
                     </tr>
                     <tr>
                       <td><code>trigger</code></td>
@@ -3821,6 +3900,13 @@ new BSN.Tooltip('#selector',options).show();
         </div>
         <div class="col-md-3" id="side-nav">
           <ul id="nav-scrollspy-v5" class="nav nav-stacked d-none d-md-flex flex-column">
+            <li class="nav-item">
+              <a rel="nofollow" class="nav-link" href="#componentBase">BaseComponent</a>
+              <ul class="nav">
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#baseInfo">Info</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#baseMethods">Methods</a></li>
+              </ul>
+            </li>
             <li class="nav-item">
               <a rel="nofollow" class="nav-link" href="#componentAlert">Alert</a>
               <ul class="nav">

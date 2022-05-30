@@ -43,12 +43,10 @@ export default class Popover extends Tooltip {
   }
   /**
    * Returns component name string.
-   * @readonly @static
    */ 
   get name() { return popoverComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return popoverDefaults; }
   /* eslint-enable */

@@ -67,6 +67,23 @@ function removeClass(element, classNAME) {
 }
 
 /**
+ * Shortcut for `HTMLElement.closest` method which also works
+ * with children of `ShadowRoot`. The order of the parameters
+ * is intentional since they're both required.
+ *
+ * @see https://stackoverflow.com/q/54520554/803358
+ *
+ * @param {HTMLElement} element Element to look into
+ * @param {string} selector the selector name
+ * @return {HTMLElement?} the query result
+ */
+function closest(element, selector) {
+  return element ? (element.closest(selector)
+    // break out of `ShadowRoot`
+    || closest(element.getRootNode().host, selector)) : null;
+}
+
+/**
  * Checks if an object is a `Node`.
  *
  * @param {any} node the target object
@@ -125,6 +142,18 @@ function querySelector(selector, parent) {
   const lookUp = isNode(parent) ? parent : getDocument();
 
   return lookUp.querySelector(selector);
+}
+
+/**
+ * A shortcut for `(document|Element).querySelectorAll`.
+ *
+ * @param {string} selector the input selector
+ * @param {ParentNode=} parent optional node to look into
+ * @return {NodeListOf<HTMLElement>} the query result
+ */
+function querySelectorAll(selector, parent) {
+  const lookUp = isNode(parent) ? parent : getDocument();
+  return lookUp.querySelectorAll(selector);
 }
 
 /**
@@ -551,6 +580,11 @@ const showClass = 'show';
  */
 const dataBsDismiss = 'data-bs-dismiss';
 
+/**
+ * Global namespace for most components `toggle` option.
+ */
+const dataBsToggle = 'data-bs-toggle';
+
 /** @type {string} */
 const toastString = 'toast';
 
@@ -564,6 +598,41 @@ const toastComponent = 'Toast';
  * @returns {string?} attribute value
  */
 const getAttribute = (element, attribute) => element.getAttribute(attribute);
+
+/**
+ * Global namespace for most components `target` option.
+ */
+const dataBsTarget = 'data-bs-target';
+
+/**
+ * Global namespace for most components `parent` option.
+ */
+const dataBsParent = 'data-bs-parent';
+
+/**
+ * Global namespace for most components `container` option.
+ */
+const dataBsContainer = 'data-bs-container';
+
+/**
+ * Returns the `Element` that THIS one targets
+ * via `data-bs-target`, `href`, `data-bs-parent` or `data-bs-container`.
+ *
+ * @param {HTMLElement} element the target element
+ * @returns {HTMLElement?} the query result
+ */
+function getTargetElement(element) {
+  const targetAttr = [dataBsTarget, dataBsParent, dataBsContainer, 'href'];
+  const doc = getDocument(element);
+
+  return targetAttr.map((att) => {
+    const attValue = getAttribute(element, att);
+    if (attValue) {
+      return att === dataBsParent ? closest(element, attValue) : querySelector(attValue, doc);
+    }
+    return null;
+  }).filter((x) => x)[0];
+}
 
 /**
  * The raw value or a given component option.
@@ -729,6 +798,7 @@ class BaseComponent {
 // ================
 const toastSelector = `.${toastString}`;
 const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
+const toastToggleSelector = `[${dataBsToggle}="${toastString}"]`;
 const showingClass = 'showing';
 /** @deprecated */
 const hideClass = 'hide';
@@ -834,15 +904,23 @@ function showToast(self) {
  */
 function toggleToastHandlers(self, add) {
   const action = add ? addListener : removeListener;
-  const { element, dismiss, options } = self;
+  const {
+    element, triggers, dismiss, options,
+  } = self;
+
   /* istanbul ignore else */
   if (dismiss) {
     action(dismiss, mouseclickEvent, self.hide);
   }
+
   /* istanbul ignore else */
   if (options.autohide) {
     [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent]
       .forEach((e) => action(element, e, interactiveToastHandler));
+  }
+  /* istanbul ignore else */
+  if (triggers.length) {
+    triggers.forEach((btn) => action(btn, mouseclickEvent, toastClickHandler));
   }
 }
 
@@ -855,6 +933,23 @@ function toggleToastHandlers(self, add) {
 function completeDisposeToast(self) {
   Timer.clear(self.element, toastString);
   toggleToastHandlers(self);
+}
+
+/**
+ * Handles the `click` event listener for toast.
+ * @param {MouseEvent} e the `Event` object
+ */
+function toastClickHandler(e) {
+  const { target } = e;
+
+  const trigger = target && closest(target, toastToggleSelector);
+  const element = trigger && getTargetElement(trigger);
+  const self = element && getToastInstance(element);
+
+  /* istanbul ignore else */
+  if (trigger && trigger.tagName === 'A') e.preventDefault();
+  self.relatedTarget = trigger;
+  self.show();
 }
 
 /**
@@ -896,9 +991,15 @@ class Toast extends BaseComponent {
     // set fadeClass, the options.animation will override the markup
     if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
     else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
+
     // dismiss button
     /** @type {HTMLElement?} */
     self.dismiss = querySelector(toastDismissSelector, element);
+
+    // toast can have multiple triggering elements
+    /** @type {HTMLElement[]} */
+    self.triggers = [...querySelectorAll(toastToggleSelector, getDocument(element))]
+      .filter((btn) => getTargetElement(btn) === element);
 
     // bind
     self.show = self.show.bind(self);
@@ -911,24 +1012,28 @@ class Toast extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */  
   get name() { return toastComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */  
   get defaults() { return toastDefaults; }
   /* eslint-enable */
+
+  /**
+   * Returns *true* when toast is visible.
+   */
+  get isShown() { return hasClass(this.element, showClass); }
 
   // TOAST PUBLIC METHODS
   // ====================
   /** Shows the toast. */
   show() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
+
     /* istanbul ignore else */
-    if (element && !hasClass(element, showClass)) {
+    if (element && !isShown) {
       dispatchEvent(element, showToastEvent);
       if (showToastEvent.defaultPrevented) return;
 
@@ -939,10 +1044,10 @@ class Toast extends BaseComponent {
   /** Hides the toast. */
   hide() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
 
     /* istanbul ignore else */
-    if (element && hasClass(element, showClass)) {
+    if (element && isShown) {
       dispatchEvent(element, hideToastEvent);
       if (hideToastEvent.defaultPrevented) return;
       hideToast(self);
@@ -952,10 +1057,10 @@ class Toast extends BaseComponent {
   /** Removes the `Toast` component from the target element. */
   dispose() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
 
     /* istanbul ignore else */
-    if (hasClass(element, showClass)) {
+    if (isShown) {
       removeClass(element, showClass);
     }
 

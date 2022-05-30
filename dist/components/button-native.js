@@ -543,7 +543,6 @@
     /* eslint-disable */
     /**
      * Returns component name string.
-     * @readonly @static
      */
     get name() { return buttonComponent; }
     /* eslint-enable */

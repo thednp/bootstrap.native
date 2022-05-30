@@ -1256,7 +1256,7 @@
       const { element } = self;
 
       // additional properties
-      /** @type {right|left} */
+      /** @type {string} */
       self.direction = isRTL(element) ? 'right' : 'left';
       /** @type {number} */
       self.index = 0;
@@ -1315,12 +1315,10 @@
     /* eslint-disable */
     /**
      * Returns component name string.
-     * @readonly @static
      */
     get name() { return carouselComponent; }
     /**
      * Returns component default options.
-     * @readonly @static
      */
     get defaults() { return carouselDefaults; }
     /* eslint-enable */

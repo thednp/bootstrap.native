@@ -1148,12 +1148,10 @@
     /* eslint-disable */
     /**
      * Returns component name string.
-     * @readonly @static
      */
     get name() { return dropdownComponent; }
     /**
      * Returns component default options.
-     * @readonly @static
      */
     get defaults() { return dropdownDefaults; }
     /* eslint-enable */

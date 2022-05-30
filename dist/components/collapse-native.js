@@ -974,7 +974,8 @@
 
       // set parent accordion
       /** @type {HTMLElement?} */
-      self.parent = querySelector(options.parent, doc);
+      self.parent = querySelector(options.parent, doc)
+        || getTargetElement(element) || null;
 
       // add event listeners
       toggleCollapseHandler(self, true);
@@ -983,12 +984,10 @@
     /* eslint-disable */
     /**
      * Returns component name string.
-     * @readonly @static
      */
     get name() { return collapseComponent; }
     /**
      * Returns component default options.
-     * @readonly @static
      */
     get defaults() { return collapseDefaults; }
     /* eslint-enable */

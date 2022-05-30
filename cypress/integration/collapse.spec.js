@@ -32,7 +32,7 @@ describe('Collapse Class Tests', () => {
           expect(instance.parent, 'parent').to.be.null;
         } else {
           expect(instance.triggers, 'triggers').to.have.length(1);
-          expect(instance.options, 'options').to.deep.equal({parent: '#accordionExample'});
+          expect(instance.options, 'options').to.deep.equal({parent: '.accordion'});
           expect(instance.parent.nodeType, 'parent').to.equal(1);
         }
         expect(instance.defaults, 'defaults').to.deep.equal({parent: null});

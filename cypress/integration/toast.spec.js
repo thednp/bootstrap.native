@@ -40,27 +40,47 @@ describe('Toast Class Tests', () => {
       })
       .get('@instance').invoke('show')
       .get('@instance').its('element').should('have.class', 'show').and('be.visible')
+      .get('@instance').its('isShown').should('be.true')
       .wait(550)
       .get('@instance').its('element').should('not.have.class', 'show')
+  });
+
+  it('Can do click()', () => {
+    cy.wait('@toast-page')
+      .get('.toast').each(($element, i) => {
+        cy.wrap(new Toast($element[0])).as('instance' + i);
+      })
+      .get('@instance0').its('triggers').eq(0).click()
+      .get('@instance0').its('element').should('have.class', 'show').and('be.visible')
+      .get('@instance0').its('isShown').should('be.true')
+      .get('@instance0').its('dismiss').click()
+      .get('@instance0').its('element').should('not.have.class', 'show')
+      .get('@instance1').its('triggers').eq(0).click()
+      .get('@instance1').its('element').should('have.class', 'show').and('be.visible')
+      .get('@instance1').its('isShown').should('be.true')
+      .get('@instance1').its('dismiss').click()
+      .get('@instance1').its('element').should('not.have.class', 'show')
   });
 
   it('Can extend visibility duration by user interaction', () => {
     cy.wait('@toast-page')
       .get('.toast').then(($element) => {
-        const instance = new Toast($element[0], { animation: false, delay: 500 });
+        const instance = new Toast($element[0], { animation: false, delay: 200 });
         cy.wrap(instance).as('instance');
         cy.log(instance.options)
       })
       .get('@instance').invoke('show')
       .get('@instance').its('element').should('have.class', 'show').and('be.visible')
+      .get('@instance').its('isShown').should('be.true')
       .wait(100)
       .get('@instance').its('element').trigger('mouseenter')
-      .wait(517)
+      .wait(217)
       .get('@instance').its('element').should('have.class', 'show').and('be.visible')
       .wait(100)
       .get('@instance').its('element').trigger('mouseleave')
-      .wait(517)
+      .wait(217)
       .get('@instance').its('element').should('not.have.class', 'show').and('be.hidden')
+      .get('@instance').its('isShown').should('be.false')
   });
 
   it('Can do dispose()', () => {

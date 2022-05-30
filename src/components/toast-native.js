@@ -8,7 +8,9 @@ import focusoutEvent from '@thednp/shorty/src/strings/focusoutEvent';
 import addClass from '@thednp/shorty/src/class/addClass';
 import hasClass from '@thednp/shorty/src/class/hasClass';
 import removeClass from '@thednp/shorty/src/class/removeClass';
+import closest from '@thednp/shorty/src/selectors/closest';
 import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import querySelectorAll from '@thednp/shorty/src/selectors/querySelectorAll';
 import dispatchEvent from '@thednp/shorty/src/misc/dispatchEvent';
 import emulateTransitionEnd from '@thednp/shorty/src/misc/emulateTransitionEnd';
 import ObjectAssign from '@thednp/shorty/src/misc/ObjectAssign';
@@ -16,14 +18,17 @@ import reflow from '@thednp/shorty/src/misc/reflow';
 import { getInstance } from '@thednp/shorty/src/misc/data';
 import Timer from '@thednp/shorty/src/misc/timer';
 import OriginalEvent from '@thednp/shorty/src/misc/OriginalEvent';
+import getDocument from '@thednp/shorty/src/get/getDocument';
 
 import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
 import dataBsDismiss from '../strings/dataBsDismiss';
+import dataBsToggle from '../strings/dataBsToggle';
 import toastString from '../strings/toastString';
 import toastComponent from '../strings/toastComponent';
+import getTargetElement from '../util/getTargetElement';
 
 import BaseComponent from './base-component';
 
@@ -31,6 +36,7 @@ import BaseComponent from './base-component';
 // ================
 const toastSelector = `.${toastString}`;
 const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
+const toastToggleSelector = `[${dataBsToggle}="${toastString}"]`;
 const showingClass = 'showing';
 /** @deprecated */
 const hideClass = 'hide';
@@ -136,15 +142,23 @@ function showToast(self) {
  */
 function toggleToastHandlers(self, add) {
   const action = add ? addListener : removeListener;
-  const { element, dismiss, options } = self;
+  const {
+    element, triggers, dismiss, options,
+  } = self;
+
   /* istanbul ignore else */
   if (dismiss) {
     action(dismiss, mouseclickEvent, self.hide);
   }
+
   /* istanbul ignore else */
   if (options.autohide) {
     [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent]
       .forEach((e) => action(element, e, interactiveToastHandler));
+  }
+  /* istanbul ignore else */
+  if (triggers.length) {
+    triggers.forEach((btn) => action(btn, mouseclickEvent, toastClickHandler));
   }
 }
 
@@ -157,6 +171,23 @@ function toggleToastHandlers(self, add) {
 function completeDisposeToast(self) {
   Timer.clear(self.element, toastString);
   toggleToastHandlers(self);
+}
+
+/**
+ * Handles the `click` event listener for toast.
+ * @param {MouseEvent} e the `Event` object
+ */
+function toastClickHandler(e) {
+  const { target } = e;
+
+  const trigger = target && closest(target, toastToggleSelector);
+  const element = trigger && getTargetElement(trigger);
+  const self = element && getToastInstance(element);
+
+  /* istanbul ignore else */
+  if (trigger && trigger.tagName === 'A') e.preventDefault();
+  self.relatedTarget = trigger;
+  self.show();
 }
 
 /**
@@ -198,9 +229,15 @@ export default class Toast extends BaseComponent {
     // set fadeClass, the options.animation will override the markup
     if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
     else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
+
     // dismiss button
     /** @type {HTMLElement?} */
     self.dismiss = querySelector(toastDismissSelector, element);
+
+    // toast can have multiple triggering elements
+    /** @type {HTMLElement[]} */
+    self.triggers = [...querySelectorAll(toastToggleSelector, getDocument(element))]
+      .filter((btn) => getTargetElement(btn) === element);
 
     // bind
     self.show = self.show.bind(self);
@@ -213,24 +250,28 @@ export default class Toast extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */  
   get name() { return toastComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */  
   get defaults() { return toastDefaults; }
   /* eslint-enable */
+
+  /**
+   * Returns *true* when toast is visible.
+   */
+  get isShown() { return hasClass(this.element, showClass); }
 
   // TOAST PUBLIC METHODS
   // ====================
   /** Shows the toast. */
   show() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
+
     /* istanbul ignore else */
-    if (element && !hasClass(element, showClass)) {
+    if (element && !isShown) {
       dispatchEvent(element, showToastEvent);
       if (showToastEvent.defaultPrevented) return;
 
@@ -241,10 +282,10 @@ export default class Toast extends BaseComponent {
   /** Hides the toast. */
   hide() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
 
     /* istanbul ignore else */
-    if (element && hasClass(element, showClass)) {
+    if (element && isShown) {
       dispatchEvent(element, hideToastEvent);
       if (hideToastEvent.defaultPrevented) return;
       hideToast(self);
@@ -254,10 +295,10 @@ export default class Toast extends BaseComponent {
   /** Removes the `Toast` component from the target element. */
   dispose() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
 
     /* istanbul ignore else */
-    if (hasClass(element, showClass)) {
+    if (isShown) {
       removeClass(element, showClass);
     }
 

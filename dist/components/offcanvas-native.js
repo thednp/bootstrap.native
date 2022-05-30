@@ -722,6 +722,7 @@
 
     while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
       parentNode = getParentNode(parentNode);
+      /* istanbul ignore else */
       if (!(isShadowRoot(parentNode) || !!parentNode.shadowRoot
         || isTableElement(parentNode))) {
         containers.push(parentNode);
@@ -1403,12 +1404,10 @@
     /* eslint-disable */
     /**
      * Returns component name string.
-     * @readonly @static
      */
     get name() { return offcanvasComponent; }
     /**
      * Returns component default options.
-     * @readonly @static
      */
     get defaults() { return offcanvasDefaults; }
     /* eslint-enable */

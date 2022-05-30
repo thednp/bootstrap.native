@@ -791,12 +791,10 @@ class ScrollSpy extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return scrollspyComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return scrollspyDefaults; }
   /* eslint-enable */

@@ -166,8 +166,8 @@ declare module "bootstrap.native/src/components/carousel-native" {
          * @param {BSN.Options.Carousel=} config instance options
          */
         constructor(target: HTMLElement | string, config?: BSN.Options.Carousel | undefined);
-        /** @type {right|left} */
-        direction: right | left;
+        /** @type {string} */
+        direction: 'right' | 'left';
         /** @type {number} */
         index: number;
         /** @type {boolean} */
@@ -180,9 +180,8 @@ declare module "bootstrap.native/src/components/carousel-native" {
         indicators: HTMLElement[];
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             pause: string;
             keyboard: boolean;
             touch: boolean;
@@ -246,9 +245,8 @@ declare module "bootstrap.native/src/components/collapse-native" {
         parent: HTMLElement | null;
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             parent: null;
         };
         /** Toggles the visibility of the collapse. */
@@ -305,9 +303,8 @@ declare module "bootstrap.native/src/components/dropdown-native" {
         open: boolean;
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             offset: number;
             display: string;
         };
@@ -456,8 +453,8 @@ declare module "bootstrap.native/src/components/modal-native" {
         constructor(target: HTMLElement | string, config?: BSN.Options.Modal | undefined);
         /** @type {(HTMLElement)} */
         modalDialog: (HTMLElement);
-        /** @type {(HTMLElement)[]} */
-        triggers: (HTMLElement)[];
+        /** @type {HTMLElement[]} */
+        triggers: HTMLElement[];
         /** @type {boolean} */
         isStatic: boolean;
         /** @type {boolean} */
@@ -473,9 +470,8 @@ declare module "bootstrap.native/src/components/modal-native" {
         update(this: Modal): void;
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             backdrop: boolean;
             keyboard: boolean;
         };
@@ -512,9 +508,8 @@ declare module "bootstrap.native/src/components/offcanvas-native" {
         relatedTarget: HTMLElement | null;
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             backdrop: boolean;
             keyboard: boolean;
             scroll: boolean;
@@ -556,8 +551,9 @@ declare module "bootstrap.native/src/util/getTipTemplate" {
     export default function getTipTemplate(tipType: string): string;
 }
 declare module "bootstrap.native/src/util/tipClassPositions" {
-    const _default: Record<string, string>;
-    export default _default;
+    export default tipClassPositions;
+    /** @type {Record<string, string>} */
+    const tipClassPositions: Record<string, string>;
 }
 declare module "bootstrap.native/src/util/styleTip" {
     /**
@@ -600,9 +596,9 @@ declare module "bootstrap.native/src/util/setHtml" {
      *
      * @param {HTMLElement} element target
      * @param {Node | string} content the `Element` to append / string
-     * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
+     * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
      */
-    export default function setHtml(element: HTMLElement, content: Node | string, sanitizeFn: ReturnType<string>): void;
+    export default function setHtml(element: HTMLElement, content: Node | string, sanitizeFn: ReturnType<any>): void;
 }
 declare module "bootstrap.native/src/util/createTip" {
     /**
@@ -674,9 +670,8 @@ declare module "bootstrap.native/src/components/tooltip-native" {
         toggle(this: Tooltip, e?: Event | undefined): void;
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             template: string;
             title: string | null;
             customClass: string | null;
@@ -706,9 +701,8 @@ declare module "bootstrap.native/src/components/popover-native" {
         constructor(target: HTMLElement | string, config?: BSN.Options.Popover | undefined);
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             /** @type {string} */
             template: string;
             /** @type {string} */
@@ -770,9 +764,8 @@ declare module "bootstrap.native/src/components/scrollspy-native" {
         refresh(): void;
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             offset: number;
             target: null;
         };
@@ -829,19 +822,24 @@ declare module "bootstrap.native/src/components/toast-native" {
         constructor(target: HTMLElement | string, config?: BSN.Options.Toast | undefined);
         /** @type {HTMLElement?} */
         dismiss: HTMLElement | null;
+        /** @type {HTMLElement[]} */
+        triggers: HTMLElement[];
         /** Shows the toast. */
         show(): void;
         /** Hides the toast. */
         hide(): void;
         /**
          * Returns component default options.
-         * @readonly @static
          */
-        readonly get defaults(): {
+        get defaults(): {
             animation: boolean;
             autohide: boolean;
             delay: number;
         };
+        /**
+         * Returns *true* when toast is visible.
+         */
+        get isShown(): any;
     }
     import BaseComponent from "bootstrap.native/src/components/base-component";
 }

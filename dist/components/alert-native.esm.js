@@ -705,7 +705,6 @@ class Alert extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return alertComponent; }
   /* eslint-enable */

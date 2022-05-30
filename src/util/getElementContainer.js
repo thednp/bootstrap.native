@@ -47,6 +47,7 @@ export default function getElementContainer(element, getOffset) {
 
   while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
     parentNode = getParentNode(parentNode);
+    /* istanbul ignore else */
     if (!(isShadowRoot(parentNode) || !!parentNode.shadowRoot
       || isTableElement(parentNode))) {
       containers.push(parentNode);

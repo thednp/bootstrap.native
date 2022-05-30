@@ -718,7 +718,6 @@ class Alert extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return alertComponent; }
   /* eslint-enable */
@@ -864,7 +863,6 @@ class Button extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return buttonComponent; }
   /* eslint-enable */
@@ -1533,7 +1531,7 @@ class Carousel extends BaseComponent {
     const { element } = self;
 
     // additional properties
-    /** @type {right|left} */
+    /** @type {string} */
     self.direction = isRTL(element) ? 'right' : 'left';
     /** @type {number} */
     self.index = 0;
@@ -1592,12 +1590,10 @@ class Carousel extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return carouselComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return carouselDefaults; }
   /* eslint-enable */
@@ -1978,7 +1974,8 @@ class Collapse extends BaseComponent {
 
     // set parent accordion
     /** @type {HTMLElement?} */
-    self.parent = querySelector(options.parent, doc);
+    self.parent = querySelector(options.parent, doc)
+      || getTargetElement(element) || null;
 
     // add event listeners
     toggleCollapseHandler(self, true);
@@ -1987,12 +1984,10 @@ class Collapse extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return collapseComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return collapseDefaults; }
   /* eslint-enable */
@@ -2562,12 +2557,10 @@ class Dropdown extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return dropdownComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return dropdownDefaults; }
   /* eslint-enable */
@@ -2778,6 +2771,7 @@ function getElementContainer(element, getOffset) {
 
   while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
     parentNode = getParentNode(parentNode);
+    /* istanbul ignore else */
     if (!(isShadowRoot(parentNode) || !!parentNode.shadowRoot
       || isTableElement(parentNode))) {
       containers.push(parentNode);
@@ -3176,12 +3170,11 @@ function beforeModalHide(self, callback) {
 /**
  * Handles the `click` event listener for modal.
  * @param {MouseEvent} e the `Event` object
- * @this {HTMLElement}
  */
 function modalClickHandler(e) {
   const { target } = e;
 
-  const trigger = target && closest(this, modalToggleSelector);
+  const trigger = target && closest(target, modalToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getModalInstance(element);
 
@@ -3280,7 +3273,7 @@ class Modal extends BaseComponent {
     self.modalDialog = querySelector(`.${modalString}-dialog`, element);
 
     // modal can have multiple triggering elements
-    /** @type {(HTMLElement)[]} */
+    /** @type {HTMLElement[]} */
     self.triggers = [...querySelectorAll(modalToggleSelector, getDocument(element))]
       .filter((btn) => getTargetElement(btn) === element);
 
@@ -3304,12 +3297,10 @@ class Modal extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return modalComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return modalDefaults; }
   /* eslint-enable */
@@ -3696,12 +3687,10 @@ class Offcanvas extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return offcanvasComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return offcanvasDefaults; }
   /* eslint-enable */
@@ -4290,7 +4279,7 @@ const isArray = (arr) => Array.isArray(arr);
  *
  * @param {HTMLElement} element target
  * @param {Node | string} content the `Element` to append / string
- * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
+ * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
  */
 function setHtml(element, content, sanitizeFn) {
   /* istanbul ignore next */
@@ -4719,12 +4708,10 @@ class Tooltip extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return tooltipComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return tooltipDefaults; }
   /* eslint-enable */
@@ -4932,12 +4919,10 @@ class Popover extends Tooltip {
   }
   /**
    * Returns component name string.
-   * @readonly @static
    */ 
   get name() { return popoverComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return popoverDefaults; }
   /* eslint-enable */
@@ -5198,12 +5183,10 @@ class ScrollSpy extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return scrollspyComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return scrollspyDefaults; }
   /* eslint-enable */
@@ -5529,7 +5512,6 @@ class Tab extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */  
   get name() { return tabComponent; }
   /* eslint-enable */
@@ -5612,6 +5594,7 @@ const toastComponent = 'Toast';
 // ================
 const toastSelector = `.${toastString}`;
 const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
+const toastToggleSelector = `[${dataBsToggle}="${toastString}"]`;
 const showingClass = 'showing';
 /** @deprecated */
 const hideClass = 'hide';
@@ -5717,15 +5700,23 @@ function showToast(self) {
  */
 function toggleToastHandlers(self, add) {
   const action = add ? addListener : removeListener;
-  const { element, dismiss, options } = self;
+  const {
+    element, triggers, dismiss, options,
+  } = self;
+
   /* istanbul ignore else */
   if (dismiss) {
     action(dismiss, mouseclickEvent, self.hide);
   }
+
   /* istanbul ignore else */
   if (options.autohide) {
     [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent]
       .forEach((e) => action(element, e, interactiveToastHandler));
+  }
+  /* istanbul ignore else */
+  if (triggers.length) {
+    triggers.forEach((btn) => action(btn, mouseclickEvent, toastClickHandler));
   }
 }
 
@@ -5738,6 +5729,23 @@ function toggleToastHandlers(self, add) {
 function completeDisposeToast(self) {
   Timer.clear(self.element, toastString);
   toggleToastHandlers(self);
+}
+
+/**
+ * Handles the `click` event listener for toast.
+ * @param {MouseEvent} e the `Event` object
+ */
+function toastClickHandler(e) {
+  const { target } = e;
+
+  const trigger = target && closest(target, toastToggleSelector);
+  const element = trigger && getTargetElement(trigger);
+  const self = element && getToastInstance(element);
+
+  /* istanbul ignore else */
+  if (trigger && trigger.tagName === 'A') e.preventDefault();
+  self.relatedTarget = trigger;
+  self.show();
 }
 
 /**
@@ -5779,9 +5787,15 @@ class Toast extends BaseComponent {
     // set fadeClass, the options.animation will override the markup
     if (options.animation && !hasClass(element, fadeClass)) addClass(element, fadeClass);
     else if (!options.animation && hasClass(element, fadeClass)) removeClass(element, fadeClass);
+
     // dismiss button
     /** @type {HTMLElement?} */
     self.dismiss = querySelector(toastDismissSelector, element);
+
+    // toast can have multiple triggering elements
+    /** @type {HTMLElement[]} */
+    self.triggers = [...querySelectorAll(toastToggleSelector, getDocument(element))]
+      .filter((btn) => getTargetElement(btn) === element);
 
     // bind
     self.show = self.show.bind(self);
@@ -5794,24 +5808,28 @@ class Toast extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */  
   get name() { return toastComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */  
   get defaults() { return toastDefaults; }
   /* eslint-enable */
+
+  /**
+   * Returns *true* when toast is visible.
+   */
+  get isShown() { return hasClass(this.element, showClass); }
 
   // TOAST PUBLIC METHODS
   // ====================
   /** Shows the toast. */
   show() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
+
     /* istanbul ignore else */
-    if (element && !hasClass(element, showClass)) {
+    if (element && !isShown) {
       dispatchEvent(element, showToastEvent);
       if (showToastEvent.defaultPrevented) return;
 
@@ -5822,10 +5840,10 @@ class Toast extends BaseComponent {
   /** Hides the toast. */
   hide() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
 
     /* istanbul ignore else */
-    if (element && hasClass(element, showClass)) {
+    if (element && isShown) {
       dispatchEvent(element, hideToastEvent);
       if (hideToastEvent.defaultPrevented) return;
       hideToast(self);
@@ -5835,10 +5853,10 @@ class Toast extends BaseComponent {
   /** Removes the `Toast` component from the target element. */
   dispose() {
     const self = this;
-    const { element } = self;
+    const { element, isShown } = self;
 
     /* istanbul ignore else */
-    if (hasClass(element, showClass)) {
+    if (isShown) {
       removeClass(element, showClass);
     }
 

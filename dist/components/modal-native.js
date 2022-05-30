@@ -775,6 +775,7 @@
 
     while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
       parentNode = getParentNode(parentNode);
+      /* istanbul ignore else */
       if (!(isShadowRoot(parentNode) || !!parentNode.shadowRoot
         || isTableElement(parentNode))) {
         containers.push(parentNode);
@@ -1394,12 +1395,11 @@
   /**
    * Handles the `click` event listener for modal.
    * @param {MouseEvent} e the `Event` object
-   * @this {HTMLElement}
    */
   function modalClickHandler(e) {
     const { target } = e;
 
-    const trigger = target && closest(this, modalToggleSelector);
+    const trigger = target && closest(target, modalToggleSelector);
     const element = trigger && getTargetElement(trigger);
     const self = element && getModalInstance(element);
 
@@ -1498,7 +1498,7 @@
       self.modalDialog = querySelector(`.${modalString}-dialog`, element);
 
       // modal can have multiple triggering elements
-      /** @type {(HTMLElement)[]} */
+      /** @type {HTMLElement[]} */
       self.triggers = [...querySelectorAll(modalToggleSelector, getDocument(element))]
         .filter((btn) => getTargetElement(btn) === element);
 
@@ -1522,12 +1522,10 @@
     /* eslint-disable */
     /**
      * Returns component name string.
-     * @readonly @static
      */
     get name() { return modalComponent; }
     /**
      * Returns component default options.
-     * @readonly @static
      */
     get defaults() { return modalDefaults; }
     /* eslint-enable */

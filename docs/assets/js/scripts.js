@@ -169,20 +169,13 @@ toastElement.addEventListener('show.bs.toast',function(e){
 },false)
 toastElement.addEventListener('shown.bs.toast',function(e){
 	console.log( 'The "shown.bs.toast" event fired for #' + toastElement.id );
-	// showToastBTN.classList.add('d-none')
 },false)
 toastElement.addEventListener('hide.bs.toast',function(e){
 	console.log( 'The "hide.bs.toast" event fired for #' + toastElement.id );
 },false)
 toastElement.addEventListener('hidden.bs.toast',function(e){
 	console.log( 'The "hidden.bs.toast" event fired for #' + toastElement.id );
-	// showToastBTN.classList.remove('d-none')
-},false)
-
-showToastBTN.addEventListener('click',function(){
-	const inst = BSN.Toast.getInstance(toastElement);
-	inst ? inst.show() : console.log( 'DISPOSED!' )
-}, false)
+}, false);
 
 // ScrollSpy
 var disposableSpy = document.getElementById('disposableSpy');

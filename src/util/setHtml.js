@@ -12,7 +12,7 @@ import isNode from '@thednp/shorty/src/is/isNode';
  *
  * @param {HTMLElement} element target
  * @param {Node | string} content the `Element` to append / string
- * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
+ * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
  */
 export default function setHtml(element, content, sanitizeFn) {
   /* istanbul ignore next */

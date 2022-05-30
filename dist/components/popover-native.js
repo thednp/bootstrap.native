@@ -1255,7 +1255,7 @@
    *
    * @param {HTMLElement} element target
    * @param {Node | string} content the `Element` to append / string
-   * @param {ReturnType<String>} sanitizeFn a function to sanitize string content
+   * @param {ReturnType<any>} sanitizeFn a function to sanitize string content
    */
   function setHtml(element, content, sanitizeFn) {
     /* istanbul ignore next */
@@ -1486,6 +1486,7 @@
 
     while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
       parentNode = getParentNode(parentNode);
+      /* istanbul ignore else */
       if (!(isShadowRoot(parentNode) || !!parentNode.shadowRoot
         || isTableElement(parentNode))) {
         containers.push(parentNode);
@@ -1930,12 +1931,10 @@
     /* eslint-disable */
     /**
      * Returns component name string.
-     * @readonly @static
      */
     get name() { return tooltipComponent; }
     /**
      * Returns component default options.
-     * @readonly @static
      */
     get defaults() { return tooltipDefaults; }
     /* eslint-enable */
@@ -2143,12 +2142,10 @@
     }
     /**
      * Returns component name string.
-     * @readonly @static
      */ 
     get name() { return popoverComponent; }
     /**
      * Returns component default options.
-     * @readonly @static
      */
     get defaults() { return popoverDefaults; }
     /* eslint-enable */

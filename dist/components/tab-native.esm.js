@@ -1047,7 +1047,6 @@ class Tab extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */  
   get name() { return tabComponent; }
   /* eslint-enable */

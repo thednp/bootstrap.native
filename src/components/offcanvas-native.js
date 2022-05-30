@@ -319,12 +319,10 @@ export default class Offcanvas extends BaseComponent {
   /* eslint-disable */
   /**
    * Returns component name string.
-   * @readonly @static
    */
   get name() { return offcanvasComponent; }
   /**
    * Returns component default options.
-   * @readonly @static
    */
   get defaults() { return offcanvasDefaults; }
   /* eslint-enable */
