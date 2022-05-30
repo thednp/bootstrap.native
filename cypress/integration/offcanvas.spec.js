@@ -84,7 +84,6 @@ describe('Offcanvas Class Tests', () => {
       .get('@click_test').its('triggers').eq(0).click()
       .get('@click_test').its('element').should('have.class', 'show').and('be.visible')
       .get('@click_test').its('triggers').eq(0).click()
-      // .wait(100)
       .get('@click_test').its('element').should('not.have.class', 'show').and('be.hidden')
       .get('@click_test').its('triggers').eq(0).click()
       .get('@click_test').its('element').should('have.class', 'show').and('be.visible')
@@ -95,14 +94,15 @@ describe('Offcanvas Class Tests', () => {
   it('Can be dismissed via Escape', function() {
     cy.wait('@offcanvas-page')
       .get('[data-cy="offcanvas"]').eq(0).then(($element) => {
-      cy.wrap(new Offcanvas($element[0])).as('key_test');
+      cy.wrap(new Offcanvas($element[0], { backdrop: 'static'})).as('key_test');
     })
     .get('@key_test').invoke('show')
+    .get('@key_test').its('element').should('have.class', 'show').and('be.visible')
+    .get('.offcanvas-backdrop').click()
     .get('@key_test').its('element').should('have.class', 'show').and('be.visible')
     .wait(100)
     .document().trigger('keydown', { code: 'Escape' })
     .get('@key_test').its('element').should('not.have.class', 'show').and('be.hidden')
-    // .wait(200)
   });
 
   it('Can do dispose()', () => {
@@ -137,7 +137,6 @@ describe('Offcanvas Class Tests', () => {
     .get('@hide_event').its('element').should('have.class', 'show').and('be.visible')
     .get('@hide_event').invoke('hide')
     .get('@hide_event').its('element').should('have.class', 'show').and('be.visible')
-    // .wait(200)
   });
   
   it('Can work with CustomEvent show', function() {
@@ -154,6 +153,5 @@ describe('Offcanvas Class Tests', () => {
       })
       .get('@show_event').invoke('toggle')
       .get('@show_event').its('element').should('not.have.class', 'show').and('be.hidden')
-      // .wait(200)
   });
 });

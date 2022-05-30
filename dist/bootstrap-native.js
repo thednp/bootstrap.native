@@ -3573,18 +3573,22 @@
     if (!self) return;
 
     const { options, triggers } = self;
+    const { backdrop } = options;
     const trigger = closest(target, offcanvasToggleSelector);
     const selection = getDocument(element).getSelection();
 
+    if (overlay.contains(target) && backdrop === 'static') return;
+
     /* istanbul ignore else */
     if (!(selection && selection.toString().length)
-      && ((!element.contains(target) && options.backdrop
-      && /* istanbul ignore next */(!trigger || (trigger && !triggers.includes(trigger))))
+      && ((!element.contains(target) && backdrop
+      && /* istanbul ignore next */(!trigger || triggers.includes(target)))
       || (offCanvasDismiss && offCanvasDismiss.contains(target)))) {
       self.relatedTarget = offCanvasDismiss && offCanvasDismiss.contains(target)
         ? offCanvasDismiss : null;
       self.hide();
     }
+
     /* istanbul ignore next */
     if (trigger && trigger.tagName === 'A') e.preventDefault();
   }

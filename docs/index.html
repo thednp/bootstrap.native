@@ -1466,7 +1466,7 @@ myDropdownInit.dispose();
                   <tbody>
                     <tr>
                       <td><code>backdrop</code></td>
-                      <td><em>boolean</em> or the <em>string</em> <code>'static'</code></td>
+                      <td><em>boolean</em> or the <em>string</em> <code>"static"</code></td>
                       <td><em>true</em></td>
                       <td>Includes a modal-backdrop element. Alternatively, specify <code>'static'</code> for a backdrop which
                         doesn't close the modal on click.</td>
@@ -1894,9 +1894,10 @@ var findModalInitJS = BSN.Modal.getInstance(myModal);
                   <tbody>
                     <tr>
                       <td><code>backdrop</code></td>
-                      <td><em>boolean</em></td>
+                      <td><em>boolean</em><br><em>"static"</em></td>
                       <td><em>true</em></td>
-                      <td>Option to add a backdrop on the body when offcanvas element is shown.</td>
+                      <td>Option to add a backdrop on the body when offcanvas element is shown. Alternatively, specify <code>"static"</code>
+                        for a backdrop which doesn't close the offcanvas on click.</td>
                     </tr>
                     <tr>
                       <td><code>keyboard</code></td>
@@ -2140,7 +2141,6 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                     <button type="button" class="btn btn-secondary mb-1" data-bs-toggle="popover" data-bs-trigger="click"
                       data-bs-content="Closing this offcanvas will also close this popover.">Popover</button>
                   </div>
-  
                 </div>
               </div>
 
@@ -2176,13 +2176,14 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                   </div>
                 </div>
               </div>
-              <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTopWithBackdrop" aria-labelledby="offcanvasTopWithBackdropLabel">
+
+              <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTopWithBackdrop" aria-labelledby="offcanvasTopWithBackdropLabel"  data-bs-backdrop="static">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasTopWithBackdropLabel">Offcanvas Top</h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                  <p>.....</p>
+                  <p>This offcanvas instance uses "static" backdrop.</p>
                   <div class="btn-toolbar">
                     <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="me-1 mb-1"
                       data-bs-toggle="tooltip" data-bs-placement="top"
