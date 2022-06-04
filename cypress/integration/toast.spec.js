@@ -114,8 +114,6 @@ describe('Toast Class Tests', () => {
       .wait(500)
       .get('@instance_hide').its('dismiss').click()
       .get('@instance_hide').its('element').should('have.class', 'show').and('be.visible')
-      // .get('@instance_hide').invoke('dispose')
-      // .wait(200)
   });
 
   it('CustomEvent can be prevented - show', () => {
@@ -132,8 +130,6 @@ describe('Toast Class Tests', () => {
       })
       .get('@instance_show').invoke('show')
       .get('@instance_show').its('element').should('not.have.class', 'show').and('be.hidden')
-      // .get('@instance_show').invoke('dispose')
-      // .wait(200)
   });
 
 });

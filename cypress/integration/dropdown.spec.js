@@ -146,7 +146,6 @@ describe('Dropdown Class Tests', () => {
             .get('@dropstart_resize').invoke('show')
             .get('@dropstart_resize').its('menu').should('have.class', 'show')
             .get('@dropstart_resize').its('menu.style.cssText').should('contain', 'left: auto')
-              // .and('contain', 'right: 100%')
           cy.viewport(200, 660);
           cy.wait(17);
           cy.window().trigger('resize');
@@ -336,12 +335,10 @@ describe('Dropdown Class Tests', () => {
         cy.get('@dropup_topLeft_rtl').invoke('show')
         cy.get('@dropup_topLeft_rtl').its('menu').should('have.class', 'show').and('be.visible')
         cy.get('@dropup_topLeft_rtl').its('menu.style.cssText').should('contain', 'top: auto')
-            // .and('contain', 'bottom: 100%') // this check is not required for "dropup"
         cy.wait(200)
         cy.scrollTo('bottomLeft', {duration: 0})
         cy.wait(200)
         cy.get('@dropup_topLeft_rtl').its('menu.style.cssText').should('contain', 'top: 100%')
-            // .and('contain', 'bottom: auto') // this check is not required for "dropup"
         cy.scrollTo('topLeft', {duration: 0})
         cy.wait(200)
         cy.get('@dropup_topLeft_rtl').invoke('dispose')
@@ -358,12 +355,10 @@ describe('Dropdown Class Tests', () => {
         cy.get('@dropdown_bottomLeft_rtl').invoke('show')
         cy.get('@dropdown_bottomLeft_rtl').its('menu').should('have.class', 'show').and('be.visible')
         cy.get('@dropdown_bottomLeft_rtl').its('menu.style.cssText').should('contain', 'top: auto')
-            // .and('contain', 'bottom: 100%') // this check is not required for "dropdown" / "dropup"
         cy.wait(200)
         cy.scrollTo('bottomLeft', {duration: 0})
         cy.wait(200)
         cy.get('@dropdown_bottomLeft_rtl').its('menu.style.cssText').should('contain', 'top: 100%')
-            // .and('contain', 'bottom: auto') // this check is not required for "dropdown" / "dropup"
         cy.wait(200)
         cy.scrollTo('topLeft', {duration: 0})
         cy.get('@dropdown_bottomLeft_rtl').invoke('dispose')
@@ -385,7 +380,6 @@ describe('Dropdown Class Tests', () => {
         cy.scrollTo('topLeft', {duration: 0})
         cy.wait(200)
         cy.get('@dropdown_topLeft_rtl').its('menu.style.cssText').should('contain', 'left: 0px')
-        // .and('contain', 'right: auto') // this check is not required for "dropdown" / "dropup"
         cy.wait(200)
         cy.get('@dropdown_topLeft_rtl').invoke('dispose')
         cy.wait(200)
@@ -402,7 +396,6 @@ describe('Dropdown Class Tests', () => {
         cy.get('@dropstart_topLeft_rtl').invoke('show')
         cy.get('@dropstart_topLeft_rtl').its('menu').should('have.class', 'show').and('be.visible')
         cy.get('@dropstart_topLeft_rtl').its('menu.style.cssText').should('contain', 'left: 100%')
-            // .and('contain', 'right: auto')
         cy.wait(200)
       });
 
@@ -417,7 +410,6 @@ describe('Dropdown Class Tests', () => {
         cy.get('@dropend_topLeft_rtl').invoke('show')
         cy.get('@dropend_topLeft_rtl').its('menu').should('have.class', 'show').and('be.visible')
         cy.get('@dropend_topLeft_rtl').its('menu.style.cssText').should('contain', 'left: 100%')
-            // .and('contain', 'right: auto')
         cy.wait(200)
       });
 
@@ -465,7 +457,6 @@ describe('Dropdown Class Tests', () => {
       .get('[data-bs-toggle="dropdown"]').eq(0).then(($element) => {
         const element = $element[0];
         const menu = element.parentElement.querySelector('.dropdown-menu');
-        const toolbar = element.closest('.btn-toolbar');
         menu.classList.add('dropdown-menu-end');
 
         cy.wrap(new Dropdown(element)).as('dropdown')

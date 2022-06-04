@@ -65,7 +65,6 @@ describe('Tooltip Class Tests', () => {
     cy.scrollTo('bottomLeft')
     cy.wait(200)
     cy.get('@resize').its('tooltip').should('have.class', 'bs-tooltip-start');
-    // cy.get('@resize').its('tooltip.style.cssText').should('include', 'top: 120');
     cy.scrollTo('topLeft')
     cy.wait(200)
     cy.viewport(200, 600);
@@ -74,7 +73,6 @@ describe('Tooltip Class Tests', () => {
     cy.get('@resize').its('tooltip').should('have.class', 'bs-tooltip-top');
     cy.scrollTo('bottomLeft')
     cy.wait(200)
-    // cy.wait(17);
     cy.get('@resize').its('tooltip').should('have.class', 'bs-tooltip-bottom')
     cy.viewport(1000, 600)
       .get('[data-cy="tooltip"]').eq(3).then(($element) => {
@@ -86,7 +84,6 @@ describe('Tooltip Class Tests', () => {
     cy.scrollTo('topLeft')
     cy.wait(200)
     cy.get('@resize').its('tooltip').should('have.class', 'bs-tooltip-start')
-    // cy.get('@resize').its('tooltip.style.cssText').should('include', 'top: 489');
     cy.wait(200)
 
   });
@@ -105,16 +102,12 @@ describe('Tooltip Class Tests', () => {
         .get('@toggleEnable').its('enabled').should('be.true')
         .get('@toggleEnable').invoke('toggle')
         .get('@toggleEnable').its('tooltip').should('have.class', 'show').and('be.visible')
-        // .wait(300)
         .get('@toggleEnable').invoke('toggleEnabled')
         .get('@toggleEnable').its('enabled').should('be.false')
-        // .wait(200)
         .get('@toggleEnable').invoke('toggle')
         .get('@toggleEnable').its('tooltip').should('not.exist')
-        // .wait(300)
         .get('@toggleEnable').invoke('toggleEnabled')
         .get('@toggleEnable').its('enabled').should('be.true')
-        // .wait(300)
         .get('@toggleEnable').invoke('toggle')
         .get('@toggleEnable').its('tooltip').should('have.class', 'show').and('be.visible')
         .wait(200)
@@ -237,7 +230,6 @@ describe('Tooltip Class Tests', () => {
       })
       .get('@popover').invoke('show')
       .get('@popover').its('tooltip').should('have.class', 'show').and('be.visible')
-      // .wait(200)
   });
 
   it('Can work with popover and micro-template', () => {
