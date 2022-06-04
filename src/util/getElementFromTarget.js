@@ -1,5 +1,5 @@
-import getDocument from 'shorter-js/src/get/getDocument';
-import querySelector from 'shorter-js/src/selectors/querySelector';
+import getDocument from '@thednp/shorty/src/get/getDocument';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
 import dataBsTarget from '../strings/dataBsTarget';
 
 /**

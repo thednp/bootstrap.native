@@ -1,339 +1,184 @@
-/* Native JavaScript for Bootstrap 5 | Tab
+/* Native JavaScript for Bootstrap 4 | Tab
 ------------------------------------------ */
-import ariaSelected from 'shorter-js/src/strings/ariaSelected';
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import closest from 'shorter-js/src/selectors/closest';
-import getElementsByClassName from 'shorter-js/src/selectors/getElementsByClassName';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import reflow from 'shorter-js/src/misc/reflow';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import { getInstance } from 'shorter-js/src/misc/data';
-import Timer from 'shorter-js/src/misc/timer';
-import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
+import supportTransition from '@thednp/shorty/src/boolean/supportTransition';
+import emulateTransitionEnd from '@thednp/shorty/src/misc/emulateTransitionEndLegacy';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import reflow from '@thednp/shorty/src/misc/reflow';
 
-import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
-
-import collapsingClass from '../strings/collapsingClass';
-import activeClass from '../strings/activeClass';
-import fadeClass from '../strings/fadeClass';
-import showClass from '../strings/showClass';
-import dropdownClasses from '../strings/dropdownClasses';
-import dataBsToggle from '../strings/dataBsToggle';
-import tabString from '../strings/tabString';
-import tabComponent from '../strings/tabComponent';
-
-import getTargetElement from '../util/getTargetElement';
-import BaseComponent from './base-component';
-
-// TAB PRIVATE GC
-// ================
-const tabSelector = `[${dataBsToggle}="${tabString}"]`;
-
-/**
- * Static method which returns an existing `Tab` instance associated
- * to a target `Element`.
- *
- * @type {BSN.GetInstance<Tab>}
- */
-const getTabInstance = (element) => getInstance(element, tabComponent);
-
-/**
- * A `Tab` initialization callback.
- * @type {BSN.InitCallback<Tab>}
- */
-const tabInitCallback = (element) => new Tab(element);
-
-// TAB CUSTOM EVENTS
-// =================
-const showTabEvent = OriginalEvent(`show.bs.${tabString}`);
-const shownTabEvent = OriginalEvent(`shown.bs.${tabString}`);
-const hideTabEvent = OriginalEvent(`hide.bs.${tabString}`);
-const hiddenTabEvent = OriginalEvent(`hidden.bs.${tabString}`);
-
-/**
- * Stores the current active tab and its content
- * for a given `.nav` element.
- * @type {Map<(HTMLElement | Element), any>}
- */
-const tabPrivate = new Map();
-
-// TAB PRIVATE METHODS
-// ===================
-/**
- * Executes after tab transition has finished.
- * @param {Tab} self the `Tab` instance
- */
-function triggerTabEnd(self) {
-  const { tabContent, nav } = self;
-
-  if (tabContent && hasClass(tabContent, collapsingClass)) {
-    // @ts-ignore
-    tabContent.style.height = '';
-    removeClass(tabContent, collapsingClass);
-  }
-
-  if (nav) Timer.clear(nav);
-}
-
-/**
- * Executes before showing the tab content.
- * @param {Tab} self the `Tab` instance
- */
-function triggerTabShow(self) {
-  const {
-    element, tabContent, content: nextContent, nav,
-  } = self;
-  const { tab } = nav && tabPrivate.get(nav);
-
-  if (tabContent && hasClass(nextContent, fadeClass)) { // height animation
-    const { currentHeight, nextHeight } = tabPrivate.get(element);
-    if (currentHeight === nextHeight) {
-      triggerTabEnd(self);
-    } else {
-      setTimeout(() => {
-        // enables height animation
-        tabContent.style.height = `${nextHeight}px`; // height animation
-        reflow(tabContent);
-        emulateTransitionEnd(tabContent, () => triggerTabEnd(self));
-      }, 50);
-    }
-  } else if (nav) Timer.clear(nav);
-
-  shownTabEvent.relatedTarget = tab;
-  dispatchEvent(element, shownTabEvent);
-}
-
-/**
- * Executes before hiding the tab.
- * @param {Tab} self the `Tab` instance
- */
-function triggerTabHide(self) {
-  const {
-    element, content: nextContent, tabContent, nav,
-  } = self;
-  const { tab, content } = nav && tabPrivate.get(nav);
-  let currentHeight = 0;
-
-  if (tabContent && hasClass(nextContent, fadeClass)) {
-    [content, nextContent].forEach((c) => {
-      addClass(c, 'overflow-hidden');
-    });
-    currentHeight = content.scrollHeight || 0;
-  }
-
-  // update relatedTarget and dispatch event
-  showTabEvent.relatedTarget = tab;
-  hiddenTabEvent.relatedTarget = element;
-  dispatchEvent(element, showTabEvent);
-  if (showTabEvent.defaultPrevented) return;
-
-  addClass(nextContent, activeClass);
-  removeClass(content, activeClass);
-
-  if (tabContent && hasClass(nextContent, fadeClass)) {
-    const nextHeight = nextContent.scrollHeight;
-    tabPrivate.set(element, { currentHeight, nextHeight });
-
-    addClass(tabContent, collapsingClass);
-    // @ts-ignore -- height animation
-    tabContent.style.height = `${currentHeight}px`;
-    reflow(tabContent);
-    [content, nextContent].forEach((c) => {
-      removeClass(c, 'overflow-hidden');
-    });
-  }
-
-  if (nextContent && hasClass(nextContent, fadeClass)) {
-    setTimeout(() => {
-      addClass(nextContent, showClass);
-      emulateTransitionEnd(nextContent, () => {
-        triggerTabShow(self);
-      });
-    }, 1);
-  } else {
-    addClass(nextContent, showClass);
-    triggerTabShow(self);
-  }
-
-  dispatchEvent(tab, hiddenTabEvent);
-}
-
-/**
- * Returns the current active tab and its target content.
- * @param {Tab} self the `Tab` instance
- * @returns {Record<string, any>} the query result
- */
-function getActiveTab(self) {
-  const { nav } = self;
-
-  // @ts-ignore
-  const activeTabs = getElementsByClassName(activeClass, nav);
-  /** @type {(HTMLElement | Element)=} */
-  let tab;
-  if (activeTabs.length === 1
-    // @ts-ignore
-    && !dropdownClasses.some((c) => hasClass(activeTabs[0].parentElement, c))) {
-    [tab] = activeTabs;
-  } else if (activeTabs.length > 1) {
-    tab = activeTabs[activeTabs.length - 1];
-  }
-  const content = tab ? getTargetElement(tab) : null;
-  return { tab, content };
-}
-
-/**
- * Returns a parent dropdown.
- * @param {HTMLElement | Element} element the `Tab` element
- * @returns {(HTMLElement | Element)?} the parent dropdown
- */
-function getParentDropdown(element) {
-  const dropdown = closest(element, `.${dropdownClasses.join(',.')}`);
-  return dropdown ? querySelector(`.${dropdownClasses[0]}-toggle`, dropdown) : null;
-}
-
-/**
- * Toggles on/off the `click` event listener.
- * @param {Tab} self the `Tab` instance
- * @param {boolean=} add when `true`, event listener is added
- */
-function toggleTabHandler(self, add) {
-  const action = add ? addListener : removeListener;
-  action(self.element, mouseclickEvent, tabClickHandler);
-}
-
-// TAB EVENT HANDLER
-// =================
-/**
- * Handles the `click` event listener.
- * @this {HTMLElement | Element}
- * @param {MouseEvent} e the `Event` object
- */
-function tabClickHandler(e) {
-  const self = getTabInstance(this);
-  if (!self) return;
-  e.preventDefault();
-
-  self.show();
-}
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
 
 // TAB DEFINITION
 // ==============
-/** Creates a new `Tab` instance. */
-export default class Tab extends BaseComponent {
-  /**
-   * @param {HTMLElement | Element | string} target the target element
-   */
-  constructor(target) {
-    super(target);
-    // bind
-    const self = this;
 
-    // initialization element
-    const { element } = self;
-    const content = getTargetElement(element);
+export default function Tab(elem, opsInput) {
+  let element;
+  // set options
+  const options = opsInput || {};
 
-    // no point initializing a tab without a corresponding content
-    if (!content) return;
+  // bind
+  const self = this;
 
-    const nav = closest(element, '.nav');
-    const container = closest(content, '.tab-content');
+  // event targets
+  let tabs;
+  let dropdown;
 
-    /** @type {(HTMLElement | Element)?} */
-    self.nav = nav;
-    /** @type {HTMLElement | Element} */
-    self.content = content;
-    /** @type {(HTMLElement | Element)?} */
-    self.tabContent = container;
+  // custom events
+  let showCustomEvent;
+  let shownCustomEvent;
+  let hideCustomEvent;
+  let hiddenCustomEvent;
 
-    // event targets
-    /** @type {(HTMLElement | Element)?} */
-    self.dropdown = getParentDropdown(element);
+  // more GC material
+  let next;
+  let tabsContentContainer = false;
+  let activeTab;
+  let activeContent;
+  let nextContent;
+  let containerHeight;
+  let equalContents;
+  let nextHeight;
 
-    // show first Tab instance of none is shown
-    // suggested on #432
-    const { tab } = getActiveTab(self);
-    if (nav && !tab) {
-      const firstTab = querySelector(tabSelector, nav);
-      const firstTabContent = firstTab && getTargetElement(firstTab);
-
-      if (firstTabContent) {
-        addClass(firstTab, activeClass);
-        addClass(firstTabContent, showClass);
-        addClass(firstTabContent, activeClass);
-        setAttribute(element, ariaSelected, 'true');
-      }
-    }
-
-    // add event listener
-    toggleTabHandler(self, true);
+  // triggers
+  function triggerEnd() {
+    tabsContentContainer.style.height = '';
+    tabsContentContainer.classList.remove('collapsing');
+    tabs.isAnimating = false;
   }
-
-  /* eslint-disable */
-  /**
-   * Returns component name string.
-   * @readonly @static
-   */  
-  get name() { return tabComponent; }
-  /* eslint-enable */
-
-  // TAB PUBLIC METHODS
-  // ==================
-  /** Shows the tab to the user. */
-  show() {
-    const self = this;
-    const { element, nav, dropdown } = self;
-
-    if (!(nav && Timer.get(nav)) && !hasClass(element, activeClass)) {
-      const { tab, content } = getActiveTab(self);
-
-      if (nav) tabPrivate.set(nav, { tab, content });
-
-      // update relatedTarget and dispatch
-      hideTabEvent.relatedTarget = element;
-
-      dispatchEvent(tab, hideTabEvent);
-      if (hideTabEvent.defaultPrevented) return;
-
-      addClass(element, activeClass);
-      setAttribute(element, ariaSelected, 'true');
-
-      const activeDropdown = getParentDropdown(tab);
-      if (activeDropdown && hasClass(activeDropdown, activeClass)) {
-        removeClass(activeDropdown, activeClass);
-      }
-
-      if (nav) {
-        Timer.set(nav, () => {
-          removeClass(tab, activeClass);
-          setAttribute(tab, ariaSelected, 'false');
-          if (dropdown && !hasClass(dropdown, activeClass)) addClass(dropdown, activeClass);
-        }, 1);
-      }
-
-      if (hasClass(content, fadeClass)) {
-        removeClass(content, showClass);
-        emulateTransitionEnd(content, () => triggerTabHide(self));
+  function triggerShow() {
+    if (tabsContentContainer) { // height animation
+      if (equalContents) {
+        triggerEnd();
       } else {
-        triggerTabHide(self);
+        setTimeout(() => { // enables height animation
+          tabsContentContainer.style.height = `${nextHeight}px`; // height animation
+          reflow(tabsContentContainer);
+          emulateTransitionEnd(tabsContentContainer, triggerEnd);
+        }, 50);
       }
+    } else {
+      tabs.isAnimating = false;
     }
+    shownCustomEvent = bootstrapCustomEvent('shown', 'tab', { relatedTarget: activeTab });
+    dispatchCustomEvent.call(next, shownCustomEvent);
+  }
+  function triggerHide() {
+    if (tabsContentContainer) {
+      activeContent.style.float = 'left';
+      nextContent.style.float = 'left';
+      containerHeight = activeContent.scrollHeight;
+    }
+
+    showCustomEvent = bootstrapCustomEvent('show', 'tab', { relatedTarget: activeTab });
+    hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tab', { relatedTarget: next });
+
+    dispatchCustomEvent.call(next, showCustomEvent);
+    if (showCustomEvent.defaultPrevented) return;
+
+    nextContent.classList.add('active');
+
+    activeContent.classList.remove('active');
+
+    if (tabsContentContainer) {
+      nextHeight = nextContent.scrollHeight;
+      equalContents = nextHeight === containerHeight;
+      tabsContentContainer.classList.add('collapsing');
+      tabsContentContainer.style.height = `${containerHeight}px`; // height animation
+      reflow(tabsContentContainer);
+      activeContent.style.float = '';
+      nextContent.style.float = '';
+    }
+
+    if (nextContent.classList.contains('fade')) {
+      setTimeout(() => {
+        nextContent.classList.add('show');
+        emulateTransitionEnd(nextContent, triggerShow);
+      }, 20);
+    } else { triggerShow(); }
+
+    dispatchCustomEvent.call(activeTab, hiddenCustomEvent);
+  }
+  // private methods
+  function getActiveTab() {
+    const activeTabs = tabs.getElementsByClassName('active');
+
+    if (activeTabs.length === 1 && !activeTabs[0].parentNode.classList.contains('dropdown')) {
+      [activeTab] = activeTabs;
+    } else if (activeTabs.length > 1) {
+      activeTab = activeTabs[activeTabs.length - 1];
+    }
+    return activeTab;
+  }
+  function getActiveContent() { return querySelector(getActiveTab().getAttribute('href')); }
+  // handler
+  function clickHandler(e) {
+    e.preventDefault();
+    next = e.currentTarget;
+    if (!tabs.isAnimating) self.show();
   }
 
-  /** Removes the `Tab` component from the target element. */
-  dispose() {
-    toggleTabHandler(this);
-    super.dispose();
+  // public method
+  self.show = () => { // the tab we clicked is now the next tab
+    next = next || element;
+
+    if (!next.classList.contains('active')) {
+      nextContent = querySelector(next.getAttribute('href')); // this is the actual object, the next tab content to activate
+      activeTab = getActiveTab();
+      activeContent = getActiveContent();
+
+      hideCustomEvent = bootstrapCustomEvent('hide', 'tab', { relatedTarget: next });
+      dispatchCustomEvent.call(activeTab, hideCustomEvent);
+      if (hideCustomEvent.defaultPrevented) return;
+
+      tabs.isAnimating = true;
+      activeTab.classList.remove('active');
+      activeTab.setAttribute('aria-selected', 'false');
+      next.classList.add('active');
+      next.setAttribute('aria-selected', 'true');
+
+      if (dropdown) {
+        if (!element.parentNode.classList.contains('dropdown-menu')) {
+          if (dropdown.classList.contains('active')) dropdown.classList.remove('active');
+        } else if (!dropdown.classList.contains('active')) dropdown.classList.add('active');
+      }
+
+      if (activeContent.classList.contains('fade')) {
+        activeContent.classList.remove('show');
+        emulateTransitionEnd(activeContent, triggerHide);
+      } else { triggerHide(); }
+    }
+  };
+  self.dispose = () => {
+    element.removeEventListener('click', clickHandler, false);
+    delete element.Tab;
+  };
+
+  // INIT
+  // initialization element
+  element = querySelector(elem);
+
+  // reset on re-init
+  if (element.Tab) element.Tab.dispose();
+
+  // DATA API
+  const heightData = element.getAttribute('data-height');
+  // event targets
+  tabs = element.closest('.nav');
+  dropdown = tabs && querySelector('.dropdown-toggle', tabs);
+
+  // instance options
+  const animateHeight = !(!supportTransition || (options.height === false || heightData === 'false'));
+
+  // set default animation state
+  tabs.isAnimating = false;
+
+  // init
+  if (!element.Tab) { // prevent adding event handlers twice
+    element.addEventListener('click', clickHandler, false);
   }
+
+  if (animateHeight) { tabsContentContainer = getActiveContent().parentNode; }
+
+  // associate target with init object
+  element.Tab = self;
 }
-
-ObjectAssign(Tab, {
-  selector: tabSelector,
-  init: tabInitCallback,
-  getInstance: getTabInstance,
-});

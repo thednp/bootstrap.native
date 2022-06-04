@@ -1,504 +1,220 @@
-/* Native JavaScript for Bootstrap 5 | Tooltip
+/* Native JavaScript for Bootstrap 4 | Tooltip
 ---------------------------------------------- */
-import ariaDescribedBy from 'shorter-js/src/strings/ariaDescribedBy';
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import mousedownEvent from 'shorter-js/src/strings/mousedownEvent';
-import mouseenterEvent from 'shorter-js/src/strings/mouseenterEvent';
-import mouseleaveEvent from 'shorter-js/src/strings/mouseleaveEvent';
-import mousemoveEvent from 'shorter-js/src/strings/mousemoveEvent';
-import focusEvent from 'shorter-js/src/strings/focusEvent';
-import focusinEvent from 'shorter-js/src/strings/focusinEvent';
-import focusoutEvent from 'shorter-js/src/strings/focusoutEvent';
-import mousehoverEvent from 'shorter-js/src/strings/mousehoverEvent';
-import scrollEvent from 'shorter-js/src/strings/scrollEvent';
-import resizeEvent from 'shorter-js/src/strings/resizeEvent';
-import touchstartEvent from 'shorter-js/src/strings/touchstartEvent';
-import setAttribute from 'shorter-js/src/attr/setAttribute';
-import getAttribute from 'shorter-js/src/attr/getAttribute';
-import removeAttribute from 'shorter-js/src/attr/removeAttribute';
-import getWindow from 'shorter-js/src/get/getWindow';
-import getDocument from 'shorter-js/src/get/getDocument';
-import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
-import getElementTransitionDuration from 'shorter-js/src/get/getElementTransitionDuration';
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
-import getUID from 'shorter-js/src/get/getUID';
-import closest from 'shorter-js/src/selectors/closest';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import addClass from 'shorter-js/src/class/addClass';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import { getInstance } from 'shorter-js/src/misc/data';
-import isMedia from 'shorter-js/src/is/isMedia';
-import isApple from 'shorter-js/src/boolean/isApple';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import passiveHandler from 'shorter-js/src/misc/passiveHandler';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import Timer from 'shorter-js/src/misc/timer';
-import focus from 'shorter-js/src/misc/focus';
-import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
-import toLowerCase from 'shorter-js/src/misc/toLowerCase';
+import mouseHoverEvents from '@thednp/shorty/src/strings/mouseHoverEvents';
+import mouseClickEvents from '@thednp/shorty/src/strings/mouseClickEvents';
+import passiveHandler from '@thednp/shorty/src/misc/passiveHandler';
+import emulateTransitionEnd from '@thednp/shorty/src/misc/emulateTransitionEndLegacy';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
 
-import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
-
-import dataBsToggle from '../strings/dataBsToggle';
-import dataOriginalTitle from '../strings/dataOriginalTitle';
-import showClass from '../strings/showClass';
-import tooltipString from '../strings/tooltipString';
-import tooltipComponent from '../strings/tooltipComponent';
-import popoverString from '../strings/popoverString';
-import popoverComponent from '../strings/popoverComponent';
-import modalString from '../strings/modalString';
-import offcanvasString from '../strings/offcanvasString';
-
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
 import styleTip from '../util/styleTip';
-import createTip from '../util/createTip';
-import isVisibleTip from '../util/isVisibleTip';
-import getElementContainer from '../util/getElementContainer';
-import tooltipDefaults from '../util/tooltipDefaults';
-import BaseComponent from './base-component';
-
-// TOOLTIP PRIVATE GC
-// ==================
-const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${tooltipString}"]`;
-const titleAttr = 'title';
-
-/**
- * Static method which returns an existing `Tooltip` instance associated
- * to a target `Element`.
- *
- * @type {BSN.GetInstance<Tooltip>}
- */
-let getTooltipInstance = (element) => getInstance(element, tooltipComponent);
-
-/**
- * A `Tooltip` initialization callback.
- * @type {BSN.InitCallback<Tooltip>}
- */
-const tooltipInitCallback = (element) => new Tooltip(element);
-
-// TOOLTIP PRIVATE METHODS
-// =======================
-/**
- * Removes the tooltip from the DOM.
- *
- * @param {Tooltip} self the `Tooltip` instance
- */
-function removeTooltip(self) {
-  const { element, tooltip } = self;
-  removeAttribute(element, ariaDescribedBy);
-  tooltip.remove();
-}
-
-/**
- * Executes after the instance has been disposed.
- *
- * @param {Tooltip} self the `Tooltip` instance
- */
-function disposeTooltipComplete(self) {
-  const { element } = self;
-  toggleTooltipHandlers(self);
-
-  if (element.hasAttribute(dataOriginalTitle) && self.name === tooltipString) {
-    toggleTooltipTitle(self);
-  }
-}
-
-/**
- * Toggles on/off the special `Tooltip` event listeners.
- *
- * @param {Tooltip} self the `Tooltip` instance
- * @param {boolean=} add when `true`, event listeners are added
- */
-function toggleTooltipAction(self, add) {
-  const action = add ? addListener : removeListener;
-  const { element } = self;
-
-  action(getDocument(element), touchstartEvent, self.handleTouch, passiveHandler);
-
-  if (!isMedia(element)) {
-    [scrollEvent, resizeEvent].forEach((ev) => {
-      // @ts-ignore
-      action(getWindow(element), ev, self.update, passiveHandler);
-    });
-  }
-}
-
-/**
- * Executes after the tooltip was shown to the user.
- *
- * @param {Tooltip} self the `Tooltip` instance
- */
-function tooltipShownAction(self) {
-  const { element } = self;
-  const shownTooltipEvent = OriginalEvent(`shown.bs.${toLowerCase(self.name)}`);
-
-  toggleTooltipAction(self, true);
-  dispatchEvent(element, shownTooltipEvent);
-  Timer.clear(element, 'in');
-}
-
-/**
- * Executes after the tooltip was hidden to the user.
- *
- * @param {Tooltip} self the `Tooltip` instance
- */
-function tooltipHiddenAction(self) {
-  const { element } = self;
-  const hiddenTooltipEvent = OriginalEvent(`hidden.bs.${toLowerCase(self.name)}`);
-
-  toggleTooltipAction(self);
-  removeTooltip(self);
-  dispatchEvent(element, hiddenTooltipEvent);
-  Timer.clear(element, 'out');
-}
-
-/**
- * Toggles on/off the `Tooltip` event listeners.
- *
- * @param {Tooltip} self the `Tooltip` instance
- * @param {boolean=} add when `true`, event listeners are added
- */
-function toggleTooltipHandlers(self, add) {
-  const action = add ? addListener : removeListener;
-  // @ts-ignore -- btn is only for dismissible popover
-  const { element, options, btn } = self;
-  const { trigger, dismissible } = options;
-
-  if (trigger.includes('manual')) return;
-
-  self.enabled = !!add;
-
-  /** @type {string[]} */
-  const triggerOptions = trigger.split(' ');
-  const elemIsMedia = isMedia(element);
-
-  if (elemIsMedia) {
-    action(element, mousemoveEvent, self.update, passiveHandler);
-  }
-
-  triggerOptions.forEach((tr) => {
-    if (elemIsMedia || tr === mousehoverEvent) {
-      action(element, mousedownEvent, self.show);
-      action(element, mouseenterEvent, self.show);
-
-      if (dismissible && btn) {
-        action(btn, mouseclickEvent, self.hide);
-      } else {
-        action(element, mouseleaveEvent, self.hide);
-        action(getDocument(element), touchstartEvent, self.handleTouch, passiveHandler);
-      }
-    } else if (tr === mouseclickEvent) {
-      action(element, tr, (!dismissible ? self.toggle : self.show));
-    } else if (tr === focusEvent) {
-      action(element, focusinEvent, self.show);
-      if (!dismissible) action(element, focusoutEvent, self.hide);
-      if (isApple) action(element, mouseclickEvent, () => focus(element));
-    }
-  });
-}
-
-/**
- * Toggles on/off the `Tooltip` event listeners that hide/update the tooltip.
- *
- * @param {Tooltip} self the `Tooltip` instance
- * @param {boolean=} add when `true`, event listeners are added
- */
-function toggleTooltipOpenHandlers(self, add) {
-  const action = add ? addListener : removeListener;
-  const { element, options, offsetParent } = self;
-  const { container } = options;
-  const { offsetHeight, scrollHeight } = container;
-  const parentModal = closest(element, `.${modalString}`);
-  const parentOffcanvas = closest(element, `.${offcanvasString}`);
-
-  if (!isMedia(element)) {
-    const win = getWindow(element);
-    const overflow = offsetHeight !== scrollHeight;
-    const scrollTarget = overflow || offsetParent !== win ? container : win;
-    // @ts-ignore
-    action(win, resizeEvent, self.update, passiveHandler);
-    action(scrollTarget, scrollEvent, self.update, passiveHandler);
-  }
-
-  // dismiss tooltips inside modal / offcanvas
-  if (parentModal) action(parentModal, `hide.bs.${modalString}`, self.hide);
-  if (parentOffcanvas) action(parentOffcanvas, `hide.bs.${offcanvasString}`, self.hide);
-}
-
-/**
- * Toggles the `title` and `data-original-title` attributes.
- *
- * @param {Tooltip} self the `Tooltip` instance
- * @param {string=} content when `true`, event listeners are added
- */
-function toggleTooltipTitle(self, content) {
-  // [0 - add, 1 - remove] | [0 - remove, 1 - add]
-  const titleAtt = [dataOriginalTitle, titleAttr];
-  const { element } = self;
-
-  setAttribute(element, titleAtt[content ? 0 : 1],
-    // @ts-ignore
-    (content || getAttribute(element, titleAtt[0])));
-  removeAttribute(element, titleAtt[content ? 1 : 0]);
-}
 
 // TOOLTIP DEFINITION
 // ==================
-/** Creates a new `Tooltip` instance. */
-export default class Tooltip extends BaseComponent {
-  /**
-   * @param {HTMLElement | Element | string} target the target element
-   * @param {BSN.Options.Tooltip=} config the instance options
-   */
-  constructor(target, config) {
-    super(target, config);
 
-    // bind
-    const self = this;
-    const { element } = self;
-    const isTooltip = self.name === tooltipComponent;
-    const tipString = isTooltip ? tooltipString : popoverString;
-    const tipComponent = isTooltip ? tooltipComponent : popoverComponent;
+export default function Tooltip(elem, opsInput) {
+  let element;
+  // set options
+  const options = opsInput || {};
 
-    getTooltipInstance = (elem) => getInstance(elem, tipComponent);
+  // bind
+  const self = this;
 
-    // additional properties
-    /** @type {any} */
-    self.tooltip = {};
-    if (!isTooltip) {
-      /** @type {any?} */
-      // @ts-ignore
-      self.btn = null;
-    }
-    /** @type {any} */
-    self.arrow = {};
-    /** @type {any} */
-    self.offsetParent = {};
-    /** @type {boolean} */
-    self.enabled = true;
-    /** @type {string} Set unique ID for `aria-describedby`. */
-    self.id = `${tipString}-${getUID(element, tipString)}`;
+  // tooltip, timer, and title
+  let tooltip = null;
+  let timer = 0;
+  let titleString;
+  let placementClass;
 
-    // instance options
-    const { options } = self;
+  // custom events
+  let showCustomEvent;
+  let shownCustomEvent;
+  let hideCustomEvent;
+  let hiddenCustomEvent;
 
-    // invalidate
-    if ((!options.title && isTooltip) || (!isTooltip && !options.content)) return;
+  const ops = {};
 
-    const container = querySelector(options.container);
-    const idealContainer = getElementContainer(element);
-
-    // bypass container option when its position is static/relative
-    self.options.container = !container || (container
-      && ['static', 'relative'].includes(getElementStyle(container, 'position')))
-      ? idealContainer
-      : container || getDocumentBody(element);
-
-    // reset default options
-    tooltipDefaults[titleAttr] = null;
-
-    // all functions bind
-    self.handleTouch = self.handleTouch.bind(self);
-    self.update = self.update.bind(self);
-    self.show = self.show.bind(self);
-    self.hide = self.hide.bind(self);
-    self.toggle = self.toggle.bind(self);
-
-    // set title attributes and add event listeners
-    if (element.hasAttribute(titleAttr) && isTooltip) {
-      toggleTooltipTitle(self, options.title);
-    }
-
-    // create tooltip here
-    createTip(self);
-
-    // attach events
-    toggleTooltipHandlers(self, true);
+  // private methods
+  function getTitle() {
+    return element.getAttribute('title')
+        || element.getAttribute('data-title')
+        || element.getAttribute('data-original-title');
   }
-
-  /* eslint-disable */
-  /**
-   * Returns component name string.
-   * @readonly @static
-   */
-  get name() { return tooltipComponent; }
-  /**
-   * Returns component default options.
-   * @readonly @static
-   */
-  get defaults() { return tooltipDefaults; }
-  /* eslint-enable */
-
-  // TOOLTIP PUBLIC METHODS
-  // ======================
-  /**
-   * Shows the tooltip.
-   *
-   * @param {Event=} e the `Event` object
-   * @this {Tooltip}
-   */
-  show(e) {
-    const self = this;
-    const {
-      options, tooltip, element, id,
-    } = self;
-    const { container, animation } = options;
-    const outTimer = Timer.get(element, 'out');
-
-    Timer.clear(element, 'out');
-
-    if (tooltip && !outTimer && !isVisibleTip(tooltip, container)) {
-      Timer.set(element, () => {
-        const showTooltipEvent = OriginalEvent(`show.bs.${toLowerCase(self.name)}`);
-        dispatchEvent(element, showTooltipEvent);
-        if (showTooltipEvent.defaultPrevented) return;
-
-        // append to container
-        container.append(tooltip);
-        setAttribute(element, ariaDescribedBy, `#${id}`);
-        // set offsetParent
-        self.offsetParent = getElementContainer(tooltip, true);
-
-        self.update(e);
-        toggleTooltipOpenHandlers(self, true);
-
-        if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
-        if (animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(self));
-        else tooltipShownAction(self);
-      }, 17, 'in');
-    }
+  function removeToolTip() {
+    ops.container.removeChild(tooltip);
+    tooltip = null; timer = null;
   }
+  function createToolTip() {
+    titleString = getTitle(); // read the title again
+    if (titleString) { // invalidate, maybe markup changed
+      // create tooltip
+      tooltip = document.createElement('div');
 
-  /**
-   * Hides the tooltip.
-   *
-   * @this {Tooltip}
-   */
-  hide() {
-    const self = this;
-    const { options, tooltip, element } = self;
-    const { container, animation, delay } = options;
+      // set markup
+      if (ops.template) {
+        const tooltipMarkup = document.createElement('div');
+        tooltipMarkup.innerHTML = ops.template.trim();
 
-    Timer.clear(element, 'in');
+        tooltip.className = tooltipMarkup.firstChild.className;
+        tooltip.innerHTML = tooltipMarkup.firstChild.innerHTML;
 
-    if (tooltip && isVisibleTip(tooltip, container)) {
-      Timer.set(element, () => {
-        const hideTooltipEvent = OriginalEvent(`hide.bs.${toLowerCase(self.name)}`);
-        dispatchEvent(element, hideTooltipEvent);
-
-        if (hideTooltipEvent.defaultPrevented) return;
-
-        // @ts-ignore
-        removeClass(tooltip, showClass);
-        toggleTooltipOpenHandlers(self);
-
-        if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(self));
-        else tooltipHiddenAction(self);
-      }, delay + 17, 'out');
-    }
-  }
-
-  /**
-   * Updates the tooltip position.
-   *
-   * @param {Event=} e the `Event` object
-   * @this {Tooltip} the `Tooltip` instance
-   */
-  update(e) {
-    // @ts-ignore
-    styleTip(this, e);
-  }
-
-  /**
-   * Toggles the tooltip visibility.
-   *
-   * @param {Event=} e the `Event` object
-   * @this {Tooltip} the instance
-   */
-  toggle(e) {
-    const self = this;
-    const { tooltip, options } = self;
-
-    if (!isVisibleTip(tooltip, options.container)) self.show(e);
-    else self.hide();
-  }
-
-  /** Enables the tooltip. */
-  enable() {
-    const self = this;
-    const { enabled } = self;
-    if (!enabled) {
-      toggleTooltipHandlers(self, true);
-      self.enabled = !enabled;
-    }
-  }
-
-  /** Disables the tooltip. */
-  disable() {
-    const self = this;
-    const {
-      element, tooltip, options, enabled,
-    } = self;
-    const { animation, container, delay } = options;
-    if (enabled) {
-      if (isVisibleTip(tooltip, container) && animation) {
-        self.hide();
-
-        Timer.set(element, () => {
-          toggleTooltipHandlers(self);
-          Timer.clear(element, tooltipString);
-        }, getElementTransitionDuration(tooltip) + delay + 17, tooltipString);
+        querySelector('.tooltip-inner', tooltip).innerHTML = titleString.trim();
       } else {
-        toggleTooltipHandlers(self);
+        // tooltip arrow
+        const tooltipArrow = document.createElement('div');
+        tooltipArrow.classList.add('arrow');
+        tooltip.appendChild(tooltipArrow);
+        // tooltip inner
+        const tooltipInner = document.createElement('div');
+        tooltipInner.classList.add('tooltip-inner');
+        tooltip.appendChild(tooltipInner);
+        tooltipInner.innerHTML = titleString;
       }
-      self.enabled = !enabled;
+      // reset position
+      tooltip.style.left = '0';
+      tooltip.style.top = '0';
+      // set class and role attribute
+      tooltip.setAttribute('role', 'tooltip');
+      if (!tooltip.classList.contains('tooltip')) tooltip.classList.add('tooltip');
+      if (!tooltip.classList.contains(ops.animation)) tooltip.classList.add(ops.animation);
+      if (!tooltip.classList.contains(placementClass)) tooltip.classList.add(placementClass);
+      // append to container
+      ops.container.appendChild(tooltip);
     }
   }
-
-  /** Toggles the `disabled` property. */
-  toggleEnabled() {
-    const self = this;
-    if (!self.enabled) self.enable();
-    else self.disable();
+  function updateTooltip() {
+    styleTip(element, tooltip, ops.placement, ops.container);
   }
-
-  /**
-   * Handles the `touchstart` event listener for `Tooltip`
-   * @this {Tooltip}
-   * @param {TouchEvent} e the `Event` object
-   */
-  handleTouch({ target }) {
-    const { tooltip, element } = this;
-
-    if (tooltip.contains(target) || target === element
-      // @ts-ignore
-      || (target && element.contains(target))) {
-      // smile for ESLint
+  function showTooltip() {
+    if (!tooltip.classList.contains('show')) tooltip.classList.add('show');
+  }
+  function touchHandler(e) {
+    if ((tooltip && tooltip.contains(e.target))
+      || e.target === element || element.contains(e.target)) {
+      // smile
     } else {
-      this.hide();
-    }
-  }
-
-  /** Removes the `Tooltip` from the target element. */
-  dispose() {
-    const self = this;
-    const { tooltip, options } = self;
-
-    if (options.animation && isVisibleTip(tooltip, options.container)) {
-      options.delay = 0; // reset delay
       self.hide();
-      emulateTransitionEnd(tooltip, () => disposeTooltipComplete(self));
-    } else {
-      disposeTooltipComplete(self);
     }
-    super.dispose();
   }
-}
+  // triggers
+  function toggleAction(add) {
+    const action = add ? 'addEventListener' : 'removeEventListener';
+    document[action]('touchstart', touchHandler, passiveHandler);
+    window[action]('resize', self.hide, passiveHandler);
+  }
+  function showAction() {
+    toggleAction(1);
+    dispatchCustomEvent.call(element, shownCustomEvent);
+  }
+  function hideAction() {
+    toggleAction();
+    removeToolTip();
+    dispatchCustomEvent.call(element, hiddenCustomEvent);
+  }
+  function toggleEvents(add) {
+    const action = add ? 'addEventListener' : 'removeEventListener';
+    element[action](mouseClickEvents.down, self.show, false);
+    element[action](mouseHoverEvents[0], self.show, false);
+    element[action](mouseHoverEvents[1], self.hide, false);
+  }
 
-ObjectAssign(Tooltip, {
-  selector: tooltipSelector,
-  init: tooltipInitCallback,
-  getInstance: getTooltipInstance,
-  styleTip,
-});
+  // public methods
+  self.show = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      if (tooltip === null) {
+        dispatchCustomEvent.call(element, showCustomEvent);
+        if (showCustomEvent.defaultPrevented) return;
+        // if(createToolTip() == false) return;
+        if (createToolTip() !== false) {
+          updateTooltip();
+          showTooltip();
+          if (ops.animation) emulateTransitionEnd(tooltip, showAction);
+          else showAction();
+        }
+      }
+    }, 20);
+  };
+  self.hide = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      if (tooltip && tooltip.classList.contains('show')) {
+        dispatchCustomEvent.call(element, hideCustomEvent);
+        if (hideCustomEvent.defaultPrevented) return;
+        tooltip.classList.remove('show');
+        if (ops.animation) emulateTransitionEnd(tooltip, hideAction);
+        else hideAction();
+      }
+    }, ops.delay);
+  };
+  self.toggle = () => {
+    if (!tooltip) self.show();
+    else self.hide();
+  };
+  self.dispose = () => {
+    toggleEvents();
+    self.hide();
+    element.setAttribute('title', element.getAttribute('data-original-title'));
+    element.removeAttribute('data-original-title');
+    delete element.Tooltip;
+  };
+
+  // init
+  // initialization element
+  element = querySelector(elem);
+
+  // reset on re-init
+  if (element.Tooltip) element.Tooltip.dispose();
+
+  // DATA API
+  const animationData = element.getAttribute('data-animation');
+  const placementData = element.getAttribute('data-placement');
+  const delayData = element.getAttribute('data-delay');
+  const containerData = element.getAttribute('data-container');
+
+  // check container
+  const containerElement = querySelector(options.container);
+  const containerDataElement = querySelector(containerData);
+
+  // maybe the element is inside a modal
+  const modal = element.closest('.modal');
+
+  // custom events
+  showCustomEvent = bootstrapCustomEvent('show', 'tooltip');
+  shownCustomEvent = bootstrapCustomEvent('shown', 'tooltip');
+  hideCustomEvent = bootstrapCustomEvent('hide', 'tooltip');
+  hiddenCustomEvent = bootstrapCustomEvent('hidden', 'tooltip');
+
+  // maybe the element is inside a fixed navbar
+  const navbarFixedTop = element.closest('.fixed-top');
+  const navbarFixedBottom = element.closest('.fixed-bottom');
+
+  // set instance options
+  ops.animation = options.animation && options.animation !== 'fade' ? options.animation : animationData || 'fade';
+  ops.placement = options.placement ? options.placement : placementData || 'top';
+  ops.template = options.template ? options.template : null; // JavaScript only
+  ops.delay = parseInt((options.delay || delayData), 10) || 200;
+  ops.container = containerElement
+    || (containerDataElement
+      || (navbarFixedTop || (navbarFixedBottom || (modal || document.body))));
+
+  // set placement class
+  placementClass = `bs-tooltip-${ops.placement}`;
+
+  // set tooltip content
+  titleString = getTitle();
+
+  // invalidate
+  if (!titleString) return;
+
+  // prevent adding event handlers twice
+  if (!element.Tooltip) {
+    element.setAttribute('data-original-title', titleString);
+    element.removeAttribute('title');
+    toggleEvents(1);
+  }
+
+  // associate target to init object
+  element.Tooltip = self;
+}

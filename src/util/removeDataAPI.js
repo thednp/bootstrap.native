@@ -1,4 +1,4 @@
-import componentsInit from './componentsInit-v4';
+import componentsInit from './componentsInit';
 
 /* Native JavaScript for Bootstrap v4 | Remove Data API
 ---------------------------------------------------- */

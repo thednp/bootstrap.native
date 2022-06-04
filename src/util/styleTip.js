@@ -1,217 +1,97 @@
-import isMedia from 'shorter-js/src/is/isMedia';
-import isRTL from 'shorter-js/src/is/isRTL';
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
-import getBoundingClientRect from 'shorter-js/src/get/getBoundingClientRect';
-import getNodeScroll from 'shorter-js/src/get/getNodeScroll';
-import getRectRelativeToOffsetParent from 'shorter-js/src/get/getRectRelativeToOffsetParent';
-import getDocumentElement from 'shorter-js/src/get/getDocumentElement';
-import setElementStyle from 'shorter-js/src/misc/setElementStyle';
+import getScroll from './getScroll';
 
-import popoverComponent from '../strings/popoverComponent';
-import tipClassPositions from './tipClassPositions';
+// both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
+export default function styleTip(link, element, originalPosition, parent) {
+  const tipPositions = /\b(top|bottom|left|right)+/;
+  const elementDimensions = { w: element.offsetWidth, h: element.offsetHeight };
+  const windowWidth = (document.documentElement.clientWidth || document.body.clientWidth);
+  const windowHeight = (document.documentElement.clientHeight || document.body.clientHeight);
+  const rect = link.getBoundingClientRect();
+  const scroll = parent === document.body
+    ? getScroll()
+    : { x: parent.offsetLeft + parent.scrollLeft, y: parent.offsetTop + parent.scrollTop };
+  const linkDimensions = { w: rect.right - rect.left, h: rect.bottom - rect.top };
+  const isPopover = element.classList.contains('popover');
+  const arrow = element.getElementsByClassName('arrow')[0];
+  const halfTopExceed = rect.top + linkDimensions.h / 2 - elementDimensions.h / 2 < 0;
+  const halfLeftExceed = rect.left + linkDimensions.w / 2 - elementDimensions.w / 2 < 0;
+  const halfRightExceed = rect.left + elementDimensions.w / 2
+    + linkDimensions.w / 2 >= windowWidth;
+  const halfBottomExceed = rect.top + elementDimensions.h / 2
+    + linkDimensions.h / 2 >= windowHeight;
+  const topExceed = rect.top - elementDimensions.h < 0;
+  const leftExceed = rect.left - elementDimensions.w < 0;
+  const bottomExceed = rect.top + elementDimensions.h + linkDimensions.h >= windowHeight;
+  const rightExceed = rect.left + elementDimensions.w + linkDimensions.w >= windowWidth;
+  let position = originalPosition;
 
-/**
- * Style popovers and tooltips.
- * @param {BSN.Tooltip | BSN.Popover} self the `Popover` / `Tooltip` instance
- * @param {PointerEvent=} e event object
- */
-export default function styleTip(self, e) {
-  const tipClasses = /\b(top|bottom|start|end)+/;
-  const {
-    element, tooltip, options, arrow, offsetParent,
-  } = self;
-  const tipPositions = { ...tipClassPositions };
+  // recompute position
+  // first, when both left and right limits are exceeded, we fall back to top|bottom
+  position = (position === 'left' || position === 'right') && leftExceed && rightExceed ? 'top' : position;
+  position = position === 'top' && topExceed ? 'bottom' : position;
+  position = position === 'bottom' && bottomExceed ? 'top' : position;
+  position = position === 'left' && leftExceed ? 'right' : position;
+  position = position === 'right' && rightExceed ? 'left' : position;
 
-  // reset tooltip style (top: 0, left: 0 works best)
-  setElementStyle(tooltip, { top: '0px', left: '0px', right: '' });
-  // @ts-ignore
-  const isPopover = self.name === popoverComponent;
-  const tipWidth = tooltip.offsetWidth;
-  const tipHeight = tooltip.offsetHeight;
-  const RTL = isRTL(element);
-  if (RTL) {
-    tipPositions.left = 'end';
-    tipPositions.right = 'start';
-  }
-  const documentElement = getDocumentElement(element);
-  const windowWidth = documentElement.clientWidth;
-  const windowHeight = documentElement.clientHeight;
-  const { container } = options;
-  let { placement } = options;
-  const {
-    left: parentLeft, right: parentRight, top: parentTop,
-  } = getBoundingClientRect(container, true);
-  const parentWidth = container.clientWidth;
-  const scrollbarWidth = Math.abs(parentWidth - container.offsetWidth);
-  const parentPosition = getElementStyle(container, 'position');
-  // const absoluteParent = parentPosition === 'absolute';
-  const fixedParent = parentPosition === 'fixed';
-  const staticParent = parentPosition === 'static';
-  const stickyParent = parentPosition === 'sticky';
-  const isSticky = stickyParent && parentTop === parseFloat(getElementStyle(container, 'top'));
-  // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
-  // const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
-  const leftBoundry = RTL && fixedParent ? scrollbarWidth : 0;
-  const rightBoundry = fixedParent ? parentWidth + parentLeft + (RTL ? scrollbarWidth : 0)
-    : parentWidth + parentLeft + (windowWidth - parentRight) - 1;
-  const {
-    width: elemWidth,
-    height: elemHeight,
-    left: elemRectLeft,
-    right: elemRectRight,
-    top: elemRectTop,
-  } = getBoundingClientRect(element, true);
-
-  const scroll = getNodeScroll(offsetParent);
-  const { x, y } = getRectRelativeToOffsetParent(element, offsetParent, scroll);
-  // reset arrow style
-  setElementStyle(arrow, { top: '', left: '', right: '' });
   let topPosition;
   let leftPosition;
-  let rightPosition;
   let arrowTop;
   let arrowLeft;
-  let arrowRight;
-
-  const arrowWidth = arrow.offsetWidth || 0;
-  const arrowHeight = arrow.offsetHeight || 0;
-  const arrowAdjust = arrowWidth / 2;
-
-  // check placement
-  let topExceed = elemRectTop - tipHeight - arrowHeight < 0;
-  let bottomExceed = elemRectTop + tipHeight + elemHeight
-    + arrowHeight >= windowHeight;
-  let leftExceed = elemRectLeft - tipWidth - arrowWidth < leftBoundry;
-  let rightExceed = elemRectLeft + tipWidth + elemWidth
-    + arrowWidth >= rightBoundry;
-
-  const horizontal = ['left', 'right'];
-  const vertical = ['top', 'bottom'];
-  topExceed = horizontal.includes(placement)
-    ? elemRectTop + elemHeight / 2 - tipHeight / 2 - arrowHeight < 0
-    : topExceed;
-  bottomExceed = horizontal.includes(placement)
-    ? elemRectTop + tipHeight / 2 + elemHeight / 2 + arrowHeight >= windowHeight
-    : bottomExceed;
-  leftExceed = vertical.includes(placement)
-    ? elemRectLeft + elemWidth / 2 - tipWidth / 2 < leftBoundry
-    : leftExceed;
-  rightExceed = vertical.includes(placement)
-    ? elemRectLeft + tipWidth / 2 + elemWidth / 2 >= rightBoundry
-    : rightExceed;
-
-  // recompute placement
-  // first, when both left and right limits are exceeded, we fall back to top|bottom
-  placement = (horizontal.includes(placement)) && leftExceed && rightExceed ? 'top' : placement;
-  placement = placement === 'top' && topExceed ? 'bottom' : placement;
-  placement = placement === 'bottom' && bottomExceed ? 'top' : placement;
-  placement = placement === 'left' && leftExceed ? 'right' : placement;
-  placement = placement === 'right' && rightExceed ? 'left' : placement;
 
   // update tooltip/popover class
-  if (!tooltip.className.includes(placement)) {
-    tooltip.className = tooltip.className.replace(tipClasses, tipPositions[placement]);
+  if (element.className.indexOf(position) === -1) {
+    element.className = element.className.replace(tipPositions, position);
   }
 
-  // compute tooltip / popover coordinates
-  if (horizontal.includes(placement)) { // secondary|side positions
-    if (placement === 'left') { // LEFT
-      leftPosition = x - tipWidth - (isPopover ? arrowWidth : 0);
+  // we check the computed width & height and update here
+  const arrowWidth = arrow.offsetWidth;
+  const arrowHeight = arrow.offsetHeight;
+
+  // apply styling to tooltip or popover
+  // secondary|side positions
+  if (position === 'left' || position === 'right') {
+    if (position === 'left') { // LEFT
+      leftPosition = rect.left + scroll.x - elementDimensions.w - (isPopover ? arrowWidth : 0);
     } else { // RIGHT
-      leftPosition = x + elemWidth + (isPopover ? arrowWidth : 0);
+      leftPosition = rect.left + scroll.x + linkDimensions.w;
     }
 
     // adjust top and arrow
-    if (topExceed) {
-      topPosition = y;
-      topPosition += (isSticky ? -parentTop - scroll.y : 0);
-
-      arrowTop = elemHeight / 2 - arrowWidth;
-    } else if (bottomExceed) {
-      topPosition = y - tipHeight + elemHeight;
-      topPosition += (isSticky ? -parentTop - scroll.y : 0);
-
-      arrowTop = tipHeight - elemHeight / 2 - arrowWidth;
+    if (halfTopExceed) {
+      topPosition = rect.top + scroll.y;
+      arrowTop = linkDimensions.h / 2 - arrowWidth;
+    } else if (halfBottomExceed) {
+      topPosition = rect.top + scroll.y - elementDimensions.h + linkDimensions.h;
+      arrowTop = elementDimensions.h - linkDimensions.h / 2 - arrowWidth;
     } else {
-      topPosition = y - tipHeight / 2 + elemHeight / 2;
-      topPosition += (isSticky ? -parentTop - scroll.y : 0);
-
-      arrowTop = tipHeight / 2 - arrowHeight / 2;
+      topPosition = rect.top + scroll.y - elementDimensions.h / 2 + linkDimensions.h / 2;
+      arrowTop = elementDimensions.h / 2 - (isPopover ? arrowHeight * 0.9 : arrowHeight / 2);
     }
-  } else if (vertical.includes(placement)) {
-    if (e && isMedia(element)) {
-      let eX = 0;
-      let eY = 0;
-      if (staticParent) {
-        eX = e.pageX;
-        eY = e.pageY;
-      } else { // fixedParent | stickyParent
-        eX = e.clientX - parentLeft + (fixedParent ? scroll.x : 0);
-        eY = e.clientY - parentTop + (fixedParent ? scroll.y : 0);
-      }
-
-      // some weird RTL bug
-      eX -= RTL && fixedParent && scrollbarWidth ? scrollbarWidth : 0;
-
-      if (placement === 'top') {
-        topPosition = eY - tipHeight - arrowWidth;
-      } else {
-        topPosition = eY + arrowWidth;
-      }
-
-      // adjust (left | right) and also the arrow
-      if (e.clientX - tipWidth / 2 < leftBoundry) {
-        leftPosition = 0;
-        arrowLeft = eX - arrowAdjust;
-      } else if (e.clientX + tipWidth / 2 > rightBoundry) {
-        leftPosition = 'auto';
-        rightPosition = 0;
-        arrowRight = rightBoundry - eX - arrowAdjust;
-        arrowRight -= fixedParent ? parentLeft + (RTL ? scrollbarWidth : 0) : 0;
-
-      // normal top/bottom
-      } else {
-        leftPosition = eX - tipWidth / 2;
-        arrowLeft = tipWidth / 2 - arrowAdjust;
-      }
+  // primary|vertical positions
+  } else if (position === 'top' || position === 'bottom') {
+    if (position === 'top') { // TOP
+      topPosition = rect.top + scroll.y - elementDimensions.h - (isPopover ? arrowHeight : 0);
+    } else { // BOTTOM
+      topPosition = rect.top + scroll.y + linkDimensions.h;
+    }
+    // adjust left | right and also the arrow
+    if (halfLeftExceed) {
+      leftPosition = 0;
+      arrowLeft = rect.left + linkDimensions.w / 2 - arrowWidth;
+    } else if (halfRightExceed) {
+      leftPosition = windowWidth - elementDimensions.w * 1.01;
+      arrowLeft = elementDimensions.w - (windowWidth - rect.left)
+        + linkDimensions.w / 2 - arrowWidth / 2;
     } else {
-      if (placement === 'top') {
-        topPosition = y - tipHeight - (isPopover ? arrowHeight : 0);
-      } else { // BOTTOM
-        topPosition = y + elemHeight + (isPopover ? arrowHeight : 0);
-      }
-
-      // adjust left | right and also the arrow
-      if (leftExceed) {
-        leftPosition = 0;
-        arrowLeft = x + elemWidth / 2 - arrowAdjust;
-      } else if (rightExceed) {
-        leftPosition = 'auto';
-        rightPosition = 0;
-        arrowRight = elemWidth / 2 + rightBoundry - elemRectRight - arrowAdjust;
-      } else {
-        leftPosition = x - tipWidth / 2 + elemWidth / 2;
-        arrowLeft = tipWidth / 2 - arrowAdjust;
-      }
+      leftPosition = rect.left + scroll.x - elementDimensions.w / 2 + linkDimensions.w / 2;
+      arrowLeft = elementDimensions.w / 2 - (isPopover ? arrowWidth : arrowWidth / 2);
     }
   }
 
-  // apply style to tooltip/popover
-  setElementStyle(tooltip, {
-    top: `${topPosition}px`,
-    left: leftPosition === 'auto' ? leftPosition : `${leftPosition}px`,
-    right: rightPosition !== undefined ? `${rightPosition}px` : '',
-  });
+  // apply style to tooltip/popover and its arrow
+  element.style.top = `${topPosition}px`;
+  element.style.left = `${leftPosition}px`;
 
-  // update arrow placement
-  if (arrow instanceof HTMLElement) {
-    if (arrowTop !== undefined) {
-      arrow.style.top = `${arrowTop}px`;
-    }
-    if (arrowLeft !== undefined) {
-      arrow.style.left = `${arrowLeft}px`;
-    } else if (arrowRight !== undefined) {
-      arrow.style.right = `${arrowRight}px`;
-    }
-  }
+  if (arrowTop) arrow.style.top = `${arrowTop}px`;
+  if (arrowLeft) arrow.style.left = `${arrowLeft}px`;
 }

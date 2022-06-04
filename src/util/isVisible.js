@@ -1,4 +1,4 @@
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
+import getElementStyle from '@thednp/shorty/src/get/getElementStyle';
 
 /**
  * @param {HTMLElement | Element} element target

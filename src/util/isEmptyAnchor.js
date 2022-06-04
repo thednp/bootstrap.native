@@ -1,5 +1,5 @@
-import hasAttribute from 'shorter-js/src/attr/hasAttribute';
-import closest from 'shorter-js/src/selectors/closest';
+import hasAttribute from '@thednp/shorty/src/attr/hasAttribute';
+import closest from '@thednp/shorty/src/selectors/closest';
 
 /**
  * Checks if an *event.target* or its parent has an `href="#"` value.

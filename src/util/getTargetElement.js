@@ -1,7 +1,7 @@
-import getDocument from 'shorter-js/src/get/getDocument';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import closest from 'shorter-js/src/selectors/closest';
-import getAttribute from 'shorter-js/src/attr/getAttribute';
+import getDocument from '@thednp/shorty/src/get/getDocument';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
+import closest from '@thednp/shorty/src/selectors/closest';
+import getAttribute from '@thednp/shorty/src/attr/getAttribute';
 
 import dataBsTarget from '../strings/dataBsTarget';
 import dataBsParent from '../strings/dataBsParent';

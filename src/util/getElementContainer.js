@@ -1,10 +1,10 @@
-import getParentNode from 'shorter-js/src/get/getParentNode';
-import getElementStyle from 'shorter-js/src/get/getElementStyle';
-import isTableElement from 'shorter-js/src/is/isTableElement';
-import isShadowRoot from 'shorter-js/src/is/isShadowRoot';
-import isHTMLElement from 'shorter-js/src/is/isHTMLElement';
-import getWindow from 'shorter-js/src/get/getWindow';
-import getDocumentBody from 'shorter-js/src/get/getDocumentBody';
+import getParentNode from '@thednp/shorty/src/get/getParentNode';
+import getElementStyle from '@thednp/shorty/src/get/getElementStyle';
+import isTableElement from '@thednp/shorty/src/is/isTableElement';
+import isShadowRoot from '@thednp/shorty/src/is/isShadowRoot';
+import isHTMLElement from '@thednp/shorty/src/is/isHTMLElement';
+import getWindow from '@thednp/shorty/src/get/getWindow';
+import getDocumentBody from '@thednp/shorty/src/get/getDocumentBody';
 
 /**
  * Returns an `HTMLElement` to be used as default value for *options.container*

@@ -1,144 +1,79 @@
-/* Native JavaScript for Bootstrap 5 | Alert
+/* Native JavaScript for Bootstrap 4 | Alert
 -------------------------------------------- */
-import mouseclickEvent from 'shorter-js/src/strings/mouseclickEvent';
-import emulateTransitionEnd from 'shorter-js/src/misc/emulateTransitionEnd';
-import querySelector from 'shorter-js/src/selectors/querySelector';
-import closest from 'shorter-js/src/selectors/closest';
-import ObjectAssign from 'shorter-js/src/misc/ObjectAssign';
-import hasClass from 'shorter-js/src/class/hasClass';
-import removeClass from 'shorter-js/src/class/removeClass';
-import dispatchEvent from 'shorter-js/src/misc/dispatchEvent';
-import { getInstance } from 'shorter-js/src/misc/data';
-import OriginalEvent from 'shorter-js/src/misc/OriginalEvent';
-import { addListener, removeListener } from '@thednp/event-listener/src/event-listener';
+import emulateTransitionEnd from '@thednp/shorty/src/misc/emulateTransitionEndLegacy';
+import querySelector from '@thednp/shorty/src/selectors/querySelector';
 
-import fadeClass from '../strings/fadeClass';
-import showClass from '../strings/showClass';
-import dataBsDismiss from '../strings/dataBsDismiss';
-import alertString from '../strings/alertString';
-import alertComponent from '../strings/alertComponent';
-
-import BaseComponent from './base-component';
-
-// ALERT PRIVATE GC
-// ================
-const alertSelector = `.${alertString}`;
-const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
-
-/**
- * Static method which returns an existing `Alert` instance associated
- * to a target `Element`.
- *
- * @type {BSN.GetInstance<Alert>}
- */
-const getAlertInstance = (element) => getInstance(element, alertComponent);
-
-/**
-* An `Alert` initialization callback.
-* @type {BSN.InitCallback<Alert>}
-*/
-const alertInitCallback = (element) => new Alert(element);
-
-// ALERT CUSTOM EVENTS
-// ===================
-const closeAlertEvent = OriginalEvent(`close.bs.${alertString}`);
-const closedAlertEvent = OriginalEvent(`closed.bs.${alertString}`);
-
-// ALERT EVENT HANDLER
-// ===================
-/**
- * Alert `transitionend` callback.
- * @param {Alert} self target Alert instance
- */
-function alertTransitionEnd(self) {
-  const { element } = self;
-  toggleAlertHandler(self);
-
-  dispatchEvent(element, closedAlertEvent);
-
-  self.dispose();
-  element.remove();
-}
-
-// ALERT PRIVATE METHOD
-// ====================
-/**
- * Toggle on / off the `click` event listener.
- * @param {Alert} self the target alert instance
- * @param {boolean=} add when `true`, event listener is added
- */
-function toggleAlertHandler(self, add) {
-  const action = add ? addListener : removeListener;
-  const { dismiss } = self;
-  if (dismiss) action(dismiss, mouseclickEvent, self.close);
-}
+import bootstrapCustomEvent from '../util/bootstrapCustomEvent';
+import dispatchCustomEvent from '../util/dispatchCustomEvent';
 
 // ALERT DEFINITION
 // ================
-/** Creates a new Alert instance. */
-export default class Alert extends BaseComponent {
-  /** @param {HTMLElement | Element | string} target element or selector */
-  constructor(target) {
-    super(target);
-    // bind
-    const self = this;
 
-    // initialization element
-    const { element } = self;
+export default function Alert(elem) {
+  let element;
 
-    // the dismiss button
-    /** @static @type {(HTMLElement | Element)?} */
-    self.dismiss = querySelector(alertDismissSelector, element);
+  // bind
+  const self = this;
 
-    // add event listener
-    toggleAlertHandler(self, true);
+  // the target alert
+  let alert;
+
+  // custom events
+  const closeCustomEvent = bootstrapCustomEvent('close', 'alert');
+  const closedCustomEvent = bootstrapCustomEvent('closed', 'alert');
+
+  // private methods
+  function triggerHandler() {
+    if (alert.classList.contains('fade')) emulateTransitionEnd(alert, transitionEndHandler);
+    else transitionEndHandler();
+  }
+  function toggleEvents(add) {
+    const action = add ? 'addEventListener' : 'removeEventListener';
+    element[action]('click', clickHandler, false);
   }
 
-  /* eslint-disable */
-  /**
-   * Returns component name string.
-   * @readonly @static
-   */
-  get name() { return alertComponent; }
-  /* eslint-enable */
+  // event handlers
+  function clickHandler(e) {
+    alert = e && e.target.closest('.alert');
+    element = querySelector('[data-dismiss="alert"]', alert);
+    if (element && alert && (element === e.target || element.contains(e.target))) self.close();
+  }
+  function transitionEndHandler() {
+    toggleEvents();
+    alert.parentNode.removeChild(alert);
+    dispatchCustomEvent.call(alert, closedCustomEvent);
+  }
 
-  // ALERT PUBLIC METHODS
-  // ====================
-  /**
-   * Public method that hides the `.alert` element from the user,
-   * disposes the instance once animation is complete, then
-   * removes the element from the DOM.
-   *
-   * @param {Event=} e most likely the `click` event
-   * @this {Alert} the `Alert` instance or `EventTarget`
-   */
-  close(e) {
-    // @ts-ignore
-    const self = e ? getAlertInstance(closest(this, alertSelector)) : this;
-    if (!self) return;
-    const { element } = self;
-
-    if (hasClass(element, showClass)) {
-      dispatchEvent(element, closeAlertEvent);
-      if (closeAlertEvent.defaultPrevented) return;
-
-      removeClass(element, showClass);
-
-      if (hasClass(element, fadeClass)) {
-        emulateTransitionEnd(element, () => alertTransitionEnd(self));
-      } else alertTransitionEnd(self);
+  // PUBLIC METHODS
+  self.close = () => {
+    if (alert && element && alert.classList.contains('show')) {
+      dispatchCustomEvent.call(alert, closeCustomEvent);
+      if (closeCustomEvent.defaultPrevented) return;
+      self.dispose();
+      alert.classList.remove('show');
+      triggerHandler();
     }
-  }
+  };
 
-  /** Remove the component from target element. */
-  dispose() {
-    toggleAlertHandler(this);
-    super.dispose();
-  }
+  self.dispose = () => {
+    toggleEvents();
+    delete element.Alert;
+  };
+
+  // INIT
+  // initialization element
+  element = querySelector(elem);
+
+  // find the target alert
+  alert = element.closest('.alert');
+
+  // reset on re-init
+  if (element.Alert) element.Alert.dispose();
+
+  // prevent adding event handlers twice
+  if (!element.Alert) toggleEvents(1);
+
+  // store init object within target element
+  self.element = element;
+  element.Alert = self;
 }
-
-ObjectAssign(Alert, {
-  selector: alertSelector,
-  init: alertInitCallback,
-  getInstance: getAlertInstance,
-});
