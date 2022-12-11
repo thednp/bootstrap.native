@@ -4,8 +4,8 @@
 [![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg)](https://www.npmjs.com/package/bootstrap.native)
 [![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/bootstrap.native)](https://www.jsdelivr.com/package/npm/bootstrap.native)
 [![CDNJS](https://img.shields.io/cdnjs/v/bootstrap.native.svg)](https://cdnjs.com/libraries/bootstrap.native)
-![cypress version](https://img.shields.io/badge/cypress-9.7.0-brightgreen)
-![typescript version](https://img.shields.io/badge/typescript-4.5.2-brightgreen)
+![cypress version](https://img.shields.io/badge/cypress-12.0.2-brightgreen)
+![typescript version](https://img.shields.io/badge/typescript-4.9.3-brightgreen)
 
 
 The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, free from major dependecies such as jQuery, Popper.
