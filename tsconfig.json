@@ -1,20 +1,29 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "moduleResolution": "Node",
-    "declaration": true,
-    "resolveJsonModule": true,
-    "emitDeclarationOnly": true,
-    "strict": true,
-    "allowJs": true,
-    "checkJs": true,
-    "rootDir": "../",
-    // "outFile": "types/bsn.d.ts", // comment after generate
-    "outDir": "types"
-  },
-  "files": [
-    "types/index.d.ts",
-    "types/bsn.d.ts", // comment to generate, delete file
-    // "types/more/bsn.ts", // un-comment to generate
-  ]
+  // https://janessagarrow.com/blog/typescript-and-esbuild/
+ "compilerOptions": {
+   "lib": ["DOM", "ESNext", "DOM.Iterable", "ES2022"],
+   "types": ["cypress", "@thednp/event-listener", "@thednp/shorty"],
+   "rootDir": "./",
+  //  "rootDir": "src",
+   "baseUrl": "./",
+   "module": "ESNext",
+   "target": "ESNext",
+   "moduleResolution": "Node",
+   "allowJs": true,
+   "forceConsistentCasingInFileNames": true,
+   "useDefineForClassFields": true,
+   "strict": true,
+   "sourceMap": true,
+   "resolveJsonModule": true,
+   "esModuleInterop": true,
+   "isolatedModules": true,
+   "noUnusedLocals": true,
+   "noUnusedParameters": true,
+   "noImplicitReturns": true,
+   "removeComments": false,
+   "allowSyntheticDefaultImports": true,
+   "noEmit": true,
+ },
+ "include": ["./src/*"],
+ "exclude": ["node_modules", "experiments", "coverage"],
 }

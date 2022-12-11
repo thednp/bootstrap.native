@@ -1,0 +1,473 @@
+/* Native JavaScript for Bootstrap 5 | Modal
+-------------------------------------------- */
+import {
+  keyEscape,
+  getElementTransitionDuration,
+  removeAttribute,
+  setAttribute,
+  keydownEvent,
+  mouseclickEvent,
+  resizeEvent,
+  ariaModal,
+  ariaHidden,
+  getInstance,
+  isHTMLElement,
+  isRTL,
+  isFunction,
+  removeClass,
+  hasClass,
+  addClass,
+  closest,
+  querySelectorAll,
+  querySelector,
+  getDocumentElement,
+  getDocumentBody,
+  getDocument,
+  getWindow,
+  CSS4Declaration,
+  setElementStyle,
+  createCustomEvent,
+  emulateTransitionEnd,
+  passiveHandler,
+  dispatchEvent,
+  // ObjectAssign,
+  focus,
+  Timer,
+} from '@thednp/shorty';
+
+import { addListener, removeListener } from '@thednp/event-listener';
+
+import dataBsToggle from '../strings/dataBsToggle';
+import dataBsDismiss from '../strings/dataBsDismiss';
+import fadeClass from '../strings/fadeClass';
+import showClass from '../strings/showClass';
+import modalString from '../strings/modalString';
+import modalComponent from '../strings/modalComponent';
+
+import getTargetElement from '../util/getTargetElement';
+import { setScrollbar, measureScrollbar } from '../util/scrollbar';
+import {
+  overlay,
+  modalActiveSelector,
+  toggleOverlayType,
+  appendOverlay,
+  showOverlay,
+  hideOverlay,
+  getCurrentOpen,
+  removeOverlay,
+} from '../util/backdrop';
+import isVisible from '../util/isVisible';
+import BaseComponent from './base-component';
+import { ModalOptions, ModalEvent } from '../interface/modal';
+import { hasPopup } from '../util/popupContainer';
+
+// MODAL PRIVATE GC
+// ================
+const modalSelector = `.${modalString}`;
+const modalToggleSelector = `[${dataBsToggle}="${modalString}"]`;
+const modalDismissSelector = `[${dataBsDismiss}="${modalString}"]`;
+const modalStaticClass = `${modalString}-static`;
+
+const modalDefaults = {
+  backdrop: true,
+  keyboard: true,
+};
+
+/**
+ * Static method which returns an existing `Modal` instance associated
+ * to a target `Element`.
+ */
+const getModalInstance = (element: HTMLElement) => getInstance<Modal>(element, modalComponent);
+
+/**
+ * A `Modal` initialization callback.
+ */
+const modalInitCallback = (element: HTMLElement) => new Modal(element);
+
+// MODAL CUSTOM EVENTS
+// ===================
+const showModalEvent = createCustomEvent<ModalEvent>(`show.bs.${modalString}`);
+const shownModalEvent = createCustomEvent<ModalEvent>(`shown.bs.${modalString}`);
+const hideModalEvent = createCustomEvent<ModalEvent>(`hide.bs.${modalString}`);
+const hiddenModalEvent = createCustomEvent<ModalEvent>(`hidden.bs.${modalString}`);
+
+// MODAL PRIVATE METHODS
+// =====================
+/**
+ * Applies special style for the `<body>` and fixed elements
+ * when a modal instance is shown to the user.
+ *
+ * @param self the `Modal` instance
+ */
+const setModalScrollbar = (self: Modal) => {
+  const { element } = self;
+  const scrollbarWidth = measureScrollbar(element);
+  const { clientHeight, scrollHeight } = getDocumentElement(element);
+  const { clientHeight: modalHeight, scrollHeight: modalScrollHeight } = element;
+  const modalOverflow = modalHeight !== modalScrollHeight;
+
+  /* istanbul ignore else */
+  if (!modalOverflow && scrollbarWidth) {
+    const pad = !isRTL(element) ? 'paddingRight' : /* istanbul ignore next */ 'paddingLeft';
+    const padStyle = {} as Partial<CSS4Declaration>;
+    padStyle[pad] = `${scrollbarWidth}px`;
+    setElementStyle(element, padStyle);
+  }
+  setScrollbar(element, modalOverflow || clientHeight !== scrollHeight);
+};
+
+/**
+ * Toggles on/off the listeners of events that close the modal.
+ *
+ * @param self the `Modal` instance
+ * @param add when `true`, event listeners are added
+ */
+const toggleModalDismiss = (self: Modal, add?: boolean) => {
+  const action = add ? addListener : removeListener;
+  const { element } = self;
+  action(element, mouseclickEvent, modalDismissHandler as EventListener);
+  action(getWindow(element), resizeEvent, self.update, passiveHandler);
+  action(getDocument(element), keydownEvent, modalKeyHandler as EventListener);
+};
+
+/**
+ * Toggles on/off the `click` event listener of the `Modal` instance.
+ *
+ * @param self the `Modal` instance
+ * @param add when `true`, event listener is added
+ */
+const toggleModalHandler = (self: Modal, add?: boolean) => {
+  const action = add ? addListener : removeListener;
+  const { triggers } = self;
+
+  /* istanbul ignore else */
+  if (triggers.length) {
+    triggers.forEach(btn => action(btn, mouseclickEvent, modalClickHandler as EventListener));
+  }
+};
+
+/**
+ * Executes after a modal is hidden to the user.
+ *
+ * @param self the `Modal` instance
+ * @param callback the `Modal` instance
+ */
+const afterModalHide = (self: Modal, callback?: () => void) => {
+  const { triggers, element, relatedTarget } = self;
+  removeOverlay(element);
+  setElementStyle(element, { paddingRight: '', display: '' });
+  toggleModalDismiss(self);
+
+  const focusElement = showModalEvent.relatedTarget || triggers.find(isVisible);
+  /* istanbul ignore else */
+  if (focusElement) focus(focusElement as HTMLElement);
+
+  /* istanbul ignore else */
+  if (isFunction(callback)) callback();
+
+  hiddenModalEvent.relatedTarget = relatedTarget as HTMLElement | undefined;
+  dispatchEvent(element, hiddenModalEvent);
+};
+
+/**
+ * Executes after a modal is shown to the user.
+ *
+ * @param self the `Modal` instance
+ */
+const afterModalShow = (self: Modal) => {
+  const { element, relatedTarget } = self;
+  focus(element);
+  toggleModalDismiss(self, true);
+
+  shownModalEvent.relatedTarget = relatedTarget as HTMLElement | undefined;
+  dispatchEvent(element, shownModalEvent);
+};
+
+/**
+ * Executes before a modal is shown to the user.
+ *
+ * @param self the `Modal` instance
+ */
+const beforeModalShow = (self: Modal) => {
+  const { element, hasFade } = self;
+  setElementStyle(element, { display: 'block' });
+
+  setModalScrollbar(self);
+  /* istanbul ignore else */
+  if (!getCurrentOpen(element)) {
+    setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
+  }
+
+  addClass(element, showClass);
+  removeAttribute(element, ariaHidden);
+  setAttribute(element, ariaModal, 'true');
+
+  if (hasFade) emulateTransitionEnd(element, () => afterModalShow(self));
+  else afterModalShow(self);
+};
+
+/**
+ * Executes before a modal is hidden to the user.
+ *
+ * @param self the `Modal` instance
+ * @param callback when `true` skip animation
+ */
+const beforeModalHide = (self: Modal, callback?: () => void) => {
+  const { element, options, hasFade } = self;
+
+  // callback can also be the transitionEvent object, we wanna make sure it's not
+  // call is not forced and overlay is visible
+  if (options.backdrop && !callback && hasFade && hasClass(overlay, showClass) && !getCurrentOpen(element)) {
+    // AND no modal is visible
+    hideOverlay();
+    emulateTransitionEnd(overlay, () => afterModalHide(self));
+  } else {
+    afterModalHide(self, callback);
+  }
+};
+
+// MODAL EVENT HANDLERS
+// ====================
+/**
+ * Handles the `click` event listener for modal.
+ *
+ * @param e the `Event` object
+ */
+const modalClickHandler = (e: MouseEvent) => {
+  const { target } = e;
+
+  const trigger = target && closest(target as HTMLElement, modalToggleSelector);
+  const element = trigger && getTargetElement(trigger);
+  const self = element && getModalInstance(element);
+
+  if (!self) return;
+
+  /* istanbul ignore else */
+  if (trigger && trigger.tagName === 'A') e.preventDefault();
+  self.relatedTarget = trigger;
+  self.toggle();
+};
+
+/**
+ * Handles the `keydown` event listener for modal
+ * to hide the modal when user type the `ESC` key.
+ *
+ * @param e the `Event` object
+ */
+const modalKeyHandler = ({ code, target }: KeyboardEvent) => {
+  const element = querySelector(modalActiveSelector, getDocument(target as Node));
+  const self = element && getModalInstance(element);
+
+  if (!self) return;
+
+  const { options } = self;
+  /* istanbul ignore else */
+  if (
+    options.keyboard &&
+    code === keyEscape && // the keyboard option is enabled and the key is 27
+    hasClass(element, showClass)
+  ) {
+    // the modal is not visible
+    self.relatedTarget = null;
+    self.hide();
+  }
+};
+
+/**
+ * Handles the `click` event listeners that hide the modal.
+ *
+ * @param e the `Event` object
+ */
+function modalDismissHandler(this: HTMLElement, e: MouseEvent) {
+  const self = getModalInstance(this);
+
+  // this timer is needed
+  /* istanbul ignore next: must have a filter */
+  if (!self || Timer.get(this)) return;
+
+  const { options, isStatic, modalDialog } = self;
+  const { backdrop } = options;
+  const { target } = e;
+
+  const selectedText = getDocument(this)?.getSelection()?.toString().length;
+  const targetInsideDialog = modalDialog?.contains(target as HTMLElement);
+  const dismiss = target && closest(target as HTMLElement, modalDismissSelector);
+
+  /* istanbul ignore else */
+  if (isStatic && !targetInsideDialog) {
+    Timer.set(
+      this,
+      () => {
+        addClass(this, modalStaticClass);
+        emulateTransitionEnd(modalDialog as HTMLElement, () => staticTransitionEnd(self));
+      },
+      17,
+    );
+  } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)) {
+    self.relatedTarget = dismiss || null;
+    self.hide();
+    e.preventDefault();
+  }
+}
+
+/**
+ * Handles the `transitionend` event listeners for `Modal`.
+ *
+ * @param self the `Modal` instance
+ */
+const staticTransitionEnd = (self: Modal) => {
+  const { element, modalDialog } = self;
+  const duration = (isHTMLElement(modalDialog) ? getElementTransitionDuration(modalDialog) : 0) + 17;
+  removeClass(element, modalStaticClass);
+  // user must wait for zoom out transition
+  Timer.set(element, () => Timer.clear(element), duration);
+};
+
+// MODAL DEFINITION
+// ================
+/** Returns a new `Modal` instance. */
+export default class Modal extends BaseComponent {
+  static selector = modalSelector;
+  static init = modalInitCallback;
+  static getInstance = getModalInstance;
+  declare options: ModalOptions;
+  declare modalDialog: HTMLElement | null;
+  declare triggers: HTMLElement[];
+  declare isStatic: boolean;
+  declare hasFade: boolean;
+  declare relatedTarget: HTMLElement | null;
+
+  /**
+   * @param target usually the `.modal` element
+   * @param config instance options
+   */
+  constructor(target: HTMLElement | string, config?: Partial<ModalOptions>) {
+    super(target, config);
+
+    // the modal
+    const { element } = this;
+
+    // the modal-dialog
+    this.modalDialog = querySelector(`.${modalString}-dialog`, element);
+
+    // modal can have multiple triggering elements
+    this.triggers = [...querySelectorAll(modalToggleSelector, getDocument(element))].filter(
+      btn => getTargetElement(btn) === element,
+    );
+
+    // additional internals
+    this.isStatic = this.options.backdrop === 'static';
+    this.hasFade = hasClass(element, fadeClass);
+    this.relatedTarget = null;
+
+    // attach event listeners
+    toggleModalHandler(this, true);
+
+    // bind
+    this.update = this.update.bind(this);
+  }
+
+  /**
+   * Returns component name string.
+   */
+  get name() {
+    return modalComponent;
+  }
+  /**
+   * Returns component default options.
+   */
+  get defaults() {
+    return modalDefaults;
+  }
+
+  // MODAL PUBLIC METHODS
+  // ====================
+  /** Toggles the visibility of the modal. */
+  toggle() {
+    if (hasClass(this.element, showClass)) this.hide();
+    else this.show();
+  }
+
+  /** Shows the modal to the user. */
+  show() {
+    const { element, options, hasFade, relatedTarget } = this;
+    const { backdrop } = options;
+    let overlayDelay = 0;
+
+    if (hasClass(element, showClass)) return;
+
+    showModalEvent.relatedTarget = relatedTarget || undefined;
+    dispatchEvent(element, showModalEvent);
+    if (showModalEvent.defaultPrevented) return;
+
+    // we elegantly hide any opened modal/offcanvas
+    const currentOpen = getCurrentOpen(element);
+    if (currentOpen && currentOpen !== element) {
+      const this1 = getModalInstance(currentOpen);
+      const that1 =
+        this1 ||
+        /* istanbul ignore next */ getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, 'Offcanvas');
+      if (that1) that1.hide();
+    }
+
+    if (backdrop) {
+      if (!hasPopup(overlay)) {
+        appendOverlay(hasFade, true);
+      } else {
+        toggleOverlayType(true);
+      }
+
+      overlayDelay = getElementTransitionDuration(overlay);
+
+      showOverlay();
+      setTimeout(() => beforeModalShow(this), overlayDelay);
+    } else {
+      beforeModalShow(this);
+      /* istanbul ignore else */
+      if (currentOpen && hasClass(overlay, showClass)) {
+        hideOverlay();
+      }
+    }
+  }
+
+  /**
+   * Hide the modal from the user.
+   *
+   * @param callback when defined it will skip animation
+   */
+  hide(callback?: () => void) {
+    const { element, hasFade, relatedTarget } = this;
+
+    if (!hasClass(element, showClass)) return;
+
+    hideModalEvent.relatedTarget = relatedTarget || undefined;
+    dispatchEvent(element, hideModalEvent);
+    if (hideModalEvent.defaultPrevented) return;
+    removeClass(element, showClass);
+    setAttribute(element, ariaHidden, 'true');
+    removeAttribute(element, ariaModal);
+
+    // if (hasFade && callback) {
+    /* istanbul ignore else */
+    if (hasFade) {
+      emulateTransitionEnd(element, () => beforeModalHide(this, callback));
+    } else {
+      beforeModalHide(this, callback);
+    }
+  }
+
+  /**
+   * Updates the modal layout.
+   */
+  update() {
+    /* istanbul ignore else */
+    if (hasClass(this.element, showClass)) setModalScrollbar(this);
+  }
+
+  /** Removes the `Modal` component from target element. */
+  dispose() {
+    toggleModalHandler(this);
+    // use callback
+    this.hide(() => super.dispose());
+  }
+}
