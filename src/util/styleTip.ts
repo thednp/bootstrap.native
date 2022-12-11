@@ -79,7 +79,7 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
     right: elemRectRight,
     top: elemRectTop,
   } = getBoundingClientRect(element, true);
-  console.log(getWindow(tooltip));
+  // console.log(getWindow(tooltip));
   const win = getWindow(tooltip);
 
   const scroll = { x: win.scrollX, y: win.scrollY };
@@ -245,7 +245,7 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
       arrow.style.right = `${arrowRight}px`;
     }
   }
-  console.log(tooltip, leftPosition, rightPosition, arrowLeft);
+  // console.log(tooltip, leftPosition, rightPosition, arrowLeft);
 };
 
 export default styleTip;

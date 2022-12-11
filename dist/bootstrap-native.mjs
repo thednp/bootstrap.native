@@ -1713,7 +1713,6 @@ const styleTip = (self, e2) => {
     right: elemRectRight,
     top: elemRectTop
   } = w(element, true);
-  console.log($n(tooltip));
   const win = $n(tooltip);
   const scroll = { x: win.scrollX, y: win.scrollY };
   const { x: x2, y: y2 } = { x: elemRectLeft + scroll.x, y: elemRectTop + scroll.y };
@@ -1829,7 +1828,6 @@ const styleTip = (self, e2) => {
       arrow.style.right = `${arrowRight}px`;
     }
   }
-  console.log(tooltip, leftPosition, rightPosition, arrowLeft);
 };
 const tooltipDefaults = {
   template: getTipTemplate(tooltipString),
