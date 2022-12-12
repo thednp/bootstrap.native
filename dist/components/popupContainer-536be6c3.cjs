@@ -1,0 +1,2 @@
+"use strict";const p=require("./base-component-2e8b2d4a.cjs"),e="modal",s="offcanvas",o=p.$t({tagName:"DIV"}),t=n=>{const a=p.Jn(n);p.a(n)&&(a.contains(o)||a.append(o),o.append(n))},c=n=>{p.a(n)&&(n.remove(),o.children.length||o.remove())},i=n=>o.contains(n);exports.appendPopup=t;exports.hasPopup=i;exports.modalString=e;exports.offcanvasString=s;exports.popupContainer=o;exports.removePopup=c;
+//# sourceMappingURL=popupContainer-536be6c3.cjs.map

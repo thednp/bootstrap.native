@@ -2,7 +2,7 @@
   // https://janessagarrow.com/blog/typescript-and-esbuild/
  "compilerOptions": {
    "lib": ["DOM", "ESNext", "DOM.Iterable", "ES2022"],
-   "types": ["cypress", "@thednp/event-listener", "@thednp/shorty"],
+   "types": ["cypress", "vite", "vite/client", "@thednp/event-listener", "@thednp/shorty"],
    "rootDir": "./",
   //  "rootDir": "src",
    "baseUrl": "./",
@@ -23,7 +23,8 @@
    "removeComments": false,
    "allowSyntheticDefaultImports": true,
    "noEmit": true,
+   "checkJs": true
  },
- "include": ["./src/*"],
+ "include": ["src/*"],
  "exclude": ["node_modules", "experiments", "coverage"],
 }

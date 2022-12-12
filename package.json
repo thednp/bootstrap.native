@@ -5,8 +5,8 @@
   "type": "module",
   "source": "./src/index.ts",
   "main": "./dist/bootstrap.native.js",
-  "types": "./dist/bootstrap.native.d.ts",
   "module": "./dist/bootstrap.native.mjs",
+  "types": "./dist/bootstrap.native.d.ts",
   "exports": {
     ".": {
       "import": "./dist/bootstrap-native.mjs",
@@ -21,14 +21,14 @@
     "test": "npm run pre-test && npx cypress run",
     "cypress": "npm run pre-test && npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
-    "build": "npm run lint:ts && npm run build-vite && npm run build-dts && npm run copy-docs",
+    "build": "npm run lint:ts && npm run build-vite && npm run build-dts && npm run copy-docs && npm run build-modules && npm run dts-modules",
     "build-vite": "vite build && npm run copy-docs",
-    "build-dts": "dts-bundle-generator --config ./dts.config.ts",
+    "dts": "dts-bundle-generator --config ./dts.config.ts",
+    "build-modules": "vite build --config ./vite.modules.ts",
+    "dts-modules": "dts-bundle-generator --config ./dts.modules.ts",
     "copy-docs": "ncp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && ncp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "lint:ts": "eslint -c .eslintrc.cjs --ext .ts src",
     "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix",
-    "lint:js": "eslint src/ --config .eslintrc",
-    "modules": "vite build --config ./vite.modules.ts",
     "watch": "rollup --environment FORMAT:umd,MIN:false -c -w"
   },
   "browserslist": [

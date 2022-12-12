@@ -25,22 +25,9 @@ export default defineConfig({
       formats: ['es', 'cjs', 'iife'],
       fileName: (format) => fileName[format],
     },
-
     target: 'ESNext',
     sourcemap: true,
-  
-    minify: false,
-    // rollupOptions: {
-		// 	// external: ['@thednp/shorty', '@thednp/event-listener'],
-		// 	output: {
-		// 		banner: `// BSN v${version}\n`,
-    //     // globals: {
-    //     //   SHORTY: '@thednp/shorty',
-    //     //   Listener: '@thednp/event-listener'
-    //     // }
-        
-		// 	},
-		// }
+    minify: true,
   },
   
   
