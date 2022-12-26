@@ -340,7 +340,7 @@ describe('Tooltip Class Tests', () => {
       })
     cy.get('@rtl').invoke('show')
     cy.get('.tooltip').should('have.class', 'show').and('be.visible')
-    // cy.wait(200)
+    cy.wait(200)
   });
 
   it('Can work with media elements', () => {
