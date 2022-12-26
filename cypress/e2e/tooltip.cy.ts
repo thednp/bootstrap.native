@@ -347,10 +347,10 @@ describe('Tooltip Class Tests', () => {
     cy.get('svg').then(($element) => {
         cy.wrap(new Tooltip($element[0])).as('media');
       })
-    cy.get('svg').trigger('mouseenter', 'center')
+    cy.get('svg').trigger('mouseenter', 'center', {force: true})
     cy.get('.tooltip').should('have.class', 'show').and('be.visible')
-    cy.get('svg').trigger('mousemove', 'topLeft')
-    cy.get('svg').trigger('mouseleave', 'topLeft')
+    cy.get('svg').trigger('mousemove', 'topLeft', {force: true})
+    cy.get('svg').trigger('mouseleave', 'topLeft', {force: true})
     cy.get('@media').its('tooltip').then(tip => {
       cy.wrap(tip).should('not.have.class', 'show')
     })

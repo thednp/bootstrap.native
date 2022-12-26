@@ -1,11 +1,13 @@
-# BSN ![vite version](https://img.shields.io/badge/vite-4.0.3-brightgreen) ![prettier version](https://img.shields.io/badge/prettier-2.8.1-brightgreen)
+# BSN
 [![Coverage Status](https://coveralls.io/repos/github/thednp/bootstrap.native/badge.svg)](https://coveralls.io/github/thednp/bootstrap.native)
 [![ci](https://github.com/thednp/bootstrap.native/actions/workflows/ci.yml/badge.svg)](https://github.com/thednp/bootstrap.native/actions/workflows/ci.yml)
 [![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg)](https://www.npmjs.com/package/bootstrap.native)
 [![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/bootstrap.native)](https://www.jsdelivr.com/package/npm/bootstrap.native)
 [![CDNJS](https://img.shields.io/cdnjs/v/bootstrap.native.svg)](https://cdnjs.com/libraries/bootstrap.native)
-![cypress version](https://img.shields.io/badge/cypress-12.2.0-brightgreen)
-![typescript version](https://img.shields.io/badge/typescript-4.9.4-brightgreen)
+[![cypress version](https://img.shields.io/badge/cypress-12.2.0-brightgreen)](https://www.cypress.io/)
+[![typescript version](https://img.shields.io/badge/typescript-4.9.4-brightgreen)](https://www.typescriptlang.org/)
+[![vite version](https://img.shields.io/badge/vite-4.0.3-brightgreen)](https://vitejs.dev/)
+[![prettier version](https://img.shields.io/badge/prettier-2.8.1-brightgreen)](https://prettier.io/)
 
 
 The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, free from major dependecies such as jQuery, Popper.
