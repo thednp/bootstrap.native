@@ -36,6 +36,10 @@
     "not <= 1%",
     "not IE 10"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thednp/bootstrap.native.git"
