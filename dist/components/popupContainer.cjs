@@ -1,0 +1,2 @@
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const o=require("./shorty-1329a513.cjs"),d=o.$t({tagName:"div"}),l=(e,p)=>{const a=o.a(p)&&p.nodeName!=="BODY"?p:d,n=o.a(p)&&p.nodeName==="BODY"?p:o.Jn(e);o.a(e)&&((!p&&!n.contains(d)||o.a(p)&&p.nodeName==="BODY")&&n.append(d),a.append(e))},P=(e,p)=>{o.a(e)&&(e.remove(),!p&&!d.children.length&&d.remove())},u=(e,p)=>(o.a(p)&&p.nodeName!=="BODY"?p:d).contains(e);exports.appendPopup=l;exports.hasPopup=u;exports.popupContainer=d;exports.removePopup=P;
+//# sourceMappingURL=popupContainer.cjs.map

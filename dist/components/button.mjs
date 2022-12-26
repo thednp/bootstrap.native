@@ -1,11 +1,12 @@
-import { B as g, k as o, F as c, A as r, L as p, u as f, N as d, M as b } from "./base-component-215a274f.js";
-import { E as v, d as A } from "./event-listener-097fdcc5.js";
+import { k as o, F as c, A as r, L as g, u as p, N as f, M as d } from "./shorty-f5e32a8f.js";
+import { E as b, r as v } from "./event-listener-e555c4ba.js";
 import { a as i } from "./activeClass-b231b21b.js";
-import { d as B } from "./dataBsToggle-330f300b.js";
-const h = "button", m = "Button", C = `[${B}="${h}"]`, u = (e) => p(e, m), k = (e) => new I(e), l = (e, t) => {
-  (t ? v : A)(e.element, f, e.toggle);
+import { d as A } from "./dataBsToggle-330f300b.js";
+import h from "./base-component.mjs";
+const B = "button", m = "Button", C = `[${A}="${B}"]`, u = (e) => g(e, m), k = (e) => new I(e), l = (e, t) => {
+  (t ? b : v)(e.element, p, e.toggle);
 };
-class I extends g {
+class I extends h {
   static selector = C;
   static init = k;
   static getInstance = u;
@@ -26,7 +27,7 @@ class I extends g {
     const { element: n, isActive: a } = s;
     if (o(n, "disabled"))
       return;
-    (a ? d : b)(n, i), c(n, r, a ? "false" : "true"), s.isActive = o(n, i);
+    (a ? f : d)(n, i), c(n, r, a ? "false" : "true"), s.isActive = o(n, i);
   }
   dispose() {
     l(this), super.dispose();

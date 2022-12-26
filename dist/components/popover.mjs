@@ -1,34 +1,44 @@
-import { q as p, v as i, L as n } from "./base-component-215a274f.js";
-import { d as r } from "./dataBsToggle-330f300b.js";
-import { T as l, s as c, p as a, a as e, g as m, t as u } from "./tooltip-d4e567a2.js";
-import "./event-listener-097fdcc5.js";
-import "./showClass-f6a4d601.js";
-import "./popupContainer-26c3059d.js";
+import { q as r, B as i, L as a } from "./shorty-f5e32a8f.js";
+import { d as m } from "./dataBsToggle-330f300b.js";
+import { p as s } from "./createTip-c738ae49.js";
+import { s as n, p } from "./styleTip-2726b8f9.js";
+import l from "./getTipTemplate.mjs";
+import c from "./tooltipDefaults.mjs";
+import f from "./tooltip.mjs";
+import "./tooltipString-23f00c61.js";
 import "./fadeClass-0d50d035.js";
-const b = `[${r}="${e}"],[data-tip="${e}"]`, f = p({}, u, {
-  template: m(e),
+import "./tipClassPositions.mjs";
+import "./setHtml.mjs";
+import "./event-listener-e555c4ba.js";
+import "./showClass-f6a4d601.js";
+import "./offcanvasString-ecc53af6.js";
+import "./popupContainer.mjs";
+import "./getElementContainer.mjs";
+import "./base-component.mjs";
+const u = `[${m}="${s}"],[data-tip="${s}"]`, b = r({}, c, {
+  template: l(s),
   content: "",
   dismissible: !1,
   btnClose: '<button class="btn-close" aria-label="Close"></button>'
-}), g = (t) => n(t, a), d = (t) => new v(t);
-class v extends l {
-  static selector = b;
-  static init = d;
-  static getInstance = g;
-  static styleTip = c;
-  constructor(s, o) {
-    super(s, o);
+}), d = (t) => a(t, p), g = (t) => new v(t);
+class v extends f {
+  static selector = u;
+  static init = g;
+  static getInstance = d;
+  static styleTip = n;
+  constructor(e, o) {
+    super(e, o);
   }
   get name() {
-    return a;
+    return p;
   }
   get defaults() {
-    return f;
+    return b;
   }
   show() {
     super.show();
-    const { options: s, btn: o } = this;
-    s.dismissible && o && setTimeout(() => i(o), 17);
+    const { options: e, btn: o } = this;
+    e.dismissible && o && setTimeout(() => i(o), 17);
   }
 }
 export {

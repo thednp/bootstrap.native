@@ -35,7 +35,7 @@ export default class Toast extends BaseComponent {
 	 * @param target the target `.toast` element
 	 * @param config the instance options
 	 */
-	constructor(target: HTMLElement | string, config?: ToastOptions);
+	constructor(target: HTMLElement | string, config?: Partial<ToastOptions>);
 	/**
 	 * Returns component name string.
 	 */

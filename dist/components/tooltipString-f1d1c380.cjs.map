@@ -1,0 +1,1 @@
+{"version":3,"file":"tooltipString-f1d1c380.cjs","sources":["../../src/strings/tooltipString.ts"],"sourcesContent":["/** @type {string} */\nconst tooltipString = 'tooltip';\nexport default tooltipString;\n"],"names":["tooltipString"],"mappings":"aACA,MAAMA,EAAgB"}

@@ -18,19 +18,17 @@ declare class BaseComponent {
 	dispose(): void;
 }
 export interface TooltipOptions extends BaseOptions {
-	template: string;
-	title: string;
+	template: string | HTMLElement;
+	title: string | HTMLElement;
 	customClass: string;
 	trigger: string;
 	placement: "top" | "bottom" | "left" | "right";
 	sanitizeFn?: (str: string) => string;
 	animation: boolean;
 	delay: number;
-	/** @deprecated */
-	container: ParentNode | Window;
-	content: string;
+	content: string | HTMLElement;
 	dismissible: boolean;
-	btnClose: string;
+	btnClose: string | HTMLElement;
 }
 /** Creates a new `Tooltip` instance. */
 export default class Tooltip extends BaseComponent {
@@ -41,8 +39,9 @@ export default class Tooltip extends BaseComponent {
 	options: TooltipOptions;
 	btn?: HTMLElement;
 	tooltip?: HTMLElement;
+	container: ParentNode;
 	arrow?: HTMLElement;
-	offsetParent?: HTMLElement | Window;
+	offsetParent?: HTMLElement;
 	enabled: boolean;
 	id: string;
 	/**

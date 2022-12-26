@@ -21,7 +21,7 @@
     "test": "npm run pre-test && npx cypress run",
     "cypress": "npm run pre-test && npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
-    "build": "npm run lint:ts && npm run build-vite && npm run build-dts && npm run copy-docs && npm run build-modules && npm run dts-modules",
+    "build": "npm run lint:ts && npm run build-vite && npm run dts && npm run copy-docs && npm run build-modules && npm run dts-modules",
     "build-vite": "vite build && npm run copy-docs",
     "dts": "dts-bundle-generator --config ./dts.config.ts",
     "build-modules": "vite build --config ./vite.modules.ts",
@@ -54,28 +54,28 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
-    "@thednp/event-listener": "^2.0.0-alpha6",
+    "@thednp/event-listener": "^2.0.0-alpha7",
     "@thednp/shorty": "^2.0.0-alpha7"
   },
   "devDependencies": {
-    "@bahmutov/cypress-esbuild-preprocessor": "^2.1.3",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.1.5",
     "@cypress/code-coverage": "^3.10.0",
     "@types/istanbul-lib-instrument": "^1.7.4",
-    "@typescript-eslint/eslint-plugin": "^5.40.0",
-    "@typescript-eslint/parser": "^5.40.0",
-    "cypress": "^12.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.47.0",
+    "@typescript-eslint/parser": "^5.47.0",
+    "cypress": "^12.2.0",
     "dts-bundle-generator": "^7.1.0",
-    "eslint": "^8.29.0",
-    "eslint-plugin-jsdoc": "^39.3.6",
+    "eslint": "^8.30.0",
+    "eslint-plugin-jsdoc": "^39.6.4",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^4.2.1",
     "istanbul-lib-coverage": "^3.2.0",
-    "istanbul-lib-instrument": "^5.2.0",
+    "istanbul-lib-instrument": "^5.2.1",
     "ncp": "^2.0.0",
     "nyc": "^15.1.0",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.9.3",
-    "vite": "^4.0.0"
+    "typescript": "^4.9.4",
+    "vite": "^4.0.3"
   }
 }

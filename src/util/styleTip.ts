@@ -2,7 +2,6 @@ import {
   isHTMLElement,
   setElementStyle,
   getDocumentElement,
-  getWindow,
   getBoundingClientRect,
   getElementStyle,
   isRTL,
@@ -11,19 +10,7 @@ import {
 
 import popoverComponent from '../strings/popoverComponent';
 import tipClassPositions from './tipClassPositions';
-// import TooltipInterface from '../interface/tooltip';
-// import PopoverInterface from '../interface/popover';
 import Tooltip from '../components/tooltip';
-import { popupContainer } from './popupContainer';
-
-// type FakeTip = {
-//   name: string,
-//   element: HTMLElement,
-//   tooltip: HTMLElement,
-//   options: TooltipInterface.Options | PopoverInterface.Options,
-//   arrow: HTMLElement,
-//   offsetParent: ParentNode
-// }
 
 /**
  * Style popovers and tooltips.
@@ -33,15 +20,11 @@ import { popupContainer } from './popupContainer';
  */
 const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
   const tipClasses = /\b(top|bottom|start|end)+/;
-  const { element, tooltip, options, arrow } = self;
+  const { element, tooltip, container, options, arrow } = self;
   if (!tooltip) return;
   const tipPositions = { ...tipClassPositions };
 
   const RTL = isRTL(element);
-  if (RTL) {
-    tipPositions.left = 'end';
-    tipPositions.right = 'start';
-  }
 
   // reset tooltip style (top: 0, left: 0 works best)
   setElementStyle(tooltip, {
@@ -53,25 +36,14 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
   });
   const isPopover = self.name === popoverComponent;
   const { offsetWidth: tipWidth, offsetHeight: tipHeight } = tooltip;
-  const { clientWidth: htmlcw, clientHeight: htmlch } = getDocumentElement(element);
-  // const { container } = options;
+  const { clientWidth: htmlcw, clientHeight: htmlch, offsetWidth: htmlow } = getDocumentElement(element);
   let { placement } = options;
-  const { left: parentLeft, right: parentRight, top: parentTop } = getBoundingClientRect(popupContainer, true);
-  const { clientWidth: parentCWidth, offsetWidth: parentOWidth } = popupContainer;
-  const scrollbarWidth = Math.abs(parentCWidth - parentOWidth);
-  // const tipAbsolute = getElementStyle(tooltip, 'position') === 'absolute';
-  const parentPosition = getElementStyle(popupContainer, 'position');
-  // const absoluteParent = parentPosition === 'absolute';
+  const { clientWidth: parentCWidth, offsetWidth: parentOWidth } = container as HTMLElement;
+  const parentPosition = getElementStyle(container as HTMLElement, 'position');
   const fixedParent = parentPosition === 'fixed';
-  const staticParent = parentPosition === 'static';
-  // const stickyParent = parentPosition === 'sticky';
-  // const isSticky = stickyParent && parentTop === parseFloat(getElementStyle(popupContainer, 'top'));
-  // const absoluteTarget = getElementStyle(element, 'position') === 'absolute';
-  // const stickyFixedParent = ['sticky', 'fixed'].includes(parentPosition);
+  const scrollbarWidth = fixedParent ? Math.abs(parentCWidth - parentOWidth) : Math.abs(htmlcw - htmlow);
   const leftBoundry = RTL && fixedParent ? scrollbarWidth : 0;
-  const rightBoundry = fixedParent
-    ? parentCWidth + parentLeft + (RTL ? scrollbarWidth : 0)
-    : parentCWidth + parentLeft + (htmlcw - parentRight) - 1;
+  const rightBoundry = htmlcw - (!RTL ? scrollbarWidth : 0) - 1;
   const {
     width: elemWidth,
     height: elemHeight,
@@ -79,12 +51,10 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
     right: elemRectRight,
     top: elemRectTop,
   } = getBoundingClientRect(element, true);
-  // console.log(getWindow(tooltip));
-  const win = getWindow(tooltip);
-
-  const scroll = { x: win.scrollX, y: win.scrollY };
-  // const { x, y } = getRectRelativeToOffsetParent(element, win, scroll);
-  const { x, y } = { x: elemRectLeft + scroll.x, y: elemRectTop + scroll.y };
+  const { x, y } = {
+    x: elemRectLeft,
+    y: elemRectTop,
+  };
   // reset arrow style
   setElementStyle(arrow as HTMLElement, {
     top: '',
@@ -94,10 +64,10 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
   });
   let topPosition: number | string = 0;
   let leftPosition: number | string = 0;
-  let rightPosition: number | string = 0;
-  let arrowTop: number | string = 0;
-  let arrowLeft: number | string = 0;
-  let arrowRight: number | string = 0;
+  let rightPosition: number | string = '';
+  let arrowTop: number | string = '';
+  let arrowLeft: number | string = '';
+  let arrowRight: number | string = '';
 
   const arrowWidth = (arrow as HTMLElement).offsetWidth || 0;
   const arrowHeight = (arrow as HTMLElement).offsetHeight || 0;
@@ -109,24 +79,24 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
   let leftExceed = elemRectLeft - tipWidth - arrowWidth < leftBoundry;
   let rightExceed = elemRectLeft + tipWidth + elemWidth + arrowWidth >= rightBoundry;
 
-  const horizontal = ['left', 'right'];
-  const vertical = ['top', 'bottom'];
+  const horizontals = ['left', 'right'];
+  const verticals = ['top', 'bottom'];
 
-  topExceed = horizontal.includes(placement)
+  topExceed = horizontals.includes(placement)
     ? elemRectTop + elemHeight / 2 - tipHeight / 2 - arrowHeight < 0
     : topExceed;
-  bottomExceed = horizontal.includes(placement)
+  bottomExceed = horizontals.includes(placement)
     ? elemRectTop + tipHeight / 2 + elemHeight / 2 + arrowHeight >= htmlch
     : bottomExceed;
-  leftExceed = vertical.includes(placement) ? elemRectLeft + elemWidth / 2 - tipWidth / 2 < leftBoundry : leftExceed;
-  rightExceed = vertical.includes(placement)
+  leftExceed = verticals.includes(placement) ? elemRectLeft + elemWidth / 2 - tipWidth / 2 < leftBoundry : leftExceed;
+  rightExceed = verticals.includes(placement)
     ? elemRectLeft + tipWidth / 2 + elemWidth / 2 >= rightBoundry
     : rightExceed;
 
   // first remove side positions if both left and right limits are exceeded
   // we usually fall back to top|bottom
-  placement = horizontal.includes(placement) && leftExceed && rightExceed ? 'top' : placement;
-  // second, recompute placement
+  placement = horizontals.includes(placement) && leftExceed && rightExceed ? 'top' : placement;
+  // recompute placement
   placement = placement === 'top' && topExceed ? 'bottom' : placement;
   placement = placement === 'bottom' && bottomExceed ? 'top' : placement;
   placement = placement === 'left' && leftExceed ? 'right' : placement;
@@ -139,7 +109,7 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
 
   // compute tooltip / popover coordinates
   /* istanbul ignore else */
-  if (horizontal.includes(placement)) {
+  if (horizontals.includes(placement)) {
     // secondary|side positions
     if (placement === 'left') {
       // LEFT
@@ -152,35 +122,21 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
     // adjust top and arrow
     if (topExceed) {
       topPosition = y;
-      // topPosition += isSticky ? -parentTop - scroll.y : 0;
-
+      // topPosition += (isSticky ? -parentTop - scroll.y : 0);
       arrowTop = elemHeight / 2 - arrowWidth;
     } else if (bottomExceed) {
       topPosition = y - tipHeight + elemHeight;
-      // topPosition += isSticky ? -parentTop - scroll.y : 0;
-
+      // topPosition += (isSticky ? -parentTop - scroll.y : 0);
       arrowTop = tipHeight - elemHeight / 2 - arrowWidth;
     } else {
       topPosition = y - tipHeight / 2 + elemHeight / 2;
-      // topPosition += isSticky ? -parentTop - scroll.y : 0;
-
+      // topPosition += (isSticky ? -parentTop - scroll.y : 0);
       arrowTop = tipHeight / 2 - arrowHeight / 2;
     }
-  } else if (vertical.includes(placement)) {
+  } else if (verticals.includes(placement)) {
     if (e && isMedia(element)) {
-      let eX = 0;
-      let eY = 0;
-      if (staticParent) {
-        eX = e.pageX;
-        eY = e.pageY;
-      } else {
-        // fixedParent | stickyParent
-        eX = e.clientX - parentLeft + (fixedParent ? scroll.x : 0);
-        eY = e.clientY - parentTop + (fixedParent ? scroll.y : 0);
-      }
-
-      // some weird RTL bug
-      eX -= RTL && fixedParent && scrollbarWidth ? scrollbarWidth : 0;
+      const eX = e.clientX;
+      const eY = e.clientY;
 
       if (placement === 'top') {
         topPosition = eY - tipHeight - arrowWidth;
@@ -190,13 +146,14 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
 
       // adjust (left | right) and also the arrow
       if (e.clientX - tipWidth / 2 < leftBoundry) {
-        leftPosition = 0;
+        leftPosition = RTL ? scrollbarWidth : 0;
         arrowLeft = eX - arrowAdjust;
+        arrowLeft -= fixedParent ? (RTL ? scrollbarWidth : 0) : 0;
       } else if (e.clientX + tipWidth / 2 > rightBoundry) {
         leftPosition = 'auto';
-        rightPosition = 0;
+        rightPosition = !RTL ? scrollbarWidth : 0;
         arrowRight = rightBoundry - eX - arrowAdjust;
-        arrowRight -= fixedParent ? parentLeft + (RTL ? scrollbarWidth : 0) : 0;
+        arrowRight += fixedParent ? (RTL ? scrollbarWidth : 0) : 0;
 
         // normal top/bottom
       } else {
@@ -218,6 +175,7 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
       } else if (rightExceed) {
         leftPosition = 'auto';
         rightPosition = 0;
+        // arrowRight = elemWidth / 2 + rightBoundry - elemRectRight - arrowAdjust;
         arrowRight = elemWidth / 2 + rightBoundry - elemRectRight - arrowAdjust;
       } else {
         leftPosition = x - tipWidth / 2 + elemWidth / 2;
@@ -230,22 +188,21 @@ const styleTip = <T extends Tooltip>(self: T, e?: Event & PointerEvent) => {
   setElementStyle(tooltip, {
     top: `${topPosition}px`,
     left: leftPosition === 'auto' ? leftPosition : `${leftPosition}px`,
-    right: rightPosition !== undefined ? `${rightPosition}px` : '',
+    right: rightPosition !== '' ? `${rightPosition}px` : '',
   });
 
   // update arrow placement
   /* istanbul ignore else */
   if (isHTMLElement(arrow)) {
-    if (arrowTop !== undefined) {
+    if (arrowTop !== '') {
       arrow.style.top = `${arrowTop}px`;
     }
-    if (arrowLeft !== undefined) {
+    if (arrowLeft !== '') {
       arrow.style.left = `${arrowLeft}px`;
-    } else if (arrowRight !== undefined) {
+    } else if (arrowRight !== '') {
       arrow.style.right = `${arrowRight}px`;
     }
   }
-  // console.log(tooltip, leftPosition, rightPosition, arrowLeft);
 };
 
 export default styleTip;

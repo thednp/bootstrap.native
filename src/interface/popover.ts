@@ -1,10 +1,10 @@
-import { OriginalEvent } from '@thednp/shorty/src/interface/originalEvent';
+import { OriginalEvent } from '@thednp/shorty';
 import { TooltipOptions } from './tooltip';
 
 export interface PopoverOptions extends TooltipOptions {
-  title: string;
-  content: string;
-  btnClose: string;
+  title: string | HTMLElement;
+  content: string | HTMLElement;
+  btnClose: string | HTMLElement;
   dismissible: boolean;
 }
 

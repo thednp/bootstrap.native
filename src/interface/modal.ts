@@ -1,4 +1,4 @@
-import { OriginalEvent } from '@thednp/shorty/src/interface/originalEvent';
+import { OriginalEvent } from '@thednp/shorty';
 import { BaseOptions } from './baseComponent';
 
 export interface ModalOptions extends BaseOptions {

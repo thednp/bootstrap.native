@@ -108,7 +108,8 @@ const createTip = (self: Tooltip | Popover) => {
   } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
 
   // Bootstrap 5.2.x
-  addClass(tooltip, 'position-absolute');
+  // addClass(tooltip, 'position-absolute');
+  addClass(tooltip, 'position-fixed');
   addClass(arrow, 'position-absolute');
 
   // set popover animation and placement

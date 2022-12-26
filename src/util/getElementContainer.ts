@@ -1,55 +1,18 @@
-import {
-  getDocumentBody,
-  getWindow,
-  isHTMLElement,
-  isShadowRoot,
-  isTableElement,
-  getParentNode,
-  getElementStyle,
-} from '@thednp/shorty';
+import { getDocumentBody, isShadowRoot, isTableElement, getParentNode, getElementStyle } from '@thednp/shorty';
 
 /**
  * Returns an `HTMLElement` to be used as default value for *options.container*
  * for `Tooltip` / `Popover` components.
  *
- * When `getOffset` is *true*, it returns the `offsetParent` for tooltip/popover
- * offsets computation similar to **floating-ui**.
- *
  * @see https://github.com/floating-ui/floating-ui
  *
  * @param element the target
- * @param getOffset when *true* it will return an `offsetParent`
  * @returns the query result
  */
-const getElementContainer = (element: HTMLElement, getOffset?: boolean): ParentNode | Window => {
+const getElementContainer = (element: HTMLElement): ParentNode => {
   const majorBlockTags = ['HTML', 'BODY'];
-
-  if (getOffset) {
-    let { offsetParent }: { offsetParent: ParentNode | Window | null } = element;
-    const win = getWindow(element);
-
-    while (
-      offsetParent &&
-      (isTableElement(offsetParent) ||
-        (isHTMLElement(offsetParent) &&
-          // we must count for both fixed & sticky
-          !['sticky', 'fixed'].includes(getElementStyle(offsetParent, 'position'))))
-    ) {
-      offsetParent = offsetParent.offsetParent as HTMLElement;
-    }
-
-    if (
-      !offsetParent ||
-      (isHTMLElement(offsetParent) && majorBlockTags.includes(offsetParent.tagName)) ||
-      getElementStyle(offsetParent as HTMLElement, 'position') === 'static'
-    ) {
-      offsetParent = win;
-    }
-    return offsetParent;
-  }
-
   const containers: ParentNode[] = [];
-  let { parentNode } = element as { parentNode: ParentNode };
+  let { parentNode } = element as Node;
 
   while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
     parentNode = getParentNode(parentNode) as ParentNode;

@@ -1,4 +1,13 @@
-import { createElement, getDocument, reflow, removeClass, hasClass, addClass, querySelector } from '@thednp/shorty';
+import {
+  createElement,
+  getDocument,
+  reflow,
+  removeClass,
+  hasClass,
+  addClass,
+  querySelector,
+  getDocumentBody,
+} from '@thednp/shorty';
 
 import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
@@ -42,13 +51,13 @@ const toggleOverlayType = (isModal?: boolean) => {
 /**
  * Append the overlay to DOM.
  *
+ * @param element
  * @param hasFade
  * @param isModal
  */
-const appendOverlay = (hasFade: boolean, isModal?: boolean) => {
+const appendOverlay = (element: HTMLElement, hasFade: boolean, isModal?: boolean) => {
   toggleOverlayType(isModal);
-  // container.append(overlay);
-  appendPopup(overlay);
+  appendPopup(overlay, getDocumentBody(element));
   if (hasFade) addClass(overlay, fadeClass);
 };
 
@@ -72,13 +81,12 @@ const hideOverlay = () => {
 /**
  * Removes the overlay from DOM.
  *
- * @param {HTMLElement=} element
+ * @param element
  */
 const removeOverlay = (element?: HTMLElement): void => {
   if (!getCurrentOpen(element)) {
     removeClass(overlay, fadeClass);
-    // overlay.remove();
-    removePopup(overlay);
+    removePopup(overlay, getDocumentBody(element));
     resetScrollbar(element);
   }
 };

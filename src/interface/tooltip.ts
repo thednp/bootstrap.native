@@ -1,21 +1,19 @@
-import { OriginalEvent } from '@thednp/shorty/src/interface/originalEvent';
+import { OriginalEvent } from '@thednp/shorty';
 import { BaseOptions } from './baseComponent';
 
 export interface TooltipOptions extends BaseOptions {
-  template: string;
-  title: string;
+  template: string | HTMLElement;
+  title: string | HTMLElement;
   customClass: string;
   trigger: string;
   placement: 'top' | 'bottom' | 'left' | 'right';
   sanitizeFn?: (str: string) => string;
   animation: boolean;
   delay: number;
-  /** @deprecated */
-  container: ParentNode | Window;
   // ------ Popover
-  content: string;
+  content: string | HTMLElement;
   dismissible: boolean;
-  btnClose: string;
+  btnClose: string | HTMLElement;
 }
 
 export interface TooltipEvent extends OriginalEvent {

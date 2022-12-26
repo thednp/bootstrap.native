@@ -283,19 +283,17 @@ export declare class Offcanvas extends BaseComponent {
 	dispose(): void;
 }
 export interface TooltipOptions extends BaseOptions {
-	template: string;
-	title: string;
+	template: string | HTMLElement;
+	title: string | HTMLElement;
 	customClass: string;
 	trigger: string;
 	placement: "top" | "bottom" | "left" | "right";
 	sanitizeFn?: (str: string) => string;
 	animation: boolean;
 	delay: number;
-	/** @deprecated */
-	container: ParentNode | Window;
-	content: string;
+	content: string | HTMLElement;
 	dismissible: boolean;
-	btnClose: string;
+	btnClose: string | HTMLElement;
 }
 /** Creates a new `Tooltip` instance. */
 export declare class Tooltip extends BaseComponent {
@@ -306,8 +304,9 @@ export declare class Tooltip extends BaseComponent {
 	options: TooltipOptions;
 	btn?: HTMLElement;
 	tooltip?: HTMLElement;
+	container: ParentNode;
 	arrow?: HTMLElement;
-	offsetParent?: HTMLElement | Window;
+	offsetParent?: HTMLElement;
 	enabled: boolean;
 	id: string;
 	/**
@@ -365,9 +364,9 @@ export declare class Tooltip extends BaseComponent {
 	dispose(): void;
 }
 export interface PopoverOptions extends TooltipOptions {
-	title: string;
-	content: string;
-	btnClose: string;
+	title: string | HTMLElement;
+	content: string | HTMLElement;
+	btnClose: string | HTMLElement;
 	dismissible: boolean;
 }
 /** Returns a new `Popover` instance. */
@@ -468,7 +467,7 @@ export declare class Toast extends BaseComponent {
 	 * @param target the target `.toast` element
 	 * @param config the instance options
 	 */
-	constructor(target: HTMLElement | string, config?: ToastOptions);
+	constructor(target: HTMLElement | string, config?: Partial<ToastOptions>);
 	/**
 	 * Returns component name string.
 	 */

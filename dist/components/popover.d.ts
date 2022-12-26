@@ -18,19 +18,17 @@ declare class BaseComponent {
 	dispose(): void;
 }
 export interface TooltipOptions extends BaseOptions {
-	template: string;
-	title: string;
+	template: string | HTMLElement;
+	title: string | HTMLElement;
 	customClass: string;
 	trigger: string;
 	placement: "top" | "bottom" | "left" | "right";
 	sanitizeFn?: (str: string) => string;
 	animation: boolean;
 	delay: number;
-	/** @deprecated */
-	container: ParentNode | Window;
-	content: string;
+	content: string | HTMLElement;
 	dismissible: boolean;
-	btnClose: string;
+	btnClose: string | HTMLElement;
 }
 declare class Tooltip extends BaseComponent {
 	static selector: string;
@@ -40,8 +38,9 @@ declare class Tooltip extends BaseComponent {
 	options: TooltipOptions;
 	btn?: HTMLElement;
 	tooltip?: HTMLElement;
+	container: ParentNode;
 	arrow?: HTMLElement;
-	offsetParent?: HTMLElement | Window;
+	offsetParent?: HTMLElement;
 	enabled: boolean;
 	id: string;
 	/**
@@ -99,9 +98,9 @@ declare class Tooltip extends BaseComponent {
 	dispose(): void;
 }
 export interface PopoverOptions extends TooltipOptions {
-	title: string;
-	content: string;
-	btnClose: string;
+	title: string | HTMLElement;
+	content: string | HTMLElement;
+	btnClose: string | HTMLElement;
 	dismissible: boolean;
 }
 /** Returns a new `Popover` instance. */

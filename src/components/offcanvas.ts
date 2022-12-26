@@ -14,7 +14,6 @@ import {
   keydownEvent,
   mouseclickEvent,
   ariaModal,
-  // ObjectAssign,
   emulateTransitionEnd,
   dispatchEvent,
   getElementTransitionDuration,
@@ -35,6 +34,7 @@ import dataBsToggle from '../strings/dataBsToggle';
 import showClass from '../strings/showClass';
 import offcanvasString from '../strings/offcanvasString';
 import offcanvasComponent from '../strings/offcanvasComponent';
+import modalComponent from '../strings/modalComponent';
 
 import getTargetElement from '../util/getTargetElement';
 import isVisible from '../util/isVisible';
@@ -360,16 +360,16 @@ export default class Offcanvas extends BaseComponent {
     // we elegantly hide any opened modal/offcanvas
     const currentOpen = getCurrentOpen(element);
     if (currentOpen && currentOpen !== element) {
-      const this1 = getOffcanvasInstance(currentOpen);
-      const that1 =
-        this1 ||
-        /* istanbul ignore next */ getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, 'Modal');
-      if (that1) that1.hide();
+      const that =
+        getOffcanvasInstance(currentOpen) ||
+        /* istanbul ignore next */
+        getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, modalComponent);
+      if (that) that.hide();
     }
 
     if (options.backdrop) {
       if (!hasPopup(overlay)) {
-        appendOverlay(true);
+        appendOverlay(element, true);
       } else {
         toggleOverlayType();
       }

@@ -30,7 +30,6 @@ import {
   emulateTransitionEnd,
   passiveHandler,
   dispatchEvent,
-  // ObjectAssign,
   focus,
   Timer,
 } from '@thednp/shorty';
@@ -43,6 +42,7 @@ import fadeClass from '../strings/fadeClass';
 import showClass from '../strings/showClass';
 import modalString from '../strings/modalString';
 import modalComponent from '../strings/modalComponent';
+import offcanvasComponent from '../strings/offcanvasComponent';
 
 import getTargetElement from '../util/getTargetElement';
 import { setScrollbar, measureScrollbar } from '../util/scrollbar';
@@ -240,6 +240,7 @@ const modalClickHandler = (e: MouseEvent) => {
   const element = trigger && getTargetElement(trigger);
   const self = element && getModalInstance(element);
 
+  /* istanbul ignore next */
   if (!self) return;
 
   /* istanbul ignore else */
@@ -258,6 +259,7 @@ const modalKeyHandler = ({ code, target }: KeyboardEvent) => {
   const element = querySelector(modalActiveSelector, getDocument(target as Node));
   const self = element && getModalInstance(element);
 
+  /* istanbul ignore next */
   if (!self) return;
 
   const { options } = self;
@@ -402,23 +404,22 @@ export default class Modal extends BaseComponent {
 
     // we elegantly hide any opened modal/offcanvas
     const currentOpen = getCurrentOpen(element);
-    if (currentOpen && currentOpen !== element) {
-      const this1 = getModalInstance(currentOpen);
-      const that1 =
-        this1 ||
-        /* istanbul ignore next */ getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, 'Offcanvas');
-      if (that1) that1.hide();
-    }
 
+    if (currentOpen && currentOpen !== element) {
+      const that =
+        getModalInstance(currentOpen) ||
+        /* istanbul ignore next */
+        getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, offcanvasComponent);
+      if (that) that.hide();
+    }
     if (backdrop) {
       if (!hasPopup(overlay)) {
-        appendOverlay(hasFade, true);
+        appendOverlay(element, hasFade, true);
       } else {
         toggleOverlayType(true);
       }
 
       overlayDelay = getElementTransitionDuration(overlay);
-
       showOverlay();
       setTimeout(() => beforeModalShow(this), overlayDelay);
     } else {

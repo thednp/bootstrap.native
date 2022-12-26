@@ -1,105 +1,104 @@
-import { d as v, t as Q, W as H, B as $t, g as Dt, Q as D, M as U, F as _, v as L, N as G, L as vt, w as Ct, p as xt, k as V, s as M, x as bt, y as yt, q as X, a as k, C as Ht, D as Pt, $ as At, h as It, Z as St, E as Y, u as B, _ as dt, l as Tt, H as Mt, R as Nt, I as W, P as j, J as Ft } from "./base-component-215a274f.js";
-import { E as ct, d as lt } from "./event-listener-097fdcc5.js";
+import { W as y, g as Et, Q as D, M as Q, F as U, B as N, N as _, L as $t, x as Dt, p as Ct, k as G, w as M, y as vt, C as xt, q as V, c as A, u as B, _ as at, n as bt, D as yt, I as Ht, J as Pt, R as It, $ as St, h as Tt, Z as Mt, d as W, K as j, P as k, O as Ft, E as X } from "./shorty-f5e32a8f.js";
+import { E as dt, r as ct } from "./event-listener-e555c4ba.js";
 import { s as u } from "./showClass-f6a4d601.js";
-import { d as h } from "./dataBsToggle-330f300b.js";
+import { d as m } from "./dataBsToggle-330f300b.js";
 import { d as C } from "./dropdownClasses-66be00d3.js";
-const pt = "Dropdown", ft = "dropdown-menu", ut = (n) => {
-  const t = v(n, "A");
-  return n.tagName === "A" && Q(n, "href") && n.href.slice(-1) === "#" || t && Q(t, "href") && t.href.slice(-1) === "#";
-}, [p, x, b, y] = C, O = `[${h}="${p}"],[${h}="${x}"],[${h}="${y}"],[${h}="${b}"]`, f = (n) => vt(n, pt), Lt = (n) => new Zt(n), Wt = `${ft}-end`, tt = [p, x], et = [b, y], nt = ["A", "BUTTON"], jt = {
+import lt from "./isEmptyAnchor.mjs";
+import Lt from "./base-component.mjs";
+const pt = "Dropdown", ft = "dropdown-menu", [p, v, x, b] = C, O = `[${m}="${p}"],[${m}="${v}"],[${m}="${b}"],[${m}="${x}"]`, f = (n) => $t(n, pt), Nt = (n) => new qt(n), Wt = `${ft}-end`, Y = [p, v], tt = [x, b], et = ["A", "BUTTON"], jt = {
   offset: 5,
   display: "dynamic"
-}, N = H(`show.bs.${p}`), ot = H(`shown.bs.${p}`), F = H(`hide.bs.${p}`), st = H(`hidden.bs.${p}`), ht = (n) => {
+}, F = y(`show.bs.${p}`), nt = y(`shown.bs.${p}`), L = y(`hide.bs.${p}`), ot = y(`hidden.bs.${p}`), ut = (n) => {
   const { element: t, menu: e, parentElement: o, options: r } = n, { offset: i } = r;
-  if (Ct(e, "position") === "static")
+  if (Dt(e, "position") === "static")
     return;
-  const s = xt(t), a = V(e, Wt);
+  const s = Ct(t), a = G(e, Wt);
   ["margin", "top", "bottom", "left", "right"].forEach((l) => {
-    const K = {};
-    K[l] = "", M(e, K);
+    const J = {};
+    J[l] = "", M(e, J);
   });
-  let d = C.find((l) => V(o, l)) || p;
+  let d = C.find((l) => G(o, l)) || p;
   const mt = {
     dropdown: [i, 0, 0],
     dropup: [0, 0, i],
     dropstart: s ? [-1, 0, 0, i] : [-1, i, 0],
     dropend: s ? [-1, i, 0] : [-1, 0, 0, i]
-  }, m = {
+  }, h = {
     dropdown: { top: "100%" },
     dropup: { top: "auto", bottom: "100%" },
     dropstart: s ? { left: "100%", right: "auto" } : { left: "auto", right: "100%" },
     dropend: s ? { left: "auto", right: "100%" } : { left: "100%", right: "auto" },
     menuStart: s ? { right: "0", left: "auto" } : { right: "auto", left: "0" },
     menuEnd: s ? { right: "auto", left: "0" } : { right: "0", left: "auto" }
-  }, { offsetWidth: g, offsetHeight: A } = e, { clientWidth: R, clientHeight: q } = bt(t), { left: w, top: I, width: Z, height: gt } = yt(t), S = w - g - i < 0, T = w + g + Z + i >= R, wt = I + A + i >= q, z = I + A + gt + i >= q, J = I - A - i < 0, E = (!s && a || s && !a) && w + Z - g < 0, $ = (s && a || !s && !a) && w + g >= R;
-  if (et.includes(d) && S && T && (d = p), d === b && (s ? T : S) && (d = y), d === y && (s ? S : T) && (d = b), d === x && J && !z && (d = p), d === p && z && !J && (d = x), et.includes(d) && wt && X(m[d], {
+  }, { offsetWidth: g, offsetHeight: P } = e, { clientWidth: R, clientHeight: q } = vt(t), { left: w, top: I, width: K, height: ht } = xt(t), S = w - g - i < 0, T = w + g + K + i >= R, gt = I + P + i >= q, Z = I + P + ht + i >= q, z = I - P - i < 0, E = (!s && a || s && !a) && w + K - g < 0, $ = (s && a || !s && !a) && w + g >= R;
+  if (tt.includes(d) && S && T && (d = p), d === x && (s ? T : S) && (d = b), d === b && (s ? S : T) && (d = x), d === v && z && !Z && (d = p), d === p && Z && !z && (d = v), tt.includes(d) && gt && V(h[d], {
     top: "auto",
     bottom: 0
-  }), tt.includes(d) && (E || $)) {
+  }), Y.includes(d) && (E || $)) {
     let l = { left: "auto", right: "auto" };
-    !E && $ && !s && (l = { left: "auto", right: 0 }), E && !$ && s && (l = { left: 0, right: "auto" }), l && X(m[d], l);
+    !E && $ && !s && (l = { left: "auto", right: 0 }), E && !$ && s && (l = { left: 0, right: "auto" }), l && V(h[d], l);
   }
-  const Et = mt[d];
+  const wt = mt[d];
   M(e, {
-    ...m[d],
-    margin: `${Et.map((l) => l && `${l}px`).join(" ")}`
-  }), tt.includes(d) && a && a && M(e, m[!s && E || s && $ ? "menuStart" : "menuEnd"]);
+    ...h[d],
+    margin: `${wt.map((l) => l && `${l}px`).join(" ")}`
+  }), Y.includes(d) && a && a && M(e, h[!s && E || s && $ ? "menuStart" : "menuEnd"]);
 }, kt = (n) => [...n.children].map((t) => {
-  if (t && nt.includes(t.tagName))
+  if (t && et.includes(t.tagName))
     return t;
   const { firstElementChild: e } = t;
-  return e && nt.includes(e.tagName) ? e : null;
-}).filter((t) => t), rt = (n) => {
-  const { element: t, options: e } = n, o = n.open ? ct : lt, r = k(t);
-  o(r, B, at), o(r, dt, at), o(r, Tt, Ot), o(r, Mt, Rt), e.display === "dynamic" && [Ht, Pt].forEach((i) => {
-    o(At(t), i, qt, Nt);
+  return e && et.includes(e.tagName) ? e : null;
+}).filter((t) => t), st = (n) => {
+  const { element: t, options: e } = n, o = n.open ? dt : ct, r = A(t);
+  o(r, B, it), o(r, at, it), o(r, bt, Bt), o(r, yt, Ot), e.display === "dynamic" && [Ht, Pt].forEach((i) => {
+    o(St(t), i, Rt, It);
   });
-}, it = (n, t) => {
-  (t ? ct : lt)(n.element, B, Bt);
-}, P = (n) => {
-  const t = [...C, "btn-group", "input-group"].map((e) => It(`${e} ${u}`, k(n))).find((e) => e.length);
+}, rt = (n, t) => {
+  (t ? dt : ct)(n.element, B, At);
+}, H = (n) => {
+  const t = [...C, "btn-group", "input-group"].map((e) => Tt(`${e} ${u}`, A(n))).find((e) => e.length);
   if (t && t.length)
     return [...t[0].children].find(
-      (e) => C.some((o) => o === St(e, h))
+      (e) => C.some((o) => o === Mt(e, m))
     );
-}, at = (n) => {
+}, it = (n) => {
   const { target: t, type: e } = n;
   if (!t || !t.closest)
     return;
-  const o = P(t), r = o && f(o);
+  const o = H(t), r = o && f(o);
   if (!r)
     return;
-  const { parentElement: i, menu: s } = r, a = v(t, O) !== null, c = i && i.contains(t) && (t.tagName === "form" || v(t, "form") !== null);
-  e === B && ut(t) && n.preventDefault(), !(e === dt && (t === o || t === s || s.contains(t))) && (c || a || r && r.hide());
+  const { parentElement: i, menu: s } = r, a = W(t, O) !== null, c = i && i.contains(t) && (t.tagName === "form" || W(t, "form") !== null);
+  e === B && lt(t) && n.preventDefault(), !(e === at && (t === o || t === s || s.contains(t))) && (c || a || r && r.hide());
+}, At = (n) => {
+  const { target: t } = n, e = t && W(t, O), o = e && f(e);
+  o && (n.stopImmediatePropagation(), o.toggle(), e && lt(e) && n.preventDefault());
 }, Bt = (n) => {
-  const { target: t } = n, e = t && v(t, O), o = e && f(e);
-  o && (n.stopImmediatePropagation(), o.toggle(), e && ut(e) && n.preventDefault());
-}, Ot = (n) => {
-  [W, j].includes(n.code) && n.preventDefault();
+  [j, k].includes(n.code) && n.preventDefault();
 };
-function Rt(n) {
-  const { code: t } = n, e = P(this), o = e && f(e), { activeElement: r } = e && k(e);
+function Ot(n) {
+  const { code: t } = n, e = H(this), o = e && f(e), { activeElement: r } = e && A(e);
   if (!o || !r)
     return;
   const { menu: i, open: s } = o, a = kt(i);
-  if (a && a.length && [W, j].includes(t)) {
+  if (a && a.length && [j, k].includes(t)) {
     let c = a.indexOf(r);
-    r === e ? c = 0 : t === j ? c = c > 1 ? c - 1 : 0 : t === W && (c = c < a.length - 1 ? c + 1 : c), a[c] && L(a[c]);
+    r === e ? c = 0 : t === k ? c = c > 1 ? c - 1 : 0 : t === j && (c = c < a.length - 1 ? c + 1 : c), a[c] && N(a[c]);
   }
-  Ft === t && s && (o.toggle(), L(e));
+  Ft === t && s && (o.toggle(), N(e));
 }
-function qt() {
-  const n = P(this), t = n && f(n);
-  t && t.open && ht(t);
+function Rt() {
+  const n = H(this), t = n && f(n);
+  t && t.open && ut(t);
 }
-class Zt extends $t {
+class qt extends Lt {
   static selector = O;
-  static init = Lt;
+  static init = Nt;
   static getInstance = f;
   constructor(t, e) {
     super(t, e);
     const { parentElement: o } = this.element;
-    this.parentElement = o, this.menu = Dt(`.${ft}`, o), it(this, !0);
+    this.parentElement = o, this.menu = Et(`.${ft}`, o), rt(this, !0);
   }
   get name() {
     return pt;
@@ -114,22 +113,22 @@ class Zt extends $t {
     const { element: t, open: e, menu: o, parentElement: r } = this;
     if (e)
       return;
-    const i = P(t), s = i && f(i);
-    s && s.hide(), [N, ot].forEach((a) => {
+    const i = H(t), s = i && f(i);
+    s && s.hide(), [F, nt].forEach((a) => {
       a.relatedTarget = t;
-    }), D(r, N), !N.defaultPrevented && (U(o, u), U(r, u), _(t, Y, "true"), ht(this), this.open = !e, L(t), rt(this), D(r, ot));
+    }), D(r, F), !F.defaultPrevented && (Q(o, u), Q(r, u), U(t, X, "true"), ut(this), this.open = !e, N(t), st(this), D(r, nt));
   }
   hide() {
     const { element: t, open: e, menu: o, parentElement: r } = this;
-    !e || ([F, st].forEach((i) => {
+    e && ([L, ot].forEach((i) => {
       i.relatedTarget = t;
-    }), D(r, F), !F.defaultPrevented && (G(o, u), G(r, u), _(t, Y, "false"), this.open = !e, rt(this), D(r, st)));
+    }), D(r, L), !L.defaultPrevented && (_(o, u), _(r, u), U(t, X, "false"), this.open = !e, st(this), D(r, ot)));
   }
   dispose() {
-    this.open && this.hide(), it(this), super.dispose();
+    this.open && this.hide(), rt(this), super.dispose();
   }
 }
 export {
-  Zt as default
+  qt as default
 };
 //# sourceMappingURL=dropdown.mjs.map

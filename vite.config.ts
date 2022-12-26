@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
-import { name, version } from './package.json';
+import { name } from './package.json';
 
 const getPackageName = () => {
   return (name.includes('@') ? name.split('/')[1] : name).replace('.', '-');
@@ -23,12 +23,10 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       name: NAME,
       formats: ['es', 'cjs', 'iife'],
-      fileName: (format) => fileName[format],
+      fileName: (format: string) => fileName[format],
     },
     target: 'ESNext',
     sourcemap: true,
     minify: true,
   },
-  
-  
 });

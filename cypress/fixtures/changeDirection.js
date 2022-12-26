@@ -8,7 +8,7 @@ export default function changeDirection(element, requestedDir) {
   const dir = requestedDir === 'rtl' ? 'rtl' : '';
   const HTML = doc.documentElement;
   const STYLE = doc.querySelector('link');
-  let HREF = 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css';
+  let HREF = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css';
   // set RTL mode
   if (dir) {
     HTML.setAttribute('dir', 'rtl');
