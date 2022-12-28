@@ -1,1 +1,0 @@
-{"version":3,"file":"tipClassPositions.cjs","sources":["../../src/util/tipClassPositions.ts"],"sourcesContent":["const tipClassPositions = {\n  top: 'top',\n  bottom: 'bottom',\n  left: 'start',\n  right: 'end',\n};\n\nexport default tipClassPositions;\n"],"names":["tipClassPositions"],"mappings":"aAAA,MAAMA,EAAoB,CACxB,IAAK,MACL,OAAQ,SACR,KAAM,QACN,MAAO,KACT"}

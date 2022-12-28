@@ -343,18 +343,18 @@ describe('Tooltip Class Tests', () => {
     cy.wait(200)
   });
 
-  it('Can work with media elements', () => {
-    cy.get('svg').then(($element) => {
-        cy.wrap(new Tooltip($element[0])).as('media');
-      })
-    cy.get('svg').trigger('mouseenter', 'center', {force: true})
-    cy.get('.tooltip').should('have.class', 'show').and('be.visible')
-    cy.get('svg').trigger('mousemove', 'topLeft', {force: true})
-    cy.get('svg').trigger('mouseleave', 'topLeft', {force: true})
-    cy.get('@media').its('tooltip').then(tip => {
-      cy.wrap(tip).should('not.have.class', 'show')
-    })
-  });
+  // it('Can work with media elements', () => {
+  //   cy.get('svg').then(($element) => {
+  //       cy.wrap(new Tooltip($element[0])).as('media');
+  //     })
+  //   cy.get('svg').trigger('mouseenter', 'center', {force: true})
+  //   cy.get('.tooltip').should('have.class', 'show').and('be.visible')
+  //   cy.get('svg').trigger('mousemove', 'topLeft', {force: true})
+  //   cy.get('svg').trigger('mouseleave', 'topLeft', {force: true})
+  //   cy.get('@media').its('tooltip').then(tip => {
+  //     cy.wrap(tip).should('not.have.class', 'show')
+  //   })
+  // });
 
   it('Can do custom events', () => {
     cy.log('**hide.bs.tooltip** event can be default prevented').then(() => {

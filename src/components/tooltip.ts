@@ -5,7 +5,6 @@ import {
   focusoutEvent,
   focusinEvent,
   focusEvent,
-  mousemoveEvent,
   mouseleaveEvent,
   mouseenterEvent,
   mousedownEvent,
@@ -29,7 +28,6 @@ import {
   passiveHandler,
   dispatchEvent,
   isApple,
-  isMedia,
   isFunction,
   getInstance,
   ObjectAssign,
@@ -121,12 +119,9 @@ const toggleTooltipAction = (self: Tooltip, add?: boolean) => {
 
   action(getDocument(element), touchstartEvent, self.handleTouch as EventListener, passiveHandler);
 
-  /* istanbul ignore else */
-  if (!isMedia(element)) {
-    [scrollEvent, resizeEvent].forEach(ev => {
-      action(getWindow(element), ev, self.update, passiveHandler);
-    });
-  }
+  [scrollEvent, resizeEvent].forEach(ev => {
+    action(getWindow(element), ev, self.update, passiveHandler);
+  });
 };
 
 /**
@@ -147,16 +142,18 @@ const tooltipShownAction = (self: Tooltip) => {
  * Executes after the tooltip was hidden to the user.
  *
  * @param self the `Tooltip` instance
- * @param callback the dispose callback
  */
-const tooltipHiddenAction = (self: Tooltip, callback?: () => any) => {
-  const { element } = self;
+const tooltipHiddenAction = (self: Tooltip) => {
+  const { element, onHideComplete } = self;
   const hiddenTooltipEvent = createCustomEvent<TooltipEvent | PopoverEvent>(`hidden.bs.${toLowerCase(self.name)}`);
 
   toggleTooltipAction(self);
   removeTooltip(self);
   dispatchEvent(element, hiddenTooltipEvent);
-  if (isFunction(callback)) callback();
+  if (isFunction(onHideComplete)) {
+    onHideComplete();
+    self.onHideComplete = undefined;
+  }
   Timer.clear(element, 'out');
 };
 
@@ -179,15 +176,10 @@ const toggleTooltipHandlers = (self: Tooltip, add?: boolean) => {
   self.enabled = !!add;
 
   const triggerOptions = trigger?.split(' ');
-  const elemIsMedia = isMedia(element);
-
-  if (elemIsMedia) {
-    action(element, mousemoveEvent, self.update, passiveHandler);
-  }
 
   triggerOptions?.forEach(tr => {
     /* istanbul ignore else */
-    if (elemIsMedia || tr === mousehoverEvent) {
+    if (tr === mousehoverEvent) {
       action(element, mousedownEvent, self.show);
       action(element, mouseenterEvent, self.show);
 
@@ -226,13 +218,11 @@ const toggleTooltipOpenHandlers = (self: Tooltip, add?: boolean) => {
   const parentOffcanvas = closest(element, `.${offcanvasString}`);
 
   /* istanbul ignore else */
-  if (!isMedia(element)) {
-    const win = getWindow(element);
-    const overflow = offsetHeight !== scrollHeight;
-    const scrollTarget = overflow && container === offsetParent ? container : win;
-    action(scrollTarget, resizeEvent, self.update, passiveHandler);
-    action(scrollTarget, scrollEvent, self.update, passiveHandler);
-  }
+  const win = getWindow(element);
+  const overflow = offsetHeight !== scrollHeight;
+  const scrollTarget = overflow && container === offsetParent ? container : win;
+  action(scrollTarget, resizeEvent, self.update, passiveHandler);
+  action(scrollTarget, scrollEvent, self.update, passiveHandler);
 
   // dismiss tooltips inside modal / offcanvas
   if (parentModal) action(parentModal, `hide.bs.${modalString}`, self.hide);
@@ -270,6 +260,7 @@ export default class Tooltip extends BaseComponent {
   declare offsetParent?: HTMLElement;
   declare enabled: boolean;
   declare id: string;
+  declare onHideComplete?: () => void;
 
   /**
    * @param target the target element
@@ -346,12 +337,8 @@ export default class Tooltip extends BaseComponent {
 
   // TOOLTIP PUBLIC METHODS
   // ======================
-  /**
-   * Shows the tooltip.
-   *
-   * @param e the `Event` object
-   */
-  show(e?: Event) {
+  /** Shows the tooltip. */
+  show() {
     const { options, tooltip, element, container, offsetParent, id } = this;
     const { animation } = options;
     const outTimer = Timer.get(element, 'out');
@@ -371,7 +358,7 @@ export default class Tooltip extends BaseComponent {
 
           setAttribute(element, ariaDescribedBy, `#${id}`);
 
-          this.update(e);
+          this.update();
           toggleTooltipOpenHandlers(this, true);
 
           /* istanbul ignore else */
@@ -389,10 +376,9 @@ export default class Tooltip extends BaseComponent {
   /**
    * Hides the tooltip.
    *
-   * @param e the dispose callback
    * @param callback the dispose callback
    */
-  hide(e?: Event, callback?: () => void) {
+  hide() {
     const { options, tooltip, element, container, offsetParent } = this;
     const { animation, delay } = options;
 
@@ -408,13 +394,13 @@ export default class Tooltip extends BaseComponent {
 
           if (hideTooltipEvent.defaultPrevented) return;
 
-          this.update(e); // use Event
+          this.update();
           removeClass(tooltip, showClass);
           toggleTooltipOpenHandlers(this);
 
           /* istanbul ignore else */
-          if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(this, callback));
-          else tooltipHiddenAction(this, callback);
+          if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(this));
+          else tooltipHiddenAction(this);
         },
         delay + 17,
         'out',
@@ -424,22 +410,18 @@ export default class Tooltip extends BaseComponent {
 
   /**
    * Updates the tooltip position.
-   *
-   * @param e the `Event` object
    */
-  update(e?: Event) {
-    styleTip<Tooltip>(this, e as (Event & PointerEvent) | undefined);
+  update() {
+    styleTip<Tooltip>(this);
   }
 
   /**
    * Toggles the tooltip visibility.
-   *
-   * @param e the `Event` object
    */
-  toggle(e?: Event) {
+  toggle() {
     const { tooltip, container, offsetParent } = this;
 
-    if (tooltip && !hasPopup(tooltip, container === offsetParent ? container : undefined)) this.show(e);
+    if (tooltip && !hasPopup(tooltip, container === offsetParent ? container : undefined)) this.show();
     else this.hide();
   }
 
@@ -460,7 +442,8 @@ export default class Tooltip extends BaseComponent {
     /* istanbul ignore else */
     if (enabled) {
       if (tooltip && hasPopup(tooltip, container === offsetParent ? container : undefined) && animation) {
-        this.hide(undefined, () => toggleTooltipHandlers(this));
+        this.onHideComplete = () => toggleTooltipHandlers(this);
+        this.hide();
       } else {
         toggleTooltipHandlers(this);
       }
@@ -502,7 +485,8 @@ export default class Tooltip extends BaseComponent {
 
     if (options.animation && tooltip && hasPopup(tooltip, container === offsetParent ? container : undefined)) {
       this.options.delay = 0; // reset delay
-      this.hide(undefined, callback);
+      this.onHideComplete = callback;
+      this.hide();
     } else {
       callback();
     }

@@ -2290,13 +2290,6 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                         <code>&lt;button class="btn-close" aria-label="Close"&gt;&lt;/button&gt;</code><br>
                         This option allows you to set an <code>HTMLElement</code> to be cloned and used as the <code>dismiss</code> button.<br>
                         <b>This option is JavaScript API only.</b></td>
-                    </tr>                    
-                    <tr>
-                      <td><code>container</code></td>
-                      <td><em>selector</em><br><em>HTMLElement</em></td>
-                      <td><code>&lt;body&gt;</code></td>
-                      <td>The container where your popovers are appended to. You can set the option via JavaScript or the
-                        <code>data-bs-container="#elementID"</code> attribute.</td>
                     </tr>
                     <tr>
                       <td><code>content</code></td>
@@ -2393,16 +2386,8 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                   </tbody>
                 </table>
               </div>
-              <p>The <b>Popover</b> component has a built in method to determine the best <code>container</code> option
-                by default, which may also override the developer configured container when its position doesn't meet the
-                layout requirements. Essentially it will find the closest parent that is not wrapped in any other parent with
-                <code>position: relative</code>, if not, the <code>&lt;body&gt;</code> is used. This serves two main purposes:</p>
-              <ul>
-                <li>one - it will eliminate the browser notice of long render times, usually 30-50ms, which is long enough to
-                  produce jank or scroll interruptions;</li>
-                <li>two - it will make sure that no matter the context or configuration, the component delivers the best
-                  possible outcome in showing the popover within the viewport.</li>
-              </ul>
+              <p>The <b>Popover</b> component no longer requires the <code>container</code> option</p>
+
               <p>If a proper <code>template</code> is not specified via JavaScript or the <code>content</code> option is not set
                 in any way, the <b>Popover</b> will not be initialized for that specific element.</p>
               <p>When your popover title and/or content are HTML markup strings, remember to 
@@ -3587,13 +3572,6 @@ myToastInit.dispose();
                         to the tooltip to enable the transition.</td>
                     </tr>
                     <tr>
-                      <td><code>container</code></td>
-                      <td><em>selector</em><br>or <em>HTMLElement</em></td>
-                      <td><code>&lt;body&gt;</code></td>
-                      <td>The container where your tooltips get appended to. You can set the option via JavaScript or the
-                        <code>data-bs-container="#elementID"</code> attribute.</td>
-                    </tr>
-                    <tr>
                       <td><code>customClass</code></td>
                       <td><em>string</em></td>
                       <td><em>true</em></td>
@@ -3674,9 +3652,8 @@ myToastInit.dispose();
                   </tbody>
                 </table>
               </div>
-              <p>Now since <b>Popover</b> extends the <b>Tooltip</b> component they share the same built in method to determine the
-                best <code>container</code> option by default, the event lock mechanism and most options or automatic repositioning.</p>
-              <p>When your tooltip title is an HTML markup string, remember to
+              <p>Now since <b>Popover</b> extends the <b>Tooltip</b> component, the <code>container</code> option is now deprecated starting
+                with BSN v5. When your tooltip title is an HTML markup string, remember to
                 <a href="https://www.npmjs.com/package/sanitizer">sanitize the content</a>.</p>
             </section>
           
@@ -4043,7 +4020,7 @@ new BSN.Tooltip('#selector',options).show();
       <footer class="mt-3 pt-3 border-top">
         <div class="container">
           <p class="float-end"><a href="#myCarousel">Back to top</a></p>
-          <p><a href="http://themeforest.net/user/dnp_theme" rel="noreferrer" target="_blank">dnp_theme</a> &copy; 2015-2022.</p>
+          <p><a href="http://themeforest.net/user/dnp_theme" rel="noreferrer" target="_blank">dnp_theme</a> &copy; 2015-2023.</p>
         </div>
       </footer>
     </div>

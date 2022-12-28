@@ -300,7 +300,7 @@ export declare class Tooltip extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Tooltip;
 	static getInstance: (element: HTMLElement) => Tooltip | null;
-	static styleTip: <T extends Tooltip>(self: T, e?: (Event & PointerEvent) | undefined) => void;
+	static styleTip: <T extends Tooltip>(self: T) => void;
 	options: TooltipOptions;
 	btn?: HTMLElement;
 	tooltip?: HTMLElement;
@@ -309,6 +309,7 @@ export declare class Tooltip extends BaseComponent {
 	offsetParent?: HTMLElement;
 	enabled: boolean;
 	id: string;
+	onHideComplete?: () => void;
 	/**
 	 * @param target the target element
 	 * @param config the instance options
@@ -322,31 +323,22 @@ export declare class Tooltip extends BaseComponent {
 	 * Returns component default options.
 	 */
 	get defaults(): TooltipOptions;
-	/**
-	 * Shows the tooltip.
-	 *
-	 * @param e the `Event` object
-	 */
-	show(e?: Event): void;
+	/** Shows the tooltip. */
+	show(): void;
 	/**
 	 * Hides the tooltip.
 	 *
-	 * @param e the dispose callback
 	 * @param callback the dispose callback
 	 */
-	hide(e?: Event, callback?: () => void): void;
+	hide(): void;
 	/**
 	 * Updates the tooltip position.
-	 *
-	 * @param e the `Event` object
 	 */
-	update(e?: Event): void;
+	update(): void;
 	/**
 	 * Toggles the tooltip visibility.
-	 *
-	 * @param e the `Event` object
 	 */
-	toggle(e?: Event): void;
+	toggle(): void;
 	/** Enables the tooltip. */
 	enable(): void;
 	/** Disables the tooltip. */
@@ -374,7 +366,7 @@ export declare class Popover extends Tooltip {
 	static selector: string;
 	static init: (element: HTMLElement) => Popover;
 	static getInstance: (element: HTMLElement) => Popover | null;
-	static styleTip: <T extends Tooltip>(self: T, e?: (Event & PointerEvent) | undefined) => void;
+	static styleTip: <T extends Tooltip>(self: T) => void;
 	options: PopoverOptions;
 	/**
 	 * @param target the target element
