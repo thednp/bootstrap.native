@@ -25,7 +25,6 @@ Check out the `bootstrap.native` Wiki pages, they're updated with almost every n
   * [Locally Hosted](https://github.com/thednp/bootstrap.native/wiki/How-to-use#working-locally) - download and copy in your project `assets/js` folder, then use proper markup to enable BSN on your pages
   * [ES6+ Example](https://github.com/thednp/bootstrap.native/wiki/How-to-use#es6es7-basic-example) - modern application would like you to `import BSN from "@thednp/bootstrap.native"`
   * [NPM Installation](https://github.com/thednp/bootstrap.native/wiki/How-to-use#npm) - just execute `npm install @thednp/bootstrap.native` or mark it as dependency and take it from there
-  * [Custom Builds](https://github.com/thednp/bootstrap.native/wiki/How-to-use#custom-builds) - use rollup build scripts to create your own custom builds, only with the components you need
   * [Dynamic Content](https://github.com/thednp/bootstrap.native/wiki/How-to-use#dynamic-content) - use the library callbacks with your `turbolinks:load`, `mount`, `load` and similar events
   * [RequireJS/CommonJS](https://github.com/thednp/bootstrap.native/wiki/How-to-use#requirejs-commonjs) - NodeJS applications would like you to `const BSN = require("@thednp/bootstrap.native")` 
   * [Factory Methods](https://github.com/thednp/bootstrap.native/wiki/How-to-use#note-about-the-factory-methods) - for NodeJS apps you need to have `document` and `window` in scope
