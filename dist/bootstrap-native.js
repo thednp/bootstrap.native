@@ -1297,11 +1297,12 @@
       setScrollbar = function () {
         var openModal = hasClass(DOC[body],component+'-open'),
             bodyStyle = DOC[body].currentStyle || globalObject[getComputedStyle](DOC[body]),
-            bodyPad = parseInt((bodyStyle[paddingRight]), 10), itemPad;
+            bodyPad = parseInt((bodyStyle[paddingRight]), 10), itemPad,
+            verticalScroll = DOC[body][scrollHeight] > HTML[clientHeight];
   
-        DOC[body][style][paddingRight] = (bodyPad + (openModal?0:scrollBarWidth)) + 'px';
+        if ( verticalScroll ) DOC[body][style][paddingRight] = (bodyPad + (openModal?0:scrollBarWidth)) + 'px';
         modal[style][paddingRight] = (scrollBarWidth?scrollBarWidth+'px':'');
-        if (fixedItems[length]){
+        if (fixedItems[length] && verticalScroll){
           for (var i = 0; i < fixedItems[length]; i++) {
             itemPad = (fixedItems[i].currentStyle || globalObject[getComputedStyle](fixedItems[i]))[paddingRight];
             fixedItems[i][style][paddingRight] = ( parseInt(itemPad) + (openModal?0:scrollBarWidth) ) + 'px';
