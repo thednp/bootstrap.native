@@ -1,25 +1,15 @@
-// Native JavaScript for Bootstrap 4 v2.0.28 | © dnp_theme | MIT-License
+// Native JavaScript for Bootstrap 4 - v2.0.28 | © dnp_theme | MIT-License
 (function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD support:
-    define([], factory);
-  } else if (typeof module === 'object' && module.exports) {
+  if (typeof module === 'object' && module.exports) {
     // CommonJS-like:
     module.exports = factory();
+  } else if (typeof define === 'function' && define.amd) {
+    // AMD support:
+    define([], factory);
   } else {
     // Browser globals (root is window)
-    var bsn = factory();
-    root.Alert = bsn.Alert;
-    root.Button = bsn.Button;
-    root.Carousel = bsn.Carousel;
-    root.Collapse = bsn.Collapse;
-    root.Dropdown = bsn.Dropdown;
-    root.Modal = bsn.Modal;
-    root.Popover = bsn.Popover;
-    root.ScrollSpy = bsn.ScrollSpy;
-    root.Tab = bsn.Tab;
-    root.Toast = bsn.Toast;
-    root.Tooltip = bsn.Tooltip;
+    root = root || self;
+    root.BSN = factory();
   }
 }(this, function () {
   
@@ -28,12 +18,10 @@
   "use strict";
   
   // globals
-  var globalObject = typeof global !== 'undefined' ? global : this||window,
-    DOC = document, HTML = DOC.documentElement, body = 'body', // allow the library to be used in <head>
+  var DOC = document, HTML = DOC.documentElement, body = 'body', // allow the library to be used in <head>
   
     // Native JavaScript for Bootstrap Global Object
-    BSN = globalObject.BSN = {},
-    supports = BSN.supports = [],
+    supports = [],
   
     // function toggle attributes
     dataToggle    = 'data-toggle',
@@ -230,7 +218,7 @@
             result = true;
           }
         });
-        one(globalObject, null, null, opts);
+        one(document, null, null, opts);
       } catch (e) {}
   
       return result;
@@ -240,7 +228,7 @@
     passiveHandler = supportPassive ? { passive: true } : false,
     // transitions
     getTransitionDurationFromElement = function(element) {
-      var duration = supportTransitions ? globalObject[getComputedStyle](element)[transitionDuration] : 0;
+      var duration = supportTransitions ? window[getComputedStyle](element)[transitionDuration] : 0;
       duration = parseFloat(duration);
       duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
       return duration; // we take a short offset to make sure we fire on the next frame after animation
@@ -262,8 +250,8 @@
     // tooltip / popover stuff
     getScroll = function() { // also Affix and ScrollSpy uses it
       return {
-        y : globalObject.pageYOffset || HTML[scrollTop],
-        x : globalObject.pageXOffset || HTML[scrollLeft]
+        y : window.pageYOffset || HTML[scrollTop],
+        x : window.pageXOffset || HTML[scrollLeft]
       }
     },
     styleTip = function(link,element,position,parent) { // both popovers and tooltips (target,tooltip,placement,elementToAppendTo)
@@ -347,7 +335,6 @@
       arrowLeft && (arrow[style][left] = arrowLeft + 'px');
     };
   
-  BSN.version = '2.0.28';
   
   /* Native JavaScript for Bootstrap 4 | Alert
   -------------------------------------------*/
@@ -667,7 +654,7 @@
         leftArrow && action( leftArrow, clickEvent, controlsHandler );
       
         indicator && action( indicator, clickEvent, indicatorHandler );
-        self[keyboard] && action( globalObject, keydownEvent, keyHandler );
+        self[keyboard] && action( window, keydownEvent, keyHandler );
       },
       // touch events
       toggleTouchEvents = function(action){
@@ -719,7 +706,7 @@
       // private methods
       isElementInScrollRange = function () {
         var rect = element[getBoundingClientRect](),
-          viewportHeight = globalObject[innerHeight] || HTML[clientHeight]
+          viewportHeight = window[innerHeight] || HTML[clientHeight]
         return rect[top] <= viewportHeight && rect[bottom] >= 0; // bottom && top
       },
       setActivePage = function( pageIndex ) { //indicators
@@ -1197,7 +1184,7 @@
       // private methods
       setScrollbar = function () {
         var openModal = hasClass(DOC[body],component+'-open'),
-          bodyStyle = globalObject[getComputedStyle](DOC[body]),
+          bodyStyle = window[getComputedStyle](DOC[body]),
           bodyPad = parseInt((bodyStyle[paddingRight]), 10), itemPad,
           verticalScroll = DOC[body][scrollHeight] > HTML[clientHeight];
   
@@ -1205,7 +1192,7 @@
         modal[style][paddingRight] = (scrollBarWidth?scrollBarWidth+'px':'');
         if (fixedItems[length] && verticalScroll){
           for (var i = 0; i < fixedItems[length]; i++) {
-            itemPad = globalObject[getComputedStyle](fixedItems[i])[paddingRight];
+            itemPad = window[getComputedStyle](fixedItems[i])[paddingRight];
             fixedItems[i][style][paddingRight] = ( parseInt(itemPad) + (openModal?0:scrollBarWidth) ) + 'px';
           }
         }
@@ -1249,7 +1236,7 @@
         overlay === null && (removeClass(DOC[body],component+'-open'), resetScrollbar());
       },
       toggleEvents = function(action){
-        action(globalObject, resizeEvent, self.update, passiveHandler);
+        action(window, resizeEvent, self.update, passiveHandler);
         action(modal, clickEvent, dismissHandler);
         action(DOC, keydownEvent, keyHandler);
       },
@@ -1564,7 +1551,7 @@
           !self[dismissible] && action( element, 'blur', self.hide );
         }
         self[dismissible] && action( DOC, clickEvent, dismissibleHandler );     
-        action( globalObject, resizeEvent, self.hide, passiveHandler );
+        action( window, resizeEvent, self.hide, passiveHandler );
       },
   
       // triggers
@@ -1661,8 +1648,8 @@
         links = spyTarget && spyTarget[getElementsByTagName]('A'),
         offset = parseInt(options['offset'] || offsetData) || 10,      
         items = [], targetItems = [], scrollOffset,
-        scrollTarget = element[offsetHeight] < element[scrollHeight] ? element : globalObject, // determine which is the real scrollTarget
-        isWindow = scrollTarget === globalObject;  
+        scrollTarget = element[offsetHeight] < element[scrollHeight] ? element : window, // determine which is the real scrollTarget
+        isWindow = scrollTarget === window;  
   
     // populate items and targets
     for (var i=0, il=links[length]; i<il; i++) {
@@ -1710,7 +1697,7 @@
       },
       toggleEvents = function(action){
         action( scrollTarget, scrollEvent, self.refresh, passiveHandler );
-        action( globalObject, resizeEvent, self.refresh, passiveHandler );
+        action( window, resizeEvent, self.refresh, passiveHandler );
       },
       updateItems = function(){
         scrollOffset = isWindow ? getScroll().y : element[scrollTop];
@@ -2142,11 +2129,11 @@
       },
       // triggers
       showAction = function() {
-        on( globalObject, resizeEvent, self.hide, passiveHandler );
+        on( window, resizeEvent, self.hide, passiveHandler );
         dispatchCustomEvent.call(element, shownCustomEvent);
       },
       hideAction = function() {
-        off( globalObject, resizeEvent, self.hide, passiveHandler );
+        off( window, resizeEvent, self.hide, passiveHandler );
         removeToolTip();
         dispatchCustomEvent.call(element, hiddenCustomEvent);
       },
@@ -2216,20 +2203,23 @@
   
   /* Native JavaScript for Bootstrap | Initialize Data API
   --------------------------------------------------------*/
-  var initializeDataAPI = function( constructor, collection ){
+  
+  var initCallback = function(lookUp){
+    lookUp = lookUp || DOC;
+    var initializeDataAPI = function( constructor, collection ){
       for (var i=0, l=collection[length]; i<l; i++) {
         new constructor(collection[i]);
       }
-    },
-    initCallback = BSN.initCallback = function(lookUp){
-      lookUp = lookUp || DOC;
-      for (var i=0, l=supports[length]; i<l; i++) {
-        initializeDataAPI( supports[i][1], lookUp[querySelectorAll] (supports[i][2]) );
-      }
     };
+    for (var i=0, l=supports[length]; i<l; i++) {
+      initializeDataAPI( supports[i][1], lookUp[querySelectorAll] (supports[i][2]) );
+    }
+  };
   
   // bulk initialize all components
   DOC[body] ? initCallback() : on( DOC, 'DOMContentLoaded', function(){ initCallback(); } );
+  
+  var version = '2.0.28';
   
   return {
     Alert: Alert,
@@ -2242,6 +2232,9 @@
     ScrollSpy: ScrollSpy,
     Tab: Tab,
     Toast: Toast,
-    Tooltip: Tooltip
+    Tooltip: Tooltip,
+    initCallback: initCallback,
+    supports: supports,
+    version: version
   };
 }));
