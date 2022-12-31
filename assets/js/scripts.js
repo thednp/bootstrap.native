@@ -33,7 +33,7 @@ var firstModalContent = '<div class="modal-header">'
 		+'</div>';
 
 // init the modal
-var modalInitJS = new Modal(myModalJS, {
+var modalInitJS = new BSN.Modal(myModalJS, {
 	content: firstModalContent,
 	backdrop: 'static'
 });
@@ -164,7 +164,7 @@ makeMeDropdown.addEventListener('click', function(e){
 		var formDropdown = document.getElementById('formDropdown');
 
 		// initiate with option
-		var DropdownInit = new Dropdown(formDropdown, true);
+		var DropdownInit = new BSN.Dropdown(formDropdown, true);
 
 		// NEW: attach Dropdown original events
 		formDropdown.parentNode.addEventListener('show.bs.dropdown', function(e){
@@ -227,17 +227,17 @@ document.getElementById('alertDemo').addEventListener('closed.bs.alert', functio
 
 
 //demo popover. trigger via click
-var popover1 = new Popover('#popover-via-click', { trigger: 'click'} );
+var popover1 = new BSN.Popover('#popover-via-click', { trigger: 'click'} );
 
 // demo popover, using template
 var someTitleFromOtherCode = 'Popover via JavaScript <span class="label label-primary">FOCUS</span>';
 var someContentFromOuterSpace = '<p>Some sample message from outer space wrapped in &lt;p&gt; tags. You can add your own functions to combine with Popover template as you wish.</p>';
-var popover2 = new Popover('.popover-via-template', {
+var popover2 = new BSN.Popover('.popover-via-template', {
 	trigger: 'focus',
 	template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title">'+someTitleFromOtherCode+'</h3><div class="popover-content">'+someContentFromOuterSpace+'</div></div>'
 });
 
-// new Popover events
+// new BSN.Popover events
 var popoverEvents = document.getElementById('popoverWithEvents');
 popoverEvents.addEventListener('show.bs.popover', function(){ console.log('The show.bs.popover event fired for #' + popoverEvents.id); }, false);
 popoverEvents.addEventListener('shown.bs.popover', function(){ console.log('The shown.bs.popover event fired for #' + popoverEvents.id); }, false);
@@ -250,7 +250,7 @@ var btn = document.getElementById('myButton');
 var success = document.getElementById('successButton'),	successOuter = success.outerHTML;
 
 btn.addEventListener('click', function() {
-	Button(btn,'loading');
+	BSN.Button(btn,'loading');
 	setTimeout(function() {
 		if ( !document.getElementById('successButton') ) {
 
@@ -260,7 +260,7 @@ btn.addEventListener('click', function() {
 
 			// reidentify the new alert and reinit alert
 			success = document.getElementById('successButton');
-			new Alert(success.querySelector('[data-dismiss="alert"]')); // initialize if not already
+			new BSN.Alert(success.querySelector('[data-dismiss="alert"]')); // initialize if not already
 		}
 
 		success.style.display = 'block';
@@ -268,7 +268,7 @@ btn.addEventListener('click', function() {
 			success.className += ' in';
 		}, 10)
 
-		Button(btn,'reset');
+		BSN.Button(btn,'reset');
 	}, 2000)
 });
 
@@ -297,7 +297,7 @@ mainSlider.addEventListener('slid.bs.carousel', function(e) {
 
 // JS init for carousel example
 // var exampleCarousel = document.getElementById('carousel-example-generic');
-// var exampleCarouselInit = new Carousel(exampleCarousel);
+// var exampleCarouselInit = new BSN.Carousel(exampleCarousel);
 
 /* side-nav autoresize on window scroll and resize */
 var sideNav = document.getElementById('side-nav');
@@ -358,36 +358,36 @@ document.getElementById('radioButtons').addEventListener('change.bs.button', fun
 radioBtns[0].addEventListener('change.bs.button', function() { console.log( 'This handler is bound by the "change" of the FIRST RADIO button only.' ); });
 
 
-// new Affix events, well some of them
+// new BSN.Affix events, well some of them
 var navScrollspy = document.getElementById('nav-scrollspy');
 navScrollspy.addEventListener('affix.bs.affix', function(e) {	console.log( 'The "affix.bs.affix" event fired for #' + e.target.id );}, false );
 navScrollspy.addEventListener('affix-top.bs.affix', function(e) {	console.log( 'The "affix-top.bs.affix" event fired for #' + e.target.id );}, false );
 navScrollspy.addEventListener('affix-bottom.bs.affix', function(e) { console.log( 'The "affix-bottom.bs.affix" event fired for #' + e.target.id ); }, false );
 
-// new Collapse events
+// new BSN.Collapse events
 var collapseExample = document.getElementById('collapseExample');
 collapseExample.addEventListener('show.bs.collapse', function(){ console.log('The show.bs.collapse event fired for #' + collapseExample.id); },false);
 collapseExample.addEventListener('shown.bs.collapse', function(){ console.log('The shown.bs.collapse event fired for #' + collapseExample.id); },false);
 collapseExample.addEventListener('hide.bs.collapse', function(){ console.log('The hide.bs.collapse event fired for #' + collapseExample.id); },false);
 collapseExample.addEventListener('hidden.bs.collapse', function(){ console.log('The hidden.bs.collapse event fired for #' + collapseExample.id); },false);
 
-// new ScrollSpy events
+// new BSN.ScrollSpy events
 var scrollSpyElement = document.querySelector('[data-target="#navbar-example"]');
 scrollSpyElement.addEventListener('activate.bs.scrollspy', function(e){
 	var related = e.relatedTarget ? (' by relatedTarget: ' + e.relatedTarget.tagName + '.' + e.relatedTarget.getAttribute('href') ) : '';
 	console.log('The activate.bs.scrollspy event fired for div[data-target="#navbar-example"]' + related ); 
 }, false);
 
-// new Tab events
+// new BSN.Tab events
 var tabEventsExample = document.getElementById('tabEventsExample'),
-	tabEventsExampleInit = new Tab(tabEventsExample, {preserve: true});
+	tabEventsExampleInit = new BSN.Tab(tabEventsExample, {preserve: true});
 tabEventsExample.addEventListener('show.bs.tab', function() { console.log('The show.bs.tab event fired for #' + tabEventsExample.id); }, false);
 tabEventsExample.addEventListener('shown.bs.tab', function() { console.log('The shown.bs.tab event fired for #' + tabEventsExample.id); }, false);
 tabEventsExample.addEventListener('hide.bs.tab', function() { console.log('The hide.bs.tab event fired for #' + tabEventsExample.id); }, false);
 tabEventsExample.addEventListener('hidden.bs.tab', function() { console.log('The hidden.bs.tab event fired for #' + tabEventsExample.id); }, false);
 
 
-// new Tooltip events
+// new BSN.Tooltip events
 var tooltipEvents = document.getElementById('tooltipWithEvents');
 tooltipEvents.addEventListener('show.bs.tooltip', function(){ console.log('The show.bs.tooltip event fired for #' + tooltipEvents.id); }, false);
 tooltipEvents.addEventListener('shown.bs.tooltip', function(){ console.log('The shown.bs.tooltip event fired for #' + tooltipEvents.id); }, false);
