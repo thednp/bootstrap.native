@@ -2249,9 +2249,6 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
               Unlike our previous versions, this component now extends the <b><a href="#tooltipComponent">Tooltip</a></b> component
               since both share the same utilities and functionality except that <b>Popover</b> has a different template and the
               ability to change how events are handled via <a href="#popoverOptions">additional options</a>.</p>
-            <p>A very special case is handled different with <code>&lt;img&gt;</code> or <code>&lt;svg&gt;</code> targets, the popover 
-              will follow the user cursor. The reason for this implementation is that in most cases images extend beyond the viewport 
-              or in other cases the media elements are partly transparent, so the popover will better follow the user's cursor.</p>
             <p>Our implementation can automatically reposition your popovers when showing them to the user, as well as when 
               a popover is visible and the <code>resize</code> and <code>scroll</code> events produce layout changes in the page.</p>
             <p>On that note, Popover makes use of some <a rel="noreferrer" href="https://floating-ui.com/" target="_blank">floating-ui</a> 
@@ -3543,9 +3540,7 @@ myToastInit.dispose();
               <code>data-bs-toggle="tooltip"</code> attribute. Additionally, the component can do automatic placement without any
               options required or third party dependency and covers essential options, methods and original events.</p>
             <p>Our implementation can automatically reposition your tooltips when shown to the user, as well as when 
-              a tooltip is visible and the <code>resize</code> and <code>scroll</code> events produce layout changes in the page.</p>
-            <p>Just like the <b>Popover</b> component, your tooltips will also follow the user's cursor for <code>&lt;img&gt;</code> 
-              or <code>&lt;svg&gt;</code> targets.</p>              
+              a tooltip is visible and the <code>resize</code> and <code>scroll</code> events produce layout changes in the page.</p>            
           
             <section id="tooltipOptions">
               <h3>Tooltip Options</h3>
