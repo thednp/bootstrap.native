@@ -352,7 +352,7 @@ var myModal = document.getElementById('modalID');
 
 // initialize on a &lt;div class="modal"&gt; with all options
 // Note: options object is optional
-var myModalInstance = new Modal(myModal,
+var myModalInstance = new BSN.Modal(myModal,
 { // options object
   content: '&lt;div class="modal-body"&gt;Some content to be set on init&lt;/div&gt;', // sets modal content
   backdrop: 'static', // we don't want to dismiss Modal when Modal or backdrop is the click event target
@@ -360,7 +360,7 @@ var myModalInstance = new Modal(myModal,
 });
 
 // OR initialize and show the modal right away
-var myModalInstance = new Modal(myModal, options);
+var myModalInstance = new BSN.Modal(myModal, options);
 myModalInstance.show();
 // now you know why we don't need a show option
 </code></pre>
@@ -380,7 +380,7 @@ myModalInstance.show();
 var myButton = document.getElementById('buttonID');
 
 // initiate Modal on a triggering element
-var myModalInstance = new Modal(myButton,
+var myModalInstance = new BSN.Modal(myButton,
 { // options object
   content: '&lt;div class="modal-body"&gt;Some content to be set on init&lt;/div&gt;', // sets modal content
   keyboard: false // we don't want to dismiss Modal on pressing Esc key
@@ -552,14 +552,14 @@ var firstModalContent = '&lt;div class="modal-header"&gt;'
   +'&lt;/div&gt;';
 
 // initialize Modal for this triggering element
-var modalInitJS = new Modal(myModal, {
+var modalInitJS = new BSN.Modal(myModal, {
   content: firstModalContent,
   backdrop: 'static'
 });
 
 // OR initialize with no options provided
 // the options object is optional
-var modalInitJS = new Modal(myModal);
+var modalInitJS = new BSN.Modal(myModal);
 
 // when we click btnModal, open the modal
 btnModal.addEventListener('click', function(e){
@@ -602,7 +602,7 @@ var secondModalContent =
   +'&lt;/div&gt;';
 
 // initialize Modal for this triggering element
-var modalInitJS2 = new Modal(btnModal2, { backdrop: 'static' });
+var modalInitJS2 = new BSN.Modal(btnModal2, { backdrop: 'static' });
 
 // because we initialized the component for this button
 // this becomes the triggering element to hold the initialization object
@@ -806,18 +806,18 @@ changeModal2.addEventListener('click', function(){
 var myDropdown = document.getElementById('myDropdown');
 
 // initialize component with it's 'persist' option
-var myDropdownInit = new Dropdown( myDropdown, true );
+var myDropdownInit = new BSN.Dropdown( myDropdown, true );
 
 // OR initialize component with no option
 // the option is optional
-var myDropdownInit = new Dropdown( myDropdown );
+var myDropdownInit = new BSN.Dropdown( myDropdown );
 </code></pre>
               <p>All right, now we have an initialization reference, we can get to work with the component's method:</p>
 <pre><code class="language-javascript">// assuming the above, we can
 myDropdownInit.toggle();
 
 // or we can simply toggle the dropdown on initialization
-var newDropdownInitialization = new Dropdown(myDropdown).toggle();
+var newDropdownInitialization = new BSN.Dropdown(myDropdown).toggle();
 </code></pre>
 
               <p>Also assuming the above HTML was used for your dropdown-menu, we can also attach the original events to the parent of the triggering element, which is the <code>&lt;div class="dropdown"&gt;</code> element:</p>
@@ -907,7 +907,7 @@ makeMeDropdown.addEventListener('click', function(e){
     var formDropdown = document.getElementById('formDropdown');
 
     // initiate with option
-    var DropdownInit = new Dropdown(formDropdown, true);
+    var DropdownInit = new BSN.Dropdown(formDropdown, true);
 
     // also attach Dropdown original events
     formDropdown.parentNode.addEventListener('show.bs.dropdown', function(e){
@@ -1180,7 +1180,7 @@ var myScrollSpyElement = document.getElementsByClassName('scrollspy-example')[0]
 var myScrollSpyTarget = document.getElementById('myScrollSpyTarget');
 
 // initialize the ScrollSpy for this element
-var myScrollSpyInit = new ScrollSpy(myScrollSpyElement, {
+var myScrollSpyInit = new BSN.ScrollSpy(myScrollSpyElement, {
   // set options
   target : myScrollSpyTarget,
   // alternativelly, provide a valid selector string
@@ -1406,7 +1406,7 @@ var myTabsCollection = myTabs.getElementsByTagName('A');
 
 // initialize the component for all items in the collection
 for (var i = 0; i &lt; myTabsCollection.length; i++) {
-  new Tab(myTabsCollection[i], // our target
+  new BSN.Tab(myTabsCollection[i], // our target
   { // our options
     height: true
   });
@@ -1618,7 +1618,7 @@ var elementsTooltip = document.querySelectorAll('[title]');
 
 // attach a tooltip for each
 for (var i = 0; i &lt; elementsTooltip.length; i++){
-  new Tooltip(elementsTooltip[i], {
+  new BSN.Tooltip(elementsTooltip[i], {
     placement: 'top', //string
     animation: 'slideNfade', // CSS class
     delay: 150, // integer
@@ -1849,7 +1849,7 @@ var elementsPopover = document.querySelectorAll('[data-content]'); // also a cer
 
 // attach a popover for each
 for (var i = 0; i &lt; elementsPopover.length; i++){
-  new Popover(elementsPopover[i], {
+  new BSN.Popover(elementsPopover[i], {
     placement: 'top', //string
     animation: 'slideNfade', // CSS class
     delay: 100, // integer
@@ -1901,7 +1901,7 @@ var someTitleFromOtherCode = 'Sample title';
 var someContentFromOuterSpace = '&lt;p&gt;Some sample message.&lt;/p&gt;';
 
 //initiate Popover with the template
-var popover2 = new Popover('.popover-via-template', { // where .popover-via-template is the text input
+var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-template is the text input
   trigger: 'focus',
   template: '&lt;div class="popover" role="tooltip"&gt;'
   + '&lt;div class="arrow"&gt;&lt;/div&gt;'
@@ -2003,7 +2003,7 @@ var popover2 = new Popover('.popover-via-template', { // where .popover-via-temp
 var myWarningAlert = document.getElementById('myWarningAlert');
 
 // initialize
-var myWarningAlertInit = new Alert(myWarningAlert);
+var myWarningAlertInit = new BSN.Alert(myWarningAlert);
 </code></pre>
 
               <p>Also attach handlers to the original events:</p>
@@ -2182,7 +2182,7 @@ xhr.send();
 var myRadioButtonGroup = document.getElementById('myRadioButtonGroup');
 
 // initialize
-var myRadioButtonGroupINIT = new Button(myRadioButtonGroup);
+var myRadioButtonGroupINIT = new BSN.Button(myRadioButtonGroup);
 </code></pre>
 
               <p>If the component finds the markup to meet all requirements, it will initialize it and the <code>myRadioButtonGroup</code> element will store the initialization, just like the other components of the library:</p>
@@ -2441,7 +2441,7 @@ myRadioButtonGroup.getElementsByTagName('INPUT')[0].addEventListener('change.bs.
 var collapseLink = document.getElementById('collapseLink');
 
 // initialize the component for this collapse trigger
-var myCollapseInit = new Collapse(collapseLink)
+var myCollapseInit = new BSN.Collapse(collapseLink)
 </code></pre>
 
               <p>This now enables you to work with the public methods.</p>
@@ -2478,7 +2478,7 @@ var myAccordionTriggers = myAccordion.querySelectorAll('[data-toggle="collapse"]
 
 // initialize the component for each collapse trigger
 for (var i = 0; i &lt; myAccordionTriggers.length; i++){
-  new Collapse(myAccordionTriggers[i], {
+  new BSN.Collapse(myAccordionTriggers[i], {
     parent: myAccordion // this is the above defined object
   });
 }
@@ -2708,7 +2708,7 @@ var myCollapseTriggerInit = myCollapseTrigger.Collapse;
 var myCarousel = document.getElementById('myCarousel');
 
 // initialize with some options
-var myCarouselInit = new Carousel(myCarousel, { // these options values will override the ones set via DATA API
+var myCarouselInit = new BSN.Carousel(myCarousel, { // these options values will override the ones set via DATA API
   interval: false,
   pause: false,
   keyboard: false
@@ -2971,7 +2971,7 @@ mainSlider.addEventListener('slid.bs.carousel', function(e) {
 var myAffix = document.getElementById('myAffix');
 
 // initialize
-var theAffixInit = new Affix(myAffix, {
+var theAffixInit = new BSN.Affix(myAffix, {
   target: '#use',
   offsetBottom: 120,
 });
@@ -2986,7 +2986,7 @@ theAffixInit.update();
 var myAffix = document.getElementById('myAffix');
 
 // initialize with some cool options
-var theAffixInit = new Affix(myAffix, {
+var theAffixInit = new BSN.Affix(myAffix, {
   offsetTop: function() {
     var rectTop = document.getElementById('use').getBoundingClientRect().top;
     var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
