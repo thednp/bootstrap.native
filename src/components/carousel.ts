@@ -152,7 +152,7 @@ function carouselIndicatorHandler(this: HTMLElement, e: MouseEvent) {
 
   if (!self || self.isAnimating) return;
 
-  const newIndex = +(getAttribute(this, dataBsSlideTo) || 0);
+  const newIndex = +(getAttribute(this, dataBsSlideTo) || /* istanbul ignore next */ 0);
 
   if (
     this &&

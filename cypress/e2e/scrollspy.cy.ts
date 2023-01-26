@@ -71,7 +71,7 @@ describe('ScrollSpy Class Tests', () => {
         Object.assign(nav.style, {top: '0px'});
         nav.classList.add('position-sticky')
       })
-    cy.viewport(780,1000)
+    // cy.viewport(780,1000)
     cy.get(ScrollSpy.selector).then(($element) => {
         cy.wrap(new ScrollSpy($element[0])).as('pageInstance');
       })
@@ -84,7 +84,15 @@ describe('ScrollSpy Class Tests', () => {
     cy.get('@pageInstance').its('items').then(itms => {
       cy.wrap(itms).eq(0).should('not.have.class', 'active')
     })
-    // cy.wait(500)
+    cy.wait(200)
+    cy.viewport(400, 600)
+    cy.window().trigger('resize', { force: true })
+    cy.wait(200)
+    cy.get('@pageInstance').its('scrollTarget').scrollTo('bottom')
+    cy.wait(200)
+    cy.get('@pageInstance').its('items').then(itms => {
+      cy.wrap(itms).eq(4).should('have.class', 'active')
+    })
     cy.viewport(680,1000)
   });
 

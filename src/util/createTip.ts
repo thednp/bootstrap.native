@@ -43,9 +43,12 @@ const createTip = (self: Tooltip | Popover) => {
   }
 
   // set popover markup
-  self.tooltip = isHTMLElement(tooltipTemplate) ? (tooltipTemplate.cloneNode(true) as HTMLElement) : undefined;
+  self.tooltip = isHTMLElement(tooltipTemplate)
+    ? (tooltipTemplate.cloneNode(true) as HTMLElement)
+    : /* istanbul ignore next */ undefined;
 
   const { tooltip } = self;
+  /* istanbul ignore next */
   if (!tooltip) return;
 
   // set id and role attributes

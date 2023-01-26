@@ -86,7 +86,7 @@ const tooltipInitCallback = (element: HTMLElement) => new Tooltip(element);
 const removeTooltip = (self: Tooltip) => {
   const { element, tooltip, container, offsetParent } = self;
   removeAttribute(element, ariaDescribedBy);
-  removePopup(tooltip, container === offsetParent ? container : undefined);
+  removePopup(tooltip, container === offsetParent ? container : offsetParent);
 };
 
 /**
@@ -171,13 +171,13 @@ const toggleTooltipHandlers = (self: Tooltip, add?: boolean) => {
   const isPopover = self.name !== tooltipComponent;
   const dismissible = isPopover && (options as PopoverOptions).dismissible ? true : false;
 
-  if (trigger?.includes('manual')) return;
+  if (trigger.includes('manual')) return;
 
   self.enabled = !!add;
 
-  const triggerOptions = trigger?.split(' ');
+  const triggerOptions = trigger.split(' ');
 
-  triggerOptions?.forEach(tr => {
+  triggerOptions.forEach(tr => {
     /* istanbul ignore else */
     if (tr === mousehoverEvent) {
       action(element, mousedownEvent, self.show);
@@ -220,7 +220,7 @@ const toggleTooltipOpenHandlers = (self: Tooltip, add?: boolean) => {
   /* istanbul ignore else */
   const win = getWindow(element);
   const overflow = offsetHeight !== scrollHeight;
-  const scrollTarget = overflow && container === offsetParent ? container : win;
+  const scrollTarget = container === offsetParent && overflow ? container : win;
   action(scrollTarget, resizeEvent, self.update, passiveHandler);
   action(scrollTarget, scrollEvent, self.update, passiveHandler);
 
@@ -240,7 +240,11 @@ const toggleTooltipTitle = (self: Tooltip, content?: string) => {
   const titleAtt = [dataOriginalTitle, titleAttr];
   const { element } = self;
 
-  setAttribute(element, titleAtt[content ? 0 : 1], content || getAttribute(element, titleAtt[0]) || '');
+  setAttribute(
+    element,
+    titleAtt[content ? 0 : 1],
+    content || getAttribute(element, titleAtt[0]) || /* istanbul ignore next */ '',
+  );
   removeAttribute(element, titleAtt[content ? 1 : 0]);
 };
 
@@ -342,10 +346,11 @@ export default class Tooltip extends BaseComponent {
     const { options, tooltip, element, container, offsetParent, id } = this;
     const { animation } = options;
     const outTimer = Timer.get(element, 'out');
+    const tipContainer = container === offsetParent ? container : offsetParent;
 
     Timer.clear(element, 'out');
 
-    if (tooltip && !outTimer && !hasPopup(tooltip, container === offsetParent ? container : undefined)) {
+    if (tooltip && !outTimer && !hasPopup(tooltip, tipContainer)) {
       Timer.set(
         element,
         () => {
@@ -354,7 +359,7 @@ export default class Tooltip extends BaseComponent {
           if (showTooltipEvent.defaultPrevented) return;
 
           // append to container
-          appendPopup(tooltip, container === offsetParent ? container : undefined);
+          appendPopup(tooltip, tipContainer);
 
           setAttribute(element, ariaDescribedBy, `#${id}`);
 
@@ -373,11 +378,7 @@ export default class Tooltip extends BaseComponent {
     }
   }
 
-  /**
-   * Hides the tooltip.
-   *
-   * @param callback the dispose callback
-   */
+  /** Hides the tooltip. */
   hide() {
     const { options, tooltip, element, container, offsetParent } = this;
     const { animation, delay } = options;
@@ -385,7 +386,7 @@ export default class Tooltip extends BaseComponent {
     Timer.clear(element, 'in');
 
     /* istanbul ignore else */
-    if (tooltip && hasPopup(tooltip, container === offsetParent ? container : undefined)) {
+    if (tooltip && hasPopup(tooltip, container === offsetParent ? container : offsetParent)) {
       Timer.set(
         element,
         () => {
@@ -408,20 +409,16 @@ export default class Tooltip extends BaseComponent {
     }
   }
 
-  /**
-   * Updates the tooltip position.
-   */
+  /** Updates the tooltip position. */
   update() {
     styleTip<Tooltip>(this);
   }
 
-  /**
-   * Toggles the tooltip visibility.
-   */
+  /** Toggles the tooltip visibility. */
   toggle() {
     const { tooltip, container, offsetParent } = this;
 
-    if (tooltip && !hasPopup(tooltip, container === offsetParent ? container : undefined)) this.show();
+    if (tooltip && !hasPopup(tooltip, container === offsetParent ? container : offsetParent)) this.show();
     else this.hide();
   }
 
@@ -441,7 +438,7 @@ export default class Tooltip extends BaseComponent {
     const { animation } = options;
     /* istanbul ignore else */
     if (enabled) {
-      if (tooltip && hasPopup(tooltip, container === offsetParent ? container : undefined) && animation) {
+      if (tooltip && hasPopup(tooltip, container === offsetParent ? container : offsetParent) && animation) {
         this.onHideComplete = () => toggleTooltipHandlers(this);
         this.hide();
       } else {
@@ -483,7 +480,7 @@ export default class Tooltip extends BaseComponent {
     const { tooltip, container, offsetParent, options } = this;
     const callback = () => disposeTooltipComplete(this, () => super.dispose());
 
-    if (options.animation && tooltip && hasPopup(tooltip, container === offsetParent ? container : undefined)) {
+    if (options.animation && tooltip && hasPopup(tooltip, container === offsetParent ? container : offsetParent)) {
       this.options.delay = 0; // reset delay
       this.onHideComplete = callback;
       this.hide();

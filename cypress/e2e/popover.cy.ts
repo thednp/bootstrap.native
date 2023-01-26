@@ -18,6 +18,170 @@ describe('Popover Class Tests', () => {
     }
   });
 
+  it('Can handle horizontal position when both exceed top and bottom', () => {
+    cy.viewport(600, 200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      const { body } = $element[0].ownerDocument;
+      body.innerHTML = '<main class="container" style="padding: 10rem 27rem"></main>';
+      body.children[0].append($element[0].cloneNode(true))
+    })
+    cy.wait(200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      cy.wrap(new Popover($element[0], {
+        dismissible: false,
+        placement: 'left',
+        title: 'Popover Left',
+        content: 'This Popover can handle horizontal position when both exceed top and bottom. Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'
+      })).as('horizontal');
+    })
+    // cy.window().trigger('resize', { force: true })
+    // cy.wait(200)
+    cy.wait(200)
+    cy.get('@horizontal').invoke('toggle')
+    // cy.get('@horizontal').then(el => console.log(el))
+    cy.get('@horizontal').its('tooltip').should('have.class', 'show')
+    cy.scrollTo('100%', '0%', {duration: 0})
+    cy.wait(200)
+    cy.get('@horizontal').its('tooltip').should('have.class', 'bs-popover-end')
+    cy.scrollTo('topLeft', {duration: 0})
+    cy.wait(200)
+    cy.get('@horizontal').its('tooltip').should('have.class', 'bs-popover-start')
+    cy.wait(200)
+    cy.scrollTo('bottomLeft', {duration: 0})
+    cy.get('@horizontal').its('tooltip').should('have.class', 'bs-popover-start')
+    cy.wait(500)
+  })
+
+  it('Can handle vertical right', () => {
+    cy.viewport(400, 400)
+    cy.window().trigger('resize', { force: true })
+    cy.wait(200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      const { body } = $element[0].ownerDocument;
+      body.innerHTML = '<main style="padding: 15rem 25rem 15rem 1rem"></main>';
+      body.children[0].append($element[0].cloneNode(true))
+    })
+    cy.scrollTo('topRight', {duration: 0})
+    cy.wait(200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      cy.wrap(new Popover($element[0], {
+        dismissible: false,
+        placement: 'top',
+        title: 'Popover Right',
+        content: 'This Popover can handle vertical position when both exceed top and bottom. Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'
+      })).as('verticalRight');
+      cy.wait(200)
+      cy.get('@verticalRight').invoke('toggle')
+      // cy.get('@verticalRight').then(el => console.log(el))
+      cy.get('@verticalRight').its('tooltip').should('have.class', 'show')
+      cy.scrollTo('topLeft', {duration: 0}).then(() => {
+        cy.wait(200)
+        cy.get('@verticalRight').its('tooltip').should('have.class', 'show')
+        // cy.get('@verticalRight').invoke('dispose')
+      })
+      cy.wait(500)
+    })
+  })
+
+  it('Can handle vertical left', () => {
+    cy.viewport(400, 400)
+    cy.window().trigger('resize', { force: true })
+    cy.wait(200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      const { body } = $element[0].ownerDocument;
+      body.innerHTML = '<main style="padding: 15rem 5rem 15rem 25rem"></main>';
+      body.children[0].append($element[0].cloneNode(true))
+    })
+    cy.wait(200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      cy.wrap(new Popover($element[0], {
+        dismissible: false,
+        placement: 'top',
+        title: 'Popover Top',
+        content: 'This Popover can handle vertical position when both exceed top and bottom. Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'
+      })).as('verticalLeft');
+      cy.wait(200)
+      cy.get('@verticalLeft').invoke('toggle')
+      // cy.get('@verticalLeft').then(el => console.log(el))
+      cy.get('@verticalLeft').its('tooltip').should('have.class', 'show')
+      cy.scrollTo('topRight', {duration: 0}).then(() => {
+        // cy.wait(200)
+        cy.get('@verticalLeft').its('tooltip').should('have.class', 'show')
+        // cy.get('@verticalLeft').invoke('dispose')
+      })
+      cy.wait(500)
+    })
+  })
+  
+  it.skip('Can switch bottom to top', () => {
+    cy.viewport(400, 600)
+    cy.window().trigger('resize', { force: true })
+    cy.wait(200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      const { body } = $element[0].ownerDocument;
+      body.innerHTML = '<main style="padding: 20rem 15rem"></main>';
+      body.children[0].append($element[0].cloneNode(true))
+      $element[0].remove()
+    })
+    cy.scrollTo('bottom', {duration: 0})
+    cy.wait(200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      cy.wrap(new Popover($element[0], {
+        dismissible: false,
+        placement: 'bottom',
+        title: 'Popover Bottom',
+        content: 'This Popover can handle bottom position when both exceed top and bottom. Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'
+      })).as('bottom');
+      cy.wait(200)
+      cy.get('@bottom').invoke('toggle')
+      // .then(() => {
+        // cy.wait(200)
+        // cy.get('@bottom').then(el => console.log(el))
+        cy.get('@bottom').its('tooltip').should('have.class', 'bs-popover-bottom')
+        cy.scrollTo('top', {duration: 0})
+        .then(() => {
+          cy.wait(200)
+          cy.get('@bottom').its('tooltip').should('have.class', 'bs-popover-top')
+          // cy.get('@bottom').invoke('dispose')
+        })
+
+      // })
+    })
+    cy.wait(500)
+  })
+
+  it.skip('Can switch top to bottom', () => {
+    cy.viewport(400, 600)
+    cy.window().trigger('resize', { force: true })
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      const { body } = $element[0].ownerDocument;
+      body.innerHTML = '<main style="padding: 20rem 15rem"></main>';
+      body.children[0].append($element[0].cloneNode(true));
+      $element[0].remove()
+    })
+    cy.wait(200)
+    cy.get('[data-cy="popover"]').eq(0).then(($element) => {
+      cy.wrap(new Popover($element[0], {
+        dismissible: false,
+        placement: 'top',
+        title: 'Top Popover',
+        content: 'This Popover can handle top position when exceed top. Here we add more content for testing. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.'
+      })).as('top');
+      cy.wait(200)
+      cy.get('@top').invoke('toggle')
+      // cy.get('@vertical').then(el => console.log(el))
+      // cy.wait(200)
+      cy.get('@top').its('tooltip').should('have.class', 'bs-popover-top')
+      cy.scrollTo('bottom', {duration: 0})
+      .then(() => {
+        // cy.wait(200)
+        cy.get('@top').its('tooltip').should('have.class', 'bs-popover-bottom')
+        cy.get('@top').invoke('dispose')
+      })
+    })
+    cy.wait(500)
+  })
+
   it('Can do toggle() and dismissible', () => {
     cy.get('[data-cy="popover"]').eq(0).then(($element) => {
           const element = $element[0];

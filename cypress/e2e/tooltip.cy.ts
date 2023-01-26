@@ -128,17 +128,12 @@ describe('Tooltip Class Tests', () => {
     cy.log('can handle **focus**')
     cy.get('[data-cy="tooltip"]').eq(1).trigger('focusin')
     cy.get('[data-cy="tooltip"]').eq(1).focus()
-    // cy.get('.tooltip').should('have.class', 'show')
     cy.get('@instance').its('tooltip').then((tip) => {
       cy.wrap(tip).should('have.class', 'show')
     })
     cy.get('[data-cy="tooltip"]').eq(1).trigger('focusout')
     cy.get('[data-cy="tooltip"]').eq(1).blur()
-    // cy.get('.tooltip').should('not.exist')
-    cy.get('@instance').its('tooltip').then((tip) => {
-      cy.wrap(tip).should('not.exist')
-    })
-      // .wait(200)
+    cy.get('@instance').its('tooltip').should('not.exist')
   });
 
   it('Can do toggleEnabled()', () => {
@@ -159,59 +154,96 @@ describe('Tooltip Class Tests', () => {
     cy.get('@toggleEnable').its('enabled').should('be.true')
     cy.get('@toggleEnable').invoke('toggle')
     cy.get('@toggleEnable').its('tooltip').should('have.class', 'show').and('be.visible')
+    cy.get('@toggleEnable').invoke('dispose')
+    cy.get('@toggleEnable').its('tooltip').should('not.exist')
   });
 
-  it('Can be dismissed when closing a modal', () => {
+  it('Can be dismissed when closing an offcanvas', () => {
+    cy.visit('cypress/offcanvas.html')
+
+    cy.get('[data-cy="offcanvas"]').eq(0).then(($offcanvas) => {
+      cy.wrap(new Offcanvas($offcanvas[0])).as('offcanvas');
+    })
+    cy.get('[data-cy="offcanvas"] [data-bs-toggle="tooltip"]').eq(0).then(($tip) => {
+      cy.wrap(new Tooltip($tip[0])).as('tooltip_offcanvas');
+    })
+    cy.get('@offcanvas').invoke('toggle')
+    cy.wait(300)
+    cy.get('@tooltip_offcanvas').invoke('show')
+    cy.get('@tooltip_offcanvas').its('tooltip').should('have.class', 'show')
+    cy.wait(300)
+    cy.get('@offcanvas').invoke('toggle')
+    cy.get('@tooltip_offcanvas').its('tooltip').should('not.have.class', 'show').and('be.hidden')
+  });
+
+  it('Can be dismissed when closing an overflowing modal', () => {
     cy.visit('cypress/modal.html');
 
-    cy.get('.modal').then(($modal) => {
-        const modal = $modal[0];
-        const modalBody = modal.querySelector('.modal-body');
-        const doc = modal.ownerDocument;
-        const tooltipTarget = doc.createElement('button');
-        tooltipTarget.innerText = 'Tooltip Demo';
-        tooltipTarget.className = 'btn btn-success btn-lg';
-        tooltipTarget.setAttribute('data-bs-title', 'Tooltip Inside Modal');
-        tooltipTarget.setAttribute('data-bs-toggle', 'tooltip');
-        modalBody?.prepend(tooltipTarget);
-        cy.wrap(new Modal(modal)).as('modal');
+    cy.get('.modal').eq(0).then(($modal) => {
+        cy.wrap(new Modal($modal[0])).as('modal');
       })
     cy.get('[data-bs-toggle="tooltip"]').eq(0).then(($element) => {
         cy.wrap(new Tooltip($element[0])).as('tooltip_modal');
       })
     cy.get('@modal').invoke('show')
-    cy.get('@tooltip_modal').invoke('show')
+    cy.wait(200)
+    cy.get('@tooltip_modal').invoke('toggle')
     cy.get('@tooltip_modal').invoke('update')
-    cy.get('@tooltip_modal').its('tooltip').should('have.class', 'show').and('be.visible')
+      // .then(s => console.log(s))
+    cy.get('@modal').its('element').then($el => cy.wrap($el).scrollTo(0, 350))
+    // cy.log()
+    cy.wait(200)
+    cy.get('@tooltip_modal').its('tooltip').should('have.class', 'show')
+      .and('have.class', 'bs-tooltip-bottom').and('be.visible')
     cy.wait(200)
     cy.get('@modal').invoke('hide')
     cy.get('@tooltip_modal').its('tooltip').should('not.have.class', 'show').and('be.hidden')
   });
 
-  it('Can be dismissed when closing an offcanvas', () => {
-    cy.visit('cypress/offcanvas.html');
+  it('Can be dismissed when closing a small modal', () => {
+    cy.visit('cypress/modal.html');
 
-    cy.get('.offcanvas').then(($offcanvas) => {
-        const offcanvas = $offcanvas[0];
-        const offcanvasBody = offcanvas.querySelector('.offcanvas-body');
-        const doc = offcanvas.ownerDocument;
-        const tooltipTarget = doc.createElement('button');
-        tooltipTarget.innerText = 'Tooltip Demo';
-        tooltipTarget.setAttribute('data-bs-title', 'Tooltip Inside Offcanvas');
-        tooltipTarget.setAttribute('data-bs-toggle', 'tooltip');
-        tooltipTarget.className = 'btn btn-success btn-lg';
-        offcanvasBody?.prepend(tooltipTarget);
-        cy.wrap(new Offcanvas(offcanvas)).as('offcanvas');
+    cy.get('.modal').eq(1).then(($modal) => {
+        cy.wrap(new Modal($modal[0])).as('modal');
       })
-      .get('[data-bs-toggle="tooltip"]').eq(0).then(($element) => {
-        cy.wrap(new Tooltip($element[0])).as('tooltip_offcanvas');
+    cy.get('[data-bs-toggle="tooltip"]').eq(1).then(($element) => {
+        cy.wrap(new Tooltip($element[0])).as('tooltip_modal');
       })
-    cy.get('@offcanvas').invoke('show')
-    cy.get('@tooltip_offcanvas').invoke('show')
-    cy.get('@tooltip_offcanvas').its('tooltip').should('have.class', 'show').and('be.visible')
+    cy.get('@modal').invoke('toggle')
+    cy.get('@tooltip_modal').invoke('toggle')
+    cy.get('@tooltip_modal').its('tooltip').should('have.class', 'show').and('be.visible')
     cy.wait(200)
-    cy.get('@offcanvas').invoke('hide')
-    cy.get('@tooltip_offcanvas').its('tooltip').should('not.have.class', 'show').and('be.hidden')
+    cy.get('@tooltip_modal').invoke('toggle')
+    cy.get('@tooltip_modal').its('tooltip').should('not.have.class', 'show')
+    cy.wait(200)
+    cy.get('@tooltip_modal').invoke('toggle')
+    cy.get('@tooltip_modal').its('tooltip').should('have.class', 'show').and('be.visible')
+    cy.get('@modal').invoke('toggle')
+    // cy.wait(200)
+    cy.get('@tooltip_modal').its('tooltip').should('not.have.class', 'show')
+  });
+
+  it('Can be toggleEnabled when inside a small modal', () => {
+    cy.visit('cypress/modal.html');
+
+    cy.get('.modal').eq(1).then(($modal) => {
+        cy.wrap(new Modal($modal[0])).as('modal');
+      })
+    cy.get('[data-bs-toggle="tooltip"]').eq(1).then(($element) => {
+        cy.wrap(new Tooltip($element[0])).as('tooltip_modal');
+      })
+    cy.get('@modal').invoke('toggle')
+    cy.get('@tooltip_modal').invoke('toggle')
+    cy.get('@tooltip_modal').its('tooltip').should('have.class', 'show').and('be.visible')
+    // cy.wait(200)
+    cy.get('@tooltip_modal').invoke('toggleEnabled')
+    cy.get('@tooltip_modal').its('tooltip').should('not.have.class', 'show')
+    cy.get('@tooltip_modal').invoke('toggle')
+    cy.get('@tooltip_modal').its('tooltip').should('not.have.class', 'show')
+    cy.get('@tooltip_modal').invoke('toggleEnabled')
+    cy.wait(200)
+    cy.get('@tooltip_modal').invoke('toggle')
+    cy.get('@tooltip_modal').its('tooltip').should('have.class', 'show').and('be.visible')
   });
 
   it('Can work with popover, template and sanitizeFn', () => {
@@ -237,8 +269,8 @@ describe('Tooltip Class Tests', () => {
         // add another container for code coverage
         cy.wrap(new Popover(element, {template: template.firstChild as HTMLElement, sanitizeFn: (c) => c.trim()})).as('popover');
       })
-      .get('@popover').invoke('show')
-      .get('@popover').its('tooltip').should('have.class', 'show').and('be.visible')
+    cy.get('@popover').invoke('show')
+    cy.get('@popover').its('tooltip').should('have.class', 'show').and('be.visible')
   });
 
   it('Can work with popover and micro-template', () => {
@@ -250,7 +282,7 @@ describe('Tooltip Class Tests', () => {
         popoverTarget.setAttribute('data-bs-dismissible', 'true');
         doc.querySelector('.btn-toolbar')?.append(popoverTarget);
       })
-      .get('[data-bs-toggle="popover"]').then(($element) => {
+    cy.get('[data-bs-toggle="popover"]').then(($element) => {
         const element = $element[0];
         const doc = element.ownerDocument;
         const title = doc.createElement('div');
@@ -267,8 +299,8 @@ describe('Tooltip Class Tests', () => {
           customClass: 'custom-class'
         })).as('popover');
       })
-      .get('@popover').invoke('show')
-      .get('@popover').its('tooltip').should('have.class', 'custom-class').and('have.class', 'show').and('be.visible')
+    cy.get('@popover').invoke('show')
+    cy.get('@popover').its('tooltip').should('have.class', 'custom-class').and('have.class', 'show').and('be.visible')
   });
 
   it('Can be dismissed via touch events', () => {
@@ -343,19 +375,6 @@ describe('Tooltip Class Tests', () => {
     cy.wait(200)
   });
 
-  // it('Can work with media elements', () => {
-  //   cy.get('svg').then(($element) => {
-  //       cy.wrap(new Tooltip($element[0])).as('media');
-  //     })
-  //   cy.get('svg').trigger('mouseenter', 'center', {force: true})
-  //   cy.get('.tooltip').should('have.class', 'show').and('be.visible')
-  //   cy.get('svg').trigger('mousemove', 'topLeft', {force: true})
-  //   cy.get('svg').trigger('mouseleave', 'topLeft', {force: true})
-  //   cy.get('@media').its('tooltip').then(tip => {
-  //     cy.wrap(tip).should('not.have.class', 'show')
-  //   })
-  // });
-
   it('Can do custom events', () => {
     cy.log('**hide.bs.tooltip** event can be default prevented').then(() => {
         cy.get('[data-cy="tooltip"]').eq(0).then(($element) => {
@@ -414,5 +433,24 @@ describe('Tooltip Class Tests', () => {
         cy.get('[data-cy="tooltip"]').eq(1).should('have.attr', 'title')
         cy.get('[data-cy="tooltip"]').eq(1).should('not.have.attr', 'data-original-title')
       })
+  });
+
+  it('Can be disposed when inside a small modal', () => {
+    cy.visit('cypress/modal.html');
+
+    cy.get('.modal').eq(1).then(($modal) => {
+        cy.wrap(new Modal($modal[0])).as('modal');
+      })
+    cy.get('[data-bs-toggle="tooltip"]').eq(1).then(($element) => {
+        cy.wrap(new Tooltip($element[0])).as('tooltip_modal');
+      })
+    cy.get('@modal').invoke('toggle')
+    cy.get('@tooltip_modal').invoke('toggle')
+    cy.get('@tooltip_modal').its('tooltip').should('have.class', 'show').and('be.visible')
+    // cy.wait(200)
+    cy.get('@tooltip_modal').invoke('dispose')
+    cy.get('@tooltip_modal').its('tooltip').should('not.have.class', 'show')
+    cy.get('@tooltip_modal').its('tooltip').should('be.undefined');
+    cy.visit('cypress/tooltip.html')
   });
 });

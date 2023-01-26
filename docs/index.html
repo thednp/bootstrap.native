@@ -1246,6 +1246,10 @@ myCollapseInit.toggle();
                       <td><code>hidden.bs.dropdown</code></td>
                       <td>This event is fired when the dropdown has finished being hidden from the user.</td>
                     </tr>
+                    <tr>
+                      <td><code>updated.bs.dropdown</code></td>
+                      <td>This event is fired after the dropdown menu has updated it's position.</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -2452,6 +2456,10 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                     <tr>
                       <td><code>hidden.bs.popover</code></td>
                       <td>This event is fired when the popover has finished being hidden from the user.</td>
+                    </tr>
+                    <tr>
+                      <td><code>updated.bs.popover</code></td>
+                      <td>This event is fired after the popover has updated it's position.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -3718,6 +3726,10 @@ myToastInit.dispose();
                       <td><code>hidden.bs.tooltip</code></td>
                       <td>This event is fired when the tooltip has finished being hidden from the user.</td>
                     </tr>
+                    <tr>
+                      <td><code>updated.bs.tooltip</code></td>
+                      <td>This event is fired after the tooltip has updated it's position.</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -3867,6 +3879,7 @@ new BSN.Tooltip('#selector',options).show();
                 <img class="position-absolute absolute-img" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
               </div>
 
+              <iframe src="../cypress/tooltip.html" width="100%" height="400" style="border:none;"></iframe>
             </section>
           </section>
         </div>
@@ -4022,7 +4035,6 @@ new BSN.Tooltip('#selector',options).show();
 
     <script src="./assets/js/custom-button.js"></script>
     <script src="./assets/js/bootstrap-native.js"></script>
-
     <script src="https://cure53.de/purify.js"></script>
     <script src="./assets/js/scripts.js"></script>
     <script src="./assets/js/prism.js"></script>

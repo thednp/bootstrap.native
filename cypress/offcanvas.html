@@ -16,7 +16,7 @@
       Link with href
     </a>
     <button class="btn btn-primary ms-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNoBackdrop" aria-controls="offcanvasNoBackdrop">
-      Open Offcanvas
+      Button with data
     </button>
   </div>
 
@@ -28,16 +28,16 @@
     <div class="offcanvas-body">
       <p>This <b>Offcanvas</b> instance is a demo.</p>
       <p>Opening another <b>Offcanvas</b> instance will close this <b>Offcanvas</b> instance.</p>
+      <p><button class="btn btn-success btn-lg" data-bs-title="Tooltip Inside Offcanvas" data-bs-toggle="tooltip">Tooltip Inside Offcanvas</button></p>
     </div>
   </div>
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNoBackdrop" aria-labelledby="offcanvasNoBackdropLabel" data-bs-backdrop="false"  aria-hidden="true" aria-modal="true" role="dialog" data-cy="offcanvas">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasNoBackdropLabel">Offcanvas with Modal</h5>
+      <h5 class="offcanvas-title" id="offcanvasNoBackdropLabel">Offcanvas End</h5>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-      <p>Opening a <b>Modal / Offcanvas</b> instance will close this <b>Offcanvas</b> instance.</p>
       <p>This <b>Offcanvas</b> uses <code>data-bs-backdrop="false"</code> intentionally to test the option independently for each instance.</p>
     </div>
   </div>

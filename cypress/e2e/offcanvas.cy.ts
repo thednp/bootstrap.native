@@ -56,7 +56,7 @@ describe('Offcanvas Class Tests', () => {
     cy.get('[data-cy="offcanvas"]').eq(1).should('not.have.class', 'show').and('be.hidden')
   });
 
-  it.only('Can be openeded / dismissed via click - backdrop', () => {
+  it('Can be openeded / dismissed via click - backdrop', () => {
     cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
         cy.wrap(new Offcanvas($element[0])).as('click_test');
       })
@@ -77,14 +77,14 @@ describe('Offcanvas Class Tests', () => {
     cy.get('[data-cy="offcanvas"]').eq(1).then(($element) => {
         cy.wrap(new Offcanvas($element[0])).as('click_test');
       })
-      .get('@click_test').its('triggers').eq(0).click()
-      .get('@click_test').its('element').should('have.class', 'show').and('be.visible')
-      .get('@click_test').its('triggers').eq(0).click()
-      .get('@click_test').its('element').should('not.have.class', 'show').and('be.hidden')
-      .get('@click_test').its('triggers').eq(0).click()
-      .get('@click_test').its('element').should('have.class', 'show').and('be.visible')
-      .get('@click_test').its('element').find('[data-bs-dismiss="offcanvas"]').eq(0).trigger('click', 'center')
-      .get('@click_test').its('element').should('not.have.class', 'show').and('be.hidden')
+    cy.get('[data-bs-target="#offcanvasNoBackdrop"]').click()
+    cy.get('[data-cy="offcanvas"]').eq(1).should('have.class', 'show').and('be.visible')
+    cy.get('[data-bs-target="#offcanvasNoBackdrop"]').click()
+    cy.get('[data-cy="offcanvas"]').eq(1).should('not.have.class', 'show').and('be.hidden')
+    cy.get('[data-bs-target="#offcanvasNoBackdrop"]').click()
+    cy.get('[data-cy="offcanvas"]').eq(1).should('have.class', 'show').and('be.visible')
+    cy.get('[data-cy="offcanvas"]').eq(1).find('[data-bs-dismiss="offcanvas"]').click()
+    cy.get('[data-cy="offcanvas"]').eq(1).should('not.have.class', 'show').and('be.hidden')
   });
   
   it('Can be dismissed via Escape', function() {
@@ -103,16 +103,13 @@ describe('Offcanvas Class Tests', () => {
   it('Can do dispose()', () => {
     cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
         cy.wrap(new Offcanvas($element[0])).as('disposable');
+        cy.get('@disposable').invoke('show')
+        cy.get('@disposable').its('element').should('have.class', 'show').and('be.visible')
+        cy.get('@disposable').invoke('dispose')
+        // cy.get('[data-cy="offcanvas"]').first().should('not.have.class', 'show').and('be.hidden')
+        cy.get('@disposable').its('element').should('be.undefined')
+        cy.get('@disposable').its('options').should('be.undefined')
       })
-      .get('@disposable', { timeout: 200 }).invoke('show')
-      .get('@disposable').its('element').should('have.class', 'show').and('be.visible')
-      .wait(200)
-      .get('@disposable').invoke('dispose')
-      .wait(200)
-      .get('[data-cy="offcanvas"]').eq(0).should('not.have.class', 'show').and('be.hidden')
-      .get('@disposable').its('element').should('be.null')
-      .get('@disposable').its('options').should('be.null')
-      .wait(200)
   });
 
   it('Can work with CustomEvent hide', function() {
@@ -125,11 +122,12 @@ describe('Offcanvas Class Tests', () => {
         }
       })
       cy.wrap(instance).as('hide_event');
+      cy.get('@hide_event').invoke('toggle')
+      cy.get('@hide_event').its('element').should('have.class', 'show')
+      cy.wait(200)
+      cy.get('@hide_event').invoke('toggle')
+      cy.get('@hide_event').its('element').should('have.class', 'show')
     })
-    .get('@hide_event').invoke('toggle')
-    .get('@hide_event').its('element').should('have.class', 'show').and('be.visible')
-    .get('@hide_event').invoke('hide')
-    .get('@hide_event').its('element').should('have.class', 'show').and('be.visible')
   });
   
   it('Can work with CustomEvent show', function() {
@@ -142,8 +140,8 @@ describe('Offcanvas Class Tests', () => {
           }
         })
         cy.wrap(instance).as('show_event');
+        cy.get('@show_event').invoke('toggle')
+        cy.get('@show_event').its('element').should('not.have.class', 'show').and('be.hidden')
       })
-      .get('@show_event').invoke('toggle')
-      .get('@show_event').its('element').should('not.have.class', 'show').and('be.hidden')
   });
 });

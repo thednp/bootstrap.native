@@ -14,7 +14,6 @@ import {
   ariaExpanded,
   emulateTransitionEnd,
   reflow,
-  // ObjectAssign,
   dispatchEvent,
   setElementStyle,
   Timer,
@@ -198,6 +197,7 @@ export default class Collapse extends BaseComponent {
 
     // set parent accordion
     this.parent = querySelector(options.parent as HTMLElement | string, doc) || getTargetElement(element) || null;
+    this.parent = getTargetElement(element) || null;
 
     // add event listeners
     toggleCollapseHandler(this, true);

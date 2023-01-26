@@ -32,14 +32,17 @@ describe('Toast Class Tests', () => {
   it('Can do show() and autoclose', () => {
     cy.get('.toast').then(($element) => {
         $element[0].classList.remove('fade'); // code coverage
-        const instance = new Toast($element[0], { delay: 500 });
+        const instance = new Toast($element[0], { delay: 200 });
         cy.wrap(instance).as('instance');
+        cy.get('@instance').invoke('show')
+        cy.get('@instance').its('element').should('have.class', 'show').and('be.visible')
+        cy.get('@instance').its('isShown').should('be.true')
+        cy.wait(250)
+        cy.get('@instance').then(() => {
+          cy.get('@instance').its('isShown').should('be.false')
+          cy.get('@instance').its('element').should('not.have.class', 'show')
+        })
       })
-      .get('@instance').invoke('show')
-      .get('@instance').its('element').should('have.class', 'show').and('be.visible')
-      .get('@instance').its('isShown').should('be.true')
-      .wait(550)
-      .get('@instance').its('element').should('not.have.class', 'show')
   });
 
   it('Can do click()', () => {
@@ -62,20 +65,19 @@ describe('Toast Class Tests', () => {
     cy.get('.toast').then(($element) => {
         const instance = new Toast($element[0], { animation: false, delay: 200 });
         cy.wrap(instance).as('instance');
-        // cy.log(instance.options)
       })
-      .get('@instance').invoke('show')
-      .get('@instance').its('element').should('have.class', 'show').and('be.visible')
-      .get('@instance').its('isShown').should('be.true')
-      // .wait(100)
-      .get('@instance').its('element').then(el => cy.wrap(el).trigger('mouseenter'))
-      // .wait(217)
-      .get('@instance').its('element').should('have.class', 'show').and('be.visible')
-      // .wait(100)
-      .get('@instance').its('element').then(el => cy.wrap(el).trigger('mouseenter'))
-      // .wait(217)
-      .get('@instance').its('element').should('not.have.class', 'show').and('be.hidden')
-      .get('@instance').its('isShown').should('be.false')
+    cy.get('@instance').invoke('show')
+    cy.get('@instance').its('element').should('have.class', 'show').and('be.visible')
+    cy.get('@instance').its('isShown').should('be.true')
+    cy.wait(100)
+    cy.get('@instance').its('element').first().trigger('mouseenter', {force: true})
+    cy.wait(190)
+    cy.get('@instance').its('element').should('have.class', 'show').and('be.visible')
+    cy.wait(100)
+    cy.get('@instance').its('element').first().trigger('mouseenter', {force: true}).trigger('mouseleave', {force: true})
+    cy.wait(201)
+    cy.get('@instance').its('element').should('not.have.class', 'show')
+    cy.get('@instance').its('isShown').should('be.false')
   });
 
   it('Can do dispose()', () => {

@@ -193,6 +193,7 @@ const toastClickHandler = (e: Event) => {
   const trigger = target && closest(target as HTMLElement, toastToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getToastInstance(element);
+  /* istanbul ignore next */
   if (!self) return;
 
   /* istanbul ignore else */

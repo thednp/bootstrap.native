@@ -9,5 +9,11 @@ export interface PopoverOptions extends TooltipOptions {
 }
 
 export interface PopoverEvent extends OriginalEvent {
-  readonly type: string | 'show.bs.popover' | 'shown.bs.popover' | 'hide.bs.popover' | 'hidden.bs.popover';
+  readonly type:
+    | string
+    | 'show.bs.popover'
+    | 'shown.bs.popover'
+    | 'hide.bs.popover'
+    | 'hidden.bs.popover'
+    | 'updated.bs.popover';
 }

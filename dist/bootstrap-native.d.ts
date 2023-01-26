@@ -325,19 +325,11 @@ export declare class Tooltip extends BaseComponent {
 	get defaults(): TooltipOptions;
 	/** Shows the tooltip. */
 	show(): void;
-	/**
-	 * Hides the tooltip.
-	 *
-	 * @param callback the dispose callback
-	 */
+	/** Hides the tooltip. */
 	hide(): void;
-	/**
-	 * Updates the tooltip position.
-	 */
+	/** Updates the tooltip position. */
 	update(): void;
-	/**
-	 * Toggles the tooltip visibility.
-	 */
+	/** Toggles the tooltip visibility. */
 	toggle(): void;
 	/** Enables the tooltip. */
 	enable(): void;
@@ -394,7 +386,7 @@ export declare class ScrollSpy extends BaseComponent {
 	static getInstance: (element: HTMLElement) => ScrollSpy | null;
 	options: ScrollSpyOptions;
 	target: HTMLElement | null;
-	scrollTarget: HTMLElement | Window | null;
+	scrollTarget: HTMLElement | Window;
 	scrollTop: number;
 	maxScroll: number;
 	scrollHeight: number;

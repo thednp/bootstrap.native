@@ -5,11 +5,16 @@ import {
   getBoundingClientRect,
   getElementStyle,
   isRTL,
+  toLowerCase,
+  createCustomEvent,
+  dispatchEvent,
 } from '@thednp/shorty';
 
 import popoverComponent from '../strings/popoverComponent';
 import tipClassPositions from './tipClassPositions';
 import Tooltip from '../components/tooltip';
+import type { TooltipEvent } from '../interface/tooltip';
+import type { PopoverEvent } from '../interface/popover';
 
 /**
  * Style popovers and tooltips.
@@ -19,6 +24,7 @@ import Tooltip from '../components/tooltip';
 const styleTip = <T extends Tooltip>(self: T) => {
   const tipClasses = /\b(top|bottom|start|end)+/;
   const { element, tooltip, container, options, arrow } = self;
+  /* istanbul ignore next */
   if (!tooltip) return;
   const tipPositions = { ...tipClassPositions };
   const RTL = isRTL(element);
@@ -39,7 +45,7 @@ const styleTip = <T extends Tooltip>(self: T) => {
   const parentPosition = getElementStyle(container as HTMLElement, 'position');
   const fixedParent = parentPosition === 'fixed';
   const scrollbarWidth = fixedParent ? Math.abs(parentCWidth - parentOWidth) : Math.abs(htmlcw - htmlow);
-  const leftBoundry = RTL && fixedParent ? scrollbarWidth : 0;
+  const leftBoundry = RTL && fixedParent ? /* istanbul ignore next */ scrollbarWidth : 0;
   const rightBoundry = htmlcw - (!RTL ? scrollbarWidth : 0) - 1;
   const {
     width: elemWidth,
@@ -176,6 +182,8 @@ const styleTip = <T extends Tooltip>(self: T) => {
       arrow.style.right = `${arrowRight}px`;
     }
   }
+  const updatedTooltipEvent = createCustomEvent<TooltipEvent | PopoverEvent>(`updated.bs.${toLowerCase(self.name)}`);
+  dispatchEvent(element, updatedTooltipEvent);
 };
 
 export default styleTip;

@@ -82,6 +82,7 @@ const showDropdownEvent = createCustomEvent<DropdownEvent>(`show.bs.${dropdownSt
 const shownDropdownEvent = createCustomEvent<DropdownEvent>(`shown.bs.${dropdownString}`);
 const hideDropdownEvent = createCustomEvent<DropdownEvent>(`hide.bs.${dropdownString}`);
 const hiddenDropdownEvent = createCustomEvent<DropdownEvent>(`hidden.bs.${dropdownString}`);
+const updatedDropdownEvent = createCustomEvent<DropdownEvent>(`updated.bs.${dropdownString}`);
 
 // DROPDOWN PRIVATE METHODS
 // ========================
@@ -205,6 +206,8 @@ const styleDropdown = (self: Dropdown) => {
       setElementStyle(menu, dropdownPosition[endAdjust]);
     }
   }
+  // trigger updated event
+  dispatchEvent(parentElement, updatedDropdownEvent);
 };
 
 /**
@@ -314,7 +317,7 @@ const dropdownDismissHandler = (e: MouseEvent) => {
     return;
   }
 
-  /* istanbul ignore else */
+  /* istanbul ignore next */
   if (isForm || hasData) {
     // smile to ESLint
   } else if (self) {
@@ -459,7 +462,7 @@ export default class Dropdown extends BaseComponent {
     if (currentInstance) currentInstance.hide();
 
     // dispatch event
-    [showDropdownEvent, shownDropdownEvent].forEach(e => {
+    [showDropdownEvent, shownDropdownEvent, updatedDropdownEvent].forEach(e => {
       e.relatedTarget = element;
     });
     dispatchEvent(parentElement, showDropdownEvent);

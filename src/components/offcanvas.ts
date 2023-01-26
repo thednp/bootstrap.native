@@ -203,6 +203,7 @@ const offcanvasDismissHandler = (e: MouseEvent) => {
   const trigger = closest(target as HTMLElement, offcanvasToggleSelector);
   const selection = getDocument(element).getSelection();
 
+  /* istanbul ignore next: a filter is required here */
   if (overlay.contains(target as HTMLElement) && backdrop === 'static') return;
 
   /* istanbul ignore else */

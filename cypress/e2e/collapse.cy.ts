@@ -32,24 +32,26 @@ describe('Collapse Class Tests', () => {
         } else {
           expect(instance.triggers, 'triggers').to.have.length(1);
           expect(instance.options, 'options').to.deep.equal({parent: '.accordion'});
-          //@ts-ignore
-          expect(instance.parent.nodeType, 'parent').to.equal(1);
+          expect(instance.parent?.nodeType, 'parent').to.equal(1);
         }
         expect(instance.defaults, 'defaults').to.deep.equal({parent: null});
         expect(instance.version, 'version').to.be.string;
         cy.wrap(instance).as('instance' + i);
       })
-      .get('@instance0').invoke('toggle')
+    cy.get('@instance0').invoke('toggle')
       .get('@instance0').invoke('toggle') // must be SPAM protected
     cy.get('#collapseExample').should('be.visible').and('have.class', 'show')
+    cy.get('@instance0').invoke('toggle')
+    cy.get('@instance0').invoke('toggle') // must be SPAM protected
+    cy.get('#collapseExample').should('be.hidden').and('not.have.class', 'show')
     cy.get('@instance1').invoke('toggle')
-      .get('@instance2').invoke('toggle') // must be SPAM protected
+    cy.get('@instance2').invoke('toggle') // must be SPAM protected
     cy.get('#collapseOne').should('be.visible').should('have.class', 'show')
     cy.get('@instance3').invoke('toggle')
-      .get('#collapseOne').should('not.have.class', 'show')
-      .get('#collapseThree').should('have.class', 'show')
+    cy.get('#collapseOne').should('not.have.class', 'show')
+    cy.get('#collapseThree').should('have.class', 'show')
     cy.get('@instance3').invoke('hide')
-      .get('@instance3').invoke('hide') // must be SPAM protected
+    cy.get('@instance3').invoke('hide') // must be SPAM protected
     cy.get('#collapseThree').should('not.have.class', 'show')
   });
 

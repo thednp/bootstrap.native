@@ -1,12 +1,16 @@
 {
   "name": "@thednp/bootstrap.native",
-  "version": "5.0.0-alpha2",
+  "version": "5.0.0-alpha3",
   "description": "Native JavaScript for Bootstrap",
   "type": "module",
   "source": "./src/index.ts",
   "main": "./dist/bootstrap.native.js",
   "module": "./dist/bootstrap.native.mjs",
   "types": "./dist/bootstrap.native.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "exports": {
     ".": {
       "import": "./dist/bootstrap-native.mjs",
@@ -19,7 +23,7 @@
     "pre-test": "npm run clean-coverage",
     "clean-coverage": "rimraf coverage .nyc_output",
     "test": "npm run pre-test && npx cypress run",
-    "cypress": "npm run pre-test && npx cypress open",
+    "cypress": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "build": "npm run lint:ts && npm run build-vite && npm run dts",
     "build-vite": "vite build && npm run copy-docs",
@@ -65,7 +69,7 @@
     "@types/istanbul-lib-instrument": "^1.7.4",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
-    "cypress": "^12.2.0",
+    "cypress": "^12.3.0",
     "dts-bundle-generator": "^7.1.0",
     "eslint": "^8.30.0",
     "eslint-plugin-jsdoc": "^39.6.4",

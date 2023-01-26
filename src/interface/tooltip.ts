@@ -17,5 +17,11 @@ export interface TooltipOptions extends BaseOptions {
 }
 
 export interface TooltipEvent extends OriginalEvent {
-  readonly type: string | 'show.bs.tooltip' | 'shown.bs.tooltip' | 'hide.bs.tooltip' | 'hidden.bs.tooltip';
+  readonly type:
+    | string
+    | 'show.bs.tooltip'
+    | 'shown.bs.tooltip'
+    | 'hide.bs.tooltip'
+    | 'hidden.bs.tooltip'
+    | 'updated.bs.tooltip';
 }

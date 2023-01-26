@@ -7,5 +7,11 @@ export interface DropdownOptions extends BaseOptions {
 }
 
 export interface DropdownEvent extends OriginalEvent {
-  readonly type: string | 'show.bs.dropdown' | 'shown.bs.dropdown' | 'hide.bs.dropdown' | 'hidden.bs.dropdown';
+  readonly type:
+    | string
+    | 'show.bs.dropdown'
+    | 'shown.bs.dropdown'
+    | 'hide.bs.dropdown'
+    | 'hidden.bs.dropdown'
+    | 'updated.bs.dropdown';
 }

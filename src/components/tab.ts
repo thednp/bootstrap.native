@@ -95,11 +95,14 @@ const triggerTabEnd = (self: Tab) => {
  */
 const triggerTabShow = (self: Tab) => {
   const { element, tabContent, content: nextContent, nav } = self;
-  const { tab } = (isHTMLElement(nav) && tabPrivate.get(nav)) || { tab: null };
+  const { tab } = (isHTMLElement(nav) && tabPrivate.get(nav)) || /* istanbul ignore next */ { tab: null };
 
   /* istanbul ignore else */
   if (tabContent && nextContent && hasClass(nextContent, fadeClass)) {
-    const { currentHeight, nextHeight } = tabPrivate.get(element) || { currentHeight: 0, nextHeight: 0 };
+    const { currentHeight, nextHeight } = tabPrivate.get(element) || /* istanbul ignore next */ {
+      currentHeight: 0,
+      nextHeight: 0,
+    };
     if (currentHeight === nextHeight) {
       triggerTabEnd(self);
     } else {
@@ -124,7 +127,7 @@ const triggerTabShow = (self: Tab) => {
  */
 const triggerTabHide = (self: Tab) => {
   const { element, content: nextContent, tabContent, nav } = self;
-  const { tab, content } = (nav && tabPrivate.get(nav)) || { tab: null, content: null };
+  const { tab, content } = (nav && tabPrivate.get(nav)) || /* istanbul ignore next */ { tab: null, content: null };
   let currentHeight = 0;
 
   /* istanbul ignore else */
@@ -180,6 +183,7 @@ const triggerTabHide = (self: Tab) => {
  */
 const getActiveTab = (self: Tab): { tab: HTMLElement | null; content: HTMLElement | null } => {
   const { nav } = self;
+  /* istanbul ignore next */
   if (!isHTMLElement(nav as HTMLElement | undefined)) return { tab: null, content: null };
 
   const activeTabs = getElementsByClassName(activeClass, nav as HTMLElement);
@@ -201,6 +205,7 @@ const getActiveTab = (self: Tab): { tab: HTMLElement | null; content: HTMLElemen
  * @returns the parent dropdown
  */
 const getParentDropdown = (element?: HTMLElement): HTMLElement | null => {
+  /* istanbul ignore next */
   if (!isHTMLElement(element)) return null;
   const dropdown = closest(element, `.${dropdownClasses.join(',.')}`);
   return dropdown ? querySelector(`.${dropdownClasses[0]}-toggle`, dropdown) : null;

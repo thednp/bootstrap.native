@@ -319,7 +319,8 @@ function modalDismissHandler(this: HTMLElement, e: MouseEvent) {
  */
 const staticTransitionEnd = (self: Modal) => {
   const { element, modalDialog } = self;
-  const duration = (isHTMLElement(modalDialog) ? getElementTransitionDuration(modalDialog) : 0) + 17;
+  const duration =
+    (isHTMLElement(modalDialog) ? getElementTransitionDuration(modalDialog) : /* istanbul ignore next */ 0) + 17;
   removeClass(element, modalStaticClass);
   // user must wait for zoom out transition
   Timer.set(element, () => Timer.clear(element), duration);

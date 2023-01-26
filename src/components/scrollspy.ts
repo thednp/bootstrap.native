@@ -68,13 +68,13 @@ const updateSpyTargets = (self: ScrollSpy) => {
   const isWin = isWindow(scrollTarget as Node | Window);
 
   const links = target && getElementsByTagName('A', target);
-  const scrollHEIGHT = scrollTarget && getScrollHeight(scrollTarget);
+  const scrollHEIGHT = scrollTarget ? getScrollHeight(scrollTarget) : /* istanbul ignore next */ scrollHeight;
 
   self.scrollTop = isWin ? (scrollTarget as Window).scrollY : (scrollTarget as HTMLElement).scrollTop;
 
   // only update items/offsets once or with each mutation
   /* istanbul ignore else */
-  if (links && (itemsLength !== links.length || scrollHEIGHT !== scrollHeight)) {
+  if (links && (scrollHEIGHT !== scrollHeight || itemsLength !== links.length)) {
     let href;
     let targetItem;
     let rect;
@@ -82,7 +82,7 @@ const updateSpyTargets = (self: ScrollSpy) => {
     // reset arrays & update
     self.items = [];
     self.offsets = [];
-    self.scrollHeight = scrollHEIGHT as number;
+    self.scrollHeight = scrollHEIGHT;
     self.maxScroll = self.scrollHeight - getOffsetHeight(self);
 
     [...links].forEach(link => {
@@ -186,7 +186,7 @@ export default class ScrollSpy extends BaseComponent {
   static getInstance = getScrollSpyInstance;
   declare options: ScrollSpyOptions;
   declare target: HTMLElement | null;
-  declare scrollTarget: HTMLElement | Window | null;
+  declare scrollTarget: HTMLElement | Window;
   declare scrollTop: number;
   declare maxScroll: number;
   declare scrollHeight: number;
@@ -213,6 +213,7 @@ export default class ScrollSpy extends BaseComponent {
 
     // set initial state
     this.scrollTarget = element.clientHeight < element.scrollHeight ? element : getWindow(element);
+    this.scrollHeight = getScrollHeight(this.scrollTarget);
 
     // bind events
     this.refresh = this.refresh.bind(this);
@@ -266,7 +267,7 @@ export default class ScrollSpy extends BaseComponent {
 
     if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
       this.activeItem = null;
-      if (isHTMLElement(target)) clear(target);
+      if (target) clear(target);
       return;
     }
 
