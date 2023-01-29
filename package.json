@@ -23,6 +23,7 @@
     "pre-test": "npm run clean-coverage",
     "clean-coverage": "rimraf coverage .nyc_output",
     "test": "npm run pre-test && npx cypress run",
+    "dev": "npx vite --host --port 8080 --open /docs/index.html",
     "cypress": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "build": "npm run lint:ts && npm run build-vite && npm run dts",
