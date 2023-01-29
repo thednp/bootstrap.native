@@ -1,6 +1,6 @@
 {
   "name": "@thednp/bootstrap.native",
-  "version": "5.0.0-alpha4",
+  "version": "5.0.0-alpha5",
   "description": "Native JavaScript for Bootstrap",
   "type": "module",
   "source": "./src/index.ts",
@@ -62,7 +62,7 @@
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
     "@thednp/event-listener": "^2.0.0-alpha7",
-    "@thednp/shorty": "^2.0.0-alpha8"
+    "@thednp/shorty": "^2.0.0-alpha9"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.1.5",

@@ -1,6 +1,4 @@
 /* carousel */
-.carousel { touch-action: none; }
-.carousel img { user-select: none; pointer-events: none; }
 #myCarousel .carousel-inner > .carousel-item > .item-bg {
     position: absolute;
     top: 0;

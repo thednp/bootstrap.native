@@ -459,10 +459,6 @@ var myButtonINIT = BSN.Button.getInstance('#myButton');
             <p>The <b>Carousel</b> component covers the original events, as well as a set of essential options and public methods. 
               In addition it also provides a solid DATA API, it adds a <code>paused</code> class to the target element when in
               paused state, and a solid event handling implementation.</p>
-            <p>The component features a simplified and unified code base for event handling, so all <b>touch</b> events are
-              now handled by <b>pointer</b> events, which is why you need to add <code>.carousel { touch-action: none }</code> to your
-              styling to <a href="https://stackoverflow.com/questions/48124372/pointermove-event-not-working-with-touch-why-not">enable touch</a>
-              on your carousel instances.</p>
             <p>The component implements a <a href="https://github.com/thednp/shorter-js/blob/master/src/misc/timer.js">
               lock mechanism</a> to guard over trigger events making it virtually impossible to break.</p>
             <section id="carouselOptions">
@@ -1380,7 +1376,7 @@ myDropdownInit.dispose();
                     </div>
                     <div class="mb-3">
                       <label for="inputPassword3" class="control-label">Password</label>
-                      <div class=""><input type="password" class="form-control" id="inputPassword3" placeholder="Password"></div>
+                      <div class=""><input type="password" class="form-control" id="inputPassword3" placeholder="Password" autocomplete="off"></div>
                     </div>
                     <div class="mb-3">
                       <div class="">

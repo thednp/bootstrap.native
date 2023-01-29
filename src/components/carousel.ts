@@ -28,6 +28,8 @@ import {
   mouseclickEvent,
   mouseleaveEvent,
   mouseenterEvent,
+  touchstartEvent,
+  dragstartEvent,
   addClass,
   hasClass,
   removeClass,
@@ -210,12 +212,33 @@ const carouselKeyHandler = ({ code, target }: KeyboardEvent & { target: Node }) 
 // CAROUSEL TOUCH HANDLERS
 // =======================
 /**
+ * Prevents the `touchstart` and `dragstart` events for the `Carousel` element.
+ *
+ * @param e the `Event` object
+ */
+function carouselDragHandler(this: HTMLElement, e: DragEvent | TouchEvent) {
+  const { target } = e;
+  const self = getCarouselInstance(this);
+
+  if (
+    self &&
+    self.isTouch &&
+    ((self.indicator && !self.indicator.contains(target as Node)) || !self.controls.includes(target as HTMLElement))
+  ) {
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+    e.preventDefault();
+  }
+}
+
+// CAROUSEL POINTER HANDLERS
+// =========================
+/**
  * Handles the `pointerdown` event for the `Carousel` element.
  *
  * @param e the `Event` object
  */
 function carouselPointerDownHandler(this: HTMLElement, e: PointerEvent) {
-  // const element = this;
   const { target } = e;
   const self = getCarouselInstance(this);
 
@@ -351,6 +374,8 @@ const toggleCarouselHandlers = (self: Carousel, add?: boolean) => {
 
   if (touch && slides.length > 2) {
     action(element, pointerdownEvent, carouselPointerDownHandler as EventListener, passiveHandler);
+    action(element, touchstartEvent, carouselDragHandler as unknown as EventListener, { passive: false });
+    action(element, dragstartEvent, carouselDragHandler as unknown as EventListener, { passive: false });
   }
 
   /* istanbul ignore else */
