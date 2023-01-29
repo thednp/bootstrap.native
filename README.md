@@ -5,9 +5,9 @@
 [![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/@thednp/bootstrap.native)](https://www.jsdelivr.com/package/npm/@thednp/bootstrap.native)
 [![typescript version](https://img.shields.io/badge/typescript-4.9.4-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.30.0-brightgreen)](https://github.com/eslint)
-[![cypress version](https://img.shields.io/badge/cypress-12.3.0-brightgreen)](https://www.cypress.io/)
-[![vite version](https://img.shields.io/badge/vite-4.0.3-brightgreen)](https://vitejs.dev/)
-[![prettier version](https://img.shields.io/badge/prettier-2.8.1-brightgreen)](https://prettier.io/)
+[![cypress version](https://img.shields.io/badge/cypress-12.4.1-brightgreen)](https://www.cypress.io/)
+[![vite version](https://img.shields.io/badge/vite-4.0.4-brightgreen)](https://vitejs.dev/)
+[![prettier version](https://img.shields.io/badge/prettier-2.8.3-brightgreen)](https://prettier.io/)
 
 
 The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, free from major dependecies such as jQuery, Popper.
