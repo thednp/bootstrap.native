@@ -187,10 +187,14 @@ const Kt = /* @__PURE__ */ new Map(), jn = (t, e) => {
   return e <= n && s >= 0;
 }, ke = (t) => typeof t == "function" || !1, bi = (t) => ae(t) && t.constructor.name === "NodeList" || !1, yt = (t) => ct(t).dir === "rtl", wi = (t) => P(t) && ["TABLE", "TD", "TH"].includes(t.nodeName) || !1, A = (t, e) => t ? t.closest(e) || A(t.getRootNode().host, e) : null, S = (t, e) => T(t) ? t : (P(e) ? e : b()).querySelector(t), ms = (t, e) => (P(e) ? e : b()).getElementsByTagName(t), J = (t, e) => (P(e) ? e : b()).querySelectorAll(t), bt = (t, e) => (e && P(e) ? e : b()).getElementsByClassName(
   t
-), $i = (t, e) => t.matches(e), B = "fade", p = "show", Ne = "data-bs-dismiss", Oe = "alert", Kn = "Alert", Ti = "5.0.0-alpha3", yi = Ti;
+), $i = (t, e) => t.matches(e), B = "fade", p = "show", Ne = "data-bs-dismiss", Oe = "alert", Kn = "Alert", Ti = "5.0.0-alpha4", yi = Ti;
 class st {
   element;
   options;
+  /**
+   * @param target `HTMLElement` or selector string
+   * @param config component instance options
+   */
   constructor(e, s) {
     const n = S(e);
     if (!n)
@@ -198,15 +202,21 @@ class st {
     const o = Dt.get(n, this.name);
     o && o.dispose(), this.element = n, this.defaults && es(this.defaults).length && (this.options = ui(n, this.defaults, s || {}, "bs")), Dt.set(n, this.name, this);
   }
+  /* istanbul ignore next */
   get version() {
     return yi;
   }
+  /* istanbul ignore next */
   get name() {
     return "BaseComponent";
   }
+  /* istanbul ignore next */
   get defaults() {
     return {};
   }
+  /**
+   * Removes component from target element;
+   */
   dispose() {
     Dt.remove(this.element, this.name), es(this).forEach((e) => {
       delete this[e];
@@ -228,9 +238,19 @@ class Vn extends st {
   constructor(e) {
     super(e), this.dismiss = S(Ei, this.element), ns(this, !0);
   }
+  /** Returns component name string. */
   get name() {
     return Kn;
   }
+  // ALERT PUBLIC METHODS
+  // ====================
+  /**
+   * Public method that hides the `.alert` element from the user,
+   * disposes the instance once animation is complete, then
+   * removes the element from the DOM.
+   *
+   * @param e the `click` event
+   */
   close(e) {
     const s = e ? Os(A(e.target, Ns)) : this, { element: n } = s;
     if (n && h(n, p)) {
@@ -239,6 +259,7 @@ class Vn extends st {
       g(n, p), h(n, B) ? L(n, () => Ls(s)) : Ls(s);
     }
   }
+  /** Remove the component from target element. */
   dispose() {
     ns(this), super.dispose();
   }
@@ -251,14 +272,27 @@ class Yn extends st {
   static init = xi;
   static getInstance = Bs;
   isActive = !1;
+  /**
+   * @param target usually a `.btn` element
+   */
   constructor(e) {
     super(e);
     const { element: s } = this;
     this.isActive = h(s, y), N(s, Hs, String(!!this.isActive)), Rs(this, !0);
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return Un;
   }
+  // BUTTON PUBLIC METHODS
+  // =====================
+  /**
+   * Toggles the state of the target button.
+   *
+   * @param e usually `click` Event object
+   */
   toggle(e) {
     e && e.preventDefault();
     const s = e ? Bs(e.target) : this;
@@ -269,6 +303,7 @@ class Yn extends st {
       return;
     (o ? g : d)(n, y), N(n, Hs, o ? "false" : "true"), s.isActive = h(n, y);
   }
+  /** Removes the `Button` component from the target element. */
   dispose() {
     Rs(this), super.dispose();
   }
@@ -306,8 +341,10 @@ function Oi(t) {
   const e = A(this, he) || F(this), s = at(e);
   if (!s || s.isAnimating)
     return;
-  const n = +(Bt(this, is) || 0);
-  this && !h(this, y) && !Number.isNaN(n) && s.to(n);
+  const n = +(Bt(this, is) || /* istanbul ignore next */
+  0);
+  this && !h(this, y) && // event target is not active
+  !Number.isNaN(n) && s.to(n);
 }
 function Mi(t) {
   t.preventDefault();
@@ -368,6 +405,10 @@ class _n extends st {
   static selector = he;
   static init = Ai;
   static getInstance = at;
+  /**
+   * @param target mostly a `.carousel` element
+   * @param config instance options
+   */
   constructor(e, s) {
     super(e, s);
     const { element: n } = this;
@@ -386,18 +427,33 @@ class _n extends st {
     const { options: r } = this;
     this.options.interval = r.interval === !0 ? Fs.interval : r.interval, cs(this) < 0 && (d(o[0], y), this.indicators.length && Ye(this, 0)), js(this, !0), r.interval && this.cycle();
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return Xn;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return Fs;
   }
+  /**
+   * Check if instance is paused.
+   */
   get isPaused() {
     return h(this.element, wt);
   }
+  /**
+   * Check if instance is animating.
+   */
   get isAnimating() {
     return S(`.${Z}-next,.${Z}-prev`, this.element) !== null;
   }
+  // CAROUSEL PUBLIC METHODS
+  // =======================
+  /** Slide automatically through items. */
   cycle() {
     const { element: e, options: s, isPaused: n, index: o } = this;
     u.clear(e, It), n && (u.clear(e, wt), g(e, wt)), u.set(
@@ -409,6 +465,7 @@ class _n extends st {
       It
     );
   }
+  /** Pause the automatic cycle. */
   pause() {
     const { element: e, options: s } = this;
     !this.isPaused && s.interval && (d(e, wt), u.set(
@@ -419,12 +476,19 @@ class _n extends st {
       wt
     ));
   }
+  /** Slide to the next item. */
   next() {
     this.isAnimating || this.to(this.index + 1);
   }
+  /** Slide to the previous item. */
   prev() {
     this.isAnimating || this.to(this.index - 1);
   }
+  /**
+   * Jump to the item with the `idx` index.
+   *
+   * @param idx the index of the item to jump to
+   */
   to(e) {
     const { element: s, slides: n, options: o } = this, i = cs(this), r = yt(s);
     let c = e;
@@ -455,6 +519,7 @@ class _n extends st {
       mt
     )));
   }
+  /** Remove `Carousel` component from target. */
   dispose() {
     const { slides: e } = this, s = ["start", "end", "prev", "next"];
     [...e].forEach((n, o) => {
@@ -483,24 +548,39 @@ class Zn extends st {
   static selector = Fi;
   static init = zi;
   static getInstance = ge;
+  /**
+   * @param target and `Element` that matches the selector
+   * @param config instance options
+   */
   constructor(e, s) {
     super(e, s);
     const { element: n, options: o } = this, i = b(n);
     this.triggers = [...J(Qn, i)].filter((r) => F(r) === n), this.parent = S(o.parent, i) || F(n) || null, this.parent = F(n) || null, Us(this, !0);
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return Gn;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return ji;
   }
+  // COLLAPSE PUBLIC METHODS
+  // =======================
+  /** Toggles the visibility of the collapse. */
   toggle() {
     h(this.element, p) ? this.hide() : this.show();
   }
+  /** Hides the collapse. */
   hide() {
     const { triggers: e, element: s } = this;
     u.get(s) || (Vs(this), e.length && e.forEach((n) => d(n, `${U}d`)));
   }
+  /** Shows the collapse. */
   show() {
     const { element: e, parent: s, triggers: n } = this;
     let o, i;
@@ -510,16 +590,21 @@ class Zn extends st {
       d(r, `${U}d`);
     })), Ui(this), n.length && n.forEach((r) => g(r, `${U}d`)));
   }
+  /** Remove the `Collapse` component from the target `Element`. */
   dispose() {
     Us(this), super.dispose();
   }
 }
 const Lt = ["dropdown", "dropup", "dropstart", "dropend"], Jn = "Dropdown", to = "dropdown-menu", eo = (t) => {
   const e = A(t, "A");
-  return t.tagName === "A" && Te(t, "href") && t.href.slice(-1) === "#" || e && Te(e, "href") && e.href.slice(-1) === "#";
+  return t.tagName === "A" && // anchor href starts with #
+  Te(t, "href") && t.href.slice(-1) === "#" || // OR a child of an anchor with href starts with #
+  e && Te(e, "href") && e.href.slice(-1) === "#";
 }, [tt, ye, Ee, Ce] = Lt, vs = `[${X}="${tt}"],[${X}="${ye}"],[${X}="${Ce}"],[${X}="${Ee}"]`, Yt = (t) => j(t, Jn), Xi = (t) => new oo(t), qi = `${to}-end`, Ys = [tt, ye], Xs = [Ee, Ce], qs = ["A", "BUTTON"], _i = {
   offset: 5,
+  // [number] 5(px)
   display: "dynamic"
+  // [dynamic|static]
 }, Xe = w(`show.bs.${tt}`), _s = w(`shown.bs.${tt}`), qe = w(`hide.bs.${tt}`), Gs = w(`hidden.bs.${tt}`), so = w(`updated.bs.${tt}`), no = (t) => {
   const { element: e, menu: s, parentElement: n, options: o } = t, { offset: i } = o;
   if (V(s, "position") === "static")
@@ -529,7 +614,8 @@ const Lt = ["dropdown", "dropup", "dropstart", "dropend"], Jn = "Dropdown", to =
     const ht = {};
     ht[O] = "", x(s, ht);
   });
-  let l = Lt.find((O) => h(n, O)) || tt;
+  let l = Lt.find((O) => h(n, O)) || /* istanbul ignore next: fallback position */
+  tt;
   const f = {
     dropdown: [i, 0, 0],
     dropup: [0, 0, i],
@@ -554,7 +640,10 @@ const Lt = ["dropdown", "dropup", "dropstart", "dropend"], Jn = "Dropdown", to =
   x(s, {
     ...m[l],
     margin: `${dt.map((O) => O && `${O}px`).join(" ")}`
-  }), Ys.includes(l) && c && c && x(s, m[!r && C || r && jt ? "menuStart" : "menuEnd"]), v(n, so);
+  }), Ys.includes(l) && c && c && x(s, m[!r && C || r && jt ? "menuStart" : (
+    /* istanbul ignore next */
+    "menuEnd"
+  )]), v(n, so);
 }, Gi = (t) => [...t.children].map((e) => {
   if (e && qs.includes(e.tagName))
     return e;
@@ -607,20 +696,34 @@ class oo extends st {
   static selector = vs;
   static init = Xi;
   static getInstance = Yt;
+  /**
+   * @param target Element or string selector
+   * @param config the instance options
+   */
   constructor(e, s) {
     super(e, s);
     const { parentElement: n } = this.element;
     this.parentElement = n, this.menu = S(`.${to}`, n), Zs(this, !0);
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return Jn;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return _i;
   }
+  // DROPDOWN PUBLIC METHODS
+  // =======================
+  /** Shows/hides the dropdown menu to the user. */
   toggle() {
     this.open ? this.hide() : this.show();
   }
+  /** Shows the dropdown menu to the user. */
   show() {
     const { element: e, open: s, menu: n, parentElement: o } = this;
     if (s)
@@ -630,12 +733,14 @@ class oo extends st {
       c.relatedTarget = e;
     }), v(o, Xe), !Xe.defaultPrevented && (d(n, p), d(o, p), N(e, be, "true"), no(this), this.open = !s, rt(e), Qs(this), v(o, _s));
   }
+  /** Hides the dropdown menu from the user. */
   hide() {
     const { element: e, open: s, menu: n, parentElement: o } = this;
     s && ([qe, Gs].forEach((i) => {
       i.relatedTarget = e;
     }), v(o, qe), !qe.defaultPrevented && (g(n, p), g(o, p), N(e, be, "false"), this.open = !s, Qs(this), v(o, Gs)));
   }
+  /** Removes the `Dropdown` component from the target element. */
   dispose() {
     this.open && this.hide(), Zs(this), super.dispose();
   }
@@ -702,7 +807,10 @@ const q = "modal", bs = "Modal", ws = "Offcanvas", er = "fixed-top", sr = "fixed
 }, ie = (t) => j(t, bs), cr = (t) => new Eo(t), me = w(`show.bs.${q}`), sn = w(`shown.bs.${q}`), _e = w(`hide.bs.${q}`), nn = w(`hidden.bs.${q}`), To = (t) => {
   const { element: e } = t, s = ao(e), { clientHeight: n, scrollHeight: o } = ct(e), { clientHeight: i, scrollHeight: r } = e, c = i !== r;
   if (!c && s) {
-    const a = yt(e) ? "paddingLeft" : "paddingRight", l = {};
+    const a = yt(e) ? (
+      /* istanbul ignore next */
+      "paddingLeft"
+    ) : "paddingRight", l = {};
     l[a] = `${s}px`, x(e, l);
   }
   lo(e, c || n !== o);
@@ -734,7 +842,8 @@ const q = "modal", bs = "Modal", ws = "Offcanvas", er = "fixed-top", sr = "fixed
   if (!n)
     return;
   const { options: o } = n;
-  o.keyboard && t === ps && h(s, p) && (n.relatedTarget = null, n.hide());
+  o.keyboard && t === ps && // the keyboard option is enabled and the key is 27
+  h(s, p) && (n.relatedTarget = null, n.hide());
 };
 function dr(t) {
   const e = ie(this);
@@ -750,13 +859,20 @@ function dr(t) {
   ) : (l || !c && !n && !a && i) && (e.relatedTarget = l || null, e.hide(), t.preventDefault());
 }
 const hr = (t) => {
-  const { element: e, modalDialog: s } = t, n = (T(s) ? le(s) : 0) + 17;
+  const { element: e, modalDialog: s } = t, n = (T(s) ? le(s) : (
+    /* istanbul ignore next */
+    0
+  )) + 17;
   g(e, $o), u.set(e, () => u.clear(e), n);
 };
 class Eo extends st {
   static selector = or;
   static init = cr;
   static getInstance = ie;
+  /**
+   * @param target usually the `.modal` element
+   * @param config instance options
+   */
   constructor(e, s) {
     super(e, s);
     const { element: n } = this;
@@ -764,15 +880,25 @@ class Eo extends st {
       (o) => F(o) === n
     ), this.isStatic = this.options.backdrop === "static", this.hasFade = h(n, B), this.relatedTarget = null, on(this, !0), this.update = this.update.bind(this);
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return bs;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return rr;
   }
+  // MODAL PUBLIC METHODS
+  // ====================
+  /** Toggles the visibility of the modal. */
   toggle() {
     h(this.element, p) ? this.hide() : this.show();
   }
+  /** Shows the modal to the user. */
   show() {
     const { element: e, options: s, hasFade: n, relatedTarget: o } = this, { backdrop: i } = s;
     let r = 0;
@@ -780,26 +906,39 @@ class Eo extends st {
       return;
     const c = Wt(e);
     if (c && c !== e) {
-      const a = ie(c) || j(c, ws);
+      const a = ie(c) || /* istanbul ignore next */
+      j(c, ws);
       a && a.hide();
     }
     i ? (Pt(D) ? Ts(!0) : go(e, n, !0), r = le(D), mo(), setTimeout(() => an(this), r)) : (an(this), c && h(D, p) && Le());
   }
+  /**
+   * Hide the modal from the user.
+   *
+   * @param callback when defined it will skip animation
+   */
   hide(e) {
     const { element: s, hasFade: n, relatedTarget: o } = this;
     h(s, p) && (_e.relatedTarget = o || void 0, v(s, _e), !_e.defaultPrevented && (g(s, p), N(s, He, "true"), Ot(s, Se), n ? L(s, () => ln(this, e)) : ln(this, e)));
   }
+  /**
+   * Updates the modal layout.
+   */
   update() {
     h(this.element, p) && To(this);
   }
+  /** Removes the `Modal` component from target element. */
   dispose() {
     on(this), this.hide(() => super.dispose());
   }
 }
 const fr = `.${G}`, ys = `[${X}="${G}"]`, ur = `[${Ne}="${G}"]`, Be = `${G}-toggling`, pr = {
   backdrop: !0,
+  // boolean
   keyboard: !0,
+  // boolean
   scroll: !1
+  // boolean
 }, re = (t) => j(t, ws), gr = (t) => new Po(t), ve = w(`show.bs.${G}`), Co = w(`shown.bs.${G}`), Ge = w(`hide.bs.${G}`), Ho = w(`hidden.bs.${G}`), mr = (t) => {
   const { element: e } = t, { clientHeight: s, scrollHeight: n } = ct(e);
   lo(e, s !== n);
@@ -823,7 +962,8 @@ const fr = `.${G}`, ys = `[${X}="${G}"]`, ur = `[${Ne}="${G}"]`, Be = `${G}-togg
   if (!o)
     return;
   const { options: i, triggers: r } = o, { backdrop: c } = i, a = A(e, ys), l = b(s).getSelection();
-  D.contains(e) && c === "static" || (!(l && l.toString().length) && (!s.contains(e) && c && (!a || r.includes(e)) || n && n.contains(e)) && (o.relatedTarget = n && n.contains(e) ? n : null, o.hide()), a && a.tagName === "A" && t.preventDefault());
+  D.contains(e) && c === "static" || (!(l && l.toString().length) && (!s.contains(e) && c && /* istanbul ignore next */
+  (!a || r.includes(e)) || n && n.contains(e)) && (o.relatedTarget = n && n.contains(e) ? n : null, o.hide()), a && a.tagName === "A" && t.preventDefault());
 }, wr = ({ code: t, target: e }) => {
   const s = S($s, b(e)), n = s && re(s);
   n && n.options.keyboard && t === ps && (n.relatedTarget = null, n.hide());
@@ -840,6 +980,10 @@ class Po extends st {
   static selector = fr;
   static init = gr;
   static getInstance = re;
+  /**
+   * @param target usually an `.offcanvas` element
+   * @param config instance options
+   */
   constructor(e, s) {
     super(e, s);
     const { element: n } = this;
@@ -847,15 +991,25 @@ class Po extends st {
       (o) => F(o) === n
     ), this.relatedTarget = null, dn(this, !0);
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return ws;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return pr;
   }
+  // OFFCANVAS PUBLIC METHODS
+  // ========================
+  /** Shows or hides the offcanvas from the user. */
   toggle() {
     h(this.element, p) ? this.hide() : this.show();
   }
+  /** Shows the offcanvas to the user. */
   show() {
     const { element: e, options: s, relatedTarget: n } = this;
     let o = 0;
@@ -863,15 +1017,22 @@ class Po extends st {
       return;
     const i = Wt(e);
     if (i && i !== e) {
-      const r = re(i) || j(i, bs);
+      const r = re(i) || /* istanbul ignore next */
+      j(i, bs);
       r && r.hide();
     }
     s.backdrop ? (Pt(D) ? Ts() : go(e, !0), o = le(D), mo(), setTimeout(() => hn(this), o)) : (hn(this), i && h(D, p) && Le());
   }
+  /**
+   * Hides the offcanvas from the user.
+   *
+   * @param callback when `true` it will skip animation
+   */
   hide(e) {
     const { element: s, relatedTarget: n } = this;
     h(s, p) && (Ge.relatedTarget = n || void 0, Ho.relatedTarget = n || void 0, v(s, Ge), !Ge.defaultPrevented && (d(s, Be), g(s, p), e ? fn(this, e) : L(s, () => fn(this, e))));
   }
+  /** Removes the `Offcanvas` from the target element. */
   dispose() {
     dn(this), this.hide(() => super.dispose());
   }
@@ -890,6 +1051,7 @@ const kt = "popover", Re = "Popover", it = "tooltip", xo = (t) => {
     return;
   const c = { ...Do }, a = yt(s);
   x(n, {
+    // top: '0px', left: '0px', right: '', bottom: '',
     top: "",
     left: "",
     right: "",
@@ -897,7 +1059,10 @@ const kt = "popover", Re = "Popover", it = "tooltip", xo = (t) => {
   });
   const l = t.name === Re, { offsetWidth: f, offsetHeight: m } = n, { clientWidth: E, clientHeight: R, offsetWidth: _ } = ct(s);
   let { placement: $ } = i;
-  const { clientWidth: z, offsetWidth: Y } = o, ot = V(o, "position") === "fixed", H = Math.abs(ot ? z - Y : E - _), lt = a && ot ? H : 0, nt = E - (a ? 0 : H) - 1, {
+  const { clientWidth: z, offsetWidth: Y } = o, ot = V(o, "position") === "fixed", H = Math.abs(ot ? z - Y : E - _), lt = a && ot ? (
+    /* istanbul ignore next */
+    H
+  ) : 0, nt = E - (a ? 0 : H) - 1, {
     width: W,
     height: K,
     left: C,
@@ -959,7 +1124,10 @@ const kt = "popover", Re = "Popover", it = "tooltip", xo = (t) => {
     const C = vt("div");
     gt(C, c, f), ot = C.firstChild;
   }
-  t.tooltip = T(ot) ? ot.cloneNode(!0) : void 0;
+  t.tooltip = T(ot) ? ot.cloneNode(!0) : (
+    /* istanbul ignore next */
+    void 0
+  );
   const { tooltip: H } = t;
   if (!H)
     return;
@@ -999,7 +1167,8 @@ const kt = "popover", Re = "Popover", it = "tooltip", xo = (t) => {
   let { parentNode: n } = t;
   for (; n && !e.includes(n.nodeName); )
     n = mi(n), Fn(n) || wi(n) || s.push(n);
-  return s.find((o, i) => V(o, "position") !== "relative" && s.slice(i + 1).every((r) => V(r, "position") === "static") ? o : null) || b(t).body;
+  return s.find((o, i) => V(o, "position") !== "relative" && s.slice(i + 1).every((r) => V(r, "position") === "static") ? o : null) || /* istanbul ignore next: optional guard */
+  b(t).body;
 }, Er = `[${X}="${it}"],[data-tip="${it}"]`, Io = "title";
 let pn = (t) => j(t, Nt);
 const Cr = (t) => new Es(t), Hr = (t) => {
@@ -1034,7 +1203,8 @@ const Cr = (t) => new Es(t), Hr = (t) => {
   N(
     n,
     s[e ? 0 : 1],
-    e || Bt(n, s[0]) || ""
+    e || Bt(n, s[0]) || /* istanbul ignore next */
+    ""
   ), Ot(n, s[e ? 1 : 0]);
 };
 class Es extends st {
@@ -1042,6 +1212,10 @@ class Es extends st {
   static init = Cr;
   static getInstance = pn;
   static styleTip = as;
+  /**
+   * @param target the target element
+   * @param config the instance options
+   */
   constructor(e, s) {
     super(e, s);
     const { element: n } = this, o = this.name === Nt, i = o ? it : kt, r = o ? Nt : Re;
@@ -1051,12 +1225,21 @@ class Es extends st {
       (a) => V(this.container, "position") === a
     ) ? this.container : b(this.element).body, Tr(this), se(this, !0));
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return Nt;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return ls;
   }
+  // TOOLTIP PUBLIC METHODS
+  // ======================
+  /** Shows the tooltip. */
   show() {
     const { options: e, tooltip: s, element: n, container: o, offsetParent: i, id: r } = this, { animation: c } = e, a = u.get(n, "out"), l = o === i ? o : i;
     u.clear(n, "out"), s && !a && !Pt(s, l) && u.set(
@@ -1069,6 +1252,7 @@ class Es extends st {
       "in"
     );
   }
+  /** Hides the tooltip. */
   hide() {
     const { options: e, tooltip: s, element: n, container: o, offsetParent: i } = this, { animation: r, delay: c } = e;
     u.clear(n, "in"), s && Pt(s, o === i ? o : i) && u.set(
@@ -1081,28 +1265,40 @@ class Es extends st {
       "out"
     );
   }
+  /** Updates the tooltip position. */
   update() {
     as(this);
   }
+  /** Toggles the tooltip visibility. */
   toggle() {
     const { tooltip: e, container: s, offsetParent: n } = this;
     e && !Pt(e, s === n ? s : n) ? this.show() : this.hide();
   }
+  /** Enables the tooltip. */
   enable() {
     const { enabled: e } = this;
     e || (se(this, !0), this.enabled = !e);
   }
+  /** Disables the tooltip. */
   disable() {
     const { tooltip: e, container: s, offsetParent: n, options: o, enabled: i } = this, { animation: r } = o;
     i && (e && Pt(e, s === n ? s : n) && r ? (this.onHideComplete = () => se(this), this.hide()) : se(this), this.enabled = !i);
   }
+  /** Toggles the `disabled` property. */
   toggleEnabled() {
     this.enabled ? this.disable() : this.enable();
   }
+  /**
+   * Handles the `touchstart` event listener for `Tooltip`
+   *
+   * @this {Tooltip}
+   * @param {TouchEvent} e the `Event` object
+   */
   handleTouch({ target: e }) {
     const { tooltip: s, element: n } = this;
     s && s.contains(e) || e === n || e && n.contains(e) || this.hide();
   }
+  /** Removes the `Tooltip` from the target element. */
   dispose() {
     const { tooltip: e, container: s, offsetParent: n, options: o } = this, i = () => Sr(this, () => super.dispose());
     o.animation && e && Pt(e, s === n ? s : n) ? (this.options.delay = 0, this.onHideComplete = i, this.hide()) : i();
@@ -1119,15 +1315,26 @@ class Oo extends Es {
   static init = Ar;
   static getInstance = Dr;
   static styleTip = as;
+  /**
+   * @param target the target element
+   * @param config the instance options
+   */
   constructor(e, s) {
     super(e, s);
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return Re;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return xr;
   }
+  /* extend original `show()` */
   show() {
     super.show();
     const { options: e, btn: s } = this;
@@ -1138,7 +1345,10 @@ const Ir = "scrollspy", Mo = "ScrollSpy", kr = '[data-bs-spy="scroll"]', Nr = {
   offset: 10,
   target: null
 }, Or = (t) => j(t, Mo), Mr = (t) => new Ro(t), bn = w(`activate.bs.${Ir}`), Lr = (t) => {
-  const { target: e, scrollTarget: s, options: n, itemsLength: o, scrollHeight: i, element: r } = t, { offset: c } = n, a = gs(s), l = e && ms("A", e), f = s ? Lo(s) : i;
+  const { target: e, scrollTarget: s, options: n, itemsLength: o, scrollHeight: i, element: r } = t, { offset: c } = n, a = gs(s), l = e && ms("A", e), f = s ? Lo(s) : (
+    /* istanbul ignore next */
+    i
+  );
   if (t.scrollTop = a ? s.scrollY : s.scrollTop, l && (f !== i || o !== l.length)) {
     let m, E, R;
     t.items = [], t.offsets = [], t.scrollHeight = f, t.maxScroll = t.scrollHeight - Br(t), [...l].forEach((_) => {
@@ -1167,17 +1377,32 @@ class Ro extends st {
   static selector = kr;
   static init = Mr;
   static getInstance = Or;
+  /**
+   * @param target the target element
+   * @param config the instance options
+   */
   constructor(e, s) {
     super(e, s);
     const { element: n, options: o } = this;
     this.target = S(o.target, b(n)), this.target && (this.scrollTarget = n.clientHeight < n.scrollHeight ? n : qt(n), this.scrollHeight = Lo(this.scrollTarget), this.refresh = this.refresh.bind(this), $n(this, !0), this.refresh());
   }
+  /* eslint-disable */
+  /**
+   * Returns component name string.
+   */
   get name() {
     return Mo;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return Nr;
   }
+  /* eslint-enable */
+  // SCROLLSPY PUBLIC METHODS
+  // ========================
+  /** Updates all items. */
   refresh() {
     const { target: e } = this;
     if (e?.offsetHeight === 0)
@@ -1198,6 +1423,7 @@ class Ro extends st {
       r !== a && s >= c[l] && (typeof c[l + 1] > "u" || s < c[l + 1]) && wn(this, a);
     });
   }
+  /** Removes `ScrollSpy` from the target element. */
   dispose() {
     $n(this), super.dispose();
   }
@@ -1206,9 +1432,11 @@ const fe = "tab", Wo = "Tab", Tn = `[${X}="${fe}"]`, Fo = (t) => j(t, Wo), Rr = 
   const { tabContent: e, nav: s } = t;
   e && h(e, Mt) && (e.style.height = "", g(e, Mt)), s && u.clear(s);
 }, Hn = (t) => {
-  const { element: e, tabContent: s, content: n, nav: o } = t, { tab: i } = T(o) && ce.get(o) || { tab: null };
+  const { element: e, tabContent: s, content: n, nav: o } = t, { tab: i } = T(o) && ce.get(o) || /* istanbul ignore next */
+  { tab: null };
   if (s && n && h(n, B)) {
-    const { currentHeight: r, nextHeight: c } = ce.get(e) || {
+    const { currentHeight: r, nextHeight: c } = ce.get(e) || /* istanbul ignore next */
+    {
       currentHeight: 0,
       nextHeight: 0
     };
@@ -1219,11 +1447,15 @@ const fe = "tab", Wo = "Tab", Tn = `[${X}="${fe}"]`, Fo = (t) => j(t, Wo), Rr = 
     o && u.clear(o);
   yn.relatedTarget = i, v(e, yn);
 }, Sn = (t) => {
-  const { element: e, content: s, tabContent: n, nav: o } = t, { tab: i, content: r } = o && ce.get(o) || { tab: null, content: null };
+  const { element: e, content: s, tabContent: n, nav: o } = t, { tab: i, content: r } = o && ce.get(o) || /* istanbul ignore next */
+  { tab: null, content: null };
   let c = 0;
   if (n && s && h(s, B) && ([r, s].forEach((a) => {
     T(a) && d(a, "overflow-hidden");
-  }), c = T(r) ? r.scrollHeight : 0), Qe.relatedTarget = i, En.relatedTarget = e, v(e, Qe), !Qe.defaultPrevented) {
+  }), c = T(r) ? r.scrollHeight : (
+    /* istanbul ignore next */
+    0
+  )), Qe.relatedTarget = i, En.relatedTarget = e, v(e, Qe), !Qe.defaultPrevented) {
     if (s && d(s, y), r && g(r, y), n && s && h(s, B)) {
       const a = s.scrollHeight;
       ce.set(e, { currentHeight: c, nextHeight: a, tab: null, content: null }), d(n, Mt), n.style.height = `${c}px`, Rt(n), [r, s].forEach((l) => {
@@ -1260,6 +1492,7 @@ class jo extends st {
   static selector = Tn;
   static init = Rr;
   static getInstance = Fo;
+  /** @param target the target element */
   constructor(e) {
     super(e);
     const { element: s } = this, n = F(s);
@@ -1274,9 +1507,15 @@ class jo extends st {
     }
     Dn(this, !0);
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return Wo;
   }
+  // TAB PUBLIC METHODS
+  // ==================
+  /** Shows the tab to the user. */
   show() {
     const { element: e, content: s, nav: n, dropdown: o } = this;
     if (!(n && u.get(n)) && !h(e, y)) {
@@ -1294,6 +1533,7 @@ class jo extends st {
       r && (g(r, p), h(r, B) ? L(r, () => Sn(this)) : Sn(this));
     }
   }
+  /** Removes the `Tab` component from the target element. */
   dispose() {
     Dn(this), super.dispose();
   }
@@ -1339,6 +1579,10 @@ class Yo extends st {
   static selector = Fr;
   static init = Kr;
   static getInstance = Cs;
+  /**
+   * @param target the target `.toast` element
+   * @param config the instance options
+   */
   constructor(e, s) {
     super(e, s);
     const { element: n, options: o } = this;
@@ -1346,15 +1590,27 @@ class Yo extends st {
       (i) => F(i) === n
     ), this.show = this.show.bind(this), this.hide = this.hide.bind(this), Uo(this, !0);
   }
+  /**
+   * Returns component name string.
+   */
   get name() {
     return zo;
   }
+  /**
+   * Returns component default options.
+   */
   get defaults() {
     return zr;
   }
+  /**
+   * Returns *true* when toast is visible.
+   */
   get isShown() {
     return h(this.element, p);
   }
+  // TOAST PUBLIC METHODS
+  // ====================
+  /** Shows the toast. */
   show() {
     const { element: e, isShown: s } = this;
     if (e && !s) {
@@ -1363,6 +1619,7 @@ class Yo extends st {
       Xr(this);
     }
   }
+  /** Hides the toast. */
   hide() {
     const { element: e, isShown: s } = this;
     if (e && s) {
@@ -1371,6 +1628,7 @@ class Yo extends st {
       Yr(this);
     }
   }
+  /** Removes the `Toast` component from the target element. */
   dispose() {
     const { element: e, isShown: s } = this;
     s && g(e, p), qr(this), super.dispose();

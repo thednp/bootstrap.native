@@ -86,7 +86,7 @@ const tooltipInitCallback = (element: HTMLElement) => new Tooltip(element);
 const removeTooltip = (self: Tooltip) => {
   const { element, tooltip, container, offsetParent } = self;
   removeAttribute(element, ariaDescribedBy);
-  removePopup(tooltip, container === offsetParent ? container : offsetParent);
+  removePopup(tooltip as HTMLElement, container === offsetParent ? container : offsetParent);
 };
 
 /**

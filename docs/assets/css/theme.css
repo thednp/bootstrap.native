@@ -1,4 +1,5 @@
 /* carousel */
+.carousel { touch-action: none ;}
 #myCarousel .carousel-inner > .carousel-item > .item-bg {
     position: absolute;
     top: 0;

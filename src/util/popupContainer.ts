@@ -3,7 +3,7 @@ import { getDocumentBody, isNode, createElement } from '@thednp/shorty';
 // the default container for Modal, Offcanvas, Popover and Tooltip
 const popupContainer = createElement({ tagName: 'div' }) as HTMLElement;
 
-const appendPopup = (target?: HTMLElement, customContainer?: ParentNode) => {
+const appendPopup = (target: HTMLElement, customContainer?: ParentNode) => {
   const containerIsBody = isNode(customContainer) && customContainer.nodeName === 'BODY';
   const lookup = isNode(customContainer) && !containerIsBody ? customContainer : popupContainer;
   const BODY = containerIsBody ? customContainer : getDocumentBody(target);
@@ -16,7 +16,7 @@ const appendPopup = (target?: HTMLElement, customContainer?: ParentNode) => {
   }
 };
 
-const removePopup = (target?: HTMLElement, customContainer?: ParentNode) => {
+const removePopup = (target: HTMLElement, customContainer?: ParentNode) => {
   const containerIsBody = isNode(customContainer) && customContainer.nodeName === 'BODY';
   const lookup = isNode(customContainer) && !containerIsBody ? customContainer : popupContainer;
 
@@ -29,7 +29,7 @@ const removePopup = (target?: HTMLElement, customContainer?: ParentNode) => {
   }
 };
 
-const hasPopup = (target?: HTMLElement, customContainer?: ParentNode) => {
+const hasPopup = (target: HTMLElement, customContainer?: ParentNode) => {
   const lookup = isNode(customContainer) && customContainer.nodeName !== 'BODY' ? customContainer : popupContainer;
   return isNode(target) && lookup.contains(target);
 };

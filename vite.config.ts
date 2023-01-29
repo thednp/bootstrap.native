@@ -15,6 +15,13 @@ const fileName = {
 };
 
 export default defineConfig({
+  /* add the below to host the app, the run "npx vite" */
+  // root: resolve(__dirname, 'docs'),
+  // server: {
+  //   port: 8080,
+  //   host: true,
+  //   // hot: true
+  // },
   base: './',
   build: {
     emptyOutDir: true,
