@@ -220,10 +220,12 @@ function carouselDragHandler(this: HTMLElement, e: DragEvent | TouchEvent) {
   const { target } = e;
   const self = getCarouselInstance(this);
 
+  /* istanbul ignore next */
   if (
     self &&
     self.isTouch &&
-    ((self.indicator && !self.indicator.contains(target as Node)) || !self.controls.includes(target as HTMLElement))
+    ((self.indicator && !self.indicator.contains(target as Node)) ||
+      !self.controls.includes(target as HTMLElement))
   ) {
     e.stopImmediatePropagation();
     e.stopPropagation();

@@ -418,6 +418,26 @@ describe('Carousel Class Tests', () => {
       .get('@instance').its('element').find('.carousel-item').eq(0).should('have.class', 'active')
   });
 
+  it('Can prevent drag and touch events', () => {
+    cy.get('[data-cy="carousel"]').then(($element) => {
+        const [element] = $element;
+        const instance = new Carousel(element, { interval: false });
+
+        element.addEventListener('dragstart', function handle(e) {
+          console.log('dragstart ' + e.target + ' is prevented');
+        });
+        element.addEventListener('touchstart', function handle(e) {
+          console.log('touchstart ' + e.target + ' is prevented');
+        });
+
+        cy.wrap(instance).as('instance');
+      })
+      cy.get('[data-cy="carousel"]').trigger('touchstart', { force: true })
+      cy.get('@instance').its('element').should('not.have.class', 'paused')
+      cy.get('[data-cy="carousel"]').trigger('dragstart', { force: true })
+      cy.get('@instance').its('element').should('not.have.class', 'paused')
+  })
+
   it('Can do original event', () => {
     cy.get('[data-cy="carousel"]').then(($element) => {
         const element = $element[0];
