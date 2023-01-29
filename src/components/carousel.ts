@@ -224,8 +224,7 @@ function carouselDragHandler(this: HTMLElement, e: DragEvent | TouchEvent) {
   if (
     self &&
     self.isTouch &&
-    ((self.indicator && !self.indicator.contains(target as Node)) ||
-      !self.controls.includes(target as HTMLElement))
+    ((self.indicator && !self.indicator.contains(target as Node)) || !self.controls.includes(target as HTMLElement))
   ) {
     e.stopImmediatePropagation();
     e.stopPropagation();
