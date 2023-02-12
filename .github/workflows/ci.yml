@@ -12,7 +12,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: bahmutov/npm-install@v1
+      # - uses: bahmutov/npm-install@v1
+      - run: npm install
       - run: npm run build
       - run: npm run test
 
