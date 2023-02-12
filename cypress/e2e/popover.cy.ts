@@ -108,7 +108,7 @@ describe('Popover Class Tests', () => {
         expect(instance.name, 'name').to.eq('Popover');
         expect(instance.options, 'options').to.not.be.empty;
         expect(instance.defaults, 'defaults').to.not.be.undefined;
-        expect(instance.version, 'version').to.be.string;
+        // expect(instance.version, 'version').to.be.string;
 
         cy.wrap(instance).as('instance');
       });

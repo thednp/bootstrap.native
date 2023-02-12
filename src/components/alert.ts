@@ -21,7 +21,6 @@ import dataBsDismiss from '../strings/dataBsDismiss';
 import alertString from '../strings/alertString';
 import alertComponent from '../strings/alertComponent';
 import type { AlertEvent } from '../interface/alert';
-// import type { BaseOptions } from 'src/interface/baseComponent';
 
 import BaseComponent from './base-component';
 

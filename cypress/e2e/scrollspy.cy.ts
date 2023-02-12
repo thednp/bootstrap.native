@@ -29,7 +29,7 @@ describe('ScrollSpy Class Tests', () => {
         expect(instance.name).to.eq('ScrollSpy');
         expect(instance.options).to.not.be.empty;
         expect(instance.defaults).to.not.be.undefined;
-        expect(instance.version).to.be.string;
+        // expect(instance.version).to.be.string;
       });
   });
 

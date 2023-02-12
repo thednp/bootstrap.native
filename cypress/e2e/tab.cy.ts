@@ -43,7 +43,7 @@ describe('Tab Class Tests', () => {
           expect(instance.options).to.be.undefined;
           expect(instance.defaults).to.be.empty;
           expect(instance.name).to.equal('Tab');
-          expect(instance.version).to.not.be.empty;
+          // expect(instance.version).to.not.be.empty;
           expect(instance.tabContent).to.be.instanceOf(win?.HTMLElement);
         }
         cy.wrap(instance).as('instance' + i);

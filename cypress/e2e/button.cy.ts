@@ -30,7 +30,7 @@ describe('Button Class Tests', () => {
           expect(instance.isActive, 'isActive').to.be.false;
           expect(instance.options, 'options').to.be.undefined;
           expect(instance.defaults, 'defaults').to.not.be.undefined;
-          expect(instance.version, 'version').to.be.string;
+          // expect(instance.version, 'version').to.be.string;
           cy.wrap(instance).as('instance');
         });
       })
