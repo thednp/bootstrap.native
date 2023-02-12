@@ -3,7 +3,7 @@ on: push
 jobs:
   test:
     runs-on: ubuntu-20.04
-    name: Test on Node 18
+    name: Test on Node 16
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -11,13 +11,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
       - uses: bahmutov/npm-install@v1
       - run: npm run lint:ts
       - run: npm run build-vite
       - run: npm run test
 
-      - name: Upload coverage report on Node 18 to coveralls.io...
+      - name: Upload coverage report on Node 16 to coveralls.io...
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
