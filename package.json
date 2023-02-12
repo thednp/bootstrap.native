@@ -38,9 +38,10 @@
   "keywords": [
     "bootstrap native",
     "bootstrap",
+    "bsn",
     "native",
-    "javascript",
-    "vanilla"
+    "vanilla javascript",
+    "typescript"
   ],
   "author": "dnp_theme",
   "license": "MIT",
