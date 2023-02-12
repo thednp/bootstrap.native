@@ -4,7 +4,6 @@
    "lib": ["DOM", "ESNext", "DOM.Iterable", "ES2022"],
    "types": ["cypress", "vite", "vite/client", "@thednp/event-listener", "@thednp/shorty"],
    "rootDir": "./",
-  //  "rootDir": "src",
    "baseUrl": "./",
    "module": "ESNext",
    "target": "ESNext",
@@ -25,6 +24,6 @@
    "noEmit": true,
    "checkJs": true
  },
- "include": ["src/*"],
- "exclude": ["node_modules", "experiments", "coverage"],
+ "include": ["src/*", "src/**/*"],
+ "exclude": ["node_modules", "experiments", "coverage", "dist"],
 }
