@@ -1,6 +1,6 @@
 {
   "name": "@thednp/bootstrap.native",
-  "version": "5.0.0-alpha16",
+  "version": "5.0.0-alpha17",
   "description": "Native JavaScript for Bootstrap",
   "source": "src/index.ts",
   "main": "dist/bootstrap-native.js",
@@ -12,7 +12,7 @@
     "pre-test": "npm run clean-coverage",
     "clean-coverage": "rimraf coverage .nyc_output",
     "test": "npm run pre-test && npx cypress run",
-    "dev": "npx vite --host --port 8080 --open /docs/index.html",
+    "//": "npx vite --host --port 8080 --open /docs/index.html",
     "cypress": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "build": "npm run lint:ts && npm run build-vite && npm run dts",
