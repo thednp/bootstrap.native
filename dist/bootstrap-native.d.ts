@@ -9,6 +9,7 @@ declare class BaseComponent {
 	 * @param config component instance options
 	 */
 	constructor(target: HTMLElement | string, config?: BaseOptions);
+	get version(): string;
 	get name(): string;
 	get defaults(): {};
 	/**

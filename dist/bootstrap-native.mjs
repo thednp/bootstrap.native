@@ -36,7 +36,7 @@ var C = {};
   }, r = o, d = a;
   t.addListener = o, t.globalListener = s, t.off = d, t.on = r, t.registry = n, t.removeListener = a;
 })(C);
-const Il = /* @__PURE__ */ er({
+const Nl = /* @__PURE__ */ er({
   __proto__: null,
   default: C
 }, [C]);
@@ -237,7 +237,7 @@ var e = {};
   }, ja = (i) => ce(i) && i.constructor.name === "WeakMap" || !1, Fa = (i) => P(i) && ["SVG", "Image", "Video", "Canvas"].some((l) => i.constructor.name.includes(l)) || !1, Va = (i) => ce(i) && i.constructor.name === "NodeList" || !1, Ua = (i) => Ge(i).dir === "rtl", Ka = (i) => P(i) && i.constructor.name.includes("SVG") || !1, Qa = (i) => P(i) && ["TABLE", "TD", "TH"].includes(i.nodeName) || !1, Kn = (i, l) => i ? i.closest(l) || Kn(i.getRootNode().host, l) : null, Xa = (i, l) => z(i) ? i : (P(l) ? l : x()).querySelector(i), Qn = (i, l) => (P(l) ? l : x()).getElementsByTagName(i), Ya = (i) => [...Qn("*", i)].filter(Un), Ga = (i, l) => x(l).getElementById(i) || null, _a = (i, l) => (P(l) ? l : x()).querySelectorAll(i), Ja = (i, l) => (l && P(l) ? l : x()).getElementsByClassName(i), Za = (i, l) => i.matches(l);
   t.ArrayFrom = la, t.DOMContentLoadedEvent = K, t.DOMMouseScrollEvent = j, t.Data = at, t.Float32ArrayFrom = ha, t.Float64ArrayFrom = ga, t.ObjectAssign = Lt, t.ObjectEntries = $e, t.ObjectHasOwn = pa, t.ObjectKeys = Ea, t.ObjectValues = ba, t.Timer = Sa, t.abortEvent = N, t.addClass = sa, t.addEventListener = Pi, t.animationDelay = Cn, t.animationDuration = bn, t.animationEndEvent = ot, t.animationName = yt, t.ariaChecked = n, t.ariaDescribedBy = o, t.ariaDescription = s, t.ariaExpanded = a, t.ariaHasPopup = r, t.ariaHidden = d, t.ariaLabel = c, t.ariaLabelledBy = m, t.ariaModal = h, t.ariaPressed = p, t.ariaSelected = v, t.ariaValueMax = S, t.ariaValueMin = E, t.ariaValueNow = B, t.ariaValueText = y, t.beforeunloadEvent = R, t.bezierEasings = Mi, t.blurEvent = ae, t.changeEvent = U, t.closest = Kn, t.contextmenuEvent = A, t.createCustomEvent = Ca, t.createElement = kn, t.createElementNS = In, t.dispatchEvent = $t, t.distinct = da, t.documentBody = aa, t.documentElement = ra, t.documentHead = Xe, t.dragEvent = ti, t.dragendEvent = ai, t.dragenterEvent = si, t.dragleaveEvent = oi, t.dragoverEvent = ii, t.dragstartEvent = ni, t.emulateAnimationEnd = ua, t.emulateTransitionEnd = ma, t.errorEvent = I, t.focus = fa, t.focusEvent = M, t.focusEvents = mi, t.focusinEvent = w, t.focusoutEvent = re, t.gesturechangeEvent = G, t.gestureendEvent = $, t.gesturestartEvent = _, t.getAttribute = Ln, t.getAttributeNS = Ji, t.getBoundingClientRect = qe, t.getCustomElements = Ya, t.getDocument = x, t.getDocumentBody = Da, t.getDocumentElement = Ge, t.getDocumentHead = $a, t.getElementAnimationDelay = Pn, t.getElementAnimationDuration = Nn, t.getElementById = Ga, t.getElementStyle = ue, t.getElementTransitionDelay = Mn, t.getElementTransitionDuration = On, t.getElementsByClassName = Ja, t.getElementsByTagName = Qn, t.getInstance = ca, t.getNodeScroll = Ha, t.getParentNode = La, t.getRectRelativeToOffsetParent = ka, t.getUID = Fn, t.getWindow = Ia, t.hasAttribute = Zi, t.hasAttributeNS = xi, t.hasClass = ia, t.isApple = Vi, t.isArray = Vn, t.isCanvas = Pa, t.isCustomElement = Un, t.isDocument = Dt, t.isElement = Na, t.isElementInScrollRange = Ma, t.isElementInViewport = Oa, t.isElementsArray = Ba, t.isFirefox = Ui, t.isFunction = Ra, t.isHTMLCollection = za, t.isHTMLElement = z, t.isHTMLImageElement = Wa, t.isJSON = qa, t.isMap = rt, t.isMedia = Fa, t.isMobile = Fi, t.isNode = P, t.isNodeList = Va, t.isNumber = Rn, t.isObject = ce, t.isRTL = Ua, t.isSVGElement = Ka, t.isScaledElement = Wn, t.isShadowRoot = zn, t.isString = de, t.isTableElement = Qa, t.isWeakMap = ja, t.isWindow = At, t.keyAlt = gi, t.keyArrowDown = fi, t.keyArrowLeft = pi, t.keyArrowRight = Ei, t.keyArrowUp = vi, t.keyBackspace = bi, t.keyCapsLock = Ci, t.keyControl = yi, t.keyDelete = Ti, t.keyEnter = wi, t.keyEscape = Si, t.keyInsert = Ai, t.keyMeta = Di, t.keyPause = $i, t.keyScrollLock = Hi, t.keyShift = Li, t.keySpace = ki, t.keyTab = Ii, t.keyboardEventKeys = hi, t.keydownEvent = se, t.keypressEvent = he, t.keyupEvent = J, t.loadEvent = Be, t.loadstartEvent = ri, t.matches = Za, t.mouseClickEvents = ci, t.mouseHoverEvents = di, t.mouseSwipeEvents = li, t.mouseclickEvent = le, t.mousedblclickEvent = Ae, t.mousedownEvent = Re, t.mouseenterEvent = ze, t.mousehoverEvent = Z, t.mouseinEvent = fe, t.mouseleaveEvent = ge, t.mousemoveEvent = De, t.mouseoutEvent = ve, t.mouseoverEvent = pe, t.mouseupEvent = oe, t.mousewheelEvent = We, t.moveEvent = st, t.nativeEvents = ei, t.noop = Hn, t.normalizeOptions = va, t.normalizeValue = Ht, t.off = Dn, t.offsetHeight = Oi, t.offsetWidth = Bi, t.on = An, t.one = $n, t.orientationchangeEvent = xt, t.passiveHandler = ya, t.pointercancelEvent = en, t.pointerdownEvent = tn, t.pointerleaveEvent = nn, t.pointermoveEvent = sn, t.pointerupEvent = on, t.querySelector = Xa, t.querySelectorAll = _a, t.readystatechangeEvent = an, t.reflow = Ta, t.removeAttribute = ta, t.removeAttributeNS = na, t.removeClass = oa, t.removeEventListener = Ni, t.resetEvent = rn, t.resizeEvent = ln, t.scrollEvent = mn, t.scrollHeight = Ri, t.scrollWidth = zi, t.selectEvent = cn, t.selectendEvent = dn, t.selectstartEvent = un, t.setAttribute = St, t.setAttributeNS = ea, t.setElementStyle = wa, t.submitEvent = hn, t.support3DTransform = Ki, t.supportAnimation = Gi, t.supportPassive = Qi, t.supportTouch = Yi, t.supportTransform = Xi, t.supportTransition = _i, t.tabindex = Wi, t.toLowerCase = Bn, t.toUpperCase = Aa, t.touchEvents = ui, t.touchcancelEvent = vn, t.touchendEvent = pn, t.touchmoveEvent = fn, t.touchstartEvent = gn, t.transitionDelay = Tn, t.transitionDuration = yn, t.transitionEndEvent = it, t.transitionProperty = Tt, t.unloadEvent = En, t.userAgent = Qe, t.userAgentData = Ke;
 })(e);
-const O = "fade", b = "show", ft = "data-bs-dismiss", vt = "alert", Gs = "Alert";
+const O = "fade", b = "show", ft = "data-bs-dismiss", vt = "alert", Gs = "Alert", tr = "5.0.0-alpha12", nr = tr;
 class ne {
   element;
   options;
@@ -251,6 +251,10 @@ class ne {
       throw e.isString(n) ? Error(`${this.name} Error: "${n}" is not a valid selector.`) : Error(`${this.name} Error: your target is not an instance of HTMLElement.`);
     const a = e.Data.get(o, this.name);
     a && a.dispose(), this.element = o, this.defaults && e.ObjectKeys(this.defaults).length && (this.options = e.normalizeOptions(o, this.defaults, s || {}, "bs")), e.Data.set(o, this.name, this);
+  }
+  /* istanbul ignore next */
+  get version() {
+    return nr;
   }
   /* istanbul ignore next */
   get name() {
@@ -269,20 +273,20 @@ class ne {
     });
   }
 }
-const Xn = `.${vt}`, tr = `[${ft}="${vt}"]`, Yn = (t) => e.getInstance(t, Gs), nr = (t) => new _s(t), Gn = e.createCustomEvent(`close.bs.${vt}`), sr = e.createCustomEvent(`closed.bs.${vt}`), _n = (t) => {
+const Xn = `.${vt}`, sr = `[${ft}="${vt}"]`, Yn = (t) => e.getInstance(t, Gs), or = (t) => new _s(t), Gn = e.createCustomEvent(`close.bs.${vt}`), ir = e.createCustomEvent(`closed.bs.${vt}`), _n = (t) => {
   const { element: n } = t;
-  zt(t), e.dispatchEvent(n, sr), t.dispose(), n.remove();
+  zt(t), e.dispatchEvent(n, ir), t.dispose(), n.remove();
 }, zt = (t, n) => {
   const s = n ? C.addListener : C.removeListener, { dismiss: o } = t;
   o && s(o, e.mouseclickEvent, t.close);
 };
 class _s extends ne {
   static selector = Xn;
-  static init = nr;
+  static init = or;
   static getInstance = Yn;
   dismiss;
   constructor(n) {
-    super(n), this.dismiss = e.querySelector(tr, this.element), zt(this, !0);
+    super(n), this.dismiss = e.querySelector(sr, this.element), zt(this, !0);
   }
   /** Returns component name string. */
   get name() {
@@ -310,12 +314,12 @@ class _s extends ne {
     zt(this), super.dispose();
   }
 }
-const T = "active", F = "data-bs-toggle", or = "button", Js = "Button", ir = `[${F}="${or}"]`, Jn = (t) => e.getInstance(t, Js), ar = (t) => new Zs(t), Zn = (t, n) => {
+const T = "active", F = "data-bs-toggle", ar = "button", Js = "Button", rr = `[${F}="${ar}"]`, Jn = (t) => e.getInstance(t, Js), lr = (t) => new Zs(t), Zn = (t, n) => {
   (n ? C.addListener : C.removeListener)(t.element, e.mouseclickEvent, t.toggle);
 };
 class Zs extends ne {
-  static selector = ir;
-  static init = ar;
+  static selector = rr;
+  static init = lr;
   static getInstance = Jn;
   isActive = !1;
   /**
@@ -354,8 +358,8 @@ class Zs extends ne {
     Zn(this), super.dispose();
   }
 }
-const Wt = "data-bs-target", ke = "carousel", xs = "Carousel", xn = "data-bs-parent", rr = "data-bs-container", W = (t) => {
-  const n = [Wt, xn, rr, "href"], s = e.getDocument(t);
+const Wt = "data-bs-target", ke = "carousel", xs = "Carousel", xn = "data-bs-parent", cr = "data-bs-container", W = (t) => {
+  const n = [Wt, xn, cr, "href"], s = e.getDocument(t);
   return n.map((o) => {
     const a = e.getAttribute(t, o);
     return a ? o === xn ? e.closest(t, a) : e.querySelector(a, s) : null;
@@ -365,24 +369,24 @@ const Wt = "data-bs-target", ke = "carousel", xs = "Carousel", xn = "data-bs-par
   keyboard: !1,
   touch: !0,
   interval: 5e3
-}, ie = (t) => e.getInstance(t, xs), lr = (t) => new to(t);
+}, ie = (t) => e.getInstance(t, xs), dr = (t) => new to(t);
 let He = 0, Fe = 0, _e = 0;
-const kt = e.createCustomEvent(`slide.bs.${ke}`), jt = e.createCustomEvent(`slid.bs.${ke}`), cr = (t) => {
+const kt = e.createCustomEvent(`slide.bs.${ke}`), jt = e.createCustomEvent(`slid.bs.${ke}`), ur = (t) => {
   const { index: n, direction: s, element: o, slides: a, options: r } = t;
   if (t.isAnimating && ie(o)) {
     const d = Ft(t), c = s === "left" ? "next" : "prev", m = s === "left" ? "start" : "end";
     e.addClass(a[n], T), e.removeClass(a[n], `${ee}-${c}`), e.removeClass(a[n], `${ee}-${m}`), e.removeClass(a[d], T), e.removeClass(a[d], `${ee}-${m}`), e.dispatchEvent(o, jt), e.Timer.clear(o, Te), !e.getDocument(o).hidden && r.interval && !t.isPaused && t.cycle();
   }
 };
-function dr() {
+function mr() {
   const t = ie(this);
   t && !t.isPaused && !e.Timer.get(this, we) && e.addClass(this, we);
 }
-function ur() {
+function hr() {
   const t = ie(this);
   t && t.isPaused && !e.Timer.get(this, we) && t.cycle();
 }
-function mr(t) {
+function gr(t) {
   t.preventDefault();
   const n = e.closest(this, tt) || W(this), s = ie(n);
   if (!s || s.isAnimating)
@@ -392,7 +396,7 @@ function mr(t) {
   this && !e.hasClass(this, T) && // event target is not active
   !Number.isNaN(o) && s.to(o);
 }
-function hr(t) {
+function fr(t) {
   t.preventDefault();
   const n = e.closest(this, tt) || W(this), s = ie(n);
   if (!s || s.isAnimating)
@@ -400,7 +404,7 @@ function hr(t) {
   const o = e.getAttribute(this, Te);
   o === "next" ? s.next() : o === "prev" && s.prev();
 }
-const gr = ({ code: t, target: n }) => {
+const vr = ({ code: t, target: n }) => {
   const s = e.getDocument(n), [o] = [...e.querySelectorAll(tt, s)].filter((m) => e.isElementInScrollRange(m)), a = ie(o);
   if (!a || a.isAnimating || /textarea|input/i.test(n.nodeName))
     return;
@@ -411,16 +415,16 @@ function ts(t) {
   const { target: n } = t, s = ie(this);
   s && s.isTouch && (s.indicator && !s.indicator.contains(n) || !s.controls.includes(n)) && (t.stopImmediatePropagation(), t.stopPropagation(), t.preventDefault());
 }
-function fr(t) {
+function pr(t) {
   const { target: n } = t, s = ie(this);
   if (!s || s.isAnimating || s.isTouch)
     return;
   const { controls: o, indicators: a } = s;
   [...o, ...a].some((r) => r === n || r.contains(n)) || (He = t.pageX, this.contains(n) && (s.isTouch = !0, eo(s, !0)));
 }
-const vr = (t) => {
+const Er = (t) => {
   Fe = t.pageX;
-}, pr = (t) => {
+}, br = (t) => {
   const { target: n } = t, s = e.getDocument(n), o = [...e.querySelectorAll(tt, s)].map((c) => ie(c)).find((c) => c.isTouch);
   if (!o)
     return;
@@ -439,21 +443,21 @@ const vr = (t) => {
   [...s].forEach((o) => e.removeClass(o, T)), t.indicators[n] && e.addClass(s[n], T);
 }, eo = (t, n) => {
   const { element: s } = t, o = n ? C.addListener : C.removeListener;
-  o(e.getDocument(s), e.pointermoveEvent, vr, e.passiveHandler), o(e.getDocument(s), e.pointerupEvent, pr, e.passiveHandler);
+  o(e.getDocument(s), e.pointermoveEvent, Er, e.passiveHandler), o(e.getDocument(s), e.pointerupEvent, br, e.passiveHandler);
 }, ns = (t, n) => {
   const { element: s, options: o, slides: a, controls: r, indicators: d } = t, { touch: c, pause: m, interval: h, keyboard: p } = o, v = n ? C.addListener : C.removeListener;
-  m && h && (v(s, e.mouseenterEvent, dr), v(s, e.mouseleaveEvent, ur)), c && a.length > 2 && (v(s, e.pointerdownEvent, fr, e.passiveHandler), v(s, e.touchstartEvent, ts, { passive: !1 }), v(s, e.dragstartEvent, ts, { passive: !1 })), r.length && r.forEach((E) => {
-    E && v(E, e.mouseclickEvent, hr);
+  m && h && (v(s, e.mouseenterEvent, mr), v(s, e.mouseleaveEvent, hr)), c && a.length > 2 && (v(s, e.pointerdownEvent, pr, e.passiveHandler), v(s, e.touchstartEvent, ts, { passive: !1 }), v(s, e.dragstartEvent, ts, { passive: !1 })), r.length && r.forEach((E) => {
+    E && v(E, e.mouseclickEvent, fr);
   }), d.length && d.forEach((E) => {
-    v(E, e.mouseclickEvent, mr);
-  }), p && v(e.getDocument(s), e.keydownEvent, gr);
+    v(E, e.mouseclickEvent, gr);
+  }), p && v(e.getDocument(s), e.keydownEvent, vr);
 }, Ft = (t) => {
   const { slides: n, element: s } = t, o = e.querySelector(`.${ee}.${T}`, s);
   return e.isHTMLElement(o) ? [...n].indexOf(o) : -1;
 };
 class to extends ne {
   static selector = tt;
-  static init = lr;
+  static init = dr;
   static getInstance = ie;
   /**
    * @param target mostly a `.carousel` element
@@ -556,7 +560,7 @@ class to extends ne {
     e.ObjectAssign(kt, v), e.ObjectAssign(jt, v), e.dispatchEvent(s, kt), !kt.defaultPrevented && (this.index = c, It(this, c), e.getElementTransitionDuration(o[c]) && e.hasClass(s, "slide") ? e.Timer.set(
       s,
       () => {
-        e.addClass(o[c], `${ee}-${h}`), e.reflow(o[c]), e.addClass(o[c], `${ee}-${p}`), e.addClass(o[r], `${ee}-${p}`), e.emulateTransitionEnd(o[c], () => cr(this));
+        e.addClass(o[c], `${ee}-${h}`), e.reflow(o[c]), e.addClass(o[c], `${ee}-${p}`), e.addClass(o[r], `${ee}-${p}`), e.emulateTransitionEnd(o[c], () => ur(this));
       },
       0,
       Te
@@ -577,26 +581,26 @@ class to extends ne {
     }), ns(this), super.dispose();
   }
 }
-const Ne = "collapsing", q = "collapse", no = "Collapse", Er = `.${q}`, so = `[${F}="${q}"]`, br = { parent: null }, ct = (t) => e.getInstance(t, no), Cr = (t) => new oo(t), ss = e.createCustomEvent(`show.bs.${q}`), yr = e.createCustomEvent(`shown.bs.${q}`), os = e.createCustomEvent(`hide.bs.${q}`), Tr = e.createCustomEvent(`hidden.bs.${q}`), wr = (t) => {
+const Ne = "collapsing", q = "collapse", no = "Collapse", Cr = `.${q}`, so = `[${F}="${q}"]`, yr = { parent: null }, ct = (t) => e.getInstance(t, no), Tr = (t) => new oo(t), ss = e.createCustomEvent(`show.bs.${q}`), wr = e.createCustomEvent(`shown.bs.${q}`), os = e.createCustomEvent(`hide.bs.${q}`), Sr = e.createCustomEvent(`hidden.bs.${q}`), Ar = (t) => {
   const { element: n, parent: s, triggers: o } = t;
   e.dispatchEvent(n, ss), !ss.defaultPrevented && (e.Timer.set(n, e.noop, 17), s && e.Timer.set(s, e.noop, 17), e.addClass(n, Ne), e.removeClass(n, q), e.setElementStyle(n, { height: `${n.scrollHeight}px` }), e.emulateTransitionEnd(n, () => {
-    e.Timer.clear(n), s && e.Timer.clear(s), o.forEach((a) => e.setAttribute(a, e.ariaExpanded, "true")), e.removeClass(n, Ne), e.addClass(n, q), e.addClass(n, b), e.setElementStyle(n, { height: "" }), e.dispatchEvent(n, yr);
+    e.Timer.clear(n), s && e.Timer.clear(s), o.forEach((a) => e.setAttribute(a, e.ariaExpanded, "true")), e.removeClass(n, Ne), e.addClass(n, q), e.addClass(n, b), e.setElementStyle(n, { height: "" }), e.dispatchEvent(n, wr);
   }));
 }, is = (t) => {
   const { element: n, parent: s, triggers: o } = t;
   e.dispatchEvent(n, os), !os.defaultPrevented && (e.Timer.set(n, e.noop, 17), s && e.Timer.set(s, e.noop, 17), e.setElementStyle(n, { height: `${n.scrollHeight}px` }), e.removeClass(n, q), e.removeClass(n, b), e.addClass(n, Ne), e.reflow(n), e.setElementStyle(n, { height: "0px" }), e.emulateTransitionEnd(n, () => {
-    e.Timer.clear(n), s && e.Timer.clear(s), o.forEach((a) => e.setAttribute(a, e.ariaExpanded, "false")), e.removeClass(n, Ne), e.addClass(n, q), e.setElementStyle(n, { height: "" }), e.dispatchEvent(n, Tr);
+    e.Timer.clear(n), s && e.Timer.clear(s), o.forEach((a) => e.setAttribute(a, e.ariaExpanded, "false")), e.removeClass(n, Ne), e.addClass(n, q), e.setElementStyle(n, { height: "" }), e.dispatchEvent(n, Sr);
   }));
 }, as = (t, n) => {
   const s = n ? C.addListener : C.removeListener, { triggers: o } = t;
-  o.length && o.forEach((a) => s(a, e.mouseclickEvent, Sr));
-}, Sr = (t) => {
+  o.length && o.forEach((a) => s(a, e.mouseclickEvent, Dr));
+}, Dr = (t) => {
   const { target: n } = t, s = n && e.closest(n, so), o = s && W(s), a = o && ct(o);
   a && a.toggle(), s && s.tagName === "A" && t.preventDefault();
 };
 class oo extends ne {
-  static selector = Er;
-  static init = Cr;
+  static selector = Cr;
+  static init = Tr;
   static getInstance = ct;
   /**
    * @param target and `Element` that matches the selector
@@ -617,7 +621,7 @@ class oo extends ne {
    * Returns component default options.
    */
   get defaults() {
-    return br;
+    return yr;
   }
   // COLLAPSE PUBLIC METHODS
   // =======================
@@ -638,7 +642,7 @@ class oo extends ne {
       (d) => ct(d)
     ), r = a && ct(a)), (!s || !e.Timer.get(s)) && !e.Timer.get(n) && (r && a !== n && (is(r), r.triggers.forEach((d) => {
       e.addClass(d, `${q}d`);
-    })), wr(this), o.length && o.forEach((d) => e.removeClass(d, `${q}d`)));
+    })), Ar(this), o.length && o.forEach((d) => e.removeClass(d, `${q}d`)));
   }
   /** Remove the `Collapse` component from the target `Element`. */
   dispose() {
@@ -650,7 +654,7 @@ const Me = ["dropdown", "dropup", "dropstart", "dropend"], io = "Dropdown", ao =
   return t.tagName === "A" && // anchor href starts with #
   e.hasAttribute(t, "href") && t.href.slice(-1) === "#" || // OR a child of an anchor with href starts with #
   n && e.hasAttribute(n, "href") && n.href.slice(-1) === "#";
-}, [te, mt, ht, gt] = Me, Kt = `[${F}="${te}"],[${F}="${mt}"],[${F}="${gt}"],[${F}="${ht}"]`, Ve = (t) => e.getInstance(t, io), Ar = (t) => new uo(t), Dr = `${ao}-end`, rs = [te, mt], ls = [ht, gt], cs = ["A", "BUTTON"], $r = {
+}, [te, mt, ht, gt] = Me, Kt = `[${F}="${te}"],[${F}="${mt}"],[${F}="${gt}"],[${F}="${ht}"]`, Ve = (t) => e.getInstance(t, io), $r = (t) => new uo(t), Hr = `${ao}-end`, rs = [te, mt], ls = [ht, gt], cs = ["A", "BUTTON"], Lr = {
   offset: 5,
   // [number] 5(px)
   display: "dynamic"
@@ -659,7 +663,7 @@ const Me = ["dropdown", "dropup", "dropstart", "dropend"], io = "Dropdown", ao =
   const { element: n, menu: s, parentElement: o, options: a } = t, { offset: r } = a;
   if (e.getElementStyle(s, "position") === "static")
     return;
-  const d = e.isRTL(n), c = e.hasClass(s, Dr);
+  const d = e.isRTL(n), c = e.hasClass(s, Hr);
   ["margin", "top", "bottom", "left", "right"].forEach(($) => {
     const _ = {};
     _[$] = "", e.setElementStyle(s, _);
@@ -698,18 +702,18 @@ const Me = ["dropdown", "dropup", "dropstart", "dropend"], io = "Dropdown", ao =
     e.setElementStyle(s, v[$]);
   }
   e.dispatchEvent(o, lo);
-}, Hr = (t) => [...t.children].map((n) => {
+}, kr = (t) => [...t.children].map((n) => {
   if (n && cs.includes(n.tagName))
     return n;
   const { firstElementChild: s } = n;
   return s && cs.includes(s.tagName) ? s : null;
 }).filter((n) => n), ms = (t) => {
   const { element: n, options: s } = t, o = t.open ? C.addListener : C.removeListener, a = e.getDocument(n);
-  o(a, e.mouseclickEvent, gs), o(a, e.focusEvent, gs), o(a, e.keydownEvent, kr), o(a, e.keyupEvent, Ir), s.display === "dynamic" && [e.scrollEvent, e.resizeEvent].forEach((r) => {
-    o(e.getWindow(n), r, Pr, e.passiveHandler);
+  o(a, e.mouseclickEvent, gs), o(a, e.focusEvent, gs), o(a, e.keydownEvent, Pr), o(a, e.keyupEvent, Nr), s.display === "dynamic" && [e.scrollEvent, e.resizeEvent].forEach((r) => {
+    o(e.getWindow(n), r, Mr, e.passiveHandler);
   });
 }, hs = (t, n) => {
-  (n ? C.addListener : C.removeListener)(t.element, e.mouseclickEvent, Lr);
+  (n ? C.addListener : C.removeListener)(t.element, e.mouseclickEvent, Ir);
 }, pt = (t) => {
   const n = [...Me, "btn-group", "input-group"].map((s) => e.getElementsByClassName(`${s} ${b}`, e.getDocument(t))).find((s) => s.length);
   if (n && n.length)
@@ -725,30 +729,30 @@ const Me = ["dropdown", "dropup", "dropstart", "dropend"], io = "Dropdown", ao =
     return;
   const { parentElement: r, menu: d } = a, c = e.closest(n, Kt) !== null, m = r && r.contains(n) && (n.tagName === "form" || e.closest(n, "form") !== null);
   s === e.mouseclickEvent && ro(n) && t.preventDefault(), !(s === e.focusEvent && (n === o || n === d || d.contains(n))) && (m || c || a && a.hide());
-}, Lr = (t) => {
+}, Ir = (t) => {
   const { target: n } = t, s = n && e.closest(n, Kt), o = s && Ve(s);
   o && (t.stopImmediatePropagation(), o.toggle(), s && ro(s) && t.preventDefault());
-}, kr = (t) => {
+}, Pr = (t) => {
   [e.keyArrowDown, e.keyArrowUp].includes(t.code) && t.preventDefault();
 };
-function Ir(t) {
+function Nr(t) {
   const { code: n } = t, s = pt(this), o = s && Ve(s), { activeElement: a } = s && e.getDocument(s);
   if (!o || !a)
     return;
-  const { menu: r, open: d } = o, c = Hr(r);
+  const { menu: r, open: d } = o, c = kr(r);
   if (c && c.length && [e.keyArrowDown, e.keyArrowUp].includes(n)) {
     let m = c.indexOf(a);
     a === s ? m = 0 : n === e.keyArrowUp ? m = m > 1 ? m - 1 : 0 : n === e.keyArrowDown && (m = m < c.length - 1 ? m + 1 : m), c[m] && e.focus(c[m]);
   }
   e.keyEscape === n && d && (o.toggle(), e.focus(s));
 }
-function Pr() {
+function Mr() {
   const t = pt(this), n = t && Ve(t);
   n && n.open && co(n);
 }
 class uo extends ne {
   static selector = Kt;
-  static init = Ar;
+  static init = $r;
   static getInstance = Ve;
   /**
    * @param target Element or string selector
@@ -769,7 +773,7 @@ class uo extends ne {
    * Returns component default options.
    */
   get defaults() {
-    return $r;
+    return Lr;
   }
   // DROPDOWN PUBLIC METHODS
   // =======================
@@ -799,13 +803,13 @@ class uo extends ne {
     this.open && this.hide(), hs(this), super.dispose();
   }
 }
-const V = "modal", Qt = "Modal", Xt = "Offcanvas", Nr = "fixed-top", Mr = "fixed-bottom", mo = "sticky-top", ho = "position-sticky", go = (t) => [
-  ...e.getElementsByClassName(Nr, t),
-  ...e.getElementsByClassName(Mr, t),
+const V = "modal", Qt = "Modal", Xt = "Offcanvas", Or = "fixed-top", Br = "fixed-bottom", mo = "sticky-top", ho = "position-sticky", go = (t) => [
+  ...e.getElementsByClassName(Or, t),
+  ...e.getElementsByClassName(Br, t),
   ...e.getElementsByClassName(mo, t),
   ...e.getElementsByClassName(ho, t),
   ...e.getElementsByClassName("is-fixed", t)
-], Or = (t) => {
+], Rr = (t) => {
   const n = e.getDocumentBody(t);
   e.setElementStyle(n, {
     paddingRight: "",
@@ -854,11 +858,11 @@ const V = "modal", Qt = "Modal", Xt = "Offcanvas", Nr = "fixed-top", Mr = "fixed
 }, Et = () => {
   e.removeClass(L, b);
 }, wo = (t) => {
-  Oe(t) || (e.removeClass(L, O), Eo(L, e.getDocumentBody(t)), Or(t));
-}, So = (t) => e.isHTMLElement(t) && e.getElementStyle(t, "visibility") !== "hidden" && t.offsetParent !== null, Br = `.${V}`, Ao = `[${F}="${V}"]`, Rr = `[${ft}="${V}"]`, Do = `${V}-static`, zr = {
+  Oe(t) || (e.removeClass(L, O), Eo(L, e.getDocumentBody(t)), Rr(t));
+}, So = (t) => e.isHTMLElement(t) && e.getElementStyle(t, "visibility") !== "hidden" && t.offsetParent !== null, zr = `.${V}`, Ao = `[${F}="${V}"]`, Wr = `[${ft}="${V}"]`, Do = `${V}-static`, qr = {
   backdrop: !0,
   keyboard: !0
-}, Ze = (t) => e.getInstance(t, Qt), Wr = (t) => new Lo(t), dt = e.createCustomEvent(`show.bs.${V}`), ps = e.createCustomEvent(`shown.bs.${V}`), Mt = e.createCustomEvent(`hide.bs.${V}`), Es = e.createCustomEvent(`hidden.bs.${V}`), $o = (t) => {
+}, Ze = (t) => e.getInstance(t, Qt), jr = (t) => new Lo(t), dt = e.createCustomEvent(`show.bs.${V}`), ps = e.createCustomEvent(`shown.bs.${V}`), Mt = e.createCustomEvent(`hide.bs.${V}`), Es = e.createCustomEvent(`hidden.bs.${V}`), $o = (t) => {
   const { element: n } = t, s = fo(n), { clientHeight: o, scrollHeight: a } = e.getDocumentElement(n), { clientHeight: r, scrollHeight: d } = n, c = r !== d;
   if (!c && s) {
     const m = e.isRTL(n) ? (
@@ -870,10 +874,10 @@ const V = "modal", Qt = "Modal", Xt = "Offcanvas", Nr = "fixed-top", Mr = "fixed
   vo(n, c || o !== a);
 }, Ho = (t, n) => {
   const s = n ? C.addListener : C.removeListener, { element: o } = t;
-  s(o, e.mouseclickEvent, Fr), s(e.getWindow(o), e.resizeEvent, t.update, e.passiveHandler), s(e.getDocument(o), e.keydownEvent, jr);
+  s(o, e.mouseclickEvent, Ur), s(e.getWindow(o), e.resizeEvent, t.update, e.passiveHandler), s(e.getDocument(o), e.keydownEvent, Vr);
 }, bs = (t, n) => {
   const s = n ? C.addListener : C.removeListener, { triggers: o } = t;
-  o.length && o.forEach((a) => s(a, e.mouseclickEvent, qr));
+  o.length && o.forEach((a) => s(a, e.mouseclickEvent, Fr));
 }, Cs = (t, n) => {
   const { triggers: s, element: o, relatedTarget: a } = t;
   wo(o), e.setElementStyle(o, { paddingRight: "", display: "" }), Ho(t);
@@ -888,10 +892,10 @@ const V = "modal", Qt = "Modal", Xt = "Offcanvas", Nr = "fixed-top", Mr = "fixed
 }, ws = (t, n) => {
   const { element: s, options: o, hasFade: a } = t;
   o.backdrop && !n && a && e.hasClass(L, b) && !Oe(s) ? (Et(), e.emulateTransitionEnd(L, () => Cs(t))) : Cs(t, n);
-}, qr = (t) => {
+}, Fr = (t) => {
   const { target: n } = t, s = n && e.closest(n, Ao), o = s && W(s), a = o && Ze(o);
   a && (s && s.tagName === "A" && t.preventDefault(), a.relatedTarget = s, a.toggle());
-}, jr = ({ code: t, target: n }) => {
+}, Vr = ({ code: t, target: n }) => {
   const s = e.querySelector(Co, e.getDocument(n)), o = s && Ze(s);
   if (!o)
     return;
@@ -899,20 +903,20 @@ const V = "modal", Qt = "Modal", Xt = "Offcanvas", Nr = "fixed-top", Mr = "fixed
   a.keyboard && t === e.keyEscape && // the keyboard option is enabled and the key is 27
   e.hasClass(s, b) && (o.relatedTarget = null, o.hide());
 };
-function Fr(t) {
+function Ur(t) {
   const n = Ze(this);
   if (!n || e.Timer.get(this))
     return;
-  const { options: s, isStatic: o, modalDialog: a } = n, { backdrop: r } = s, { target: d } = t, c = e.getDocument(this)?.getSelection()?.toString().length, m = a?.contains(d), h = d && e.closest(d, Rr);
+  const { options: s, isStatic: o, modalDialog: a } = n, { backdrop: r } = s, { target: d } = t, c = e.getDocument(this)?.getSelection()?.toString().length, m = a?.contains(d), h = d && e.closest(d, Wr);
   o && !m ? e.Timer.set(
     this,
     () => {
-      e.addClass(this, Do), e.emulateTransitionEnd(a, () => Vr(n));
+      e.addClass(this, Do), e.emulateTransitionEnd(a, () => Kr(n));
     },
     17
   ) : (h || !c && !o && !m && r) && (n.relatedTarget = h || null, n.hide(), t.preventDefault());
 }
-const Vr = (t) => {
+const Kr = (t) => {
   const { element: n, modalDialog: s } = t, o = (e.isHTMLElement(s) ? e.getElementTransitionDuration(s) : (
     /* istanbul ignore next */
     0
@@ -920,8 +924,8 @@ const Vr = (t) => {
   e.removeClass(n, Do), e.Timer.set(n, () => e.Timer.clear(n), o);
 };
 class Lo extends ne {
-  static selector = Br;
-  static init = Wr;
+  static selector = zr;
+  static init = jr;
   static getInstance = Ze;
   /**
    * @param target usually the `.modal` element
@@ -944,7 +948,7 @@ class Lo extends ne {
    * Returns component default options.
    */
   get defaults() {
-    return zr;
+    return qr;
   }
   // MODAL PUBLIC METHODS
   // ====================
@@ -986,42 +990,42 @@ class Lo extends ne {
     bs(this), this.hide(() => super.dispose());
   }
 }
-const Ur = `.${X}`, _t = `[${F}="${X}"]`, Kr = `[${ft}="${X}"]`, bt = `${X}-toggling`, Qr = {
+const Qr = `.${X}`, _t = `[${F}="${X}"]`, Xr = `[${ft}="${X}"]`, bt = `${X}-toggling`, Yr = {
   backdrop: !0,
   // boolean
   keyboard: !0,
   // boolean
   scroll: !1
   // boolean
-}, xe = (t) => e.getInstance(t, Xt), Xr = (t) => new No(t), ut = e.createCustomEvent(`show.bs.${X}`), ko = e.createCustomEvent(`shown.bs.${X}`), Ot = e.createCustomEvent(`hide.bs.${X}`), Io = e.createCustomEvent(`hidden.bs.${X}`), Yr = (t) => {
+}, xe = (t) => e.getInstance(t, Xt), Gr = (t) => new No(t), ut = e.createCustomEvent(`show.bs.${X}`), ko = e.createCustomEvent(`shown.bs.${X}`), Ot = e.createCustomEvent(`hide.bs.${X}`), Io = e.createCustomEvent(`hidden.bs.${X}`), _r = (t) => {
   const { element: n } = t, { clientHeight: s, scrollHeight: o } = e.getDocumentElement(n);
   vo(n, s !== o);
 }, Ss = (t, n) => {
   const s = n ? C.addListener : C.removeListener;
-  t.triggers.forEach((o) => s(o, e.mouseclickEvent, Gr));
+  t.triggers.forEach((o) => s(o, e.mouseclickEvent, Jr));
 }, Po = (t, n) => {
   const s = n ? C.addListener : C.removeListener, o = e.getDocument(t.element);
-  s(o, e.keydownEvent, Jr), s(o, e.mouseclickEvent, _r);
+  s(o, e.keydownEvent, xr), s(o, e.mouseclickEvent, Zr);
 }, As = (t) => {
   const { element: n, options: s } = t;
-  s.scroll || (Yr(t), e.setElementStyle(e.getDocumentBody(n), { overflow: "hidden" })), e.addClass(n, bt), e.addClass(n, b), e.setElementStyle(n, { visibility: "visible" }), e.emulateTransitionEnd(n, () => Zr(t));
+  s.scroll || (_r(t), e.setElementStyle(e.getDocumentBody(n), { overflow: "hidden" })), e.addClass(n, bt), e.addClass(n, b), e.setElementStyle(n, { visibility: "visible" }), e.emulateTransitionEnd(n, () => el(t));
 }, Ds = (t, n) => {
   const { element: s, options: o } = t, a = Oe(s);
   s.blur(), !a && o.backdrop && e.hasClass(L, b) ? (Et(), e.emulateTransitionEnd(L, () => $s(t, n))) : $s(t, n);
-}, Gr = (t) => {
+}, Jr = (t) => {
   const n = e.closest(t.target, _t), s = n && W(n), o = s && xe(s);
   o && (o.relatedTarget = n, o.toggle(), n && n.tagName === "A" && t.preventDefault());
-}, _r = (t) => {
-  const { target: n } = t, s = e.querySelector(Yt, e.getDocument(n)), o = e.querySelector(Kr, s), a = s && xe(s);
+}, Zr = (t) => {
+  const { target: n } = t, s = e.querySelector(Yt, e.getDocument(n)), o = e.querySelector(Xr, s), a = s && xe(s);
   if (!a)
     return;
   const { options: r, triggers: d } = a, { backdrop: c } = r, m = e.closest(n, _t), h = e.getDocument(s).getSelection();
   L.contains(n) && c === "static" || (!(h && h.toString().length) && (!s.contains(n) && c && /* istanbul ignore next */
   (!m || d.includes(n)) || o && o.contains(n)) && (a.relatedTarget = o && o.contains(n) ? o : null, a.hide()), m && m.tagName === "A" && t.preventDefault());
-}, Jr = ({ code: t, target: n }) => {
+}, xr = ({ code: t, target: n }) => {
   const s = e.querySelector(Yt, e.getDocument(n)), o = s && xe(s);
   o && o.options.keyboard && t === e.keyEscape && (o.relatedTarget = null, o.hide());
-}, Zr = (t) => {
+}, el = (t) => {
   const { element: n } = t;
   e.removeClass(n, bt), e.removeAttribute(n, e.ariaHidden), e.setAttribute(n, e.ariaModal, "true"), e.setAttribute(n, "role", "dialog"), e.dispatchEvent(n, ko), Po(t, !0), e.focus(n);
 }, $s = (t, n) => {
@@ -1031,8 +1035,8 @@ const Ur = `.${X}`, _t = `[${F}="${X}"]`, Kr = `[${ft}="${X}"]`, bt = `${X}-togg
   a && e.focus(a), wo(s), e.dispatchEvent(s, Io), e.removeClass(s, bt), Oe(s) || Po(t), e.isFunction(n) && n();
 };
 class No extends ne {
-  static selector = Ur;
-  static init = Xr;
+  static selector = Qr;
+  static init = Gr;
   static getInstance = xe;
   /**
    * @param target usually an `.offcanvas` element
@@ -1055,7 +1059,7 @@ class No extends ne {
    * Returns component default options.
    */
   get defaults() {
-    return Qr;
+    return Yr;
   }
   // OFFCANVAS PUBLIC METHODS
   // ========================
@@ -1166,7 +1170,7 @@ const Ie = "popover", Ct = "Popover", me = "tooltip", Mo = (t) => {
       t.append(...r.body.childNodes);
     } else
       e.isHTMLElement(n) ? t.append(n) : (e.isNodeList(n) || e.isArray(n) && n.every(e.isNode)) && t.append(...n);
-}, xr = (t) => {
+}, tl = (t) => {
   const n = t.name === Pe, { id: s, element: o, options: a } = t, { title: r, placement: d, template: c, animation: m, customClass: h, sanitizeFn: p, dismissible: v, content: E, btnClose: S } = a, B = n ? me : Ie, y = { ...Oo };
   let N = [], R = [];
   e.isRTL(o) && (y.left = "end", y.right = "start");
@@ -1216,19 +1220,19 @@ const Ie = "popover", Ct = "Popover", me = "tooltip", Mo = (t) => {
       ye(w, S, p), R = [...R, w.firstChild];
     }
   n ? r && I && ye(I, r, p) : (r && j && ye(j, N, p), E && I && ye(I, R, p), t.btn = e.querySelector(".btn-close", A) || void 0), e.addClass(A, "position-fixed"), e.addClass(M, "position-absolute"), e.hasClass(A, B) || e.addClass(A, B), m && !e.hasClass(A, O) && e.addClass(A, O), h && !e.hasClass(A, h) && e.addClass(A, h), e.hasClass(A, ae) || e.addClass(A, ae);
-}, el = (t) => {
+}, nl = (t) => {
   const n = ["HTML", "BODY"], s = [];
   let { parentNode: o } = t;
   for (; o && !n.includes(o.nodeName); )
     o = e.getParentNode(o), e.isShadowRoot(o) || e.isTableElement(o) || s.push(o);
   return s.find((a, r) => e.getElementStyle(a, "position") !== "relative" && s.slice(r + 1).every((d) => e.getElementStyle(d, "position") === "static") ? a : null) || /* istanbul ignore next: optional guard */
   e.getDocument(t).body;
-}, tl = `[${F}="${me}"],[data-tip="${me}"]`, Ro = "title";
+}, sl = `[${F}="${me}"],[data-tip="${me}"]`, Ro = "title";
 let Hs = (t) => e.getInstance(t, Pe);
-const nl = (t) => new Jt(t), sl = (t) => {
+const ol = (t) => new Jt(t), il = (t) => {
   const { element: n, tooltip: s, container: o, offsetParent: a } = t;
   e.removeAttribute(n, e.ariaDescribedBy), Eo(s, o === a ? o : a);
-}, ol = (t, n) => {
+}, al = (t, n) => {
   const { element: s } = t;
   Je(t), e.hasAttribute(s, Bo) && t.name === Pe && Wo(t), n && n();
 }, zo = (t, n) => {
@@ -1241,7 +1245,7 @@ const nl = (t) => new Jt(t), sl = (t) => {
   zo(t, !0), e.dispatchEvent(n, s), e.Timer.clear(n, "in");
 }, ks = (t) => {
   const { element: n, onHideComplete: s } = t, o = e.createCustomEvent(`hidden.bs.${e.toLowerCase(t.name)}`);
-  zo(t), sl(t), e.dispatchEvent(n, o), e.isFunction(s) && (s(), t.onHideComplete = void 0), e.Timer.clear(n, "out");
+  zo(t), il(t), e.dispatchEvent(n, o), e.isFunction(s) && (s(), t.onHideComplete = void 0), e.Timer.clear(n, "out");
 }, Je = (t, n) => {
   const s = n ? C.addListener : C.removeListener, { element: o, options: a, btn: r } = t, { trigger: d } = a, m = !!(t.name !== Pe && a.dismissible);
   if (d.includes("manual"))
@@ -1262,8 +1266,8 @@ const nl = (t) => new Jt(t), sl = (t) => {
   ), e.removeAttribute(o, s[n ? 1 : 0]);
 };
 class Jt extends ne {
-  static selector = tl;
-  static init = nl;
+  static selector = sl;
+  static init = ol;
   static getInstance = Hs;
   static styleTip = Vt;
   /**
@@ -1275,9 +1279,9 @@ class Jt extends ne {
     const { element: o } = this, a = this.name === Pe, r = a ? me : Ie, d = a ? Pe : Ct;
     Hs = (m) => e.getInstance(m, d), this.enabled = !0, this.id = `${r}-${e.getUID(o, r)}`;
     const { options: c } = this;
-    !c.title && a || !a && !c.content || (e.ObjectAssign(Ut, { titleAttr: "" }), this.handleTouch = this.handleTouch.bind(this), this.update = this.update.bind(this), this.show = this.show.bind(this), this.hide = this.hide.bind(this), this.toggle = this.toggle.bind(this), e.hasAttribute(o, Ro) && a && typeof c.title == "string" && Wo(this, c.title), this.container = el(o), this.offsetParent = ["sticky", "fixed"].some(
+    !c.title && a || !a && !c.content || (e.ObjectAssign(Ut, { titleAttr: "" }), this.handleTouch = this.handleTouch.bind(this), this.update = this.update.bind(this), this.show = this.show.bind(this), this.hide = this.hide.bind(this), this.toggle = this.toggle.bind(this), e.hasAttribute(o, Ro) && a && typeof c.title == "string" && Wo(this, c.title), this.container = nl(o), this.offsetParent = ["sticky", "fixed"].some(
       (m) => e.getElementStyle(this.container, "position") === m
-    ) ? this.container : e.getDocument(this.element).body, xr(this), Je(this, !0));
+    ) ? this.container : e.getDocument(this.element).body, tl(this), Je(this, !0));
   }
   /**
    * Returns component name string.
@@ -1354,20 +1358,20 @@ class Jt extends ne {
   }
   /** Removes the `Tooltip` from the target element. */
   dispose() {
-    const { tooltip: n, container: s, offsetParent: o, options: a } = this, r = () => ol(this, () => super.dispose());
+    const { tooltip: n, container: s, offsetParent: o, options: a } = this, r = () => al(this, () => super.dispose());
     a.animation && n && Le(n, s === o ? s : o) ? (this.options.delay = 0, this.onHideComplete = r, this.hide()) : r();
   }
 }
-const il = `[${F}="${Ie}"],[data-tip="${Ie}"]`, al = e.ObjectAssign({}, Ut, {
+const rl = `[${F}="${Ie}"],[data-tip="${Ie}"]`, ll = e.ObjectAssign({}, Ut, {
   template: Mo(Ie),
   content: "",
   dismissible: !1,
   btnClose: '<button class="btn-close" aria-label="Close"></button>'
-}), rl = (t) => e.getInstance(t, Ct), ll = (t) => new qo(t);
+}), cl = (t) => e.getInstance(t, Ct), dl = (t) => new qo(t);
 class qo extends Jt {
-  static selector = il;
-  static init = ll;
-  static getInstance = rl;
+  static selector = rl;
+  static init = dl;
+  static getInstance = cl;
   static styleTip = Vt;
   /**
    * @param target the target element
@@ -1386,7 +1390,7 @@ class qo extends Jt {
    * Returns component default options.
    */
   get defaults() {
-    return al;
+    return ll;
   }
   /* extend original `show()` */
   show() {
@@ -1395,21 +1399,21 @@ class qo extends Jt {
     n.dismissible && s && setTimeout(() => e.focus(s), 17);
   }
 }
-const cl = "scrollspy", jo = "ScrollSpy", dl = '[data-bs-spy="scroll"]', ul = {
+const ul = "scrollspy", jo = "ScrollSpy", ml = '[data-bs-spy="scroll"]', hl = {
   offset: 10,
   target: null
-}, ml = (t) => e.getInstance(t, jo), hl = (t) => new Uo(t), Ps = e.createCustomEvent(`activate.bs.${cl}`), gl = (t) => {
+}, gl = (t) => e.getInstance(t, jo), fl = (t) => new Uo(t), Ps = e.createCustomEvent(`activate.bs.${ul}`), vl = (t) => {
   const { target: n, scrollTarget: s, options: o, itemsLength: a, scrollHeight: r, element: d } = t, { offset: c } = o, m = e.isWindow(s), h = n && e.getElementsByTagName("A", n), p = s ? Fo(s) : (
     /* istanbul ignore next */
     r
   );
   if (t.scrollTop = m ? s.scrollY : s.scrollTop, h && (p !== r || a !== h.length)) {
     let v, E, S;
-    t.items = [], t.offsets = [], t.scrollHeight = p, t.maxScroll = t.scrollHeight - fl(t), [...h].forEach((B) => {
+    t.items = [], t.offsets = [], t.scrollHeight = p, t.maxScroll = t.scrollHeight - pl(t), [...h].forEach((B) => {
       v = e.getAttribute(B, "href"), E = v && v.charAt(0) === "#" && v.slice(-1) !== "#" && e.querySelector(v, e.getDocument(d)), E && (t.items.push(B), S = e.getBoundingClientRect(E), t.offsets.push((m ? S.top + t.scrollTop : E.offsetTop) - c));
     }), t.itemsLength = t.items.length;
   }
-}, Fo = (t) => e.isHTMLElement(t) ? t.scrollHeight : e.getDocumentElement(t).scrollHeight, fl = ({ element: t, scrollTarget: n }) => e.isWindow(n) ? n.innerHeight : e.getBoundingClientRect(t).height, Vo = (t) => {
+}, Fo = (t) => e.isHTMLElement(t) ? t.scrollHeight : e.getDocumentElement(t).scrollHeight, pl = ({ element: t, scrollTarget: n }) => e.isWindow(n) ? n.innerHeight : e.getBoundingClientRect(t).height, Vo = (t) => {
   [...e.getElementsByTagName("A", t)].forEach((n) => {
     e.hasClass(n, T) && e.removeClass(n, T);
   });
@@ -1428,9 +1432,9 @@ const cl = "scrollspy", jo = "ScrollSpy", dl = '[data-bs-spy="scroll"]', ul = {
   (n ? C.addListener : C.removeListener)(t.scrollTarget, e.scrollEvent, t.refresh, e.passiveHandler);
 };
 class Uo extends ne {
-  static selector = dl;
-  static init = hl;
-  static getInstance = ml;
+  static selector = ml;
+  static init = fl;
+  static getInstance = gl;
   /**
    * @param target the target element
    * @param config the instance options
@@ -1451,7 +1455,7 @@ class Uo extends ne {
    * Returns component default options.
    */
   get defaults() {
-    return ul;
+    return hl;
   }
   /* eslint-enable */
   // SCROLLSPY PUBLIC METHODS
@@ -1461,7 +1465,7 @@ class Uo extends ne {
     const { target: n } = this;
     if (n?.offsetHeight === 0)
       return;
-    gl(this);
+    vl(this);
     const { scrollTop: s, maxScroll: o, itemsLength: a, items: r, activeItem: d } = this;
     if (s >= o) {
       const m = r[a - 1];
@@ -1482,7 +1486,7 @@ class Uo extends ne {
     Ms(this), super.dispose();
   }
 }
-const nt = "tab", Ko = "Tab", Os = `[${F}="${nt}"]`, Qo = (t) => e.getInstance(t, Ko), vl = (t) => new Xo(t), Bt = e.createCustomEvent(`show.bs.${nt}`), Bs = e.createCustomEvent(`shown.bs.${nt}`), Rt = e.createCustomEvent(`hide.bs.${nt}`), Rs = e.createCustomEvent(`hidden.bs.${nt}`), et = /* @__PURE__ */ new Map(), zs = (t) => {
+const nt = "tab", Ko = "Tab", Os = `[${F}="${nt}"]`, Qo = (t) => e.getInstance(t, Ko), El = (t) => new Xo(t), Bt = e.createCustomEvent(`show.bs.${nt}`), Bs = e.createCustomEvent(`shown.bs.${nt}`), Rt = e.createCustomEvent(`hide.bs.${nt}`), Rs = e.createCustomEvent(`hidden.bs.${nt}`), et = /* @__PURE__ */ new Map(), zs = (t) => {
   const { tabContent: n, nav: s } = t;
   n && e.hasClass(n, Ne) && (n.style.height = "", e.removeClass(n, Ne)), s && e.Timer.clear(s);
 }, Ws = (t) => {
@@ -1537,14 +1541,14 @@ const nt = "tab", Ko = "Tab", Os = `[${F}="${nt}"]`, Qo = (t) => e.getInstance(t
   const n = e.closest(t, `.${Me.join(",.")}`);
   return n ? e.querySelector(`.${Me[0]}-toggle`, n) : null;
 }, Vs = (t, n) => {
-  (n ? C.addListener : C.removeListener)(t.element, e.mouseclickEvent, pl);
-}, pl = (t) => {
+  (n ? C.addListener : C.removeListener)(t.element, e.mouseclickEvent, bl);
+}, bl = (t) => {
   const n = Qo(t.target);
   n && (t.preventDefault(), n.show());
 };
 class Xo extends ne {
   static selector = Os;
-  static init = vl;
+  static init = El;
   static getInstance = Qo;
   /** @param target the target element */
   constructor(n) {
@@ -1592,20 +1596,20 @@ class Xo extends ne {
     Vs(this), super.dispose();
   }
 }
-const Y = "toast", Yo = "Toast", El = `.${Y}`, bl = `[${ft}="${Y}"]`, Go = `[${F}="${Y}"]`, Ue = "showing", _o = "hide", Cl = {
+const Y = "toast", Yo = "Toast", Cl = `.${Y}`, yl = `[${ft}="${Y}"]`, Go = `[${F}="${Y}"]`, Ue = "showing", _o = "hide", Tl = {
   animation: !0,
   autohide: !0,
   delay: 5e3
-}, Zt = (t) => e.getInstance(t, Yo), yl = (t) => new Zo(t), Us = e.createCustomEvent(`show.bs.${Y}`), Tl = e.createCustomEvent(`shown.bs.${Y}`), Ks = e.createCustomEvent(`hide.bs.${Y}`), wl = e.createCustomEvent(`hidden.bs.${Y}`), Qs = (t) => {
+}, Zt = (t) => e.getInstance(t, Yo), wl = (t) => new Zo(t), Us = e.createCustomEvent(`show.bs.${Y}`), Sl = e.createCustomEvent(`shown.bs.${Y}`), Ks = e.createCustomEvent(`hide.bs.${Y}`), Al = e.createCustomEvent(`hidden.bs.${Y}`), Qs = (t) => {
   const { element: n, options: s } = t;
-  e.removeClass(n, Ue), e.Timer.clear(n, Ue), e.dispatchEvent(n, Tl), s.autohide && e.Timer.set(n, () => t.hide(), s.delay, Y);
+  e.removeClass(n, Ue), e.Timer.clear(n, Ue), e.dispatchEvent(n, Sl), s.autohide && e.Timer.set(n, () => t.hide(), s.delay, Y);
 }, Xs = (t) => {
   const { element: n } = t;
-  e.removeClass(n, Ue), e.removeClass(n, b), e.addClass(n, _o), e.Timer.clear(n, Y), e.dispatchEvent(n, wl);
-}, Sl = (t) => {
+  e.removeClass(n, Ue), e.removeClass(n, b), e.addClass(n, _o), e.Timer.clear(n, Y), e.dispatchEvent(n, Al);
+}, Dl = (t) => {
   const { element: n, options: s } = t;
   e.addClass(n, Ue), s.animation ? (e.reflow(n), e.emulateTransitionEnd(n, () => Xs(t))) : Xs(t);
-}, Al = (t) => {
+}, $l = (t) => {
   const { element: n, options: s } = t;
   e.Timer.set(
     n,
@@ -1618,20 +1622,20 @@ const Y = "toast", Yo = "Toast", El = `.${Y}`, bl = `[${ft}="${Y}"]`, Go = `[${F
 }, Jo = (t, n) => {
   const s = n ? C.addListener : C.removeListener, { element: o, triggers: a, dismiss: r, options: d } = t;
   r && s(r, e.mouseclickEvent, t.hide), d.autohide && [e.focusinEvent, e.focusoutEvent, e.mouseenterEvent, e.mouseleaveEvent].forEach(
-    (c) => s(o, c, Hl)
-  ), a.length && a.forEach((c) => s(c, e.mouseclickEvent, $l));
-}, Dl = (t) => {
+    (c) => s(o, c, kl)
+  ), a.length && a.forEach((c) => s(c, e.mouseclickEvent, Ll));
+}, Hl = (t) => {
   e.Timer.clear(t.element, Y), Jo(t);
-}, $l = (t) => {
+}, Ll = (t) => {
   const { target: n } = t, s = n && e.closest(n, Go), o = s && W(s), a = o && Zt(o);
   a && (s && s.tagName === "A" && t.preventDefault(), a.relatedTarget = s, a.show());
-}, Hl = (t) => {
+}, kl = (t) => {
   const n = t.target, s = Zt(n), { type: o, relatedTarget: a } = t;
   !s || n === a || n.contains(a) || ([e.mouseenterEvent, e.focusinEvent].includes(o) ? e.Timer.clear(n, Y) : e.Timer.set(n, () => s.hide(), s.options.delay, Y));
 };
 class Zo extends ne {
-  static selector = El;
-  static init = yl;
+  static selector = Cl;
+  static init = wl;
   static getInstance = Zt;
   /**
    * @param target the target `.toast` element
@@ -1640,7 +1644,7 @@ class Zo extends ne {
   constructor(n, s) {
     super(n, s);
     const { element: o, options: a } = this;
-    a.animation && !e.hasClass(o, O) ? e.addClass(o, O) : !a.animation && e.hasClass(o, O) && e.removeClass(o, O), this.dismiss = e.querySelector(bl, o), this.triggers = [...e.querySelectorAll(Go, e.getDocument(o))].filter(
+    a.animation && !e.hasClass(o, O) ? e.addClass(o, O) : !a.animation && e.hasClass(o, O) && e.removeClass(o, O), this.dismiss = e.querySelector(yl, o), this.triggers = [...e.querySelectorAll(Go, e.getDocument(o))].filter(
       (r) => W(r) === o
     ), this.show = this.show.bind(this), this.hide = this.hide.bind(this), Jo(this, !0);
   }
@@ -1654,7 +1658,7 @@ class Zo extends ne {
    * Returns component default options.
    */
   get defaults() {
-    return Cl;
+    return Tl;
   }
   /**
    * Returns *true* when toast is visible.
@@ -1670,7 +1674,7 @@ class Zo extends ne {
     if (n && !s) {
       if (e.dispatchEvent(n, Us), Us.defaultPrevented)
         return;
-      Al(this);
+      $l(this);
     }
   }
   /** Hides the toast. */
@@ -1679,13 +1683,13 @@ class Zo extends ne {
     if (n && s) {
       if (e.dispatchEvent(n, Ks), Ks.defaultPrevented)
         return;
-      Sl(this);
+      Dl(this);
     }
   }
   /** Removes the `Toast` component from the target element. */
   dispose() {
     const { element: n, isShown: s } = this;
-    s && e.removeClass(n, b), Dl(this), super.dispose();
+    s && e.removeClass(n, b), Hl(this), super.dispose();
   }
 }
 const xo = {
@@ -1701,9 +1705,9 @@ const xo = {
   Tab: Xo,
   Toast: Zo,
   Tooltip: Jt
-}, Ll = (t, n) => {
+}, Il = (t, n) => {
   [...n].forEach((s) => t(s));
-}, kl = (t, n) => {
+}, Pl = (t, n) => {
   const s = e.Data.getAllFor(t);
   s && [...s].forEach(([o, a]) => {
     n.contains(o) && a.dispose();
@@ -1712,15 +1716,15 @@ const xo = {
   const n = t && t.nodeName ? t : document, s = [...e.getElementsByTagName("*", n)];
   e.ObjectValues(xo).forEach((o) => {
     const { init: a, selector: r } = o;
-    Ll(
+    Il(
       a,
       s.filter((d) => e.matches(d, r))
     );
   });
-}, Pl = (t) => {
+}, Ml = (t) => {
   const n = t && t.nodeName ? t : document;
   e.ObjectKeys(xo).forEach((s) => {
-    kl(s, n);
+    Pl(s, n);
   });
 };
 document.body ? Ys() : C.addListener(document, "DOMContentLoaded", () => Ys(), { once: !0 });
@@ -1730,7 +1734,7 @@ export {
   to as Carousel,
   oo as Collapse,
   uo as Dropdown,
-  Il as Listener,
+  Nl as Listener,
   Lo as Modal,
   No as Offcanvas,
   qo as Popover,
@@ -1739,6 +1743,6 @@ export {
   Zo as Toast,
   Jt as Tooltip,
   Ys as initCallback,
-  Pl as removeDataAPI
+  Ml as removeDataAPI
 };
 //# sourceMappingURL=bootstrap-native.mjs.map

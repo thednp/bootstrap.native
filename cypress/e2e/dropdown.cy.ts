@@ -42,7 +42,7 @@ describe('Dropdown Class Tests', () => {
         expect(instance.name, 'name').to.eq('Dropdown');
         expect(instance.options, 'options').to.deep.equal({ display: 'dynamic', offset: 5 })
         expect(instance.defaults, 'defaults').to.deep.equal({ display: 'dynamic', offset: 5 });
-        // expect(instance.version, 'version').to.be.string;
+        expect(instance.version, 'version').to.be.string;
         cy.wrap(instance).as('instance' + i);
       })
       .get('@instance0').invoke('toggle')

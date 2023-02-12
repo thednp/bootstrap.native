@@ -25,7 +25,7 @@ describe('Toast Class Tests', () => {
       expect(instance.name).to.eq('Toast');
       expect(instance.options).to.deep.equal({animation: true, autohide: true, delay: 5000});
       expect(instance.defaults).to.deep.equal({animation: true, autohide: true, delay: 5000});
-      // expect(instance.version).to.be.string;
+      expect(instance.version).to.be.string;
     });
   });
 

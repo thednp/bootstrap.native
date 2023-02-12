@@ -35,7 +35,7 @@ describe('Collapse Class Tests', () => {
           expect(instance.parent?.nodeType, 'parent').to.equal(1);
         }
         expect(instance.defaults, 'defaults').to.deep.equal({parent: null});
-        // expect(instance.version, 'version').to.be.string;
+        expect(instance.version, 'version').to.be.string;
         cy.wrap(instance).as('instance' + i);
       })
     cy.get('@instance0').invoke('toggle')

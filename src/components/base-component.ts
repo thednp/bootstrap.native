@@ -3,6 +3,7 @@
 import { querySelector, normalizeOptions, Data, ObjectKeys, isString } from '@thednp/shorty';
 
 import type { BaseOptions } from '../interface/baseComponent';
+import Version from '../version';
 
 /** Returns a new `BaseComponent` instance. */
 export default class BaseComponent {
@@ -35,6 +36,11 @@ export default class BaseComponent {
     }
 
     Data.set(element, this.name, this);
+  }
+
+  /* istanbul ignore next */
+  get version() {
+    return Version;
   }
 
   /* istanbul ignore next */

@@ -47,7 +47,7 @@ describe('Carousel Class Tests', () => {
       .get('@instance').its('slides').should('have.length', 2)
       .get('@instance').its('options').should('not.be.empty').and('deep.equal', {touch: true, interval: 5000, pause: 'hover', keyboard: false})
       .get('@instance').its('defaults').should('deep.equal', {touch: true, interval: 5000, pause: 'hover', keyboard: false})
-      // .get('@instance').its('version').should('not.be.empty').and('have.length.greaterThan', 0)
+      .get('@instance').its('version').should('not.be.empty').and('have.length.greaterThan', 0)
   });
 
   it('Can invalidate with only 1 item or less', () => {
@@ -85,7 +85,7 @@ describe('Carousel Class Tests', () => {
         .get('@instance').its('options').should('not.be.empty').and('deep.equal', {touch: true, interval: 200, pause: 'hover', keyboard: true})
         .get('@instance').its('slides').should('have.length', 3)
         .get('@instance').its('defaults').should('not.be.undefined')
-        // .get('@instance').its('version').should('not.be.empty').and('have.length.greaterThan', 0);
+        .get('@instance').its('version').should('not.be.empty').and('have.length.greaterThan', 0);
         cy.tick(200);
         cy.get('@instance').its('element').find('.carousel-item').eq(1).should('have.class', 'active');
       });
