@@ -1,6 +1,6 @@
 {
   "name": "@thednp/bootstrap.native",
-  "version": "5.0.0-alpha7",
+  "version": "5.0.0-alpha8",
   "description": "Native JavaScript for Bootstrap",
   "source": "src/index.ts",
   "main": "dist/bootstrap.native.js",
