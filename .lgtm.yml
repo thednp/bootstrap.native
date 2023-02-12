@@ -2,6 +2,8 @@ extraction:
   javascript:
     index:
       exclude:
-        - node_modules
+        - coverage
         - cypress
-        - dist
+        - docs
+        - experiments
+        - node_modules

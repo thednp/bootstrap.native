@@ -17,7 +17,7 @@ describe('Popover Class Tests', () => {
     }
   });
 
-  it('Can handle horizontal position when both exceed top and bottom', () => {
+  it('Can handle horizontal position when both exceed top and bottom 1', () => {
     cy.viewport(600, 200);
     cy.get('[data-cy="popover"]')
       .eq(0)
@@ -26,9 +26,7 @@ describe('Popover Class Tests', () => {
         Object.assign(body.style, { padding: '10rem 27rem' });
       });
     cy.wait(200);
-    cy.get('[data-cy="popover"]')
-      .eq(0)
-      .then($element => {
+    cy.get('[data-cy="popover"]').eq(0).then($element => {
         cy.wrap(
           new Popover($element[0], {
             dismissible: false,
@@ -48,11 +46,53 @@ describe('Popover Class Tests', () => {
     cy.wait(200);
     cy.get('@horizontal').its('tooltip').should('have.class', 'bs-popover-end');
     cy.scrollTo('topLeft', { duration: 0 });
-    cy.wait(200);
+    // cy.wait(200);
     cy.get('@horizontal').its('tooltip').should('have.class', 'bs-popover-start');
     cy.wait(200);
     cy.scrollTo('bottomLeft', { duration: 0 });
     cy.get('@horizontal').its('tooltip').should('have.class', 'bs-popover-start');
+    cy.wait(200);
+  });
+
+  it.skip('Can handle horizontal position when both exceed top and bottom 2', () => {
+    cy.viewport(600, 200);
+    cy.get('[data-cy="popover"]')
+      .eq(0)
+      .then($element => {
+        const { body } = $element[0].ownerDocument;
+        Object.assign(body.style, { padding: '7rem 27rem' });
+      });
+    cy.wait(200);
+    // cy.scrollTo('topRight', { duration: 0 });
+    cy.scrollTo('right', { duration: 0 });
+    cy.wait(200);
+    cy.get('[data-cy="popover"]')
+      .eq(0)
+      .then($element => {
+        cy.wrap(
+          new Popover($element[0], {
+            dismissible: false,
+            placement: 'right',
+            title: 'Popover Right',
+            content: `This Popover can handle horizontal position when both exceed top and bottom.
+        Here we add more content for testing.
+        Efficiently unleash cross-media information without cross-media value.
+        Quickly maximize timely deliverables for real-time schemas.`,
+          }),
+        ).as('horizontal2');
+      });
+    cy.wait(200);
+    cy.get('@horizontal2').invoke('toggle');
+    cy.get('@horizontal2').its('tooltip').should('have.class', 'show');
+
+    cy.get('@horizontal2').its('tooltip').should('have.class', 'bs-popover-start');
+    // cy.scrollTo('100%', '0%', { duration: 0 });
+    cy.scrollTo('right', { duration: 0 });
+    cy.wait(200);
+    cy.get('@horizontal2').its('tooltip').should('have.class', 'bs-popover-end');
+    cy.wait(200);
+    cy.scrollTo('bottomLeft', { duration: 0 });
+    cy.get('@horizontal2').its('tooltip').should('have.class', 'bs-popover-end');
     cy.wait(200);
   });
 

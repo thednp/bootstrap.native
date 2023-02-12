@@ -1,23 +1,12 @@
 {
   "name": "@thednp/bootstrap.native",
-  "version": "5.0.0-alpha5",
+  "version": "5.0.0-alpha6",
   "description": "Native JavaScript for Bootstrap",
-  "type": "module",
-  "source": "./src/index.ts",
-  "main": "./dist/bootstrap.native.js",
-  "module": "./dist/bootstrap.native.mjs",
-  "types": "./dist/bootstrap.native.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "exports": {
-    ".": {
-      "import": "./dist/bootstrap-native.mjs",
-      "require": "./dist/bootstrap-native.cjs",
-      "types": "./dist/bootstrap-native.d.ts"
-    }
-  },
+  "source": "src/index.ts",
+  "main": "dist/bootstrap.native.js",
+  "module": "dist/bootstrap.native.cjs",
+  "esnext": "dist/bootstrap.native.mjs",
+  "types": "dist/bootstrap.native.d.ts",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "pre-test": "npm run clean-coverage",
@@ -31,8 +20,7 @@
     "dts": "dts-bundle-generator --config ./dts.config.ts",
     "copy-docs": "ncp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && ncp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "lint:ts": "eslint -c .eslintrc.cjs --ext .ts src",
-    "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix",
-    "watch": "rollup --environment FORMAT:umd,MIN:false -c -w"
+    "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix"
   },
   "browserslist": [
     "last 2 versions",
@@ -48,7 +36,7 @@
     "url": "git+https://github.com/thednp/bootstrap.native.git"
   },
   "keywords": [
-    "bootstrap lite",
+    "bootstrap native",
     "bootstrap",
     "native",
     "javascript",
@@ -61,8 +49,8 @@
   },
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
-    "@thednp/event-listener": "^2.0.0-alpha7",
-    "@thednp/shorty": "^2.0.0-alpha9"
+    "@thednp/event-listener": "^2.0.0-alpha8",
+    "@thednp/shorty": "^2.0.0-alpha10"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.1.5",
@@ -70,7 +58,7 @@
     "@types/istanbul-lib-instrument": "^1.7.4",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
-    "cypress": "^12.4.1",
+    "cypress": "^12.2.0",
     "dts-bundle-generator": "^7.2.0",
     "eslint": "^8.30.0",
     "eslint-plugin-jsdoc": "^39.6.4",
