@@ -1,12 +1,12 @@
 {
   "name": "@thednp/bootstrap.native",
-  "version": "5.0.0-alpha8",
+  "version": "5.0.0-alpha9",
   "description": "Native JavaScript for Bootstrap",
   "source": "src/index.ts",
-  "main": "dist/bootstrap.native.js",
-  "module": "dist/bootstrap.native.cjs",
-  "esnext": "dist/bootstrap.native.mjs",
-  "types": "dist/bootstrap.native.d.ts",
+  "main": "dist/bootstrap-native.js",
+  "module": "dist/bootstrap-native.cjs",
+  "esnext": "dist/bootstrap-native.mjs",
+  "types": "dist/bootstrap-native.d.ts",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "pre-test": "npm run clean-coverage",
