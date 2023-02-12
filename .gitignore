@@ -1,6 +1,5 @@
-.nyc_output
 .npmignore
-.vscode
+.nyc_output
 node_modules
 experiments
 coverage
