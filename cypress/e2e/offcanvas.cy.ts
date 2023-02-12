@@ -2,9 +2,20 @@
 import Offcanvas from '../../src/components/offcanvas';
 
 describe('Offcanvas Class Tests', () => {
-
   beforeEach(() => {
     cy.visit('cypress/offcanvas.html')
+  });
+
+  it('Can do dispose()', () => {
+    cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
+        cy.wrap(new Offcanvas($element[0])).as('disposable');
+        cy.get('@disposable').invoke('show')
+        cy.get('@disposable').its('element').should('have.class', 'show').and('be.visible')
+        cy.get('@disposable').invoke('dispose')
+        cy.get('@disposable').its('element').should('be.undefined')
+        cy.get('@disposable').its('options').should('be.undefined')
+        cy.wait(500)
+      })
   });
 
   it('Init without any parameters - throws error', () => {
@@ -100,21 +111,9 @@ describe('Offcanvas Class Tests', () => {
     .get('@key_test').its('element').should('not.have.class', 'show').and('be.hidden')
   });
 
-  it('Can do dispose()', () => {
-    cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
-        cy.wrap(new Offcanvas($element[0])).as('disposable');
-        cy.get('@disposable').invoke('show')
-        cy.get('@disposable').its('element').should('have.class', 'show').and('be.visible')
-        cy.get('@disposable').invoke('dispose')
-        // cy.get('[data-cy="offcanvas"]').first().should('not.have.class', 'show').and('be.hidden')
-        cy.get('@disposable').its('element').should('be.undefined')
-        cy.get('@disposable').its('options').should('be.undefined')
-      })
-  });
-
   it('Can work with CustomEvent hide', function() {
     cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
-        const element = $element[0];
+        const [element] = $element;
         const instance = new Offcanvas(element);
         element.addEventListener('hide.bs.offcanvas', function(e){
         if (!element.innerText.includes('Holy')) {
@@ -124,24 +123,24 @@ describe('Offcanvas Class Tests', () => {
       cy.wrap(instance).as('hide_event');
       cy.get('@hide_event').invoke('toggle')
       cy.get('@hide_event').its('element').should('have.class', 'show')
-      cy.wait(200)
+      cy.wait(500)
       cy.get('@hide_event').invoke('toggle')
       cy.get('@hide_event').its('element').should('have.class', 'show')
     })
   });
-  
+
   it('Can work with CustomEvent show', function() {
-      cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
-          const element = $element[0];
-          const instance = new Offcanvas(element);
-          element.addEventListener('show.bs.offcanvas', function(e){
-          if (!element.innerText.includes('Holy')) {
-            e.preventDefault()
-          }
-        })
-        cy.wrap(instance).as('show_event');
-        cy.get('@show_event').invoke('toggle')
-        cy.get('@show_event').its('element').should('not.have.class', 'show').and('be.hidden')
+    cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
+        const [element] = $element;
+        const instance = new Offcanvas(element);
+        element.addEventListener('show.bs.offcanvas', function(e){
+        if (!element.innerText.includes('Holy')) {
+          e.preventDefault()
+        }
       })
+      cy.wrap(instance).as('show_event');
+      cy.get('@show_event').invoke('toggle')
+      cy.get('@show_event').its('element').should('not.have.class', 'show').and('be.hidden')
+    })
   });
 });
