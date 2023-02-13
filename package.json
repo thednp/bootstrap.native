@@ -2,7 +2,7 @@
   "name": "bootstrap.native",
   "author": "thednp",
   "license": "MIT",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Bootstrap components build with Typescript",
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "source": "src/index.ts",
