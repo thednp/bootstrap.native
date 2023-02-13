@@ -1,7 +1,7 @@
 {
   "name": "bootstrap.native",
   "version": "5.0.0-alpha1",
-  "description": "Native JavaScript for Bootstrap",
+  "description": "Bootstrap components build with Typescript",
   "source": "src/index.ts",
   "main": "dist/bootstrap-native.js",
   "module": "dist/bootstrap-native.cjs",
