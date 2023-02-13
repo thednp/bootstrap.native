@@ -204,7 +204,7 @@ const Ft = /* @__PURE__ */ new Map(), Ws = (t, e) => {
   return e <= s && n >= 0;
 }, xe = (t) => typeof t == "function" || !1, mi = (t) => re(t) && t.constructor.name === "NodeList" || !1, Tt = (t) => at(t).dir === "rtl", vi = (t) => L(t) && ["TABLE", "TD", "TH"].includes(t.nodeName) || !1, I = (t, e) => t ? t.closest(e) || I(t.getRootNode().host, e) : null, D = (t, e) => E(t) ? t : (L(e) ? e : $()).querySelector(t), gn = (t, e) => (L(e) ? e : $()).getElementsByTagName(t), Z = (t, e) => (L(e) ? e : $()).querySelectorAll(t), vt = (t, e) => (e && L(e) ? e : $()).getElementsByClassName(
   t
-), bi = (t, e) => t.matches(e), B = "fade", m = "show", Ae = "data-bs-dismiss", Ie = "alert", Fs = "Alert", wi = "5.0.0-alpha1", $i = wi;
+), bi = (t, e) => t.matches(e), B = "fade", m = "show", Ae = "data-bs-dismiss", Ie = "alert", Fs = "Alert", wi = "5.0.0-alpha2", $i = wi;
 class et {
   element;
   options;

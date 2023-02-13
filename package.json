@@ -1,12 +1,18 @@
 {
   "name": "bootstrap.native",
-  "version": "5.0.0-alpha1",
+  "author": "thednp",
+  "license": "MIT",
+  "version": "5.0.0-alpha2",
   "description": "Bootstrap components build with Typescript",
+  "homepage": "https://thednp.github.io/bootstrap.native/",
   "source": "src/index.ts",
   "main": "dist/bootstrap-native.js",
   "module": "dist/bootstrap-native.cjs",
   "esnext": "dist/bootstrap-native.mjs",
   "types": "dist/bootstrap-native.d.ts",
+  "bugs": {
+    "url": "https://github.com/thednp/bootstrap.native/issues"
+  },
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "pre-test": "npm run clean-coverage",
@@ -22,11 +28,6 @@
     "lint:ts": "eslint -c .eslintrc.cjs --ext .ts src",
     "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix"
   },
-  "browserslist": [
-    "last 2 versions",
-    "not <= 1%",
-    "not IE 10"
-  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -43,12 +44,6 @@
     "vanilla javascript",
     "typescript"
   ],
-  "author": "dnp_theme",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/thednp/bootstrap.native/issues"
-  },
-  "homepage": "https://thednp.github.io/bootstrap.native/",
   "dependencies": {
     "@thednp/event-listener": "^2.0.0-alpha8",
     "@thednp/shorty": "^2.0.0-alpha12"
