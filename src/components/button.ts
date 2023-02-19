@@ -5,7 +5,6 @@ import {
   removeClass,
   hasClass,
   addClass,
-  // ObjectAssign,
   setAttribute,
   mouseclickEvent,
   ariaPressed,

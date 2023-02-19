@@ -420,10 +420,14 @@ export default class Dropdown extends BaseComponent {
 
     // initialization element
     const { parentElement } = this.element;
+    const menu = querySelector(`.${dropdownMenuClass}`, parentElement as ParentNode);
+
+    // invalidate when dropdown-menu is missing
+    if (!menu) return;
 
     // set targets
     this.parentElement = parentElement as HTMLElement;
-    this.menu = querySelector(`.${dropdownMenuClass}`, parentElement as HTMLElement) as HTMLElement;
+    this.menu = menu;
 
     // add event listener
     toggleDropdownHandler(this, true);

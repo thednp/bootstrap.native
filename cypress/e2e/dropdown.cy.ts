@@ -31,6 +31,16 @@ describe('Dropdown Class Tests', () => {
     }
   });
 
+  it('Can discontinue when no menu is provided', () => {
+    cy.get('[data-bs-toggle="dropdown"]').last().then($element => {
+      const element = $element[0];
+      element.parentElement?.querySelector('.dropdown-menu')?.remove();
+      const instance = Dropdown.init(element);
+      expect(instance.element, 'element').to.equal(element);
+      expect(instance.menu, 'menu').to.not.exist;
+    });
+  });
+
   it('Can do toggle()', () => {
     cy.get('[data-bs-toggle="dropdown"]').each(($element, i) => {
         const element = $element[0];

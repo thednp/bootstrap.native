@@ -1,4 +1,4 @@
-import * as Listener from '@thednp/event-listener';
+import Listener from '@thednp/event-listener';
 
 import Alert from './components/alert';
 import Button from './components/button';
@@ -13,7 +13,6 @@ import Tab from './components/tab';
 import Toast from './components/toast';
 import Tooltip from './components/tooltip';
 
-// import Version from './version';
 import { initCallback, removeDataAPI } from './util/init';
 
 export {
@@ -31,6 +30,5 @@ export {
   Tooltip,
   initCallback,
   removeDataAPI,
-  // Version,
   Listener,
 };

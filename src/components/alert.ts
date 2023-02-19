@@ -85,7 +85,6 @@ export default class Alert extends BaseComponent {
   static selector = alertSelector;
   static init = alertInitCallback;
   static getInstance = getAlertInstance;
-
   dismiss: HTMLElement | null;
 
   constructor(target: HTMLElement | string) {

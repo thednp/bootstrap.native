@@ -1,8 +1,8 @@
 {
   "name": "bootstrap.native",
+  "version": "5.0.2",
   "author": "thednp",
   "license": "MIT",
-  "version": "5.0.1",
   "description": "Bootstrap components build with Typescript",
   "homepage": "https://thednp.github.io/bootstrap.native/",
   "source": "src/index.ts",
@@ -10,9 +10,6 @@
   "module": "dist/bootstrap-native.cjs",
   "esnext": "dist/bootstrap-native.mjs",
   "types": "dist/bootstrap-native.d.ts",
-  "bugs": {
-    "url": "https://github.com/thednp/bootstrap.native/issues"
-  },
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "pre-test": "npm run clean-coverage",
@@ -27,6 +24,9 @@
     "copy-docs": "ncp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && ncp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "lint:ts": "eslint -c .eslintrc.cjs --ext .ts src",
     "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix"
+  },
+  "bugs": {
+    "url": "https://github.com/thednp/bootstrap.native/issues"
   },
   "publishConfig": {
     "access": "public",

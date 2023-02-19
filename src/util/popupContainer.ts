@@ -1,7 +1,7 @@
 import { getDocumentBody, isNode, createElement } from '@thednp/shorty';
 
 // the default container for Modal, Offcanvas, Popover and Tooltip
-const popupContainer = createElement({ tagName: 'div' }) as HTMLElement;
+const popupContainer = createElement({ tagName: 'div', className: 'popup-container' }) as HTMLElement;
 
 const appendPopup = (target: HTMLElement, customContainer?: ParentNode) => {
   const containerIsBody = isNode(customContainer) && customContainer.nodeName === 'BODY';

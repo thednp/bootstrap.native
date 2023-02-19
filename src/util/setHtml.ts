@@ -1,4 +1,3 @@
-// import {getWindow} from '@thednp/shorty';
 import { isNode, isArray, isFunction, isString, isNodeList, isHTMLElement } from '@thednp/shorty';
 
 /**
@@ -18,7 +17,6 @@ const setHtml = (element: Node, content: Node[] | Node | string, sanitizeFn?: (s
     let dirty = content.trim(); // fixing #233
     if (isFunction(sanitizeFn)) dirty = sanitizeFn(dirty);
 
-    // const win = getWindow(element);
     const domParser = new DOMParser();
     const tempDocument = domParser.parseFromString(dirty, 'text/html');
     element.append(...[...tempDocument.body.childNodes]);

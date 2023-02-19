@@ -19,6 +19,8 @@ import {
   Timer,
   createCustomEvent,
   noop,
+  isHTMLElement,
+  isString,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -196,8 +198,11 @@ export default class Collapse extends BaseComponent {
     this.triggers = [...querySelectorAll(collapseToggleSelector, doc)].filter(btn => getTargetElement(btn) === element);
 
     // set parent accordion
-    this.parent = querySelector(options.parent as HTMLElement | string, doc) || getTargetElement(element) || null;
-    this.parent = getTargetElement(element) || null;
+    this.parent = isHTMLElement(options.parent)
+      ? options.parent
+      : isString(options.parent)
+      ? getTargetElement(element) || querySelector(options.parent as string, doc)
+      : null;
 
     // add event listeners
     toggleCollapseHandler(this, true);

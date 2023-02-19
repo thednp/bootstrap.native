@@ -1,4 +1,4 @@
-import { Data, ObjectKeys, ObjectValues, getElementsByTagName, matches } from '@thednp/shorty';
+import { Data, getElementsByTagName, matches } from '@thednp/shorty';
 
 import { addListener } from '@thednp/event-listener';
 
@@ -15,20 +15,25 @@ import Tab from '../components/tab';
 import Toast from '../components/toast';
 import Tooltip from '../components/tooltip';
 
-const componentsList = {
-  Alert,
-  Button,
-  Carousel,
-  Collapse,
-  Dropdown,
-  Modal,
-  Offcanvas,
-  Popover,
-  ScrollSpy,
-  Tab,
-  Toast,
-  Tooltip,
-};
+const componentsList = new Map<
+  string,
+  | typeof Alert
+  | typeof Button
+  | typeof Carousel
+  | typeof Collapse
+  | typeof Dropdown
+  | typeof Modal
+  | typeof Offcanvas
+  | typeof Popover
+  | typeof ScrollSpy
+  | typeof Tab
+  | typeof Toast
+  | typeof Tooltip
+>();
+
+[Alert, Button, Carousel, Collapse, Dropdown, Modal, Offcanvas, Popover, ScrollSpy, Tab, Toast, Tooltip].forEach(c =>
+  componentsList.set(c.prototype.name, c),
+);
 
 /**
  * Initialize all matched `Element`s for one component.
@@ -68,7 +73,7 @@ export const initCallback = (context?: ParentNode) => {
   const lookUp = context && context.nodeName ? context : document;
   const elemCollection = [...getElementsByTagName('*', lookUp)];
 
-  ObjectValues(componentsList).forEach(cs => {
+  componentsList.forEach(cs => {
     const { init, selector } = cs;
     initComponentDataAPI(
       init,
@@ -85,12 +90,12 @@ export const initCallback = (context?: ParentNode) => {
 export const removeDataAPI = (context?: ParentNode) => {
   const lookUp = context && context.nodeName ? context : document;
 
-  ObjectKeys(componentsList).forEach(comp => {
-    removeComponentDataAPI(comp, lookUp);
+  componentsList.forEach(comp => {
+    removeComponentDataAPI(comp.prototype.name, lookUp);
   });
 };
 
-// bulk initialize all components
+// Bulk initialize all components
 if (document.body) initCallback();
 else {
   addListener(document, 'DOMContentLoaded', () => initCallback(), { once: true });
