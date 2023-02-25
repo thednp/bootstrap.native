@@ -51,7 +51,7 @@ module.exports = {
         },
       },
     ],
-    '@typescript-eslint/unbound-method': 'off',
+    '@typescript-eslint/unbound-method': 'warn',
     '@typescript-eslint/consistent-type-assertions': 'error',
     '@typescript-eslint/dot-notation': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off',

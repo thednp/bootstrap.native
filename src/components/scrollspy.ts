@@ -215,9 +215,6 @@ export default class ScrollSpy extends BaseComponent {
     this.scrollTarget = element.clientHeight < element.scrollHeight ? element : getWindow(element);
     this.scrollHeight = getScrollHeight(this.scrollTarget);
 
-    // bind events
-    this.refresh = this.refresh.bind(this);
-
     // add event handlers
     toggleSpyHandlers(this, true);
 
@@ -242,7 +239,7 @@ export default class ScrollSpy extends BaseComponent {
   // SCROLLSPY PUBLIC METHODS
   // ========================
   /** Updates all items. */
-  refresh() {
+  refresh = () => {
     const { target } = this;
 
     // check if target is visible and invalidate
@@ -280,7 +277,7 @@ export default class ScrollSpy extends BaseComponent {
         activate(this, item);
       }
     });
-  }
+  };
 
   /** Removes `ScrollSpy` from the target element. */
   dispose() {

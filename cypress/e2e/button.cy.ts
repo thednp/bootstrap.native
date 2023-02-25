@@ -89,20 +89,14 @@ describe('Button Class Tests', () => {
         const instance = new Button(element);
         cy.wrap(instance).as('instance');
       })
-      .get('@instance')
-      .should('be.instanceOf', Button)
-      .should(instance => {
+    cy.get('@instance').should('be.instanceOf', Button)
+      .and(instance => {
         // @ts-ignore
         instance.dispose();
       })
-      .get('@instance')
-      .its('element')
-      .should('be.undefined')
-      .get('@instance')
-      .its('active')
-      .should('be.undefined')
-      .get('@instance')
-      .invoke('toggle')
+    cy.get('@instance').its('element').should('be.undefined')
+    cy.get('@instance').its('active').should('be.undefined')
+    cy.get('@instance').its('toggle').should('be.undefined')
       .then(() => {
         cy.log(`Button can do nothing now with this **instance**`);
       });

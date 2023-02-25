@@ -30,10 +30,8 @@ export declare class Alert extends BaseComponent {
 	 * Public method that hides the `.alert` element from the user,
 	 * disposes the instance once animation is complete, then
 	 * removes the element from the DOM.
-	 *
-	 * @param e the `click` event
 	 */
-	close(e?: Event): void;
+	close: () => void;
 	/** Remove the component from target element. */
 	dispose(): void;
 }
@@ -56,7 +54,7 @@ export declare class Button extends BaseComponent {
 	 *
 	 * @param e usually `click` Event object
 	 */
-	toggle(e: Event): void;
+	toggle: (e: Event) => void;
 	/** Removes the `Button` component from the target element. */
 	dispose(): void;
 }
@@ -234,7 +232,7 @@ export declare class Modal extends BaseComponent {
 	/**
 	 * Updates the modal layout.
 	 */
-	update(): void;
+	update: () => void;
 	/** Removes the `Modal` component from target element. */
 	dispose(): void;
 }
@@ -322,13 +320,14 @@ export declare class Tooltip extends BaseComponent {
 	 */
 	get defaults(): TooltipOptions;
 	/** Shows the tooltip. */
-	show(): void;
+	show: () => void;
+	_show(): void;
 	/** Hides the tooltip. */
-	hide(): void;
+	hide: () => void;
 	/** Updates the tooltip position. */
-	update(): void;
+	update: () => void;
 	/** Toggles the tooltip visibility. */
-	toggle(): void;
+	toggle: () => void;
 	/** Enables the tooltip. */
 	enable(): void;
 	/** Disables the tooltip. */
@@ -341,7 +340,7 @@ export declare class Tooltip extends BaseComponent {
 	 * @this {Tooltip}
 	 * @param {TouchEvent} e the `Event` object
 	 */
-	handleTouch({ target }: TouchEvent): void;
+	handleTouch: (this: Tooltip, { target }: TouchEvent) => void;
 	/** Removes the `Tooltip` from the target element. */
 	dispose(): void;
 }
@@ -371,7 +370,7 @@ export declare class Popover extends Tooltip {
 	 * Returns component default options.
 	 */
 	get defaults(): PopoverOptions;
-	show(): void;
+	show: () => void;
 }
 export interface ScrollSpyOptions extends BaseOptions {
 	offset: number;
@@ -406,7 +405,7 @@ export declare class ScrollSpy extends BaseComponent {
 	 */
 	get defaults(): ScrollSpyOptions;
 	/** Updates all items. */
-	refresh(): void;
+	refresh: () => void;
 	/** Removes `ScrollSpy` from the target element. */
 	dispose(): void;
 }
@@ -467,9 +466,9 @@ export declare class Toast extends BaseComponent {
 	 */
 	get isShown(): boolean;
 	/** Shows the toast. */
-	show(): void;
+	show: () => void;
 	/** Hides the toast. */
-	hide(): void;
+	hide: () => void;
 	/** Removes the `Toast` component from the target element. */
 	dispose(): void;
 }

@@ -298,13 +298,6 @@ export default class Tooltip extends BaseComponent {
     // reset default options
     ObjectAssign(tooltipDefaults, { titleAttr: '' });
 
-    // all functions bind
-    this.handleTouch = this.handleTouch.bind(this);
-    this.update = this.update.bind(this);
-    this.show = this.show.bind(this);
-    this.hide = this.hide.bind(this);
-    this.toggle = this.toggle.bind(this);
-
     // set title attributes and add event listeners
     /* istanbul ignore else */
     if (hasAttribute(element, titleAttr) && isTooltip && typeof options.title === 'string') {
@@ -342,7 +335,8 @@ export default class Tooltip extends BaseComponent {
   // TOOLTIP PUBLIC METHODS
   // ======================
   /** Shows the tooltip. */
-  show() {
+  show = () => this._show();
+  _show() {
     const { options, tooltip, element, container, offsetParent, id } = this;
     const { animation } = options;
     const outTimer = Timer.get(element, 'out');
@@ -379,7 +373,7 @@ export default class Tooltip extends BaseComponent {
   }
 
   /** Hides the tooltip. */
-  hide() {
+  hide = () => {
     const { options, tooltip, element, container, offsetParent } = this;
     const { animation, delay } = options;
 
@@ -407,20 +401,20 @@ export default class Tooltip extends BaseComponent {
         'out',
       );
     }
-  }
+  };
 
   /** Updates the tooltip position. */
-  update() {
+  update = () => {
     styleTip<Tooltip>(this);
-  }
+  };
 
   /** Toggles the tooltip visibility. */
-  toggle() {
+  toggle = () => {
     const { tooltip, container, offsetParent } = this;
 
     if (tooltip && !hasPopup(tooltip, container === offsetParent ? container : offsetParent)) this.show();
     else this.hide();
-  }
+  };
 
   /** Enables the tooltip. */
   enable() {
@@ -460,7 +454,7 @@ export default class Tooltip extends BaseComponent {
    * @this {Tooltip}
    * @param {TouchEvent} e the `Event` object
    */
-  handleTouch({ target }: TouchEvent) {
+  handleTouch = ({ target }: TouchEvent) => {
     const { tooltip, element } = this;
 
     /* istanbul ignore next */
@@ -473,7 +467,7 @@ export default class Tooltip extends BaseComponent {
     } else {
       this.hide();
     }
-  }
+  };
 
   /** Removes the `Tooltip` from the target element. */
   dispose() {

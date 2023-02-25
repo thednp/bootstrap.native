@@ -5,7 +5,7 @@ import {
   mouseclickEvent,
   getInstance,
   querySelector,
-  closest,
+  // closest,
   // ObjectAssign,
   hasClass,
   removeClass,
@@ -73,9 +73,9 @@ const alertTransitionEnd = (that: Alert) => {
  */
 const toggleAlertHandler = (that: Alert, add?: boolean) => {
   const action = add ? addListener : removeListener;
-  const { dismiss } = that;
+  const { dismiss, close } = that;
   /* istanbul ignore else */
-  if (dismiss) action(dismiss, mouseclickEvent, that.close);
+  if (dismiss) action(dismiss, mouseclickEvent, close);
 };
 
 // ALERT DEFINITION
@@ -108,12 +108,9 @@ export default class Alert extends BaseComponent {
    * Public method that hides the `.alert` element from the user,
    * disposes the instance once animation is complete, then
    * removes the element from the DOM.
-   *
-   * @param e the `click` event
    */
-  close(e?: Event) {
-    const self = e ? (getAlertInstance(closest(e.target as HTMLElement, alertSelector) as HTMLElement) as Alert) : this;
-    const { element } = self;
+  close = () => {
+    const { element } = this;
 
     /* istanbul ignore else */
     if (element && hasClass(element, showClass)) {
@@ -123,10 +120,10 @@ export default class Alert extends BaseComponent {
       removeClass(element, showClass);
 
       if (hasClass(element, fadeClass)) {
-        emulateTransitionEnd(element, () => alertTransitionEnd(self));
-      } else alertTransitionEnd(self);
+        emulateTransitionEnd(element, () => alertTransitionEnd(this));
+      } else alertTransitionEnd(this);
     }
-  }
+  };
 
   /** Remove the component from target element. */
   dispose() {

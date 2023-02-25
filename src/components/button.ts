@@ -86,19 +86,17 @@ export default class Button extends BaseComponent {
    *
    * @param e usually `click` Event object
    */
-  toggle(e: Event) {
+  toggle = (e: Event) => {
     if (e) e.preventDefault();
-    const self = e ? (getButtonInstance(e.target as HTMLElement) as Button) : this;
-    if (!self.element) return;
-    const { element, isActive } = self;
 
+    const { element, isActive } = this;
     if (hasClass(element, 'disabled')) return;
 
     const action = isActive ? removeClass : addClass;
     action(element, activeClass);
     setAttribute(element, ariaPressed, isActive ? 'false' : 'true');
-    self.isActive = hasClass(element, activeClass);
-  }
+    this.isActive = hasClass(element, activeClass);
+  };
 
   /** Removes the `Button` component from the target element. */
   dispose() {

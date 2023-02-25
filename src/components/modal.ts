@@ -124,9 +124,9 @@ const setModalScrollbar = (self: Modal) => {
  */
 const toggleModalDismiss = (self: Modal, add?: boolean) => {
   const action = add ? addListener : removeListener;
-  const { element } = self;
+  const { element, update } = self;
   action(element, mouseclickEvent, modalDismissHandler as EventListener);
-  action(getWindow(element), resizeEvent, self.update, passiveHandler);
+  action(getWindow(element), resizeEvent, update, passiveHandler);
   action(getDocument(element), keydownEvent, modalKeyHandler as EventListener);
 };
 
@@ -365,9 +365,6 @@ export default class Modal extends BaseComponent {
 
     // attach event listeners
     toggleModalHandler(this, true);
-
-    // bind
-    this.update = this.update.bind(this);
   }
 
   /**
@@ -461,10 +458,10 @@ export default class Modal extends BaseComponent {
   /**
    * Updates the modal layout.
    */
-  update() {
+  update = () => {
     /* istanbul ignore else */
     if (hasClass(this.element, showClass)) setModalScrollbar(this);
-  }
+  };
 
   /** Removes the `Modal` component from target element. */
   dispose() {

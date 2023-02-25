@@ -151,11 +151,11 @@ const showToast = (self: Toast) => {
  */
 const toggleToastHandlers = (self: Toast, add?: boolean) => {
   const action = add ? addListener : removeListener;
-  const { element, triggers, dismiss, options } = self;
+  const { element, triggers, dismiss, options, hide } = self;
 
   /* istanbul ignore else */
   if (dismiss) {
-    action(dismiss, mouseclickEvent, self.hide);
+    action(dismiss, mouseclickEvent, hide);
   }
 
   /* istanbul ignore else */
@@ -255,10 +255,6 @@ export default class Toast extends BaseComponent {
       btn => getTargetElement(btn) === element,
     );
 
-    // bind
-    this.show = this.show.bind(this);
-    this.hide = this.hide.bind(this);
-
     // add event listener
     toggleToastHandlers(this, true);
   }
@@ -284,7 +280,7 @@ export default class Toast extends BaseComponent {
   // TOAST PUBLIC METHODS
   // ====================
   /** Shows the toast. */
-  show() {
+  show = () => {
     const { element, isShown } = this;
 
     /* istanbul ignore else */
@@ -294,10 +290,10 @@ export default class Toast extends BaseComponent {
 
       showToast(this);
     }
-  }
+  };
 
   /** Hides the toast. */
-  hide() {
+  hide = () => {
     const { element, isShown } = this;
 
     /* istanbul ignore else */
@@ -306,7 +302,7 @@ export default class Toast extends BaseComponent {
       if (hideToastEvent.defaultPrevented) return;
       hideToast(this);
     }
-  }
+  };
 
   /** Removes the `Toast` component from the target element. */
   dispose() {

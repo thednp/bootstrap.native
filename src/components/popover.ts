@@ -67,11 +67,11 @@ export default class Popover extends Tooltip {
   }
 
   /* extend original `show()` */
-  show() {
-    super.show();
+  show = () => {
+    super._show();
     // btn only exists within dismissible popover
     const { options, btn } = this;
     /* istanbul ignore else */
     if (options.dismissible && btn) setTimeout(() => focus(btn), 17);
-  }
+  };
 }
