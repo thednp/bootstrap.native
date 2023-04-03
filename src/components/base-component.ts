@@ -7,8 +7,8 @@ import Version from '../version';
 
 /** Returns a new `BaseComponent` instance. */
 export default class BaseComponent {
-  element: HTMLElement;
-  options?: BaseOptions;
+  declare element: HTMLElement;
+  declare options?: BaseOptions;
 
   /**
    * @param target `HTMLElement` or selector string
@@ -25,15 +25,17 @@ export default class BaseComponent {
       }
     }
 
-    const prevInstance = Data.get<this>(element, this.name);
-    if (prevInstance) prevInstance.dispose();
+    const prevInstance = Data.get<typeof this>(element, this.name);
+    /* istanbul ignore else */
+    if (prevInstance) {
+      prevInstance.dispose();
+    }
 
     this.element = element;
-
-    /* istanbul ignore else */
-    if (this.defaults && ObjectKeys(this.defaults).length) {
-      this.options = normalizeOptions(element, this.defaults, config || {}, 'bs');
-    }
+    this.options =
+      this.defaults && ObjectKeys(this.defaults).length
+        ? normalizeOptions(element, this.defaults, config || {}, 'bs')
+        : {};
 
     Data.set(element, this.name, this);
   }
@@ -53,9 +55,7 @@ export default class BaseComponent {
     return {};
   }
 
-  /**
-   * Removes component from target element;
-   */
+  /** Removes component from target element. */
   dispose() {
     Data.remove(this.element, this.name);
     ObjectKeys(this).forEach(prop => {

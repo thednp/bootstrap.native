@@ -28,27 +28,20 @@ describe('Button Class Tests', () => {
           expect(instance.element, 'element').to.not.have.class('active');
           expect(instance.name, 'name').to.eq('Button');
           expect(instance.isActive, 'isActive').to.be.false;
-          expect(instance.options, 'options').to.be.undefined;
-          expect(instance.defaults, 'defaults').to.not.be.undefined;
-          // expect(instance.version, 'version').to.be.string;
+          expect(instance.options, 'options').to.be.empty;
+          expect(instance.defaults, 'defaults').to.be.empty;
+          expect(instance.version, 'version').to.be.string;
+          expect(Button.getInstance(element)).to.be.instanceOf(Button);
+
           cy.wrap(instance).as('instance');
         });
       })
       .invoke('toggle')
-      .get('@instance')
-      .its('isActive')
-      .should('be.true')
-      .get('@instance')
-      .its('element')
-      .should('have.class', 'active')
-      .get('@instance')
-      .invoke('toggle')
-      .get('@instance')
-      .its('isActive')
-      .should('be.false')
-      .get('@instance')
-      .its('element')
-      .should('not.have.class', 'active');
+      .get('@instance').its('isActive').should('be.true')
+      .get('@instance').its('element').should('have.class', 'active')
+      .get('@instance').invoke('toggle')
+      .get('@instance').its('isActive').should('be.false')
+      .get('@instance').its('element').should('not.have.class', 'active');
   });
 
   it('Can handle click()', () => {

@@ -11,9 +11,7 @@ import {
   ariaModal,
   ariaHidden,
   getInstance,
-  isHTMLElement,
   isRTL,
-  isFunction,
   removeClass,
   hasClass,
   addClass,
@@ -150,9 +148,8 @@ const toggleModalHandler = (self: Modal, add?: boolean) => {
  * Executes after a modal is hidden to the user.
  *
  * @param self the `Modal` instance
- * @param callback the `Modal` instance
  */
-const afterModalHide = (self: Modal, callback?: () => void) => {
+const afterModalHide = (self: Modal) => {
   const { triggers, element, relatedTarget } = self;
   removeOverlay(element);
   setElementStyle(element, { paddingRight: '', display: '' });
@@ -161,9 +158,6 @@ const afterModalHide = (self: Modal, callback?: () => void) => {
   const focusElement = showModalEvent.relatedTarget || triggers.find(isVisible);
   /* istanbul ignore else */
   if (focusElement) focus(focusElement as HTMLElement);
-
-  /* istanbul ignore else */
-  if (isFunction(callback)) callback();
 
   hiddenModalEvent.relatedTarget = relatedTarget as HTMLElement | undefined;
   dispatchEvent(element, hiddenModalEvent);
@@ -210,19 +204,18 @@ const beforeModalShow = (self: Modal) => {
  * Executes before a modal is hidden to the user.
  *
  * @param self the `Modal` instance
- * @param callback when `true` skip animation
  */
-const beforeModalHide = (self: Modal, callback?: () => void) => {
+const beforeModalHide = (self: Modal) => {
   const { element, options, hasFade } = self;
 
   // callback can also be the transitionEvent object, we wanna make sure it's not
   // call is not forced and overlay is visible
-  if (options.backdrop && !callback && hasFade && hasClass(overlay, showClass) && !getCurrentOpen(element)) {
+  if (options.backdrop && hasFade && hasClass(overlay, showClass) && !getCurrentOpen(element)) {
     // AND no modal is visible
     hideOverlay();
     emulateTransitionEnd(overlay, () => afterModalHide(self));
   } else {
-    afterModalHide(self, callback);
+    afterModalHide(self);
   }
 };
 
@@ -240,13 +233,13 @@ const modalClickHandler = (e: MouseEvent) => {
   const element = trigger && getTargetElement(trigger);
   const self = element && getModalInstance(element);
 
-  /* istanbul ignore next */
-  if (!self) return;
-
   /* istanbul ignore else */
-  if (trigger && trigger.tagName === 'A') e.preventDefault();
-  self.relatedTarget = trigger;
-  self.toggle();
+  if (self) {
+    /* istanbul ignore else */
+    if (trigger && trigger.tagName === 'A') e.preventDefault();
+    self.relatedTarget = trigger;
+    self.toggle();
+  }
 };
 
 /**
@@ -259,19 +252,19 @@ const modalKeyHandler = ({ code, target }: KeyboardEvent) => {
   const element = querySelector(modalActiveSelector, getDocument(target as Node));
   const self = element && getModalInstance(element);
 
-  /* istanbul ignore next */
-  if (!self) return;
-
-  const { options } = self;
   /* istanbul ignore else */
-  if (
-    options.keyboard &&
-    code === keyEscape && // the keyboard option is enabled and the key is 27
-    hasClass(element, showClass)
-  ) {
-    // the modal is not visible
-    self.relatedTarget = null;
-    self.hide();
+  if (self) {
+    const { options } = self;
+    /* istanbul ignore else */
+    if (
+      options.keyboard &&
+      code === keyEscape && // the keyboard option is enabled and the key is 27
+      hasClass(element, showClass)
+    ) {
+      // the modal is not visible
+      self.relatedTarget = null;
+      self.hide();
+    }
   }
 };
 
@@ -284,31 +277,31 @@ function modalDismissHandler(this: HTMLElement, e: MouseEvent) {
   const self = getModalInstance(this);
 
   // this timer is needed
-  /* istanbul ignore next: must have a filter */
-  if (!self || Timer.get(this)) return;
+  /* istanbul ignore else: must have a filter */
+  if (self && !Timer.get(this)) {
+    const { options, isStatic, modalDialog } = self;
+    const { backdrop } = options;
+    const { target } = e;
 
-  const { options, isStatic, modalDialog } = self;
-  const { backdrop } = options;
-  const { target } = e;
+    const selectedText = getDocument(this)?.getSelection()?.toString().length;
+    const targetInsideDialog = modalDialog.contains(target as HTMLElement);
+    const dismiss = target && closest(target as HTMLElement, modalDismissSelector);
 
-  const selectedText = getDocument(this)?.getSelection()?.toString().length;
-  const targetInsideDialog = modalDialog?.contains(target as HTMLElement);
-  const dismiss = target && closest(target as HTMLElement, modalDismissSelector);
-
-  /* istanbul ignore else */
-  if (isStatic && !targetInsideDialog) {
-    Timer.set(
-      this,
-      () => {
-        addClass(this, modalStaticClass);
-        emulateTransitionEnd(modalDialog as HTMLElement, () => staticTransitionEnd(self));
-      },
-      17,
-    );
-  } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)) {
-    self.relatedTarget = dismiss || null;
-    self.hide();
-    e.preventDefault();
+    /* istanbul ignore else */
+    if (isStatic && !targetInsideDialog) {
+      Timer.set(
+        this,
+        () => {
+          addClass(this, modalStaticClass);
+          emulateTransitionEnd(modalDialog, () => staticTransitionEnd(self));
+        },
+        17,
+      );
+    } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)) {
+      self.relatedTarget = dismiss || null;
+      self.hide();
+      e.preventDefault();
+    }
   }
 }
 
@@ -319,8 +312,7 @@ function modalDismissHandler(this: HTMLElement, e: MouseEvent) {
  */
 const staticTransitionEnd = (self: Modal) => {
   const { element, modalDialog } = self;
-  const duration =
-    (isHTMLElement(modalDialog) ? getElementTransitionDuration(modalDialog) : /* istanbul ignore next */ 0) + 17;
+  const duration = (getElementTransitionDuration(modalDialog) || 0) + 17;
   removeClass(element, modalStaticClass);
   // user must wait for zoom out transition
   Timer.set(element, () => Timer.clear(element), duration);
@@ -334,7 +326,7 @@ export default class Modal extends BaseComponent {
   static init = modalInitCallback;
   static getInstance = getModalInstance;
   declare options: ModalOptions;
-  declare modalDialog: HTMLElement | null;
+  declare modalDialog: HTMLElement;
   declare triggers: HTMLElement[];
   declare isStatic: boolean;
   declare hasFade: boolean;
@@ -351,20 +343,24 @@ export default class Modal extends BaseComponent {
     const { element } = this;
 
     // the modal-dialog
-    this.modalDialog = querySelector(`.${modalString}-dialog`, element);
+    const modalDialog = querySelector(`.${modalString}-dialog`, element);
 
-    // modal can have multiple triggering elements
-    this.triggers = [...querySelectorAll(modalToggleSelector, getDocument(element))].filter(
-      btn => getTargetElement(btn) === element,
-    );
+    /* istanbul ignore else */
+    if (modalDialog) {
+      this.modalDialog = modalDialog;
+      // modal can have multiple triggering elements
+      this.triggers = [...querySelectorAll(modalToggleSelector, getDocument(element))].filter(
+        btn => getTargetElement(btn) === element,
+      );
 
-    // additional internals
-    this.isStatic = this.options.backdrop === 'static';
-    this.hasFade = hasClass(element, fadeClass);
-    this.relatedTarget = null;
+      // additional internals
+      this.isStatic = this.options.backdrop === 'static';
+      this.hasFade = hasClass(element, fadeClass);
+      this.relatedTarget = null;
 
-    // attach event listeners
-    toggleModalHandler(this, true);
+      // attach event listeners
+      toggleModalHandler(this, true);
+    }
   }
 
   /**
@@ -394,64 +390,61 @@ export default class Modal extends BaseComponent {
     const { backdrop } = options;
     let overlayDelay = 0;
 
-    if (hasClass(element, showClass)) return;
+    if (!hasClass(element, showClass)) {
+      showModalEvent.relatedTarget = relatedTarget || undefined;
+      dispatchEvent(element, showModalEvent);
+      if (!showModalEvent.defaultPrevented) {
+        // we elegantly hide any opened modal/offcanvas
+        const currentOpen = getCurrentOpen(element);
 
-    showModalEvent.relatedTarget = relatedTarget || undefined;
-    dispatchEvent(element, showModalEvent);
-    if (showModalEvent.defaultPrevented) return;
+        if (currentOpen && currentOpen !== element) {
+          const that =
+            getModalInstance(currentOpen) ||
+            /* istanbul ignore next */
+            getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, offcanvasComponent);
+          if (that) that.hide();
+        }
+        if (backdrop) {
+          if (!hasPopup(overlay)) {
+            appendOverlay(element, hasFade, true);
+          } else {
+            toggleOverlayType(true);
+          }
 
-    // we elegantly hide any opened modal/offcanvas
-    const currentOpen = getCurrentOpen(element);
-
-    if (currentOpen && currentOpen !== element) {
-      const that =
-        getModalInstance(currentOpen) ||
-        /* istanbul ignore next */
-        getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, offcanvasComponent);
-      if (that) that.hide();
-    }
-    if (backdrop) {
-      if (!hasPopup(overlay)) {
-        appendOverlay(element, hasFade, true);
-      } else {
-        toggleOverlayType(true);
-      }
-
-      overlayDelay = getElementTransitionDuration(overlay);
-      showOverlay();
-      setTimeout(() => beforeModalShow(this), overlayDelay);
-    } else {
-      beforeModalShow(this);
-      /* istanbul ignore else */
-      if (currentOpen && hasClass(overlay, showClass)) {
-        hideOverlay();
+          overlayDelay = getElementTransitionDuration(overlay);
+          showOverlay();
+          setTimeout(() => beforeModalShow(this), overlayDelay);
+        } else {
+          beforeModalShow(this);
+          /* istanbul ignore else */
+          if (currentOpen && hasClass(overlay, showClass)) {
+            hideOverlay();
+          }
+        }
       }
     }
   }
 
-  /**
-   * Hide the modal from the user.
-   *
-   * @param callback when defined it will skip animation
-   */
-  hide(callback?: () => void) {
+  /** Hide the modal from the user. */
+  hide() {
     const { element, hasFade, relatedTarget } = this;
 
-    if (!hasClass(element, showClass)) return;
+    if (hasClass(element, showClass)) {
+      hideModalEvent.relatedTarget = relatedTarget || undefined;
+      dispatchEvent(element, hideModalEvent);
 
-    hideModalEvent.relatedTarget = relatedTarget || undefined;
-    dispatchEvent(element, hideModalEvent);
-    if (hideModalEvent.defaultPrevented) return;
-    removeClass(element, showClass);
-    setAttribute(element, ariaHidden, 'true');
-    removeAttribute(element, ariaModal);
+      if (!hideModalEvent.defaultPrevented) {
+        removeClass(element, showClass);
+        setAttribute(element, ariaHidden, 'true');
+        removeAttribute(element, ariaModal);
 
-    // if (hasFade && callback) {
-    /* istanbul ignore else */
-    if (hasFade) {
-      emulateTransitionEnd(element, () => beforeModalHide(this, callback));
-    } else {
-      beforeModalHide(this, callback);
+        /* istanbul ignore else */
+        if (hasFade) {
+          emulateTransitionEnd(element, () => beforeModalHide(this));
+        } else {
+          beforeModalHide(this);
+        }
+      }
     }
   }
 
@@ -465,8 +458,18 @@ export default class Modal extends BaseComponent {
 
   /** Removes the `Modal` component from target element. */
   dispose() {
-    toggleModalHandler(this);
-    // use callback
-    this.hide(() => super.dispose());
+    const clone = { ...this };
+    const { element, modalDialog } = clone;
+    const callback = () => setTimeout(() => super.dispose(), 17);
+    toggleModalHandler(clone);
+
+    // use transitionend callback
+    this.hide();
+    /* istanbul ignore else */
+    if (hasClass(element, 'fade')) {
+      emulateTransitionEnd(modalDialog, callback);
+    } else {
+      callback();
+    }
   }
 }

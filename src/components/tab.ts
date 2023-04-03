@@ -142,37 +142,38 @@ const triggerTabHide = (self: Tab) => {
   showTabEvent.relatedTarget = tab as HTMLElement | undefined;
   hiddenTabEvent.relatedTarget = element;
   dispatchEvent(element, showTabEvent);
-  if (showTabEvent.defaultPrevented) return;
 
-  if (nextContent) addClass(nextContent, activeClass);
-  if (content) removeClass(content, activeClass);
+  if (!showTabEvent.defaultPrevented) {
+    if (nextContent) addClass(nextContent, activeClass);
+    if (content) removeClass(content, activeClass);
 
-  /* istanbul ignore else */
-  if (tabContent && nextContent && hasClass(nextContent, fadeClass)) {
-    const nextHeight = nextContent.scrollHeight;
-    tabPrivate.set(element, { currentHeight, nextHeight, tab: null, content: null });
+    /* istanbul ignore else */
+    if (tabContent && nextContent && hasClass(nextContent, fadeClass)) {
+      const nextHeight = nextContent.scrollHeight;
+      tabPrivate.set(element, { currentHeight, nextHeight, tab: null, content: null });
 
-    addClass(tabContent, collapsingClass);
-    tabContent.style.height = `${currentHeight}px`;
-    reflow(tabContent);
-    [content, nextContent].forEach(c => {
-      if (c) removeClass(c, 'overflow-hidden');
-    });
-  }
-
-  if (nextContent && nextContent && hasClass(nextContent, fadeClass)) {
-    setTimeout(() => {
-      addClass(nextContent, showClass);
-      emulateTransitionEnd(nextContent, () => {
-        triggerTabShow(self);
+      addClass(tabContent, collapsingClass);
+      tabContent.style.height = `${currentHeight}px`;
+      reflow(tabContent);
+      [content, nextContent].forEach(c => {
+        if (c) removeClass(c, 'overflow-hidden');
       });
-    }, 1);
-  } else {
-    if (nextContent) addClass(nextContent, showClass);
-    triggerTabShow(self);
-  }
+    }
 
-  if (tab) dispatchEvent(tab, hiddenTabEvent);
+    if (nextContent && nextContent && hasClass(nextContent, fadeClass)) {
+      setTimeout(() => {
+        addClass(nextContent, showClass);
+        emulateTransitionEnd(nextContent, () => {
+          triggerTabShow(self);
+        });
+      }, 1);
+    } else {
+      if (nextContent) addClass(nextContent, showClass);
+      triggerTabShow(self);
+    }
+
+    if (tab) dispatchEvent(tab, hiddenTabEvent);
+  }
 };
 
 /**
@@ -231,11 +232,12 @@ const toggleTabHandler = (self: Tab, add?: boolean) => {
  */
 const tabClickHandler = (e: Event) => {
   const self = getTabInstance(e.target as HTMLElement);
-  /* istanbul ignore next: must filter */
-  if (!self) return;
-  e.preventDefault();
 
-  self.show();
+  /* istanbul ignore else */
+  if (self) {
+    e.preventDefault();
+    self.show();
+  }
 };
 
 // TAB DEFINITION
@@ -260,36 +262,37 @@ export default class Tab extends BaseComponent {
     const content = getTargetElement(element);
 
     // no point initializing a tab without a corresponding content
-    if (!content) return;
+    /* istanbul ignore else */
+    if (content) {
+      const nav = closest(element, '.nav');
+      const container = closest(content, '.tab-content');
 
-    const nav = closest(element, '.nav');
-    const container = closest(content, '.tab-content');
+      this.nav = nav;
+      this.content = content;
+      this.tabContent = container;
 
-    this.nav = nav;
-    this.content = content;
-    this.tabContent = container;
+      // event targets
+      this.dropdown = getParentDropdown(element);
 
-    // event targets
-    this.dropdown = getParentDropdown(element);
+      // show first Tab instance of none is shown
+      // suggested on #432
+      const { tab } = getActiveTab(this);
+      if (nav && !tab) {
+        const firstTab = querySelector(tabSelector, nav);
+        const firstTabContent = firstTab && getTargetElement(firstTab);
 
-    // show first Tab instance of none is shown
-    // suggested on #432
-    const { tab } = getActiveTab(this);
-    if (nav && !tab) {
-      const firstTab = querySelector(tabSelector, nav);
-      const firstTabContent = firstTab && getTargetElement(firstTab);
-
-      /* istanbul ignore else */
-      if (firstTabContent) {
-        addClass(firstTab, activeClass);
-        addClass(firstTabContent, showClass);
-        addClass(firstTabContent, activeClass);
-        setAttribute(element, ariaSelected, 'true');
+        /* istanbul ignore else */
+        if (firstTabContent) {
+          addClass(firstTab, activeClass);
+          addClass(firstTabContent, showClass);
+          addClass(firstTabContent, activeClass);
+          setAttribute(element, ariaSelected, 'true');
+        }
       }
-    }
 
-    // add event listener
-    toggleTabHandler(this, true);
+      // add event listener
+      toggleTabHandler(this, true);
+    }
   }
 
   /**
@@ -315,38 +318,42 @@ export default class Tab extends BaseComponent {
       // update relatedTarget and dispatch
       hideTabEvent.relatedTarget = element;
 
-      if (isHTMLElement(tab as Node)) dispatchEvent(tab as EventTarget, hideTabEvent);
-      if (hideTabEvent.defaultPrevented) return;
-
-      addClass(element, activeClass);
-      setAttribute(element, ariaSelected, 'true');
-
-      const activeDropdown = isHTMLElement(tab as HTMLElement) && getParentDropdown(tab as HTMLElement);
-      if (activeDropdown && hasClass(activeDropdown, activeClass)) {
-        removeClass(activeDropdown, activeClass);
-      }
-
       /* istanbul ignore else */
-      if (nav) {
-        const toggleTab = () => {
-          if (tab) {
-            removeClass(tab, activeClass);
-            setAttribute(tab, ariaSelected, 'false');
+      if (isHTMLElement(tab)) {
+        dispatchEvent(tab as EventTarget, hideTabEvent);
+        /* istanbul ignore else */
+        if (!hideTabEvent.defaultPrevented) {
+          addClass(element, activeClass);
+          setAttribute(element, ariaSelected, 'true');
+
+          const activeDropdown = isHTMLElement(tab) && getParentDropdown(tab);
+          if (activeDropdown && hasClass(activeDropdown, activeClass)) {
+            removeClass(activeDropdown, activeClass);
           }
-          if (dropdown && !hasClass(dropdown, activeClass)) addClass(dropdown, activeClass);
-        };
 
-        if (content && (hasClass(content, fadeClass) || (nextContent && hasClass(nextContent, fadeClass)))) {
-          Timer.set(nav, toggleTab, 1);
-        } else toggleTab();
-      }
+          /* istanbul ignore else */
+          if (nav) {
+            const toggleTab = () => {
+              if (tab) {
+                removeClass(tab, activeClass);
+                setAttribute(tab, ariaSelected, 'false');
+              }
+              if (dropdown && !hasClass(dropdown, activeClass)) addClass(dropdown, activeClass);
+            };
 
-      if (content) {
-        removeClass(content, showClass);
-        if (hasClass(content, fadeClass)) {
-          emulateTransitionEnd(content, () => triggerTabHide(this));
-        } else {
-          triggerTabHide(this);
+            if (content && (hasClass(content, fadeClass) || (nextContent && hasClass(nextContent, fadeClass)))) {
+              Timer.set(nav, toggleTab, 1);
+            } else toggleTab();
+          }
+
+          if (content) {
+            removeClass(content, showClass);
+            if (hasClass(content, fadeClass)) {
+              emulateTransitionEnd(content, () => triggerTabHide(this));
+            } else {
+              triggerTabHide(this);
+            }
+          }
         }
       }
     }

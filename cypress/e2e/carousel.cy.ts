@@ -212,11 +212,11 @@ describe('Carousel Class Tests', () => {
         });
         cy.wrap(instance).as('instance');
       })
-      .get('@instance').its('element').find('[data-bs-slide]').eq(0).click()
-      .get('@instance').its('element').find('[data-bs-slide]').eq(0).click() // test SPAM protection
+    cy.get('@instance').its('element').find('[data-bs-slide]').eq(0).click()
+    cy.get('@instance').its('element').find('[data-bs-slide]').eq(0).click() // test SPAM protection
       .get('@instance').its('element').find('.carousel-item').eq(2).should('have.class', 'active')
-      .get('@instance').its('element').find('[data-bs-slide]').eq(1).click()
-      .get('@instance').its('element').find('[data-bs-slide]').eq(1).click()  // test SPAM protection
+    cy.get('@instance').its('element').find('[data-bs-slide]').eq(1).click()
+    cy.get('@instance').its('element').find('[data-bs-slide]').eq(1).click()  // test SPAM protection
       .get('@instance').its('element').find('.carousel-item').eq(0).should('have.class', 'active')
       .get('@instance').its('element').find('[data-bs-slide]').eq(1).click()
       .get('@instance').its('element').find('[data-bs-slide]').eq(1).click()  // test SPAM protection
@@ -470,15 +470,26 @@ describe('Carousel Class Tests', () => {
   it('Can dispose()', () => {
     cy.get('[data-cy="carousel"]').then(($element) => {
         cy.wrap(new Carousel($element[0], { interval: true })).as('instance');
-      })
-      .get('@instance').invoke('next')
-      .wait(200)
+      });
+    cy.get('@instance').invoke('next')
+      cy.wait(200)
       // @ts-ignore
-      .get('@instance').should('be.instanceOf', Carousel).should(instance => instance.dispose())
-      .get('@instance').its('element').should('be.undefined')
-      .get('@instance').its('slides').should('be.undefined')
-      .get('@instance').its('controls').should('be.undefined')
-      .get('@instance').its('indicators').should('be.undefined')
+    cy.get('@instance').should('be.instanceOf', Carousel).should(instance => instance.dispose());
+    cy.get('@instance').its('element').should('be.undefined')
+    cy.get('@instance').its('slides').should('be.undefined')
+    cy.get('@instance').its('controls').should('be.undefined')
+    cy.get('@instance').its('indicators').should('be.undefined')
   });
 
+  it('Can re-init while animating', () => {
+    cy.get('[data-cy="carousel"]').then(($element) => {
+        cy.wrap(new Carousel($element[0], { interval: false })).then(e => {
+          // console.log(e)
+          e.next();
+          const newInstance = new Carousel($element[0]);
+          expect(newInstance.element).not.to.be.undefined;
+          expect(e.element).to.be.undefined;
+        })
+      })
+    });
 });

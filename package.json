@@ -1,20 +1,26 @@
 {
   "name": "bootstrap.native",
-  "version": "5.0.4",
+  "version": "5.0.5",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
   "homepage": "https://thednp.github.io/bootstrap.native/",
-  "source": "src/index.ts",
-  "main": "dist/bootstrap-native.js",
-  "module": "dist/bootstrap-native.cjs",
-  "esnext": "dist/bootstrap-native.mjs",
-  "types": "dist/bootstrap-native.d.ts",
+  "source": "./src/index.ts",
+  "main": "./dist/bootstrap-native.js",
+  "module": "./dist/bootstrap-native.mjs",
+  "types": "./dist/bootstrap-native.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/bootstrap-native.cjs",
+      "import": "./dist/bootstrap-native.mjs"
+    }
+  },
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "pre-test": "npm run clean-coverage",
     "clean-coverage": "rimraf coverage .nyc_output",
     "test": "npm run pre-test && npx cypress run",
+    "dev": "vite --open ./docs/index-dev.html --port 8577",
     "cypress": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
     "build": "npm run lint:ts && npm run build-vite && npm run dts",
@@ -43,27 +49,27 @@
   ],
   "dependencies": {
     "@thednp/event-listener": "^2.0.0-alpha8",
-    "@thednp/shorty": "^2.0.0-alpha12"
+    "@thednp/shorty": "^2.0.0-alpha14"
   },
   "devDependencies": {
-    "@bahmutov/cypress-esbuild-preprocessor": "^2.1.5",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@cypress/code-coverage": "^3.10.0",
     "@types/istanbul-lib-instrument": "^1.7.4",
-    "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "@typescript-eslint/parser": "^5.47.0",
-    "cypress": "^12.6.0",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "cypress": "^12.8.1",
     "dts-bundle-generator": "^7.2.0",
-    "eslint": "^8.30.0",
-    "eslint-plugin-jsdoc": "^39.6.4",
+    "eslint": "^8.36.0",
+    "eslint-plugin-jsdoc": "^40.0.3",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^4.2.1",
     "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-instrument": "^5.2.1",
     "ncp": "^2.0.0",
     "nyc": "^15.1.0",
-    "prettier": "^2.8.3",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.9.4",
-    "vite": "^4.1.4"
+    "prettier": "^2.8.4",
+    "rimraf": "^4.4.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.2.0"
   }
 }

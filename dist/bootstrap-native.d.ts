@@ -12,9 +12,7 @@ declare class BaseComponent {
 	get version(): string;
 	get name(): string;
 	get defaults(): {};
-	/**
-	 * Removes component from target element;
-	 */
+	/** Removes component from target element. */
 	dispose(): void;
 }
 /** Creates a new Alert instance. */
@@ -198,7 +196,7 @@ export declare class Modal extends BaseComponent {
 	static init: (element: HTMLElement) => Modal;
 	static getInstance: (element: HTMLElement) => Modal | null;
 	options: ModalOptions;
-	modalDialog: HTMLElement | null;
+	modalDialog: HTMLElement;
 	triggers: HTMLElement[];
 	isStatic: boolean;
 	hasFade: boolean;
@@ -223,12 +221,8 @@ export declare class Modal extends BaseComponent {
 	toggle(): void;
 	/** Shows the modal to the user. */
 	show(): void;
-	/**
-	 * Hide the modal from the user.
-	 *
-	 * @param callback when defined it will skip animation
-	 */
-	hide(callback?: () => void): void;
+	/** Hide the modal from the user. */
+	hide(): void;
 	/**
 	 * Updates the modal layout.
 	 */
@@ -269,12 +263,8 @@ export declare class Offcanvas extends BaseComponent {
 	toggle(): void;
 	/** Shows the offcanvas to the user. */
 	show(): void;
-	/**
-	 * Hides the offcanvas from the user.
-	 *
-	 * @param callback when `true` it will skip animation
-	 */
-	hide(callback?: () => void): void;
+	/** Hides the offcanvas from the user. */
+	hide(): void;
 	/** Removes the `Offcanvas` from the target element. */
 	dispose(): void;
 }
@@ -305,7 +295,6 @@ export declare class Tooltip extends BaseComponent {
 	offsetParent?: HTMLElement;
 	enabled: boolean;
 	id: string;
-	onHideComplete?: () => void;
 	/**
 	 * @param target the target element
 	 * @param config the instance options
@@ -319,11 +308,14 @@ export declare class Tooltip extends BaseComponent {
 	 * Returns component default options.
 	 */
 	get defaults(): TooltipOptions;
+	/** Handles the focus event on iOS. */
+	handleFocus: () => void;
 	/** Shows the tooltip. */
-	show: () => void;
-	_show(): void;
+	handleShow: () => void;
+	show(): void;
 	/** Hides the tooltip. */
-	hide: () => void;
+	handleHide: () => void;
+	hide(): void;
 	/** Updates the tooltip position. */
 	update: () => void;
 	/** Toggles the tooltip visibility. */
@@ -340,7 +332,7 @@ export declare class Tooltip extends BaseComponent {
 	 * @this {Tooltip}
 	 * @param {TouchEvent} e the `Event` object
 	 */
-	handleTouch: (this: Tooltip, { target }: TouchEvent) => void;
+	handleTouch: ({ target }: TouchEvent) => void;
 	/** Removes the `Tooltip` from the target element. */
 	dispose(): void;
 }

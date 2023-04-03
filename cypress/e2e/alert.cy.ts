@@ -34,9 +34,10 @@ describe('Alert Class Tests', () => {
       const instance = new Alert(element);
       expect(instance.element).to.equal(element);
       expect(instance.name).to.eq('Alert');
-      expect(instance.options).to.be.undefined;
-      expect(instance.defaults).to.not.be.undefined;
+      expect(instance.options).to.be.empty;
+      expect(instance.defaults).to.be.empty;
       expect(instance.version).to.be.string;
+      expect(Alert.getInstance(element)).to.be.instanceOf(Alert);
     });
   });
 

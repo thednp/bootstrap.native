@@ -18,7 +18,6 @@ import {
   ObjectAssign,
   passiveHandler,
   getElementsByClassName,
-  querySelector,
   closest,
   getAttribute,
   getDocument,
@@ -33,6 +32,8 @@ import {
   focus,
   getWindow,
   CSS4Declaration,
+  isHTMLElement,
+  mousedownEvent,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -50,7 +51,7 @@ import type { DropdownEvent, DropdownOptions } from '../interface/dropdown';
 // DROPDOWN PRIVATE GC
 // ===================
 const [dropdownString, dropupString, dropstartString, dropendString] = dropdownClasses;
-const dropdownSelector = `[${dataBsToggle}="${dropdownString}"],[${dataBsToggle}="${dropupString}"],[${dataBsToggle}="${dropendString}"],[${dataBsToggle}="${dropstartString}"]`;
+const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
 
 /**
  * Static method which returns an existing `Dropdown` instance associated
@@ -97,117 +98,122 @@ const styleDropdown = (self: Dropdown) => {
   const { offset } = options;
 
   // don't apply any style on mobile view
-  /* istanbul ignore next: this test requires a navbar */
-  if (getElementStyle(menu, 'position') === 'static') return;
+  /* istanbul ignore else: this test requires a navbar */
+  if (getElementStyle(menu, 'position') !== 'static') {
+    const RTL = isRTL(element);
+    // const menuStart = hasClass(menu, dropdownMenuStartClass);
+    const menuEnd = hasClass(menu, dropdownMenuEndClass);
 
-  const RTL = isRTL(element);
-  // const menuStart = hasClass(menu, dropdownMenuStartClass);
-  const menuEnd = hasClass(menu, dropdownMenuEndClass);
-
-  // reset menu offset and position
-  const resetProps = ['margin', 'top', 'bottom', 'left', 'right'];
-  resetProps.forEach(p => {
-    // menu.style[p] = '';
-    const style: { [key: string]: string } = {};
-    style[p] = '';
-    setElementStyle(menu, style);
-  });
-
-  // set initial position class
-  // take into account .btn-group parent as .dropdown
-  // this requires navbar/btn-group/input-group
-  let positionClass =
-    dropdownClasses.find(c => hasClass(parentElement, c)) ||
-    /* istanbul ignore next: fallback position */ dropdownString;
-
-  const dropdownMargin: { [key: string]: number[] } = {
-    dropdown: [offset, 0, 0],
-    dropup: [0, 0, offset],
-    dropstart: RTL ? [-1, 0, 0, offset] : [-1, offset, 0],
-    dropend: RTL ? [-1, offset, 0] : [-1, 0, 0, offset],
-  };
-
-  const dropdownPosition: { [key: string]: Partial<CSS4Declaration> } = {
-    dropdown: { top: '100%' },
-    dropup: { top: 'auto', bottom: '100%' },
-    dropstart: RTL ? { left: '100%', right: 'auto' } : { left: 'auto', right: '100%' },
-    dropend: RTL ? { left: 'auto', right: '100%' } : { left: '100%', right: 'auto' },
-    menuStart: RTL ? { right: '0', left: 'auto' } : { right: 'auto', left: '0' },
-    menuEnd: RTL ? { right: 'auto', left: '0' } : { right: '0', left: 'auto' },
-  };
-
-  const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menu;
-
-  const { clientWidth, clientHeight } = getDocumentElement(element);
-  const { left: targetLeft, top: targetTop, width: targetWidth, height: targetHeight } = getBoundingClientRect(element);
-
-  // dropstart | dropend
-  const leftFullExceed = targetLeft - menuWidth - offset < 0;
-  // dropend
-  const rightFullExceed = targetLeft + menuWidth + targetWidth + offset >= clientWidth;
-  // dropstart | dropend
-  const bottomExceed = targetTop + menuHeight + offset >= clientHeight;
-  // dropdown
-  const bottomFullExceed = targetTop + menuHeight + targetHeight + offset >= clientHeight;
-  // dropup
-  const topExceed = targetTop - menuHeight - offset < 0;
-  // dropdown / dropup
-  const leftExceed = ((!RTL && menuEnd) || (RTL && !menuEnd)) && targetLeft + targetWidth - menuWidth < 0;
-  const rightExceed = ((RTL && menuEnd) || (!RTL && !menuEnd)) && targetLeft + menuWidth >= clientWidth;
-
-  // recompute position
-  // handle RTL as well
-  if (horizontalClass.includes(positionClass) && leftFullExceed && rightFullExceed) {
-    positionClass = dropdownString;
-  }
-  if (positionClass === dropstartString && (!RTL ? leftFullExceed : rightFullExceed)) {
-    positionClass = dropendString;
-  }
-  if (positionClass === dropendString && (RTL ? leftFullExceed : rightFullExceed)) {
-    positionClass = dropstartString;
-  }
-  if (positionClass === dropupString && topExceed && !bottomFullExceed) {
-    positionClass = dropdownString;
-  }
-  if (positionClass === dropdownString && bottomFullExceed && !topExceed) {
-    positionClass = dropupString;
-  }
-
-  // override position for horizontal classes
-  if (horizontalClass.includes(positionClass) && bottomExceed) {
-    ObjectAssign(dropdownPosition[positionClass], {
-      top: 'auto',
-      bottom: 0,
+    // reset menu offset and position
+    const resetProps = ['margin', 'top', 'bottom', 'left', 'right'];
+    resetProps.forEach(p => {
+      // menu.style[p] = '';
+      const style: { [key: string]: string } = {};
+      style[p] = '';
+      setElementStyle(menu, style);
     });
-  }
 
-  // override position for vertical classes
-  if (verticalClass.includes(positionClass) && (leftExceed || rightExceed)) {
-    // don't realign when menu is wider than window
-    // in both RTL and non-RTL readability is KING
-    let posAjust: { left: 'auto' | number; right: 'auto' | number } | undefined = { left: 'auto', right: 'auto' };
-    if (!leftExceed && rightExceed && !RTL) posAjust = { left: 'auto', right: 0 };
-    if (leftExceed && !rightExceed && RTL) posAjust = { left: 0, right: 'auto' };
-    if (posAjust) ObjectAssign(dropdownPosition[positionClass], posAjust);
-  }
+    // set initial position class
+    // take into account .btn-group parent as .dropdown
+    // this requires navbar/btn-group/input-group
+    let positionClass =
+      dropdownClasses.find(c => hasClass(parentElement, c)) ||
+      /* istanbul ignore next: fallback position */ dropdownString;
 
-  const margins: number[] = dropdownMargin[positionClass];
-  setElementStyle(menu, {
-    ...dropdownPosition[positionClass],
-    margin: `${margins.map(x => (x ? `${x}px` : x)).join(' ')}`,
-  });
+    const dropdownMargin: { [key: string]: number[] } = {
+      dropdown: [offset, 0, 0],
+      dropup: [0, 0, offset],
+      dropstart: RTL ? [-1, 0, 0, offset] : [-1, offset, 0],
+      dropend: RTL ? [-1, offset, 0] : [-1, 0, 0, offset],
+    };
 
-  // override dropdown-menu-start | dropdown-menu-end
-  if (verticalClass.includes(positionClass) && menuEnd) {
-    /* istanbul ignore else */
-    if (menuEnd) {
-      const endAdjust =
-        (!RTL && leftExceed) || (RTL && rightExceed) ? 'menuStart' : /* istanbul ignore next */ 'menuEnd';
-      setElementStyle(menu, dropdownPosition[endAdjust]);
+    const dropdownPosition: { [key: string]: Partial<CSS4Declaration> } = {
+      dropdown: { top: '100%' },
+      dropup: { top: 'auto', bottom: '100%' },
+      dropstart: RTL ? { left: '100%', right: 'auto' } : { left: 'auto', right: '100%' },
+      dropend: RTL ? { left: 'auto', right: '100%' } : { left: '100%', right: 'auto' },
+      menuStart: RTL ? { right: '0', left: 'auto' } : { right: 'auto', left: '0' },
+      menuEnd: RTL ? { right: 'auto', left: '0' } : { right: '0', left: 'auto' },
+    };
+
+    const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menu;
+
+    const { clientWidth, clientHeight } = getDocumentElement(element);
+    const {
+      left: targetLeft,
+      top: targetTop,
+      width: targetWidth,
+      height: targetHeight,
+    } = getBoundingClientRect(element);
+
+    // dropstart | dropend
+    const leftFullExceed = targetLeft - menuWidth - offset < 0;
+    // dropend
+    const rightFullExceed = targetLeft + menuWidth + targetWidth + offset >= clientWidth;
+    // dropstart | dropend
+    const bottomExceed = targetTop + menuHeight + offset >= clientHeight;
+    // dropdown
+    const bottomFullExceed = targetTop + menuHeight + targetHeight + offset >= clientHeight;
+    // dropup
+    const topExceed = targetTop - menuHeight - offset < 0;
+    // dropdown / dropup
+    const leftExceed = ((!RTL && menuEnd) || (RTL && !menuEnd)) && targetLeft + targetWidth - menuWidth < 0;
+    const rightExceed = ((RTL && menuEnd) || (!RTL && !menuEnd)) && targetLeft + menuWidth >= clientWidth;
+
+    // recompute position
+    // handle RTL as well
+    if (horizontalClass.includes(positionClass) && leftFullExceed && rightFullExceed) {
+      positionClass = dropdownString;
     }
+    if (positionClass === dropstartString && (!RTL ? leftFullExceed : rightFullExceed)) {
+      positionClass = dropendString;
+    }
+    if (positionClass === dropendString && (RTL ? leftFullExceed : rightFullExceed)) {
+      positionClass = dropstartString;
+    }
+    if (positionClass === dropupString && topExceed && !bottomFullExceed) {
+      positionClass = dropdownString;
+    }
+    if (positionClass === dropdownString && bottomFullExceed && !topExceed) {
+      positionClass = dropupString;
+    }
+
+    // override position for horizontal classes
+    if (horizontalClass.includes(positionClass) && bottomExceed) {
+      ObjectAssign(dropdownPosition[positionClass], {
+        top: 'auto',
+        bottom: 0,
+      });
+    }
+
+    // override position for vertical classes
+    if (verticalClass.includes(positionClass) && (leftExceed || rightExceed)) {
+      // don't realign when menu is wider than window
+      // in both RTL and non-RTL readability is KING
+      let posAjust: { left: 'auto' | number; right: 'auto' | number } | undefined = { left: 'auto', right: 'auto' };
+      if (!leftExceed && rightExceed && !RTL) posAjust = { left: 'auto', right: 0 };
+      if (leftExceed && !rightExceed && RTL) posAjust = { left: 0, right: 'auto' };
+      if (posAjust) ObjectAssign(dropdownPosition[positionClass], posAjust);
+    }
+
+    const margins: number[] = dropdownMargin[positionClass];
+    setElementStyle(menu, {
+      ...dropdownPosition[positionClass],
+      margin: `${margins.map(x => (x ? `${x}px` : x)).join(' ')}`,
+    });
+
+    // override dropdown-menu-start | dropdown-menu-end
+    if (verticalClass.includes(positionClass) && menuEnd) {
+      /* istanbul ignore else */
+      if (menuEnd) {
+        const endAdjust =
+          (!RTL && leftExceed) || (RTL && rightExceed) ? 'menuStart' : /* istanbul ignore next */ 'menuEnd';
+        setElementStyle(menu, dropdownPosition[endAdjust]);
+      }
+    }
+    // trigger updated event
+    dispatchEvent(parentElement, updatedDropdownEvent);
   }
-  // trigger updated event
-  dispatchEvent(parentElement, updatedDropdownEvent);
 };
 
 /**
@@ -293,35 +299,30 @@ const getCurrentOpenDropdown = (element: HTMLElement): HTMLElement | undefined =
 const dropdownDismissHandler = (e: MouseEvent) => {
   const { target, type } = e;
 
-  /* istanbul ignore next: impossible to satisfy */
-  if (!target || !(target as HTMLElement).closest) return; // some weird FF bug #409
+  /* istanbul ignore else */
+  if (target && isHTMLElement(target)) {
+    // some weird FF bug #409
+    const element = getCurrentOpenDropdown(target);
+    const self = element && getDropdownInstance(element);
 
-  const element = getCurrentOpenDropdown(target as HTMLElement);
-  const self = element && getDropdownInstance(element);
+    /* istanbul ignore else */
+    if (self) {
+      const { parentElement, menu } = self;
 
-  /* istanbul ignore next */
-  if (!self) return;
+      const isForm =
+        parentElement &&
+        parentElement.contains(target) &&
+        (target.tagName === 'form' || closest(target, 'form') !== null);
 
-  const { parentElement, menu } = self;
+      if ([mouseclickEvent, mousedownEvent].includes(type) && isEmptyAnchor(target)) {
+        e.preventDefault();
+      }
 
-  const hasData = closest(target as HTMLElement, dropdownSelector) !== null;
-  const isForm =
-    parentElement &&
-    parentElement.contains(target as HTMLElement) &&
-    ((target as HTMLElement).tagName === 'form' || closest(target as HTMLElement, 'form') !== null);
-
-  if (type === mouseclickEvent && isEmptyAnchor(target as HTMLElement)) {
-    e.preventDefault();
-  }
-  if (type === focusEvent && (target === element || target === menu || menu.contains(target as HTMLElement))) {
-    return;
-  }
-
-  /* istanbul ignore next */
-  if (isForm || hasData) {
-    // smile to ESLint
-  } else if (self) {
-    self.hide();
+      /* istanbul ignore else */
+      if (!isForm && type !== focusEvent && target !== element && target !== menu) {
+        self.hide();
+      }
+    }
   }
 };
 
@@ -337,7 +338,6 @@ const dropdownClickHandler = (e: MouseEvent) => {
 
   /* istanbul ignore else */
   if (self) {
-    e.stopImmediatePropagation();
     self.toggle();
     /* istanbul ignore else */
     if (element && isEmptyAnchor(element)) e.preventDefault();
@@ -364,29 +364,31 @@ function dropdownKeyHandler(this: HTMLElement, e: KeyboardEvent) {
   const element = getCurrentOpenDropdown(this);
   const self = element && getDropdownInstance(element);
   const { activeElement } = (element && getDocument(element)) as Document;
-  /* istanbul ignore next: impossible to satisfy */
-  if (!self || !activeElement) return;
-  const { menu, open } = self;
-  const menuItems = getMenuItems(menu);
 
-  // arrow up & down
-  if (menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)) {
-    let idx = menuItems.indexOf(activeElement);
-    /* istanbul ignore else */
-    if (activeElement === element) {
-      idx = 0;
-    } else if (code === keyArrowUp) {
-      idx = idx > 1 ? idx - 1 : 0;
-    } else if (code === keyArrowDown) {
-      idx = idx < menuItems.length - 1 ? idx + 1 : idx;
+  /* istanbul ignore else */
+  if (self && activeElement) {
+    const { menu, open } = self;
+    const menuItems = getMenuItems(menu);
+
+    // arrow up & down
+    if (menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)) {
+      let idx = menuItems.indexOf(activeElement);
+      /* istanbul ignore else */
+      if (activeElement === element) {
+        idx = 0;
+      } else if (code === keyArrowUp) {
+        idx = idx > 1 ? idx - 1 : 0;
+      } else if (code === keyArrowDown) {
+        idx = idx < menuItems.length - 1 ? idx + 1 : idx;
+      }
+      /* istanbul ignore else */
+      if (menuItems[idx]) focus(menuItems[idx] as HTMLElement);
     }
-    /* istanbul ignore else */
-    if (menuItems[idx]) focus(menuItems[idx] as HTMLElement);
-  }
 
-  if (keyEscape === code && open) {
-    self.toggle();
-    focus(element);
+    if (keyEscape === code && open) {
+      self.toggle();
+      focus(element);
+    }
   }
 }
 
@@ -420,17 +422,17 @@ export default class Dropdown extends BaseComponent {
 
     // initialization element
     const { parentElement } = this.element;
-    const menu = querySelector(`.${dropdownMenuClass}`, parentElement as ParentNode);
+    const [menu] = getElementsByClassName(dropdownMenuClass, parentElement as ParentNode);
 
     // invalidate when dropdown-menu is missing
-    if (!menu) return;
+    if (menu) {
+      // set targets
+      this.parentElement = parentElement as HTMLElement;
+      this.menu = menu;
 
-    // set targets
-    this.parentElement = parentElement as HTMLElement;
-    this.menu = menu;
-
-    // add event listener
-    toggleDropdownHandler(this, true);
+      // add event listener
+      toggleDropdownHandler(this, true);
+    }
   }
 
   /**
@@ -458,55 +460,57 @@ export default class Dropdown extends BaseComponent {
   show() {
     const { element, open, menu, parentElement } = this;
 
-    /* istanbul ignore next */
-    if (open) return;
+    /* istanbul ignore else */
+    if (!open) {
+      const currentElement = getCurrentOpenDropdown(element);
+      const currentInstance = currentElement && getDropdownInstance(currentElement);
+      if (currentInstance) currentInstance.hide();
 
-    const currentElement = getCurrentOpenDropdown(element);
-    const currentInstance = currentElement && getDropdownInstance(currentElement);
-    if (currentInstance) currentInstance.hide();
+      // dispatch event
+      [showDropdownEvent, shownDropdownEvent, updatedDropdownEvent].forEach(e => {
+        e.relatedTarget = element;
+      });
 
-    // dispatch event
-    [showDropdownEvent, shownDropdownEvent, updatedDropdownEvent].forEach(e => {
-      e.relatedTarget = element;
-    });
-    dispatchEvent(parentElement, showDropdownEvent);
-    if (showDropdownEvent.defaultPrevented) return;
+      dispatchEvent(parentElement, showDropdownEvent);
+      if (!showDropdownEvent.defaultPrevented) {
+        addClass(menu, showClass);
+        addClass(parentElement, showClass);
+        setAttribute(element, ariaExpanded, 'true');
 
-    addClass(menu, showClass);
-    addClass(parentElement, showClass);
-    setAttribute(element, ariaExpanded, 'true');
+        // change menu position
+        styleDropdown(this);
 
-    // change menu position
-    styleDropdown(this);
+        this.open = !open;
 
-    this.open = !open;
-
-    focus(element); // focus the element
-    toggleDropdownDismiss(this);
-    dispatchEvent(parentElement, shownDropdownEvent);
+        focus(element); // focus the element
+        toggleDropdownDismiss(this);
+        dispatchEvent(parentElement, shownDropdownEvent);
+      }
+    }
   }
 
   /** Hides the dropdown menu from the user. */
   hide() {
     const { element, open, menu, parentElement } = this;
 
-    /* istanbul ignore next */
-    if (!open) return;
+    /* istanbul ignore else */
+    if (open) {
+      [hideDropdownEvent, hiddenDropdownEvent].forEach(e => {
+        e.relatedTarget = element;
+      });
 
-    [hideDropdownEvent, hiddenDropdownEvent].forEach(e => {
-      e.relatedTarget = element;
-    });
-    dispatchEvent(parentElement, hideDropdownEvent);
-    if (hideDropdownEvent.defaultPrevented) return;
+      dispatchEvent(parentElement, hideDropdownEvent);
+      if (!hideDropdownEvent.defaultPrevented) {
+        removeClass(menu, showClass);
+        removeClass(parentElement, showClass);
+        setAttribute(element, ariaExpanded, 'false');
 
-    removeClass(menu, showClass);
-    removeClass(parentElement, showClass);
-    setAttribute(element, ariaExpanded, 'false');
-
-    this.open = !open;
-    // only re-attach handler if the instance is not disposed
-    toggleDropdownDismiss(this);
-    dispatchEvent(parentElement, hiddenDropdownEvent);
+        this.open = !open;
+        // only re-attach handler if the instance is not disposed
+        toggleDropdownDismiss(this);
+        dispatchEvent(parentElement, hiddenDropdownEvent);
+      }
+    }
   }
 
   /** Removes the `Dropdown` component from the target element. */

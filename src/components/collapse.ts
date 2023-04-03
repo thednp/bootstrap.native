@@ -70,30 +70,30 @@ const expandCollapse = (self: Collapse) => {
   const { element, parent, triggers } = self;
 
   dispatchEvent(element, showCollapseEvent);
-  if (showCollapseEvent.defaultPrevented) return;
+  if (!showCollapseEvent.defaultPrevented) {
+    Timer.set(element, noop, 17);
+    if (parent) Timer.set(parent, noop, 17);
 
-  Timer.set(element, noop, 17);
-  if (parent) Timer.set(parent, noop, 17);
+    addClass(element, collapsingClass);
+    removeClass(element, collapseString);
 
-  addClass(element, collapsingClass);
-  removeClass(element, collapseString);
+    setElementStyle(element, { height: `${element.scrollHeight}px` });
 
-  setElementStyle(element, { height: `${element.scrollHeight}px` });
+    emulateTransitionEnd(element, () => {
+      Timer.clear(element);
+      if (parent) Timer.clear(parent);
 
-  emulateTransitionEnd(element, () => {
-    Timer.clear(element);
-    if (parent) Timer.clear(parent);
+      triggers.forEach(btn => setAttribute(btn, ariaExpanded, 'true'));
 
-    triggers.forEach(btn => setAttribute(btn, ariaExpanded, 'true'));
+      removeClass(element, collapsingClass);
+      addClass(element, collapseString);
+      addClass(element, showClass);
 
-    removeClass(element, collapsingClass);
-    addClass(element, collapseString);
-    addClass(element, showClass);
+      setElementStyle(element, { height: '' });
 
-    setElementStyle(element, { height: '' });
-
-    dispatchEvent(element, shownCollapseEvent);
-  });
+      dispatchEvent(element, shownCollapseEvent);
+    });
+  }
 };
 
 /**
@@ -106,34 +106,34 @@ const collapseContent = (self: Collapse) => {
 
   dispatchEvent(element, hideCollapseEvent);
 
-  if (hideCollapseEvent.defaultPrevented) return;
+  if (!hideCollapseEvent.defaultPrevented) {
+    Timer.set(element, noop, 17);
+    if (parent) Timer.set(parent, noop, 17);
 
-  Timer.set(element, noop, 17);
-  if (parent) Timer.set(parent, noop, 17);
+    setElementStyle(element, { height: `${element.scrollHeight}px` });
 
-  setElementStyle(element, { height: `${element.scrollHeight}px` });
+    removeClass(element, collapseString);
+    removeClass(element, showClass);
+    addClass(element, collapsingClass);
 
-  removeClass(element, collapseString);
-  removeClass(element, showClass);
-  addClass(element, collapsingClass);
+    reflow(element);
+    setElementStyle(element, { height: '0px' });
 
-  reflow(element);
-  setElementStyle(element, { height: '0px' });
+    emulateTransitionEnd(element, () => {
+      Timer.clear(element);
+      /* istanbul ignore else */
+      if (parent) Timer.clear(parent);
 
-  emulateTransitionEnd(element, () => {
-    Timer.clear(element);
-    /* istanbul ignore else */
-    if (parent) Timer.clear(parent);
+      triggers.forEach(btn => setAttribute(btn, ariaExpanded, 'false'));
 
-    triggers.forEach(btn => setAttribute(btn, ariaExpanded, 'false'));
+      removeClass(element, collapsingClass);
+      addClass(element, collapseString);
 
-    removeClass(element, collapsingClass);
-    addClass(element, collapseString);
+      setElementStyle(element, { height: '' });
 
-    setElementStyle(element, { height: '' });
-
-    dispatchEvent(element, hiddenCollapseEvent);
-  });
+      dispatchEvent(element, hiddenCollapseEvent);
+    });
+  }
 };
 
 /**
@@ -232,12 +232,12 @@ export default class Collapse extends BaseComponent {
   /** Hides the collapse. */
   hide() {
     const { triggers, element } = this;
-    if (Timer.get(element)) return;
-
-    collapseContent(this);
-    /* istanbul ignore else */
-    if (triggers.length) {
-      triggers.forEach(btn => addClass(btn, `${collapseString}d`));
+    if (!Timer.get(element)) {
+      collapseContent(this);
+      /* istanbul ignore else */
+      if (triggers.length) {
+        triggers.forEach(btn => addClass(btn, `${collapseString}d`));
+      }
     }
   }
 

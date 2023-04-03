@@ -8,6 +8,7 @@ import {
   setAttribute,
   mouseclickEvent,
   ariaPressed,
+  getAttribute,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -90,12 +91,12 @@ export default class Button extends BaseComponent {
     if (e) e.preventDefault();
 
     const { element, isActive } = this;
-    if (hasClass(element, 'disabled')) return;
-
-    const action = isActive ? removeClass : addClass;
-    action(element, activeClass);
-    setAttribute(element, ariaPressed, isActive ? 'false' : 'true');
-    this.isActive = hasClass(element, activeClass);
+    if (!hasClass(element, 'disabled') && !getAttribute(element, 'disabled')) {
+      const action = isActive ? removeClass : addClass;
+      action(element, activeClass);
+      setAttribute(element, ariaPressed, isActive ? 'false' : 'true');
+      this.isActive = hasClass(element, activeClass);
+    }
   };
 
   /** Removes the `Button` component from the target element. */

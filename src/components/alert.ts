@@ -5,8 +5,6 @@ import {
   mouseclickEvent,
   getInstance,
   querySelector,
-  // closest,
-  // ObjectAssign,
   hasClass,
   removeClass,
   dispatchEvent,
@@ -115,13 +113,14 @@ export default class Alert extends BaseComponent {
     /* istanbul ignore else */
     if (element && hasClass(element, showClass)) {
       dispatchEvent(element, closeAlertEvent);
-      if (closeAlertEvent.defaultPrevented) return;
 
-      removeClass(element, showClass);
+      if (!closeAlertEvent.defaultPrevented) {
+        removeClass(element, showClass);
 
-      if (hasClass(element, fadeClass)) {
-        emulateTransitionEnd(element, () => alertTransitionEnd(this));
-      } else alertTransitionEnd(this);
+        if (hasClass(element, fadeClass)) {
+          emulateTransitionEnd(element, () => alertTransitionEnd(this));
+        } else alertTransitionEnd(this);
+      }
     }
   };
 

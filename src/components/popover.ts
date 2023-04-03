@@ -68,7 +68,7 @@ export default class Popover extends Tooltip {
 
   /* extend original `show()` */
   show = () => {
-    super._show();
+    super.show();
     // btn only exists within dismissible popover
     const { options, btn } = this;
     /* istanbul ignore else */

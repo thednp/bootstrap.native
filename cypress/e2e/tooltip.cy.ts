@@ -426,12 +426,12 @@ describe('Tooltip Class Tests', () => {
     cy.log('can dispose **closed**').then(() => {
         cy.get('[data-cy="tooltip"]').eq(1).then(($element) => {
           cy.wrap(new Tooltip($element[0])).as('instance1');
+          cy.get('@instance1').invoke('dispose')
+          cy.get('@instance1').its('element').should('be.undefined')
+          cy.get('@instance1').its('tooltip').should('be.undefined')
+          cy.get('[data-cy="tooltip"]').eq(1).should('have.attr', 'title')
+          cy.get('[data-cy="tooltip"]').eq(1).should('not.have.attr', 'data-original-title')
         })
-        cy.get('@instance1').invoke('dispose')
-        cy.get('@instance1').its('element').should('be.undefined')
-        cy.get('@instance1').its('tooltip').should('be.undefined')
-        cy.get('[data-cy="tooltip"]').eq(1).should('have.attr', 'title')
-        cy.get('[data-cy="tooltip"]').eq(1).should('not.have.attr', 'data-original-title')
       })
   });
 

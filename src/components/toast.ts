@@ -193,13 +193,14 @@ const toastClickHandler = (e: Event) => {
   const trigger = target && closest(target as HTMLElement, toastToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getToastInstance(element);
-  /* istanbul ignore next */
-  if (!self) return;
 
   /* istanbul ignore else */
-  if (trigger && trigger.tagName === 'A') e.preventDefault();
-  self.relatedTarget = trigger;
-  self.show();
+  if (self) {
+    /* istanbul ignore else */
+    if (trigger && trigger.tagName === 'A') e.preventDefault();
+    self.relatedTarget = trigger;
+    self.show();
+  }
 };
 
 /**
@@ -213,13 +214,13 @@ const interactiveToastHandler = (e: MouseEvent) => {
   const self = getToastInstance(element);
   const { type, relatedTarget } = e;
 
-  /* istanbul ignore next: a solid filter is required */
-  if (!self || element === relatedTarget || element.contains(relatedTarget as Node)) return;
-
-  if ([mouseenterEvent, focusinEvent].includes(type)) {
-    Timer.clear(element, toastString);
-  } else {
-    Timer.set(element, () => self.hide(), self.options.delay, toastString);
+  /* istanbul ignore else: a solid filter is required */
+  if (self && element !== relatedTarget && !element.contains(relatedTarget as Node)) {
+    if ([mouseenterEvent, focusinEvent].includes(type)) {
+      Timer.clear(element, toastString);
+    } else {
+      Timer.set(element, () => self.hide(), self.options.delay, toastString);
+    }
   }
 };
 
@@ -286,9 +287,9 @@ export default class Toast extends BaseComponent {
     /* istanbul ignore else */
     if (element && !isShown) {
       dispatchEvent(element, showToastEvent);
-      if (showToastEvent.defaultPrevented) return;
-
-      showToast(this);
+      if (!showToastEvent.defaultPrevented) {
+        showToast(this);
+      }
     }
   };
 
@@ -299,8 +300,9 @@ export default class Toast extends BaseComponent {
     /* istanbul ignore else */
     if (element && isShown) {
       dispatchEvent(element, hideToastEvent);
-      if (hideToastEvent.defaultPrevented) return;
-      hideToast(this);
+      if (!hideToastEvent.defaultPrevented) {
+        hideToast(this);
+      }
     }
   };
 

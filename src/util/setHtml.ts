@@ -8,12 +8,9 @@ import { isNode, isArray, isFunction, isString, isNodeList, isHTMLElement } from
  * @param content the `Element` to append / string
  * @param sanitizeFn a function to sanitize string content
  */
-const setHtml = (element: Node, content: Node[] | Node | string, sanitizeFn?: (s: string) => string) => {
-  /* istanbul ignore next */
-  if (!isHTMLElement(element) || (isString(content) && !content.length)) return;
-
+const setHtml = (element: HTMLElement, content: Node[] | Node | string, sanitizeFn?: (s: string) => string) => {
   /* istanbul ignore else */
-  if (isString(content)) {
+  if (isString(content) && content.length) {
     let dirty = content.trim(); // fixing #233
     if (isFunction(sanitizeFn)) dirty = sanitizeFn(dirty);
 

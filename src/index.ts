@@ -1,4 +1,4 @@
-import Listener from '@thednp/event-listener';
+import * as Listener from '@thednp/event-listener';
 
 import Alert from './components/alert';
 import Button from './components/button';

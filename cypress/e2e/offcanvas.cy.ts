@@ -6,18 +6,6 @@ describe('Offcanvas Class Tests', () => {
     cy.visit('cypress/offcanvas.html')
   });
 
-  it('Can do dispose()', () => {
-    cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
-        cy.wrap(new Offcanvas($element[0])).as('disposable');
-        cy.get('@disposable').invoke('show')
-        cy.get('@disposable').its('element').should('have.class', 'show').and('be.visible')
-        cy.get('@disposable').invoke('dispose')
-        cy.get('@disposable').its('element').should('be.undefined')
-        cy.get('@disposable').its('options').should('be.undefined')
-        cy.wait(500)
-      })
-  });
-
   it('Init without any parameters - throws error', () => {
     const args = [];
     try {
@@ -27,6 +15,23 @@ describe('Offcanvas Class Tests', () => {
       expect(error).to.be.instanceOf(Error);
       expect(error).to.have.property('message', `Offcanvas Error: your target is not an instance of HTMLElement.`);
     }
+  });
+
+  it('Can be openeded / dismissed via click - backdrop', () => {
+    cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
+        cy.wrap(new Offcanvas($element[0])).as('click_test');
+      })
+    cy.get('[href="#offcanvasExample"]').click()
+    cy.get('[data-cy="offcanvas"]').eq(0).should('have.class', 'show').and('be.visible')
+    cy.get('.offcanvas-backdrop').eq(0).trigger('mousedown', 990, 10)
+    cy.get('.offcanvas-backdrop').eq(0).trigger('mouseup', 990, 10)
+    cy.get('.offcanvas-backdrop').eq(0).trigger('click', 990, 10)
+    cy.wait(100)
+    cy.get('[data-cy="offcanvas"]').eq(0).should('not.have.class', 'show').and('be.hidden')
+    cy.get('[href="#offcanvasExample"]').eq(0).click()
+    cy.get('[data-cy="offcanvas"]').eq(0).should('have.class', 'show').and('be.visible')
+    cy.get('[data-cy="offcanvas"]').eq(0).find('[data-bs-dismiss="offcanvas"]').eq(0).trigger('click', 'center')
+    cy.get('[data-cy="offcanvas"]').eq(0).should('not.have.class', 'show').and('be.hidden')
   });
 
   it('Init with target element', () => {
@@ -65,23 +70,6 @@ describe('Offcanvas Class Tests', () => {
     cy.get('@instance0').invoke('show') // should be prevented
     cy.get('[data-cy="offcanvas"]').eq(0).should('have.class', 'show')
     cy.get('[data-cy="offcanvas"]').eq(1).should('not.have.class', 'show').and('be.hidden')
-  });
-
-  it('Can be openeded / dismissed via click - backdrop', () => {
-    cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
-        cy.wrap(new Offcanvas($element[0])).as('click_test');
-      })
-    cy.get('[href="#offcanvasExample"]').click()
-    cy.get('[data-cy="offcanvas"]').eq(0).should('have.class', 'show').and('be.visible')
-    cy.get('.offcanvas-backdrop').eq(0).trigger('mousedown', 990, 10)
-    cy.get('.offcanvas-backdrop').eq(0).trigger('mouseup', 990, 10)
-    cy.get('.offcanvas-backdrop').eq(0).trigger('click', 990, 10)
-    cy.wait(100)
-    cy.get('[data-cy="offcanvas"]').eq(0).should('not.have.class', 'show').and('be.hidden')
-    cy.get('[href="#offcanvasExample"]').eq(0).click()
-    cy.get('[data-cy="offcanvas"]').eq(0).should('have.class', 'show').and('be.visible')
-    cy.get('[data-cy="offcanvas"]').eq(0).find('[data-bs-dismiss="offcanvas"]').eq(0).trigger('click', 'center')
-    cy.get('[data-cy="offcanvas"]').eq(0).should('not.have.class', 'show').and('be.hidden')
   });
 
   it('Can be openeded / dismissed via click - no backdrop', () => {
@@ -128,6 +116,17 @@ describe('Offcanvas Class Tests', () => {
       cy.get('@hide_event').its('element').should('have.class', 'show')
     })
   });
+  it('Can do dispose()', () => {
+    cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
+        cy.wrap(new Offcanvas($element[0])).as('disposable');
+        cy.get('@disposable').invoke('show')
+        cy.get('@disposable').its('element').should('have.class', 'show').and('be.visible')
+        cy.get('@disposable').invoke('dispose')
+        cy.get('@disposable').its('element').should('be.undefined')
+        cy.get('@disposable').its('options').should('be.undefined')
+        cy.wait(500)
+      })
+  });
 
   it('Can work with CustomEvent show', function() {
     cy.get('[data-cy="offcanvas"]').eq(0).then(($element) => {
@@ -143,4 +142,5 @@ describe('Offcanvas Class Tests', () => {
       cy.get('@show_event').its('element').should('not.have.class', 'show').and('be.hidden')
     })
   });
+
 });

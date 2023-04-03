@@ -121,17 +121,19 @@ describe('Modal Class Tests', () => {
   it('Can do dispose()', function() {
     cy.get('[data-cy="modal"]').eq(0).then(($element) => {
         cy.wrap(new Modal($element[0])).as('disposable');
+        cy.get('@disposable').invoke('show').then(() => {
+          cy.wait(300)
+          cy.get('[data-cy="modal"]').eq(0).should('exist').and('have.class', 'show').and('be.visible')
+        })
+        cy.get('@disposable').invoke('dispose').then(() => {
+          cy.wait(300)
+          cy.get('@disposable').then(s => console.log(s));
+          cy.get('[data-cy="modal"]').eq(0).should('not.have.class', 'show').and('be.hidden')
+          // cy.wrap(Modal.getInstance($element[0])).should('be.null')
+          cy.get('@disposable').its('element').should('be.undefined')
+          cy.get('@disposable').its('options').should('be.undefined')
+        })
       })
-    cy.get('@disposable').invoke('show').then(() => {
-      cy.wait(300)
-      cy.get('[data-cy="modal"]').eq(0).should('exist').and('have.class', 'show').and('be.visible')
-    })
-    cy.get('@disposable').invoke('dispose').then(() => {
-      cy.wait(300)
-      cy.get('[data-cy="modal"]').eq(0).should('not.have.class', 'show').and('be.hidden')
-      cy.get('@disposable').its('element').should('be.undefined')
-      cy.get('@disposable').its('options').should('be.undefined')
-    })
   });
 
   it('Can work with CustomEvent hide', function() {

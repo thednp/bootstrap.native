@@ -8,7 +8,6 @@ import {
   querySelectorAll,
   querySelector,
   removeAttribute,
-  isFunction,
   setAttribute,
   keyEscape,
   keydownEvent,
@@ -147,9 +146,8 @@ const beforeOffcanvasShow = (self: Offcanvas) => {
  * Executes before hiding the offcanvas.
  *
  * @param self the `Offcanvas` instance
- * @param callback the hide callback
  */
-const beforeOffcanvasHide = (self: Offcanvas, callback?: () => void) => {
+const beforeOffcanvasHide = (self: Offcanvas) => {
   const { element, options } = self;
   const currentOpen = getCurrentOpen(element);
 
@@ -157,8 +155,8 @@ const beforeOffcanvasHide = (self: Offcanvas, callback?: () => void) => {
 
   if (!currentOpen && options.backdrop && hasClass(overlay, showClass)) {
     hideOverlay();
-    emulateTransitionEnd(overlay, () => hideOffcanvasComplete(self, callback));
-  } else hideOffcanvasComplete(self, callback);
+    emulateTransitionEnd(overlay, () => hideOffcanvasComplete(self));
+  } else hideOffcanvasComplete(self);
 };
 
 // OFFCANVAS EVENT HANDLERS
@@ -195,31 +193,32 @@ const offcanvasDismissHandler = (e: MouseEvent) => {
   const offCanvasDismiss = querySelector(offcanvasDismissSelector, element as HTMLElement | undefined);
   const self = element && getOffcanvasInstance(element);
 
-  /* istanbul ignore next: must have a filter */
-  if (!self) return;
-
-  const { options, triggers } = self;
-  const { backdrop } = options;
-  const trigger = closest(target as HTMLElement, offcanvasToggleSelector);
-  const selection = getDocument(element).getSelection();
-
-  /* istanbul ignore next: a filter is required here */
-  if (overlay.contains(target as HTMLElement) && backdrop === 'static') return;
-
   /* istanbul ignore else */
-  if (
-    !(selection && selection.toString().length) &&
-    ((!element.contains(target as HTMLElement) &&
-      backdrop &&
-      /* istanbul ignore next */ (!trigger || triggers.includes(target as HTMLElement))) ||
-      (offCanvasDismiss && offCanvasDismiss.contains(target as HTMLElement)))
-  ) {
-    self.relatedTarget = offCanvasDismiss && offCanvasDismiss.contains(target as HTMLElement) ? offCanvasDismiss : null;
-    self.hide();
-  }
+  if (self) {
+    const { options, triggers } = self;
+    const { backdrop } = options;
+    const trigger = closest(target as HTMLElement, offcanvasToggleSelector);
+    const selection = getDocument(element).getSelection();
 
-  /* istanbul ignore next */
-  if (trigger && trigger.tagName === 'A') e.preventDefault();
+    /* istanbul ignore else: a filter is required here */
+    if (!overlay.contains(target as HTMLElement) || backdrop !== 'static') {
+      /* istanbul ignore else */
+      if (
+        !(selection && selection.toString().length) &&
+        ((!element.contains(target as HTMLElement) &&
+          backdrop &&
+          /* istanbul ignore next */ (!trigger || triggers.includes(target as HTMLElement))) ||
+          (offCanvasDismiss && offCanvasDismiss.contains(target as HTMLElement)))
+      ) {
+        self.relatedTarget =
+          offCanvasDismiss && offCanvasDismiss.contains(target as HTMLElement) ? offCanvasDismiss : null;
+        self.hide();
+      }
+
+      /* istanbul ignore next */
+      if (trigger && trigger.tagName === 'A') e.preventDefault();
+    }
+  }
 };
 
 /**
@@ -232,13 +231,13 @@ const offcanvasKeyDismissHandler = ({ code, target }: KeyboardEvent) => {
   const element = querySelector(offcanvasActiveSelector, getDocument(target as Node));
   const self = element && getOffcanvasInstance(element);
 
-  /* istanbul ignore next: must filter */
-  if (!self) return;
-
   /* istanbul ignore else */
-  if (self.options.keyboard && code === keyEscape) {
-    self.relatedTarget = null;
-    self.hide();
+  if (self) {
+    /* istanbul ignore else */
+    if (self.options.keyboard && code === keyEscape) {
+      self.relatedTarget = null;
+      self.hide();
+    }
   }
 };
 
@@ -265,9 +264,8 @@ const showOffcanvasComplete = (self: Offcanvas) => {
  * Handles the `transitionend` when hiding the offcanvas.
  *
  * @param self the `Offcanvas` instance
- * @param callback the hide callback
  */
-const hideOffcanvasComplete = (self: Offcanvas, callback?: () => void) => {
+const hideOffcanvasComplete = (self: Offcanvas) => {
   const { element, triggers } = self;
 
   setAttribute(element, ariaHidden, 'true');
@@ -288,8 +286,6 @@ const hideOffcanvasComplete = (self: Offcanvas, callback?: () => void) => {
   if (!getCurrentOpen(element)) {
     toggleOffCanvasDismiss(self);
   }
-  // callback
-  if (isFunction(callback)) callback();
 };
 
 // OFFCANVAS DEFINITION
@@ -351,69 +347,74 @@ export default class Offcanvas extends BaseComponent {
     const { element, options, relatedTarget } = this;
     let overlayDelay = 0;
 
-    if (hasClass(element, showClass)) return;
+    if (!hasClass(element, showClass)) {
+      showOffcanvasEvent.relatedTarget = relatedTarget || undefined;
+      shownOffcanvasEvent.relatedTarget = relatedTarget || undefined;
+      dispatchEvent(element, showOffcanvasEvent);
 
-    showOffcanvasEvent.relatedTarget = relatedTarget || undefined;
-    shownOffcanvasEvent.relatedTarget = relatedTarget || undefined;
-    dispatchEvent(element, showOffcanvasEvent);
-    if (showOffcanvasEvent.defaultPrevented) return;
+      if (!showOffcanvasEvent.defaultPrevented) {
+        // we elegantly hide any opened modal/offcanvas
+        const currentOpen = getCurrentOpen(element);
+        if (currentOpen && currentOpen !== element) {
+          const that =
+            getOffcanvasInstance(currentOpen) ||
+            /* istanbul ignore next */
+            getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, modalComponent);
+          if (that) that.hide();
+        }
 
-    // we elegantly hide any opened modal/offcanvas
-    const currentOpen = getCurrentOpen(element);
-    if (currentOpen && currentOpen !== element) {
-      const that =
-        getOffcanvasInstance(currentOpen) ||
-        /* istanbul ignore next */
-        getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, modalComponent);
-      if (that) that.hide();
-    }
+        if (options.backdrop) {
+          if (!hasPopup(overlay)) {
+            appendOverlay(element, true);
+          } else {
+            toggleOverlayType();
+          }
 
-    if (options.backdrop) {
-      if (!hasPopup(overlay)) {
-        appendOverlay(element, true);
-      } else {
-        toggleOverlayType();
-      }
+          overlayDelay = getElementTransitionDuration(overlay);
+          showOverlay();
 
-      overlayDelay = getElementTransitionDuration(overlay);
-      showOverlay();
-
-      setTimeout(() => beforeOffcanvasShow(this), overlayDelay);
-    } else {
-      beforeOffcanvasShow(this);
-      /* istanbul ignore else */
-      if (currentOpen && hasClass(overlay, showClass)) {
-        hideOverlay();
+          setTimeout(() => beforeOffcanvasShow(this), overlayDelay);
+        } else {
+          beforeOffcanvasShow(this);
+          /* istanbul ignore next - this test was done on Modal */
+          if (currentOpen && hasClass(overlay, showClass)) {
+            hideOverlay();
+          }
+        }
       }
     }
   }
 
-  /**
-   * Hides the offcanvas from the user.
-   *
-   * @param callback when `true` it will skip animation
-   */
-  hide(callback?: () => void) {
+  /** Hides the offcanvas from the user. */
+  hide() {
     const { element, relatedTarget } = this;
 
-    if (!hasClass(element, showClass)) return;
-
-    hideOffcanvasEvent.relatedTarget = relatedTarget || undefined;
-    hiddenOffcanvasEvent.relatedTarget = relatedTarget || undefined;
-    dispatchEvent(element, hideOffcanvasEvent);
-    if (hideOffcanvasEvent.defaultPrevented) return;
-
-    addClass(element, offcanvasTogglingClass);
-    removeClass(element, showClass);
-
-    if (!callback) {
-      emulateTransitionEnd(element, () => beforeOffcanvasHide(this, callback));
-    } else beforeOffcanvasHide(this, callback);
+    if (hasClass(element, showClass)) {
+      hideOffcanvasEvent.relatedTarget = relatedTarget || undefined;
+      hiddenOffcanvasEvent.relatedTarget = relatedTarget || undefined;
+      dispatchEvent(element, hideOffcanvasEvent);
+      if (!hideOffcanvasEvent.defaultPrevented) {
+        addClass(element, offcanvasTogglingClass);
+        removeClass(element, showClass);
+        beforeOffcanvasHide(this);
+      }
+    }
   }
 
   /** Removes the `Offcanvas` from the target element. */
   dispose() {
-    toggleOffcanvasEvents(this);
-    this.hide(() => super.dispose());
+    const clone = { ...this };
+    const { element, options } = clone;
+    const delay = options.backdrop ? getElementTransitionDuration(overlay) : /* istanbul ignore next */ 0;
+    const callback = () => setTimeout(() => super.dispose(), delay + 17);
+    toggleOffcanvasEvents(clone);
+
+    this.hide();
+    if (hasClass(element, showClass)) {
+      emulateTransitionEnd(element, callback);
+      /* istanbul ignore next */
+    } else {
+      callback();
+    }
   }
 }

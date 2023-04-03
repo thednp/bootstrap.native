@@ -40,7 +40,7 @@ describe('Tab Class Tests', () => {
         if (!i) {
           expect(instance.element).to.equal(element);
           expect(instance.nav).to.be.instanceOf(win?.HTMLElement);
-          expect(instance.options).to.be.undefined;
+          expect(instance.options).to.be.empty;
           expect(instance.defaults).to.be.empty;
           expect(instance.name).to.equal('Tab');
           expect(instance.version).to.not.be.empty;

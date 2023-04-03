@@ -209,16 +209,16 @@ export default class ScrollSpy extends BaseComponent {
     this.target = querySelector(options.target as HTMLElement | string, getDocument(element));
 
     // invalidate
-    if (!this.target) return;
+    if (this.target) {
+      // set initial state
+      this.scrollTarget = element.clientHeight < element.scrollHeight ? element : getWindow(element);
+      this.scrollHeight = getScrollHeight(this.scrollTarget);
 
-    // set initial state
-    this.scrollTarget = element.clientHeight < element.scrollHeight ? element : getWindow(element);
-    this.scrollHeight = getScrollHeight(this.scrollTarget);
+      // add event handlers
+      toggleSpyHandlers(this, true);
 
-    // add event handlers
-    toggleSpyHandlers(this, true);
-
-    this.refresh();
+      this.refresh();
+    }
   }
 
   /* eslint-disable */
@@ -243,40 +243,40 @@ export default class ScrollSpy extends BaseComponent {
     const { target } = this;
 
     // check if target is visible and invalidate
-    /* istanbul ignore next */
-    if (target?.offsetHeight === 0) return;
+    /* istanbul ignore else */
+    if (isHTMLElement(target) && target.offsetHeight > 0) {
+      updateSpyTargets(this);
 
-    updateSpyTargets(this);
+      const { scrollTop, maxScroll, itemsLength, items, activeItem } = this;
 
-    const { scrollTop, maxScroll, itemsLength, items, activeItem } = this;
+      if (scrollTop >= maxScroll) {
+        const newActiveItem = items[itemsLength - 1];
 
-    if (scrollTop >= maxScroll) {
-      const newActiveItem = items[itemsLength - 1];
-
-      /* istanbul ignore else */
-      if (activeItem !== newActiveItem) {
-        activate(this, newActiveItem);
+        /* istanbul ignore else */
+        if (activeItem !== newActiveItem) {
+          activate(this, newActiveItem);
+        }
+        return;
       }
-      return;
-    }
 
-    const { offsets } = this;
+      const { offsets } = this;
 
-    if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
-      this.activeItem = null;
-      if (target) clear(target);
-      return;
-    }
-
-    items.forEach((item, i) => {
-      if (
-        activeItem !== item &&
-        scrollTop >= offsets[i] &&
-        (typeof offsets[i + 1] === 'undefined' || scrollTop < offsets[i + 1])
-      ) {
-        activate(this, item);
+      if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
+        this.activeItem = null;
+        if (target) clear(target);
+        return;
       }
-    });
+
+      items.forEach((item, i) => {
+        if (
+          activeItem !== item &&
+          scrollTop >= offsets[i] &&
+          (typeof offsets[i + 1] === 'undefined' || scrollTop < offsets[i + 1])
+        ) {
+          activate(this, item);
+        }
+      });
+    }
   };
 
   /** Removes `ScrollSpy` from the target element. */

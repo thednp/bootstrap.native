@@ -33,6 +33,7 @@ import {
   addClass,
   hasClass,
   removeClass,
+  matches,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -90,9 +91,8 @@ const carouselSlidEvent = createCustomEvent<CarouselEvent>(`slid.bs.${carouselSt
 const carouselTransitionEndHandler = (self: Carousel) => {
   const { index, direction, element, slides, options } = self;
 
-  // discontinue disposed instances
   /* istanbul ignore else */
-  if (self.isAnimating && getCarouselInstance(element)) {
+  if (self.isAnimating) {
     const activeItem = getActiveIndex(self);
     const orientation = direction === 'left' ? 'next' : 'prev';
     const directionClass = direction === 'left' ? 'start' : 'end';
@@ -107,8 +107,8 @@ const carouselTransitionEndHandler = (self: Carousel) => {
     dispatchEvent(element, carouselSlidEvent);
     Timer.clear(element, dataBsSlide);
 
-    // check for element, might have been disposed
-    if (!getDocument(element).hidden && options.interval && !self.isPaused) {
+    // must check if a previous instance is disposed
+    if (self.cycle && !getDocument(element).hidden && options.interval && !self.isPaused) {
       self.cycle();
     }
   }
@@ -152,17 +152,17 @@ function carouselIndicatorHandler(this: HTMLElement, e: MouseEvent) {
   const element = (closest(this, carouselSelector) || getTargetElement(this)) as HTMLElement;
   const self = getCarouselInstance(element);
 
-  if (!self || self.isAnimating) return;
+  if (self && !self.isAnimating) {
+    const newIndex = +(getAttribute(this, dataBsSlideTo) || /* istanbul ignore next */ 0);
 
-  const newIndex = +(getAttribute(this, dataBsSlideTo) || /* istanbul ignore next */ 0);
-
-  if (
-    this &&
-    !hasClass(this, activeClass) && // event target is not active
-    !Number.isNaN(newIndex)
-  ) {
-    // AND has the specific attribute
-    self.to(newIndex); // do the slide
+    if (
+      this &&
+      !hasClass(this, activeClass) && // event target is not active
+      !Number.isNaN(newIndex)
+    ) {
+      // AND has the specific attribute
+      self.to(newIndex); // do the slide
+    }
   }
 }
 
@@ -173,18 +173,18 @@ function carouselIndicatorHandler(this: HTMLElement, e: MouseEvent) {
  */
 function carouselControlsHandler(this: HTMLElement, e: MouseEvent) {
   e.preventDefault();
-  // const control = this;
   const element = closest(this, carouselSelector) || (getTargetElement(this) as HTMLElement);
   const self = getCarouselInstance(element);
 
-  if (!self || self.isAnimating) return;
-  const orientation = getAttribute(this, dataBsSlide);
+  if (self && !self.isAnimating) {
+    const orientation = getAttribute(this, dataBsSlide);
 
-  /* istanbul ignore else */
-  if (orientation === 'next') {
-    self.next();
-  } else if (orientation === 'prev') {
-    self.prev();
+    /* istanbul ignore else */
+    if (orientation === 'next') {
+      self.next();
+    } else if (orientation === 'prev') {
+      self.prev();
+    }
   }
 }
 
@@ -199,14 +199,15 @@ const carouselKeyHandler = ({ code, target }: KeyboardEvent & { target: Node }) 
   const self = getCarouselInstance(element);
 
   /* istanbul ignore next */
-  if (!self || self.isAnimating || /textarea|input/i.test(target.nodeName)) return;
-  const RTL = isRTL(element);
-  const arrowKeyNext = !RTL ? keyArrowRight : keyArrowLeft;
-  const arrowKeyPrev = !RTL ? keyArrowLeft : keyArrowRight;
+  if (self && !self.isAnimating && !/textarea|input/i.test(target.nodeName)) {
+    const RTL = isRTL(element);
+    const arrowKeyNext = !RTL ? keyArrowRight : keyArrowLeft;
+    const arrowKeyPrev = !RTL ? keyArrowLeft : keyArrowRight;
 
-  /* istanbul ignore else */
-  if (code === arrowKeyPrev) self.prev();
-  else if (code === arrowKeyNext) self.next();
+    /* istanbul ignore else */
+    if (code === arrowKeyPrev) self.prev();
+    else if (code === arrowKeyNext) self.next();
+  }
 };
 
 // CAROUSEL TOUCH HANDLERS
@@ -243,22 +244,18 @@ function carouselPointerDownHandler(this: HTMLElement, e: PointerEvent) {
   const { target } = e;
   const self = getCarouselInstance(this);
 
-  if (!self || self.isAnimating || self.isTouch) {
-    return;
-  }
+  if (self && !self.isAnimating && !self.isTouch) {
+    // filter pointer event on controls & indicators
+    const { controls, indicators } = self;
+    if (![...controls, ...indicators].every(el => el === target || el.contains(target as Node))) {
+      startX = e.pageX;
 
-  // filter pointer event on controls & indicators
-  const { controls, indicators } = self;
-  if ([...controls, ...indicators].some(el => el === target || el.contains(target as Node))) {
-    return;
-  }
-
-  startX = e.pageX;
-
-  /* istanbul ignore else */
-  if (this.contains(target as Node)) {
-    self.isTouch = true;
-    toggleCarouselTouchHandlers(self, true);
+      /* istanbul ignore else */
+      if (this.contains(target as Node)) {
+        self.isTouch = true;
+        toggleCarouselTouchHandlers(self, true);
+      }
+    }
   }
 }
 
@@ -284,48 +281,34 @@ const carouselPointerUpHandler = (e: PointerEvent) => {
     .find(i => i.isTouch) as Carousel;
 
   // impossible to satisfy
-  /* istanbul ignore next */
-  if (!self) {
-    return;
-  }
+  /* istanbul ignore else */
+  if (self) {
+    const { element, index } = self;
+    const RTL = isRTL(element);
+    endX = e.pageX;
 
-  const { element, index } = self;
-  const RTL = isRTL(element);
+    self.isTouch = false;
+    toggleCarouselTouchHandlers(self);
 
-  self.isTouch = false;
-  toggleCarouselTouchHandlers(self);
+    if (
+      !doc.getSelection()?.toString().length &&
+      element.contains(target as HTMLElement) &&
+      Math.abs(startX - endX) > 120
+    ) {
+      // determine next index to slide to
+      /* istanbul ignore else */
+      if (currentX < startX) {
+        self.to(index + (RTL ? -1 : 1));
+      } else if (currentX > startX) {
+        self.to(index + (RTL ? 1 : -1));
+      }
+    }
 
-  if (doc.getSelection()?.toString().length) {
     // reset pointer position
     startX = 0;
     currentX = 0;
     endX = 0;
-    return;
   }
-
-  endX = e.pageX;
-
-  // the event target is outside the carousel context
-  // OR swipe distance is less than 120px
-  /* istanbul ignore else */
-  if (!element.contains(target as HTMLElement) || Math.abs(startX - endX) < 120) {
-    // reset pointer position
-    startX = 0;
-    currentX = 0;
-    endX = 0;
-    return;
-  }
-  // OR determine next index to slide to
-  /* istanbul ignore else */
-  if (currentX < startX) {
-    self.to(index + (RTL ? -1 : 1));
-  } else if (currentX > startX) {
-    self.to(index + (RTL ? 1 : -1));
-  }
-  // reset pointer position
-  startX = 0;
-  currentX = 0;
-  endX = 0;
 };
 
 // CAROUSEL PRIVATE METHODS
@@ -334,14 +317,14 @@ const carouselPointerUpHandler = (e: PointerEvent) => {
  * Sets active indicator for the `Carousel` instance.
  *
  * @param self the `Carousel` instance
- * @param pageIndex the index of the new active indicator
+ * @param index the index of the new active indicator
  */
-const activateCarouselIndicator = (self: Carousel, pageIndex: number) => {
+const activateCarouselIndicator = (self: Carousel, index: number) => {
   const { indicators } = self;
   [...indicators].forEach(x => removeClass(x, activeClass));
 
   /* istanbul ignore else */
-  if (self.indicators[pageIndex]) addClass(indicators[pageIndex], activeClass);
+  if (self.indicators[index]) addClass(indicators[index], activeClass);
 };
 
 /**
@@ -437,7 +420,6 @@ export default class Carousel extends BaseComponent {
 
     // additional properties
     this.direction = isRTL(element) ? 'right' : 'left';
-    this.index = 0;
     this.isTouch = false;
 
     // carousel elements
@@ -447,44 +429,53 @@ export default class Carousel extends BaseComponent {
 
     // invalidate when not enough items
     // no need to go further
-    if (slides.length < 2) {
-      return;
-    }
-    // external controls must be within same document context
-    const doc = getDocument(element);
+    if (slides.length >= 2) {
+      const activeIndex = getActiveIndex(this);
+      // recover item from disposed instance
+      const transitionItem = [...slides].find(s => matches(s, `.${carouselItem}-next,.${carouselItem}-next`));
+      this.index = activeIndex;
 
-    this.controls = [
-      ...querySelectorAll(`[${dataBsSlide}]`, element),
-      ...querySelectorAll(`[${dataBsSlide}][${dataBsTarget}="#${element.id}"]`, doc),
-    ];
+      // external controls must be within same document context
+      const doc = getDocument(element);
 
-    this.indicator = querySelector(`.${carouselString}-indicators`, element);
+      this.controls = [
+        ...querySelectorAll(`[${dataBsSlide}]`, element),
+        ...querySelectorAll(`[${dataBsSlide}][${dataBsTarget}="#${element.id}"]`, doc),
+      ].filter((c, i, ar) => i === ar.indexOf(c));
 
-    // a LIVE collection is prefferable
-    this.indicators = [
-      ...(this.indicator ? querySelectorAll(`[${dataBsSlideTo}]`, this.indicator) : []),
-      ...querySelectorAll(`[${dataBsSlideTo}][${dataBsTarget}="#${element.id}"]`, doc),
-    ];
+      this.indicator = querySelector(`.${carouselString}-indicators`, element);
 
-    // set JavaScript and DATA API options
-    const { options } = this;
+      // a LIVE collection is prefferable
+      this.indicators = [
+        ...(this.indicator ? querySelectorAll(`[${dataBsSlideTo}]`, this.indicator) : []),
+        ...querySelectorAll(`[${dataBsSlideTo}][${dataBsTarget}="#${element.id}"]`, doc),
+      ].filter((c, i, ar) => i === ar.indexOf(c));
 
-    // don't use TRUE as interval, it's actually 0, use the default 5000ms better
-    this.options.interval = options.interval === true ? carouselDefaults.interval : options.interval;
+      // set JavaScript and DATA API options
+      const { options } = this;
 
-    // set first slide active if none
-    /* istanbul ignore else */
-    if (getActiveIndex(this) < 0) {
-      addClass(slides[0], activeClass);
+      // don't use TRUE as interval, it's actually 0, use the default 5000ms better
+      this.options.interval = options.interval === true ? carouselDefaults.interval : options.interval;
+
+      // set first slide active if none
+      /* istanbul ignore next - impossible to test with cypress */
+      if (transitionItem) {
+        this.index = [...slides].indexOf(transitionItem);
+      } else if (activeIndex < 0) {
+        this.index = 0;
+        addClass(slides[0], activeClass);
+        if (this.indicators.length) activateCarouselIndicator(this, 0);
+      }
+
       /* istanbul ignore else */
-      if (this.indicators.length) activateCarouselIndicator(this, 0);
+      if (this.indicators.length) activateCarouselIndicator(this, this.index);
+
+      // attach event handlers
+      toggleCarouselHandlers(this, true);
+
+      // start to cycle if interval is set
+      if (options.interval) this.cycle();
     }
-
-    // attach event handlers
-    toggleCarouselHandlers(this, true);
-
-    // start to cycle if interval is set
-    if (options.interval) this.cycle();
   }
 
   /**
@@ -588,94 +579,103 @@ export default class Carousel extends BaseComponent {
     // when controled via methods, make sure to check again
     // first return if we're on the same item #227
     // `to()` must be SPAM protected by Timer
-    if (this.isAnimating || activeItem === next || Timer.get(element, dataBsSlide)) return;
+    if (!this.isAnimating && activeItem !== next && !Timer.get(element, dataBsSlide)) {
+      // determine transition direction
+      /* istanbul ignore else */
+      if (activeItem < next || (activeItem === 0 && next === slides.length - 1)) {
+        this.direction = RTL ? 'right' : 'left'; // next
+      } else if (activeItem > next || (activeItem === slides.length - 1 && next === 0)) {
+        this.direction = RTL ? 'left' : 'right'; // prev
+      }
+      const { direction } = this;
 
-    // determine transition direction
-    /* istanbul ignore else */
-    if (activeItem < next || (activeItem === 0 && next === slides.length - 1)) {
-      this.direction = RTL ? 'right' : 'left'; // next
-    } else if (activeItem > next || (activeItem === slides.length - 1 && next === 0)) {
-      this.direction = RTL ? 'left' : 'right'; // prev
-    }
-    const { direction } = this;
+      // find the right next index
+      if (next < 0) {
+        next = slides.length - 1;
+      } else if (next >= slides.length) {
+        next = 0;
+      }
 
-    // find the right next index
-    if (next < 0) {
-      next = slides.length - 1;
-    } else if (next >= slides.length) {
-      next = 0;
-    }
+      // orientation, class name, eventProperties
+      const orientation = direction === 'left' ? 'next' : 'prev';
+      const directionClass = direction === 'left' ? 'start' : 'end';
 
-    // orientation, class name, eventProperties
-    const orientation = direction === 'left' ? 'next' : 'prev';
-    const directionClass = direction === 'left' ? 'start' : 'end';
+      const eventProperties = {
+        relatedTarget: slides[next],
+        from: activeItem,
+        to: next,
+        direction,
+      };
 
-    const eventProperties = {
-      relatedTarget: slides[next],
-      from: activeItem,
-      to: next,
-      direction,
-    };
+      // update event properties
+      ObjectAssign(carouselSlideEvent, eventProperties);
+      ObjectAssign(carouselSlidEvent, eventProperties);
 
-    // update event properties
-    ObjectAssign(carouselSlideEvent, eventProperties);
-    ObjectAssign(carouselSlidEvent, eventProperties);
+      // discontinue when prevented
+      dispatchEvent(element, carouselSlideEvent);
+      if (!carouselSlideEvent.defaultPrevented) {
+        // update index
+        this.index = next;
+        activateCarouselIndicator(this, next);
 
-    // discontinue when prevented
-    dispatchEvent(element, carouselSlideEvent);
-    if (carouselSlideEvent.defaultPrevented) return;
+        if (getElementTransitionDuration(slides[next]) && hasClass(element, 'slide')) {
+          Timer.set(
+            element,
+            () => {
+              addClass(slides[next], `${carouselItem}-${orientation}`);
+              reflow(slides[next]);
+              addClass(slides[next], `${carouselItem}-${directionClass}`);
+              addClass(slides[activeItem], `${carouselItem}-${directionClass}`);
 
-    // update index
-    this.index = next;
-    activateCarouselIndicator(this, next);
+              // the instance might get diposed mid-animation
+              emulateTransitionEnd(
+                slides[next],
+                () => this.slides && this.slides.length && carouselTransitionEndHandler(this),
+              );
+            },
+            0,
+            dataBsSlide,
+          );
+        } else {
+          addClass(slides[next], activeClass);
+          removeClass(slides[activeItem], activeClass);
 
-    if (getElementTransitionDuration(slides[next]) && hasClass(element, 'slide')) {
-      Timer.set(
-        element,
-        () => {
-          addClass(slides[next], `${carouselItem}-${orientation}`);
-          reflow(slides[next]);
-          addClass(slides[next], `${carouselItem}-${directionClass}`);
-          addClass(slides[activeItem], `${carouselItem}-${directionClass}`);
+          Timer.set(
+            element,
+            () => {
+              Timer.clear(element, dataBsSlide);
+              // check for element, might have been disposed
+              /* istanbul ignore else */
+              if (element && options.interval && !this.isPaused) {
+                this.cycle();
+              }
 
-          emulateTransitionEnd(slides[next], () => carouselTransitionEndHandler(this));
-        },
-        0,
-        dataBsSlide,
-      );
-    } else {
-      addClass(slides[next], activeClass);
-      removeClass(slides[activeItem], activeClass);
-
-      Timer.set(
-        element,
-        () => {
-          Timer.clear(element, dataBsSlide);
-          // check for element, might have been disposed
-          /* istanbul ignore else */
-          if (element && options.interval && !this.isPaused) {
-            this.cycle();
-          }
-
-          dispatchEvent(element, carouselSlidEvent);
-        },
-        0,
-        dataBsSlide,
-      );
+              dispatchEvent(element, carouselSlidEvent);
+            },
+            0,
+            dataBsSlide,
+          );
+        }
+      }
     }
   }
 
   /** Remove `Carousel` component from target. */
   dispose() {
-    const { slides } = this;
-    const itemClasses = ['start', 'end', 'prev', 'next'];
+    const { isAnimating } = this;
 
-    [...slides].forEach((slide, idx) => {
-      if (hasClass(slide, activeClass)) activateCarouselIndicator(this, idx);
-      itemClasses.forEach(c => removeClass(slide, `${carouselItem}-${c}`));
-    });
-
-    toggleCarouselHandlers(this);
+    const clone = {
+      ...this,
+      isAnimating,
+    };
+    toggleCarouselHandlers(clone);
     super.dispose();
+
+    // istanbul ignore next - impossible to test with cypress
+    if (clone.isAnimating) {
+      emulateTransitionEnd(clone.slides[clone.index], () => {
+        carouselTransitionEndHandler(clone);
+      });
+    }
   }
 }

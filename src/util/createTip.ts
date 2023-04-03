@@ -48,84 +48,84 @@ const createTip = (self: Tooltip | Popover) => {
     : /* istanbul ignore next */ undefined;
 
   const { tooltip } = self;
-  /* istanbul ignore next */
-  if (!tooltip) return;
+  /* istanbul ignore else */
+  if (tooltip) {
+    // set id and role attributes
+    setAttribute(tooltip, 'id', id);
+    setAttribute(tooltip, 'role', tooltipString);
 
-  // set id and role attributes
-  setAttribute(tooltip, 'id', id);
-  setAttribute(tooltip, 'role', tooltipString);
+    const bodyClass = isTooltip ? `${tooltipString}-inner` : `${popoverString}-body`;
+    const tooltipHeader = isTooltip ? null : querySelector(`.${popoverString}-header`, tooltip);
+    const tooltipBody = querySelector(`.${bodyClass}`, tooltip);
 
-  const bodyClass = isTooltip ? `${tooltipString}-inner` : `${popoverString}-body`;
-  const tooltipHeader = isTooltip ? null : querySelector(`.${popoverString}-header`, tooltip);
-  const tooltipBody = querySelector(`.${bodyClass}`, tooltip);
+    // set arrow and enable access for styleTip
+    self.arrow = querySelector(`.${tipString}-arrow`, tooltip) as HTMLElement;
+    const { arrow } = self;
 
-  // set arrow and enable access for styleTip
-  self.arrow = querySelector(`.${tipString}-arrow`, tooltip) as HTMLElement;
-  const { arrow } = self;
+    if (isHTMLElement(title)) titleParts = [title.cloneNode(true)];
+    else {
+      const tempTitle = createElement('div') as HTMLElement;
+      setHtml(tempTitle, title, sanitizeFn);
+      titleParts = [...[...tempTitle.childNodes]];
+    }
 
-  if (isHTMLElement(title)) titleParts = [title.cloneNode(true)];
-  else {
-    const tempTitle = createElement('div') as Node;
-    setHtml(tempTitle, title, sanitizeFn);
-    titleParts = [...[...tempTitle.childNodes]];
-  }
+    if (isHTMLElement(content)) contentParts = [content.cloneNode(true)];
+    else {
+      const tempContent = createElement('div') as HTMLElement;
+      setHtml(tempContent, content, sanitizeFn);
+      contentParts = [...[...tempContent.childNodes]];
+    }
 
-  if (isHTMLElement(content)) contentParts = [content.cloneNode(true)];
-  else {
-    const tempContent = createElement('div') as Node;
-    setHtml(tempContent, content, sanitizeFn);
-    contentParts = [...[...tempContent.childNodes]];
-  }
-
-  // set dismissible button
-  if (dismissible) {
-    if (title) {
-      if (isHTMLElement(btnClose)) titleParts = [...titleParts, btnClose.cloneNode(true)];
-      else {
-        const tempBtn = createElement('div') as Node;
-        setHtml(tempBtn, btnClose, sanitizeFn);
-        titleParts = [...titleParts, tempBtn.firstChild as Node];
-      }
-    } else {
-      /* istanbul ignore else */
-      if (tooltipHeader) tooltipHeader.remove();
-      if (isHTMLElement(btnClose)) contentParts = [...contentParts, btnClose.cloneNode(true)];
-      else {
-        const tempBtn = createElement('div') as Node;
-        setHtml(tempBtn, btnClose, sanitizeFn);
-        contentParts = [...contentParts, tempBtn.firstChild as Node];
+    // set dismissible button
+    if (dismissible) {
+      if (title) {
+        if (isHTMLElement(btnClose)) titleParts = [...titleParts, btnClose.cloneNode(true)];
+        else {
+          const tempBtn = createElement('div') as HTMLElement;
+          setHtml(tempBtn, btnClose, sanitizeFn);
+          titleParts = [...titleParts, tempBtn.firstChild as Node];
+        }
+      } else {
+        /* istanbul ignore else */
+        if (tooltipHeader) tooltipHeader.remove();
+        if (isHTMLElement(btnClose)) contentParts = [...contentParts, btnClose.cloneNode(true)];
+        else {
+          const tempBtn = createElement('div') as HTMLElement;
+          setHtml(tempBtn, btnClose, sanitizeFn);
+          contentParts = [...contentParts, tempBtn.firstChild as Node];
+        }
       }
     }
-  }
 
-  // fill the template with content from options / data attributes
-  // also sanitize title && content
-  /* istanbul ignore else */
-  if (!isTooltip) {
+    // fill the template with content from options / data attributes
+    // also sanitize title && content
     /* istanbul ignore else */
-    if (title && tooltipHeader) setHtml(tooltipHeader, titleParts, sanitizeFn);
+    if (!isTooltip) {
+      /* istanbul ignore else */
+      if (title && tooltipHeader) setHtml(tooltipHeader, titleParts, sanitizeFn);
+      /* istanbul ignore else */
+      if (content && tooltipBody) setHtml(tooltipBody, contentParts, sanitizeFn);
+      // set btn
+      self.btn = querySelector('.btn-close', tooltip) || undefined;
+    } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
+
+    // Bootstrap 5.2.x
+    // addClass(tooltip, 'position-absolute');
+    addClass(tooltip, 'position-fixed');
+    addClass(arrow, 'position-absolute');
+
+    // set popover animation and placement
     /* istanbul ignore else */
-    if (content && tooltipBody) setHtml(tooltipBody, contentParts, sanitizeFn);
-    // set btn
-    self.btn = querySelector('.btn-close', tooltip) || undefined;
-  } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
-
-  // Bootstrap 5.2.x
-  // addClass(tooltip, 'position-absolute');
-  addClass(tooltip, 'position-fixed');
-  addClass(arrow, 'position-absolute');
-
-  // set popover animation and placement
-  /* istanbul ignore else */
-  if (!hasClass(tooltip, tipString)) addClass(tooltip, tipString);
-  /* istanbul ignore else */
-  if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
-  /* istanbul ignore else */
-  if (customClass && !hasClass(tooltip, customClass)) {
-    addClass(tooltip, customClass);
+    if (!hasClass(tooltip, tipString)) addClass(tooltip, tipString);
+    /* istanbul ignore else */
+    if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
+    /* istanbul ignore else */
+    if (customClass && !hasClass(tooltip, customClass)) {
+      addClass(tooltip, customClass);
+    }
+    /* istanbul ignore else */
+    if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
   }
-  /* istanbul ignore else */
-  if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
 };
 
 export default createTip;
