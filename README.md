@@ -10,8 +10,9 @@
 [![prettier version](https://img.shields.io/badge/prettier-2.8.4-brightgreen)](https://prettier.io/)
 
 
-The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, free from major dependecies such as jQuery, Popper.
-The **bootstrap.native** library is available on npm, CDN and comes packed with strong TypeScript definitions, Cypress powered tests and other goodies.
+The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, sourced with TypeScript and free from major dependecies such as jQuery, Popper.
+
+The **bootstrap.native** library is available on npm, CDN and comes packed with Cypress powered tests and other goodies.
 
 
 The library is around ***39Kb*** minified and around ***12Kb*** gZipped. See <a href="http://thednp.github.io/bootstrap.native/">the demo</a> for components guidelines and examples, or the [Wiki/How to use](https://github.com/thednp/bootstrap.native/wiki/How-to-use) on how to install and use the library.
