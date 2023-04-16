@@ -338,6 +338,7 @@ const dropdownClickHandler = (e: MouseEvent) => {
 
   /* istanbul ignore else */
   if (self) {
+    e.stopPropagation();
     self.toggle();
     /* istanbul ignore else */
     if (element && isEmptyAnchor(element)) e.preventDefault();

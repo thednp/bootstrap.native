@@ -268,7 +268,7 @@ const Kt = /* @__PURE__ */ new Map(), Qn = (t, e) => {
 }, $i = (t) => typeof t == "function" || !1, Ti = (t) => be(t) && t.constructor.name === "NodeList" || !1, Et = (t) => ht(t).dir === "rtl", yi = (t) => A(t) && ["TABLE", "TD", "TH"].includes(t.nodeName) || !1, B = (t, e) => t ? t.closest(e) || // break out of `ShadowRoot`
 B(t.getRootNode().host, e) : null, P = (t, e) => y(t) ? t : (A(e) ? e : w()).querySelector(t), Ps = (t, e) => (A(e) ? e : w()).getElementsByTagName(t), tt = (t, e) => (A(e) ? e : w()).querySelectorAll(t), at = (t, e) => (e && A(e) ? e : w()).getElementsByClassName(
   t
-), to = (t, e) => t.matches(e), R = "fade", m = "show", je = "data-bs-dismiss", ze = "alert", eo = "Alert", Ei = "5.0.5", Ci = Ei;
+), to = (t, e) => t.matches(e), R = "fade", m = "show", je = "data-bs-dismiss", ze = "alert", eo = "Alert", Ei = "5.0.6", Ci = Ei;
 class nt {
   /**
    * @param target `HTMLElement` or selector string
@@ -742,7 +742,7 @@ const Lt = ["dropdown", "dropup", "dropstart", "dropend"], ao = "Dropdown", ro =
   }
 }, ec = (t) => {
   const { target: e } = t, s = e && B(e, ho), n = s && Ut(s);
-  n && (n.toggle(), s && lo(s) && t.preventDefault());
+  n && (t.stopPropagation(), n.toggle(), s && lo(s) && t.preventDefault());
 }, sc = (t) => {
   [rs, ls].includes(t.code) && t.preventDefault();
 };
