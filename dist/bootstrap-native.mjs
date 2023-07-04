@@ -260,7 +260,7 @@ M(t.getRootNode().host, e) : null, P = (t, e) => y(t) ? t : (A(e) ? e : w()).que
 }, B = (t, e, s, n) => {
   const o = Vt[e], i = o && o.get(t), c = i && i.get(s), a = c !== void 0 ? c : n;
   i && i.has(s) && i.delete(s), o && (!i || !i.size) && o.delete(t), (!o || !o.size) && delete Vt[e], (!i || !i.size) && t.removeEventListener(e, to, a);
-}, R = "fade", m = "show", je = "data-bs-dismiss", ze = "alert", eo = "Alert", Ti = "5.0.8", yi = Ti;
+}, R = "fade", m = "show", je = "data-bs-dismiss", ze = "alert", eo = "Alert", Ti = "5.0.9", yi = Ti;
 class nt {
   /**
    * @param target `HTMLElement` or selector string
