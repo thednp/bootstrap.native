@@ -5,7 +5,7 @@
 [![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/bootstrap.native)](https://www.jsdelivr.com/package/npm/bootstrap.native)
 [![typescript version](https://img.shields.io/badge/typescript-5.1.6-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.44.0-brightgreen)](https://github.com/eslint)
-[![cypress version](https://img.shields.io/badge/cypress-12.16.0-brightgreen)](https://www.cypress.io/)
+[![cypress version](https://img.shields.io/badge/cypress-13.3.0-brightgreen)](https://www.cypress.io/)
 [![vite version](https://img.shields.io/badge/vite-4.3.9-brightgreen)](https://vitejs.dev/)
 [![prettier version](https://img.shields.io/badge/prettier-2.8.8-brightgreen)](https://prettier.io/)
 
