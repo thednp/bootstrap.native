@@ -57,7 +57,7 @@
     "@types/istanbul-lib-instrument": "^1.7.4",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
-    "cypress": "^12.16.0",
+    "cypress": "^13.3.0",
     "dts-bundle-generator": "^8.0.1",
     "eslint": "^8.44.0",
     "eslint-plugin-jsdoc": "^46.4.3",
