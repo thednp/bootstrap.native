@@ -60,9 +60,9 @@ describe('Alert Class Tests', () => {
         cy.wrap(instance).as('instance');
       })
     cy.get('@instance').invoke('dispose')
-      .then(() => {
+      // .then(() => {
         cy.get('[data-cy="alert"]').should('exist');
-      })
+      // })
     cy.get('@instance').its('element').should('be.undefined');
   });
 

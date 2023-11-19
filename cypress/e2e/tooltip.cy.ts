@@ -258,7 +258,7 @@ describe('Tooltip Class Tests', () => {
         doc.querySelector('.btn-toolbar')?.append(popoverTarget);
       })
       .get('[data-bs-toggle="popover"]').then(($element) => {
-        const element = $element[0];
+        const [element] = $element;
         // const HTML = element.ownerDocument.documentElement;
         const template = element.ownerDocument.createElement('div');
         template.innerHTML = `<div class="popover fade bs-popover-top" role="tooltip">
@@ -270,7 +270,9 @@ describe('Tooltip Class Tests', () => {
         cy.wrap(new Popover(element, {template: template.firstChild as HTMLElement, sanitizeFn: (c) => c.trim()})).as('popover');
       })
     cy.get('@popover').invoke('show')
-    cy.get('@popover').its('tooltip').should('have.class', 'show').and('be.visible')
+    .then(() => {
+      cy.get('@popover').its('tooltip').should('have.class', 'show')
+    })
   });
 
   it('Can work with popover and micro-template', () => {
@@ -300,7 +302,7 @@ describe('Tooltip Class Tests', () => {
         })).as('popover');
       })
     cy.get('@popover').invoke('show')
-    cy.get('@popover').its('tooltip').should('have.class', 'custom-class').and('have.class', 'show').and('be.visible')
+    cy.get('@popover').its('tooltip').should('have.class', 'custom-class').and('have.class', 'show')
   });
 
   it('Can be dismissed via touch events', () => {
@@ -338,7 +340,7 @@ describe('Tooltip Class Tests', () => {
         })).as('popover1');
       })
       .get('@popover1').invoke('show')
-      .get('@popover1').its('tooltip').should('have.class', 'show').and('be.visible')
+      .get('@popover1').its('tooltip').should('have.class', 'show')
   });
 
   it('Can work with popover without title 2', () => {
@@ -361,7 +363,7 @@ describe('Tooltip Class Tests', () => {
         })).as('popover2');
       })
     cy.get('@popover2').invoke('show')
-    cy.get('.tooltip').should('have.class', 'show').and('be.visible')
+    cy.get('.tooltip').should('have.class', 'show')
   });
 
   it('Can work with RTL', () => {

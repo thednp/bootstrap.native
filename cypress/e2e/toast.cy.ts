@@ -38,10 +38,10 @@ describe('Toast Class Tests', () => {
         cy.get('@instance').its('element').should('have.class', 'show').and('be.visible')
         cy.get('@instance').its('isShown').should('be.true')
         cy.wait(250)
-        cy.get('@instance').then(() => {
+        // cy.get('@instance').then(() => {
           cy.get('@instance').its('isShown').should('be.false')
           cy.get('@instance').its('element').should('not.have.class', 'show')
-        })
+        // })
       })
   });
 

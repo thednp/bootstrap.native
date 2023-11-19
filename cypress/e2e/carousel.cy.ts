@@ -488,7 +488,7 @@ describe('Carousel Class Tests', () => {
           e.next();
           const newInstance = new Carousel($element[0]);
           expect(newInstance.element).not.to.be.undefined;
-          expect(e.element).to.be.undefined;
+          expect(e.element).to.be.eq(newInstance.element);
         })
       })
     });

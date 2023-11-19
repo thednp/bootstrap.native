@@ -63,7 +63,7 @@ describe('ScrollSpy Class Tests', () => {
         const content = doc.querySelector('.col-md-9 .row')?.cloneNode(true) as Node;
         doc.body.innerHTML = '';
         doc.body.append(content);
-        Object.assign(doc.body.style, {padding: '5rem'});
+        Object.assign(doc.body.style, {padding: '5rem 0'});
 
         const disposableSpy = doc.getElementById('disposableSpy') as HTMLElement;
         const [nav] = doc.getElementsByTagName('nav');
@@ -89,10 +89,11 @@ describe('ScrollSpy Class Tests', () => {
     cy.window().trigger('resize', { force: true })
     cy.wait(200)
     cy.get('@pageInstance').its('scrollTarget').scrollTo('bottom')
-    cy.wait(200)
     cy.get('@pageInstance').its('items').then(itms => {
       cy.wrap(itms).eq(4).should('have.class', 'active')
     })
+    // cy.get('@pageInstance').its('items').eq(4).should('have.class', 'active')
+
     cy.viewport(680,1000)
   });
 
