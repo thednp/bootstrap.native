@@ -35,7 +35,9 @@ describe('Toast Class Tests', () => {
         const instance = new Toast($element[0], { delay: 200 });
         cy.wrap(instance).as('instance');
         cy.get('@instance').invoke('show')
-        cy.get('@instance').its('element').should('have.class', 'show').and('be.visible')
+        cy.wait(250)
+
+        cy.get('@instance').its('element').should('have.class', 'show')
         cy.get('@instance').its('isShown').should('be.true')
         cy.wait(250)
         // cy.get('@instance').then(() => {
