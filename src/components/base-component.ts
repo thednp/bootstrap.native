@@ -28,7 +28,9 @@ export default class BaseComponent {
     const prevInstance = Data.get<typeof this>(element, this.name);
     /* istanbul ignore else */
     if (prevInstance) {
-      prevInstance.dispose();
+      // remove previously attached event listeners
+      // to avoid memory leaks
+      prevInstance._toggleEventListeners();
     }
 
     this.element = element;
@@ -55,9 +57,14 @@ export default class BaseComponent {
     return {};
   }
 
+  /** just to have something to extend from */
+  _toggleEventListeners = () => {
+    // do something to please linters
+  };
+
   /** Removes component from target element. */
   dispose() {
-    Data.remove(this.element, this.name);
+    Data.remove<typeof this>(this.element, this.name);
     ObjectKeys(this).forEach(prop => {
       delete this[prop];
     });

@@ -15,7 +15,6 @@ import {
   Timer,
   getInstance,
   reflow,
-  // ObjectAssign,
   emulateTransitionEnd,
   dispatchEvent,
   querySelectorAll,
@@ -143,33 +142,6 @@ const showToast = (self: Toast) => {
   );
 };
 
-/**
- * Toggles on/off the `click` event listener.
- *
- * @param self the `Toast` instance
- * @param add when `true`, it will add the listener
- */
-const toggleToastHandlers = (self: Toast, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  const { element, triggers, dismiss, options, hide } = self;
-
-  /* istanbul ignore else */
-  if (dismiss) {
-    action(dismiss, mouseclickEvent, hide);
-  }
-
-  /* istanbul ignore else */
-  if (options.autohide) {
-    [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent].forEach(e =>
-      action(element, e, interactiveToastHandler as EventListener),
-    );
-  }
-  /* istanbul ignore else */
-  if (triggers.length) {
-    triggers.forEach(btn => action(btn, mouseclickEvent, toastClickHandler));
-  }
-};
-
 // TOAST EVENT HANDLERS
 // ====================
 /**
@@ -179,7 +151,7 @@ const toggleToastHandlers = (self: Toast, add?: boolean) => {
  */
 const completeDisposeToast = (self: Toast) => {
   Timer.clear(self.element, toastString);
-  toggleToastHandlers(self);
+  self._toggleEventListeners();
 };
 
 /**
@@ -257,7 +229,7 @@ export default class Toast extends BaseComponent {
     );
 
     // add event listener
-    toggleToastHandlers(this, true);
+    this._toggleEventListeners(true);
   }
   /**
    * Returns component name string.
@@ -303,6 +275,32 @@ export default class Toast extends BaseComponent {
       if (!hideToastEvent.defaultPrevented) {
         hideToast(this);
       }
+    }
+  };
+
+  /**
+   * Toggles on/off the `click` event listener.
+   *
+   * @param add when `true`, it will add the listener
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    const { element, triggers, dismiss, options, hide } = this;
+
+    /* istanbul ignore else */
+    if (dismiss) {
+      action(dismiss, mouseclickEvent, hide);
+    }
+
+    /* istanbul ignore else */
+    if (options.autohide) {
+      [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent].forEach(e =>
+        action(element, e, interactiveToastHandler),
+      );
+    }
+    /* istanbul ignore else */
+    if (triggers.length) {
+      triggers.forEach(btn => action(btn, mouseclickEvent, toastClickHandler));
     }
   };
 

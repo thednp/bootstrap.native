@@ -2,7 +2,8 @@
   // https://janessagarrow.com/blog/typescript-and-esbuild/
  "compilerOptions": {
    "lib": ["DOM", "ESNext", "DOM.Iterable"],
-   "types": ["vite", "vite/client", "@thednp/event-listener", "@thednp/shorty"],
+  //  "types": ["@types/node", "vite", "vite/client", "@thednp/event-listener", "@thednp/shorty"],
+   "types": ["@thednp/event-listener", "@thednp/shorty"],
    "rootDir": "./",
    "baseUrl": "./",
    "module": "ESNext",

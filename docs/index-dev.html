@@ -12,7 +12,7 @@
     <title>BSN - Native JavaScript for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link id="bsCSS" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link id="bsCSS" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Prism: Code Highlight -->
     <link rel="stylesheet" href="./assets/css/prism-coy.css">
@@ -769,14 +769,14 @@ mySpecialCarouselInit.cycle();
                   </div>
           
                   <!-- Controls -->
-                  <a class="carousel-control-prev" role="button" data-bs-slide="prev">
+                  <button class="carousel-control-prev" role="button" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
-                  </a>
-                  <a class="carousel-control-next" role="button" data-bs-slide="next">
+                  </button>
+                  <button class="carousel-control-next" role="button" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
-                  </a>
+                  </button>
                 </div>
               </div>
 
@@ -2616,11 +2616,11 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                  Events
                 </button>
                 <div class="position-static d-flex" id="staticContainer1">
-                  <button type="button" class="btn btn-primary me-1 mb-1" data-bs-toggle="popover" data-bs-dismissible="true" data-bs-title="Popover in static container" data-bs-content="This popover is added to a position: static container. If the configured container belongs to parent with position: relative, the component will bypass the configuration.">Static</button>
+                  <button type="button" class="btn btn-primary me-1 mb-1" data-bs-toggle="popover" data-bs-title="Popover in static container" data-bs-content="This popover is added to a position: static container. If the configured container belongs to parent with position: relative, the component will bypass the configuration.">Static</button>
                 </div>                
                 <button type="button" class="btn btn-outline-secondary position-absolute d-none" style="top:0; right: 0;" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Popover on absolute position" data-bs-content="This button is rendered in position: absolute and this requires a position: relative container.">Absolute</button>
-                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value="" data-bs-toggle="popover" data-bs-dismissible="true" data-bs-title="Popover on focus input" data-bs-content="Popover on focus input testing" class="form-control popover-via-template me-1 mb-1" data-bs-trigger="focus" placeholder="Focus me">
-                <button type="button" id="popover-via-click" class="btn btn-warning me-1 mb-1" data-bs-toggle="popover" data-bs-title="Popover on CLICK" data-bs-dismissible="true" data-bs-trigger="click" data-bs-content="This popover is added to a position: relative container. Now simply click again to dismiss.">
+                <input style="max-width: 100px; display: inline; vertical-align: bottom;" type="text" value="" class="form-control popover-via-template me-1 mb-1" placeholder="Focus me">
+                <button type="button" id="popover-via-click" class="btn btn-warning me-1 mb-1"  data-bs-title="Popover on CLICK" data-bs-content="This popover is added to a position: relative container. Now simply click again to dismiss.">
                   Click
                 </button>
                 <svg class="me-1 mb-1" viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" data-bs-toggle="popover" data-bs-placement="top" data-bs-title="Demo Popover Title for SVG"
@@ -3847,7 +3847,7 @@ new BSN.Tooltip('#selector',options).show();
                     <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 1024 1024"><path d="M366 698l196-196-196-196 60-60 256 256-256 256z"/></svg>
                   </button>
                 </ce-tip>
-                <a href="#" data-bs-toggle="tooltip" title="Left Tooltip" class="btn btn-primary me-1 mb-1" data-bs-placement="left">Left</a>
+                <button id="tooltipElementContent" type="button" class="btn btn-primary me-1 mb-1" data-bs-placement="left">Left</button>
                 <button id="tooltipWithEvents" type="button" class="btn btn-dark me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="top" 
                   data-bs-title="&lt;b&gt;Tooltip on top&lt;/b&gt;&lt;br&gt;This tooltip example has all events attached">Events</button>
                 <button type="button" class="btn btn-secondary me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="bottom"
@@ -4042,6 +4042,8 @@ new BSN.Tooltip('#selector',options).show();
       import * as BSN from '../src/index';
       window.BSN = BSN;
     </script>
+    <script defer src="./assets/js/scripts.js"></script>
+
     <script src="https://cure53.de/purify.js"></script>
     <script src="./assets/js/prism.js"></script>
   </body>

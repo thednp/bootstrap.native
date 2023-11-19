@@ -98,17 +98,6 @@ const setOffCanvasScrollbar = (self: Offcanvas) => {
 };
 
 /**
- * Toggles on/off the `click` event listeners.
- *
- * @param self the `Offcanvas` instance
- * @param add when *true*, listeners are added
- */
-const toggleOffcanvasEvents = (self: Offcanvas, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  self.triggers.forEach(btn => action(btn, mouseclickEvent, offcanvasTriggerHandler as EventListener));
-};
-
-/**
  * Toggles on/off the listeners of the events that close the offcanvas.
  *
  * @param self the `Offcanvas` instance
@@ -117,8 +106,8 @@ const toggleOffcanvasEvents = (self: Offcanvas, add?: boolean) => {
 const toggleOffCanvasDismiss = (self: Offcanvas, add?: boolean) => {
   const action = add ? addListener : removeListener;
   const doc = getDocument(self.element);
-  action(doc, keydownEvent, offcanvasKeyDismissHandler as EventListener);
-  action(doc, mouseclickEvent, offcanvasDismissHandler as EventListener);
+  action(doc, keydownEvent, offcanvasKeyDismissHandler);
+  action(doc, mouseclickEvent, offcanvasDismissHandler);
 };
 
 /**
@@ -155,8 +144,8 @@ const beforeOffcanvasHide = (self: Offcanvas) => {
 
   if (!currentOpen && options.backdrop && hasClass(overlay, showClass)) {
     hideOverlay();
-    emulateTransitionEnd(overlay, () => hideOffcanvasComplete(self));
-  } else hideOffcanvasComplete(self);
+  }
+  emulateTransitionEnd(element, () => hideOffcanvasComplete(self));
 };
 
 // OFFCANVAS EVENT HANDLERS
@@ -318,7 +307,7 @@ export default class Offcanvas extends BaseComponent {
     this.relatedTarget = null;
 
     // attach event listeners
-    toggleOffcanvasEvents(this, true);
+    this._toggleEventListeners(true);
   }
 
   /**
@@ -388,6 +377,7 @@ export default class Offcanvas extends BaseComponent {
   /** Hides the offcanvas from the user. */
   hide() {
     const { element, relatedTarget } = this;
+    // let overlayDelay = 0;
 
     if (hasClass(element, showClass)) {
       hideOffcanvasEvent.relatedTarget = relatedTarget || undefined;
@@ -401,13 +391,24 @@ export default class Offcanvas extends BaseComponent {
     }
   }
 
+  /**
+   * Toggles on/off the `click` event listeners.
+   *
+   * @param self the `Offcanvas` instance
+   * @param add when *true*, listeners are added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    this.triggers.forEach(btn => action(btn, mouseclickEvent, offcanvasTriggerHandler));
+  };
+
   /** Removes the `Offcanvas` from the target element. */
   dispose() {
     const clone = { ...this };
     const { element, options } = clone;
     const delay = options.backdrop ? getElementTransitionDuration(overlay) : /* istanbul ignore next */ 0;
     const callback = () => setTimeout(() => super.dispose(), delay + 17);
-    toggleOffcanvasEvents(clone);
+    this._toggleEventListeners();
 
     this.hide();
     if (hasClass(element, showClass)) {

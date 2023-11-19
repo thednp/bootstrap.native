@@ -30,6 +30,8 @@ import {
   dispatchEvent,
   focus,
   Timer,
+  MouseEvent,
+  KeyboardEvent,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -123,25 +125,9 @@ const setModalScrollbar = (self: Modal) => {
 const toggleModalDismiss = (self: Modal, add?: boolean) => {
   const action = add ? addListener : removeListener;
   const { element, update } = self;
-  action(element, mouseclickEvent, modalDismissHandler as EventListener);
+  action(element, mouseclickEvent, modalDismissHandler);
   action(getWindow(element), resizeEvent, update, passiveHandler);
-  action(getDocument(element), keydownEvent, modalKeyHandler as EventListener);
-};
-
-/**
- * Toggles on/off the `click` event listener of the `Modal` instance.
- *
- * @param self the `Modal` instance
- * @param add when `true`, event listener is added
- */
-const toggleModalHandler = (self: Modal, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  const { triggers } = self;
-
-  /* istanbul ignore else */
-  if (triggers.length) {
-    triggers.forEach(btn => action(btn, mouseclickEvent, modalClickHandler as EventListener));
-  }
+  action(getDocument(element), keydownEvent, modalKeyHandler);
 };
 
 /**
@@ -185,7 +171,6 @@ const afterModalShow = (self: Modal) => {
 const beforeModalShow = (self: Modal) => {
   const { element, hasFade } = self;
   setElementStyle(element, { display: 'block' });
-
   setModalScrollbar(self);
   /* istanbul ignore else */
   if (!getCurrentOpen(element)) {
@@ -226,10 +211,10 @@ const beforeModalHide = (self: Modal) => {
  *
  * @param e the `Event` object
  */
-const modalClickHandler = (e: MouseEvent) => {
+const modalClickHandler = (e: MouseEvent<HTMLElement>) => {
   const { target } = e;
 
-  const trigger = target && closest(target as HTMLElement, modalToggleSelector);
+  const trigger = target && closest(target, modalToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getModalInstance(element);
 
@@ -248,8 +233,8 @@ const modalClickHandler = (e: MouseEvent) => {
  *
  * @param e the `Event` object
  */
-const modalKeyHandler = ({ code, target }: KeyboardEvent) => {
-  const element = querySelector(modalActiveSelector, getDocument(target as Node));
+const modalKeyHandler = ({ code, target }: KeyboardEvent<HTMLElement>) => {
+  const element = querySelector(modalActiveSelector, getDocument(target));
   const self = element && getModalInstance(element);
 
   /* istanbul ignore else */
@@ -273,26 +258,27 @@ const modalKeyHandler = ({ code, target }: KeyboardEvent) => {
  *
  * @param e the `Event` object
  */
-function modalDismissHandler(this: HTMLElement, e: MouseEvent) {
-  const self = getModalInstance(this);
+const modalDismissHandler = (e: MouseEvent<HTMLElement>) => {
+  const { currentTarget } = e;
+  const self = currentTarget ? getModalInstance(currentTarget) : null;
 
   // this timer is needed
   /* istanbul ignore else: must have a filter */
-  if (self && !Timer.get(this)) {
+  if (self && currentTarget && !Timer.get(currentTarget)) {
     const { options, isStatic, modalDialog } = self;
     const { backdrop } = options;
     const { target } = e;
 
-    const selectedText = getDocument(this)?.getSelection()?.toString().length;
-    const targetInsideDialog = modalDialog.contains(target as HTMLElement);
-    const dismiss = target && closest(target as HTMLElement, modalDismissSelector);
+    const selectedText = getDocument(currentTarget)?.getSelection()?.toString().length;
+    const targetInsideDialog = modalDialog.contains(target);
+    const dismiss = target && closest(target, modalDismissSelector);
 
     /* istanbul ignore else */
     if (isStatic && !targetInsideDialog) {
       Timer.set(
-        this,
+        currentTarget,
         () => {
-          addClass(this, modalStaticClass);
+          addClass(currentTarget, modalStaticClass);
           emulateTransitionEnd(modalDialog, () => staticTransitionEnd(self));
         },
         17,
@@ -303,7 +289,7 @@ function modalDismissHandler(this: HTMLElement, e: MouseEvent) {
       e.preventDefault();
     }
   }
-}
+};
 
 /**
  * Handles the `transitionend` event listeners for `Modal`.
@@ -359,7 +345,7 @@ export default class Modal extends BaseComponent {
       this.relatedTarget = null;
 
       // attach event listeners
-      toggleModalHandler(this, true);
+      this._toggleEventListeners(true);
     }
   }
 
@@ -413,6 +399,7 @@ export default class Modal extends BaseComponent {
 
           overlayDelay = getElementTransitionDuration(overlay);
           showOverlay();
+
           setTimeout(() => beforeModalShow(this), overlayDelay);
         } else {
           beforeModalShow(this);
@@ -456,17 +443,34 @@ export default class Modal extends BaseComponent {
     if (hasClass(this.element, showClass)) setModalScrollbar(this);
   };
 
+  /**
+   * Toggles on/off the `click` event listener of the `Modal` instance.
+   *
+   * @param add when `true`, event listener(s) is/are added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    const { triggers } = this;
+
+    /* istanbul ignore else */
+    if (triggers.length) {
+      triggers.forEach(btn => action(btn, mouseclickEvent, modalClickHandler));
+    }
+  };
+
   /** Removes the `Modal` component from target element. */
   dispose() {
     const clone = { ...this };
     const { element, modalDialog } = clone;
-    const callback = () => setTimeout(() => super.dispose(), 17);
-    toggleModalHandler(clone);
+    // const callback = () => setTimeout(() => super.dispose(), 17);
+    const callback = () => super.dispose();
+    this._toggleEventListeners();
 
-    // use transitionend callback
     this.hide();
+
     /* istanbul ignore else */
     if (hasClass(element, 'fade')) {
+      // use transitionend callback
       emulateTransitionEnd(modalDialog, callback);
     } else {
       callback();

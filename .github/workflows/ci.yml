@@ -12,10 +12,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       # - uses: bahmutov/npm-install@v1
-      - run: npm install
-      - run: npm run build
-      - run: npm run test
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test
 
       - name: Upload coverage report on Node 16 to coveralls.io...
         uses: coverallsapp/github-action@master

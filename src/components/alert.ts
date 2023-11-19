@@ -51,29 +51,13 @@ const closedAlertEvent = createCustomEvent<AlertEvent>(`closed.bs.${alertString}
  *
  * @param that target Alert instance
  */
-const alertTransitionEnd = (that: Alert) => {
-  const { element } = that;
-  toggleAlertHandler(that);
-
+const alertTransitionEnd = (self: Alert) => {
+  const { element } = self;
   dispatchEvent(element, closedAlertEvent);
 
-  that.dispose();
+  self._toggleEventListeners();
+  self.dispose();
   element.remove();
-};
-
-// ALERT PRIVATE METHOD
-// ====================
-/**
- * Toggle on / off the `click` event listener.
- *
- * @param that the target alert instance
- * @param add when `true`, event listener is added
- */
-const toggleAlertHandler = (that: Alert, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  const { dismiss, close } = that;
-  /* istanbul ignore else */
-  if (dismiss) action(dismiss, mouseclickEvent, close);
 };
 
 // ALERT DEFINITION
@@ -92,7 +76,7 @@ export default class Alert extends BaseComponent {
     this.dismiss = querySelector(alertDismissSelector, this.element);
 
     // add event listener
-    toggleAlertHandler(this, true);
+    this._toggleEventListeners(true);
   }
 
   /** Returns component name string. */
@@ -123,10 +107,21 @@ export default class Alert extends BaseComponent {
       }
     }
   };
+  /**
+   * Toggle on / off the `click` event listener.
+   *
+   * @param add when `true`, event listener is added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    const { dismiss, close } = this;
+    /* istanbul ignore else */
+    if (dismiss) action(dismiss, mouseclickEvent, close);
+  };
 
   /** Remove the component from target element. */
   dispose() {
-    toggleAlertHandler(this);
+    this._toggleEventListeners();
     super.dispose();
   }
 }

@@ -7,8 +7,8 @@ const getPackageName = () => {
 const config = {
   entries: [
     {
-      filePath: "./src/index.ts",
-      outFile: `./dist/${getPackageName()}.d.ts`,
+      filePath: "src/index.ts",
+      outFile: `dist/${getPackageName()}.d.ts`,
       noCheck: false,
       output: {
         umdModuleName: 'BSN',

@@ -33,19 +33,6 @@ const getButtonInstance = (element: HTMLElement) => getInstance<Button>(element,
 /** A `Button` initialization callback. */
 const buttonInitCallback = (element: HTMLElement) => new Button(element);
 
-// BUTTON PRIVATE METHOD
-// =====================
-/**
- * Toggles on/off the `click` event listener.
- *
- * @param self the `Button` instance
- * @param add when `true`, event listener is added
- */
-const toggleButtonHandler = (self: Button, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  action(self.element, mouseclickEvent, self.toggle);
-};
-
 // BUTTON DEFINITION
 // =================
 /** Creates a new `Button` instance. */
@@ -70,7 +57,7 @@ export default class Button extends BaseComponent {
     setAttribute(element, ariaPressed, String(!!this.isActive));
 
     // add event listener
-    toggleButtonHandler(this, true);
+    this._toggleEventListeners(true);
   }
 
   /**
@@ -99,9 +86,21 @@ export default class Button extends BaseComponent {
     }
   };
 
+  // BUTTON PRIVATE METHOD
+  // =====================
+  /**
+   * Toggles on/off the `click` event listener.
+   *
+   * @param add when `true`, event listener is added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    action(this.element, mouseclickEvent, this.toggle);
+  };
+
   /** Removes the `Button` component from the target element. */
   dispose() {
-    toggleButtonHandler(this);
+    this._toggleEventListeners();
     super.dispose();
   }
 }

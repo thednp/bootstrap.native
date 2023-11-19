@@ -16,7 +16,6 @@ import {
   createCustomEvent,
   getInstance,
   scrollEvent,
-  // ObjectAssign,
   passiveHandler,
   dispatchEvent,
   getBoundingClientRect,
@@ -166,17 +165,6 @@ const activate = (self: ScrollSpy, item: HTMLElement) => {
   dispatchEvent(element, activateScrollSpy);
 };
 
-/**
- * Toggles on/off the component event listener.
- *
- * @param self the `ScrollSpy` instance
- * @param add when `true`, listener is added
- */
-const toggleSpyHandlers = (self: ScrollSpy, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  action(self.scrollTarget as EventTarget, scrollEvent, self.refresh, passiveHandler);
-};
-
 // SCROLLSPY DEFINITION
 // ====================
 /** Returns a new `ScrollSpy` instance. */
@@ -215,7 +203,7 @@ export default class ScrollSpy extends BaseComponent {
       this.scrollHeight = getScrollHeight(this.scrollTarget);
 
       // add event handlers
-      toggleSpyHandlers(this, true);
+      this._toggleEventListeners(true);
 
       this.refresh();
     }
@@ -279,9 +267,19 @@ export default class ScrollSpy extends BaseComponent {
     }
   };
 
+  /**
+   * Toggles on/off the component event listener.
+   *
+   * @param add when `true`, listener is added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    action(this.scrollTarget as EventTarget, scrollEvent, this.refresh, passiveHandler);
+  };
+
   /** Removes `ScrollSpy` from the target element. */
   dispose() {
-    toggleSpyHandlers(this);
+    this._toggleEventListeners();
     super.dispose();
   }
 }

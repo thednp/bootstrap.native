@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "5.0.9",
+  "version": "5.0.10",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
@@ -17,16 +17,17 @@
   },
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
-    "pre-test": "npm run clean-coverage",
+    "pre-test": "pnpm clean-coverage",
     "clean-coverage": "rimraf coverage .nyc_output",
-    "test": "npm run pre-test && npx cypress run",
+    "test": "pnpm pre-test && cypress run",
     "dev": "vite --open ./docs/index-dev.html --port 8577",
     "cypress": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
-    "build": "npm run lint:ts && npm run build-vite && npm run dts",
-    "build-vite": "vite build && npm run copy-docs",
+    "build": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm dts",
+    "build-vite": "vite build && pnpm copy-docs",
     "dts": "dts-bundle-generator --config ./dts.config.ts",
     "copy-docs": "ncp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && ncp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
+    "check:ts": "tsc --noEmit",
     "lint:ts": "eslint -c .eslintrc.cjs --ext .ts src",
     "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix"
   },
@@ -48,28 +49,34 @@
     "typescript"
   ],
   "dependencies": {
-    "@thednp/event-listener": "^2.0.2",
-    "@thednp/shorty": "^2.0.0-alpha16"
+    "@thednp/event-listener": "^2.0.4",
+    "@thednp/shorty": "2.0.0-alpha22"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
-    "@cypress/code-coverage": "^3.10.8",
-    "@types/istanbul-lib-instrument": "^1.7.4",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/parser": "^5.61.0",
-    "cypress": "^13.3.0",
-    "dts-bundle-generator": "^8.0.1",
-    "eslint": "^8.44.0",
-    "eslint-plugin-jsdoc": "^46.4.3",
+    "@cypress/code-coverage": "^3.12.10",
+    "@types/istanbul-lib-instrument": "^1.7.7",
+    "@types/node": "^20.9.2",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "cypress": "^13.5.1",
+    "dts-bundle-generator": "^8.1.2",
+    "eslint": "^8.54.0",
+    "eslint-plugin-jsdoc": "^46.9.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^4.2.1",
-    "istanbul-lib-coverage": "^3.2.0",
+    "istanbul-lib-coverage": "^3.2.2",
     "istanbul-lib-instrument": "^5.2.1",
     "ncp": "^2.0.0",
     "nyc": "^15.1.0",
     "prettier": "^2.8.8",
-    "rimraf": "^5.0.1",
-    "typescript": "^5.1.6",
-    "vite": "^4.3.9"
+    "rimraf": "^5.0.5",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
+  },
+  "packageManager": "pnpm@8.6.12",
+  "engines": {
+    "node": ">=16",
+    "pnpm": ">=8.6.0"
   }
 }

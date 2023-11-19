@@ -136,22 +136,6 @@ const collapseContent = (self: Collapse) => {
   }
 };
 
-/**
- * Toggles on/off the event listener(s) of the `Collapse` instance.
- *
- * @param self the `Collapse` instance
- * @param add when `true`, the event listener is added
- */
-const toggleCollapseHandler = (self: Collapse, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  const { triggers } = self;
-
-  /* istanbul ignore else */
-  if (triggers.length) {
-    triggers.forEach(btn => action(btn, mouseclickEvent, collapseClickHandler as EventListener));
-  }
-};
-
 // COLLAPSE EVENT HANDLER
 // ======================
 /**
@@ -205,7 +189,7 @@ export default class Collapse extends BaseComponent {
       : null;
 
     // add event listeners
-    toggleCollapseHandler(this, true);
+    this._toggleEventListeners(true);
   }
 
   /**
@@ -223,12 +207,6 @@ export default class Collapse extends BaseComponent {
 
   // COLLAPSE PUBLIC METHODS
   // =======================
-  /** Toggles the visibility of the collapse. */
-  toggle() {
-    if (!hasClass(this.element, showClass)) this.show();
-    else this.hide();
-  }
-
   /** Hides the collapse. */
   hide() {
     const { triggers, element } = this;
@@ -270,9 +248,30 @@ export default class Collapse extends BaseComponent {
     }
   }
 
+  /** Toggles the visibility of the collapse. */
+  toggle() {
+    if (!hasClass(this.element, showClass)) this.show();
+    else this.hide();
+  }
+
+  /**
+   * Toggles on/off the event listener(s) of the `Collapse` instance.
+   *
+   * @param add when `true`, the event listener is added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    const { triggers } = this;
+
+    /* istanbul ignore else */
+    if (triggers.length) {
+      triggers.forEach(btn => action(btn, mouseclickEvent, collapseClickHandler));
+    }
+  };
+
   /** Remove the `Collapse` component from the target `Element`. */
   dispose() {
-    toggleCollapseHandler(this);
+    this._toggleEventListeners();
 
     super.dispose();
   }

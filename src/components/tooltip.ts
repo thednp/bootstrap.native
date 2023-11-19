@@ -107,7 +107,7 @@ const hasTip = (self: Tooltip): boolean | undefined => {
  */
 const disposeTooltipComplete = (self: Tooltip, callback?: () => void) => {
   const { element } = self;
-  toggleTooltipHandlers(self);
+  self._toggleEventListeners();
 
   /* istanbul ignore else */
   if (hasAttribute(element, dataOriginalTitle) && self.name === tooltipComponent) {
@@ -127,7 +127,7 @@ const toggleTooltipAction = (self: Tooltip, add?: boolean) => {
   const action = add ? addListener : removeListener;
   const { element } = self;
 
-  action(getDocument(element), touchstartEvent, self.handleTouch as EventListener, passiveHandler);
+  action(getDocument(element), touchstartEvent, self.handleTouch, passiveHandler);
 
   [scrollEvent, resizeEvent].forEach(ev => {
     action(getWindow(element), ev, self.update, passiveHandler);
@@ -162,56 +162,6 @@ const tooltipHiddenAction = (self: Tooltip) => {
   dispatchEvent(element, hiddenTooltipEvent);
 
   Timer.clear(element, 'out');
-};
-
-/**
- * Toggles on/off the `Tooltip` event listeners.
- *
- * @param self the `Tooltip` instance
- * @param add when `true`, event listeners are added
- */
-const toggleTooltipHandlers = (self: Tooltip, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  // btn is only for dismissible popover
-  const { element, options, btn } = self;
-  const { trigger } = options;
-  const isPopover = self.name !== tooltipComponent;
-  const dismissible = isPopover && (options as PopoverOptions).dismissible ? true : false;
-
-  /* istanbul ignore else */
-  if (!trigger.includes('manual')) {
-    self.enabled = !!add;
-
-    const triggerOptions = trigger.split(' ');
-
-    triggerOptions.forEach(tr => {
-      /* istanbul ignore else */
-      if (tr === mousehoverEvent) {
-        action(element, mousedownEvent, self.handleShow);
-        action(element, mouseenterEvent, self.handleShow);
-
-        /* istanbul ignore else */
-        if (!dismissible) {
-          action(element, mouseleaveEvent, self.handleHide);
-          action(getDocument(element), touchstartEvent, self.handleTouch as EventListener, passiveHandler);
-        }
-      } else if (tr === mouseclickEvent) {
-        action(element, tr, !dismissible ? self.toggle : self.handleShow);
-      } else if (tr === focusEvent) {
-        action(element, focusinEvent, self.handleShow);
-        /* istanbul ignore else */
-        if (!dismissible) action(element, focusoutEvent, self.handleHide);
-        /* istanbul ignore else */
-        if (isApple) {
-          action(element, mouseclickEvent, self.handleFocus);
-        }
-      }
-      /* istanbul ignore else */
-      if (dismissible && btn) {
-        action(btn, mouseclickEvent, self.handleHide);
-      }
-    });
-  }
 };
 
 /**
@@ -321,7 +271,7 @@ export default class Tooltip extends BaseComponent {
       createTip(this);
 
       // attach events
-      toggleTooltipHandlers(this, true);
+      this._toggleEventListeners(true);
     }
   }
 
@@ -430,7 +380,7 @@ export default class Tooltip extends BaseComponent {
     const { enabled } = this;
     /* istanbul ignore else */
     if (!enabled) {
-      toggleTooltipHandlers(this, true);
+      this._toggleEventListeners(true);
       this.enabled = !enabled;
     }
   }
@@ -443,9 +393,9 @@ export default class Tooltip extends BaseComponent {
     if (enabled) {
       if (tooltip && hasTip(this) && animation) {
         this.hide();
-        emulateTransitionEnd(tooltip, () => toggleTooltipHandlers(this));
+        emulateTransitionEnd(tooltip, () => this._toggleEventListeners());
       } else {
-        toggleTooltipHandlers(this);
+        this._toggleEventListeners();
       }
       this.enabled = !enabled;
     }
@@ -475,6 +425,55 @@ export default class Tooltip extends BaseComponent {
       // smile for ESLint
     } else {
       this.hide();
+    }
+  };
+
+  /**
+   * Toggles on/off the `Tooltip` event listeners.
+   *
+   * @param add when `true`, event listeners are added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    // btn is only for dismissible popover
+    const { element, options, btn } = this;
+    const { trigger } = options;
+    const isPopover = this.name !== tooltipComponent;
+    const dismissible = isPopover && (options as PopoverOptions).dismissible ? true : false;
+
+    /* istanbul ignore else */
+    if (!trigger.includes('manual')) {
+      this.enabled = !!add;
+
+      const triggerOptions = trigger.split(' ');
+
+      triggerOptions.forEach(tr => {
+        /* istanbul ignore else */
+        if (tr === mousehoverEvent) {
+          action(element, mousedownEvent, this.handleShow);
+          action(element, mouseenterEvent, this.handleShow);
+
+          /* istanbul ignore else */
+          if (!dismissible) {
+            action(element, mouseleaveEvent, this.handleHide);
+            action(getDocument(element), touchstartEvent, this.handleTouch, passiveHandler);
+          }
+        } else if (tr === mouseclickEvent) {
+          action(element, tr, !dismissible ? this.toggle : this.handleShow);
+        } else if (tr === focusEvent) {
+          action(element, focusinEvent, this.handleShow);
+          /* istanbul ignore else */
+          if (!dismissible) action(element, focusoutEvent, this.handleHide);
+          /* istanbul ignore else */
+          if (isApple) {
+            action(element, mouseclickEvent, this.handleFocus);
+          }
+        }
+        /* istanbul ignore else */
+        if (dismissible && btn) {
+          action(btn, mouseclickEvent, this.handleHide);
+        }
+      });
     }
   };
 

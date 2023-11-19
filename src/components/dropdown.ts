@@ -246,10 +246,10 @@ const toggleDropdownDismiss = (self: Dropdown) => {
   const action = self.open ? addListener : removeListener;
   const doc = getDocument(element);
 
-  action(doc, mouseclickEvent, dropdownDismissHandler as EventListener);
-  action(doc, focusEvent, dropdownDismissHandler as EventListener);
-  action(doc, keydownEvent, dropdownPreventScroll as EventListener);
-  action(doc, keyupEvent, dropdownKeyHandler as EventListener);
+  action(doc, mouseclickEvent, dropdownDismissHandler);
+  action(doc, focusEvent, dropdownDismissHandler);
+  action(doc, keydownEvent, dropdownPreventScroll);
+  action(doc, keyupEvent, dropdownKeyHandler);
 
   /* istanbul ignore else */
   if (options.display === 'dynamic') {
@@ -257,17 +257,6 @@ const toggleDropdownDismiss = (self: Dropdown) => {
       action(getWindow(element), ev, dropdownLayoutHandler, passiveHandler);
     });
   }
-};
-
-/**
- * Toggles on/off the `click` event listener of the `Dropdown`.
- *
- * @param self the `Dropdown` instance
- * @param add when `true`, it will add the event listener
- */
-const toggleDropdownHandler = (self: Dropdown, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  action(self.element, mouseclickEvent, dropdownClickHandler as EventListener);
 };
 
 /**
@@ -432,7 +421,7 @@ export default class Dropdown extends BaseComponent {
       this.menu = menu;
 
       // add event listener
-      toggleDropdownHandler(this, true);
+      this._toggleEventListeners(true);
     }
   }
 
@@ -514,11 +503,21 @@ export default class Dropdown extends BaseComponent {
     }
   }
 
+  /**
+   * Toggles on/off the `click` event listener of the `Dropdown`.
+   *
+   * @param add when `true`, it will add the event listener
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    action(this.element, mouseclickEvent, dropdownClickHandler);
+  };
+
   /** Removes the `Dropdown` component from the target element. */
   dispose() {
     if (this.open) this.hide();
 
-    toggleDropdownHandler(this);
+    this._toggleEventListeners();
     super.dispose();
   }
 }

@@ -12,6 +12,8 @@ declare class BaseComponent {
 	get version(): string;
 	get name(): string;
 	get defaults(): {};
+	/** just to have something to extend from */
+	_toggleEventListeners: () => void;
 	/** Removes component from target element. */
 	dispose(): void;
 }
@@ -30,6 +32,12 @@ export declare class Alert extends BaseComponent {
 	 * removes the element from the DOM.
 	 */
 	close: () => void;
+	/**
+	 * Toggle on / off the `click` event listener.
+	 *
+	 * @param add when `true`, event listener is added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Remove the component from target element. */
 	dispose(): void;
 }
@@ -53,6 +61,12 @@ export declare class Button extends BaseComponent {
 	 * @param e usually `click` Event object
 	 */
 	toggle: (e: Event) => void;
+	/**
+	 * Toggles on/off the `click` event listener.
+	 *
+	 * @param add when `true`, event listener is added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Removes the `Button` component from the target element. */
 	dispose(): void;
 }
@@ -110,6 +124,12 @@ export declare class Carousel extends BaseComponent {
 	 * @param idx the index of the item to jump to
 	 */
 	to(idx: number): void;
+	/**
+	 * Toggles all event listeners for the `Carousel` instance.
+	 *
+	 * @param add when `TRUE` event listeners are added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Remove `Carousel` component from target. */
 	dispose(): void;
 }
@@ -139,12 +159,18 @@ export declare class Collapse extends BaseComponent {
 	get defaults(): {
 		parent: null;
 	};
-	/** Toggles the visibility of the collapse. */
-	toggle(): void;
 	/** Hides the collapse. */
 	hide(): void;
 	/** Shows the collapse. */
 	show(): void;
+	/** Toggles the visibility of the collapse. */
+	toggle(): void;
+	/**
+	 * Toggles on/off the event listener(s) of the `Collapse` instance.
+	 *
+	 * @param add when `true`, the event listener is added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Remove the `Collapse` component from the target `Element`. */
 	dispose(): void;
 }
@@ -183,6 +209,12 @@ export declare class Dropdown extends BaseComponent {
 	show(): void;
 	/** Hides the dropdown menu from the user. */
 	hide(): void;
+	/**
+	 * Toggles on/off the `click` event listener of the `Dropdown`.
+	 *
+	 * @param add when `true`, it will add the event listener
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Removes the `Dropdown` component from the target element. */
 	dispose(): void;
 }
@@ -227,6 +259,12 @@ export declare class Modal extends BaseComponent {
 	 * Updates the modal layout.
 	 */
 	update: () => void;
+	/**
+	 * Toggles on/off the `click` event listener of the `Modal` instance.
+	 *
+	 * @param add when `true`, event listener(s) is/are added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Removes the `Modal` component from target element. */
 	dispose(): void;
 }
@@ -265,6 +303,13 @@ export declare class Offcanvas extends BaseComponent {
 	show(): void;
 	/** Hides the offcanvas from the user. */
 	hide(): void;
+	/**
+	 * Toggles on/off the `click` event listeners.
+	 *
+	 * @param self the `Offcanvas` instance
+	 * @param add when *true*, listeners are added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Removes the `Offcanvas` from the target element. */
 	dispose(): void;
 }
@@ -333,6 +378,12 @@ export declare class Tooltip extends BaseComponent {
 	 * @param {TouchEvent} e the `Event` object
 	 */
 	handleTouch: ({ target }: TouchEvent) => void;
+	/**
+	 * Toggles on/off the `Tooltip` event listeners.
+	 *
+	 * @param add when `true`, event listeners are added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Removes the `Tooltip` from the target element. */
 	dispose(): void;
 }
@@ -398,6 +449,12 @@ export declare class ScrollSpy extends BaseComponent {
 	get defaults(): ScrollSpyOptions;
 	/** Updates all items. */
 	refresh: () => void;
+	/**
+	 * Toggles on/off the component event listener.
+	 *
+	 * @param add when `true`, listener is added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Removes `ScrollSpy` from the target element. */
 	dispose(): void;
 }
@@ -419,6 +476,12 @@ export declare class Tab extends BaseComponent {
 	get name(): string;
 	/** Shows the tab to the user. */
 	show(): void;
+	/**
+	 * Toggles on/off the `click` event listener.
+	 *
+	 * @param add when `true`, event listener is added
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Removes the `Tab` component from the target element. */
 	dispose(): void;
 }
@@ -461,6 +524,12 @@ export declare class Toast extends BaseComponent {
 	show: () => void;
 	/** Hides the toast. */
 	hide: () => void;
+	/**
+	 * Toggles on/off the `click` event listener.
+	 *
+	 * @param add when `true`, it will add the listener
+	 */
+	_toggleEventListeners: (add?: boolean) => void;
 	/** Removes the `Toast` component from the target element. */
 	dispose(): void;
 }

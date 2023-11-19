@@ -15,7 +15,6 @@ import {
   Timer,
   getInstance,
   ariaSelected,
-  // ObjectAssign,
   reflow,
   isHTMLElement,
 } from '@thednp/shorty';
@@ -212,17 +211,6 @@ const getParentDropdown = (element?: HTMLElement): HTMLElement | null => {
   return dropdown ? querySelector(`.${dropdownClasses[0]}-toggle`, dropdown) : null;
 };
 
-/**
- * Toggles on/off the `click` event listener.
- *
- * @param self the `Tab` instance
- * @param add when `true`, event listener is added
- */
-const toggleTabHandler = (self: Tab, add?: boolean) => {
-  const action = add ? addListener : removeListener;
-  action(self.element, mouseclickEvent, tabClickHandler);
-};
-
 // TAB EVENT HANDLER
 // =================
 /**
@@ -291,7 +279,7 @@ export default class Tab extends BaseComponent {
       }
 
       // add event listener
-      toggleTabHandler(this, true);
+      this._toggleEventListeners(true);
     }
   }
 
@@ -359,9 +347,19 @@ export default class Tab extends BaseComponent {
     }
   }
 
+  /**
+   * Toggles on/off the `click` event listener.
+   *
+   * @param add when `true`, event listener is added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const action = add ? addListener : removeListener;
+    action(this.element, mouseclickEvent, tabClickHandler);
+  };
+
   /** Removes the `Tab` component from the target element. */
   dispose() {
-    toggleTabHandler(this);
+    this._toggleEventListeners();
     super.dispose();
   }
 }

@@ -336,48 +336,8 @@ const activateCarouselIndicator = (self: Carousel, index: number) => {
 const toggleCarouselTouchHandlers = (self: Carousel, add?: boolean) => {
   const { element } = self;
   const action = add ? addListener : removeListener;
-  action(getDocument(element), pointermoveEvent, carouselPointerMoveHandler as EventListener, passiveHandler);
-  action(getDocument(element), pointerupEvent, carouselPointerUpHandler as EventListener, passiveHandler);
-};
-
-/**
- * Toggles all event listeners for a given `Carousel` instance.
- *
- * @param self the `Carousel` instance
- * @param add when `TRUE` event listeners are added
- */
-const toggleCarouselHandlers = (self: Carousel, add?: boolean) => {
-  const { element, options, slides, controls, indicators } = self;
-  const { touch, pause, interval, keyboard } = options;
-  const action = add ? addListener : removeListener;
-
-  if (pause && interval) {
-    action(element, mouseenterEvent, carouselPauseHandler);
-    action(element, mouseleaveEvent, carouselResumeHandler);
-  }
-
-  if (touch && slides.length > 2) {
-    action(element, pointerdownEvent, carouselPointerDownHandler as EventListener, passiveHandler);
-    action(element, touchstartEvent, carouselDragHandler as unknown as EventListener, { passive: false });
-    action(element, dragstartEvent, carouselDragHandler as unknown as EventListener, { passive: false });
-  }
-
-  /* istanbul ignore else */
-  if (controls.length) {
-    controls.forEach(arrow => {
-      /* istanbul ignore else */
-      if (arrow) action(arrow, mouseclickEvent, carouselControlsHandler as EventListener);
-    });
-  }
-
-  /* istanbul ignore else */
-  if (indicators.length) {
-    indicators.forEach(indicator => {
-      action(indicator, mouseclickEvent, carouselIndicatorHandler as EventListener);
-    });
-  }
-
-  if (keyboard) action(getDocument(element), keydownEvent, carouselKeyHandler as EventListener);
+  action(getDocument(element), pointermoveEvent, carouselPointerMoveHandler, passiveHandler);
+  action(getDocument(element), pointerupEvent, carouselPointerUpHandler, passiveHandler);
 };
 
 /**
@@ -471,7 +431,7 @@ export default class Carousel extends BaseComponent {
       if (this.indicators.length) activateCarouselIndicator(this, this.index);
 
       // attach event handlers
-      toggleCarouselHandlers(this, true);
+      this._toggleEventListeners(true);
 
       // start to cycle if interval is set
       if (options.interval) this.cycle();
@@ -660,6 +620,45 @@ export default class Carousel extends BaseComponent {
     }
   }
 
+  /**
+   * Toggles all event listeners for the `Carousel` instance.
+   *
+   * @param add when `TRUE` event listeners are added
+   */
+  _toggleEventListeners = (add?: boolean) => {
+    const { element, options, slides, controls, indicators } = this;
+    const { touch, pause, interval, keyboard } = options;
+    const action = add ? addListener : removeListener;
+
+    if (pause && interval) {
+      action(element, mouseenterEvent, carouselPauseHandler);
+      action(element, mouseleaveEvent, carouselResumeHandler);
+    }
+
+    if (touch && slides.length > 2) {
+      action(element, pointerdownEvent, carouselPointerDownHandler, passiveHandler);
+      action(element, touchstartEvent, carouselDragHandler, { passive: false });
+      action(element, dragstartEvent, carouselDragHandler, { passive: false });
+    }
+
+    /* istanbul ignore else */
+    if (controls.length) {
+      controls.forEach(arrow => {
+        /* istanbul ignore else */
+        if (arrow) action(arrow, mouseclickEvent, carouselControlsHandler);
+      });
+    }
+
+    /* istanbul ignore else */
+    if (indicators.length) {
+      indicators.forEach(indicator => {
+        action(indicator, mouseclickEvent, carouselIndicatorHandler);
+      });
+    }
+
+    if (keyboard) action(getDocument(element), keydownEvent, carouselKeyHandler);
+  };
+
   /** Remove `Carousel` component from target. */
   dispose() {
     const { isAnimating } = this;
@@ -668,7 +667,7 @@ export default class Carousel extends BaseComponent {
       ...this,
       isAnimating,
     };
-    toggleCarouselHandlers(clone);
+    this._toggleEventListeners();
     super.dispose();
 
     // istanbul ignore next - impossible to test with cypress
