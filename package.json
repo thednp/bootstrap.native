@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "5.0.10",
+  "version": "5.0.11",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
@@ -50,16 +50,16 @@
   ],
   "dependencies": {
     "@thednp/event-listener": "^2.0.4",
-    "@thednp/shorty": "2.0.0-alpha22"
+    "@thednp/shorty": "^2.0.0"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
-    "@cypress/code-coverage": "^3.12.10",
+    "@cypress/code-coverage": "^3.12.12",
     "@types/istanbul-lib-instrument": "^1.7.7",
-    "@types/node": "^20.9.2",
+    "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "cypress": "^13.5.1",
+    "cypress": "^13.6.0",
     "dts-bundle-generator": "^8.1.2",
     "eslint": "^8.54.0",
     "eslint-plugin-jsdoc": "^46.9.0",
@@ -71,7 +71,7 @@
     "nyc": "^15.1.0",
     "prettier": "^2.8.8",
     "rimraf": "^5.0.5",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.2",
     "vite": "^4.5.0"
   },
   "packageManager": "pnpm@8.6.12",

@@ -264,7 +264,7 @@ M(t.getRootNode().host, s) : null, P = (t, s) => y(t) ? t : (L(s) ? s : E()).que
     zn,
     a
   );
-}, R = "fade", m = "show", We = "data-bs-dismiss", Fe = "alert", Vn = "Alert", li = "5.0.10", di = li;
+}, R = "fade", m = "show", We = "data-bs-dismiss", Fe = "alert", Vn = "Alert", li = "5.0.11", di = li;
 class nt {
   /**
    * @param target `HTMLElement` or selector string
