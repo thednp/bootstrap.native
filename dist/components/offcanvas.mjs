@@ -1,16 +1,15 @@
 var U = Object.defineProperty;
 var W = (o, e, t) => e in o ? U(o, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[e] = t;
-var d = (o, e, t) => (W(o, typeof e != "symbol" ? e + "" : e, t), t);
+var d = (o, e, t) => W(o, typeof e != "symbol" ? e + "" : e, t);
 import { createCustomEvent as b, querySelectorAll as X, getDocument as m, hasClass as l, dispatchEvent as u, getInstance as P, getElementTransitionDuration as L, addClass as O, removeClass as k, mouseclickEvent as _, emulateTransitionEnd as $, setElementStyle as C, getDocumentBody as Y, closest as q, removeAttribute as D, ariaHidden as x, setAttribute as w, ariaModal as N, focus as K, getDocumentElement as Z, keydownEvent as ee, querySelector as S, keyEscape as te } from "@thednp/shorty";
 import { addListener as M, removeListener as V } from "@thednp/event-listener";
-import { d as se } from "./dataBsDismiss-afbfbc79.mjs";
-import { d as oe } from "./dataBsToggle-330f300b.mjs";
-import { s as r } from "./showClass-f6a4d601.mjs";
-import { o as c, h as ne } from "./popupContainer-82392867.mjs";
-import { o as j, g as H, m as ae, a as ie, t as re, b as f, s as ce, h as z, i as le, r as fe, d as ge, f as F } from "./isVisible-19f1341e.mjs";
-import { g as G } from "./getTargetElement-17dc71b9.mjs";
-import { B as de } from "./base-component-a56d44ba.mjs";
-import "./fadeClass-0d50d035.mjs";
+import { d as se } from "./dataBsDismiss-DdNPQYa-.mjs";
+import { d as oe } from "./dataBsToggle-B84TS15h.mjs";
+import { s as r } from "./showClass-C8hdJfjQ.mjs";
+import { o as c, h as ne } from "./popupContainer-C6AuDE5e.mjs";
+import { o as j, g as H, m as ae, a as ie, t as re, b as f, s as ce, h as z, i as le, r as fe, d as ge, f as F } from "./isVisible-qbw-ByKP.mjs";
+import { g as G } from "./getTargetElement-DbfK8LsG.mjs";
+import { B as de } from "./base-component-DvIOojVW.mjs";
 const me = `.${c}`, A = `[${oe}="${c}"]`, ve = `[${se}="${c}"]`, T = `${c}-toggling`, he = {
   backdrop: !0,
   // boolean

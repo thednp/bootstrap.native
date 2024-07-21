@@ -1,6 +1,6 @@
 var Bo = Object.defineProperty;
 var Ro = (t, s, e) => s in t ? Bo(t, s, { enumerable: !0, configurable: !0, writable: !0, value: e }) : t[s] = e;
-var d = (t, s, e) => (Ro(t, typeof s != "symbol" ? s + "" : s, e), e);
+var d = (t, s, e) => Ro(t, typeof s != "symbol" ? s + "" : s, e);
 const Nn = "aria-describedby", De = "aria-expanded", ke = "aria-hidden", Ne = "aria-modal", Ns = "aria-pressed", Qe = "aria-selected", Wo = "DOMContentLoaded", ws = "focus", Es = "focusin", On = "focusout", Oe = "keydown", Fo = "keyup", N = "click", Mn = "mousedown", jo = "hover", Me = "mouseenter", $s = "mouseleave", zo = "pointerdown", Vo = "pointermove", Ko = "pointerup", _e = "resize", Be = "scroll", Ts = "touchstart", Xo = "dragstart", as = "ArrowDown", rs = "ArrowUp", Os = "ArrowLeft", Ms = "ArrowRight", ys = "Escape", Yo = "transitionDuration", Uo = "transitionDelay", Ze = "transitionend", _n = "transitionProperty", qo = navigator.userAgentData, Ae = qo, { userAgent: Qo } = navigator, Le = Qo, _s = /iPhone|iPad|iPod|Android/i;
 Ae ? Ae.brands.some((t) => _s.test(t.brand)) : _s.test(Le);
 const Bs = /(iPhone|iPod|iPad)/, Zo = Ae ? Ae.brands.some((t) => Bs.test(t.brand)) : (
@@ -68,8 +68,7 @@ const it = (t, s) => t.getAttribute(s), Ie = (t, s) => t.hasAttribute(s), O = (t
    * @returns the instance
    */
   get: (t, s) => {
-    if (!y(t) || !s)
-      return null;
+    if (!y(t) || !s) return null;
     const e = At.getAllFor(s);
     return t && e && e.get(t) || null;
   },
@@ -84,13 +83,11 @@ const it = (t, s) => t.getAttribute(s), Ie = (t, s) => t.hasAttribute(s), O = (t
     !e || !y(t) || (e.delete(t), e.size === 0 && Ft.delete(s));
   }
 }, F = (t, s) => At.get(t, s), be = (t) => typeof t == "string" || !1, Cs = (t) => ve(t) && t.constructor.name === "Window" || !1, Bn = (t) => L(t) && t.nodeType === 9 || !1, E = (t) => Cs(t) ? t.document : Bn(t) ? t : L(t) ? t.ownerDocument : window.document, dt = (t, ...s) => Object.assign(t, ...s), $t = (t) => {
-  if (!t)
-    return;
+  if (!t) return;
   if (be(t))
     return E().createElement(t);
   const { tagName: s } = t, e = $t(s);
-  if (!e)
-    return;
+  if (!e) return;
   const n = { ...t };
   return delete n.tagName, dt(e, n);
 }, w = (t, s) => t.dispatchEvent(s), V = (t, s) => {
@@ -135,7 +132,7 @@ const it = (t, s) => t.getAttribute(s), Ie = (t, s) => t.hasAttribute(s), O = (t
 }, ht = (t, s) => t.focus(s), Rs = (t) => ["true", !0].includes(t) ? !0 : ["false", !1].includes(t) ? !1 : ["null", "", null, void 0].includes(t) ? null : t !== "" && !Number.isNaN(+t) ? +t : t, Ce = (t) => Object.entries(t), Xt = (t) => t.toLowerCase(), si = (t, s, e, n) => {
   const o = { ...e }, i = { ...t.dataset }, c = { ...s }, a = {}, l = "title";
   return Ce(i).forEach(([r, f]) => {
-    const p = n && typeof r == "string" && r.includes(n) ? r.replace(n, "").replace(/[A-Z]/g, (v) => Xt(v)) : r;
+    const p = typeof r == "string" && r.includes(n) ? r.replace(n, "").replace(/[A-Z]/g, (v) => Xt(v)) : r;
     a[p] = Rs(f);
   }), Ce(o).forEach(([r, f]) => {
     o[r] = Rs(f);
@@ -177,8 +174,7 @@ const it = (t, s) => t.getAttribute(s), Ie = (t, s) => t.hasAttribute(s), O = (t
    * @returns the timer
    */
   get: (t, s) => {
-    if (!y(t))
-      return null;
+    if (!y(t)) return null;
     const e = bt.get(t);
     return s && e && ls(e) ? e.get(s) || /* istanbul ignore next */
     null : ni(e) ? e : null;
@@ -190,8 +186,7 @@ const it = (t, s) => t.getAttribute(s), Ie = (t, s) => t.hasAttribute(s), O = (t
    * @param key a unique key
    */
   clear: (t, s) => {
-    if (!y(t))
-      return;
+    if (!y(t)) return;
     const e = bt.get(t);
     s && s.length && ls(e) ? (clearTimeout(e.get(s)), e.delete(s), e.size === 0 && bt.delete(t)) : (clearTimeout(e), bt.delete(t));
   }
@@ -237,8 +232,7 @@ const jt = /* @__PURE__ */ new Map(), Wn = (t, s) => {
   var s;
   return t ? Bn(t) ? t.defaultView : L(t) ? (s = t == null ? void 0 : t.ownerDocument) == null ? void 0 : s.defaultView : t : window;
 }, ii = (t) => Array.isArray(t) || !1, Fn = (t) => {
-  if (!L(t))
-    return !1;
+  if (!L(t)) return !1;
   const { top: s, bottom: e } = we(t), { clientHeight: n } = ft(t);
   return s <= n && e >= 0;
 }, ci = (t) => typeof t == "function" || !1, ai = (t) => ve(t) && t.constructor.name === "NodeList" || !1, Ct = (t) => ft(t).dir === "rtl", ri = (t) => L(t) && ["TABLE", "TD", "TH"].includes(t.nodeName) || !1, M = (t, s) => t ? t.closest(s) || // break out of `ShadowRoot`
@@ -264,7 +258,7 @@ M(t.getRootNode().host, s) : null, P = (t, s) => y(t) ? t : (L(s) ? s : E()).que
     zn,
     a
   );
-}, R = "fade", m = "show", We = "data-bs-dismiss", Fe = "alert", Vn = "Alert", li = "5.0.13", di = li;
+}, R = "fade", m = "show", We = "data-bs-dismiss", Fe = "alert", Vn = "Alert", li = "5.0.14", di = li;
 class nt {
   /**
    * @param target `HTMLElement` or selector string
@@ -739,8 +733,7 @@ const Ot = ["dropdown", "dropup", "dropstart", "dropend"], Qn = "Dropdown", Zn =
     )]), w(n, to);
   }
 }, Wi = (t) => [...t.children].map((s) => {
-  if (s && tn.includes(s.tagName))
-    return s;
+  if (s && tn.includes(s.tagName)) return s;
   const { firstElementChild: e } = s;
   return e && tn.includes(e.tagName) ? e : null;
 }).filter((s) => s), nn = (t) => {
@@ -1212,8 +1205,7 @@ const It = "popover", Ke = "Popover", lt = "tooltip", yo = (t) => {
     ci(e) && (n = e(n));
     const i = new DOMParser().parseFromString(n, "text/html");
     t.append(...i.body.childNodes);
-  } else
-    y(s) ? t.append(s) : (ai(s) || ii(s) && s.every(L)) && t.append(...s);
+  } else y(s) ? t.append(s) : (ai(s) || ii(s) && s.every(L)) && t.append(...s);
 }, gc = (t) => {
   const s = t.name === Pt, { id: e, element: n, options: o } = t, { title: i, placement: c, template: a, animation: l, customClass: r, sanitizeFn: f, dismissible: p, content: v, btnClose: D } = o, q = s ? lt : It, T = { ...Co };
   let j = [], Y = [];
@@ -1236,28 +1228,24 @@ const It = "popover", Ke = "Popover", lt = "tooltip", yo = (t) => {
     const J = s ? `${lt}-inner` : `${It}-body`, ot = s ? null : P(`.${It}-header`, S), W = P(`.${J}`, S);
     t.arrow = P(`.${q}-arrow`, S);
     const { arrow: z } = t;
-    if (y(i))
-      j = [i.cloneNode(!0)];
+    if (y(i)) j = [i.cloneNode(!0)];
     else {
       const H = $t("div");
       wt(H, i, f), j = [...H.childNodes];
     }
-    if (y(v))
-      Y = [v.cloneNode(!0)];
+    if (y(v)) Y = [v.cloneNode(!0)];
     else {
       const H = $t("div");
       wt(H, v, f), Y = [...H.childNodes];
     }
     if (p)
       if (i)
-        if (y(D))
-          j = [...j, D.cloneNode(!0)];
+        if (y(D)) j = [...j, D.cloneNode(!0)];
         else {
           const H = $t("div");
           wt(H, D, f), j = [...j, H.firstChild];
         }
-      else if (ot && ot.remove(), y(D))
-        Y = [...Y, D.cloneNode(!0)];
+      else if (ot && ot.remove(), y(D)) Y = [...Y, D.cloneNode(!0)];
       else {
         const H = $t("div");
         wt(H, D, f), Y = [...Y, H.firstChild];
@@ -1554,8 +1542,7 @@ const $e = "tab", Io = "Tab", $n = `[${ct}="${$e}"]`, ko = (t) => F(t, Io), Ac =
     c === a ? Cn(t) : setTimeout(() => {
       e.style.height = `${a}px`, Mt(e), x(e, () => Cn(t));
     }, 50);
-  } else
-    o && u.clear(o);
+  } else o && u.clear(o);
   Tn.relatedTarget = i, w(s, Tn);
 }, Hn = (t) => {
   const { element: s, content: e, tabContent: n, nav: o } = t, { tab: i, content: c } = o && me.get(o) || /* istanbul ignore next */
@@ -1581,16 +1568,14 @@ const $e = "tab", Io = "Tab", $n = `[${ct}="${$e}"]`, ko = (t) => F(t, Io), Ac =
   }
 }, xn = (t) => {
   const { nav: s } = t;
-  if (!y(s))
-    return { tab: null, content: null };
+  if (!y(s)) return { tab: null, content: null };
   const e = rt(C, s);
   let n = null;
   e.length === 1 && !Ot.some((i) => h(e[0].parentElement, i)) ? [n] = e : e.length > 1 && (n = e[e.length - 1]);
   const o = y(n) ? X(n) : null;
   return { tab: n, content: o };
 }, Pn = (t) => {
-  if (!y(t))
-    return null;
+  if (!y(t)) return null;
   const s = M(t, `.${Ot.join(",.")}`);
   return s ? P(`.${Ot[0]}-toggle`, s) : null;
 }, Lc = (t) => {

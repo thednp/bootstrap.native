@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "5.0.13",
+  "version": "5.0.14",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
@@ -82,9 +82,9 @@
     "test": "pnpm pre-test && cypress run",
     "dev": "vite --open ./docs/index-dev.html --port 8577",
     "cypress": "npx cypress open",
+    "badges": "npx -p dependency-version-badge update-badge typescript eslint cypress vite prettier",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
-    "build-tsup": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm dts",
-    "build": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm build-components && pnpm dts && pnpm copy-docs",
+    "build": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm build-components && pnpm dts && pnpm badges && pnpm copy-docs",
     "build-vite-with-dts": "vite build && pnpm copy-docs",
     "build-vite": "vite build && pnpm copy-docs",
     "build-components": "vite build --config vite.config.components.ts",
@@ -112,18 +112,18 @@
     "typescript"
   ],
   "dependencies": {
-    "@thednp/event-listener": "^2.0.4",
-    "@thednp/shorty": "^2.0.0"
+    "@thednp/event-listener": "^2.0.5",
+    "@thednp/shorty": "^2.0.3"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.1",
-    "@cypress/code-coverage": "^3.12.42",
+    "@cypress/code-coverage": "^3.12.44",
     "@types/istanbul-lib-instrument": "^1.7.7",
     "@types/node": "^20.14.11",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "cypress": "^13.13.1",
-    "dts-bundle-generator": "^8.1.2",
+    "dts-bundle-generator": "^9.5.1",
     "eslint": "^8.57.0",
     "eslint-plugin-jsdoc": "^46.10.1",
     "eslint-plugin-prefer-arrow": "^1.2.3",
@@ -135,7 +135,7 @@
     "prettier": "^2.8.8",
     "rimraf": "^5.0.9",
     "typescript": "^5.5.3",
-    "vite": "^4.5.3"
+    "vite": "^5.3.4"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

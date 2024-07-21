@@ -31,7 +31,7 @@ export interface TooltipOptions extends BaseOptions {
 	btnClose: string | HTMLElement;
 }
 /** Creates a new `Tooltip` instance. */
-export default class Tooltip extends BaseComponent {
+declare class Tooltip extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Tooltip;
 	static getInstance: (element: HTMLElement) => Tooltip | null;
@@ -91,6 +91,10 @@ export default class Tooltip extends BaseComponent {
 	/** Removes the `Tooltip` from the target element. */
 	dispose(): void;
 }
+
+export {
+	Tooltip as default,
+};
 
 export as namespace Tooltip;
 

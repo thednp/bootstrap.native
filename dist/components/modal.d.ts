@@ -22,7 +22,7 @@ export interface ModalOptions extends BaseOptions {
 	keyboard: boolean;
 }
 /** Returns a new `Modal` instance. */
-export default class Modal extends BaseComponent {
+declare class Modal extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Modal;
 	static getInstance: (element: HTMLElement) => Modal | null;
@@ -67,6 +67,10 @@ export default class Modal extends BaseComponent {
 	/** Removes the `Modal` component from target element. */
 	dispose(): void;
 }
+
+export {
+	Modal as default,
+};
 
 export as namespace Modal;
 

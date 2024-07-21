@@ -18,7 +18,7 @@ declare class BaseComponent {
 	dispose(): void;
 }
 /** Creates a new `Button` instance. */
-export default class Button extends BaseComponent {
+declare class Button extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Button;
 	static getInstance: (element: HTMLElement) => Button | null;
@@ -46,6 +46,10 @@ export default class Button extends BaseComponent {
 	/** Removes the `Button` component from the target element. */
 	dispose(): void;
 }
+
+export {
+	Button as default,
+};
 
 export as namespace Button;
 

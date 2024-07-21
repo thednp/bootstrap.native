@@ -22,7 +22,7 @@ export interface ScrollSpyOptions extends BaseOptions {
 	target: HTMLElement | string | null;
 }
 /** Returns a new `ScrollSpy` instance. */
-export default class ScrollSpy extends BaseComponent {
+declare class ScrollSpy extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => ScrollSpy;
 	static getInstance: (element: HTMLElement) => ScrollSpy | null;
@@ -60,6 +60,10 @@ export default class ScrollSpy extends BaseComponent {
 	/** Removes `ScrollSpy` from the target element. */
 	dispose(): void;
 }
+
+export {
+	ScrollSpy as default,
+};
 
 export as namespace ScrollSpy;
 

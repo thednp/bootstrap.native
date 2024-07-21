@@ -1,11 +1,11 @@
 var ot = Object.defineProperty;
 var at = (s, n, t) => n in s ? ot(s, n, { enumerable: !0, configurable: !0, writable: !0, value: t }) : s[n] = t;
-var A = (s, n, t) => (at(s, typeof n != "symbol" ? n + "" : n, t), t);
+var A = (s, n, t) => at(s, typeof n != "symbol" ? n + "" : n, t);
 import { createCustomEvent as V, isRTL as L, getElementsByClassName as rt, matches as ct, getDocument as y, querySelectorAll as P, querySelector as N, addClass as g, hasClass as R, Timer as h, removeClass as E, isElementInScrollRange as W, ObjectAssign as _, dispatchEvent as B, getElementTransitionDuration as lt, reflow as dt, emulateTransitionEnd as q, mouseenterEvent as ht, mouseleaveEvent as ft, pointerdownEvent as ut, passiveHandler as X, touchstartEvent as gt, dragstartEvent as mt, mouseclickEvent as j, keydownEvent as vt, getInstance as pt, closest as Y, getAttribute as Z, pointermoveEvent as xt, pointerupEvent as $t, isHTMLElement as Et, keyArrowRight as U, keyArrowLeft as z } from "@thednp/shorty";
 import { addListener as tt, removeListener as et } from "@thednp/event-listener";
-import { a as m } from "./activeClass-b231b21b.mjs";
-import { d as F, g as st } from "./getTargetElement-17dc71b9.mjs";
-import { B as Tt } from "./base-component-a56d44ba.mjs";
+import { a as m } from "./activeClass-iqaD75Su.mjs";
+import { d as F, g as st } from "./getTargetElement-DbfK8LsG.mjs";
+import { B as Tt } from "./base-component-DvIOojVW.mjs";
 const T = "carousel", it = "Carousel", C = `[data-bs-ride="${T}"]`, d = `${T}-item`, K = "data-bs-slide-to", x = "data-bs-slide", $ = "paused", G = {
   pause: "hover",
   keyboard: !1,

@@ -1,11 +1,11 @@
 var u = Object.defineProperty;
 var d = (e, i, t) => i in e ? u(e, i, { enumerable: !0, configurable: !0, writable: !0, value: t }) : e[i] = t;
-var n = (e, i, t) => (d(e, typeof i != "symbol" ? i + "" : i, t), t);
+var n = (e, i, t) => d(e, typeof i != "symbol" ? i + "" : i, t);
 import { hasClass as a, setAttribute as l, ariaPressed as g, getAttribute as p, mouseclickEvent as v, getInstance as f, removeClass as b, addClass as h } from "@thednp/shorty";
 import { addListener as A, removeListener as C } from "@thednp/event-listener";
-import { a as r } from "./activeClass-b231b21b.mjs";
-import { d as L } from "./dataBsToggle-330f300b.mjs";
-import { B as E } from "./base-component-a56d44ba.mjs";
+import { a as r } from "./activeClass-iqaD75Su.mjs";
+import { d as L } from "./dataBsToggle-B84TS15h.mjs";
+import { B as E } from "./base-component-DvIOojVW.mjs";
 const I = "button", m = "Button", B = `[${L}="${I}"]`, S = (e) => f(e, m), _ = (e) => new o(e);
 class o extends E {
   /**

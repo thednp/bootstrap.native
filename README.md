@@ -6,7 +6,7 @@
 [![typescript version](https://img.shields.io/badge/typescript-5.5.3-brightgreen)](https://www.typescriptlang.org/)
 [![eslint version](https://img.shields.io/badge/eslint-8.57.0-brightgreen)](https://github.com/eslint)
 [![cypress version](https://img.shields.io/badge/cypress-13.13.1-brightgreen)](https://www.cypress.io/)
-[![vite version](https://img.shields.io/badge/vite-4.5.3-brightgreen)](https://vitejs.dev/)
+[![vite version](https://img.shields.io/badge/vite-5.3.4-brightgreen)](https://vitejs.dev/)
 [![prettier version](https://img.shields.io/badge/prettier-2.8.8-brightgreen)](https://prettier.io/)
 
 

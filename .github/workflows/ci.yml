@@ -19,7 +19,7 @@ jobs:
       - run: pnpm build
       - run: pnpm test
 
-      - name: Upload coverage report on Node 16 to coveralls.io...
+      - name: Upload coverage report to coveralls.io...
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

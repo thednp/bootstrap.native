@@ -24,7 +24,7 @@ export interface CarouselOptions extends BaseOptions {
 	interval: number | boolean;
 }
 /** Creates a new `Carousel` instance. */
-export default class Carousel extends BaseComponent {
+declare class Carousel extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Carousel;
 	static getInstance: (element: HTMLElement) => Carousel | null;
@@ -80,6 +80,10 @@ export default class Carousel extends BaseComponent {
 	/** Remove `Carousel` component from target. */
 	dispose(): void;
 }
+
+export {
+	Carousel as default,
+};
 
 export as namespace Carousel;
 

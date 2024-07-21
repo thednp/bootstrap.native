@@ -22,7 +22,7 @@ export interface OffcanvasOptions extends BaseOptions {
 	keyboard: boolean;
 }
 /** Returns a new `Offcanvas` instance. */
-export default class Offcanvas extends BaseComponent {
+declare class Offcanvas extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Offcanvas;
 	static getInstance: (element: HTMLElement) => Offcanvas | null;
@@ -62,6 +62,10 @@ export default class Offcanvas extends BaseComponent {
 	/** Removes the `Offcanvas` from the target element. */
 	dispose(): void;
 }
+
+export {
+	Offcanvas as default,
+};
 
 export as namespace Offcanvas;
 

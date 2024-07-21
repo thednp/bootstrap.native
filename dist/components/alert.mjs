@@ -1,12 +1,12 @@
 var h = Object.defineProperty;
 var u = (t, s, e) => s in t ? h(t, s, { enumerable: !0, configurable: !0, writable: !0, value: e }) : t[s] = e;
-var o = (t, s, e) => (u(t, typeof s != "symbol" ? s + "" : s, e), e);
+var o = (t, s, e) => u(t, typeof s != "symbol" ? s + "" : s, e);
 import { createCustomEvent as d, querySelector as E, hasClass as a, dispatchEvent as p, removeClass as C, emulateTransitionEnd as L, mouseclickEvent as $, getInstance as I } from "@thednp/shorty";
 import { addListener as S, removeListener as _ } from "@thednp/event-listener";
-import { f as b } from "./fadeClass-0d50d035.mjs";
-import { s as c } from "./showClass-f6a4d601.mjs";
-import { d as B } from "./dataBsDismiss-afbfbc79.mjs";
-import { B as k } from "./base-component-a56d44ba.mjs";
+import { f as b } from "./fadeClass-CLIYI_zn.mjs";
+import { s as c } from "./showClass-C8hdJfjQ.mjs";
+import { d as B } from "./dataBsDismiss-DdNPQYa-.mjs";
+import { B as k } from "./base-component-DvIOojVW.mjs";
 const i = "alert", g = "Alert", w = `.${i}`, x = `[${B}="${i}"]`, A = (t) => I(t, g), D = (t) => new n(t), l = d(`close.bs.${i}`), T = d(`closed.bs.${i}`), m = (t) => {
   const { element: s } = t;
   p(s, T), t._toggleEventListeners(), t.dispose(), s.remove();

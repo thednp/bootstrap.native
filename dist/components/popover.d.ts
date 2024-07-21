@@ -97,7 +97,7 @@ export interface PopoverOptions extends TooltipOptions {
 	dismissible: boolean;
 }
 /** Returns a new `Popover` instance. */
-export default class Popover extends Tooltip {
+declare class Popover extends Tooltip {
 	static selector: string;
 	static init: (element: HTMLElement) => Popover;
 	static getInstance: (element: HTMLElement) => Popover | null;
@@ -118,6 +118,10 @@ export default class Popover extends Tooltip {
 	get defaults(): PopoverOptions;
 	show: () => void;
 }
+
+export {
+	Popover as default,
+};
 
 export as namespace Popover;
 

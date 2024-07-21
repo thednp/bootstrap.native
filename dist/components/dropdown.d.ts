@@ -22,7 +22,7 @@ export interface DropdownOptions extends BaseOptions {
 	display: string | "dynamic" | "static";
 }
 /** Returns a new Dropdown instance. */
-export default class Dropdown extends BaseComponent {
+declare class Dropdown extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Dropdown;
 	static getInstance: (element: HTMLElement) => Dropdown | null;
@@ -61,6 +61,10 @@ export default class Dropdown extends BaseComponent {
 	/** Removes the `Dropdown` component from the target element. */
 	dispose(): void;
 }
+
+export {
+	Dropdown as default,
+};
 
 export as namespace Dropdown;
 

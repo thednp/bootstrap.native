@@ -1,13 +1,13 @@
 var A = Object.defineProperty;
 var B = (n, e, t) => e in n ? A(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var p = (n, e, t) => (B(n, typeof e != "symbol" ? e + "" : e, t), t);
+var p = (n, e, t) => B(n, typeof e != "symbol" ? e + "" : e, t);
 import { createCustomEvent as $, getDocument as D, querySelectorAll as x, isHTMLElement as _, isString as q, querySelector as P, Timer as i, addClass as g, removeClass as h, hasClass as M, mouseclickEvent as N, getInstance as j, dispatchEvent as u, noop as E, setElementStyle as f, emulateTransitionEnd as T, setAttribute as I, ariaExpanded as H, reflow as z, closest as F } from "@thednp/shorty";
 import { addListener as G, removeListener as J } from "@thednp/event-listener";
-import { d as K } from "./dataBsToggle-330f300b.mjs";
-import { c as C } from "./collapsingClass-dc1ed922.mjs";
-import { s as v } from "./showClass-f6a4d601.mjs";
-import { g as w } from "./getTargetElement-17dc71b9.mjs";
-import { B as O } from "./base-component-a56d44ba.mjs";
+import { d as K } from "./dataBsToggle-B84TS15h.mjs";
+import { c as C } from "./collapsingClass-BxKtDBMH.mjs";
+import { s as v } from "./showClass-C8hdJfjQ.mjs";
+import { g as w } from "./getTargetElement-DbfK8LsG.mjs";
+import { B as O } from "./base-component-DvIOojVW.mjs";
 const l = "collapse", k = "Collapse", Q = `.${l}`, y = `[${K}="${l}"]`, R = { parent: null }, m = (n) => j(n, k), U = (n) => new d(n), S = $(`show.bs.${l}`), V = $(`shown.bs.${l}`), b = $(`hide.bs.${l}`), W = $(`hidden.bs.${l}`), X = (n) => {
   const { element: e, parent: t, triggers: o } = n;
   u(e, S), S.defaultPrevented || (i.set(e, E, 17), t && i.set(t, E, 17), g(e, C), h(e, l), f(e, { height: `${e.scrollHeight}px` }), T(e, () => {

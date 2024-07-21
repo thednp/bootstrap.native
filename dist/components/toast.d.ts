@@ -23,7 +23,7 @@ export interface ToastOptions extends BaseOptions {
 	delay: number;
 }
 /** Creates a new `Toast` instance. */
-export default class Toast extends BaseComponent {
+declare class Toast extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Toast;
 	static getInstance: (element: HTMLElement) => Toast | null;
@@ -65,6 +65,10 @@ export default class Toast extends BaseComponent {
 	/** Removes the `Toast` component from the target element. */
 	dispose(): void;
 }
+
+export {
+	Toast as default,
+};
 
 export as namespace Toast;
 

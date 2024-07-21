@@ -21,7 +21,7 @@ export interface CollapseOptions extends BaseOptions {
 	parent: HTMLElement | null;
 }
 /** Returns a new `Colapse` instance. */
-export default class Collapse extends BaseComponent {
+declare class Collapse extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Collapse;
 	static getInstance: (element: HTMLElement) => Collapse | null;
@@ -58,6 +58,10 @@ export default class Collapse extends BaseComponent {
 	/** Remove the `Collapse` component from the target `Element`. */
 	dispose(): void;
 }
+
+export {
+	Collapse as default,
+};
 
 export as namespace Collapse;
 

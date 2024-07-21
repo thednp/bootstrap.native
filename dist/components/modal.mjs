@@ -1,16 +1,16 @@
 var se = Object.defineProperty;
 var oe = (s, t, e) => t in s ? se(s, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[t] = e;
-var h = (s, t, e) => (oe(s, typeof t != "symbol" ? t + "" : t, e), e);
+var h = (s, t, e) => oe(s, typeof t != "symbol" ? t + "" : t, e);
 import { createCustomEvent as S, querySelector as F, querySelectorAll as ae, getDocument as D, hasClass as r, dispatchEvent as b, getInstance as I, getElementTransitionDuration as x, removeClass as P, setAttribute as R, ariaHidden as _, removeAttribute as q, ariaModal as W, emulateTransitionEnd as p, mouseclickEvent as z, getDocumentElement as ne, isRTL as ie, setElementStyle as y, getDocumentBody as le, addClass as K, closest as N, focus as V, getWindow as re, resizeEvent as ce, passiveHandler as de, keydownEvent as me, keyEscape as ge, Timer as E } from "@thednp/shorty";
 import { addListener as j, removeListener as G } from "@thednp/event-listener";
-import { d as he } from "./dataBsToggle-330f300b.mjs";
-import { d as fe } from "./dataBsDismiss-afbfbc79.mjs";
-import { f as pe } from "./fadeClass-0d50d035.mjs";
-import { s as c } from "./showClass-f6a4d601.mjs";
-import { m as d, h as ue } from "./popupContainer-82392867.mjs";
-import { m as J, g as k, o as ve, a as Te, t as be, b as f, s as ye, h as Q, c as Ee, d as Se, r as De, i as we, e as ke } from "./isVisible-19f1341e.mjs";
-import { g as U } from "./getTargetElement-17dc71b9.mjs";
-import { B as Ce } from "./base-component-a56d44ba.mjs";
+import { d as he } from "./dataBsToggle-B84TS15h.mjs";
+import { d as fe } from "./dataBsDismiss-DdNPQYa-.mjs";
+import { f as pe } from "./fadeClass-CLIYI_zn.mjs";
+import { s as c } from "./showClass-C8hdJfjQ.mjs";
+import { m as d, h as ue } from "./popupContainer-C6AuDE5e.mjs";
+import { m as J, g as k, o as ve, a as Te, t as be, b as f, s as ye, h as Q, c as Ee, d as Se, r as De, i as we, e as ke } from "./isVisible-qbw-ByKP.mjs";
+import { g as U } from "./getTargetElement-DbfK8LsG.mjs";
+import { B as Ce } from "./base-component-DvIOojVW.mjs";
 const He = `.${d}`, X = `[${he}="${d}"]`, $e = `[${fe}="${d}"]`, Y = `${d}-static`, Me = {
   backdrop: !0,
   keyboard: !0

@@ -18,7 +18,7 @@ declare class BaseComponent {
 	dispose(): void;
 }
 /** Creates a new Alert instance. */
-export default class Alert extends BaseComponent {
+declare class Alert extends BaseComponent {
 	static selector: string;
 	static init: <T>(element: HTMLElement) => T;
 	static getInstance: (element: HTMLElement) => Alert | null;
@@ -41,6 +41,10 @@ export default class Alert extends BaseComponent {
 	/** Remove the component from target element. */
 	dispose(): void;
 }
+
+export {
+	Alert as default,
+};
 
 export as namespace Alert;
 

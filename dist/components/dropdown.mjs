@@ -1,12 +1,12 @@
 var bt = Object.defineProperty;
 var At = (n, t, e) => t in n ? bt(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
-var u = (n, t, e) => (At(n, typeof t != "symbol" ? t + "" : t, e), e);
+var u = (n, t, e) => At(n, typeof t != "symbol" ? t + "" : t, e);
 import { closest as W, hasAttribute as J, getAttribute as P, createCustomEvent as g, getElementsByClassName as ct, dispatchEvent as m, addClass as Q, setAttribute as V, ariaExpanded as X, focus as I, removeClass as Y, mouseclickEvent as O, getInstance as $t, getElementStyle as xt, isRTL as Ht, hasClass as Z, setElementStyle as S, getDocumentElement as Lt, getBoundingClientRect as St, ObjectAssign as tt, getDocument as R, focusEvent as lt, keydownEvent as Tt, keyupEvent as kt, scrollEvent as Pt, resizeEvent as It, getWindow as Bt, passiveHandler as Mt, isHTMLElement as Nt, mousedownEvent as jt, keyArrowDown as B, keyArrowUp as M, keyEscape as Ft } from "@thednp/shorty";
 import { addListener as at, removeListener as pt } from "@thednp/event-listener";
-import { s as h } from "./showClass-f6a4d601.mjs";
-import { d as ft } from "./dataBsToggle-330f300b.mjs";
-import { d as b } from "./dropdownClasses-66be00d3.mjs";
-import { B as Wt } from "./base-component-a56d44ba.mjs";
+import { s as h } from "./showClass-C8hdJfjQ.mjs";
+import { d as ft } from "./dataBsToggle-B84TS15h.mjs";
+import { d as b } from "./dropdownClasses-CdCdZ-PX.mjs";
+import { B as Wt } from "./base-component-DvIOojVW.mjs";
 const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
   const t = W(n, "A");
   return n.tagName === "A" && // anchor href starts with #
@@ -62,8 +62,7 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
     )]), m(o, Et);
   }
 }, zt = (n) => [...n.children].map((t) => {
-  if (t && ot.includes(t.tagName))
-    return t;
+  if (t && ot.includes(t.tagName)) return t;
   const { firstElementChild: e } = t;
   return e && ot.includes(e.tagName) ? e : null;
 }).filter((t) => t), rt = (n) => {

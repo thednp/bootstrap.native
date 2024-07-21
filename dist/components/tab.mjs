@@ -1,16 +1,16 @@
 var O = Object.defineProperty;
 var Q = (n, e, t) => e in n ? O(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var u = (n, e, t) => (Q(n, typeof e != "symbol" ? e + "" : e, t), t);
+var u = (n, e, t) => Q(n, typeof e != "symbol" ? e + "" : e, t);
 import { createCustomEvent as H, closest as S, querySelector as F, addClass as g, setAttribute as x, ariaSelected as $, Timer as C, hasClass as f, isHTMLElement as d, dispatchEvent as w, removeClass as b, emulateTransitionEnd as k, mouseclickEvent as R, getInstance as U, reflow as G, getElementsByClassName as V } from "@thednp/shorty";
 import { addListener as W, removeListener as X } from "@thednp/event-listener";
-import { c as B } from "./collapsingClass-dc1ed922.mjs";
-import { a as l } from "./activeClass-b231b21b.mjs";
-import { f as m } from "./fadeClass-0d50d035.mjs";
-import { s as E } from "./showClass-f6a4d601.mjs";
-import { d as I } from "./dropdownClasses-66be00d3.mjs";
-import { d as Y } from "./dataBsToggle-330f300b.mjs";
-import { g as P } from "./getTargetElement-17dc71b9.mjs";
-import { B as Z } from "./base-component-a56d44ba.mjs";
+import { c as B } from "./collapsingClass-BxKtDBMH.mjs";
+import { a as l } from "./activeClass-iqaD75Su.mjs";
+import { f as m } from "./fadeClass-CLIYI_zn.mjs";
+import { s as E } from "./showClass-C8hdJfjQ.mjs";
+import { d as I } from "./dropdownClasses-CdCdZ-PX.mjs";
+import { d as Y } from "./dataBsToggle-B84TS15h.mjs";
+import { g as P } from "./getTargetElement-DbfK8LsG.mjs";
+import { B as Z } from "./base-component-DvIOojVW.mjs";
 const v = "tab", J = "Tab", D = `[${Y}="${v}"]`, K = (n) => U(n, J), tt = (n) => new T(n), L = H(`show.bs.${v}`), M = H(`shown.bs.${v}`), y = H(`hide.bs.${v}`), _ = H(`hidden.bs.${v}`), p = /* @__PURE__ */ new Map(), A = (n) => {
   const { tabContent: e, nav: t } = n;
   e && f(e, B) && (e.style.height = "", b(e, B)), t && C.clear(t);
@@ -26,8 +26,7 @@ const v = "tab", J = "Tab", D = `[${Y}="${v}"]`, K = (n) => U(n, J), tt = (n) =>
     i === a ? A(n) : setTimeout(() => {
       t.style.height = `${a}px`, G(t), k(t, () => A(n));
     }, 50);
-  } else
-    o && C.clear(o);
+  } else o && C.clear(o);
   M.relatedTarget = r, w(e, M);
 }, q = (n) => {
   const { element: e, content: t, tabContent: s, nav: o } = n, { tab: r, content: i } = o && p.get(o) || /* istanbul ignore next */
@@ -53,16 +52,14 @@ const v = "tab", J = "Tab", D = `[${Y}="${v}"]`, K = (n) => U(n, J), tt = (n) =>
   }
 }, N = (n) => {
   const { nav: e } = n;
-  if (!d(e))
-    return { tab: null, content: null };
+  if (!d(e)) return { tab: null, content: null };
   const t = V(l, e);
   let s = null;
   t.length === 1 && !I.some((r) => f(t[0].parentElement, r)) ? [s] = t : t.length > 1 && (s = t[t.length - 1]);
   const o = d(s) ? P(s) : null;
   return { tab: s, content: o };
 }, z = (n) => {
-  if (!d(n))
-    return null;
+  if (!d(n)) return null;
   const e = S(n, `.${I.join(",.")}`);
   return e ? F(`.${I[0]}-toggle`, e) : null;
 }, et = (n) => {

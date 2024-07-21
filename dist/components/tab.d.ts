@@ -18,7 +18,7 @@ declare class BaseComponent {
 	dispose(): void;
 }
 /** Creates a new `Tab` instance. */
-export default class Tab extends BaseComponent {
+declare class Tab extends BaseComponent {
 	static selector: string;
 	static init: (element: HTMLElement) => Tab;
 	static getInstance: (element: HTMLElement) => Tab | null;
@@ -44,6 +44,10 @@ export default class Tab extends BaseComponent {
 	/** Removes the `Tab` component from the target element. */
 	dispose(): void;
 }
+
+export {
+	Tab as default,
+};
 
 export as namespace Tab;
 
