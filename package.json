@@ -84,7 +84,7 @@
     "cypress": "npx cypress open",
     "badges": "npx -p dependency-version-badge update-badge typescript eslint cypress vite prettier",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
-    "build": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm build-components && pnpm dts && pnpm badges && pnpm copy-docs",
+    "build": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm build-components && pnpm dts && pnpm copy-docs",
     "build-vite-with-dts": "vite build && pnpm copy-docs",
     "build-vite": "vite build && pnpm copy-docs",
     "build-components": "vite build --config vite.config.components.ts",
@@ -92,7 +92,8 @@
     "copy-docs": "ncp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && ncp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "check:ts": "tsc --noEmit",
     "lint:ts": "eslint -c .eslintrc.cjs --ext .ts src",
-    "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix"
+    "fix:ts": "eslint -c .eslintrc.cjs --ext .ts src --fix",
+    "prepublishOnly": "pnpm up && pnpm format && pnpm build && pnpm badges"
   },
   "bugs": {
     "url": "https://github.com/thednp/bootstrap.native/issues"
