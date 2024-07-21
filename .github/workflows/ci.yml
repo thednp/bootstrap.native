@@ -15,9 +15,17 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - run: pnpm install --no-frozen-lockfile
-      - run: pnpm build
-      - run: pnpm test
+      
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Install Cypress
+        run: npx cypress install
+
+      - name: Build
+        run: pnpm build # includes lint
+      - name: Build
+        run: pnpm test
 
       - name: Upload coverage report to coveralls.io...
         uses: coverallsapp/github-action@master
