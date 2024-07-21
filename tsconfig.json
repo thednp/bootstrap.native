@@ -8,7 +8,7 @@
    "baseUrl": "./",
    "module": "ESNext",
    "target": "ESNext",
-   "moduleResolution": "Node",
+   "moduleResolution": "Bundler",
    "allowJs": true,
    "forceConsistentCasingInFileNames": true,
    "useDefineForClassFields": true,

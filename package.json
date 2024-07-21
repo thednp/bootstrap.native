@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "5.0.12",
+  "version": "5.0.13",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
@@ -13,6 +13,66 @@
       "types": "./dist/bootstrap-native.d.ts",
       "require": "./dist/bootstrap-native.cjs",
       "import": "./dist/bootstrap-native.mjs"
+    },
+    "./alert": {
+      "types": "./dist/components/alert.d.ts",
+      "require": "./dist/components/alert.cjs",
+      "import": "./dist/components/alert.mjs"
+    },
+    "./button": {
+      "types": "./dist/components/button.d.ts",
+      "require": "./dist/components/button.cjs",
+      "import": "./dist/components/button.mjs"
+    },
+    "./carousel": {
+      "types": "./dist/components/carousel.d.ts",
+      "require": "./dist/components/carousel.cjs",
+      "import": "./dist/components/carousel.mjs"
+    },
+    "./collapse": {
+      "types": "./dist/components/collapse.d.ts",
+      "require": "./dist/components/collapse.cjs",
+      "import": "./dist/components/collapse.mjs"
+    },
+    "./dropdown": {
+      "types": "./dist/components/dropdown.d.ts",
+      "require": "./dist/components/dropdown.cjs",
+      "import": "./dist/components/dropdown.mjs"
+    },
+    "./modal": {
+      "types": "./dist/components/modal.d.ts",
+      "require": "./dist/components/modal.cjs",
+      "import": "./dist/components/modal.mjs"
+    },
+    "./offcanvas": {
+      "types": "./dist/components/offcanvas.d.ts",
+      "require": "./dist/components/offcanvas.cjs",
+      "import": "./dist/components/offcanvas.mjs"
+    },
+    "./popover": {
+      "types": "./dist/components/popover.d.ts",
+      "require": "./dist/components/popover.cjs",
+      "import": "./dist/components/popover.mjs"
+    },
+    "./scrollspy": {
+      "types": "./dist/components/scrollspy.d.ts",
+      "require": "./dist/components/scrollspy.cjs",
+      "import": "./dist/components/scrollspy.mjs"
+    },
+    "./tab": {
+      "types": "./dist/components/tab.d.ts",
+      "require": "./dist/components/tab.cjs",
+      "import": "./dist/components/tab.mjs"
+    },
+    "./toast": {
+      "types": "./dist/components/toast.d.ts",
+      "require": "./dist/components/toast.cjs",
+      "import": "./dist/components/toast.mjs"
+    },
+    "./tooltip": {
+      "types": "./dist/components/tooltip.d.ts",
+      "require": "./dist/components/tooltip.cjs",
+      "import": "./dist/components/tooltip.mjs"
     }
   },
   "scripts": {
@@ -23,9 +83,12 @@
     "dev": "vite --open ./docs/index-dev.html --port 8577",
     "cypress": "npx cypress open",
     "coverage:report": "nyc report --reporter=lcov --reporter=json --reporter=text --reporter=json-summary",
-    "build": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm dts",
+    "build-tsup": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm dts",
+    "build": "pnpm check:ts && pnpm lint:ts && pnpm build-vite && pnpm build-components && pnpm dts && pnpm copy-docs",
+    "build-vite-with-dts": "vite build && pnpm copy-docs",
     "build-vite": "vite build && pnpm copy-docs",
-    "dts": "dts-bundle-generator --config ./dts.config.ts",
+    "build-components": "vite build --config vite.config.components.ts",
+    "dts": "dts-bundle-generator --config ./dts.config.cjs --project ./tsconfig.json",
     "copy-docs": "ncp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && ncp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "check:ts": "tsc --noEmit",
     "lint:ts": "eslint -c .eslintrc.cjs --ext .ts src",
@@ -53,13 +116,13 @@
     "@thednp/shorty": "^2.0.0"
   },
   "devDependencies": {
-    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
-    "@cypress/code-coverage": "^3.12.32",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.1",
+    "@cypress/code-coverage": "^3.12.42",
     "@types/istanbul-lib-instrument": "^1.7.7",
-    "@types/node": "^20.12.2",
+    "@types/node": "^20.14.11",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "cypress": "^13.7.1",
+    "cypress": "^13.13.1",
     "dts-bundle-generator": "^8.1.2",
     "eslint": "^8.57.0",
     "eslint-plugin-jsdoc": "^46.10.1",
@@ -70,8 +133,8 @@
     "ncp": "^2.0.0",
     "nyc": "^15.1.0",
     "prettier": "^2.8.8",
-    "rimraf": "^5.0.5",
-    "typescript": "^5.4.3",
+    "rimraf": "^5.0.9",
+    "typescript": "^5.5.3",
     "vite": "^4.5.3"
   },
   "packageManager": "pnpm@8.6.12",

@@ -8,7 +8,7 @@ const getPackageName = () => {
 
 const NAME = 'BSN';
 
-const fileName = {
+const mainFile = {
   es: `${getPackageName()}.mjs`,
   cjs: `${getPackageName()}.cjs`,
   iife: `${getPackageName()}.js`,
@@ -19,11 +19,12 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     lib: {
-      // banner: 'BSN',
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: [
+        resolve(__dirname, 'src/index.ts'), // main file
+      ],
       name: NAME,
       formats: ['es', 'cjs', 'iife'],
-      fileName: (format: string) => fileName[format],
+      fileName: (format, entry) => mainFile[format]
     },
     sourcemap: true,
   },
