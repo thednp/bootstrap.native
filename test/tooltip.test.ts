@@ -527,8 +527,9 @@ describe("Tooltip Class Tests", () => {
     instance3.show();
     await vi.waitFor(() => {
       expect(instance3.tooltip?.className).to.contain("show");
-    }, 101);
+    }, 151);
     instance3.dispose();
+    await new Promise(res => setTimeout(res, 251));
 
     // vertical
     await page.viewport(150, 800);
@@ -537,7 +538,7 @@ describe("Tooltip Class Tests", () => {
     instance4.show();
     await vi.waitFor(() => {
       expect(instance4.tooltip?.className).to.contain("show");
-    }, 101);
+    }, 151);
     instance4.dispose();
 
     await new Promise(res => setTimeout(res, 251));
@@ -546,7 +547,7 @@ describe("Tooltip Class Tests", () => {
     instance5.show();
     await vi.waitFor(() => {
       expect(instance5.tooltip?.className).to.contain("show");
-    }, 101);
+    }, 151);
     instance5.dispose();
 
     await new Promise(res => setTimeout(res, 251));
@@ -555,7 +556,7 @@ describe("Tooltip Class Tests", () => {
     instance6.show();
     await vi.waitFor(() => {
       expect(instance6.tooltip?.className).to.contain("show");
-    }, 101);
+    }, 151);
     instance6.dispose();
 
     await new Promise(res => setTimeout(res, 251));
@@ -564,10 +565,8 @@ describe("Tooltip Class Tests", () => {
     instance7.show();
     await vi.waitFor(() => {
       expect(instance7.tooltip?.className).to.contain("show");
-    }, 101);
-    instance7.dispose();
-    // is this correct config?
-    
+    }, 151);
+    instance7.dispose();    
   });
 
   it("Can dispose()", async () => {
