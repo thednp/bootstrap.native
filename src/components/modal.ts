@@ -1,37 +1,38 @@
 /* Native JavaScript for Bootstrap 5 | Modal
 -------------------------------------------- */
 import {
-  keyEscape,
-  getElementTransitionDuration,
-  removeAttribute,
-  setAttribute,
-  keydownEvent,
-  mouseclickEvent,
-  resizeEvent,
-  ariaModal,
-  ariaHidden,
-  getInstance,
-  isRTL,
-  removeClass,
-  hasClass,
   addClass,
+  ariaHidden,
+  ariaModal,
   closest,
-  querySelectorAll,
-  querySelector,
-  getDocumentElement,
-  getDocumentBody,
-  getDocument,
-  getWindow,
-  CSS4Declaration,
-  setElementStyle,
   createCustomEvent,
-  emulateTransitionEnd,
-  passiveHandler,
+  CSS4Declaration,
   dispatchEvent,
+  emulateTransitionEnd,
   focus,
-  Timer,
-  MouseEvent,
+  getDocument,
+  getDocumentBody,
+  getDocumentElement,
+  getElementTransitionDuration,
+  getInstance,
+  getWindow,
+  hasClass,
+  isRTL,
   KeyboardEvent,
+  keydownEvent,
+  keyEscape,
+  mouseclickEvent,
+  MouseEvent,
+  passiveHandler,
+  querySelector,
+  querySelectorAll,
+  removeAttribute,
+  removeClass,
+  resizeEvent,
+  setAttribute,
+  setElementStyle,
+  Timer,
+  toggleFocusTrap,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -43,22 +44,21 @@ import showClass from '../strings/showClass';
 import modalString from '../strings/modalString';
 import modalComponent from '../strings/modalComponent';
 import offcanvasComponent from '../strings/offcanvasComponent';
-
 import getTargetElement from '../util/getTargetElement';
-import { setScrollbar, measureScrollbar } from '../util/scrollbar';
+import { measureScrollbar, setScrollbar } from '../util/scrollbar';
 import {
-  overlay,
-  modalActiveSelector,
-  toggleOverlayType,
   appendOverlay,
-  showOverlay,
-  hideOverlay,
   getCurrentOpen,
+  hideOverlay,
+  modalActiveSelector,
+  overlay,
   removeOverlay,
+  showOverlay,
+  toggleOverlayType,
 } from '../util/backdrop';
 import isVisible from '../util/isVisible';
 import BaseComponent from './base-component';
-import { ModalOptions, ModalEvent } from '../interface/modal';
+import { ModalEvent, ModalOptions } from '../interface/modal';
 import { hasPopup } from '../util/popupContainer';
 
 // MODAL PRIVATE GC
@@ -71,6 +71,10 @@ const modalStaticClass = `${modalString}-static`;
 const modalDefaults = {
   backdrop: true,
   keyboard: true,
+};
+
+type ModalEventProps = {
+  relatedTarget: HTMLElement | undefined;
 };
 
 /**
@@ -86,10 +90,10 @@ const modalInitCallback = (element: HTMLElement) => new Modal(element);
 
 // MODAL CUSTOM EVENTS
 // ===================
-const showModalEvent = createCustomEvent<ModalEvent>(`show.bs.${modalString}`);
-const shownModalEvent = createCustomEvent<ModalEvent>(`shown.bs.${modalString}`);
-const hideModalEvent = createCustomEvent<ModalEvent>(`hide.bs.${modalString}`);
-const hiddenModalEvent = createCustomEvent<ModalEvent>(`hidden.bs.${modalString}`);
+const showModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(`show.bs.${modalString}`);
+const shownModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(`shown.bs.${modalString}`);
+const hideModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(`hide.bs.${modalString}`);
+const hiddenModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(`hidden.bs.${modalString}`);
 
 // MODAL PRIVATE METHODS
 // =====================
@@ -106,11 +110,13 @@ const setModalScrollbar = (self: Modal) => {
   const { clientHeight: modalHeight, scrollHeight: modalScrollHeight } = element;
   const modalOverflow = modalHeight !== modalScrollHeight;
 
-  /* istanbul ignore else */
+  // istanbul ignore next @preserve: impossible to test?
   if (!modalOverflow && scrollbarWidth) {
-    const pad = !isRTL(element) ? 'paddingRight' : /* istanbul ignore next */ 'paddingLeft';
-    const padStyle = {} as Partial<CSS4Declaration>;
-    padStyle[pad] = `${scrollbarWidth}px`;
+    const pad = !isRTL(element)
+      ? 'paddingRight'
+      : // istanbul ignore next @preserve
+        'paddingLeft';
+    const padStyle = { [pad]: `${scrollbarWidth}px` } as Partial<CSS4Declaration>;
     setElementStyle(element, padStyle);
   }
   setScrollbar(element, modalOverflow || clientHeight !== scrollHeight);
@@ -142,11 +148,12 @@ const afterModalHide = (self: Modal) => {
   toggleModalDismiss(self);
 
   const focusElement = showModalEvent.relatedTarget || triggers.find(isVisible);
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (focusElement) focus(focusElement as HTMLElement);
 
   hiddenModalEvent.relatedTarget = relatedTarget as HTMLElement | undefined;
   dispatchEvent(element, hiddenModalEvent);
+  toggleFocusTrap(element);
 };
 
 /**
@@ -161,6 +168,7 @@ const afterModalShow = (self: Modal) => {
 
   shownModalEvent.relatedTarget = relatedTarget as HTMLElement | undefined;
   dispatchEvent(element, shownModalEvent);
+  toggleFocusTrap(element);
 };
 
 /**
@@ -172,7 +180,7 @@ const beforeModalShow = (self: Modal) => {
   const { element, hasFade } = self;
   setElementStyle(element, { display: 'block' });
   setModalScrollbar(self);
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (!getCurrentOpen(element)) {
     setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
   }
@@ -218,9 +226,9 @@ const modalClickHandler = (e: MouseEvent<HTMLElement>) => {
   const element = trigger && getTargetElement(trigger);
   const self = element && getModalInstance(element);
 
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (self) {
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (trigger && trigger.tagName === 'A') e.preventDefault();
     self.relatedTarget = trigger;
     self.toggle();
@@ -237,10 +245,10 @@ const modalKeyHandler = ({ code, target }: KeyboardEvent<HTMLElement>) => {
   const element = querySelector(modalActiveSelector, getDocument(target));
   const self = element && getModalInstance(element);
 
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (self) {
     const { options } = self;
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (
       options.keyboard &&
       code === keyEscape && // the keyboard option is enabled and the key is 27
@@ -260,10 +268,10 @@ const modalKeyHandler = ({ code, target }: KeyboardEvent<HTMLElement>) => {
  */
 const modalDismissHandler = (e: MouseEvent<HTMLElement>) => {
   const { currentTarget } = e;
-  const self = currentTarget ? getModalInstance(currentTarget) : null;
+  const self = currentTarget && getModalInstance(currentTarget);
 
   // this timer is needed
-  /* istanbul ignore else: must have a filter */
+  // istanbul ignore else @preserve
   if (self && currentTarget && !Timer.get(currentTarget)) {
     const { options, isStatic, modalDialog } = self;
     const { backdrop } = options;
@@ -273,7 +281,7 @@ const modalDismissHandler = (e: MouseEvent<HTMLElement>) => {
     const targetInsideDialog = modalDialog.contains(target);
     const dismiss = target && closest(target, modalDismissSelector);
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (isStatic && !targetInsideDialog) {
       Timer.set(
         currentTarget,
@@ -331,7 +339,7 @@ export default class Modal extends BaseComponent {
     // the modal-dialog
     const modalDialog = querySelector(`.${modalString}-dialog`, element);
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (modalDialog) {
       this.modalDialog = modalDialog;
       // modal can have multiple triggering elements
@@ -376,6 +384,7 @@ export default class Modal extends BaseComponent {
     const { backdrop } = options;
     let overlayDelay = 0;
 
+    // istanbul ignore else @preserve
     if (!hasClass(element, showClass)) {
       showModalEvent.relatedTarget = relatedTarget || undefined;
       dispatchEvent(element, showModalEvent);
@@ -383,11 +392,13 @@ export default class Modal extends BaseComponent {
         // we elegantly hide any opened modal/offcanvas
         const currentOpen = getCurrentOpen(element);
 
+        // istanbul ignore else @preserve
         if (currentOpen && currentOpen !== element) {
           const that =
             getModalInstance(currentOpen) ||
-            /* istanbul ignore next */
+            // istanbul ignore next @preserve
             getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, offcanvasComponent);
+          // istanbul ignore else @preserve
           if (that) that.hide();
         }
         if (backdrop) {
@@ -403,7 +414,7 @@ export default class Modal extends BaseComponent {
           setTimeout(() => beforeModalShow(this), overlayDelay);
         } else {
           beforeModalShow(this);
-          /* istanbul ignore else */
+          // istanbul ignore else @preserve
           if (currentOpen && hasClass(overlay, showClass)) {
             hideOverlay();
           }
@@ -416,16 +427,17 @@ export default class Modal extends BaseComponent {
   hide() {
     const { element, hasFade, relatedTarget } = this;
 
+    // istanbul ignore else @preserve
     if (hasClass(element, showClass)) {
       hideModalEvent.relatedTarget = relatedTarget || undefined;
       dispatchEvent(element, hideModalEvent);
 
+      // istanbul ignore else @preserve
       if (!hideModalEvent.defaultPrevented) {
         removeClass(element, showClass);
         setAttribute(element, ariaHidden, 'true');
         removeAttribute(element, ariaModal);
 
-        /* istanbul ignore else */
         if (hasFade) {
           emulateTransitionEnd(element, () => beforeModalHide(this));
         } else {
@@ -439,7 +451,7 @@ export default class Modal extends BaseComponent {
    * Updates the modal layout.
    */
   update = () => {
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (hasClass(this.element, showClass)) setModalScrollbar(this);
   };
 
@@ -452,7 +464,7 @@ export default class Modal extends BaseComponent {
     const action = add ? addListener : removeListener;
     const { triggers } = this;
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (triggers.length) {
       triggers.forEach(btn => action(btn, mouseclickEvent, modalClickHandler));
     }
@@ -461,15 +473,13 @@ export default class Modal extends BaseComponent {
   /** Removes the `Modal` component from target element. */
   dispose() {
     const clone = { ...this };
-    const { element, modalDialog } = clone;
-    // const callback = () => setTimeout(() => super.dispose(), 17);
-    const callback = () => super.dispose();
-    this._toggleEventListeners();
+    const { modalDialog, hasFade } = clone;
+    const callback = () => setTimeout(() => super.dispose(), 17);
 
     this.hide();
+    this._toggleEventListeners();
 
-    /* istanbul ignore else */
-    if (hasClass(element, 'fade')) {
+    if (hasFade) {
       // use transitionend callback
       emulateTransitionEnd(modalDialog, callback);
     } else {

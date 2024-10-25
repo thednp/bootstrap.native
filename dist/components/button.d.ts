@@ -36,7 +36,7 @@ declare class Button extends BaseComponent {
 	 *
 	 * @param e usually `click` Event object
 	 */
-	toggle: (e: Event) => void;
+	toggle: (e?: Event) => void;
 	/**
 	 * Toggles on/off the `click` event listener.
 	 *

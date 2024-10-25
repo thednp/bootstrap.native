@@ -1,40 +1,40 @@
 /* Native JavaScript for Bootstrap 5 | Tooltip
 ---------------------------------------------- */
 import {
+  addClass,
   ariaDescribedBy,
-  focusoutEvent,
-  focusinEvent,
-  focusEvent,
-  mouseleaveEvent,
-  mouseenterEvent,
-  mousedownEvent,
-  mouseclickEvent,
   closest,
-  getUID,
-  getDocument,
-  getWindow,
-  removeAttribute,
+  createCustomEvent,
+  dispatchEvent,
+  emulateTransitionEnd,
+  focus,
+  focusEvent,
+  focusinEvent,
+  focusoutEvent,
   getAttribute,
-  setAttribute,
+  getDocument,
+  getElementStyle,
+  getInstance,
+  getUID,
+  getWindow,
   hasAttribute,
-  touchstartEvent,
+  hasClass,
+  isApple,
+  mouseclickEvent,
+  mousedownEvent,
+  mouseenterEvent,
+  mousehoverEvent,
+  mouseleaveEvent,
+  ObjectAssign,
+  passiveHandler,
+  removeAttribute,
+  removeClass,
   resizeEvent,
   scrollEvent,
-  mousehoverEvent,
-  toLowerCase,
-  focus,
+  setAttribute,
   Timer,
-  emulateTransitionEnd,
-  passiveHandler,
-  dispatchEvent,
-  isApple,
-  getInstance,
-  ObjectAssign,
-  createCustomEvent,
-  removeClass,
-  hasClass,
-  addClass,
-  getElementStyle,
+  toLowerCase,
+  touchstartEvent,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -51,12 +51,12 @@ import offcanvasString from '../strings/offcanvasString';
 
 import styleTip from '../util/styleTip';
 import createTip from '../util/createTip';
-import { appendPopup, removePopup, hasPopup } from '../util/popupContainer';
+import { appendPopup, hasPopup, removePopup } from '../util/popupContainer';
 import getElementContainer from '../util/getElementContainer';
 import tooltipDefaults from '../util/tooltipDefaults';
 import BaseComponent from './base-component';
-import { TooltipOptions, TooltipEvent } from '../interface/tooltip';
-import { PopoverOptions, PopoverEvent } from '../interface/popover';
+import type { TooltipEvent, TooltipOptions } from '../interface/tooltip';
+import type { PopoverEvent, PopoverOptions } from '../interface/popover';
 
 // TOOLTIP PRIVATE GC
 // ==================
@@ -66,7 +66,6 @@ const titleAttr = 'title';
 /**
  * Static method which returns an existing `Tooltip` instance associated
  * to a target `Element`.
- *
  */
 let getTooltipInstance = (element: HTMLElement) => getInstance<Tooltip>(element, tooltipComponent);
 
@@ -109,11 +108,11 @@ const disposeTooltipComplete = (self: Tooltip, callback?: () => void) => {
   const { element } = self;
   self._toggleEventListeners();
 
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (hasAttribute(element, dataOriginalTitle) && self.name === tooltipComponent) {
     toggleTooltipTitle(self);
   }
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (callback) callback();
 };
 
@@ -141,7 +140,9 @@ const toggleTooltipAction = (self: Tooltip, add?: boolean) => {
  */
 const tooltipShownAction = (self: Tooltip) => {
   const { element } = self;
-  const shownTooltipEvent = createCustomEvent<TooltipEvent | PopoverEvent>(`shown.bs.${toLowerCase(self.name)}`);
+  const shownTooltipEvent = createCustomEvent<Record<string, never>, TooltipEvent | PopoverEvent>(
+    `shown.bs.${toLowerCase(self.name)}`,
+  );
 
   toggleTooltipAction(self, true);
   dispatchEvent(element, shownTooltipEvent);
@@ -155,7 +156,9 @@ const tooltipShownAction = (self: Tooltip) => {
  */
 const tooltipHiddenAction = (self: Tooltip) => {
   const { element } = self;
-  const hiddenTooltipEvent = createCustomEvent<TooltipEvent | PopoverEvent>(`hidden.bs.${toLowerCase(self.name)}`);
+  const hiddenTooltipEvent = createCustomEvent<Record<string, never>, TooltipEvent | PopoverEvent>(
+    `hidden.bs.${toLowerCase(self.name)}`,
+  );
 
   toggleTooltipAction(self);
   removeTooltip(self);
@@ -177,7 +180,7 @@ const toggleTooltipOpenHandlers = (self: Tooltip, add?: boolean) => {
   const parentModal = closest(element, `.${modalString}`);
   const parentOffcanvas = closest(element, `.${offcanvasString}`);
 
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   const win = getWindow(element);
   const overflow = offsetHeight !== scrollHeight;
   const scrollTarget = container === offsetParent && overflow ? container : win;
@@ -185,8 +188,12 @@ const toggleTooltipOpenHandlers = (self: Tooltip, add?: boolean) => {
   action(scrollTarget, scrollEvent, self.update, passiveHandler);
 
   // dismiss tooltips inside modal / offcanvas
-  if (parentModal) action(parentModal, `hide.bs.${modalString}`, self.handleHide);
-  if (parentOffcanvas) action(parentOffcanvas, `hide.bs.${offcanvasString}`, self.handleHide);
+  if (parentModal) {
+    action(parentModal, `hide.bs.${modalString}`, self.handleHide);
+  }
+  if (parentOffcanvas) {
+    action(parentOffcanvas, `hide.bs.${offcanvasString}`, self.handleHide);
+  }
 };
 
 /**
@@ -203,7 +210,10 @@ const toggleTooltipTitle = (self: Tooltip, content?: string) => {
   setAttribute(
     element,
     titleAtt[content ? 0 : 1],
-    content || getAttribute(element, titleAtt[0]) || /* istanbul ignore next */ '',
+    content ||
+      getAttribute(element, titleAtt[0]) ||
+      // istanbul ignore next @preserve
+      '',
   );
   removeAttribute(element, titleAtt[content ? 1 : 0]);
 };
@@ -237,7 +247,7 @@ export default class Tooltip extends BaseComponent {
     const tipString = isTooltip ? tooltipString : popoverString;
     const tipComponent = isTooltip ? tooltipComponent : popoverComponent;
 
-    /* istanbul ignore next: this is to set Popover too */
+    // istanbul ignore next @preserve: this is to set Popover too
     getTooltipInstance = <T extends Tooltip>(elem: HTMLElement) => getInstance<T>(elem, tipComponent);
 
     // additional properties
@@ -254,7 +264,7 @@ export default class Tooltip extends BaseComponent {
       ObjectAssign(tooltipDefaults, { titleAttr: '' });
 
       // set title attributes and add event listeners
-      /* istanbul ignore else */
+      // istanbul ignore else @preserve
       if (hasAttribute(element, titleAttr) && isTooltip && typeof options.title === 'string') {
         toggleTooltipTitle(this, options.title);
       }
@@ -291,6 +301,7 @@ export default class Tooltip extends BaseComponent {
   // TOOLTIP PUBLIC METHODS
   // ======================
   /** Handles the focus event on iOS. */
+  // istanbul ignore next @preserve - impossible to test without Apple device
   handleFocus = () => focus(this.element);
   /** Shows the tooltip. */
   handleShow = () => this.show();
@@ -306,8 +317,12 @@ export default class Tooltip extends BaseComponent {
       Timer.set(
         element,
         () => {
-          const showTooltipEvent = createCustomEvent<TooltipEvent | PopoverEvent>(`show.bs.${toLowerCase(this.name)}`);
+          const showTooltipEvent = createCustomEvent<Record<string, never>, TooltipEvent | PopoverEvent>(
+            `show.bs.${toLowerCase(this.name)}`,
+          );
           dispatchEvent(element, showTooltipEvent);
+
+          // istanbul ignore else @preserve
           if (!showTooltipEvent.defaultPrevented) {
             // append to container
             appendPopup(tooltip, tipContainer);
@@ -317,11 +332,12 @@ export default class Tooltip extends BaseComponent {
             this.update();
             toggleTooltipOpenHandlers(this, true);
 
-            /* istanbul ignore else */
+            // istanbul ignore else @preserve
             if (!hasClass(tooltip, showClass)) addClass(tooltip, showClass);
-            /* istanbul ignore else */
-            if (animation) emulateTransitionEnd(tooltip, () => tooltipShownAction(this));
-            else tooltipShownAction(this);
+            // istanbul ignore else @preserve
+            if (animation) {
+              emulateTransitionEnd(tooltip, () => tooltipShownAction(this));
+            } else tooltipShownAction(this);
           }
         },
         17,
@@ -338,22 +354,26 @@ export default class Tooltip extends BaseComponent {
 
     Timer.clear(element, 'in');
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (tooltip && hasTip(this)) {
       Timer.set(
         element,
         () => {
-          const hideTooltipEvent = createCustomEvent<TooltipEvent | PopoverEvent>(`hide.bs.${toLowerCase(this.name)}`);
+          const hideTooltipEvent = createCustomEvent<Record<string, never>, TooltipEvent | PopoverEvent>(
+            `hide.bs.${toLowerCase(this.name)}`,
+          );
           dispatchEvent(element, hideTooltipEvent);
 
+          // istanbul ignore else @preserve
           if (!hideTooltipEvent.defaultPrevented) {
             this.update();
             removeClass(tooltip, showClass);
             toggleTooltipOpenHandlers(this);
 
-            /* istanbul ignore else */
-            if (animation) emulateTransitionEnd(tooltip, () => tooltipHiddenAction(this));
-            else tooltipHiddenAction(this);
+            // istanbul ignore else @preserve
+            if (animation) {
+              emulateTransitionEnd(tooltip, () => tooltipHiddenAction(this));
+            } else tooltipHiddenAction(this);
           }
         },
         delay + 17,
@@ -378,7 +398,7 @@ export default class Tooltip extends BaseComponent {
   /** Enables the tooltip. */
   enable() {
     const { enabled } = this;
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!enabled) {
       this._toggleEventListeners(true);
       this.enabled = !enabled;
@@ -387,16 +407,11 @@ export default class Tooltip extends BaseComponent {
 
   /** Disables the tooltip. */
   disable() {
-    const { tooltip, options, enabled } = this;
-    const { animation } = options;
-    /* istanbul ignore else */
+    const { tooltip, enabled } = this;
+    // istanbul ignore else @preserve
     if (enabled) {
-      if (tooltip && hasTip(this) && animation) {
-        this.hide();
-        emulateTransitionEnd(tooltip, () => this._toggleEventListeners());
-      } else {
-        this._toggleEventListeners();
-      }
+      if (tooltip && hasTip(this)) this.hide();
+      this._toggleEventListeners();
       this.enabled = !enabled;
     }
   }
@@ -416,7 +431,7 @@ export default class Tooltip extends BaseComponent {
   handleTouch = ({ target }: TouchEvent) => {
     const { tooltip, element } = this;
 
-    /* istanbul ignore else */
+    // istanbul ignore if @preserve
     if (
       (tooltip && tooltip.contains(target as HTMLElement)) ||
       target === element ||
@@ -441,19 +456,19 @@ export default class Tooltip extends BaseComponent {
     const isPopover = this.name !== tooltipComponent;
     const dismissible = isPopover && (options as PopoverOptions).dismissible ? true : false;
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!trigger.includes('manual')) {
       this.enabled = !!add;
 
       const triggerOptions = trigger.split(' ');
 
       triggerOptions.forEach(tr => {
-        /* istanbul ignore else */
+        // istanbul ignore else @preserve
         if (tr === mousehoverEvent) {
           action(element, mousedownEvent, this.handleShow);
           action(element, mouseenterEvent, this.handleShow);
 
-          /* istanbul ignore else */
+          // istanbul ignore else @preserve
           if (!dismissible) {
             action(element, mouseleaveEvent, this.handleHide);
             action(getDocument(element), touchstartEvent, this.handleTouch, passiveHandler);
@@ -462,14 +477,14 @@ export default class Tooltip extends BaseComponent {
           action(element, tr, !dismissible ? this.toggle : this.handleShow);
         } else if (tr === focusEvent) {
           action(element, focusinEvent, this.handleShow);
-          /* istanbul ignore else */
+          // istanbul ignore else @preserve
           if (!dismissible) action(element, focusoutEvent, this.handleHide);
-          /* istanbul ignore else */
+          // istanbul ignore else @preserve
           if (isApple) {
             action(element, mouseclickEvent, this.handleFocus);
           }
         }
-        /* istanbul ignore else */
+        // istanbul ignore else @preserve
         if (dismissible && btn) {
           action(btn, mouseclickEvent, this.handleHide);
         }

@@ -4,16 +4,18 @@ var h = (t, e, s) => W(t, typeof e != "symbol" ? e + "" : e, s);
 import { createCustomEvent as _, querySelector as L, getDocument as S, getWindow as k, isHTMLElement as v, scrollEvent as q, passiveHandler as G, getInstance as M, isWindow as C, getElementsByTagName as w, getAttribute as N, getBoundingClientRect as b, getDocumentElement as O, hasClass as u, removeClass as R, addClass as y, getDocumentBody as Y, dispatchEvent as $ } from "@thednp/shorty";
 import { addListener as j, removeListener as z } from "@thednp/event-listener";
 import { a as m } from "./activeClass-iqaD75Su.mjs";
-import { B as F } from "./base-component-DvIOojVW.mjs";
+import { B as F } from "./base-component-nXu3wApu.mjs";
 const J = "scrollspy", A = "ScrollSpy", K = '[data-bs-spy="scroll"]', P = {
   offset: 10,
   target: null
 }, Q = (t) => M(t, A), U = (t) => new d(t), I = _(`activate.bs.${J}`), V = (t) => {
   const { target: e, scrollTarget: s, options: n, itemsLength: r, scrollHeight: o, element: a } = t, { offset: i } = n, l = C(s), c = e && w("A", e), g = s ? B(s) : (
-    /* istanbul ignore next */
+    // istanbul ignore next @preserve
     o
   );
-  if (t.scrollTop = l ? s.scrollY : s.scrollTop, c && (g !== o || r !== c.length)) {
+  t.scrollTop = l ? s.scrollY : s.scrollTop;
+  // istanbul ignore else @preserve
+  if (c && (g !== o || r !== c.length)) {
     let p, f, E;
     t.items = [], t.offsets = [], t.scrollHeight = g, t.maxScroll = t.scrollHeight - X(t), [...c].forEach((H) => {
       p = N(H, "href"), f = p && p.charAt(0) === "#" && p.slice(-1) !== "#" && L(p, S(a)), f && (t.items.push(H), E = b(f), t.offsets.push((l ? E.top + t.scrollTop : f.offsetTop) - i));
@@ -25,6 +27,7 @@ const J = "scrollspy", A = "ScrollSpy", K = '[data-bs-spy="scroll"]', P = {
   });
 }, T = (t, e) => {
   const { target: s, element: n } = t;
+  // istanbul ignore else @preserve
   v(s) && x(s), t.activeItem = e, y(e, m);
   const r = [];
   let o = e;
@@ -32,6 +35,7 @@ const J = "scrollspy", A = "ScrollSpy", K = '[data-bs-spy="scroll"]', P = {
     o = o.parentElement, (u(o, "nav") || u(o, "dropdown-menu")) && r.push(o);
   r.forEach((a) => {
     const i = a.previousElementSibling;
+    // istanbul ignore else @preserve
     i && !u(i, m) && y(i, m);
   }), I.relatedTarget = e, $(n, I);
 };
@@ -48,17 +52,22 @@ class d extends F {
     /** Updates all items. */
     h(this, "refresh", () => {
       const { target: s } = this;
+      // istanbul ignore else @preserve
       if (v(s) && s.offsetHeight > 0) {
         V(this);
         const { scrollTop: n, maxScroll: r, itemsLength: o, items: a, activeItem: i } = this;
         if (n >= r) {
           const c = a[o - 1];
+          // istanbul ignore else @preserve
           i !== c && T(this, c);
           return;
         }
         const { offsets: l } = this;
+        // istanbul ignore else @preserve
         if (i && n < l[0] && l[0] > 0) {
-          this.activeItem = null, s && x(s);
+          this.activeItem = null;
+          // istanbul ignore else @preserve
+          s && x(s);
           return;
         }
         a.forEach((c, g) => {

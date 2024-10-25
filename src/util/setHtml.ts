@@ -1,4 +1,4 @@
-import { isNode, isArray, isFunction, isString, isNodeList, isHTMLElement } from '@thednp/shorty';
+import { isArray, isFunction, isHTMLElement, isNode, isNodeList, isString } from '@thednp/shorty';
 
 /**
  * Append an existing `Element` to Popover / Tooltip component or HTML
@@ -9,7 +9,7 @@ import { isNode, isArray, isFunction, isString, isNodeList, isHTMLElement } from
  * @param sanitizeFn a function to sanitize string content
  */
 const setHtml = (element: HTMLElement, content: Node[] | Node | string, sanitizeFn?: (s: string) => string) => {
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (isString(content) && content.length) {
     let dirty = content.trim(); // fixing #233
     if (isFunction(sanitizeFn)) dirty = sanitizeFn(dirty);

@@ -1,39 +1,39 @@
 /* Native JavaScript for Bootstrap 5 | Carousel
 ----------------------------------------------- */
 import {
-  createCustomEvent,
-  getInstance,
-  dispatchEvent,
-  ObjectAssign,
-  emulateTransitionEnd,
-  passiveHandler,
-  reflow,
-  Timer,
-  getAttribute,
-  getElementsByClassName,
-  querySelectorAll,
-  querySelector,
+  addClass,
   closest,
+  createCustomEvent,
+  dispatchEvent,
+  dragstartEvent,
+  emulateTransitionEnd,
+  getAttribute,
+  getDocument,
+  getElementsByClassName,
+  getElementTransitionDuration,
+  getInstance,
+  hasClass,
+  isElementInScrollRange,
   isHTMLElement,
   isRTL,
-  isElementInScrollRange,
-  getElementTransitionDuration,
-  getDocument,
-  pointerupEvent,
-  pointermoveEvent,
-  pointerdownEvent,
-  keyArrowRight,
   keyArrowLeft,
+  keyArrowRight,
   keydownEvent,
-  mouseclickEvent,
-  mouseleaveEvent,
-  mouseenterEvent,
-  touchstartEvent,
-  dragstartEvent,
-  addClass,
-  hasClass,
-  removeClass,
   matches,
+  mouseclickEvent,
+  mouseenterEvent,
+  mouseleaveEvent,
+  ObjectAssign,
+  passiveHandler,
+  pointerdownEvent,
+  pointermoveEvent,
+  pointerupEvent,
+  querySelector,
+  querySelectorAll,
+  reflow,
+  removeClass,
+  Timer,
+  touchstartEvent,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -45,6 +45,13 @@ import carouselComponent from '../strings/carouselComponent';
 import getTargetElement from '../util/getTargetElement';
 import BaseComponent from './base-component';
 import type { CarouselEvent, CarouselOptions } from '../interface/carousel';
+
+type CarouselEventProperties = {
+  relatedTarget: HTMLElement;
+  from: number;
+  to: number;
+  direction: 'left' | 'right';
+};
 
 // CAROUSEL PRIVATE GC
 // ===================
@@ -78,8 +85,8 @@ let endX = 0;
 
 // CAROUSEL CUSTOM EVENTS
 // ======================
-const carouselSlideEvent = createCustomEvent<CarouselEvent>(`slide.bs.${carouselString}`);
-const carouselSlidEvent = createCustomEvent<CarouselEvent>(`slid.bs.${carouselString}`);
+const carouselSlideEvent = createCustomEvent<CarouselEventProperties, CarouselEvent>(`slide.bs.${carouselString}`);
+const carouselSlidEvent = createCustomEvent<CarouselEventProperties, CarouselEvent>(`slid.bs.${carouselString}`);
 
 // CAROUSEL EVENT HANDLERS
 // =======================
@@ -91,7 +98,7 @@ const carouselSlidEvent = createCustomEvent<CarouselEvent>(`slid.bs.${carouselSt
 const carouselTransitionEndHandler = (self: Carousel) => {
   const { index, direction, element, slides, options } = self;
 
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (self.isAnimating) {
     const activeItem = getActiveIndex(self);
     const orientation = direction === 'left' ? 'next' : 'prev';
@@ -119,9 +126,8 @@ const carouselTransitionEndHandler = (self: Carousel) => {
  * is set to `hover`.
  */
 function carouselPauseHandler(this: HTMLElement) {
-  // const element = this;
   const self = getCarouselInstance(this);
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (self && !self.isPaused && !Timer.get(this, pausedClass)) {
     addClass(this, pausedClass);
   }
@@ -130,12 +136,10 @@ function carouselPauseHandler(this: HTMLElement) {
 /**
  * Handles the `mouseleave` events when *options.pause*
  * is set to `hover`.
- *
  */
 function carouselResumeHandler(this: HTMLElement) {
-  // const element = this;
   const self = getCarouselInstance(this);
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (self && self.isPaused && !Timer.get(this, pausedClass)) {
     self.cycle();
   }
@@ -148,13 +152,18 @@ function carouselResumeHandler(this: HTMLElement) {
  */
 function carouselIndicatorHandler(this: HTMLElement, e: MouseEvent) {
   e.preventDefault();
-  // const indicator = this;
   const element = (closest(this, carouselSelector) || getTargetElement(this)) as HTMLElement;
   const self = getCarouselInstance(element);
 
+  // istanbul ignore else @preserve
   if (self && !self.isAnimating) {
-    const newIndex = +(getAttribute(this, dataBsSlideTo) || /* istanbul ignore next */ 0);
+    const newIndex = +(
+      getAttribute(this, dataBsSlideTo) ||
+      // istanbul ignore next @preserve
+      0
+    );
 
+    // istanbul ignore else @preserve
     if (
       this &&
       !hasClass(this, activeClass) && // event target is not active
@@ -176,10 +185,11 @@ function carouselControlsHandler(this: HTMLElement, e: MouseEvent) {
   const element = closest(this, carouselSelector) || (getTargetElement(this) as HTMLElement);
   const self = getCarouselInstance(element);
 
+  // istanbul ignore else @preserve
   if (self && !self.isAnimating) {
     const orientation = getAttribute(this, dataBsSlide);
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (orientation === 'next') {
       self.next();
     } else if (orientation === 'prev') {
@@ -198,13 +208,13 @@ const carouselKeyHandler = ({ code, target }: KeyboardEvent & { target: Node }) 
   const [element] = [...querySelectorAll(carouselSelector, doc)].filter(x => isElementInScrollRange(x));
   const self = getCarouselInstance(element);
 
-  /* istanbul ignore next */
+  // istanbul ignore next @preserve
   if (self && !self.isAnimating && !/textarea|input/i.test(target.nodeName)) {
     const RTL = isRTL(element);
     const arrowKeyNext = !RTL ? keyArrowRight : keyArrowLeft;
     const arrowKeyPrev = !RTL ? keyArrowLeft : keyArrowRight;
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (code === arrowKeyPrev) self.prev();
     else if (code === arrowKeyNext) self.next();
   }
@@ -221,7 +231,7 @@ function carouselDragHandler(this: HTMLElement, e: DragEvent | TouchEvent) {
   const { target } = e;
   const self = getCarouselInstance(this);
 
-  /* istanbul ignore next */
+  // istanbul ignore next @preserve
   if (
     self &&
     self.isTouch &&
@@ -244,13 +254,15 @@ function carouselPointerDownHandler(this: HTMLElement, e: PointerEvent) {
   const { target } = e;
   const self = getCarouselInstance(this);
 
+  // istanbul ignore else @preserve
   if (self && !self.isAnimating && !self.isTouch) {
     // filter pointer event on controls & indicators
     const { controls, indicators } = self;
+    // istanbul ignore else @preserve
     if (![...controls, ...indicators].every(el => el === target || el.contains(target as Node))) {
       startX = e.pageX;
 
-      /* istanbul ignore else */
+      // istanbul ignore else @preserve
       if (this.contains(target as Node)) {
         self.isTouch = true;
         toggleCarouselTouchHandlers(self, true);
@@ -281,7 +293,7 @@ const carouselPointerUpHandler = (e: PointerEvent) => {
     .find(i => i.isTouch) as Carousel;
 
   // impossible to satisfy
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (self) {
     const { element, index } = self;
     const RTL = isRTL(element);
@@ -296,7 +308,7 @@ const carouselPointerUpHandler = (e: PointerEvent) => {
       Math.abs(startX - endX) > 120
     ) {
       // determine next index to slide to
-      /* istanbul ignore else */
+      // istanbul ignore else @preserve
       if (currentX < startX) {
         self.to(index + (RTL ? -1 : 1));
       } else if (currentX > startX) {
@@ -323,7 +335,7 @@ const activateCarouselIndicator = (self: Carousel, index: number) => {
   const { indicators } = self;
   [...indicators].forEach(x => removeClass(x, activeClass));
 
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (self.indicators[index]) addClass(indicators[index], activeClass);
 };
 
@@ -407,7 +419,10 @@ export default class Carousel extends BaseComponent {
 
       // a LIVE collection is prefferable
       this.indicators = [
-        ...(this.indicator ? querySelectorAll(`[${dataBsSlideTo}]`, this.indicator) : []),
+        ...(this.indicator
+          ? querySelectorAll(`[${dataBsSlideTo}]`, this.indicator)
+          : // istanbul ignore next @preserve
+            []),
         ...querySelectorAll(`[${dataBsSlideTo}][${dataBsTarget}="#${element.id}"]`, doc),
       ].filter((c, i, ar) => i === ar.indexOf(c));
 
@@ -418,7 +433,7 @@ export default class Carousel extends BaseComponent {
       this.options.interval = options.interval === true ? carouselDefaults.interval : options.interval;
 
       // set first slide active if none
-      /* istanbul ignore next - impossible to test with cypress */
+      // istanbul ignore next @preserve - impossible to test
       if (transitionItem) {
         this.index = [...slides].indexOf(transitionItem);
       } else if (activeIndex < 0) {
@@ -427,7 +442,7 @@ export default class Carousel extends BaseComponent {
         if (this.indicators.length) activateCarouselIndicator(this, 0);
       }
 
-      /* istanbul ignore else */
+      // istanbul ignore else @preserve
       if (this.indicators.length) activateCarouselIndicator(this, this.index);
 
       // attach event handlers
@@ -482,7 +497,7 @@ export default class Carousel extends BaseComponent {
       () => {
         // it's very important to check self.element
         // where instance might have been disposed
-        /* istanbul ignore else */
+        // istanbul ignore else @preserve
         if (this.element && !this.isPaused && !this.isTouch && isElementInScrollRange(element)) {
           this.to(index + 1);
         }
@@ -495,7 +510,7 @@ export default class Carousel extends BaseComponent {
   /** Pause the automatic cycle. */
   pause() {
     const { element, options } = this;
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!this.isPaused && options.interval) {
       addClass(element, pausedClass);
       Timer.set(
@@ -511,7 +526,7 @@ export default class Carousel extends BaseComponent {
 
   /** Slide to the next item. */
   next() {
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!this.isAnimating) {
       this.to(this.index + 1);
     }
@@ -519,7 +534,7 @@ export default class Carousel extends BaseComponent {
 
   /** Slide to the previous item. */
   prev() {
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!this.isAnimating) {
       this.to(this.index - 1);
     }
@@ -541,7 +556,7 @@ export default class Carousel extends BaseComponent {
     // `to()` must be SPAM protected by Timer
     if (!this.isAnimating && activeItem !== next && !Timer.get(element, dataBsSlide)) {
       // determine transition direction
-      /* istanbul ignore else */
+      // istanbul ignore else @preserve
       if (activeItem < next || (activeItem === 0 && next === slides.length - 1)) {
         this.direction = RTL ? 'right' : 'left'; // next
       } else if (activeItem > next || (activeItem === slides.length - 1 && next === 0)) {
@@ -605,7 +620,7 @@ export default class Carousel extends BaseComponent {
             () => {
               Timer.clear(element, dataBsSlide);
               // check for element, might have been disposed
-              /* istanbul ignore else */
+              // istanbul ignore else @preserve
               if (element && options.interval && !this.isPaused) {
                 this.cycle();
               }
@@ -641,22 +656,24 @@ export default class Carousel extends BaseComponent {
       action(element, dragstartEvent, carouselDragHandler, { passive: false });
     }
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (controls.length) {
       controls.forEach(arrow => {
-        /* istanbul ignore else */
+        // istanbul ignore else @preserve
         if (arrow) action(arrow, mouseclickEvent, carouselControlsHandler);
       });
     }
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (indicators.length) {
       indicators.forEach(indicator => {
         action(indicator, mouseclickEvent, carouselIndicatorHandler);
       });
     }
 
-    if (keyboard) action(getDocument(element), keydownEvent, carouselKeyHandler);
+    if (keyboard) {
+      action(getDocument(element), keydownEvent, carouselKeyHandler);
+    }
   };
 
   /** Remove `Carousel` component from target. */
@@ -670,7 +687,7 @@ export default class Carousel extends BaseComponent {
     this._toggleEventListeners();
     super.dispose();
 
-    // istanbul ignore next - impossible to test with cypress
+    // istanbul ignore next @preserve - impossible to test
     if (clone.isAnimating) {
       emulateTransitionEnd(clone.slides[clone.index], () => {
         carouselTransitionEndHandler(clone);

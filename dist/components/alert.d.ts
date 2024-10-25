@@ -20,7 +20,7 @@ declare class BaseComponent {
 /** Creates a new Alert instance. */
 declare class Alert extends BaseComponent {
 	static selector: string;
-	static init: <T>(element: HTMLElement) => T;
+	static init: (element: HTMLElement) => Alert;
 	static getInstance: (element: HTMLElement) => Alert | null;
 	dismiss: HTMLElement | null;
 	constructor(target: HTMLElement | string);

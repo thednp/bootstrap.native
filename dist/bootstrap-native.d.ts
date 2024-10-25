@@ -20,7 +20,7 @@ declare class BaseComponent {
 /** Creates a new Alert instance. */
 export declare class Alert extends BaseComponent {
 	static selector: string;
-	static init: <T>(element: HTMLElement) => T;
+	static init: (element: HTMLElement) => Alert;
 	static getInstance: (element: HTMLElement) => Alert | null;
 	dismiss: HTMLElement | null;
 	constructor(target: HTMLElement | string);
@@ -60,7 +60,7 @@ export declare class Button extends BaseComponent {
 	 *
 	 * @param e usually `click` Event object
 	 */
-	toggle: (e: Event) => void;
+	toggle: (e?: Event) => void;
 	/**
 	 * Toggles on/off the `click` event listener.
 	 *
@@ -134,7 +134,7 @@ export declare class Carousel extends BaseComponent {
 	dispose(): void;
 }
 export interface CollapseOptions extends BaseOptions {
-	parent: HTMLElement | null;
+	parent: string | HTMLElement | null;
 }
 /** Returns a new `Colapse` instance. */
 export declare class Collapse extends BaseComponent {

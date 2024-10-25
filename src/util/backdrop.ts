@@ -1,12 +1,12 @@
 import {
+  addClass,
   createElement,
   getDocument,
+  getDocumentBody,
+  hasClass,
+  querySelector,
   reflow,
   removeClass,
-  hasClass,
-  addClass,
-  querySelector,
-  getDocumentBody,
 } from '@thednp/shorty';
 
 import fadeClass from '../strings/fadeClass';
@@ -92,15 +92,15 @@ const removeOverlay = (element?: HTMLElement): void => {
 };
 
 export {
-  overlay,
-  offcanvasBackdropClass,
-  modalBackdropClass,
-  modalActiveSelector,
-  offcanvasActiveSelector,
-  toggleOverlayType,
   appendOverlay,
-  showOverlay,
-  hideOverlay,
   getCurrentOpen,
+  hideOverlay,
+  modalActiveSelector,
+  modalBackdropClass,
+  offcanvasActiveSelector,
+  offcanvasBackdropClass,
+  overlay,
   removeOverlay,
+  showOverlay,
+  toggleOverlayType,
 };

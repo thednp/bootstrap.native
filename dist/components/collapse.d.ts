@@ -18,7 +18,7 @@ declare class BaseComponent {
 	dispose(): void;
 }
 export interface CollapseOptions extends BaseOptions {
-	parent: HTMLElement | null;
+	parent: string | HTMLElement | null;
 }
 /** Returns a new `Colapse` instance. */
 declare class Collapse extends BaseComponent {

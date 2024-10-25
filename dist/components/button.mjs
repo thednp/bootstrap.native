@@ -5,7 +5,7 @@ import { hasClass as a, setAttribute as l, ariaPressed as g, getAttribute as p, 
 import { addListener as A, removeListener as C } from "@thednp/event-listener";
 import { a as r } from "./activeClass-iqaD75Su.mjs";
 import { d as L } from "./dataBsToggle-B84TS15h.mjs";
-import { B as E } from "./base-component-DvIOojVW.mjs";
+import { B as E } from "./base-component-nXu3wApu.mjs";
 const I = "button", m = "Button", B = `[${L}="${I}"]`, S = (e) => f(e, m), _ = (e) => new o(e);
 class o extends E {
   /**

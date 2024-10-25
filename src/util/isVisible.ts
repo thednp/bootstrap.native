@@ -1,4 +1,4 @@
-import { isHTMLElement, getElementStyle } from '@thednp/shorty';
+import { getElementStyle, isHTMLElement } from '@thednp/shorty';
 
 /**
  * @param element target

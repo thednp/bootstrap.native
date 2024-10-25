@@ -1,14 +1,14 @@
 /* Native JavaScript for Bootstrap 5 | Button
 ---------------------------------------------*/
 import {
-  getInstance,
-  removeClass,
-  hasClass,
   addClass,
-  setAttribute,
-  mouseclickEvent,
   ariaPressed,
   getAttribute,
+  getInstance,
+  hasClass,
+  mouseclickEvent,
+  removeClass,
+  setAttribute,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -74,7 +74,7 @@ export default class Button extends BaseComponent {
    *
    * @param e usually `click` Event object
    */
-  toggle = (e: Event) => {
+  toggle = (e?: Event) => {
     if (e) e.preventDefault();
 
     const { element, isActive } = this;

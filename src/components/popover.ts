@@ -1,6 +1,6 @@
 /* Native JavaScript for Bootstrap 5 | Popover
 ---------------------------------------------- */
-import { getInstance, ObjectAssign, focus } from '@thednp/shorty';
+import { focus, getInstance, ObjectAssign } from '@thednp/shorty';
 
 import dataBsToggle from '../strings/dataBsToggle';
 import popoverString from '../strings/popoverString';
@@ -27,7 +27,6 @@ const popoverDefaults: PopoverOptions = ObjectAssign({}, tooltipDefaults, {
 /**
  * Static method which returns an existing `Popover` instance associated
  * to a target `Element`.
- *
  */
 const getPopoverInstance = (element: HTMLElement) => getInstance<Popover>(element, popoverComponent);
 
@@ -71,7 +70,7 @@ export default class Popover extends Tooltip {
     super.show();
     // btn only exists within dismissible popover
     const { options, btn } = this;
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (options.dismissible && btn) setTimeout(() => focus(btn), 17);
   };
 }

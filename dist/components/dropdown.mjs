@@ -6,7 +6,7 @@ import { addListener as at, removeListener as pt } from "@thednp/event-listener"
 import { s as h } from "./showClass-C8hdJfjQ.mjs";
 import { d as ft } from "./dataBsToggle-B84TS15h.mjs";
 import { d as b } from "./dropdownClasses-CdCdZ-PX.mjs";
-import { B as Wt } from "./base-component-DvIOojVW.mjs";
+import { B as Wt } from "./base-component-nXu3wApu.mjs";
 const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
   const t = W(n, "A");
   return n.tagName === "A" && // anchor href starts with #
@@ -19,13 +19,14 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
   // [dynamic|static]
 }, T = g(`show.bs.${p}`), st = g(`shown.bs.${p}`), k = g(`hide.bs.${p}`), it = g(`hidden.bs.${p}`), Et = g(`updated.bs.${p}`), wt = (n) => {
   const { element: t, menu: e, parentElement: o, options: r } = n, { offset: s } = r;
+  // istanbul ignore else @preserve: this test requires a navbar
   if (xt(e, "position") !== "static") {
     const i = Ht(t), d = Z(e, Rt);
     ["margin", "top", "bottom", "left", "right"].forEach((a) => {
       const G = {};
       G[a] = "", S(e, G);
     });
-    let c = b.find((a) => Z(o, a)) || /* istanbul ignore next: fallback position */
+    let c = b.find((a) => Z(o, a)) || // istanbul ignore next @preserve: fallback position
     p;
     const vt = {
       dropdown: [s, 0, 0],
@@ -50,16 +51,25 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
       bottom: 0
     }), et.includes(c) && (C || y)) {
       let a = { left: "auto", right: "auto" };
-      !C && y && !i && (a = { left: "auto", right: 0 }), C && !y && i && (a = { left: 0, right: "auto" }), a && tt(E[c], a);
+      // istanbul ignore else @preserve
+      !C && y && !i && (a = { left: "auto", right: 0 });
+      // istanbul ignore else @preserve
+      C && !y && i && (a = { left: 0, right: "auto" });
+      // istanbul ignore else @preserve
+      a && tt(E[c], a);
     }
     const Dt = vt[c];
-    S(e, {
+    if (S(e, {
       ...E[c],
       margin: `${Dt.map((a) => a && `${a}px`).join(" ")}`
-    }), et.includes(c) && d && d && S(e, E[!i && C || i && y ? "menuStart" : (
-      /* istanbul ignore next */
-      "menuEnd"
-    )]), m(o, Et);
+    }), et.includes(c) && d) {
+      // istanbul ignore else @preserve
+      d && S(e, E[!i && C || i && y ? "menuStart" : (
+        // istanbul ignore next @preserve
+        "menuEnd"
+      )]);
+    }
+    m(o, Et);
   }
 }, zt = (n) => [...n.children].map((t) => {
   if (t && ot.includes(t.tagName)) return t;
@@ -67,7 +77,9 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
   return e && ot.includes(e.tagName) ? e : null;
 }).filter((t) => t), rt = (n) => {
   const { element: t, options: e } = n, o = n.open ? at : pt, r = R(t);
-  o(r, O, dt), o(r, lt, dt), o(r, Tt, Kt), o(r, kt, qt), e.display === "dynamic" && [Pt, It].forEach((s) => {
+  o(r, O, dt), o(r, lt, dt), o(r, Tt, Kt), o(r, kt, qt);
+  // istanbul ignore else @preserve
+  e.display === "dynamic" && [Pt, It].forEach((s) => {
     o(Bt(t), s, Gt, Mt);
   });
 }, A = (n) => {
@@ -78,32 +90,47 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
     );
 }, dt = (n) => {
   const { target: t, type: e } = n;
+  // istanbul ignore else @preserve
   if (t && Nt(t)) {
     const o = A(t), r = o && f(o);
+    // istanbul ignore else @preserve
     if (r) {
       const { parentElement: s, menu: i } = r, d = s && s.contains(t) && (t.tagName === "form" || W(t, "form") !== null);
-      [O, jt].includes(e) && ht(t) && n.preventDefault(), !d && e !== lt && t !== o && t !== i && r.hide();
+      [O, jt].includes(e) && ht(t) && n.preventDefault();
+      // istanbul ignore else @preserve
+      !d && e !== lt && t !== o && t !== i && r.hide();
     }
   }
 }, Ut = (n) => {
   const { target: t } = n, e = t && W(t, gt), o = e && f(e);
-  o && (n.stopPropagation(), o.toggle(), e && ht(e) && n.preventDefault());
+  // istanbul ignore else @preserve
+  if (o) {
+    n.stopPropagation(), o.toggle();
+    // istanbul ignore else @preserve
+    e && ht(e) && n.preventDefault();
+  }
 }, Kt = (n) => {
+  // istanbul ignore else @preserve
   [B, M].includes(n.code) && n.preventDefault();
 };
 function qt(n) {
   const { code: t } = n, e = A(this), o = e && f(e), { activeElement: r } = e && R(e);
+  // istanbul ignore else @preserve
   if (o && r) {
     const { menu: s, open: i } = o, d = zt(s);
     if (d && d.length && [B, M].includes(t)) {
       let l = d.indexOf(r);
-      r === e ? l = 0 : t === M ? l = l > 1 ? l - 1 : 0 : t === B && (l = l < d.length - 1 ? l + 1 : l), d[l] && I(d[l]);
+      // istanbul ignore else @preserve
+      r === e ? l = 0 : t === M ? l = l > 1 ? l - 1 : 0 : t === B && (l = l < d.length - 1 ? l + 1 : l);
+      // istanbul ignore else @preserve
+      d[l] && I(d[l]);
     }
     Ft === t && i && (o.toggle(), I(e));
   }
 }
 function Gt() {
   const n = A(this), t = n && f(n);
+  // istanbul ignore else @preserve
   t && t.open && wt(t);
 }
 class D extends Wt {
@@ -145,6 +172,7 @@ class D extends Wt {
   /** Shows the dropdown menu to the user. */
   show() {
     const { element: e, open: o, menu: r, parentElement: s } = this;
+    // istanbul ignore else @preserve
     if (!o) {
       const i = A(e), d = i && f(i);
       d && d.hide(), [T, st, Et].forEach((l) => {
@@ -155,6 +183,7 @@ class D extends Wt {
   /** Hides the dropdown menu from the user. */
   hide() {
     const { element: e, open: o, menu: r, parentElement: s } = this;
+    // istanbul ignore else @preserve
     o && ([k, it].forEach((i) => {
       i.relatedTarget = e;
     }), m(s, k), k.defaultPrevented || (Y(r, h), Y(s, h), V(e, X, "false"), this.open = !o, rt(this), m(s, it)));

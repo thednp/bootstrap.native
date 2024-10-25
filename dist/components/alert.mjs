@@ -6,7 +6,7 @@ import { addListener as S, removeListener as _ } from "@thednp/event-listener";
 import { f as b } from "./fadeClass-CLIYI_zn.mjs";
 import { s as c } from "./showClass-C8hdJfjQ.mjs";
 import { d as B } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { B as k } from "./base-component-DvIOojVW.mjs";
+import { B as k } from "./base-component-nXu3wApu.mjs";
 const i = "alert", g = "Alert", w = `.${i}`, x = `[${B}="${i}"]`, A = (t) => I(t, g), D = (t) => new n(t), l = d(`close.bs.${i}`), T = d(`closed.bs.${i}`), m = (t) => {
   const { element: s } = t;
   p(s, T), t._toggleEventListeners(), t.dispose(), s.remove();
@@ -24,6 +24,7 @@ class n extends k {
      */
     o(this, "close", () => {
       const { element: e } = this;
+      // istanbul ignore else @preserve
       e && a(e, c) && (p(e, l), l.defaultPrevented || (C(e, c), a(e, b) ? L(e, () => m(this)) : m(this)));
     });
     /**
@@ -33,6 +34,7 @@ class n extends k {
      */
     o(this, "_toggleEventListeners", (e) => {
       const v = e ? S : _, { dismiss: r, close: f } = this;
+      // istanbul ignore else @preserve
       r && v(r, $, f);
     });
     this.dismiss = E(x, this.element), this._toggleEventListeners(!0);

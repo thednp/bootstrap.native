@@ -1,9 +1,7 @@
 .npmignore
 .nyc_output
+package-lock.json
 node_modules
 experiments
 coverage
-cypress/videos
-cypress/screenshots
-cypress/coverage
-cypress/instrumented
+test/__screenshots__

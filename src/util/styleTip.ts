@@ -1,13 +1,13 @@
 import {
-  isHTMLElement,
-  setElementStyle,
-  getDocumentElement,
-  getBoundingClientRect,
-  getElementStyle,
-  isRTL,
-  toLowerCase,
   createCustomEvent,
   dispatchEvent,
+  getBoundingClientRect,
+  getDocumentElement,
+  getElementStyle,
+  isHTMLElement,
+  isRTL,
+  setElementStyle,
+  toLowerCase,
 } from '@thednp/shorty';
 
 import popoverComponent from '../strings/popoverComponent';
@@ -25,7 +25,7 @@ const styleTip = <T extends Tooltip>(self: T) => {
   const tipClasses = /\b(top|bottom|start|end)+/;
   const { element, tooltip, container, options, arrow } = self;
 
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (tooltip) {
     const tipPositions = { ...tipClassPositions };
     const RTL = isRTL(element);
@@ -46,7 +46,11 @@ const styleTip = <T extends Tooltip>(self: T) => {
     const parentPosition = getElementStyle(container as HTMLElement, 'position');
     const fixedParent = parentPosition === 'fixed';
     const scrollbarWidth = fixedParent ? Math.abs(parentCWidth - parentOWidth) : Math.abs(htmlcw - htmlow);
-    const leftBoundry = RTL && fixedParent ? /* istanbul ignore next */ scrollbarWidth : 0;
+    const leftBoundry =
+      RTL && fixedParent
+        ? // istanbul ignore next @preserve
+          scrollbarWidth
+        : 0;
     const rightBoundry = htmlcw - (!RTL ? scrollbarWidth : 0) - 1;
     const {
       width: elemWidth,
@@ -105,7 +109,11 @@ const styleTip = <T extends Tooltip>(self: T) => {
     placement = placement === 'top' && topExceed ? 'bottom' : placement;
     placement = placement === 'bottom' && bottomExceed ? 'top' : placement;
     placement = placement === 'left' && leftExceed ? 'right' : placement;
-    placement = placement === 'right' && rightExceed ? /* istanbul ignore next */ 'left' : placement;
+    placement =
+      placement === 'right' && rightExceed
+        ? 'left'
+        : // istanbul ignore next @preserve
+          placement;
 
     // update tooltip/popover class
     if (!tooltip.className.includes(placement)) {
@@ -113,7 +121,7 @@ const styleTip = <T extends Tooltip>(self: T) => {
     }
 
     // compute tooltip / popover coordinates
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (horizontals.includes(placement)) {
       // secondary|side positions
       if (placement === 'left') {
@@ -172,7 +180,7 @@ const styleTip = <T extends Tooltip>(self: T) => {
     });
 
     // update arrow placement
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (isHTMLElement(arrow)) {
       if (arrowTop !== '') {
         arrow.style.top = `${arrowTop}px`;
@@ -183,7 +191,9 @@ const styleTip = <T extends Tooltip>(self: T) => {
         arrow.style.right = `${arrowRight}px`;
       }
     }
-    const updatedTooltipEvent = createCustomEvent<TooltipEvent | PopoverEvent>(`updated.bs.${toLowerCase(self.name)}`);
+    const updatedTooltipEvent = createCustomEvent<Record<string, unknown>, TooltipEvent | PopoverEvent>(
+      `updated.bs.${toLowerCase(self.name)}`,
+    );
     dispatchEvent(element, updatedTooltipEvent);
   }
 };

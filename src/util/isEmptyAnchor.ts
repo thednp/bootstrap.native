@@ -1,4 +1,4 @@
-import { hasAttribute, closest, getAttribute } from '@thednp/shorty';
+import { closest, getAttribute, hasAttribute } from '@thednp/shorty';
 
 /**
  * Checks if an *event.target* or its parent has an `href="#"` value.

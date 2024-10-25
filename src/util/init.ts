@@ -31,6 +31,20 @@ const componentsList = new Map<
   | typeof Tooltip
 >();
 
+type Component =
+  | Alert
+  | Button
+  | Carousel
+  | Collapse
+  | Dropdown
+  | Modal
+  | Offcanvas
+  | Popover
+  | ScrollSpy
+  | Tab
+  | Toast
+  | Tooltip;
+
 [Alert, Button, Carousel, Collapse, Dropdown, Modal, Offcanvas, Popover, ScrollSpy, Tab, Toast, Tooltip].forEach(c =>
   componentsList.set(c.prototype.name, c),
 );
@@ -41,8 +55,8 @@ const componentsList = new Map<
  * @param callback
  * @param collection
  */
-const initComponentDataAPI = <T>(
-  callback: (el: HTMLElement, ops?: Record<string, unknown>) => T,
+const initComponentDataAPI = (
+  callback: (el: HTMLElement) => Component,
   collection: HTMLCollectionOf<HTMLElement> | HTMLElement[],
 ) => {
   [...collection].forEach(x => callback(x));
@@ -59,7 +73,9 @@ const removeComponentDataAPI = <T>(component: string, context: ParentNode) => {
 
   if (compData) {
     [...compData].forEach(([element, instance]) => {
-      if (context.contains(element)) (instance as T & { dispose: () => void }).dispose();
+      if (context.contains(element)) {
+        (instance as T & { dispose: () => void }).dispose();
+      }
     });
   }
 };
@@ -98,5 +114,7 @@ export const removeDataAPI = (context?: ParentNode) => {
 // Bulk initialize all components
 if (document.body) initCallback();
 else {
-  addListener(document, 'DOMContentLoaded', () => initCallback(), { once: true });
+  addListener(document, 'DOMContentLoaded', () => initCallback(), {
+    once: true,
+  });
 }

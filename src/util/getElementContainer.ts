@@ -1,4 +1,4 @@
-import { getDocument, isShadowRoot, isTableElement, getParentNode, getElementStyle } from '@thednp/shorty';
+import { getDocument, getElementStyle, getParentNode, isShadowRoot, isTableElement } from '@thednp/shorty';
 
 /**
  * Returns an `HTMLElement` to be used as default value for *options.container*
@@ -16,7 +16,7 @@ const getElementContainer = (element: HTMLElement): ParentNode => {
 
   while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
     parentNode = getParentNode(parentNode) as ParentNode;
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!(isShadowRoot(parentNode) || isTableElement(parentNode))) {
       containers.push(parentNode);
     }
@@ -31,7 +31,9 @@ const getElementContainer = (element: HTMLElement): ParentNode => {
         return c;
       }
       return null;
-    }) || /* istanbul ignore next: optional guard */ getDocument(element).body
+    }) ||
+    // istanbul ignore next: optional guard
+    getDocument(element).body
   );
 };
 

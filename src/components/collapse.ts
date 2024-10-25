@@ -1,26 +1,26 @@
 /* Native JavaScript for Bootstrap 5 | Collapse
 ----------------------------------------------- */
 import {
-  getInstance,
-  setAttribute,
-  getDocument,
-  closest,
-  querySelector,
-  querySelectorAll,
   addClass,
-  hasClass,
-  removeClass,
-  mouseclickEvent,
   ariaExpanded,
-  emulateTransitionEnd,
-  reflow,
-  dispatchEvent,
-  setElementStyle,
-  Timer,
+  closest,
   createCustomEvent,
-  noop,
+  dispatchEvent,
+  emulateTransitionEnd,
+  getDocument,
+  getInstance,
+  hasClass,
   isHTMLElement,
   isString,
+  mouseclickEvent,
+  noop,
+  querySelector,
+  querySelectorAll,
+  reflow,
+  removeClass,
+  setAttribute,
+  setElementStyle,
+  Timer,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -54,10 +54,10 @@ const collapseInitCallback = (element: HTMLElement) => new Collapse(element);
 
 // COLLAPSE CUSTOM EVENTS
 // ======================
-const showCollapseEvent = createCustomEvent<CollapseEvent>(`show.bs.${collapseString}`);
-const shownCollapseEvent = createCustomEvent<CollapseEvent>(`shown.bs.${collapseString}`);
-const hideCollapseEvent = createCustomEvent<CollapseEvent>(`hide.bs.${collapseString}`);
-const hiddenCollapseEvent = createCustomEvent<CollapseEvent>(`hidden.bs.${collapseString}`);
+const showCollapseEvent = createCustomEvent<Record<string, never>, CollapseEvent>(`show.bs.${collapseString}`);
+const shownCollapseEvent = createCustomEvent<Record<string, never>, CollapseEvent>(`shown.bs.${collapseString}`);
+const hideCollapseEvent = createCustomEvent<Record<string, never>, CollapseEvent>(`hide.bs.${collapseString}`);
+const hiddenCollapseEvent = createCustomEvent<Record<string, never>, CollapseEvent>(`hidden.bs.${collapseString}`);
 
 // COLLAPSE PRIVATE METHODS
 // ========================
@@ -121,7 +121,7 @@ const collapseContent = (self: Collapse) => {
 
     emulateTransitionEnd(element, () => {
       Timer.clear(element);
-      /* istanbul ignore else */
+      // istanbul ignore else @preserve
       if (parent) Timer.clear(parent);
 
       triggers.forEach(btn => setAttribute(btn, ariaExpanded, 'false'));
@@ -148,7 +148,7 @@ const collapseClickHandler = (e: MouseEvent) => {
   const trigger = target && closest(target as HTMLElement, collapseToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getCollapseInstance(element);
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (self) self.toggle();
 
   // event target is anchor link #398
@@ -185,7 +185,7 @@ export default class Collapse extends BaseComponent {
     this.parent = isHTMLElement(options.parent)
       ? options.parent
       : isString(options.parent)
-      ? getTargetElement(element) || querySelector(options.parent as string, doc)
+      ? getTargetElement(element) || querySelector(options.parent, doc)
       : null;
 
     // add event listeners
@@ -210,9 +210,10 @@ export default class Collapse extends BaseComponent {
   /** Hides the collapse. */
   hide() {
     const { triggers, element } = this;
+    // istanbul ignore else @preserve
     if (!Timer.get(element)) {
       collapseContent(this);
-      /* istanbul ignore else */
+      // istanbul ignore else @preserve
       if (triggers.length) {
         triggers.forEach(btn => addClass(btn, `${collapseString}d`));
       }
@@ -241,7 +242,7 @@ export default class Collapse extends BaseComponent {
       }
 
       expandCollapse(this);
-      /* istanbul ignore else */
+      // istanbul ignore else @preserve
       if (triggers.length) {
         triggers.forEach(btn => removeClass(btn, `${collapseString}d`));
       }
@@ -263,7 +264,7 @@ export default class Collapse extends BaseComponent {
     const action = add ? addListener : removeListener;
     const { triggers } = this;
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (triggers.length) {
       triggers.forEach(btn => action(btn, mouseclickEvent, collapseClickHandler));
     }

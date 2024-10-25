@@ -1,4 +1,4 @@
-import { getDocument, getAttribute, closest, querySelector } from '@thednp/shorty';
+import { closest, getAttribute, getDocument, querySelector } from '@thednp/shorty';
 
 import dataBsTarget from '../strings/dataBsTarget';
 import dataBsParent from '../strings/dataBsParent';

@@ -1,14 +1,14 @@
 /* Native JavaScript for Bootstrap 5 | Alert
 -------------------------------------------- */
 import {
-  emulateTransitionEnd,
-  mouseclickEvent,
-  getInstance,
-  querySelector,
-  hasClass,
-  removeClass,
-  dispatchEvent,
   createCustomEvent,
+  dispatchEvent,
+  emulateTransitionEnd,
+  getInstance,
+  hasClass,
+  mouseclickEvent,
+  querySelector,
+  removeClass,
 } from '@thednp/shorty';
 
 import { addListener, removeListener } from '@thednp/event-listener';
@@ -30,19 +30,18 @@ const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
 /**
  * Static method which returns an existing `Alert` instance associated
  * to a target `Element`.
- *
  */
 const getAlertInstance = (element: HTMLElement) => getInstance<Alert>(element, alertComponent);
 
 /**
  * An `Alert` initialization callback.
  */
-const alertInitCallback = <T>(element: HTMLElement) => new Alert(element) as T;
+const alertInitCallback = (element: HTMLElement) => new Alert(element);
 
 // ALERT CUSTOM EVENTS
 // ===================
-const closeAlertEvent = createCustomEvent<AlertEvent>(`close.bs.${alertString}`);
-const closedAlertEvent = createCustomEvent<AlertEvent>(`closed.bs.${alertString}`);
+const closeAlertEvent = createCustomEvent<Record<string, never>, AlertEvent>(`close.bs.${alertString}`);
+const closedAlertEvent = createCustomEvent<Record<string, never>, AlertEvent>(`closed.bs.${alertString}`);
 
 // ALERT EVENT HANDLER
 // ===================
@@ -94,7 +93,7 @@ export default class Alert extends BaseComponent {
   close = () => {
     const { element } = this;
 
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (element && hasClass(element, showClass)) {
       dispatchEvent(element, closeAlertEvent);
 
@@ -115,7 +114,7 @@ export default class Alert extends BaseComponent {
   _toggleEventListeners = (add?: boolean) => {
     const action = add ? addListener : removeListener;
     const { dismiss, close } = this;
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (dismiss) action(dismiss, mouseclickEvent, close);
   };
 

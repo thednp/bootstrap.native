@@ -19,15 +19,15 @@ export {
   Carousel,
   Collapse,
   Dropdown,
+  initCallback,
   Modal,
   Offcanvas,
   Popover,
+  removeDataAPI,
   ScrollSpy,
   Tab,
   Toast,
   Tooltip,
-  initCallback,
-  removeDataAPI,
 };
 
 export {};

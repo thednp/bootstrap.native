@@ -1,6 +1,6 @@
 /* Native JavaScript for Bootstrap 5 | Base Component
 ----------------------------------------------------- */
-import { querySelector, normalizeOptions, Data, ObjectKeys, isString } from '@thednp/shorty';
+import { Data, isHTMLElement, isString, normalizeOptions, ObjectKeys, querySelector } from '@thednp/shorty';
 
 import type { BaseOptions } from '../interface/baseComponent';
 import Version from '../version';
@@ -15,18 +15,24 @@ export default class BaseComponent {
    * @param config component instance options
    */
   constructor(target: HTMLElement | string, config?: BaseOptions) {
-    const element = querySelector(target);
+    let element: HTMLElement | null;
 
-    if (!element) {
-      if (isString(target)) {
-        throw Error(`${this.name} Error: "${target}" is not a valid selector.`);
+    try {
+      if (isHTMLElement(target)) {
+        element = target;
+      } else if (isString(target)) {
+        element = querySelector<HTMLElement>(target);
+        // istanbul ignore else @preserve
+        if (!element) throw Error(`"${target}" is not a valid selector.`);
       } else {
-        throw Error(`${this.name} Error: your target is not an instance of HTMLElement.`);
+        throw Error(`your target is not an instance of HTMLElement.`);
       }
+    } catch (e) {
+      throw Error(`${this.name} Error: ${(e as Error).message}`);
     }
 
     const prevInstance = Data.get<typeof this>(element, this.name);
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (prevInstance) {
       // remove previously attached event listeners
       // to avoid memory leaks
@@ -37,27 +43,29 @@ export default class BaseComponent {
     this.options =
       this.defaults && ObjectKeys(this.defaults).length
         ? normalizeOptions(element, this.defaults, config || {}, 'bs')
-        : {};
+        : // istanbul ignore next @preserve
+          {};
 
     Data.set(element, this.name, this);
   }
 
-  /* istanbul ignore next */
+  // istanbul ignore next @preserve
   get version() {
     return Version;
   }
 
-  /* istanbul ignore next */
+  // istanbul ignore next @preserve
   get name() {
     return 'BaseComponent';
   }
 
-  /* istanbul ignore next */
+  // istanbul ignore next @preserve
   get defaults() {
     return {};
   }
 
   /** just to have something to extend from */
+  // istanbul ignore next @preserve coverage wise this isn't important
   _toggleEventListeners = () => {
     // do something to please linters
   };

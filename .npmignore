@@ -1,11 +1,9 @@
 .github
 .gitignore
 .nyc_output
+package-lock.json
 node_modules
 experiments
 docs
 coverage
-cypress/videos
-cypress/screenshots
-cypress/coverage
-cypress/instrumented
+test/__screenshots__

@@ -2,7 +2,7 @@ import { OriginalEvent } from '@thednp/shorty';
 import { BaseOptions } from './baseComponent';
 
 export interface CollapseOptions extends BaseOptions {
-  parent: HTMLElement | null;
+  parent: string | HTMLElement | null;
 }
 
 export interface CollapseEvent extends OriginalEvent {

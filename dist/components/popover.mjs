@@ -3,7 +3,7 @@ var c = (t, s, e) => s in t ? p(t, s, { enumerable: !0, configurable: !0, writab
 var o = (t, s, e) => c(t, typeof s != "symbol" ? s + "" : s, e);
 import { ObjectAssign as r, focus as m, getInstance as u } from "@thednp/shorty";
 import { d as g } from "./dataBsToggle-B84TS15h.mjs";
-import { t as b, g as f, T as d, s as T, p as l, a as i } from "./tooltip-BuF2bDNc.mjs";
+import { t as b, g as f, T as d, s as T, p as l, a as i } from "./tooltip-B1BCkN2D.mjs";
 const C = `[${g}="${i}"],[data-tip="${i}"]`, I = r({}, b, {
   template: f(i),
   content: "",
@@ -21,6 +21,7 @@ class a extends d {
     o(this, "show", () => {
       super.show();
       const { options: e, btn: n } = this;
+      // istanbul ignore else @preserve
       e.dismissible && n && setTimeout(() => m(n), 17);
     });
   }

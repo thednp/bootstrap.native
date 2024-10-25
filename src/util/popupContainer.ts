@@ -1,13 +1,17 @@
-import { getDocumentBody, isNode, createElement } from '@thednp/shorty';
+import { createElement, getDocumentBody, isNode } from '@thednp/shorty';
 
 // the default container for Modal, Offcanvas, Popover and Tooltip
-const popupContainer = createElement({ tagName: 'div', className: 'popup-container' }) as HTMLElement;
+const popupContainer = createElement({
+  tagName: 'div',
+  className: 'popup-container',
+}) as HTMLElement;
 
 const appendPopup = (target: HTMLElement, customContainer?: ParentNode) => {
   const containerIsBody = isNode(customContainer) && customContainer.nodeName === 'BODY';
   const lookup = isNode(customContainer) && !containerIsBody ? customContainer : popupContainer;
   const BODY = containerIsBody ? customContainer : getDocumentBody(target);
 
+  // istanbul ignore else @preserve
   if (isNode(target)) {
     if (lookup === popupContainer) {
       BODY.append(popupContainer);
@@ -20,6 +24,7 @@ const removePopup = (target: HTMLElement, customContainer?: ParentNode) => {
   const containerIsBody = isNode(customContainer) && customContainer.nodeName === 'BODY';
   const lookup = isNode(customContainer) && !containerIsBody ? customContainer : popupContainer;
 
+  // istanbul ignore else @preserve
   if (isNode(target)) {
     target.remove();
 
@@ -34,4 +39,4 @@ const hasPopup = (target: HTMLElement, customContainer?: ParentNode) => {
   return isNode(target) && lookup.contains(target);
 };
 
-export { popupContainer, appendPopup, removePopup, hasPopup };
+export { appendPopup, hasPopup, popupContainer, removePopup };

@@ -1,4 +1,4 @@
-import { createElement, addClass, hasClass, setAttribute, querySelector, isRTL, isHTMLElement } from '@thednp/shorty';
+import { addClass, createElement, hasClass, isHTMLElement, isRTL, querySelector, setAttribute } from '@thednp/shorty';
 
 import tooltipComponent from '../strings/tooltipComponent';
 import tooltipString from '../strings/tooltipString';
@@ -45,10 +45,11 @@ const createTip = (self: Tooltip | Popover) => {
   // set popover markup
   self.tooltip = isHTMLElement(tooltipTemplate)
     ? (tooltipTemplate.cloneNode(true) as HTMLElement)
-    : /* istanbul ignore next */ undefined;
+    : // istanbul ignore next @preserve
+      undefined;
 
   const { tooltip } = self;
-  /* istanbul ignore else */
+  // istanbul ignore else @preserve
   if (tooltip) {
     // set id and role attributes
     setAttribute(tooltip, 'id', id);
@@ -79,17 +80,19 @@ const createTip = (self: Tooltip | Popover) => {
     // set dismissible button
     if (dismissible) {
       if (title) {
-        if (isHTMLElement(btnClose)) titleParts = [...titleParts, btnClose.cloneNode(true)];
-        else {
+        if (isHTMLElement(btnClose)) {
+          titleParts = [...titleParts, btnClose.cloneNode(true)];
+        } else {
           const tempBtn = createElement('div') as HTMLElement;
           setHtml(tempBtn, btnClose, sanitizeFn);
           titleParts = [...titleParts, tempBtn.firstChild as Node];
         }
       } else {
-        /* istanbul ignore else */
+        // istanbul ignore else @preserve
         if (tooltipHeader) tooltipHeader.remove();
-        if (isHTMLElement(btnClose)) contentParts = [...contentParts, btnClose.cloneNode(true)];
-        else {
+        if (isHTMLElement(btnClose)) {
+          contentParts = [...contentParts, btnClose.cloneNode(true)];
+        } else {
           const tempBtn = createElement('div') as HTMLElement;
           setHtml(tempBtn, btnClose, sanitizeFn);
           contentParts = [...contentParts, tempBtn.firstChild as Node];
@@ -99,12 +102,16 @@ const createTip = (self: Tooltip | Popover) => {
 
     // fill the template with content from options / data attributes
     // also sanitize title && content
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!isTooltip) {
-      /* istanbul ignore else */
-      if (title && tooltipHeader) setHtml(tooltipHeader, titleParts, sanitizeFn);
-      /* istanbul ignore else */
-      if (content && tooltipBody) setHtml(tooltipBody, contentParts, sanitizeFn);
+      // istanbul ignore else @preserve
+      if (title && tooltipHeader) {
+        setHtml(tooltipHeader, titleParts, sanitizeFn);
+      }
+      // istanbul ignore else @preserve
+      if (content && tooltipBody) {
+        setHtml(tooltipBody, contentParts, sanitizeFn);
+      }
       // set btn
       self.btn = querySelector('.btn-close', tooltip) || undefined;
     } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
@@ -115,15 +122,17 @@ const createTip = (self: Tooltip | Popover) => {
     addClass(arrow, 'position-absolute');
 
     // set popover animation and placement
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!hasClass(tooltip, tipString)) addClass(tooltip, tipString);
-    /* istanbul ignore else */
-    if (animation && !hasClass(tooltip, fadeClass)) addClass(tooltip, fadeClass);
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
+    if (animation && !hasClass(tooltip, fadeClass)) {
+      addClass(tooltip, fadeClass);
+    }
+    // istanbul ignore else @preserve
     if (customClass && !hasClass(tooltip, customClass)) {
       addClass(tooltip, customClass);
     }
-    /* istanbul ignore else */
+    // istanbul ignore else @preserve
     if (!hasClass(tooltip, placementClass)) addClass(tooltip, placementClass);
   }
 };
