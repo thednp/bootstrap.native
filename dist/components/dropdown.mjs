@@ -6,7 +6,7 @@ import { addListener as at, removeListener as pt } from "@thednp/event-listener"
 import { s as h } from "./showClass-C8hdJfjQ.mjs";
 import { d as ft } from "./dataBsToggle-B84TS15h.mjs";
 import { d as b } from "./dropdownClasses-CdCdZ-PX.mjs";
-import { B as Wt } from "./base-component-nXu3wApu.mjs";
+import { B as Wt } from "./base-component-DHbs0JQk.mjs";
 const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
   const t = W(n, "A");
   return n.tagName === "A" && // anchor href starts with #
@@ -17,7 +17,13 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
   // [number] 5(px)
   display: "dynamic"
   // [dynamic|static]
-}, T = g(`show.bs.${p}`), st = g(`shown.bs.${p}`), k = g(`hide.bs.${p}`), it = g(`hidden.bs.${p}`), Et = g(`updated.bs.${p}`), wt = (n) => {
+}, T = g(
+  `show.bs.${p}`
+), st = g(
+  `shown.bs.${p}`
+), k = g(
+  `hide.bs.${p}`
+), it = g(`hidden.bs.${p}`), Et = g(`updated.bs.${p}`), wt = (n) => {
   const { element: t, menu: e, parentElement: o, options: r } = n, { offset: s } = r;
   // istanbul ignore else @preserve: this test requires a navbar
   if (xt(e, "position") !== "static") {
@@ -26,7 +32,9 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
       const G = {};
       G[a] = "", S(e, G);
     });
-    let c = b.find((a) => Z(o, a)) || // istanbul ignore next @preserve: fallback position
+    let c = b.find(
+      (a) => Z(o, a)
+    ) || // istanbul ignore next @preserve: fallback position
     p;
     const vt = {
       dropdown: [s, 0, 0],
@@ -64,10 +72,7 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
       margin: `${Dt.map((a) => a && `${a}px`).join(" ")}`
     }), et.includes(c) && d) {
       // istanbul ignore else @preserve
-      d && S(e, E[!i && C || i && y ? "menuStart" : (
-        // istanbul ignore next @preserve
-        "menuEnd"
-      )]);
+      d && S(e, E[!i && C || i && y ? "menuStart" : "menuEnd"]);
     }
     m(o, Et);
   }
@@ -83,7 +88,9 @@ const ut = "Dropdown", mt = "dropdown-menu", ht = (n) => {
     o(Bt(t), s, Gt, Mt);
   });
 }, A = (n) => {
-  const t = [...b, "btn-group", "input-group"].map((e) => ct(`${e} ${h}`, R(n))).find((e) => e.length);
+  const t = [...b, "btn-group", "input-group"].map(
+    (e) => ct(`${e} ${h}`, R(n))
+  ).find((e) => e.length);
   if (t && t.length)
     return [...t[0].children].find(
       (e) => b.some((o) => o === P(e, ft))
@@ -148,7 +155,10 @@ class D extends Wt {
     u(this, "_toggleEventListeners", (e) => {
       (e ? at : pt)(this.element, O, Ut);
     });
-    const { parentElement: r } = this.element, [s] = ct(mt, r);
+    const { parentElement: r } = this.element, [s] = ct(
+      mt,
+      r
+    );
     s && (this.parentElement = r, this.menu = s, this._toggleEventListeners(!0));
   }
   /**
@@ -175,9 +185,11 @@ class D extends Wt {
     // istanbul ignore else @preserve
     if (!o) {
       const i = A(e), d = i && f(i);
-      d && d.hide(), [T, st, Et].forEach((l) => {
-        l.relatedTarget = e;
-      }), m(s, T), T.defaultPrevented || (Q(r, h), Q(s, h), V(e, X, "true"), wt(this), this.open = !o, I(e), rt(this), m(s, st));
+      d && d.hide(), [T, st, Et].forEach(
+        (l) => {
+          l.relatedTarget = e;
+        }
+      ), m(s, T), T.defaultPrevented || (Q(r, h), Q(s, h), V(e, X, "true"), wt(this), this.open = !o, I(e), rt(this), m(s, st));
     }
   }
   /** Hides the dropdown menu from the user. */

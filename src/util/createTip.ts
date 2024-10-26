@@ -1,13 +1,21 @@
-import { addClass, createElement, hasClass, isHTMLElement, isRTL, querySelector, setAttribute } from '@thednp/shorty';
+import {
+  addClass,
+  createElement,
+  hasClass,
+  isHTMLElement,
+  isRTL,
+  querySelector,
+  setAttribute,
+} from "@thednp/shorty";
 
-import tooltipComponent from '../strings/tooltipComponent';
-import tooltipString from '../strings/tooltipString';
-import popoverString from '../strings/popoverString';
-import fadeClass from '../strings/fadeClass';
-import tipClassPositions from './tipClassPositions';
-import setHtml from './setHtml';
-import Tooltip from '../components/tooltip';
-import Popover from '../components/popover';
+import tooltipComponent from "../strings/tooltipComponent";
+import tooltipString from "../strings/tooltipString";
+import popoverString from "../strings/popoverString";
+import fadeClass from "../strings/fadeClass";
+import tipClassPositions from "./tipClassPositions";
+import setHtml from "./setHtml";
+import Tooltip from "../components/tooltip";
+import Popover from "../components/popover";
 
 /**
  * Creates a new tooltip / popover.
@@ -18,15 +26,25 @@ const createTip = (self: Tooltip | Popover) => {
   const isTooltip = self.name === tooltipComponent;
 
   const { id, element, options } = self;
-  const { title, placement, template, animation, customClass, sanitizeFn, dismissible, content, btnClose } = options;
+  const {
+    title,
+    placement,
+    template,
+    animation,
+    customClass,
+    sanitizeFn,
+    dismissible,
+    content,
+    btnClose,
+  } = options;
   const tipString = isTooltip ? tooltipString : popoverString;
   const tipPositions = { ...tipClassPositions };
   let titleParts: Node[] = [];
   let contentParts: Node[] = [];
 
   if (isRTL(element)) {
-    tipPositions.left = 'end';
-    tipPositions.right = 'start';
+    tipPositions.left = "end";
+    tipPositions.right = "start";
   }
 
   // set initial popover class
@@ -37,7 +55,7 @@ const createTip = (self: Tooltip | Popover) => {
   if (isHTMLElement(template)) {
     tooltipTemplate = template;
   } else {
-    const htmlMarkup = createElement('div') as HTMLElement;
+    const htmlMarkup = createElement("div") as HTMLElement;
     setHtml(htmlMarkup, template, sanitizeFn);
     tooltipTemplate = htmlMarkup.firstChild as HTMLElement;
   }
@@ -45,18 +63,22 @@ const createTip = (self: Tooltip | Popover) => {
   // set popover markup
   self.tooltip = isHTMLElement(tooltipTemplate)
     ? (tooltipTemplate.cloneNode(true) as HTMLElement)
-    : // istanbul ignore next @preserve
-      undefined;
+    // istanbul ignore next @preserve
+    : undefined;
 
   const { tooltip } = self;
   // istanbul ignore else @preserve
   if (tooltip) {
     // set id and role attributes
-    setAttribute(tooltip, 'id', id);
-    setAttribute(tooltip, 'role', tooltipString);
+    setAttribute(tooltip, "id", id);
+    setAttribute(tooltip, "role", tooltipString);
 
-    const bodyClass = isTooltip ? `${tooltipString}-inner` : `${popoverString}-body`;
-    const tooltipHeader = isTooltip ? null : querySelector(`.${popoverString}-header`, tooltip);
+    const bodyClass = isTooltip
+      ? `${tooltipString}-inner`
+      : `${popoverString}-body`;
+    const tooltipHeader = isTooltip
+      ? null
+      : querySelector(`.${popoverString}-header`, tooltip);
     const tooltipBody = querySelector(`.${bodyClass}`, tooltip);
 
     // set arrow and enable access for styleTip
@@ -65,14 +87,14 @@ const createTip = (self: Tooltip | Popover) => {
 
     if (isHTMLElement(title)) titleParts = [title.cloneNode(true)];
     else {
-      const tempTitle = createElement('div') as HTMLElement;
+      const tempTitle = createElement("div") as HTMLElement;
       setHtml(tempTitle, title, sanitizeFn);
       titleParts = [...[...tempTitle.childNodes]];
     }
 
     if (isHTMLElement(content)) contentParts = [content.cloneNode(true)];
     else {
-      const tempContent = createElement('div') as HTMLElement;
+      const tempContent = createElement("div") as HTMLElement;
       setHtml(tempContent, content, sanitizeFn);
       contentParts = [...[...tempContent.childNodes]];
     }
@@ -83,7 +105,7 @@ const createTip = (self: Tooltip | Popover) => {
         if (isHTMLElement(btnClose)) {
           titleParts = [...titleParts, btnClose.cloneNode(true)];
         } else {
-          const tempBtn = createElement('div') as HTMLElement;
+          const tempBtn = createElement("div") as HTMLElement;
           setHtml(tempBtn, btnClose, sanitizeFn);
           titleParts = [...titleParts, tempBtn.firstChild as Node];
         }
@@ -93,7 +115,7 @@ const createTip = (self: Tooltip | Popover) => {
         if (isHTMLElement(btnClose)) {
           contentParts = [...contentParts, btnClose.cloneNode(true)];
         } else {
-          const tempBtn = createElement('div') as HTMLElement;
+          const tempBtn = createElement("div") as HTMLElement;
           setHtml(tempBtn, btnClose, sanitizeFn);
           contentParts = [...contentParts, tempBtn.firstChild as Node];
         }
@@ -113,13 +135,13 @@ const createTip = (self: Tooltip | Popover) => {
         setHtml(tooltipBody, contentParts, sanitizeFn);
       }
       // set btn
-      self.btn = querySelector('.btn-close', tooltip) || undefined;
+      self.btn = querySelector(".btn-close", tooltip) || undefined;
     } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);
 
     // Bootstrap 5.2.x
     // addClass(tooltip, 'position-absolute');
-    addClass(tooltip, 'position-fixed');
-    addClass(arrow, 'position-absolute');
+    addClass(tooltip, "position-fixed");
+    addClass(arrow, "position-absolute");
 
     // set popover animation and placement
     // istanbul ignore else @preserve

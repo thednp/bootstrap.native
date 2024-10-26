@@ -1,3 +1,3 @@
 export interface BaseOptions {
-  [key: string]: any;
+  [key: string]: unknown;
 }

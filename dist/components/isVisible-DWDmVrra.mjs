@@ -44,7 +44,10 @@ const U = "Modal", X = "Offcanvas", V = "fixed-top", A = "fixed-bottom", S = "st
       }
     });
   }
-}, R = "backdrop", v = `${u}-${R}`, y = `${$}-${R}`, H = `.${u}.${c}`, L = `.${$}.${c}`, a = I("div"), N = (s) => B(`${H},${L}`, P(s)), j = (s) => {
+}, R = "backdrop", v = `${u}-${R}`, y = `${$}-${R}`, H = `.${u}.${c}`, L = `.${$}.${c}`, a = I("div"), N = (s) => B(
+  `${H},${L}`,
+  P(s)
+), j = (s) => {
   const o = s ? v : y;
   [v, y].forEach((t) => {
     g(a, t);
@@ -74,4 +77,4 @@ export {
   _ as s,
   j as t
 };
-//# sourceMappingURL=isVisible-w9jESiCU.mjs.map
+//# sourceMappingURL=isVisible-DWDmVrra.mjs.map

@@ -1,3 +1,3 @@
 /** @type {string} */
-const collapseComponent = 'Collapse';
+const collapseComponent = "Collapse";
 export default collapseComponent;

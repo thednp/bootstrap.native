@@ -1,3 +1,3 @@
 /** @type {string} */
-const toastComponent = 'Toast';
+const toastComponent = "Toast";
 export default toastComponent;

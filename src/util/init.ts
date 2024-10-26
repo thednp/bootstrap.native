@@ -1,19 +1,19 @@
-import { Data, getElementsByTagName, matches } from '@thednp/shorty';
+import { Data, getElementsByTagName, matches } from "@thednp/shorty";
 
-import { addListener } from '@thednp/event-listener';
+import { addListener } from "@thednp/event-listener";
 
-import Alert from '../components/alert';
-import Button from '../components/button';
-import Carousel from '../components/carousel';
-import Collapse from '../components/collapse';
-import Dropdown from '../components/dropdown';
-import Modal from '../components/modal';
-import Offcanvas from '../components/offcanvas';
-import Popover from '../components/popover';
-import ScrollSpy from '../components/scrollspy';
-import Tab from '../components/tab';
-import Toast from '../components/toast';
-import Tooltip from '../components/tooltip';
+import Alert from "../components/alert";
+import Button from "../components/button";
+import Carousel from "../components/carousel";
+import Collapse from "../components/collapse";
+import Dropdown from "../components/dropdown";
+import Modal from "../components/modal";
+import Offcanvas from "../components/offcanvas";
+import Popover from "../components/popover";
+import ScrollSpy from "../components/scrollspy";
+import Tab from "../components/tab";
+import Toast from "../components/toast";
+import Tooltip from "../components/tooltip";
 
 const componentsList = new Map<
   string,
@@ -45,9 +45,20 @@ type Component =
   | Toast
   | Tooltip;
 
-[Alert, Button, Carousel, Collapse, Dropdown, Modal, Offcanvas, Popover, ScrollSpy, Tab, Toast, Tooltip].forEach(c =>
-  componentsList.set(c.prototype.name, c),
-);
+[
+  Alert,
+  Button,
+  Carousel,
+  Collapse,
+  Dropdown,
+  Modal,
+  Offcanvas,
+  Popover,
+  ScrollSpy,
+  Tab,
+  Toast,
+  Tooltip,
+].forEach((c) => componentsList.set(c.prototype.name, c));
 
 /**
  * Initialize all matched `Element`s for one component.
@@ -59,7 +70,7 @@ const initComponentDataAPI = (
   callback: (el: HTMLElement) => Component,
   collection: HTMLCollectionOf<HTMLElement> | HTMLElement[],
 ) => {
-  [...collection].forEach(x => callback(x));
+  [...collection].forEach((x) => callback(x));
 };
 
 /**
@@ -87,13 +98,13 @@ const removeComponentDataAPI = <T>(component: string, context: ParentNode) => {
  */
 export const initCallback = (context?: ParentNode) => {
   const lookUp = context && context.nodeName ? context : document;
-  const elemCollection = [...getElementsByTagName('*', lookUp)];
+  const elemCollection = [...getElementsByTagName("*", lookUp)];
 
-  componentsList.forEach(cs => {
+  componentsList.forEach((cs) => {
     const { init, selector } = cs;
     initComponentDataAPI(
       init,
-      elemCollection.filter(item => matches(item, selector)),
+      elemCollection.filter((item) => matches(item, selector)),
     );
   });
 };
@@ -106,7 +117,7 @@ export const initCallback = (context?: ParentNode) => {
 export const removeDataAPI = (context?: ParentNode) => {
   const lookUp = context && context.nodeName ? context : document;
 
-  componentsList.forEach(comp => {
+  componentsList.forEach((comp) => {
     removeComponentDataAPI(comp.prototype.name, lookUp);
   });
 };
@@ -114,7 +125,7 @@ export const removeDataAPI = (context?: ParentNode) => {
 // Bulk initialize all components
 if (document.body) initCallback();
 else {
-  addListener(document, 'DOMContentLoaded', () => initCallback(), {
+  addListener(document, "DOMContentLoaded", () => initCallback(), {
     once: true,
   });
 }

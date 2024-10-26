@@ -1,5 +1,5 @@
 /**
  * Global namespace for most components active class.
  */
-const activeClass = 'active';
+const activeClass = "active";
 export default activeClass;

@@ -1,9 +1,16 @@
 /* Native JavaScript for Bootstrap 5 | Base Component
 ----------------------------------------------------- */
-import { Data, isHTMLElement, isString, normalizeOptions, ObjectKeys, querySelector } from '@thednp/shorty';
+import {
+  Data,
+  isHTMLElement,
+  isString,
+  normalizeOptions,
+  ObjectKeys,
+  querySelector,
+} from "@thednp/shorty";
 
-import type { BaseOptions } from '../interface/baseComponent';
-import Version from '../version';
+import type { BaseOptions } from "../interface/baseComponent";
+import Version from "../version";
 
 /** Returns a new `BaseComponent` instance. */
 export default class BaseComponent {
@@ -40,11 +47,10 @@ export default class BaseComponent {
     }
 
     this.element = element;
-    this.options =
-      this.defaults && ObjectKeys(this.defaults).length
-        ? normalizeOptions(element, this.defaults, config || {}, 'bs')
-        : // istanbul ignore next @preserve
-          {};
+    this.options = this.defaults && ObjectKeys(this.defaults).length
+      ? normalizeOptions(element, this.defaults, config || {}, "bs")
+      // istanbul ignore next @preserve
+      : {};
 
     Data.set(element, this.name, this);
   }
@@ -56,7 +62,7 @@ export default class BaseComponent {
 
   // istanbul ignore next @preserve
   get name() {
-    return 'BaseComponent';
+    return "BaseComponent";
   }
 
   // istanbul ignore next @preserve
@@ -73,7 +79,7 @@ export default class BaseComponent {
   /** Removes component from target element. */
   dispose() {
     Data.remove<typeof this>(this.element, this.name);
-    ObjectKeys(this).forEach(prop => {
+    ObjectKeys(this).forEach((prop) => {
       delete this[prop];
     });
   }

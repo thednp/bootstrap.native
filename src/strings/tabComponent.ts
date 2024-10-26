@@ -1,3 +1,3 @@
 /** @type {string} */
-const tabComponent = 'Tab';
+const tabComponent = "Tab";
 export default tabComponent;

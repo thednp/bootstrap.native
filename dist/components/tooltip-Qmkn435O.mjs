@@ -7,7 +7,7 @@ import { d as ue } from "./dataBsToggle-B84TS15h.mjs";
 import { s as ft } from "./showClass-C8hdJfjQ.mjs";
 import { a as ge, h as ve, m as bt, o as wt, r as be } from "./popupContainer-BitC465I.mjs";
 import { f as Et } from "./fadeClass-CLIYI_zn.mjs";
-import { B as we } from "./base-component-nXu3wApu.mjs";
+import { B as we } from "./base-component-DHbs0JQk.mjs";
 const ot = "popover", Dt = "Popover", T = "tooltip", Ee = (e) => {
   const i = e === T, o = i ? `${e}-inner` : `${e}-body`, t = i ? "" : `<h3 class="${e}-header"></h3>`, s = `<div class="${e}-arrow"></div>`, n = `<div class="${o}"></div>`;
   return `<div class="${e}" role="${T}">${t + s + n}</div>`;
@@ -30,10 +30,10 @@ const ot = "popover", Dt = "Popover", T = "tooltip", Ee = (e) => {
     });
     const c = e.name === Dt, { offsetWidth: r, offsetHeight: d } = t, { clientWidth: b, clientHeight: w, offsetWidth: R } = Yt(o);
     let { placement: l } = n;
-    const { clientWidth: E, offsetWidth: $ } = s, S = it(s, "position") === "fixed", h = Math.abs(S ? E - $ : b - R), N = f && S ? (
-      // istanbul ignore next @preserve
-      h
-    ) : 0, C = b - (f ? 0 : h) - 1, {
+    const { clientWidth: E, offsetWidth: $ } = s, S = it(
+      s,
+      "position"
+    ) === "fixed", h = Math.abs(S ? E - $ : b - R), N = f && S ? h : 0, C = b - (f ? 0 : h) - 1, {
       width: u,
       height: v,
       left: m,
@@ -53,10 +53,10 @@ const ot = "popover", Dt = "Popover", T = "tooltip", Ee = (e) => {
     const A = a.offsetWidth || 0, y = a.offsetHeight || 0, rt = A / 2;
     let I = D - d - y < 0, _ = D + d + v + y >= w, j = m - r - A < N, z = m + r + u + A >= C;
     const tt = ["left", "right"], dt = ["top", "bottom"];
-    I = tt.includes(l) ? D + v / 2 - d / 2 - y < 0 : I, _ = tt.includes(l) ? D + d / 2 + v / 2 + y >= w : _, j = dt.includes(l) ? m + u / 2 - r / 2 < N : j, z = dt.includes(l) ? m + r / 2 + u / 2 >= C : z, l = tt.includes(l) && j && z ? "top" : l, l = l === "top" && I ? "bottom" : l, l = l === "bottom" && _ ? "top" : l, l = l === "left" && j ? "right" : l, l = l === "right" && z ? "left" : (
-      // istanbul ignore next @preserve
-      l
-    ), t.className.includes(l) || (t.className = t.className.replace(i, p[l]));
+    I = tt.includes(l) ? D + v / 2 - d / 2 - y < 0 : I, _ = tt.includes(l) ? D + d / 2 + v / 2 + y >= w : _, j = dt.includes(l) ? m + u / 2 - r / 2 < N : j, z = dt.includes(l) ? m + r / 2 + u / 2 >= C : z, l = tt.includes(l) && j && z ? "top" : l, l = l === "top" && I ? "bottom" : l, l = l === "bottom" && _ ? "top" : l, l = l === "left" && j ? "right" : l, l = l === "right" && z ? "left" : l, t.className.includes(l) || (t.className = t.className.replace(
+      i,
+      p[l]
+    ));
     // istanbul ignore else @preserve
     tt.includes(l) ? (l === "left" ? P = X - r - (c ? A : 0) : P = X + u + (c ? A : 0), I && _ ? (L = 0, F = 0, M = D + v / 2 - y / 2) : I ? (L = k, F = "", M = v / 2 - A) : _ ? (L = k - d + v, F = "", M = d - v / 2 - A) : (L = k - d / 2 + v / 2, M = d / 2 - y / 2)) : dt.includes(l) && (l === "top" ? L = k - d - (c ? y : 0) : L = k + v + (c ? y : 0), j ? (P = 0, Z = X + u / 2 - rt) : z ? (P = "auto", at = 0, ct = u / 2 + C - jt - rt) : (P = X - r / 2 + u / 2, Z = r / 2 - rt)), ht(t, {
       top: `${L}px`,
@@ -93,7 +93,17 @@ const ot = "popover", Dt = "Popover", T = "tooltip", Ee = (e) => {
     e.append(...n.body.childNodes);
   } else x(i) ? e.append(i) : (Qt(i) || Vt(i) && i.every(Xt)) && e.append(...i);
 }, $e = (e) => {
-  const i = e.name === O, { id: o, element: t, options: s } = e, { title: n, placement: a, template: p, animation: f, customClass: c, sanitizeFn: r, dismissible: d, content: b, btnClose: w } = s, R = i ? T : ot, l = { ...Mt };
+  const i = e.name === O, { id: o, element: t, options: s } = e, {
+    title: n,
+    placement: a,
+    template: p,
+    animation: f,
+    customClass: c,
+    sanitizeFn: r,
+    dismissible: d,
+    content: b,
+    btnClose: w
+  } = s, R = i ? T : ot, l = { ...Mt };
   let E = [], $ = [];
   xt(t) && (l.left = "end", l.right = "start");
   const lt = `bs-${R}-${l[a]}`;
@@ -104,10 +114,7 @@ const ot = "popover", Dt = "Popover", T = "tooltip", Ee = (e) => {
     const N = q("div");
     H(N, p, r), S = N.firstChild;
   }
-  e.tooltip = x(S) ? S.cloneNode(!0) : (
-    // istanbul ignore next @preserve
-    void 0
-  );
+  e.tooltip = x(S) ? S.cloneNode(!0) : void 0;
   const { tooltip: h } = e;
   // istanbul ignore else @preserve
   if (h) {
@@ -169,13 +176,18 @@ const ot = "popover", Dt = "Popover", T = "tooltip", Ee = (e) => {
     // istanbul ignore else @preserve
     te(t) || ee(t) || o.push(t);
   }
-  return o.find((s, n) => it(s, "position") !== "relative" && o.slice(n + 1).every((a) => it(a, "position") === "static") ? s : null) || // istanbul ignore next: optional guard
+  return o.find((s, n) => it(s, "position") !== "relative" && o.slice(n + 1).every(
+    (a) => it(a, "position") === "static"
+  ) ? s : null) || // istanbul ignore next: optional guard
   nt(e).body;
 }, Ce = `[${ue}="${T}"],[data-tip="${T}"]`, Ft = "title";
 let Ct = (e) => St(e, O);
 const Pe = (e) => new G(e), ye = (e) => {
   const { element: i, tooltip: o, container: t, offsetParent: s } = e;
-  Rt(i, Lt), be(o, t === s ? t : s);
+  Rt(i, Lt), be(
+    o,
+    t === s ? t : s
+  );
 }, U = (e) => {
   const { tooltip: i, container: o, offsetParent: t } = e;
   return i && ve(i, o === t ? o : t);
@@ -188,7 +200,12 @@ const Pe = (e) => new G(e), ye = (e) => {
   i && i();
 }, It = (e, i) => {
   const o = i ? ut : gt, { element: t } = e;
-  o(nt(t), At, e.handleTouch, V), [Ot, Bt].forEach((s) => {
+  o(
+    nt(t),
+    At,
+    e.handleTouch,
+    V
+  ), [Ot, Bt].forEach((s) => {
     o(Wt(t), s, e.update, V);
   });
 }, Pt = (e) => {
@@ -264,7 +281,12 @@ class G extends we {
         if (d === le) {
           t(s, ae, this.handleShow), t(s, ce, this.handleShow);
           // istanbul ignore else @preserve
-          c || (t(s, re, this.handleHide), t(nt(s), At, this.handleTouch, V));
+          c || (t(s, re, this.handleHide), t(
+            nt(s),
+            At,
+            this.handleTouch,
+            V
+          ));
         } else if (d === mt)
           t(s, d, c ? this.handleShow : this.toggle);
         else if (d === de) {
@@ -364,7 +386,10 @@ class G extends we {
   }
   /** Removes the `Tooltip` from the target element. */
   dispose() {
-    const { tooltip: o, options: t } = this, s = { ...this, name: this.name }, n = () => setTimeout(() => He(s, () => super.dispose()), 17);
+    const { tooltip: o, options: t } = this, s = { ...this, name: this.name }, n = () => setTimeout(
+      () => He(s, () => super.dispose()),
+      17
+    );
     t.animation && U(s) ? (this.options.delay = 0, this.hide(), pt(o, n)) : n();
   }
 }
@@ -377,4 +402,4 @@ export {
   $t as s,
   Tt as t
 };
-//# sourceMappingURL=tooltip-B1BCkN2D.mjs.map
+//# sourceMappingURL=tooltip-Qmkn435O.mjs.map

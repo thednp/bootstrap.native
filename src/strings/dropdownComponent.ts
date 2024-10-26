@@ -1,3 +1,3 @@
 /** @type {string} */
-const dropdownComponent = 'Dropdown';
+const dropdownComponent = "Dropdown";
 export default dropdownComponent;

@@ -1,5 +1,5 @@
-import { OriginalEvent } from '@thednp/shorty';
-import { BaseOptions } from './baseComponent';
+import { OriginalEvent } from "@thednp/shorty";
+import { BaseOptions } from "./baseComponent";
 
 export interface ToastOptions extends BaseOptions {
   animation: boolean;
@@ -8,5 +8,10 @@ export interface ToastOptions extends BaseOptions {
 }
 
 export interface ToastEvent extends OriginalEvent {
-  readonly type: string | 'show.bs.toast' | 'shown.bs.toast' | 'hide.bs.toast' | 'hidden.bs.toast';
+  readonly type:
+    | string
+    | "show.bs.toast"
+    | "shown.bs.toast"
+    | "hide.bs.toast"
+    | "hidden.bs.toast";
 }

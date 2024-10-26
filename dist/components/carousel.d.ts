@@ -1,5 +1,5 @@
 export interface BaseOptions {
-	[key: string]: any;
+	[key: string]: unknown;
 }
 declare class BaseComponent {
 	element: HTMLElement;

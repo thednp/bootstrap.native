@@ -9,18 +9,18 @@ import {
   mouseclickEvent,
   querySelector,
   removeClass,
-} from '@thednp/shorty';
+} from "@thednp/shorty";
 
-import { addListener, removeListener } from '@thednp/event-listener';
+import { addListener, removeListener } from "@thednp/event-listener";
 
-import fadeClass from '../strings/fadeClass';
-import showClass from '../strings/showClass';
-import dataBsDismiss from '../strings/dataBsDismiss';
-import alertString from '../strings/alertString';
-import alertComponent from '../strings/alertComponent';
-import type { AlertEvent } from '../interface/alert';
+import fadeClass from "../strings/fadeClass";
+import showClass from "../strings/showClass";
+import dataBsDismiss from "../strings/dataBsDismiss";
+import alertString from "../strings/alertString";
+import alertComponent from "../strings/alertComponent";
+import type { AlertEvent } from "../interface/alert";
 
-import BaseComponent from './base-component';
+import BaseComponent from "./base-component";
 
 // ALERT PRIVATE GC
 // ================
@@ -31,7 +31,8 @@ const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
  * Static method which returns an existing `Alert` instance associated
  * to a target `Element`.
  */
-const getAlertInstance = (element: HTMLElement) => getInstance<Alert>(element, alertComponent);
+const getAlertInstance = (element: HTMLElement) =>
+  getInstance<Alert>(element, alertComponent);
 
 /**
  * An `Alert` initialization callback.
@@ -40,8 +41,12 @@ const alertInitCallback = (element: HTMLElement) => new Alert(element);
 
 // ALERT CUSTOM EVENTS
 // ===================
-const closeAlertEvent = createCustomEvent<Record<string, never>, AlertEvent>(`close.bs.${alertString}`);
-const closedAlertEvent = createCustomEvent<Record<string, never>, AlertEvent>(`closed.bs.${alertString}`);
+const closeAlertEvent = createCustomEvent<Record<string, never>, AlertEvent>(
+  `close.bs.${alertString}`,
+);
+const closedAlertEvent = createCustomEvent<Record<string, never>, AlertEvent>(
+  `closed.bs.${alertString}`,
+);
 
 // ALERT EVENT HANDLER
 // ===================

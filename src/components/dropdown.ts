@@ -34,30 +34,32 @@ import {
   scrollEvent,
   setAttribute,
   setElementStyle,
-} from '@thednp/shorty';
+} from "@thednp/shorty";
 
-import { addListener, removeListener } from '@thednp/event-listener';
+import { addListener, removeListener } from "@thednp/event-listener";
 
-import showClass from '../strings/showClass';
-import dataBsToggle from '../strings/dataBsToggle';
-import dropdownClasses from '../strings/dropdownClasses';
-import dropdownComponent from '../strings/dropdownComponent';
-import dropdownMenuClass from '../strings/dropdownMenuClass';
+import showClass from "../strings/showClass";
+import dataBsToggle from "../strings/dataBsToggle";
+import dropdownClasses from "../strings/dropdownClasses";
+import dropdownComponent from "../strings/dropdownComponent";
+import dropdownMenuClass from "../strings/dropdownMenuClass";
 
-import isEmptyAnchor from '../util/isEmptyAnchor';
-import BaseComponent from './base-component';
-import type { DropdownEvent, DropdownOptions } from '../interface/dropdown';
+import isEmptyAnchor from "../util/isEmptyAnchor";
+import BaseComponent from "./base-component";
+import type { DropdownEvent, DropdownOptions } from "../interface/dropdown";
 
 // DROPDOWN PRIVATE GC
 // ===================
-const [dropdownString, dropupString, dropstartString, dropendString] = dropdownClasses;
+const [dropdownString, dropupString, dropstartString, dropendString] =
+  dropdownClasses;
 const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
 
 /**
  * Static method which returns an existing `Dropdown` instance associated
  * to a target `Element`.
  */
-const getDropdownInstance = (element: HTMLElement) => getInstance<Dropdown>(element, dropdownComponent);
+const getDropdownInstance = (element: HTMLElement) =>
+  getInstance<Dropdown>(element, dropdownComponent);
 
 /**
  * A `Dropdown` initialization callback.
@@ -70,22 +72,34 @@ const dropdownInitCallback = (element: HTMLElement) => new Dropdown(element);
 const dropdownMenuEndClass = `${dropdownMenuClass}-end`;
 const verticalClass = [dropdownString, dropupString];
 const horizontalClass = [dropstartString, dropendString];
-const menuFocusTags = ['A', 'BUTTON'];
+const menuFocusTags = ["A", "BUTTON"];
 
 const dropdownDefaults = {
   offset: 5, // [number] 5(px)
-  display: 'dynamic', // [dynamic|static]
+  display: "dynamic", // [dynamic|static]
 };
 
 type DropdownEventProps = { relatedTarget: HTMLElement };
 
 // DROPDOWN CUSTOM EVENTS
 // ======================
-const showDropdownEvent = createCustomEvent<DropdownEventProps, DropdownEvent>(`show.bs.${dropdownString}`);
-const shownDropdownEvent = createCustomEvent<DropdownEventProps, DropdownEvent>(`shown.bs.${dropdownString}`);
-const hideDropdownEvent = createCustomEvent<DropdownEventProps, DropdownEvent>(`hide.bs.${dropdownString}`);
-const hiddenDropdownEvent = createCustomEvent<DropdownEventProps, DropdownEvent>(`hidden.bs.${dropdownString}`);
-const updatedDropdownEvent = createCustomEvent<DropdownEventProps, DropdownEvent>(`updated.bs.${dropdownString}`);
+const showDropdownEvent = createCustomEvent<DropdownEventProps, DropdownEvent>(
+  `show.bs.${dropdownString}`,
+);
+const shownDropdownEvent = createCustomEvent<DropdownEventProps, DropdownEvent>(
+  `shown.bs.${dropdownString}`,
+);
+const hideDropdownEvent = createCustomEvent<DropdownEventProps, DropdownEvent>(
+  `hide.bs.${dropdownString}`,
+);
+const hiddenDropdownEvent = createCustomEvent<
+  DropdownEventProps,
+  DropdownEvent
+>(`hidden.bs.${dropdownString}`);
+const updatedDropdownEvent = createCustomEvent<
+  DropdownEventProps,
+  DropdownEvent
+>(`updated.bs.${dropdownString}`);
 
 // DROPDOWN PRIVATE METHODS
 // ========================
@@ -101,25 +115,26 @@ const styleDropdown = (self: Dropdown) => {
 
   // don't apply any style on mobile view
   // istanbul ignore else @preserve: this test requires a navbar
-  if (getElementStyle(menu, 'position') !== 'static') {
+  if (getElementStyle(menu, "position") !== "static") {
     const RTL = isRTL(element);
     // const menuStart = hasClass(menu, dropdownMenuStartClass);
     const menuEnd = hasClass(menu, dropdownMenuEndClass);
 
     // reset menu offset and position
-    const resetProps = ['margin', 'top', 'bottom', 'left', 'right'];
-    resetProps.forEach(p => {
+    const resetProps = ["margin", "top", "bottom", "left", "right"];
+    resetProps.forEach((p) => {
       // menu.style[p] = '';
       const style: { [key: string]: string } = {};
-      style[p] = '';
+      style[p] = "";
       setElementStyle(menu, style);
     });
 
     // set initial position class
     // take into account .btn-group parent as .dropdown
     // this requires navbar/btn-group/input-group
-    let positionClass =
-      dropdownClasses.find(c => hasClass(parentElement, c)) ||
+    let positionClass = dropdownClasses.find((c) =>
+      hasClass(parentElement, c)
+    ) ||
       // istanbul ignore next @preserve: fallback position
       dropdownString;
 
@@ -131,12 +146,20 @@ const styleDropdown = (self: Dropdown) => {
     };
 
     const dropdownPosition: { [key: string]: Partial<CSS4Declaration> } = {
-      dropdown: { top: '100%' },
-      dropup: { top: 'auto', bottom: '100%' },
-      dropstart: RTL ? { left: '100%', right: 'auto' } : { left: 'auto', right: '100%' },
-      dropend: RTL ? { left: 'auto', right: '100%' } : { left: '100%', right: 'auto' },
-      menuStart: RTL ? { right: '0', left: 'auto' } : { right: 'auto', left: '0' },
-      menuEnd: RTL ? { right: 'auto', left: '0' } : { right: '0', left: 'auto' },
+      dropdown: { top: "100%" },
+      dropup: { top: "auto", bottom: "100%" },
+      dropstart: RTL
+        ? { left: "100%", right: "auto" }
+        : { left: "auto", right: "100%" },
+      dropend: RTL
+        ? { left: "auto", right: "100%" }
+        : { left: "100%", right: "auto" },
+      menuStart: RTL
+        ? { right: "0", left: "auto" }
+        : { right: "auto", left: "0" },
+      menuEnd: RTL
+        ? { right: "auto", left: "0" }
+        : { right: "0", left: "auto" },
     };
 
     const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menu;
@@ -152,26 +175,39 @@ const styleDropdown = (self: Dropdown) => {
     // dropstart | dropend
     const leftFullExceed = targetLeft - menuWidth - offset < 0;
     // dropend
-    const rightFullExceed = targetLeft + menuWidth + targetWidth + offset >= clientWidth;
+    const rightFullExceed =
+      targetLeft + menuWidth + targetWidth + offset >= clientWidth;
     // dropstart | dropend
     const bottomExceed = targetTop + menuHeight + offset >= clientHeight;
     // dropdown
-    const bottomFullExceed = targetTop + menuHeight + targetHeight + offset >= clientHeight;
+    const bottomFullExceed =
+      targetTop + menuHeight + targetHeight + offset >= clientHeight;
     // dropup
     const topExceed = targetTop - menuHeight - offset < 0;
     // dropdown / dropup
-    const leftExceed = ((!RTL && menuEnd) || (RTL && !menuEnd)) && targetLeft + targetWidth - menuWidth < 0;
-    const rightExceed = ((RTL && menuEnd) || (!RTL && !menuEnd)) && targetLeft + menuWidth >= clientWidth;
+    const leftExceed = ((!RTL && menuEnd) || (RTL && !menuEnd)) &&
+      targetLeft + targetWidth - menuWidth < 0;
+    const rightExceed = ((RTL && menuEnd) || (!RTL && !menuEnd)) &&
+      targetLeft + menuWidth >= clientWidth;
 
     // recompute position
     // handle RTL as well
-    if (horizontalClass.includes(positionClass) && leftFullExceed && rightFullExceed) {
+    if (
+      horizontalClass.includes(positionClass) && leftFullExceed &&
+      rightFullExceed
+    ) {
       positionClass = dropdownString;
     }
-    if (positionClass === dropstartString && (!RTL ? leftFullExceed : rightFullExceed)) {
+    if (
+      positionClass === dropstartString &&
+      (!RTL ? leftFullExceed : rightFullExceed)
+    ) {
       positionClass = dropendString;
     }
-    if (positionClass === dropendString && (RTL ? leftFullExceed : rightFullExceed)) {
+    if (
+      positionClass === dropendString &&
+      (RTL ? leftFullExceed : rightFullExceed)
+    ) {
       positionClass = dropstartString;
     }
     if (positionClass === dropupString && topExceed && !bottomFullExceed) {
@@ -184,7 +220,7 @@ const styleDropdown = (self: Dropdown) => {
     // override position for horizontal classes
     if (horizontalClass.includes(positionClass) && bottomExceed) {
       ObjectAssign(dropdownPosition[positionClass], {
-        top: 'auto',
+        top: "auto",
         bottom: 0,
       });
     }
@@ -193,14 +229,16 @@ const styleDropdown = (self: Dropdown) => {
     if (verticalClass.includes(positionClass) && (leftExceed || rightExceed)) {
       // don't realign when menu is wider than window
       // in both RTL and non-RTL readability is KING
-      let posAjust: { left: 'auto' | number; right: 'auto' | number } | undefined = { left: 'auto', right: 'auto' };
+      let posAjust:
+        | { left: "auto" | number; right: "auto" | number }
+        | undefined = { left: "auto", right: "auto" };
       // istanbul ignore else @preserve
       if (!leftExceed && rightExceed && !RTL) {
-        posAjust = { left: 'auto', right: 0 };
+        posAjust = { left: "auto", right: 0 };
       }
       // istanbul ignore else @preserve
       if (leftExceed && !rightExceed && RTL) {
-        posAjust = { left: 0, right: 'auto' };
+        posAjust = { left: 0, right: "auto" };
       }
       // istanbul ignore else @preserve
       if (posAjust) {
@@ -211,18 +249,17 @@ const styleDropdown = (self: Dropdown) => {
     const margins: number[] = dropdownMargin[positionClass];
     setElementStyle(menu, {
       ...dropdownPosition[positionClass],
-      margin: `${margins.map(x => (x ? `${x}px` : x)).join(' ')}`,
+      margin: `${margins.map((x) => (x ? `${x}px` : x)).join(" ")}`,
     });
 
     // override dropdown-menu-start | dropdown-menu-end
     if (verticalClass.includes(positionClass) && menuEnd) {
       // istanbul ignore else @preserve
       if (menuEnd) {
-        const endAdjust =
-          (!RTL && leftExceed) || (RTL && rightExceed)
-            ? 'menuStart'
-            : // istanbul ignore next @preserve
-              'menuEnd';
+        const endAdjust = (!RTL && leftExceed) || (RTL && rightExceed)
+          ? "menuStart"
+          // istanbul ignore next @preserve
+          : "menuEnd";
         setElementStyle(menu, dropdownPosition[endAdjust]);
       }
     }
@@ -239,15 +276,17 @@ const styleDropdown = (self: Dropdown) => {
  */
 const getMenuItems = (menu: HTMLElement) => {
   return [...menu.children]
-    .map(c => {
+    .map((c) => {
       if (c && menuFocusTags.includes(c.tagName)) return c;
       const { firstElementChild } = c;
-      if (firstElementChild && menuFocusTags.includes(firstElementChild.tagName)) {
+      if (
+        firstElementChild && menuFocusTags.includes(firstElementChild.tagName)
+      ) {
         return firstElementChild;
       }
       return null;
     })
-    .filter(c => c);
+    .filter((c) => c);
 };
 
 /**
@@ -267,8 +306,8 @@ const toggleDropdownDismiss = (self: Dropdown) => {
   action(doc, keyupEvent, dropdownKeyHandler);
 
   // istanbul ignore else @preserve
-  if (options.display === 'dynamic') {
-    [scrollEvent, resizeEvent].forEach(ev => {
+  if (options.display === "dynamic") {
+    [scrollEvent, resizeEvent].forEach((ev) => {
       action(getWindow(element), ev, dropdownLayoutHandler, passiveHandler);
     });
   }
@@ -280,15 +319,20 @@ const toggleDropdownDismiss = (self: Dropdown) => {
  * @param element target
  * @returns the query result
  */
-const getCurrentOpenDropdown = (element: HTMLElement): HTMLElement | undefined => {
-  const currentParent = [...dropdownClasses, 'btn-group', 'input-group']
-    .map(c => getElementsByClassName(`${c} ${showClass}`, getDocument(element)))
-    .find(x => x.length);
+const getCurrentOpenDropdown = (
+  element: HTMLElement,
+): HTMLElement | undefined => {
+  const currentParent = [...dropdownClasses, "btn-group", "input-group"]
+    .map((c) =>
+      getElementsByClassName(`${c} ${showClass}`, getDocument(element))
+    )
+    .find((x) => x.length);
 
   if (currentParent && currentParent.length) {
-    return [...(currentParent[0].children as HTMLCollectionOf<HTMLElement>)].find(x =>
-      dropdownClasses.some(c => c === getAttribute(x, dataBsToggle)),
-    );
+    return [...(currentParent[0].children as HTMLCollectionOf<HTMLElement>)]
+      .find((x) =>
+        dropdownClasses.some((c) => c === getAttribute(x, dataBsToggle))
+      );
   }
   return undefined;
 };
@@ -313,17 +357,21 @@ const dropdownDismissHandler = (e: MouseEvent) => {
     if (self) {
       const { parentElement, menu } = self;
 
-      const isForm =
-        parentElement &&
+      const isForm = parentElement &&
         parentElement.contains(target) &&
-        (target.tagName === 'form' || closest(target, 'form') !== null);
+        (target.tagName === "form" || closest(target, "form") !== null);
 
-      if ([mouseclickEvent, mousedownEvent].includes(type) && isEmptyAnchor(target)) {
+      if (
+        [mouseclickEvent, mousedownEvent].includes(type) &&
+        isEmptyAnchor(target)
+      ) {
         e.preventDefault();
       }
 
       // istanbul ignore else @preserve
-      if (!isForm && type !== focusEvent && target !== element && target !== menu) {
+      if (
+        !isForm && type !== focusEvent && target !== element && target !== menu
+      ) {
         self.hide();
       }
     }
@@ -376,7 +424,9 @@ function dropdownKeyHandler(this: HTMLElement, e: KeyboardEvent) {
     const menuItems = getMenuItems(menu);
 
     // arrow up & down
-    if (menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)) {
+    if (
+      menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)
+    ) {
       let idx = menuItems.indexOf(activeElement);
       // istanbul ignore else @preserve
       if (activeElement === element) {
@@ -427,7 +477,10 @@ export default class Dropdown extends BaseComponent {
 
     // initialization element
     const { parentElement } = this.element;
-    const [menu] = getElementsByClassName(dropdownMenuClass, parentElement as ParentNode);
+    const [menu] = getElementsByClassName(
+      dropdownMenuClass,
+      parentElement as ParentNode,
+    );
 
     // invalidate when dropdown-menu is missing
     if (menu) {
@@ -468,19 +521,22 @@ export default class Dropdown extends BaseComponent {
     // istanbul ignore else @preserve
     if (!open) {
       const currentElement = getCurrentOpenDropdown(element);
-      const currentInstance = currentElement && getDropdownInstance(currentElement);
+      const currentInstance = currentElement &&
+        getDropdownInstance(currentElement);
       if (currentInstance) currentInstance.hide();
 
       // dispatch event
-      [showDropdownEvent, shownDropdownEvent, updatedDropdownEvent].forEach(e => {
-        e.relatedTarget = element;
-      });
+      [showDropdownEvent, shownDropdownEvent, updatedDropdownEvent].forEach(
+        (e) => {
+          e.relatedTarget = element;
+        },
+      );
 
       dispatchEvent(parentElement, showDropdownEvent);
       if (!showDropdownEvent.defaultPrevented) {
         addClass(menu, showClass);
         addClass(parentElement, showClass);
-        setAttribute(element, ariaExpanded, 'true');
+        setAttribute(element, ariaExpanded, "true");
 
         // change menu position
         styleDropdown(this);
@@ -500,7 +556,7 @@ export default class Dropdown extends BaseComponent {
 
     // istanbul ignore else @preserve
     if (open) {
-      [hideDropdownEvent, hiddenDropdownEvent].forEach(e => {
+      [hideDropdownEvent, hiddenDropdownEvent].forEach((e) => {
         e.relatedTarget = element;
       });
 
@@ -508,7 +564,7 @@ export default class Dropdown extends BaseComponent {
       if (!hideDropdownEvent.defaultPrevented) {
         removeClass(menu, showClass);
         removeClass(parentElement, showClass);
-        setAttribute(element, ariaExpanded, 'false');
+        setAttribute(element, ariaExpanded, "false");
 
         this.open = !open;
         // only re-attach handler if the instance is not disposed

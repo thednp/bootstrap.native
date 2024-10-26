@@ -1,5 +1,5 @@
 /**
  * Global namespace for `Dropdown` types / classes.
  */
-const dropdownMenuClasses = ['dropdown', 'dropup', 'dropstart', 'dropend'];
+const dropdownMenuClasses = ["dropdown", "dropup", "dropstart", "dropend"];
 export default dropdownMenuClasses;

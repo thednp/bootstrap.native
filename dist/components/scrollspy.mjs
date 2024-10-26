@@ -4,21 +4,20 @@ var h = (t, e, s) => W(t, typeof e != "symbol" ? e + "" : e, s);
 import { createCustomEvent as _, querySelector as L, getDocument as S, getWindow as k, isHTMLElement as v, scrollEvent as q, passiveHandler as G, getInstance as M, isWindow as C, getElementsByTagName as w, getAttribute as N, getBoundingClientRect as b, getDocumentElement as O, hasClass as u, removeClass as R, addClass as y, getDocumentBody as Y, dispatchEvent as $ } from "@thednp/shorty";
 import { addListener as j, removeListener as z } from "@thednp/event-listener";
 import { a as m } from "./activeClass-iqaD75Su.mjs";
-import { B as F } from "./base-component-nXu3wApu.mjs";
+import { B as F } from "./base-component-DHbs0JQk.mjs";
 const J = "scrollspy", A = "ScrollSpy", K = '[data-bs-spy="scroll"]', P = {
   offset: 10,
   target: null
 }, Q = (t) => M(t, A), U = (t) => new d(t), I = _(`activate.bs.${J}`), V = (t) => {
-  const { target: e, scrollTarget: s, options: n, itemsLength: r, scrollHeight: o, element: a } = t, { offset: i } = n, l = C(s), c = e && w("A", e), g = s ? B(s) : (
-    // istanbul ignore next @preserve
-    o
-  );
+  const { target: e, scrollTarget: s, options: n, itemsLength: r, scrollHeight: o, element: a } = t, { offset: i } = n, l = C(s), c = e && w("A", e), g = s ? B(s) : o;
   t.scrollTop = l ? s.scrollY : s.scrollTop;
   // istanbul ignore else @preserve
   if (c && (g !== o || r !== c.length)) {
     let p, f, E;
     t.items = [], t.offsets = [], t.scrollHeight = g, t.maxScroll = t.scrollHeight - X(t), [...c].forEach((H) => {
-      p = N(H, "href"), f = p && p.charAt(0) === "#" && p.slice(-1) !== "#" && L(p, S(a)), f && (t.items.push(H), E = b(f), t.offsets.push((l ? E.top + t.scrollTop : f.offsetTop) - i));
+      p = N(H, "href"), f = p && p.charAt(0) === "#" && p.slice(-1) !== "#" && L(p, S(a)), f && (t.items.push(H), E = b(f), t.offsets.push(
+        (l ? E.top + t.scrollTop : f.offsetTop) - i
+      ));
     }), t.itemsLength = t.items.length;
   }
 }, B = (t) => v(t) ? t.scrollHeight : O(t).scrollHeight, X = ({ element: t, scrollTarget: e }) => C(e) ? e.innerHeight : b(t).height, x = (t) => {
@@ -81,10 +80,18 @@ class d extends F {
      * @param add when `true`, listener is added
      */
     h(this, "_toggleEventListeners", (s) => {
-      (s ? j : z)(this.scrollTarget, q, this.refresh, G);
+      (s ? j : z)(
+        this.scrollTarget,
+        q,
+        this.refresh,
+        G
+      );
     });
     const { element: r, options: o } = this;
-    this.target = L(o.target, S(r)), this.target && (this.scrollTarget = r.clientHeight < r.scrollHeight ? r : k(r), this.scrollHeight = B(this.scrollTarget), this._toggleEventListeners(!0), this.refresh());
+    this.target = L(
+      o.target,
+      S(r)
+    ), this.target && (this.scrollTarget = r.clientHeight < r.scrollHeight ? r : k(r), this.scrollHeight = B(this.scrollTarget), this._toggleEventListeners(!0), this.refresh());
   }
   /* eslint-disable */
   /**

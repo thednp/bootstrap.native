@@ -1,3 +1,3 @@
 /** @type {string} */
-const scrollspyString = 'scrollspy';
+const scrollspyString = "scrollspy";
 export default scrollspyString;

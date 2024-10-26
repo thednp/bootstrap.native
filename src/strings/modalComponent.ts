@@ -1,3 +1,3 @@
 /** @type {string} */
-const modalComponent = 'Modal';
+const modalComponent = "Modal";
 export default modalComponent;

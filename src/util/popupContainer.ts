@@ -1,14 +1,17 @@
-import { createElement, getDocumentBody, isNode } from '@thednp/shorty';
+import { createElement, getDocumentBody, isNode } from "@thednp/shorty";
 
 // the default container for Modal, Offcanvas, Popover and Tooltip
 const popupContainer = createElement({
-  tagName: 'div',
-  className: 'popup-container',
+  tagName: "div",
+  className: "popup-container",
 }) as HTMLElement;
 
 const appendPopup = (target: HTMLElement, customContainer?: ParentNode) => {
-  const containerIsBody = isNode(customContainer) && customContainer.nodeName === 'BODY';
-  const lookup = isNode(customContainer) && !containerIsBody ? customContainer : popupContainer;
+  const containerIsBody = isNode(customContainer) &&
+    customContainer.nodeName === "BODY";
+  const lookup = isNode(customContainer) && !containerIsBody
+    ? customContainer
+    : popupContainer;
   const BODY = containerIsBody ? customContainer : getDocumentBody(target);
 
   // istanbul ignore else @preserve
@@ -21,8 +24,11 @@ const appendPopup = (target: HTMLElement, customContainer?: ParentNode) => {
 };
 
 const removePopup = (target: HTMLElement, customContainer?: ParentNode) => {
-  const containerIsBody = isNode(customContainer) && customContainer.nodeName === 'BODY';
-  const lookup = isNode(customContainer) && !containerIsBody ? customContainer : popupContainer;
+  const containerIsBody = isNode(customContainer) &&
+    customContainer.nodeName === "BODY";
+  const lookup = isNode(customContainer) && !containerIsBody
+    ? customContainer
+    : popupContainer;
 
   // istanbul ignore else @preserve
   if (isNode(target)) {
@@ -35,7 +41,9 @@ const removePopup = (target: HTMLElement, customContainer?: ParentNode) => {
 };
 
 const hasPopup = (target: HTMLElement, customContainer?: ParentNode) => {
-  const lookup = isNode(customContainer) && customContainer.nodeName !== 'BODY' ? customContainer : popupContainer;
+  const lookup = isNode(customContainer) && customContainer.nodeName !== "BODY"
+    ? customContainer
+    : popupContainer;
   return isNode(target) && lookup.contains(target);
 };
 

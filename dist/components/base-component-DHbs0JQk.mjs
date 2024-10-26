@@ -28,10 +28,7 @@ class y {
     }
     const o = r.get(t, this.name);
     // istanbul ignore else @preserve
-    o && o._toggleEventListeners(), this.element = t, this.options = this.defaults && a(this.defaults).length ? E(t, this.defaults, n || {}, "bs") : (
-      // istanbul ignore next @preserve
-      {}
-    ), r.set(t, this.name, this);
+    o && o._toggleEventListeners(), this.element = t, this.options = this.defaults && a(this.defaults).length ? E(t, this.defaults, n || {}, "bs") : {}, r.set(t, this.name, this);
   }
   // istanbul ignore next @preserve
   get version() {
@@ -55,4 +52,4 @@ class y {
 export {
   y as B
 };
-//# sourceMappingURL=base-component-nXu3wApu.mjs.map
+//# sourceMappingURL=base-component-DHbs0JQk.mjs.map

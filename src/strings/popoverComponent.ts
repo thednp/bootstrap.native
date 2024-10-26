@@ -1,3 +1,3 @@
 /** @type {string} */
-const popoverComponent = 'Popover';
+const popoverComponent = "Popover";
 export default popoverComponent;

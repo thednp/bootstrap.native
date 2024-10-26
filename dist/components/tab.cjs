@@ -1,9 +1,7 @@
 "use strict";var P=Object.defineProperty;var k=(n,s,t)=>s in n?P(n,s,{enumerable:!0,configurable:!0,writable:!0,value:t}):n[s]=t;var g=(n,s,t)=>k(n,typeof s!="symbol"?s+"":s,t);const e=require("@thednp/shorty"),H=require("@thednp/event-listener"),E=require("./collapsingClass-CLblascz.js"),d=require("./activeClass-CxJYQAGN.js"),h=require("./fadeClass-Co6nOzNJ.js"),m=require("./showClass-D_Ms1FgG.js"),p=require("./dropdownClasses-CnEyz_iw.js"),D=require("./dataBsToggle-Dj-Ng54N.js"),w=require("./getTargetElement-Cl-PhUJH.js"),_=require("./base-component-DBcDoOjV.js"),f="tab",B="Tab",L=`[${D.dataBsToggle}="${f}"]`,I=n=>e.getInstance(n,B),j=n=>new u(n),b=e.createCustomEvent(`show.bs.${f}`),q=e.createCustomEvent(`shown.bs.${f}`),T=e.createCustomEvent(`hide.bs.${f}`),M=e.createCustomEvent(`hidden.bs.${f}`),v=new Map,x=n=>{const{tabContent:s,nav:t}=n;// istanbul ignore else @preserve
 s&&e.hasClass(s,E.collapsingClass)&&(s.style.height="",e.removeClass(s,E.collapsingClass));// istanbul ignore else @preserve
-t&&e.Timer.clear(t)},$=n=>{const{element:s,tabContent:t,content:a,nav:l}=n,{tab:r}=e.isHTMLElement(l)&&v.get(l)||{tab:null};// istanbul ignore next @preserve
-// istanbul ignore else @preserve
-if(t&&a&&e.hasClass(a,h.fadeClass)){const{currentHeight:o,nextHeight:i}=v.get(s)||{currentHeight:0,nextHeight:0};// istanbul ignore next @preserve
-// istanbul ignore else @preserve: vitest won't validate this branch
+t&&e.Timer.clear(t)},$=n=>{const{element:s,tabContent:t,content:a,nav:l}=n,{tab:r}=e.isHTMLElement(l)&&v.get(l)||{tab:null};// istanbul ignore else @preserve
+if(t&&a&&e.hasClass(a,h.fadeClass)){const{currentHeight:o,nextHeight:i}=v.get(s)||{currentHeight:0,nextHeight:0};// istanbul ignore else @preserve: vitest won't validate this branch
 o!==i?setTimeout(()=>{t.style.height=`${i}px`,e.reflow(t),e.emulateTransitionEnd(t,()=>x(n))},50):x(n)}else l&&e.Timer.clear(l);q.relatedTarget=r,e.dispatchEvent(s,q)},S=n=>{const{element:s,content:t,tabContent:a,nav:l}=n,{tab:r,content:o}=l&&v.get(l)||{tab:null,content:null};let i=0;// istanbul ignore else @preserve
 a&&t&&e.hasClass(t,h.fadeClass)&&([o,t].forEach(c=>{// istanbul ignore else @preserve
 e.isHTMLElement(c)&&e.addClass(c,"overflow-hidden")}),i=e.isHTMLElement(o)?o.scrollHeight:0),b.relatedTarget=r,M.relatedTarget=s,e.dispatchEvent(s,b);// istanbul ignore else @preserve

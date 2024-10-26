@@ -35,39 +35,41 @@ import {
   Timer,
   toLowerCase,
   touchstartEvent,
-} from '@thednp/shorty';
+} from "@thednp/shorty";
 
-import { addListener, removeListener } from '@thednp/event-listener';
+import { addListener, removeListener } from "@thednp/event-listener";
 
-import dataBsToggle from '../strings/dataBsToggle';
-import dataOriginalTitle from '../strings/dataOriginalTitle';
-import showClass from '../strings/showClass';
-import tooltipString from '../strings/tooltipString';
-import tooltipComponent from '../strings/tooltipComponent';
-import popoverString from '../strings/popoverString';
-import popoverComponent from '../strings/popoverComponent';
-import modalString from '../strings/modalString';
-import offcanvasString from '../strings/offcanvasString';
+import dataBsToggle from "../strings/dataBsToggle";
+import dataOriginalTitle from "../strings/dataOriginalTitle";
+import showClass from "../strings/showClass";
+import tooltipString from "../strings/tooltipString";
+import tooltipComponent from "../strings/tooltipComponent";
+import popoverString from "../strings/popoverString";
+import popoverComponent from "../strings/popoverComponent";
+import modalString from "../strings/modalString";
+import offcanvasString from "../strings/offcanvasString";
 
-import styleTip from '../util/styleTip';
-import createTip from '../util/createTip';
-import { appendPopup, hasPopup, removePopup } from '../util/popupContainer';
-import getElementContainer from '../util/getElementContainer';
-import tooltipDefaults from '../util/tooltipDefaults';
-import BaseComponent from './base-component';
-import type { TooltipEvent, TooltipOptions } from '../interface/tooltip';
-import type { PopoverEvent, PopoverOptions } from '../interface/popover';
+import styleTip from "../util/styleTip";
+import createTip from "../util/createTip";
+import { appendPopup, hasPopup, removePopup } from "../util/popupContainer";
+import getElementContainer from "../util/getElementContainer";
+import tooltipDefaults from "../util/tooltipDefaults";
+import BaseComponent from "./base-component";
+import type { TooltipEvent, TooltipOptions } from "../interface/tooltip";
+import type { PopoverEvent, PopoverOptions } from "../interface/popover";
 
 // TOOLTIP PRIVATE GC
 // ==================
-const tooltipSelector = `[${dataBsToggle}="${tooltipString}"],[data-tip="${tooltipString}"]`;
-const titleAttr = 'title';
+const tooltipSelector =
+  `[${dataBsToggle}="${tooltipString}"],[data-tip="${tooltipString}"]`;
+const titleAttr = "title";
 
 /**
  * Static method which returns an existing `Tooltip` instance associated
  * to a target `Element`.
  */
-let getTooltipInstance = (element: HTMLElement) => getInstance<Tooltip>(element, tooltipComponent);
+let getTooltipInstance = (element: HTMLElement) =>
+  getInstance<Tooltip>(element, tooltipComponent);
 
 /**
  * A `Tooltip` initialization callback.
@@ -84,7 +86,10 @@ const tooltipInitCallback = (element: HTMLElement) => new Tooltip(element);
 const removeTooltip = (self: Tooltip) => {
   const { element, tooltip, container, offsetParent } = self;
   removeAttribute(element, ariaDescribedBy);
-  removePopup(tooltip as HTMLElement, container === offsetParent ? container : offsetParent);
+  removePopup(
+    tooltip as HTMLElement,
+    container === offsetParent ? container : offsetParent,
+  );
 };
 
 /**
@@ -95,7 +100,8 @@ const removeTooltip = (self: Tooltip) => {
 const hasTip = (self: Tooltip): boolean | undefined => {
   const { tooltip, container, offsetParent } = self;
 
-  return tooltip && hasPopup(tooltip, container === offsetParent ? container : offsetParent);
+  return tooltip &&
+    hasPopup(tooltip, container === offsetParent ? container : offsetParent);
 };
 
 /**
@@ -109,7 +115,9 @@ const disposeTooltipComplete = (self: Tooltip, callback?: () => void) => {
   self._toggleEventListeners();
 
   // istanbul ignore else @preserve
-  if (hasAttribute(element, dataOriginalTitle) && self.name === tooltipComponent) {
+  if (
+    hasAttribute(element, dataOriginalTitle) && self.name === tooltipComponent
+  ) {
     toggleTooltipTitle(self);
   }
   // istanbul ignore else @preserve
@@ -126,9 +134,14 @@ const toggleTooltipAction = (self: Tooltip, add?: boolean) => {
   const action = add ? addListener : removeListener;
   const { element } = self;
 
-  action(getDocument(element), touchstartEvent, self.handleTouch, passiveHandler);
+  action(
+    getDocument(element),
+    touchstartEvent,
+    self.handleTouch,
+    passiveHandler,
+  );
 
-  [scrollEvent, resizeEvent].forEach(ev => {
+  [scrollEvent, resizeEvent].forEach((ev) => {
     action(getWindow(element), ev, self.update, passiveHandler);
   });
 };
@@ -140,13 +153,16 @@ const toggleTooltipAction = (self: Tooltip, add?: boolean) => {
  */
 const tooltipShownAction = (self: Tooltip) => {
   const { element } = self;
-  const shownTooltipEvent = createCustomEvent<Record<string, never>, TooltipEvent | PopoverEvent>(
+  const shownTooltipEvent = createCustomEvent<
+    Record<string, never>,
+    TooltipEvent | PopoverEvent
+  >(
     `shown.bs.${toLowerCase(self.name)}`,
   );
 
   toggleTooltipAction(self, true);
   dispatchEvent(element, shownTooltipEvent);
-  Timer.clear(element, 'in');
+  Timer.clear(element, "in");
 };
 
 /**
@@ -156,7 +172,10 @@ const tooltipShownAction = (self: Tooltip) => {
  */
 const tooltipHiddenAction = (self: Tooltip) => {
   const { element } = self;
-  const hiddenTooltipEvent = createCustomEvent<Record<string, never>, TooltipEvent | PopoverEvent>(
+  const hiddenTooltipEvent = createCustomEvent<
+    Record<string, never>,
+    TooltipEvent | PopoverEvent
+  >(
     `hidden.bs.${toLowerCase(self.name)}`,
   );
 
@@ -164,7 +183,7 @@ const tooltipHiddenAction = (self: Tooltip) => {
   removeTooltip(self);
   dispatchEvent(element, hiddenTooltipEvent);
 
-  Timer.clear(element, 'out');
+  Timer.clear(element, "out");
 };
 
 /**
@@ -213,7 +232,7 @@ const toggleTooltipTitle = (self: Tooltip, content?: string) => {
     content ||
       getAttribute(element, titleAtt[0]) ||
       // istanbul ignore next @preserve
-      '',
+      "",
   );
   removeAttribute(element, titleAtt[content ? 1 : 0]);
 };
@@ -248,7 +267,8 @@ export default class Tooltip extends BaseComponent {
     const tipComponent = isTooltip ? tooltipComponent : popoverComponent;
 
     // istanbul ignore next @preserve: this is to set Popover too
-    getTooltipInstance = <T extends Tooltip>(elem: HTMLElement) => getInstance<T>(elem, tipComponent);
+    getTooltipInstance = <T extends Tooltip>(elem: HTMLElement) =>
+      getInstance<T>(elem, tipComponent);
 
     // additional properties
     this.enabled = true;
@@ -261,19 +281,24 @@ export default class Tooltip extends BaseComponent {
     // invalidate
     if (!((!options.title && isTooltip) || (!isTooltip && !options.content))) {
       // reset default options
-      ObjectAssign(tooltipDefaults, { titleAttr: '' });
+      ObjectAssign(tooltipDefaults, { titleAttr: "" });
 
       // set title attributes and add event listeners
       // istanbul ignore else @preserve
-      if (hasAttribute(element, titleAttr) && isTooltip && typeof options.title === 'string') {
+      if (
+        hasAttribute(element, titleAttr) && isTooltip &&
+        typeof options.title === "string"
+      ) {
         toggleTooltipTitle(this, options.title);
       }
 
       // set containers
       this.container = getElementContainer(element);
-      this.offsetParent = ['sticky', 'fixed'].some(
-        position => getElementStyle(this.container as HTMLElement, 'position') === position,
-      )
+      this.offsetParent = ["sticky", "fixed"].some(
+          (position) =>
+            getElementStyle(this.container as HTMLElement, "position") ===
+              position,
+        )
         ? (this.container as HTMLElement)
         : getDocument(this.element).body;
 
@@ -308,16 +333,19 @@ export default class Tooltip extends BaseComponent {
   show() {
     const { options, tooltip, element, container, offsetParent, id } = this;
     const { animation } = options;
-    const outTimer = Timer.get(element, 'out');
+    const outTimer = Timer.get(element, "out");
     const tipContainer = container === offsetParent ? container : offsetParent;
 
-    Timer.clear(element, 'out');
+    Timer.clear(element, "out");
 
     if (tooltip && !outTimer && !hasTip(this)) {
       Timer.set(
         element,
         () => {
-          const showTooltipEvent = createCustomEvent<Record<string, never>, TooltipEvent | PopoverEvent>(
+          const showTooltipEvent = createCustomEvent<
+            Record<string, never>,
+            TooltipEvent | PopoverEvent
+          >(
             `show.bs.${toLowerCase(this.name)}`,
           );
           dispatchEvent(element, showTooltipEvent);
@@ -341,7 +369,7 @@ export default class Tooltip extends BaseComponent {
           }
         },
         17,
-        'in',
+        "in",
       );
     }
   }
@@ -352,14 +380,17 @@ export default class Tooltip extends BaseComponent {
     const { options, tooltip, element } = this;
     const { animation, delay } = options;
 
-    Timer.clear(element, 'in');
+    Timer.clear(element, "in");
 
     // istanbul ignore else @preserve
     if (tooltip && hasTip(this)) {
       Timer.set(
         element,
         () => {
-          const hideTooltipEvent = createCustomEvent<Record<string, never>, TooltipEvent | PopoverEvent>(
+          const hideTooltipEvent = createCustomEvent<
+            Record<string, never>,
+            TooltipEvent | PopoverEvent
+          >(
             `hide.bs.${toLowerCase(this.name)}`,
           );
           dispatchEvent(element, hideTooltipEvent);
@@ -377,7 +408,7 @@ export default class Tooltip extends BaseComponent {
           }
         },
         delay + 17,
-        'out',
+        "out",
       );
     }
   }
@@ -454,15 +485,17 @@ export default class Tooltip extends BaseComponent {
     const { element, options, btn } = this;
     const { trigger } = options;
     const isPopover = this.name !== tooltipComponent;
-    const dismissible = isPopover && (options as PopoverOptions).dismissible ? true : false;
+    const dismissible = isPopover && (options as PopoverOptions).dismissible
+      ? true
+      : false;
 
     // istanbul ignore else @preserve
-    if (!trigger.includes('manual')) {
+    if (!trigger.includes("manual")) {
       this.enabled = !!add;
 
-      const triggerOptions = trigger.split(' ');
+      const triggerOptions = trigger.split(" ");
 
-      triggerOptions.forEach(tr => {
+      triggerOptions.forEach((tr) => {
         // istanbul ignore else @preserve
         if (tr === mousehoverEvent) {
           action(element, mousedownEvent, this.handleShow);
@@ -471,7 +504,12 @@ export default class Tooltip extends BaseComponent {
           // istanbul ignore else @preserve
           if (!dismissible) {
             action(element, mouseleaveEvent, this.handleHide);
-            action(getDocument(element), touchstartEvent, this.handleTouch, passiveHandler);
+            action(
+              getDocument(element),
+              touchstartEvent,
+              this.handleTouch,
+              passiveHandler,
+            );
           }
         } else if (tr === mouseclickEvent) {
           action(element, tr, !dismissible ? this.toggle : this.handleShow);
@@ -496,7 +534,11 @@ export default class Tooltip extends BaseComponent {
   dispose() {
     const { tooltip, options } = this;
     const clone = { ...this, name: this.name };
-    const callback = () => setTimeout(() => disposeTooltipComplete(clone, () => super.dispose()), 17);
+    const callback = () =>
+      setTimeout(
+        () => disposeTooltipComplete(clone, () => super.dispose()),
+        17,
+      );
 
     if (options.animation && hasTip(clone)) {
       this.options.delay = 0; // reset delay

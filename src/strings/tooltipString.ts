@@ -1,3 +1,3 @@
 /** @type {string} */
-const tooltipString = 'tooltip';
+const tooltipString = "tooltip";
 export default tooltipString;

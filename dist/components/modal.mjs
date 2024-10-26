@@ -8,20 +8,25 @@ import { d as pe } from "./dataBsDismiss-DdNPQYa-.mjs";
 import { f as ue } from "./fadeClass-CLIYI_zn.mjs";
 import { s as i } from "./showClass-C8hdJfjQ.mjs";
 import { m as l, h as ve } from "./popupContainer-BitC465I.mjs";
-import { m as Q, g as k, o as Te, a as be, t as ye, b as f, s as Ee, h as U, c as Se, d as De, r as we, i as ke, e as Ce } from "./isVisible-w9jESiCU.mjs";
+import { m as Q, g as k, o as Te, a as be, t as ye, b as f, s as Ee, h as U, c as Se, d as De, r as we, i as ke, e as Ce } from "./isVisible-DWDmVrra.mjs";
 import { g as X } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as He } from "./base-component-nXu3wApu.mjs";
+import { B as He } from "./base-component-DHbs0JQk.mjs";
 const $e = `.${l}`, Y = `[${fe}="${l}"]`, Me = `[${pe}="${l}"]`, Z = `${l}-static`, Oe = {
   backdrop: !0,
   keyboard: !0
-}, u = (s) => I(s, Q), Fe = (s) => new T(s), v = S(`show.bs.${l}`), $ = S(`shown.bs.${l}`), w = S(`hide.bs.${l}`), M = S(`hidden.bs.${l}`), ee = (s) => {
+}, u = (s) => I(s, Q), Fe = (s) => new T(s), v = S(
+  `show.bs.${l}`
+), $ = S(
+  `shown.bs.${l}`
+), w = S(
+  `hide.bs.${l}`
+), M = S(
+  `hidden.bs.${l}`
+), ee = (s) => {
   const { element: t } = s, e = Se(t), { clientHeight: o, scrollHeight: a } = ie(t), { clientHeight: n, scrollHeight: r } = t, c = n !== r;
   // istanbul ignore next @preserve: impossible to test?
   if (!c && e) {
-    const g = { [le(t) ? (
-      // istanbul ignore next @preserve
-      "paddingLeft"
-    ) : "paddingRight"]: `${e}px` };
+    const g = { [le(t) ? "paddingLeft" : "paddingRight"]: `${e}px` };
     y(t, g);
   }
   De(t, c || o !== a);
@@ -102,11 +107,15 @@ class T extends He {
     h(this, "_toggleEventListeners", (e) => {
       const o = e ? G : J, { triggers: a } = this;
       // istanbul ignore else @preserve
-      a.length && a.forEach((n) => o(n, z, Le));
+      a.length && a.forEach(
+        (n) => o(n, z, Le)
+      );
     });
     const { element: a } = this, n = B(`.${l}-dialog`, a);
     // istanbul ignore else @preserve
-    n && (this.modalDialog = n, this.triggers = [...ne(Y, D(a))].filter(
+    n && (this.modalDialog = n, this.triggers = [
+      ...ne(Y, D(a))
+    ].filter(
       (r) => X(r) === a
     ), this.isStatic = this.options.backdrop === "static", this.hasFade = m(a, ue), this.relatedTarget = null, this._toggleEventListeners(!0));
   }
@@ -138,7 +147,10 @@ class T extends He {
       // istanbul ignore else @preserve
       if (d && d !== e) {
         const g = u(d) || // istanbul ignore next @preserve
-        I(d, Te);
+        I(
+          d,
+          Te
+        );
         // istanbul ignore else @preserve
         g && g.hide();
       }

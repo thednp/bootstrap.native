@@ -7,7 +7,7 @@ import { d as K } from "./dataBsToggle-B84TS15h.mjs";
 import { c as C } from "./collapsingClass-BxKtDBMH.mjs";
 import { s as v } from "./showClass-C8hdJfjQ.mjs";
 import { g as w } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as O } from "./base-component-nXu3wApu.mjs";
+import { B as O } from "./base-component-DHbs0JQk.mjs";
 const l = "collapse", k = "Collapse", Q = `.${l}`, y = `[${K}="${l}"]`, R = { parent: null }, m = (n) => j(n, k), U = (n) => new d(n), S = $(`show.bs.${l}`), V = $(`shown.bs.${l}`), b = $(`hide.bs.${l}`), W = $(`hidden.bs.${l}`), X = (n) => {
   const { element: e, parent: t, triggers: o } = n;
   u(e, S), S.defaultPrevented || (i.set(e, E, 17), t && i.set(t, E, 17), g(e, C), h(e, l), f(e, { height: `${e.scrollHeight}px` }), T(e, () => {
@@ -40,10 +40,14 @@ class d extends O {
     p(this, "_toggleEventListeners", (t) => {
       const o = t ? G : J, { triggers: s } = this;
       // istanbul ignore else @preserve
-      s.length && s.forEach((r) => o(r, N, Y));
+      s.length && s.forEach(
+        (r) => o(r, N, Y)
+      );
     });
     const { element: s, options: r } = this, a = D(s);
-    this.triggers = [...x(y, a)].filter((c) => w(c) === s), this.parent = _(r.parent) ? r.parent : q(r.parent) ? w(s) || P(r.parent, a) : null, this._toggleEventListeners(!0);
+    this.triggers = [...x(y, a)].filter(
+      (c) => w(c) === s
+    ), this.parent = _(r.parent) ? r.parent : q(r.parent) ? w(s) || P(r.parent, a) : null, this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
@@ -73,9 +77,9 @@ class d extends O {
   show() {
     const { element: t, parent: o, triggers: s } = this;
     let r, a;
-    if (o && (r = [...x(`.${l}.${v}`, o)].find(
-      (c) => m(c)
-    ), a = r && m(r)), (!o || !i.get(o)) && !i.get(t)) {
+    if (o && (r = [
+      ...x(`.${l}.${v}`, o)
+    ].find((c) => m(c)), a = r && m(r)), (!o || !i.get(o)) && !i.get(t)) {
       a && r !== t && (L(a), a.triggers.forEach((c) => {
         g(c, `${l}d`);
       })), X(this);

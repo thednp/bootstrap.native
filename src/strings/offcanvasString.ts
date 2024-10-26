@@ -1,3 +1,3 @@
 /** @type {string} */
-const offcanvasString = 'offcanvas';
+const offcanvasString = "offcanvas";
 export default offcanvasString;

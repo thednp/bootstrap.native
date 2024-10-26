@@ -1,3 +1,3 @@
 /** @type {string} */
-const tooltipComponent = 'Tooltip';
+const tooltipComponent = "Tooltip";
 export default tooltipComponent;

@@ -10,20 +10,28 @@ import { s as E } from "./showClass-C8hdJfjQ.mjs";
 import { d as I } from "./dropdownClasses-CdCdZ-PX.mjs";
 import { d as Y } from "./dataBsToggle-B84TS15h.mjs";
 import { g as P } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as Z } from "./base-component-nXu3wApu.mjs";
-const v = "tab", J = "Tab", D = `[${Y}="${v}"]`, K = (n) => U(n, J), tt = (n) => new T(n), L = H(`show.bs.${v}`), M = H(`shown.bs.${v}`), y = H(`hide.bs.${v}`), _ = H(`hidden.bs.${v}`), p = /* @__PURE__ */ new Map(), A = (n) => {
+import { B as Z } from "./base-component-DHbs0JQk.mjs";
+const v = "tab", J = "Tab", D = `[${Y}="${v}"]`, K = (n) => U(n, J), tt = (n) => new T(n), L = H(
+  `show.bs.${v}`
+), M = H(
+  `shown.bs.${v}`
+), y = H(
+  `hide.bs.${v}`
+), _ = H(
+  `hidden.bs.${v}`
+), p = /* @__PURE__ */ new Map(), A = (n) => {
   const { tabContent: e, nav: t } = n;
   // istanbul ignore else @preserve
   e && f(e, B) && (e.style.height = "", b(e, B));
   // istanbul ignore else @preserve
   t && C.clear(t);
 }, j = (n) => {
-  const { element: e, tabContent: t, content: s, nav: o } = n, { tab: r } = d(o) && p.get(o) || { tab: null };
-  // istanbul ignore next @preserve
+  const { element: e, tabContent: t, content: s, nav: o } = n, { tab: r } = d(o) && p.get(o) || // istanbul ignore next @preserve
+  { tab: null };
   // istanbul ignore else @preserve
   if (t && s && f(s, m)) {
-    const { currentHeight: i, nextHeight: a } = p.get(e) || { currentHeight: 0, nextHeight: 0 };
-    // istanbul ignore next @preserve
+    const { currentHeight: i, nextHeight: a } = p.get(e) || // istanbul ignore next @preserve
+    { currentHeight: 0, nextHeight: 0 };
     // istanbul ignore else @preserve: vitest won't validate this branch
     i !== a ? setTimeout(() => {
       t.style.height = `${a}px`, G(t), k(t, () => A(n));
@@ -31,20 +39,14 @@ const v = "tab", J = "Tab", D = `[${Y}="${v}"]`, K = (n) => U(n, J), tt = (n) =>
   } else o && C.clear(o);
   M.relatedTarget = r, w(e, M);
 }, q = (n) => {
-  const { element: e, content: t, tabContent: s, nav: o } = n, { tab: r, content: i } = o && p.get(o) || {
-    // istanbul ignore next @preserve
-    tab: null,
-    content: null
-  };
+  const { element: e, content: t, tabContent: s, nav: o } = n, { tab: r, content: i } = o && p.get(o) || // istanbul ignore next @preserve
+  { tab: null, content: null };
   let a = 0;
   // istanbul ignore else @preserve
   s && t && f(t, m) && ([i, t].forEach((c) => {
     // istanbul ignore else @preserve
     d(c) && g(c, "overflow-hidden");
-  }), a = d(i) ? i.scrollHeight : (
-    // istanbul ignore next @preserve
-    0
-  )), L.relatedTarget = r, _.relatedTarget = e, w(e, L);
+  }), a = d(i) ? i.scrollHeight : 0), L.relatedTarget = r, _.relatedTarget = e, w(e, L);
   // istanbul ignore else @preserve
   if (!L.defaultPrevented) {
     // istanbul ignore else @preserve
@@ -85,7 +87,9 @@ const v = "tab", J = "Tab", D = `[${Y}="${v}"]`, K = (n) => U(n, J), tt = (n) =>
   const t = V(l, e);
   let s = null;
   // istanbul ignore else @preserve
-  t.length === 1 && !I.some((r) => f(t[0].parentElement, r)) ? [s] = t : t.length > 1 && (s = t[t.length - 1]);
+  t.length === 1 && !I.some(
+    (r) => f(t[0].parentElement, r)
+  ) ? [s] = t : t.length > 1 && (s = t[t.length - 1]);
   const o = d(s) ? P(s) : null;
   return { tab: s, content: o };
 }, z = (n) => {

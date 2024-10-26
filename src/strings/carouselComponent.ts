@@ -1,3 +1,3 @@
 /** @type {string} */
-const carouselComponent = 'Carousel';
+const carouselComponent = "Carousel";
 export default carouselComponent;

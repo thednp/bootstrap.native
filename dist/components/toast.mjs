@@ -8,12 +8,20 @@ import { s as p } from "./showClass-C8hdJfjQ.mjs";
 import { d as R } from "./dataBsDismiss-DdNPQYa-.mjs";
 import { d as U } from "./dataBsToggle-B84TS15h.mjs";
 import { g as k } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as V } from "./base-component-nXu3wApu.mjs";
+import { B as V } from "./base-component-DHbs0JQk.mjs";
 const i = "toast", _ = "Toast", W = `.${i}`, X = `[${R}="${i}"]`, q = `[${U}="${i}"]`, l = "showing", x = "hide", Y = {
   animation: !0,
   autohide: !0,
   delay: 5e3
-}, T = (s) => K(s, _), Z = (s) => new g(s), S = v(`show.bs.${i}`), tt = v(`shown.bs.${i}`), $ = v(`hide.bs.${i}`), et = v(`hidden.bs.${i}`), y = (s) => {
+}, T = (s) => K(s, _), Z = (s) => new g(s), S = v(
+  `show.bs.${i}`
+), tt = v(
+  `shown.bs.${i}`
+), $ = v(
+  `hide.bs.${i}`
+), et = v(
+  `hidden.bs.${i}`
+), y = (s) => {
   const { element: t, options: e } = s;
   c(t, l), r.clear(t, l), u(t, tt);
   // istanbul ignore else @preserve
@@ -81,10 +89,14 @@ class g extends V {
         (E) => o(n, E, it)
       );
       // istanbul ignore else @preserve
-      m.length && m.forEach((E) => o(E, C, nt));
+      m.length && m.forEach(
+        (E) => o(E, C, nt)
+      );
     });
     const { element: n, options: m } = this;
-    m.animation && !w(n, f) ? d(n, f) : !m.animation && w(n, f) && c(n, f), this.dismiss = j(X, n), this.triggers = [...z(q, F(n))].filter(
+    m.animation && !w(n, f) ? d(n, f) : !m.animation && w(n, f) && c(n, f), this.dismiss = j(X, n), this.triggers = [
+      ...z(q, F(n))
+    ].filter(
       (h) => k(h) === n
     ), this._toggleEventListeners(!0);
   }

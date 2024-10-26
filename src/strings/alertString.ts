@@ -1,3 +1,3 @@
 /** @type {string} */
-const alertString = 'alert';
+const alertString = "alert";
 export default alertString;

@@ -147,10 +147,8 @@ a!==l&&Co(this,l);return}const{offsets:r}=this;// istanbul ignore else @preserve
 if(a&&n<r[0]&&r[0]>0){this.activeItem=null;// istanbul ignore else @preserve
 e&&yo(e);return}c.forEach((l,g)=>{a!==l&&n>=r[g]&&(typeof r[g+1]>"u"||n<r[g+1])&&Co(this,l)})}});d(this,"_toggleEventListeners",e=>{(e?_:B)(this.scrollTarget,Ie,this.refresh,st)});const{element:o,options:i}=this;this.target=P(i.target,w(o)),this.target&&(this.scrollTarget=o.clientHeight<o.scrollHeight?o:Xt(o),this.scrollHeight=To(this.scrollTarget),this._toggleEventListeners(!0),this.refresh())}get name(){return Eo}get defaults(){return Pc}dispose(){this._toggleEventListeners(),super.dispose()}}d(ee,"selector",Hc),d(ee,"init",xc),d(ee,"getInstance",Dc);const Ee="tab",So="Tab",Ho=`[${at}="${Ee}"]`,Po=t=>W(t,So),Lc=t=>new se(t),As=$(`show.bs.${Ee}`),Do=$(`shown.bs.${Ee}`),Is=$(`hide.bs.${Ee}`),xo=$(`hidden.bs.${Ee}`),$e=new Map,Ao=t=>{const{tabContent:s,nav:e}=t;// istanbul ignore else @preserve
 s&&f(s,Nt)&&(s.style.height="",b(s,Nt));// istanbul ignore else @preserve
-e&&u.clear(e)},Io=t=>{const{element:s,tabContent:e,content:n,nav:o}=t,{tab:i}=T(o)&&$e.get(o)||{tab:null};// istanbul ignore next @preserve
-// istanbul ignore else @preserve
-if(e&&n&&f(n,F)){const{currentHeight:c,nextHeight:a}=$e.get(s)||{currentHeight:0,nextHeight:0};// istanbul ignore next @preserve
-// istanbul ignore else @preserve: vitest won't validate this branch
+e&&u.clear(e)},Io=t=>{const{element:s,tabContent:e,content:n,nav:o}=t,{tab:i}=T(o)&&$e.get(o)||{tab:null};// istanbul ignore else @preserve
+if(e&&n&&f(n,F)){const{currentHeight:c,nextHeight:a}=$e.get(s)||{currentHeight:0,nextHeight:0};// istanbul ignore else @preserve: vitest won't validate this branch
 c!==a?setTimeout(()=>{e.style.height=`${a}px`,Lt(e),A(e,()=>Ao(t))},50):Ao(t)}else o&&u.clear(o);Do.relatedTarget=i,E(s,Do)},Lo=t=>{const{element:s,content:e,tabContent:n,nav:o}=t,{tab:i,content:c}=o&&$e.get(o)||{tab:null,content:null};let a=0;// istanbul ignore else @preserve
 n&&e&&f(e,F)&&([c,e].forEach(r=>{// istanbul ignore else @preserve
 T(r)&&h(r,"overflow-hidden")}),a=T(c)?c.scrollHeight:0),As.relatedTarget=i,xo.relatedTarget=s,E(s,As);// istanbul ignore else @preserve

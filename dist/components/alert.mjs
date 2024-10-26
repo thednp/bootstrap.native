@@ -6,8 +6,12 @@ import { addListener as S, removeListener as _ } from "@thednp/event-listener";
 import { f as b } from "./fadeClass-CLIYI_zn.mjs";
 import { s as c } from "./showClass-C8hdJfjQ.mjs";
 import { d as B } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { B as k } from "./base-component-nXu3wApu.mjs";
-const i = "alert", g = "Alert", w = `.${i}`, x = `[${B}="${i}"]`, A = (t) => I(t, g), D = (t) => new n(t), l = d(`close.bs.${i}`), T = d(`closed.bs.${i}`), m = (t) => {
+import { B as k } from "./base-component-DHbs0JQk.mjs";
+const i = "alert", g = "Alert", w = `.${i}`, x = `[${B}="${i}"]`, A = (t) => I(t, g), D = (t) => new n(t), l = d(
+  `close.bs.${i}`
+), T = d(
+  `closed.bs.${i}`
+), m = (t) => {
   const { element: s } = t;
   p(s, T), t._toggleEventListeners(), t.dispose(), s.remove();
 };

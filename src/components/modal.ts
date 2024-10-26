@@ -33,19 +33,19 @@ import {
   setElementStyle,
   Timer,
   toggleFocusTrap,
-} from '@thednp/shorty';
+} from "@thednp/shorty";
 
-import { addListener, removeListener } from '@thednp/event-listener';
+import { addListener, removeListener } from "@thednp/event-listener";
 
-import dataBsToggle from '../strings/dataBsToggle';
-import dataBsDismiss from '../strings/dataBsDismiss';
-import fadeClass from '../strings/fadeClass';
-import showClass from '../strings/showClass';
-import modalString from '../strings/modalString';
-import modalComponent from '../strings/modalComponent';
-import offcanvasComponent from '../strings/offcanvasComponent';
-import getTargetElement from '../util/getTargetElement';
-import { measureScrollbar, setScrollbar } from '../util/scrollbar';
+import dataBsToggle from "../strings/dataBsToggle";
+import dataBsDismiss from "../strings/dataBsDismiss";
+import fadeClass from "../strings/fadeClass";
+import showClass from "../strings/showClass";
+import modalString from "../strings/modalString";
+import modalComponent from "../strings/modalComponent";
+import offcanvasComponent from "../strings/offcanvasComponent";
+import getTargetElement from "../util/getTargetElement";
+import { measureScrollbar, setScrollbar } from "../util/scrollbar";
 import {
   appendOverlay,
   getCurrentOpen,
@@ -55,11 +55,11 @@ import {
   removeOverlay,
   showOverlay,
   toggleOverlayType,
-} from '../util/backdrop';
-import isVisible from '../util/isVisible';
-import BaseComponent from './base-component';
-import { ModalEvent, ModalOptions } from '../interface/modal';
-import { hasPopup } from '../util/popupContainer';
+} from "../util/backdrop";
+import isVisible from "../util/isVisible";
+import BaseComponent from "./base-component";
+import { ModalEvent, ModalOptions } from "../interface/modal";
+import { hasPopup } from "../util/popupContainer";
 
 // MODAL PRIVATE GC
 // ================
@@ -81,7 +81,8 @@ type ModalEventProps = {
  * Static method which returns an existing `Modal` instance associated
  * to a target `Element`.
  */
-const getModalInstance = (element: HTMLElement) => getInstance<Modal>(element, modalComponent);
+const getModalInstance = (element: HTMLElement) =>
+  getInstance<Modal>(element, modalComponent);
 
 /**
  * A `Modal` initialization callback.
@@ -90,10 +91,18 @@ const modalInitCallback = (element: HTMLElement) => new Modal(element);
 
 // MODAL CUSTOM EVENTS
 // ===================
-const showModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(`show.bs.${modalString}`);
-const shownModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(`shown.bs.${modalString}`);
-const hideModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(`hide.bs.${modalString}`);
-const hiddenModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(`hidden.bs.${modalString}`);
+const showModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(
+  `show.bs.${modalString}`,
+);
+const shownModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(
+  `shown.bs.${modalString}`,
+);
+const hideModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(
+  `hide.bs.${modalString}`,
+);
+const hiddenModalEvent = createCustomEvent<ModalEventProps, ModalEvent>(
+  `hidden.bs.${modalString}`,
+);
 
 // MODAL PRIVATE METHODS
 // =====================
@@ -107,16 +116,19 @@ const setModalScrollbar = (self: Modal) => {
   const { element } = self;
   const scrollbarWidth = measureScrollbar(element);
   const { clientHeight, scrollHeight } = getDocumentElement(element);
-  const { clientHeight: modalHeight, scrollHeight: modalScrollHeight } = element;
+  const { clientHeight: modalHeight, scrollHeight: modalScrollHeight } =
+    element;
   const modalOverflow = modalHeight !== modalScrollHeight;
 
   // istanbul ignore next @preserve: impossible to test?
   if (!modalOverflow && scrollbarWidth) {
     const pad = !isRTL(element)
-      ? 'paddingRight'
-      : // istanbul ignore next @preserve
-        'paddingLeft';
-    const padStyle = { [pad]: `${scrollbarWidth}px` } as Partial<CSS4Declaration>;
+      ? "paddingRight"
+      // istanbul ignore next @preserve
+      : "paddingLeft";
+    const padStyle = { [pad]: `${scrollbarWidth}px` } as Partial<
+      CSS4Declaration
+    >;
     setElementStyle(element, padStyle);
   }
   setScrollbar(element, modalOverflow || clientHeight !== scrollHeight);
@@ -144,7 +156,7 @@ const toggleModalDismiss = (self: Modal, add?: boolean) => {
 const afterModalHide = (self: Modal) => {
   const { triggers, element, relatedTarget } = self;
   removeOverlay(element);
-  setElementStyle(element, { paddingRight: '', display: '' });
+  setElementStyle(element, { paddingRight: "", display: "" });
   toggleModalDismiss(self);
 
   const focusElement = showModalEvent.relatedTarget || triggers.find(isVisible);
@@ -178,16 +190,16 @@ const afterModalShow = (self: Modal) => {
  */
 const beforeModalShow = (self: Modal) => {
   const { element, hasFade } = self;
-  setElementStyle(element, { display: 'block' });
+  setElementStyle(element, { display: "block" });
   setModalScrollbar(self);
   // istanbul ignore else @preserve
   if (!getCurrentOpen(element)) {
-    setElementStyle(getDocumentBody(element), { overflow: 'hidden' });
+    setElementStyle(getDocumentBody(element), { overflow: "hidden" });
   }
 
   addClass(element, showClass);
   removeAttribute(element, ariaHidden);
-  setAttribute(element, ariaModal, 'true');
+  setAttribute(element, ariaModal, "true");
 
   if (hasFade) emulateTransitionEnd(element, () => afterModalShow(self));
   else afterModalShow(self);
@@ -203,7 +215,10 @@ const beforeModalHide = (self: Modal) => {
 
   // callback can also be the transitionEvent object, we wanna make sure it's not
   // call is not forced and overlay is visible
-  if (options.backdrop && hasFade && hasClass(overlay, showClass) && !getCurrentOpen(element)) {
+  if (
+    options.backdrop && hasFade && hasClass(overlay, showClass) &&
+    !getCurrentOpen(element)
+  ) {
     // AND no modal is visible
     hideOverlay();
     emulateTransitionEnd(overlay, () => afterModalHide(self));
@@ -229,7 +244,7 @@ const modalClickHandler = (e: MouseEvent<HTMLElement>) => {
   // istanbul ignore else @preserve
   if (self) {
     // istanbul ignore else @preserve
-    if (trigger && trigger.tagName === 'A') e.preventDefault();
+    if (trigger && trigger.tagName === "A") e.preventDefault();
     self.relatedTarget = trigger;
     self.toggle();
   }
@@ -277,7 +292,8 @@ const modalDismissHandler = (e: MouseEvent<HTMLElement>) => {
     const { backdrop } = options;
     const { target } = e;
 
-    const selectedText = getDocument(currentTarget)?.getSelection()?.toString().length;
+    const selectedText = getDocument(currentTarget)?.getSelection()?.toString()
+      .length;
     const targetInsideDialog = modalDialog.contains(target);
     const dismiss = target && closest(target, modalDismissSelector);
 
@@ -291,7 +307,9 @@ const modalDismissHandler = (e: MouseEvent<HTMLElement>) => {
         },
         17,
       );
-    } else if (dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)) {
+    } else if (
+      dismiss || (!selectedText && !isStatic && !targetInsideDialog && backdrop)
+    ) {
       self.relatedTarget = dismiss || null;
       self.hide();
       e.preventDefault();
@@ -343,12 +361,14 @@ export default class Modal extends BaseComponent {
     if (modalDialog) {
       this.modalDialog = modalDialog;
       // modal can have multiple triggering elements
-      this.triggers = [...querySelectorAll(modalToggleSelector, getDocument(element))].filter(
-        btn => getTargetElement(btn) === element,
+      this.triggers = [
+        ...querySelectorAll(modalToggleSelector, getDocument(element)),
+      ].filter(
+        (btn) => getTargetElement(btn) === element,
       );
 
       // additional internals
-      this.isStatic = this.options.backdrop === 'static';
+      this.isStatic = this.options.backdrop === "static";
       this.hasFade = hasClass(element, fadeClass);
       this.relatedTarget = null;
 
@@ -394,10 +414,12 @@ export default class Modal extends BaseComponent {
 
         // istanbul ignore else @preserve
         if (currentOpen && currentOpen !== element) {
-          const that =
-            getModalInstance(currentOpen) ||
+          const that = getModalInstance(currentOpen) ||
             // istanbul ignore next @preserve
-            getInstance<typeof BaseComponent & { hide: () => void }>(currentOpen, offcanvasComponent);
+            getInstance<typeof BaseComponent & { hide: () => void }>(
+              currentOpen,
+              offcanvasComponent,
+            );
           // istanbul ignore else @preserve
           if (that) that.hide();
         }
@@ -435,7 +457,7 @@ export default class Modal extends BaseComponent {
       // istanbul ignore else @preserve
       if (!hideModalEvent.defaultPrevented) {
         removeClass(element, showClass);
-        setAttribute(element, ariaHidden, 'true');
+        setAttribute(element, ariaHidden, "true");
         removeAttribute(element, ariaModal);
 
         if (hasFade) {
@@ -466,7 +488,9 @@ export default class Modal extends BaseComponent {
 
     // istanbul ignore else @preserve
     if (triggers.length) {
-      triggers.forEach(btn => action(btn, mouseclickEvent, modalClickHandler));
+      triggers.forEach((btn) =>
+        action(btn, mouseclickEvent, modalClickHandler)
+      );
     }
   };
 

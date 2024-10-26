@@ -1,4 +1,4 @@
-import { closest, getAttribute, hasAttribute } from '@thednp/shorty';
+import { closest, getAttribute, hasAttribute } from "@thednp/shorty";
 
 /**
  * Checks if an *event.target* or its parent has an `href="#"` value.
@@ -9,16 +9,16 @@ import { closest, getAttribute, hasAttribute } from '@thednp/shorty';
  */
 const isEmptyAnchor = (element: HTMLElement) => {
   // `EventTarget` must be `HTMLElement`
-  const parentAnchor = closest(element, 'A');
+  const parentAnchor = closest(element, "A");
   return (
-    (element.tagName === 'A' &&
+    (element.tagName === "A" &&
       // anchor href starts with #
-      hasAttribute(element, 'href') &&
-      (getAttribute(element, 'href') as string).slice(-1) === '#') ||
+      hasAttribute(element, "href") &&
+      (getAttribute(element, "href") as string).slice(-1) === "#") ||
     // OR a child of an anchor with href starts with #
     (parentAnchor &&
-      hasAttribute(parentAnchor, 'href') &&
-      (getAttribute(parentAnchor, 'href') as string).slice(-1) === '#')
+      hasAttribute(parentAnchor, "href") &&
+      (getAttribute(parentAnchor, "href") as string).slice(-1) === "#")
   );
 };
 export default isEmptyAnchor;

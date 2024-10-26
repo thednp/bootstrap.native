@@ -1,3 +1,3 @@
 /** @type {string} */
-const toastString = 'toast';
+const toastString = "toast";
 export default toastString;

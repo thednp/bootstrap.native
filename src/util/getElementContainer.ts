@@ -1,4 +1,10 @@
-import { getDocument, getElementStyle, getParentNode, isShadowRoot, isTableElement } from '@thednp/shorty';
+import {
+  getDocument,
+  getElementStyle,
+  getParentNode,
+  isShadowRoot,
+  isTableElement,
+} from "@thednp/shorty";
 
 /**
  * Returns an `HTMLElement` to be used as default value for *options.container*
@@ -10,7 +16,7 @@ import { getDocument, getElementStyle, getParentNode, isShadowRoot, isTableEleme
  * @returns the query result
  */
 const getElementContainer = (element: HTMLElement): ParentNode => {
-  const majorBlockTags = ['HTML', 'BODY'];
+  const majorBlockTags = ["HTML", "BODY"];
   const containers: ParentNode[] = [];
   let { parentNode } = element as Node;
 
@@ -25,8 +31,10 @@ const getElementContainer = (element: HTMLElement): ParentNode => {
   return (
     containers.find((c, i) => {
       if (
-        getElementStyle(c as HTMLElement, 'position') !== 'relative' &&
-        containers.slice(i + 1).every(r => getElementStyle(r as HTMLElement, 'position') === 'static')
+        getElementStyle(c as HTMLElement, "position") !== "relative" &&
+        containers.slice(i + 1).every((r) =>
+          getElementStyle(r as HTMLElement, "position") === "static"
+        )
       ) {
         return c;
       }

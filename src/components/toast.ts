@@ -19,28 +19,28 @@ import {
   reflow,
   removeClass,
   Timer,
-} from '@thednp/shorty';
+} from "@thednp/shorty";
 
-import { addListener, removeListener } from '@thednp/event-listener';
+import { addListener, removeListener } from "@thednp/event-listener";
 
-import fadeClass from '../strings/fadeClass';
-import showClass from '../strings/showClass';
-import dataBsDismiss from '../strings/dataBsDismiss';
-import dataBsToggle from '../strings/dataBsToggle';
-import toastString from '../strings/toastString';
-import toastComponent from '../strings/toastComponent';
-import getTargetElement from '../util/getTargetElement';
-import BaseComponent from './base-component';
-import { ToastEvent, ToastOptions } from '../interface/toast';
+import fadeClass from "../strings/fadeClass";
+import showClass from "../strings/showClass";
+import dataBsDismiss from "../strings/dataBsDismiss";
+import dataBsToggle from "../strings/dataBsToggle";
+import toastString from "../strings/toastString";
+import toastComponent from "../strings/toastComponent";
+import getTargetElement from "../util/getTargetElement";
+import BaseComponent from "./base-component";
+import { ToastEvent, ToastOptions } from "../interface/toast";
 
 // TOAST PRIVATE GC
 // ================
 const toastSelector = `.${toastString}`;
 const toastDismissSelector = `[${dataBsDismiss}="${toastString}"]`;
 const toastToggleSelector = `[${dataBsToggle}="${toastString}"]`;
-const showingClass = 'showing';
+const showingClass = "showing";
 /** @deprecated */
-const hideClass = 'hide';
+const hideClass = "hide";
 
 const toastDefaults = {
   animation: true,
@@ -52,7 +52,8 @@ const toastDefaults = {
  * Static method which returns an existing `Toast` instance associated
  * to a target `Element`.
  */
-const getToastInstance = (element: HTMLElement) => getInstance<Toast>(element, toastComponent);
+const getToastInstance = (element: HTMLElement) =>
+  getInstance<Toast>(element, toastComponent);
 
 /**
  * A `Toast` initialization callback.
@@ -61,10 +62,18 @@ const toastInitCallback = (element: HTMLElement) => new Toast(element);
 
 // TOAST CUSTOM EVENTS
 // ===================
-const showToastEvent = createCustomEvent<Record<string, never>, ToastEvent>(`show.bs.${toastString}`);
-const shownToastEvent = createCustomEvent<Record<string, never>, ToastEvent>(`shown.bs.${toastString}`);
-const hideToastEvent = createCustomEvent<Record<string, never>, ToastEvent>(`hide.bs.${toastString}`);
-const hiddenToastEvent = createCustomEvent<Record<string, never>, ToastEvent>(`hidden.bs.${toastString}`);
+const showToastEvent = createCustomEvent<Record<string, never>, ToastEvent>(
+  `show.bs.${toastString}`,
+);
+const shownToastEvent = createCustomEvent<Record<string, never>, ToastEvent>(
+  `shown.bs.${toastString}`,
+);
+const hideToastEvent = createCustomEvent<Record<string, never>, ToastEvent>(
+  `hide.bs.${toastString}`,
+);
+const hiddenToastEvent = createCustomEvent<Record<string, never>, ToastEvent>(
+  `hidden.bs.${toastString}`,
+);
 
 // TOAST PRIVATE METHODS
 // =====================
@@ -159,7 +168,7 @@ const toastClickHandler = (e: Event) => {
   // istanbul ignore else @preserve
   if (self) {
     // istanbul ignore else @preserve
-    if (trigger && trigger.tagName === 'A') e.preventDefault();
+    if (trigger && trigger.tagName === "A") e.preventDefault();
     self.relatedTarget = trigger;
     self.show();
   }
@@ -177,7 +186,10 @@ const interactiveToastHandler = (e: MouseEvent) => {
   const { type, relatedTarget } = e;
 
   // istanbul ignore else @preserve: a solid filter is required
-  if (self && element !== relatedTarget && !element.contains(relatedTarget as Node)) {
+  if (
+    self && element !== relatedTarget &&
+    !element.contains(relatedTarget as Node)
+  ) {
     if ([mouseenterEvent, focusinEvent].includes(type)) {
       Timer.clear(element, toastString);
     } else {
@@ -217,8 +229,10 @@ export default class Toast extends BaseComponent {
     this.dismiss = querySelector(toastDismissSelector, element);
 
     // toast can have multiple triggering elements
-    this.triggers = [...querySelectorAll(toastToggleSelector, getDocument(element))].filter(
-      btn => getTargetElement(btn) === element,
+    this.triggers = [
+      ...querySelectorAll(toastToggleSelector, getDocument(element)),
+    ].filter(
+      (btn) => getTargetElement(btn) === element,
     );
 
     // add event listener
@@ -287,13 +301,15 @@ export default class Toast extends BaseComponent {
 
     // istanbul ignore else @preserve
     if (options.autohide) {
-      [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent].forEach(e =>
-        action(element, e, interactiveToastHandler),
+      [focusinEvent, focusoutEvent, mouseenterEvent, mouseleaveEvent].forEach(
+        (e) => action(element, e, interactiveToastHandler),
       );
     }
     // istanbul ignore else @preserve
     if (triggers.length) {
-      triggers.forEach(btn => action(btn, mouseclickEvent, toastClickHandler));
+      triggers.forEach((btn) =>
+        action(btn, mouseclickEvent, toastClickHandler)
+      );
     }
   };
 

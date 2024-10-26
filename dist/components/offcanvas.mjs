@@ -7,9 +7,9 @@ import { d as oe } from "./dataBsDismiss-DdNPQYa-.mjs";
 import { d as ne } from "./dataBsToggle-B84TS15h.mjs";
 import { s as a } from "./showClass-C8hdJfjQ.mjs";
 import { o as i, h as ae } from "./popupContainer-BitC465I.mjs";
-import { o as V, g as H, m as ie, a as re, t as ce, b as d, s as le, h as j, i as fe, r as ge, d as de, f as z } from "./isVisible-w9jESiCU.mjs";
+import { o as V, g as H, m as ie, a as re, t as ce, b as d, s as le, h as j, i as fe, r as ge, d as de, f as z } from "./isVisible-DWDmVrra.mjs";
 import { g as G } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as me } from "./base-component-nXu3wApu.mjs";
+import { B as me } from "./base-component-DHbs0JQk.mjs";
 const ve = `.${i}`, A = `[${ne}="${i}"]`, he = `[${oe}="${i}"]`, T = `${i}-toggling`, ue = {
   backdrop: !0,
   // boolean
@@ -39,7 +39,13 @@ const ve = `.${i}`, A = `[${ne}="${i}"]`, he = `[${oe}="${i}"]`, T = `${i}-toggl
     e && e.tagName === "A" && s.preventDefault();
   }
 }, Ee = (s) => {
-  const { target: e } = s, t = S(z, m(e)), o = S(he, t), n = t && v(t);
+  const { target: e } = s, t = S(
+    z,
+    m(e)
+  ), o = S(
+    he,
+    t
+  ), n = t && v(t);
   // istanbul ignore else @preserve
   if (n) {
     const { options: c, triggers: r } = n, { backdrop: f } = c, y = _(e, A), B = m(t).getSelection();
@@ -53,7 +59,10 @@ const ve = `.${i}`, A = `[${ne}="${i}"]`, he = `[${oe}="${i}"]`, T = `${i}-toggl
     }
   }
 }, Oe = ({ code: s, target: e }) => {
-  const t = S(z, m(e)), o = t && v(t);
+  const t = S(
+    z,
+    m(e)
+  ), o = t && v(t);
   // istanbul ignore else @preserve
   if (o) {
     // istanbul ignore else @preserve
@@ -84,10 +93,14 @@ class u extends me {
      */
     g(this, "_toggleEventListeners", (t) => {
       const o = t ? K : M;
-      this.triggers.forEach((n) => o(n, P, ye));
+      this.triggers.forEach(
+        (n) => o(n, P, ye)
+      );
     });
     const { element: n } = this;
-    this.triggers = [...X(A, m(n))].filter(
+    this.triggers = [
+      ...X(A, m(n))
+    ].filter(
       (c) => G(c) === n
     ), this.relatedTarget = null, this._toggleEventListeners(!0);
   }
@@ -117,7 +130,10 @@ class u extends me {
       const r = H(t);
       if (r && r !== t) {
         const f = v(r) || // istanbul ignore next @preserve
-        I(r, ie);
+        I(
+          r,
+          ie
+        );
         // istanbul ignore else @preserve
         f && f.hide();
       }

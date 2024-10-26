@@ -1,5 +1,5 @@
 /**
  * Global namespace for most components `show` class.
  */
-const showClass = 'show';
+const showClass = "show";
 export default showClass;

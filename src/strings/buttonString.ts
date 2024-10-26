@@ -1,3 +1,3 @@
 /** @type {string} */
-const buttonString = 'button';
+const buttonString = "button";
 export default buttonString;

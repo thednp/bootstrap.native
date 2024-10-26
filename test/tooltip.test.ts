@@ -487,87 +487,28 @@ describe("Tooltip Class Tests", () => {
     instance.dispose();
   });
 
-  it("Can handle small devices", async () => {
-    await page.viewport(800, 150);
-    const container = getMarkup("tooltip");
-    wrapper.append(container);
-    await vi.waitFor(() => container.querySelector('[data-test="tooltip"]'), 200);
-    Object.assign(container.style, { padding: "5rem" });
- 
-    const element = container.querySelectorAll<HTMLElement>('[data-test="tooltip"]')[1]!;
-    // horizontal
-    const instance = new Tooltip(element, { placement: "left" });
-    instance.show();
-    await vi.waitFor(() => {
-      expect(instance.tooltip?.className).to.contain("show");
-    }, 101);
-    instance.dispose();
+  const viewports = [[800,150], [150,800]];
+  const placements = ['top', 'right', 'bottom', 'left'];
 
-    await new Promise(res => setTimeout(res, 251));
-    const instance1 = new Tooltip(element, { placement: "right" });
-
-    instance1.show();
-    await vi.waitFor(() => {
-      expect(instance1.tooltip?.className).to.contain("show");
-    }, 101);
-    instance1.dispose();
-
-    await new Promise(res => setTimeout(res, 251));
-    const instance2 = new Tooltip(element, { placement: "top" });
-
-    instance2.show();
-    await vi.waitFor(() => {
-      expect(instance2.tooltip?.className).to.contain("show");
-    }, 101);
-    instance2.dispose();
-
-    await new Promise(res => setTimeout(res, 251));
-    const instance3 = new Tooltip(element, { placement: "bottom" });
-
-    instance3.show();
-    await vi.waitFor(() => {
-      expect(instance3.tooltip?.className).to.contain("show");
-    }, 151);
-    instance3.dispose();
-    await new Promise(res => setTimeout(res, 251));
-
-    // vertical
-    await page.viewport(150, 800);
-    await new Promise(res => setTimeout(res, 251));
-    const instance4 = new Tooltip(element, { placement: "left" });
-    instance4.show();
-    await vi.waitFor(() => {
-      expect(instance4.tooltip?.className).to.contain("show");
-    }, 151);
-    instance4.dispose();
-
-    await new Promise(res => setTimeout(res, 251));
-    const instance5 = new Tooltip(element, { placement: "right" });
-
-    instance5.show();
-    await vi.waitFor(() => {
-      expect(instance5.tooltip?.className).to.contain("show");
-    }, 151);
-    instance5.dispose();
-
-    await new Promise(res => setTimeout(res, 251));
-    const instance6 = new Tooltip(element, { placement: "top" });
-
-    instance6.show();
-    await vi.waitFor(() => {
-      expect(instance6.tooltip?.className).to.contain("show");
-    }, 151);
-    instance6.dispose();
-
-    await new Promise(res => setTimeout(res, 251));
-    const instance7 = new Tooltip(element, { placement: "bottom" });
-
-    instance7.show();
-    await vi.waitFor(() => {
-      expect(instance7.tooltip?.className).to.contain("show");
-    }, 151);
-    instance7.dispose();    
-  });
+  viewports.forEach(([width, height]) => {
+    placements.forEach((placement) => {
+      it(`Can handle small devices ${placement} - ${width}, ${height}`, async () => {
+        await page.viewport(width, height);
+        const container = getMarkup("tooltip");
+        wrapper.append(container);
+        await vi.waitFor(() => container.querySelector('[data-test="tooltip"]'), 200);
+        Object.assign(container.style, { padding: "5rem" });
+     
+        const element = container.querySelectorAll<HTMLElement>('[data-test="tooltip"]')[1]!;
+        // horizontal
+        const instance = new Tooltip(element, { placement: placement as 'top' | 'left' | 'right' | 'bottom' });
+        instance.show();
+        await vi.waitFor(() => {
+          expect(instance.tooltip?.className).to.contain("show");
+        }, 151);
+      })
+    })
+  })
 
   it("Can dispose()", async () => {
     const container = getMarkup("tooltip");

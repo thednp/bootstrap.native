@@ -1,5 +1,5 @@
 /**
  * Global namespace for most components `fade` class.
  */
-const fadeClass = 'fade';
+const fadeClass = "fade";
 export default fadeClass;

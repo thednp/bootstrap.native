@@ -9,16 +9,16 @@ import {
   mouseclickEvent,
   removeClass,
   setAttribute,
-} from '@thednp/shorty';
+} from "@thednp/shorty";
 
-import { addListener, removeListener } from '@thednp/event-listener';
+import { addListener, removeListener } from "@thednp/event-listener";
 
-import activeClass from '../strings/activeClass';
-import dataBsToggle from '../strings/dataBsToggle';
-import buttonString from '../strings/buttonString';
-import buttonComponent from '../strings/buttonComponent';
+import activeClass from "../strings/activeClass";
+import dataBsToggle from "../strings/dataBsToggle";
+import buttonString from "../strings/buttonString";
+import buttonComponent from "../strings/buttonComponent";
 
-import BaseComponent from './base-component';
+import BaseComponent from "./base-component";
 
 // BUTTON PRIVATE GC
 // =================
@@ -28,7 +28,8 @@ const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
  * Static method which returns an existing `Button` instance associated
  * to a target `Element`.
  */
-const getButtonInstance = (element: HTMLElement) => getInstance<Button>(element, buttonComponent);
+const getButtonInstance = (element: HTMLElement) =>
+  getInstance<Button>(element, buttonComponent);
 
 /** A `Button` initialization callback. */
 const buttonInitCallback = (element: HTMLElement) => new Button(element);
@@ -78,10 +79,10 @@ export default class Button extends BaseComponent {
     if (e) e.preventDefault();
 
     const { element, isActive } = this;
-    if (!hasClass(element, 'disabled') && !getAttribute(element, 'disabled')) {
+    if (!hasClass(element, "disabled") && !getAttribute(element, "disabled")) {
       const action = isActive ? removeClass : addClass;
       action(element, activeClass);
-      setAttribute(element, ariaPressed, isActive ? 'false' : 'true');
+      setAttribute(element, ariaPressed, isActive ? "false" : "true");
       this.isActive = hasClass(element, activeClass);
     }
   };

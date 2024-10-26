@@ -333,10 +333,7 @@ class ot {
     }
     const o = At.get(n, this.name);
     // istanbul ignore else @preserve
-    o && o._toggleEventListeners(), this.element = n, this.options = this.defaults && js(this.defaults).length ? ii(n, this.defaults, e || {}, "bs") : (
-      // istanbul ignore next @preserve
-      {}
-    ), At.set(n, this.name, this);
+    o && o._toggleEventListeners(), this.element = n, this.options = this.defaults && js(this.defaults).length ? ii(n, this.defaults, e || {}, "bs") : {}, At.set(n, this.name, this);
   }
   // istanbul ignore next @preserve
   get version() {
@@ -357,7 +354,11 @@ class ot {
     });
   }
 }
-const mi = `.${je}`, vi = `[${We}="${je}"]`, bi = (t) => W(t, Un), wi = (t) => new se(t), Xs = $(`close.bs.${je}`), Ei = $(`closed.bs.${je}`), Ks = (t) => {
+const mi = `.${je}`, vi = `[${We}="${je}"]`, bi = (t) => W(t, Un), wi = (t) => new se(t), Xs = $(
+  `close.bs.${je}`
+), Ei = $(
+  `closed.bs.${je}`
+), Ks = (t) => {
   const { element: s } = t;
   w(s, Ei), t._toggleEventListeners(), t.dispose(), s.remove();
 };
@@ -498,7 +499,9 @@ function Ai(t) {
   }
 }
 const Ii = ({ code: t, target: s }) => {
-  const e = E(s), [n] = [...J(Te, e)].filter((i) => Xn(i)), o = gt(n);
+  const e = E(s), [n] = [...J(Te, e)].filter(
+    (i) => Xn(i)
+  ), o = gt(n);
   // istanbul ignore next @preserve
   if (o && !o.isAnimating && !/textarea|input/i.test(s.nodeName)) {
     const i = Ct(n), c = i ? _s : Bs, a = i ? Bs : _s;
@@ -517,7 +520,9 @@ function Li(t) {
   if (e && !e.isAnimating && !e.isTouch) {
     const { controls: n, indicators: o } = e;
     // istanbul ignore else @preserve
-    if (![...n, ...o].every((i) => i === s || i.contains(s))) {
+    if (![...n, ...o].every(
+      (i) => i === s || i.contains(s)
+    )) {
       ee = t.pageX;
       // istanbul ignore else @preserve
       this.contains(s) && (e.isTouch = !0, Jn(e, !0));
@@ -545,7 +550,17 @@ const ki = (t) => {
   t.indicators[s] && f(e[s], C);
 }, Jn = (t, s) => {
   const { element: e } = t, n = s ? _ : B;
-  n(E(e), Uo, ki, nt), n(E(e), qo, Ni, nt);
+  n(
+    E(e),
+    Uo,
+    ki,
+    nt
+  ), n(
+    E(e),
+    qo,
+    Ni,
+    nt
+  );
 }, us = (t) => {
   const { slides: s, element: e } = t, n = S(`.${Z}.${C}`, e);
   return T(n) ? [...s].indexOf(n) : -1;
@@ -564,7 +579,12 @@ class oe extends ot {
      */
     d(this, "_toggleEventListeners", (e) => {
       const { element: n, options: o, slides: i, controls: c, indicators: a } = this, { touch: l, pause: r, interval: h, keyboard: p } = o, v = e ? _ : B;
-      r && h && (v(n, Me, Si), v(n, ys, Pi)), l && i.length > 2 && (v(n, Yo, Li, nt), v(n, Cs, Zs, { passive: !1 }), v(n, Zo, Zs, { passive: !1 }));
+      r && h && (v(n, Me, Si), v(n, ys, Pi)), l && i.length > 2 && (v(
+        n,
+        Yo,
+        Li,
+        nt
+      ), v(n, Cs, Zs, { passive: !1 }), v(n, Zo, Zs, { passive: !1 }));
       // istanbul ignore else @preserve
       c.length && c.forEach((P) => {
         // istanbul ignore else @preserve
@@ -579,18 +599,23 @@ class oe extends ot {
     this.direction = Ct(o) ? "right" : "left", this.isTouch = !1, this.slides = rt(Z, o);
     const { slides: i } = this;
     if (i.length >= 2) {
-      const c = us(this), a = [...i].find((h) => Kn(h, `.${Z}-next,.${Z}-next`));
+      const c = us(this), a = [...i].find(
+        (h) => Kn(h, `.${Z}-next,.${Z}-next`)
+      );
       this.index = c;
       const l = E(o);
       this.controls = [
         ...J(`[${Et}]`, o),
-        ...J(`[${Et}][${fs}="#${o.id}"]`, l)
+        ...J(
+          `[${Et}][${fs}="#${o.id}"]`,
+          l
+        )
       ].filter((h, p, v) => p === v.indexOf(h)), this.indicator = S(`.${It}-indicators`, o), this.indicators = [
-        ...this.indicator ? J(`[${gs}]`, this.indicator) : (
-          // istanbul ignore next @preserve
-          []
-        ),
-        ...J(`[${gs}][${fs}="#${o.id}"]`, l)
+        ...this.indicator ? J(`[${gs}]`, this.indicator) : [],
+        ...J(
+          `[${gs}][${fs}="#${o.id}"]`,
+          l
+        )
       ].filter((h, p, v) => p === v.indexOf(h));
       const { options: r } = this;
       this.options.interval = r.interval === !0 ? Us.interval : r.interval;
@@ -622,7 +647,10 @@ class oe extends ot {
    * Check if instance is animating.
    */
   get isAnimating() {
-    return S(`.${Z}-next,.${Z}-prev`, this.element) !== null;
+    return S(
+      `.${Z}-next,.${Z}-prev`,
+      this.element
+    ) !== null;
   }
   // CAROUSEL PUBLIC METHODS
   // =======================
@@ -748,10 +776,14 @@ class ie extends ot {
     d(this, "_toggleEventListeners", (e) => {
       const n = e ? _ : B, { triggers: o } = this;
       // istanbul ignore else @preserve
-      o.length && o.forEach((i) => n(i, N, Wi));
+      o.length && o.forEach(
+        (i) => n(i, N, Wi)
+      );
     });
     const { element: o, options: i } = this, c = E(o);
-    this.triggers = [...J(Qn, c)].filter((a) => K(a) === o), this.parent = T(i.parent) ? i.parent : we(i.parent) ? K(o) || S(i.parent, c) : null, this._toggleEventListeners(!0);
+    this.triggers = [...J(Qn, c)].filter(
+      (a) => K(a) === o
+    ), this.parent = T(i.parent) ? i.parent : we(i.parent) ? K(o) || S(i.parent, c) : null, this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
@@ -781,9 +813,9 @@ class ie extends ot {
   show() {
     const { element: e, parent: n, triggers: o } = this;
     let i, c;
-    if (n && (i = [...J(`.${X}.${m}`, n)].find(
-      (a) => Pe(a)
-    ), c = i && Pe(i)), (!n || !u.get(n)) && !u.get(e)) {
+    if (n && (i = [
+      ...J(`.${X}.${m}`, n)
+    ].find((a) => Pe(a)), c = i && Pe(i)), (!n || !u.get(n)) && !u.get(e)) {
       c && i !== e && (Qs(c), c.triggers.forEach((a) => {
         f(a, `${X}d`);
       })), Fi(this);
@@ -811,7 +843,13 @@ const Ot = ["dropdown", "dropup", "dropstart", "dropend"], to = "Dropdown", eo =
   // [number] 5(px)
   display: "dynamic"
   // [dynamic|static]
-}, ss = $(`show.bs.${et}`), nn = $(`shown.bs.${et}`), ns = $(`hide.bs.${et}`), on = $(`hidden.bs.${et}`), oo = $(`updated.bs.${et}`), io = (t) => {
+}, ss = $(
+  `show.bs.${et}`
+), nn = $(
+  `shown.bs.${et}`
+), ns = $(
+  `hide.bs.${et}`
+), on = $(`hidden.bs.${et}`), oo = $(`updated.bs.${et}`), io = (t) => {
   const { element: s, menu: e, parentElement: n, options: o } = t, { offset: i } = o;
   // istanbul ignore else @preserve: this test requires a navbar
   if (V(e, "position") !== "static") {
@@ -820,7 +858,9 @@ const Ot = ["dropdown", "dropup", "dropstart", "dropend"], to = "Dropdown", eo =
       const ut = {};
       ut[k] = "", I(e, ut);
     });
-    let r = Ot.find((k) => g(n, k)) || // istanbul ignore next @preserve: fallback position
+    let r = Ot.find(
+      (k) => g(n, k)
+    ) || // istanbul ignore next @preserve: fallback position
     et;
     const h = {
       dropdown: [i, 0, 0],
@@ -858,10 +898,7 @@ const Ot = ["dropdown", "dropup", "dropstart", "dropend"], to = "Dropdown", eo =
       margin: `${pt.map((k) => k && `${k}px`).join(" ")}`
     }), tn.includes(r) && a) {
       // istanbul ignore else @preserve
-      a && I(e, p[!c && H || c && Rt ? "menuStart" : (
-        // istanbul ignore next @preserve
-        "menuEnd"
-      )]);
+      a && I(e, p[!c && H || c && Rt ? "menuStart" : "menuEnd"]);
     }
     w(n, oo);
   }
@@ -877,7 +914,9 @@ const Ot = ["dropdown", "dropup", "dropstart", "dropend"], to = "Dropdown", eo =
     n(Ut(s), i, qi, nt);
   });
 }, ze = (t) => {
-  const s = [...Ot, "btn-group", "input-group"].map((e) => rt(`${e} ${m}`, E(t))).find((e) => e.length);
+  const s = [...Ot, "btn-group", "input-group"].map(
+    (e) => rt(`${e} ${m}`, E(t))
+  ).find((e) => e.length);
   if (s && s.length)
     return [...s[0].children].find(
       (e) => Ot.some((n) => n === st(e, ct))
@@ -942,7 +981,10 @@ class ce extends ot {
     d(this, "_toggleEventListeners", (e) => {
       (e ? _ : B)(this.element, N, Ki);
     });
-    const { parentElement: o } = this.element, [i] = rt(eo, o);
+    const { parentElement: o } = this.element, [i] = rt(
+      eo,
+      o
+    );
     i && (this.parentElement = o, this.menu = i, this._toggleEventListeners(!0));
   }
   /**
@@ -969,9 +1011,11 @@ class ce extends ot {
     // istanbul ignore else @preserve
     if (!n) {
       const c = ze(e), a = c && Kt(c);
-      a && a.hide(), [ss, nn, oo].forEach((l) => {
-        l.relatedTarget = e;
-      }), w(i, ss), ss.defaultPrevented || (f(o, m), f(i, m), O(e, Ie, "true"), io(this), this.open = !n, ht(e), cn(this), w(i, nn));
+      a && a.hide(), [ss, nn, oo].forEach(
+        (l) => {
+          l.relatedTarget = e;
+        }
+      ), w(i, ss), ss.defaultPrevented || (f(o, m), f(i, m), O(e, Ie, "true"), io(this), this.open = !n, ht(e), cn(this), w(i, nn));
     }
   }
   /** Hides the dropdown menu from the user. */
@@ -1044,7 +1088,10 @@ const U = "modal", Ps = "Modal", Ds = "Offcanvas", Zi = "fixed-top", Ji = "fixed
 }, As = (t, s) => {
   const e = D(s) && s.nodeName !== "BODY" ? s : yt;
   return D(t) && e.contains(t);
-}, po = "backdrop", rn = `${U}-${po}`, ln = `${G}-${po}`, uo = `.${U}.${m}`, Is = `.${G}.${m}`, L = $t("div"), _t = (t) => S(`${uo},${Is}`, E(t)), Ls = (t) => {
+}, po = "backdrop", rn = `${U}-${po}`, ln = `${G}-${po}`, uo = `.${U}.${m}`, Is = `.${G}.${m}`, L = $t("div"), _t = (t) => S(
+  `${uo},${Is}`,
+  E(t)
+), Ls = (t) => {
   const s = t ? rn : ln;
   [rn, ln].forEach((e) => {
     b(L, e);
@@ -1060,14 +1107,19 @@ const U = "modal", Ps = "Modal", Ds = "Offcanvas", Zi = "fixed-top", Ji = "fixed
 }, wo = (t) => T(t) && V(t, "visibility") !== "hidden" && t.offsetParent !== null, Qi = `.${U}`, Eo = `[${ct}="${U}"]`, tc = `[${We}="${U}"]`, $o = `${U}-static`, ec = {
   backdrop: !0,
   keyboard: !0
-}, pe = (t) => W(t, Ps), sc = (t) => new ae(t), De = $(`show.bs.${U}`), dn = $(`shown.bs.${U}`), os = $(`hide.bs.${U}`), hn = $(`hidden.bs.${U}`), To = (t) => {
+}, pe = (t) => W(t, Ps), sc = (t) => new ae(t), De = $(
+  `show.bs.${U}`
+), dn = $(
+  `shown.bs.${U}`
+), os = $(
+  `hide.bs.${U}`
+), hn = $(
+  `hidden.bs.${U}`
+), To = (t) => {
   const { element: s } = t, e = lo(s), { clientHeight: n, scrollHeight: o } = ft(s), { clientHeight: i, scrollHeight: c } = s, a = i !== c;
   // istanbul ignore next @preserve: impossible to test?
   if (!a && e) {
-    const r = { [Ct(s) ? (
-      // istanbul ignore next @preserve
-      "paddingLeft"
-    ) : "paddingRight"]: `${e}px` };
+    const r = { [Ct(s) ? "paddingLeft" : "paddingRight"]: `${e}px` };
     I(s, r);
   }
   ho(s, a || n !== o);
@@ -1148,11 +1200,15 @@ class ae extends ot {
     d(this, "_toggleEventListeners", (e) => {
       const n = e ? _ : B, { triggers: o } = this;
       // istanbul ignore else @preserve
-      o.length && o.forEach((i) => n(i, N, nc));
+      o.length && o.forEach(
+        (i) => n(i, N, nc)
+      );
     });
     const { element: o } = this, i = S(`.${U}-dialog`, o);
     // istanbul ignore else @preserve
-    i && (this.modalDialog = i, this.triggers = [...J(Eo, E(o))].filter(
+    i && (this.modalDialog = i, this.triggers = [
+      ...J(Eo, E(o))
+    ].filter(
       (c) => K(c) === o
     ), this.isStatic = this.options.backdrop === "static", this.hasFade = g(o, R), this.relatedTarget = null, this._toggleEventListeners(!0));
   }
@@ -1184,7 +1240,10 @@ class ae extends ot {
       // istanbul ignore else @preserve
       if (l && l !== e) {
         const r = pe(l) || // istanbul ignore next @preserve
-        W(l, Ds);
+        W(
+          l,
+          Ds
+        );
         // istanbul ignore else @preserve
         r && r.hide();
       }
@@ -1243,7 +1302,13 @@ const ac = `.${G}`, ks = `[${ct}="${G}"]`, rc = `[${We}="${G}"]`, Xe = `${G}-tog
     s && s.tagName === "A" && t.preventDefault();
   }
 }, pc = (t) => {
-  const { target: s } = t, e = S(Is, E(s)), n = S(rc, e), o = e && ue(e);
+  const { target: s } = t, e = S(
+    Is,
+    E(s)
+  ), n = S(
+    rc,
+    e
+  ), o = e && ue(e);
   // istanbul ignore else @preserve
   if (o) {
     const { options: i, triggers: c } = o, { backdrop: a } = i, l = M(s, ks), r = E(e).getSelection();
@@ -1257,7 +1322,10 @@ const ac = `.${G}`, ks = `[${ct}="${G}"]`, rc = `[${We}="${G}"]`, Xe = `${G}-tog
     }
   }
 }, uc = ({ code: t, target: s }) => {
-  const e = S(Is, E(s)), n = e && ue(e);
+  const e = S(
+    Is,
+    E(s)
+  ), n = e && ue(e);
   // istanbul ignore else @preserve
   if (n) {
     // istanbul ignore else @preserve
@@ -1288,10 +1356,14 @@ class re extends ot {
      */
     d(this, "_toggleEventListeners", (e) => {
       const n = e ? _ : B;
-      this.triggers.forEach((o) => n(o, N, gc));
+      this.triggers.forEach(
+        (o) => n(o, N, gc)
+      );
     });
     const { element: o } = this;
-    this.triggers = [...J(ks, E(o))].filter(
+    this.triggers = [
+      ...J(ks, E(o))
+    ].filter(
       (i) => K(i) === o
     ), this.relatedTarget = null, this._toggleEventListeners(!0);
   }
@@ -1321,7 +1393,10 @@ class re extends ot {
       const c = _t(e);
       if (c && c !== e) {
         const a = ue(c) || // istanbul ignore next @preserve
-        W(c, Ps);
+        W(
+          c,
+          Ps
+        );
         // istanbul ignore else @preserve
         a && a.hide();
       }
@@ -1372,10 +1447,10 @@ const Lt = "popover", Ke = "Popover", lt = "tooltip", So = (t) => {
     });
     const r = t.name === Ke, { offsetWidth: h, offsetHeight: p } = n, { clientWidth: v, clientHeight: P, offsetWidth: q } = ft(e);
     let { placement: y } = i;
-    const { clientWidth: j, offsetWidth: Y } = o, at = V(o, "position") === "fixed", x = Math.abs(at ? j - Y : v - q), tt = l && at ? (
-      // istanbul ignore next @preserve
-      x
-    ) : 0, it = v - (l ? 0 : x) - 1, {
+    const { clientWidth: j, offsetWidth: Y } = o, at = V(
+      o,
+      "position"
+    ) === "fixed", x = Math.abs(at ? j - Y : v - q), tt = l && at ? x : 0, it = v - (l ? 0 : x) - 1, {
       width: F,
       height: z,
       left: H,
@@ -1395,10 +1470,10 @@ const Lt = "popover", Ke = "Popover", lt = "tooltip", So = (t) => {
     const St = c.offsetWidth || 0, vt = c.offsetHeight || 0, qe = St / 2;
     let Zt = pt - p - vt < 0, Jt = pt + p + z + vt >= P, Gt = H - h - St < tt, Qt = H + h + F + St >= it;
     const xe = ["left", "right"], Ze = ["top", "bottom"];
-    Zt = xe.includes(y) ? pt + z / 2 - p / 2 - vt < 0 : Zt, Jt = xe.includes(y) ? pt + p / 2 + z / 2 + vt >= P : Jt, Gt = Ze.includes(y) ? H + F / 2 - h / 2 < tt : Gt, Qt = Ze.includes(y) ? H + h / 2 + F / 2 >= it : Qt, y = xe.includes(y) && Gt && Qt ? "top" : y, y = y === "top" && Zt ? "bottom" : y, y = y === "bottom" && Jt ? "top" : y, y = y === "left" && Gt ? "right" : y, y = y === "right" && Qt ? "left" : (
-      // istanbul ignore next @preserve
-      y
-    ), n.className.includes(y) || (n.className = n.className.replace(s, a[y]));
+    Zt = xe.includes(y) ? pt + z / 2 - p / 2 - vt < 0 : Zt, Jt = xe.includes(y) ? pt + p / 2 + z / 2 + vt >= P : Jt, Gt = Ze.includes(y) ? H + F / 2 - h / 2 < tt : Gt, Qt = Ze.includes(y) ? H + h / 2 + F / 2 >= it : Qt, y = xe.includes(y) && Gt && Qt ? "top" : y, y = y === "top" && Zt ? "bottom" : y, y = y === "bottom" && Jt ? "top" : y, y = y === "left" && Gt ? "right" : y, y = y === "right" && Qt ? "left" : y, n.className.includes(y) || (n.className = n.className.replace(
+      s,
+      a[y]
+    ));
     // istanbul ignore else @preserve
     xe.includes(y) ? (y === "left" ? mt = k - h - (r ? St : 0) : mt = k + F + (r ? St : 0), Zt && Jt ? (Ht = 0, qt = 0, Ft = pt + z / 2 - vt / 2) : Zt ? (Ht = ut, qt = "", Ft = z / 2 - St) : Jt ? (Ht = ut - p + z, qt = "", Ft = p - z / 2 - St) : (Ht = ut - p / 2 + z / 2, Ft = p / 2 - vt / 2)) : Ze.includes(y) && (y === "top" ? Ht = ut - p - (r ? vt : 0) : Ht = ut + z + (r ? vt : 0), Gt ? (mt = 0, Ce = k + F / 2 - qe) : Qt ? (mt = "auto", Ye = 0, Ue = F / 2 + it - Rt - qe) : (mt = k - h / 2 + F / 2, Ce = h / 2 - qe)), I(n, {
       top: `${Ht}px`,
@@ -1435,7 +1510,17 @@ const Lt = "popover", Ke = "Popover", lt = "tooltip", So = (t) => {
     t.append(...i.body.childNodes);
   } else T(s) ? t.append(s) : (fi(s) || di(s) && s.every(D)) && t.append(...s);
 }, bc = (t) => {
-  const s = t.name === Pt, { id: e, element: n, options: o } = t, { title: i, placement: c, template: a, animation: l, customClass: r, sanitizeFn: h, dismissible: p, content: v, btnClose: P } = o, q = s ? lt : Lt, y = { ...Po };
+  const s = t.name === Pt, { id: e, element: n, options: o } = t, {
+    title: i,
+    placement: c,
+    template: a,
+    animation: l,
+    customClass: r,
+    sanitizeFn: h,
+    dismissible: p,
+    content: v,
+    btnClose: P
+  } = o, q = s ? lt : Lt, y = { ...Po };
   let j = [], Y = [];
   Ct(n) && (y.left = "end", y.right = "start");
   const Bt = `bs-${q}-${y[c]}`;
@@ -1446,10 +1531,7 @@ const Lt = "popover", Ke = "Popover", lt = "tooltip", So = (t) => {
     const tt = $t("div");
     wt(tt, a, h), at = tt.firstChild;
   }
-  t.tooltip = T(at) ? at.cloneNode(!0) : (
-    // istanbul ignore next @preserve
-    void 0
-  );
+  t.tooltip = T(at) ? at.cloneNode(!0) : void 0;
   const { tooltip: x } = t;
   // istanbul ignore else @preserve
   if (x) {
@@ -1511,13 +1593,18 @@ const Lt = "popover", Ke = "Popover", lt = "tooltip", So = (t) => {
     // istanbul ignore else @preserve
     zn(n) || gi(n) || e.push(n);
   }
-  return e.find((o, i) => V(o, "position") !== "relative" && e.slice(i + 1).every((c) => V(c, "position") === "static") ? o : null) || // istanbul ignore next: optional guard
+  return e.find((o, i) => V(o, "position") !== "relative" && e.slice(i + 1).every(
+    (c) => V(c, "position") === "static"
+  ) ? o : null) || // istanbul ignore next: optional guard
   E(t).body;
 }, Ec = `[${ct}="${lt}"],[data-tip="${lt}"]`, Ao = "title";
 let vn = (t) => W(t, Pt);
 const $c = (t) => new Dt(t), Tc = (t) => {
   const { element: s, tooltip: e, container: n, offsetParent: o } = t;
-  kt(s, Mn), go(e, n === o ? n : o);
+  kt(s, Mn), go(
+    e,
+    n === o ? n : o
+  );
 }, te = (t) => {
   const { tooltip: s, container: e, offsetParent: n } = t;
   return s && As(s, e === n ? e : n);
@@ -1530,7 +1617,12 @@ const $c = (t) => new Dt(t), Tc = (t) => {
   s && s();
 }, Io = (t, s) => {
   const e = s ? _ : B, { element: n } = t;
-  e(E(n), Cs, t.handleTouch, nt), [Be, _e].forEach((o) => {
+  e(
+    E(n),
+    Cs,
+    t.handleTouch,
+    nt
+  ), [Be, _e].forEach((o) => {
     e(Ut(n), o, t.update, nt);
   });
 }, bn = (t) => {
@@ -1606,7 +1698,12 @@ class Dt extends ot {
         if (p === Ko) {
           n(o, Bn, this.handleShow), n(o, Me, this.handleShow);
           // istanbul ignore else @preserve
-          r || (n(o, ys, this.handleHide), n(E(o), Cs, this.handleTouch, nt));
+          r || (n(o, ys, this.handleHide), n(
+            E(o),
+            Cs,
+            this.handleTouch,
+            nt
+          ));
         } else if (p === N)
           n(o, p, r ? this.handleShow : this.toggle);
         else if (p === $s) {
@@ -1706,7 +1803,10 @@ class Dt extends ot {
   }
   /** Removes the `Tooltip` from the target element. */
   dispose() {
-    const { tooltip: e, options: n } = this, o = { ...this, name: this.name }, i = () => setTimeout(() => yc(o, () => super.dispose()), 17);
+    const { tooltip: e, options: n } = this, o = { ...this, name: this.name }, i = () => setTimeout(
+      () => yc(o, () => super.dispose()),
+      17
+    );
     n.animation && te(o) ? (this.options.delay = 0, this.hide(), A(e, i)) : i();
   }
 }
@@ -1750,16 +1850,15 @@ const Pc = "scrollspy", ko = "ScrollSpy", Dc = '[data-bs-spy="scroll"]', Ac = {
   offset: 10,
   target: null
 }, Ic = (t) => W(t, ko), Lc = (t) => new le(t), $n = $(`activate.bs.${Pc}`), kc = (t) => {
-  const { target: s, scrollTarget: e, options: n, itemsLength: o, scrollHeight: i, element: c } = t, { offset: a } = n, l = Hs(e), r = s && Ss("A", s), h = e ? No(e) : (
-    // istanbul ignore next @preserve
-    i
-  );
+  const { target: s, scrollTarget: e, options: n, itemsLength: o, scrollHeight: i, element: c } = t, { offset: a } = n, l = Hs(e), r = s && Ss("A", s), h = e ? No(e) : i;
   t.scrollTop = l ? e.scrollY : e.scrollTop;
   // istanbul ignore else @preserve
   if (r && (h !== i || o !== r.length)) {
     let p, v, P;
     t.items = [], t.offsets = [], t.scrollHeight = h, t.maxScroll = t.scrollHeight - Nc(t), [...r].forEach((q) => {
-      p = st(q, "href"), v = p && p.charAt(0) === "#" && p.slice(-1) !== "#" && S(p, E(c)), v && (t.items.push(q), P = $e(v), t.offsets.push((l ? P.top + t.scrollTop : v.offsetTop) - a));
+      p = st(q, "href"), v = p && p.charAt(0) === "#" && p.slice(-1) !== "#" && S(p, E(c)), v && (t.items.push(q), P = $e(v), t.offsets.push(
+        (l ? P.top + t.scrollTop : v.offsetTop) - a
+      ));
     }), t.itemsLength = t.items.length;
   }
 }, No = (t) => T(t) ? t.scrollHeight : ft(t).scrollHeight, Nc = ({ element: t, scrollTarget: s }) => Hs(s) ? s.innerHeight : $e(t).height, Oo = (t) => {
@@ -1822,10 +1921,18 @@ class le extends ot {
      * @param add when `true`, listener is added
      */
     d(this, "_toggleEventListeners", (e) => {
-      (e ? _ : B)(this.scrollTarget, Be, this.refresh, nt);
+      (e ? _ : B)(
+        this.scrollTarget,
+        Be,
+        this.refresh,
+        nt
+      );
     });
     const { element: o, options: i } = this;
-    this.target = S(i.target, E(o)), this.target && (this.scrollTarget = o.clientHeight < o.scrollHeight ? o : Ut(o), this.scrollHeight = No(this.scrollTarget), this._toggleEventListeners(!0), this.refresh());
+    this.target = S(
+      i.target,
+      E(o)
+    ), this.target && (this.scrollTarget = o.clientHeight < o.scrollHeight ? o : Ut(o), this.scrollHeight = No(this.scrollTarget), this._toggleEventListeners(!0), this.refresh());
   }
   /* eslint-disable */
   /**
@@ -1846,19 +1953,27 @@ class le extends ot {
   }
 }
 d(le, "selector", Dc), d(le, "init", Lc), d(le, "getInstance", Ic);
-const ye = "tab", Mo = "Tab", yn = `[${ct}="${ye}"]`, _o = (t) => W(t, Mo), Oc = (t) => new de(t), cs = $(`show.bs.${ye}`), Cn = $(`shown.bs.${ye}`), as = $(`hide.bs.${ye}`), xn = $(`hidden.bs.${ye}`), me = /* @__PURE__ */ new Map(), Hn = (t) => {
+const ye = "tab", Mo = "Tab", yn = `[${ct}="${ye}"]`, _o = (t) => W(t, Mo), Oc = (t) => new de(t), cs = $(
+  `show.bs.${ye}`
+), Cn = $(
+  `shown.bs.${ye}`
+), as = $(
+  `hide.bs.${ye}`
+), xn = $(
+  `hidden.bs.${ye}`
+), me = /* @__PURE__ */ new Map(), Hn = (t) => {
   const { tabContent: s, nav: e } = t;
   // istanbul ignore else @preserve
   s && g(s, Nt) && (s.style.height = "", b(s, Nt));
   // istanbul ignore else @preserve
   e && u.clear(e);
 }, Sn = (t) => {
-  const { element: s, tabContent: e, content: n, nav: o } = t, { tab: i } = T(o) && me.get(o) || { tab: null };
-  // istanbul ignore next @preserve
+  const { element: s, tabContent: e, content: n, nav: o } = t, { tab: i } = T(o) && me.get(o) || // istanbul ignore next @preserve
+  { tab: null };
   // istanbul ignore else @preserve
   if (e && n && g(n, R)) {
-    const { currentHeight: c, nextHeight: a } = me.get(s) || { currentHeight: 0, nextHeight: 0 };
-    // istanbul ignore next @preserve
+    const { currentHeight: c, nextHeight: a } = me.get(s) || // istanbul ignore next @preserve
+    { currentHeight: 0, nextHeight: 0 };
     // istanbul ignore else @preserve: vitest won't validate this branch
     c !== a ? setTimeout(() => {
       e.style.height = `${a}px`, Mt(e), A(e, () => Hn(t));
@@ -1866,20 +1981,14 @@ const ye = "tab", Mo = "Tab", yn = `[${ct}="${ye}"]`, _o = (t) => W(t, Mo), Oc =
   } else o && u.clear(o);
   Cn.relatedTarget = i, w(s, Cn);
 }, Pn = (t) => {
-  const { element: s, content: e, tabContent: n, nav: o } = t, { tab: i, content: c } = o && me.get(o) || {
-    // istanbul ignore next @preserve
-    tab: null,
-    content: null
-  };
+  const { element: s, content: e, tabContent: n, nav: o } = t, { tab: i, content: c } = o && me.get(o) || // istanbul ignore next @preserve
+  { tab: null, content: null };
   let a = 0;
   // istanbul ignore else @preserve
   n && e && g(e, R) && ([c, e].forEach((l) => {
     // istanbul ignore else @preserve
     T(l) && f(l, "overflow-hidden");
-  }), a = T(c) ? c.scrollHeight : (
-    // istanbul ignore next @preserve
-    0
-  )), cs.relatedTarget = i, xn.relatedTarget = s, w(s, cs);
+  }), a = T(c) ? c.scrollHeight : 0), cs.relatedTarget = i, xn.relatedTarget = s, w(s, cs);
   // istanbul ignore else @preserve
   if (!cs.defaultPrevented) {
     // istanbul ignore else @preserve
@@ -1920,7 +2029,9 @@ const ye = "tab", Mo = "Tab", yn = `[${ct}="${ye}"]`, _o = (t) => W(t, Mo), Oc =
   const e = rt(C, s);
   let n = null;
   // istanbul ignore else @preserve
-  e.length === 1 && !Ot.some((i) => g(e[0].parentElement, i)) ? [n] = e : e.length > 1 && (n = e[e.length - 1]);
+  e.length === 1 && !Ot.some(
+    (i) => g(e[0].parentElement, i)
+  ) ? [n] = e : e.length > 1 && (n = e[e.length - 1]);
   const o = T(n) ? K(n) : null;
   return { tab: n, content: o };
 }, An = (t) => {
@@ -2007,7 +2118,15 @@ const Q = "toast", Bo = "Toast", _c = `.${Q}`, Bc = `[${We}="${Q}"]`, Ro = `[${c
   animation: !0,
   autohide: !0,
   delay: 5e3
-}, Ns = (t) => W(t, Bo), Fc = (t) => new he(t), In = $(`show.bs.${Q}`), Wc = $(`shown.bs.${Q}`), Ln = $(`hide.bs.${Q}`), jc = $(`hidden.bs.${Q}`), kn = (t) => {
+}, Ns = (t) => W(t, Bo), Fc = (t) => new he(t), In = $(
+  `show.bs.${Q}`
+), Wc = $(
+  `shown.bs.${Q}`
+), Ln = $(
+  `hide.bs.${Q}`
+), jc = $(
+  `hidden.bs.${Q}`
+), kn = (t) => {
   const { element: s, options: e } = t;
   b(s, Yt), u.clear(s, Yt), w(s, Wc);
   // istanbul ignore else @preserve
@@ -2075,10 +2194,14 @@ class he extends ot {
         (r) => n(o, r, Kc)
       );
       // istanbul ignore else @preserve
-      i.length && i.forEach((r) => n(r, N, Xc));
+      i.length && i.forEach(
+        (r) => n(r, N, Xc)
+      );
     });
     const { element: o, options: i } = this;
-    i.animation && !g(o, R) ? f(o, R) : !i.animation && g(o, R) && b(o, R), this.dismiss = S(Bc, o), this.triggers = [...J(Ro, E(o))].filter(
+    i.animation && !g(o, R) ? f(o, R) : !i.animation && g(o, R) && b(o, R), this.dismiss = S(Bc, o), this.triggers = [
+      ...J(Ro, E(o))
+    ].filter(
       (c) => K(c) === o
     ), this._toggleEventListeners(!0);
   }
@@ -2108,9 +2231,20 @@ class he extends ot {
 }
 d(he, "selector", _c), d(he, "init", Fc), d(he, "getInstance", Ns);
 const Os = /* @__PURE__ */ new Map();
-[se, ne, oe, ie, ce, ae, re, zt, le, de, he, Dt].forEach(
-  (t) => Os.set(t.prototype.name, t)
-);
+[
+  se,
+  ne,
+  oe,
+  ie,
+  ce,
+  ae,
+  re,
+  zt,
+  le,
+  de,
+  he,
+  Dt
+].forEach((t) => Os.set(t.prototype.name, t));
 const Yc = (t, s) => {
   [...s].forEach((e) => t(e));
 }, Uc = (t, s) => {

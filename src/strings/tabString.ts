@@ -1,3 +1,3 @@
 /** @type {string} */
-const tabString = 'tab';
+const tabString = "tab";
 export default tabString;

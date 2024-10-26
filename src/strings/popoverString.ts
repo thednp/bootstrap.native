@@ -1,3 +1,3 @@
 /** @type {string} */
-const popoverString = 'popover';
+const popoverString = "popover";
 export default popoverString;

@@ -5,7 +5,7 @@ import { createCustomEvent as V, isRTL as S, getElementsByClassName as ct, match
 import { addListener as tt, removeListener as et } from "@thednp/event-listener";
 import { a as m } from "./activeClass-iqaD75Su.mjs";
 import { d as F, g as st } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as Tt } from "./base-component-nXu3wApu.mjs";
+import { B as Tt } from "./base-component-DHbs0JQk.mjs";
 const T = "carousel", it = "Carousel", C = `[data-bs-ride="${T}"]`, d = `${T}-item`, O = "data-bs-slide-to", x = "data-bs-slide", $ = "paused", G = {
   pause: "hover",
   keyboard: !1,
@@ -54,7 +54,9 @@ function Ct(s) {
   }
 }
 const Ht = ({ code: s, target: n }) => {
-  const t = y(n), [e] = [...A(C, t)].filter((o) => W(o)), i = v(e);
+  const t = y(n), [e] = [...A(C, t)].filter(
+    (o) => W(o)
+  ), i = v(e);
   // istanbul ignore next @preserve
   if (i && !i.isAnimating && !/textarea|input/i.test(n.nodeName)) {
     const o = S(e), c = o ? z : U, r = o ? U : z;
@@ -73,7 +75,9 @@ function bt(s) {
   if (t && !t.isAnimating && !t.isTouch) {
     const { controls: e, indicators: i } = t;
     // istanbul ignore else @preserve
-    if (![...e, ...i].every((o) => o === n || o.contains(n))) {
+    if (![...e, ...i].every(
+      (o) => o === n || o.contains(n)
+    )) {
       I = s.pageX;
       // istanbul ignore else @preserve
       this.contains(n) && (t.isTouch = !0, nt(t, !0));
@@ -101,7 +105,17 @@ const Lt = (s) => {
   s.indicators[n] && g(t[n], m);
 }, nt = (s, n) => {
   const { element: t } = s, e = n ? tt : et;
-  e(y(t), xt, Lt, X), e(y(t), $t, St, X);
+  e(
+    y(t),
+    xt,
+    Lt,
+    X
+  ), e(
+    y(t),
+    $t,
+    St,
+    X
+  );
 }, M = (s) => {
   const { slides: n, element: t } = s, e = R(`.${d}.${m}`, t);
   return Et(e) ? [...n].indexOf(e) : -1;
@@ -120,7 +134,12 @@ class L extends Tt {
      */
     P(this, "_toggleEventListeners", (t) => {
       const { element: e, options: i, slides: o, controls: c, indicators: r } = this, { touch: a, pause: f, interval: u, keyboard: p } = i, l = t ? tt : et;
-      f && u && (l(e, ht, At), l(e, ft, Pt)), a && o.length > 2 && (l(e, ut, bt, X), l(e, gt, Q, { passive: !1 }), l(e, mt, Q, { passive: !1 }));
+      f && u && (l(e, ht, At), l(e, ft, Pt)), a && o.length > 2 && (l(
+        e,
+        ut,
+        bt,
+        X
+      ), l(e, gt, Q, { passive: !1 }), l(e, mt, Q, { passive: !1 }));
       // istanbul ignore else @preserve
       c.length && c.forEach((H) => {
         // istanbul ignore else @preserve
@@ -135,18 +154,23 @@ class L extends Tt {
     this.direction = S(i) ? "right" : "left", this.isTouch = !1, this.slides = ct(d, i);
     const { slides: o } = this;
     if (o.length >= 2) {
-      const c = M(this), r = [...o].find((u) => rt(u, `.${d}-next,.${d}-next`));
+      const c = M(this), r = [...o].find(
+        (u) => rt(u, `.${d}-next,.${d}-next`)
+      );
       this.index = c;
       const a = y(i);
       this.controls = [
         ...A(`[${x}]`, i),
-        ...A(`[${x}][${F}="#${i.id}"]`, a)
+        ...A(
+          `[${x}][${F}="#${i.id}"]`,
+          a
+        )
       ].filter((u, p, l) => p === l.indexOf(u)), this.indicator = R(`.${T}-indicators`, i), this.indicators = [
-        ...this.indicator ? A(`[${O}]`, this.indicator) : (
-          // istanbul ignore next @preserve
-          []
-        ),
-        ...A(`[${O}][${F}="#${i.id}"]`, a)
+        ...this.indicator ? A(`[${O}]`, this.indicator) : [],
+        ...A(
+          `[${O}][${F}="#${i.id}"]`,
+          a
+        )
       ].filter((u, p, l) => p === l.indexOf(u));
       const { options: f } = this;
       this.options.interval = f.interval === !0 ? G.interval : f.interval;
@@ -178,7 +202,10 @@ class L extends Tt {
    * Check if instance is animating.
    */
   get isAnimating() {
-    return R(`.${d}-next,.${d}-prev`, this.element) !== null;
+    return R(
+      `.${d}-next,.${d}-prev`,
+      this.element
+    ) !== null;
   }
   // CAROUSEL PUBLIC METHODS
   // =======================

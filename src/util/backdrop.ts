@@ -7,23 +7,23 @@ import {
   querySelector,
   reflow,
   removeClass,
-} from '@thednp/shorty';
+} from "@thednp/shorty";
 
-import fadeClass from '../strings/fadeClass';
-import showClass from '../strings/showClass';
-import modalString from '../strings/modalString';
-import offcanvasString from '../strings/offcanvasString';
-import { resetScrollbar } from './scrollbar';
-import { appendPopup, removePopup } from './popupContainer';
+import fadeClass from "../strings/fadeClass";
+import showClass from "../strings/showClass";
+import modalString from "../strings/modalString";
+import offcanvasString from "../strings/offcanvasString";
+import { resetScrollbar } from "./scrollbar";
+import { appendPopup, removePopup } from "./popupContainer";
 
-const backdropString = 'backdrop';
+const backdropString = "backdrop";
 const modalBackdropClass = `${modalString}-${backdropString}`;
 const offcanvasBackdropClass = `${offcanvasString}-${backdropString}`;
 const modalActiveSelector = `.${modalString}.${showClass}`;
 const offcanvasActiveSelector = `.${offcanvasString}.${showClass}`;
 
 // any document would suffice
-const overlay = createElement('div') as HTMLElement;
+const overlay = createElement("div") as HTMLElement;
 
 /**
  * Returns the current active modal / offcancas element.
@@ -32,7 +32,10 @@ const overlay = createElement('div') as HTMLElement;
  * @returns the requested element
  */
 const getCurrentOpen = (element?: HTMLElement): HTMLElement | null => {
-  return querySelector(`${modalActiveSelector},${offcanvasActiveSelector}`, getDocument(element));
+  return querySelector(
+    `${modalActiveSelector},${offcanvasActiveSelector}`,
+    getDocument(element),
+  );
 };
 
 /**
@@ -42,7 +45,7 @@ const getCurrentOpen = (element?: HTMLElement): HTMLElement | null => {
  */
 const toggleOverlayType = (isModal?: boolean) => {
   const targetClass = isModal ? modalBackdropClass : offcanvasBackdropClass;
-  [modalBackdropClass, offcanvasBackdropClass].forEach(c => {
+  [modalBackdropClass, offcanvasBackdropClass].forEach((c) => {
     removeClass(overlay, c);
   });
   addClass(overlay, targetClass);
@@ -55,7 +58,11 @@ const toggleOverlayType = (isModal?: boolean) => {
  * @param hasFade
  * @param isModal
  */
-const appendOverlay = (element: HTMLElement, hasFade: boolean, isModal?: boolean) => {
+const appendOverlay = (
+  element: HTMLElement,
+  hasFade: boolean,
+  isModal?: boolean,
+) => {
   toggleOverlayType(isModal);
   appendPopup(overlay, getDocumentBody(element));
   if (hasFade) addClass(overlay, fadeClass);

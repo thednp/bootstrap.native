@@ -1,3 +1,3 @@
 /** @type {string} */
-const modalString = 'modal';
+const modalString = "modal";
 export default modalString;

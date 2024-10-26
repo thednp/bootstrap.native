@@ -1,19 +1,19 @@
-import getTipTemplate from './getTipTemplate';
-import tooltipString from '../strings/tooltipString';
-import { TooltipOptions } from '../interface/tooltip';
+import getTipTemplate from "./getTipTemplate";
+import tooltipString from "../strings/tooltipString";
+import { TooltipOptions } from "../interface/tooltip";
 
 const tooltipDefaults: TooltipOptions = {
   template: getTipTemplate(tooltipString),
-  title: '',
-  customClass: '',
-  trigger: 'hover focus',
-  placement: 'top',
+  title: "",
+  customClass: "",
+  trigger: "hover focus",
+  placement: "top",
   sanitizeFn: undefined,
   animation: true,
   delay: 200,
   container: document.body,
-  content: '',
+  content: "",
   dismissible: false,
-  btnClose: '',
+  btnClose: "",
 };
 export default tooltipDefaults;

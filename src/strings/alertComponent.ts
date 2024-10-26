@@ -1,3 +1,3 @@
 /** @type {string} */
-const alertComponent = 'Alert';
+const alertComponent = "Alert";
 export default alertComponent;
