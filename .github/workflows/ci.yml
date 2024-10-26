@@ -8,14 +8,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
+      - name: PNPM setup
+        uses: pnpm/action-setup@v3
 
-      - name: Setup Node
+      - name: Deno Setup
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Node Setup
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
-      
+
       - name: Install Dependencies
         run: pnpm install --no-frozen-lockfile
 
@@ -23,9 +29,6 @@ jobs:
         run: pnpm exec playwright install
 
       - name: Lint
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
         run: pnpm lint
 
       - name: Build
