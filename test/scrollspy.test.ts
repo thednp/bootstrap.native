@@ -73,6 +73,25 @@ describe("ScrollSpy Class Tests", async () => {
     }, 51);
   });
 
+  it("Can dispose", async () => {
+    const container = getMarkup("scrollspy");
+    wrapper.append(container);
+    await vi.waitFor(() => container.querySelector('[data-bs-spy="scroll"]'), 200);
+
+    const element = container.querySelector<HTMLElement>('[data-bs-spy="scroll"]')!;
+    const instance = ScrollSpy.init(element);
+
+    await new Promise(res => setTimeout(res, 250));
+    instance.dispose();
+    await vi.waitFor(() => {
+      expect(instance.element).to.be.undefined;
+      expect(instance.scrollTarget).to.be.undefined;
+      expect(instance.scrollHeight).to.be.undefined;
+      expect(instance.items).to.be.undefined;
+      expect(instance.offsets).to.be.undefined;
+    }, 150);
+  });
+
   it("Can work with full page contents", async () => {
     await page.viewport(780, 1000);
     const containerSource = getMarkup("scrollspy");
@@ -114,23 +133,5 @@ describe("ScrollSpy Class Tests", async () => {
     }, 101);
 
     await page.viewport(414, 896);
-  });
-
-  it("Can dispose", async () => {
-    const container = getMarkup("scrollspy");
-    wrapper.append(container);
-    await vi.waitFor(() => container.querySelector('[data-bs-spy="scroll"]'), 200);
-
-    const element = container.querySelector<HTMLElement>('[data-bs-spy="scroll"]')!;
-    const instance = ScrollSpy.init(element);
-
-    instance.dispose();
-    await vi.waitFor(() => {
-      expect(instance.element).to.be.undefined;
-      expect(instance.scrollTarget).to.be.undefined;
-      expect(instance.scrollHeight).to.be.undefined;
-      expect(instance.items).to.be.undefined;
-      expect(instance.offsets).to.be.undefined;
-    }, 50);
   });
 });

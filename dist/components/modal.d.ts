@@ -32,6 +32,7 @@ declare class Modal extends BaseComponent {
 	isStatic: boolean;
 	hasFade: boolean;
 	relatedTarget: HTMLElement | null;
+	_observer: ResizeObserver;
 	/**
 	 * @param target usually the `.modal` element
 	 * @param config instance options

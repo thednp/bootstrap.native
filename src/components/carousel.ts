@@ -751,7 +751,7 @@ export default class Carousel extends BaseComponent {
     this._toggleEventListeners();
     super.dispose();
 
-    // istanbul ignore next @preserve - impossible to test
+    // istanbul ignore next @preserve - impossible to test in playwright
     if (clone.isAnimating) {
       emulateTransitionEnd(clone.slides[clone.index], () => {
         carouselTransitionEndHandler(clone);

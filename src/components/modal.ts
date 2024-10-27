@@ -15,7 +15,6 @@ import {
   getDocumentElement,
   getElementTransitionDuration,
   getInstance,
-  getWindow,
   hasClass,
   isRTL,
   KeyboardEvent,
@@ -23,12 +22,10 @@ import {
   keyEscape,
   mouseclickEvent,
   MouseEvent,
-  passiveHandler,
   querySelector,
   querySelectorAll,
   removeAttribute,
   removeClass,
-  resizeEvent,
   setAttribute,
   setElementStyle,
   Timer,
@@ -142,10 +139,12 @@ const setModalScrollbar = (self: Modal) => {
  */
 const toggleModalDismiss = (self: Modal, add?: boolean) => {
   const action = add ? addListener : removeListener;
-  const { element, update } = self;
+  const { element } = self;
   action(element, mouseclickEvent, modalDismissHandler);
-  action(getWindow(element), resizeEvent, update, passiveHandler);
   action(getDocument(element), keydownEvent, modalKeyHandler);
+
+  if (add) self._observer.observe(element);
+  else self._observer.disconnect();
 };
 
 /**
@@ -343,6 +342,7 @@ export default class Modal extends BaseComponent {
   declare isStatic: boolean;
   declare hasFade: boolean;
   declare relatedTarget: HTMLElement | null;
+  declare _observer: ResizeObserver;
 
   /**
    * @param target usually the `.modal` element
@@ -371,6 +371,7 @@ export default class Modal extends BaseComponent {
       this.isStatic = this.options.backdrop === "static";
       this.hasFade = hasClass(element, fadeClass);
       this.relatedTarget = null;
+      this._observer = new ResizeObserver(() => this.update());
 
       // attach event listeners
       this._toggleEventListeners(true);

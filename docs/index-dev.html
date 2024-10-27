@@ -37,10 +37,10 @@
         <div id="main-nav" class="navbar-collapse collapse">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#" onclick="switchDirection.call(this)">RTL</a>
+              <button class="nav-link" onclick="switchDirection.call(this)">RTL</button>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Github</a>
+              <button class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Github</button>
               <div class="dropdown-menu dropdown-menu-end">
                 <a class="dropdown-item" href="https://github.com/thednp/bootstrap.native/">Fork</a>
                 <a class="dropdown-item" href="https://github.com/thednp/bootstrap.native/wiki">Wiki</a>
@@ -48,7 +48,7 @@
               </div>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Share</a>
+              <button class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Share</button>
               <div class="dropdown-menu dropdown-menu-end">
                 <a class="dropdown-item" target="_blank" rel="noreferrer" href="https://www.facebook.com/sharer/sharer.php?u=http://thednp.github.io/bootstrap.native/index.html" title="Share Native JavaScript for Bootstrap on Facebook">Facebook</a>
                 <a class="dropdown-item" target="_blank" href="https://twitter.com/intent/tweet?text=Spread the word about %23BootstrapNative by @dnp_theme and download here http://thednp.github.io/bootstrap.native/index.html" title="Share Bootstrap Native on Twitter">
@@ -1758,6 +1758,17 @@ var myModalInit = BSN.Modal.getInstance(myModal);
                       <h4>Overflowing text to show scroll behavior</h4>
                       <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget
                         quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+                      <div class="btn-group">
+                        <div class="dropdown">
+                          <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Share</button>
+                          <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" target="_blank" rel="noreferrer" href="https://www.facebook.com/sharer/sharer.php?u=http://thednp.github.io/bootstrap.native/index.html" title="Share Native JavaScript for Bootstrap on Facebook">Facebook</a>
+                            <a class="dropdown-item" target="_blank" href="https://twitter.com/intent/tweet?text=Spread the word about %23BootstrapNative by @dnp_theme and download here http://thednp.github.io/bootstrap.native/index.html" title="Share Bootstrap Native on Twitter">
+                              Twitter
+                            </a>
+                          </div>
+                        </div>
+                      </div>
                       <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue
                         laoreet rutrum faucibus dolor auctor.</p>  
                       <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl
@@ -1915,7 +1926,7 @@ var findModalInitJS = BSN.Modal.getInstance(myModal);
                       <td><code>keyboard</code></td>
                       <td><em>boolean</em></td>
                       <td><em>true</em></td>
-                      <td>Option to dismiss the current modal via <kbd>Esc</kbd> key.</td>
+                      <td>Option to dismiss the current offcanvas via <kbd>Esc</kbd> key.</td>
                     </tr>
                     <tr>
                       <td><code>scroll</code></td>
@@ -4032,14 +4043,14 @@ new BSN.Tooltip('#selector',options).show();
       <footer class="mt-3 pt-3 border-top">
         <div class="container">
           <p class="float-end"><a href="#myCarousel">Back to top</a></p>
-          <p><a href="https://github.com/thednp" rel="noreferrer" target="_blank">thednp</a> &copy; 2015-2023.</p>
+          <p><a href="https://github.com/thednp" rel="noreferrer" target="_blank">thednp</a> &copy; 2015-2024.</p>
         </div>
       </footer>
     </div>
 
     <script src="./assets/js/custom-button.js"></script>
     <script type="module">
-      import * as BSN from '../src/index';
+      import * as BSN from '~/index';
       window.BSN = BSN;
     </script>
     <script defer src="./assets/js/scripts.js"></script>

@@ -292,7 +292,7 @@ class L extends Tt {
       isAnimating: t
     };
     this._toggleEventListeners(), super.dispose();
-    // istanbul ignore next @preserve - impossible to test
+    // istanbul ignore next @preserve - impossible to test in playwright
     e.isAnimating && q(e.slides[e.index], () => {
       J(e);
     });

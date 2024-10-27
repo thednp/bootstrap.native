@@ -16,7 +16,6 @@ import {
   getElementStyle,
   getInstance,
   getUID,
-  getWindow,
   hasAttribute,
   hasClass,
   isApple,
@@ -29,8 +28,6 @@ import {
   passiveHandler,
   removeAttribute,
   removeClass,
-  resizeEvent,
-  scrollEvent,
   setAttribute,
   Timer,
   toLowerCase,
@@ -38,6 +35,7 @@ import {
 } from "@thednp/shorty";
 
 import { addListener, removeListener } from "@thednp/event-listener";
+import PositionObserver from "@thednp/position-observer";
 
 import dataBsToggle from "../strings/dataBsToggle";
 import dataOriginalTitle from "../strings/dataOriginalTitle";
@@ -140,10 +138,6 @@ const toggleTooltipAction = (self: Tooltip, add?: boolean) => {
     self.handleTouch,
     passiveHandler,
   );
-
-  [scrollEvent, resizeEvent].forEach((ev) => {
-    action(getWindow(element), ev, self.update, passiveHandler);
-  });
 };
 
 /**
@@ -194,17 +188,13 @@ const tooltipHiddenAction = (self: Tooltip) => {
  */
 const toggleTooltipOpenHandlers = (self: Tooltip, add?: boolean) => {
   const action = add ? addListener : removeListener;
-  const { element, container, offsetParent } = self;
-  const { offsetHeight, scrollHeight } = container as HTMLElement;
+  const { element } = self;
+  // const { offsetHeight, scrollHeight } = container as HTMLElement;
   const parentModal = closest(element, `.${modalString}`);
   const parentOffcanvas = closest(element, `.${offcanvasString}`);
 
-  // istanbul ignore else @preserve
-  const win = getWindow(element);
-  const overflow = offsetHeight !== scrollHeight;
-  const scrollTarget = container === offsetParent && overflow ? container : win;
-  action(scrollTarget, resizeEvent, self.update, passiveHandler);
-  action(scrollTarget, scrollEvent, self.update, passiveHandler);
+  if (add) self._observer.observe(self.element);
+  else self._observer.disconnect();
 
   // dismiss tooltips inside modal / offcanvas
   if (parentModal) {
@@ -253,6 +243,7 @@ export default class Tooltip extends BaseComponent {
   declare offsetParent?: HTMLElement;
   declare enabled: boolean;
   declare id: string;
+  declare _observer: PositionObserver;
 
   /**
    * @param target the target element
@@ -304,6 +295,9 @@ export default class Tooltip extends BaseComponent {
 
       // create tooltip here
       createTip(this);
+
+      // create observer
+      this._observer = new PositionObserver(() => this.update());
 
       // attach events
       this._toggleEventListeners(true);

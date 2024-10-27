@@ -1,3 +1,5 @@
+import PositionObserver$1 from '@thednp/position-observer';
+
 export interface BaseOptions {
 	[key: string]: unknown;
 }
@@ -43,6 +45,7 @@ declare class Tooltip extends BaseComponent {
 	offsetParent?: HTMLElement;
 	enabled: boolean;
 	id: string;
+	_observer: PositionObserver$1;
 	/**
 	 * @param target the target element
 	 * @param config the instance options

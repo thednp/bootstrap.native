@@ -11,17 +11,13 @@ import {
   getDocumentElement,
   getElementsByTagName,
   getInstance,
-  getWindow,
   hasClass,
   isHTMLElement,
-  isWindow,
-  passiveHandler,
   querySelector,
   removeClass,
-  scrollEvent,
 } from "@thednp/shorty";
 
-import { addListener, removeListener } from "@thednp/event-listener";
+import PositionObserver from "@thednp/position-observer";
 
 import activeClass from "../strings/activeClass";
 import scrollspyString from "../strings/scrollspyString";
@@ -73,17 +69,13 @@ const updateSpyTargets = (self: ScrollSpy) => {
   const { target, scrollTarget, options, itemsLength, scrollHeight, element } =
     self;
   const { offset } = options;
-  const isWin = isWindow(scrollTarget as Node | Window);
+  const isRoot = scrollTarget !== element;
 
   const links = target && getElementsByTagName("A", target);
-  const scrollHEIGHT = scrollTarget
-    ? getScrollHeight(scrollTarget)
-    // istanbul ignore next @preserve
-    : scrollHeight;
+  const doc = getDocument(element);
+  const scrollHEIGHT = scrollTarget.scrollHeight;
 
-  self.scrollTop = isWin
-    ? (scrollTarget as Window).scrollY
-    : (scrollTarget as HTMLElement).scrollTop;
+  self.scrollTop = scrollTarget.scrollTop;
 
   // only update items/offsets once or with each mutation
   // istanbul ignore else @preserve
@@ -96,20 +88,22 @@ const updateSpyTargets = (self: ScrollSpy) => {
 
     // reset arrays & update
     self.items = [];
+    self.targets = [];
     self.offsets = [];
     self.scrollHeight = scrollHEIGHT;
     self.maxScroll = self.scrollHeight - getOffsetHeight(self);
 
-    [...links].forEach((link) => {
+    Array.from(links).forEach((link) => {
       href = getAttribute(link, "href");
       targetItem = href && href.charAt(0) === "#" && href.slice(-1) !== "#" &&
-        querySelector(href, getDocument(element));
+        querySelector(href, doc);
 
       if (targetItem) {
         self.items.push(link);
+        self.targets.push(targetItem);
         rect = getBoundingClientRect(targetItem);
         self.offsets.push(
-          (isWin ? rect.top + self.scrollTop : targetItem.offsetTop) - offset,
+          (isRoot ? rect.top + self.scrollTop : targetItem.offsetTop) - offset,
         );
       }
     });
@@ -118,15 +112,31 @@ const updateSpyTargets = (self: ScrollSpy) => {
 };
 
 /**
+ * Toggles on/off the component observer.
+ *
+ * @param self the ScrollSpy instance
+ * @param add when `true`, listener is added
+ */
+const toggleObservers = ({ targets, scrollTarget, element, _observer }: ScrollSpy, add?: boolean) => {
+  if (add) {
+    if (scrollTarget === element) {
+      targets.forEach((targetItem) =>
+        _observer.observe(targetItem)
+      );
+    } else {
+      _observer.observe(element);
+    }
+  } else _observer.disconnect();
+};
+
+/**
  * Returns the `scrollHeight` property of the scrolling element.
  *
  * @param scrollTarget the `ScrollSpy` instance
  * @return `scrollTarget` height
  */
-const getScrollHeight = (scrollTarget: Node | Window) => {
-  return isHTMLElement(scrollTarget as Node)
-    ? (scrollTarget as HTMLElement).scrollHeight
-    : getDocumentElement(scrollTarget as Node).scrollHeight;
+const getScrollHeight = (scrollTarget: HTMLElement) => {
+  return scrollTarget.scrollHeight
 };
 
 /**
@@ -135,8 +145,8 @@ const getScrollHeight = (scrollTarget: Node | Window) => {
  * @param params the `ScrollSpy` instance
  */
 const getOffsetHeight = ({ element, scrollTarget }: ScrollSpy) => {
-  return isWindow(scrollTarget as Node)
-    ? (scrollTarget as Window).innerHeight
+  return scrollTarget !== element
+    ? scrollTarget.clientHeight
     : getBoundingClientRect(element).height;
 };
 
@@ -199,14 +209,16 @@ export default class ScrollSpy extends BaseComponent {
   static getInstance = getScrollSpyInstance;
   declare options: ScrollSpyOptions;
   declare target: HTMLElement | null;
-  declare scrollTarget: HTMLElement | Window;
+  declare scrollTarget: HTMLElement;
   declare scrollTop: number;
   declare maxScroll: number;
   declare scrollHeight: number;
   declare activeItem: HTMLElement | null;
   declare items: HTMLElement[];
+  declare targets: HTMLElement[];
   declare itemsLength: number;
   declare offsets: number[];
+  declare _observer: PositionObserver;
 
   /**
    * @param target the target element
@@ -232,13 +244,19 @@ export default class ScrollSpy extends BaseComponent {
       // set initial state
       this.scrollTarget = element.clientHeight < element.scrollHeight
         ? element
-        : getWindow(element);
+        : getDocumentElement(element);
       this.scrollHeight = getScrollHeight(this.scrollTarget);
 
-      // add event handlers
-      this._toggleEventListeners(true);
-
+      // run an initial burst, we need to know the targets
       this.refresh();
+
+      // create observer
+      this._observer = new PositionObserver(() => this.refresh(), {
+        root: this.scrollTarget,
+      });
+
+      // add event handlers
+      toggleObservers(this, true);
     }
   }
 
@@ -302,24 +320,10 @@ export default class ScrollSpy extends BaseComponent {
     }
   };
 
-  /**
-   * Toggles on/off the component event listener.
-   *
-   * @param add when `true`, listener is added
-   */
-  _toggleEventListeners = (add?: boolean) => {
-    const action = add ? addListener : removeListener;
-    action(
-      this.scrollTarget as EventTarget,
-      scrollEvent,
-      this.refresh,
-      passiveHandler,
-    );
-  };
-
   /** Removes `ScrollSpy` from the target element. */
   dispose() {
-    this._toggleEventListeners();
+    const clone = { ...this };
+    toggleObservers(clone);
     super.dispose();
   }
 }

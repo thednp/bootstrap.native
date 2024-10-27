@@ -16,7 +16,6 @@ import {
   getElementsByClassName,
   getElementStyle,
   getInstance,
-  getWindow,
   hasClass,
   isHTMLElement,
   isRTL,
@@ -28,10 +27,7 @@ import {
   mouseclickEvent,
   mousedownEvent,
   ObjectAssign,
-  passiveHandler,
   removeClass,
-  resizeEvent,
-  scrollEvent,
   setAttribute,
   setElementStyle,
 } from "@thednp/shorty";
@@ -296,7 +292,7 @@ const getMenuItems = (menu: HTMLElement) => {
  * @param {Dropdown} self the `Dropdown` instance
  */
 const toggleDropdownDismiss = (self: Dropdown) => {
-  const { element, options } = self;
+  const { element, options, menu } = self;
   const action = self.open ? addListener : removeListener;
   const doc = getDocument(element);
 
@@ -307,9 +303,8 @@ const toggleDropdownDismiss = (self: Dropdown) => {
 
   // istanbul ignore else @preserve
   if (options.display === "dynamic") {
-    [scrollEvent, resizeEvent].forEach((ev) => {
-      action(getWindow(element), ev, dropdownLayoutHandler, passiveHandler);
-    });
+    if (self.open) self._observer.observe(menu);
+    else self._observer.disconnect();
   }
 };
 
@@ -448,8 +443,8 @@ function dropdownKeyHandler(this: HTMLElement, e: KeyboardEvent) {
 }
 
 /** Handles dropdown layout changes during resize / scroll. */
-function dropdownLayoutHandler(this: HTMLElement) {
-  const element = getCurrentOpenDropdown(this);
+function dropdownIntersectionHandler(target: HTMLElement) {
+  const element = getCurrentOpenDropdown(target);
   const self = element && getDropdownInstance(element);
 
   // istanbul ignore else @preserve
@@ -467,6 +462,7 @@ export default class Dropdown extends BaseComponent {
   declare open: boolean;
   declare parentElement: HTMLElement;
   declare menu: HTMLElement;
+  declare _observer: IntersectionObserver;
 
   /**
    * @param target Element or string selector
@@ -487,6 +483,10 @@ export default class Dropdown extends BaseComponent {
       // set targets
       this.parentElement = parentElement as HTMLElement;
       this.menu = menu;
+      this._observer = new IntersectionObserver(
+        ([entry]) => dropdownIntersectionHandler(entry.target as HTMLElement),
+        { threshold: 1 },
+      );
 
       // add event listener
       this._toggleEventListeners(true);

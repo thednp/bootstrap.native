@@ -30,6 +30,7 @@ declare class Dropdown extends BaseComponent {
 	open: boolean;
 	parentElement: HTMLElement;
 	menu: HTMLElement;
+	_observer: IntersectionObserver;
 	/**
 	 * @param target Element or string selector
 	 * @param config the instance options

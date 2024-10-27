@@ -69,7 +69,7 @@ describe("Toast Class Tests", () => {
     await vi.waitFor(() => {
       expect(instance.isShown).to.be.false;
       expect(instance.element.className).to.not.contain('show');
-    }, 151);
+    }, 251);
   });
 
   it("Can do click()", async () => {

@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: ViTst
+      - name: ViTest
         run: pnpm test
 
       - name: Upload coverage report to coveralls.io...
