@@ -23,7 +23,6 @@ export default defineConfig({
   },
   esbuild: {
     legalComments: 'none',
-    minifyIdentifiers: false,
   },
   plugins: [
     dts({
@@ -38,7 +37,6 @@ export default defineConfig({
     target: 'ESNext',
     outDir: 'dist',
     rollupOptions: {
-      preserveEntrySignatures: "strict",
       output: {
         compact: true
       }
