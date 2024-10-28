@@ -23,6 +23,7 @@ export default defineConfig({
   },
   esbuild: {
     legalComments: 'none',
+    minifyIdentifiers: false,
   },
   plugins: [
     dts({
@@ -35,6 +36,13 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     target: 'ESNext',
+    outDir: 'dist',
+    rollupOptions: {
+      preserveEntrySignatures: "strict",
+      output: {
+        compact: true
+      }
+    },
     lib: {
       entry: [
         resolve(__dirname, 'src/index.ts'), // main file
