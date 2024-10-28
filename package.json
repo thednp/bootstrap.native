@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "5.0.15",
+  "version": "5.1.0",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
@@ -82,11 +82,9 @@
     "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.mts --browser=chrome",
     "clean-coverage": "rm -rf coverage .nyc_output",
     "badges": "npx -p dependency-version-badge update-badge typescript vitest vite",
-    "build": "pnpm build-vite && pnpm build-components && pnpm dts && pnpm copy-docs",
-    "build-vite-with-dts": "vite build && pnpm copy-docs",
+    "build": "pnpm build-vite && pnpm build-components && pnpm copy-docs",
     "build-vite": "vite build && pnpm copy-docs",
     "build-components": "vite build --config vite.config.components.mts",
-    "dts": "dts-bundle-generator --config ./dts.config.cjs --project ./tsconfig.json",
     "copy-docs": "cp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && cp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "lint": "deno lint src && pnpm check:ts",
     "check:ts": "tsc --noEmit",
@@ -111,19 +109,19 @@
   ],
   "dependencies": {
     "@thednp/event-listener": "^2.0.6",
-    "@thednp/position-observer": "^0.0.2",
-    "@thednp/shorty": "^2.0.6"
+    "@thednp/position-observer": "^0.0.3",
+    "@thednp/shorty": "^2.0.7"
   },
   "devDependencies": {
     "@types/node": "^20.17.1",
-    "@vitest/browser": "^2.1.3",
-    "@vitest/coverage-istanbul": "^2.1.3",
-    "@vitest/ui": "^2.1.3",
-    "dts-bundle-generator": "^9.5.1",
+    "@vitest/browser": "^2.1.4",
+    "@vitest/coverage-istanbul": "^2.1.4",
+    "@vitest/ui": "^2.1.4",
     "playwright": "^1.48.2",
     "typescript": "^5.6.3",
     "vite": "^5.4.10",
-    "vitest": "^2.1.3"
+    "vite-plugin-dts": "^4.3.0",
+    "vitest": "^2.1.4"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

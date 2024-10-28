@@ -1,103 +1,88 @@
-var A = Object.defineProperty;
-var B = (n, e, t) => e in n ? A(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var p = (n, e, t) => B(n, typeof e != "symbol" ? e + "" : e, t);
-import { createCustomEvent as $, getDocument as D, querySelectorAll as x, isHTMLElement as _, isString as q, querySelector as P, Timer as i, addClass as g, removeClass as h, hasClass as M, mouseclickEvent as N, getInstance as j, dispatchEvent as u, noop as E, setElementStyle as f, emulateTransitionEnd as T, setAttribute as I, ariaExpanded as H, reflow as z, closest as F } from "@thednp/shorty";
-import { addListener as G, removeListener as J } from "@thednp/event-listener";
-import { d as K } from "./dataBsToggle-B84TS15h.mjs";
-import { c as C } from "./collapsingClass-BxKtDBMH.mjs";
-import { s as v } from "./showClass-C8hdJfjQ.mjs";
-import { g as w } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as O } from "./base-component-DHbs0JQk.mjs";
-const l = "collapse", k = "Collapse", Q = `.${l}`, y = `[${K}="${l}"]`, R = { parent: null }, m = (n) => j(n, k), U = (n) => new d(n), S = $(`show.bs.${l}`), V = $(`shown.bs.${l}`), b = $(`hide.bs.${l}`), W = $(`hidden.bs.${l}`), X = (n) => {
-  const { element: e, parent: t, triggers: o } = n;
-  u(e, S), S.defaultPrevented || (i.set(e, E, 17), t && i.set(t, E, 17), g(e, C), h(e, l), f(e, { height: `${e.scrollHeight}px` }), T(e, () => {
-    i.clear(e), t && i.clear(t), o.forEach((s) => I(s, H, "true")), h(e, C), g(e, l), g(e, v), f(e, { height: "" }), u(e, V);
+import { B as D, l as H, n as v, u as k, I as q, q as y, T as n, f as c, r as g, h as A, g as B, c as E, d as f, J as d, K as p, e as S, s as T, L as b, t as _, m as P, D as J } from "./base-component-ylZzLp-h.mjs";
+import { E as K, r as M } from "./event-listener-C1-Yf9Z5.mjs";
+import { d as N } from "./dataBsToggle-B84TS15h.mjs";
+import { c as m } from "./collapsingClass-BxKtDBMH.mjs";
+import { s as u } from "./showClass-C8hdJfjQ.mjs";
+import { g as C } from "./getTargetElement-BFOUI7hP.mjs";
+const o = "collapse", I = "Collapse", j = `.${o}`, L = `[${N}="${o}"]`, z = { parent: null }, h = (l) => B(l, I), F = (l) => new U(l), $ = E(`show.bs.${o}`), G = E(`shown.bs.${o}`), w = E(`hide.bs.${o}`), O = E(`hidden.bs.${o}`), Q = (l) => {
+  const { element: e, parent: t, triggers: s } = l;
+  f(e, $), $.defaultPrevented || (n.set(e, d, 17), t && n.set(t, d, 17), c(e, m), g(e, o), p(e, { height: `${e.scrollHeight}px` }), S(e, () => {
+    n.clear(e), t && n.clear(t), s.forEach((a) => T(a, b, "true")), g(e, m), c(e, o), c(e, u), p(e, { height: "" }), f(e, G);
   }));
-}, L = (n) => {
-  const { element: e, parent: t, triggers: o } = n;
-  u(e, b), b.defaultPrevented || (i.set(e, E, 17), t && i.set(t, E, 17), f(e, { height: `${e.scrollHeight}px` }), h(e, l), h(e, v), g(e, C), z(e), f(e, { height: "0px" }), T(e, () => {
-    i.clear(e);
-    // istanbul ignore else @preserve
-    t && i.clear(t), o.forEach((s) => I(s, H, "false")), h(e, C), g(e, l), f(e, { height: "" }), u(e, W);
+}, x = (l) => {
+  const { element: e, parent: t, triggers: s } = l;
+  f(e, w), w.defaultPrevented || (n.set(e, d, 17), t && n.set(t, d, 17), p(e, { height: `${e.scrollHeight}px` }), g(e, o), g(e, u), c(e, m), _(e), p(e, { height: "0px" }), S(e, () => {
+    n.clear(e), t && n.clear(t), s.forEach((a) => T(a, b, "false")), g(e, m), c(e, o), p(e, { height: "" }), f(e, O);
   }));
-}, Y = (n) => {
-  const { target: e } = n, t = e && F(e, y), o = t && w(t), s = o && m(o);
-  // istanbul ignore else @preserve
-  s && s.toggle(), t && t.tagName === "A" && n.preventDefault();
+}, R = (l) => {
+  const { target: e } = l, t = e && J(e, L), s = t && C(t), a = s && h(s);
+  a && a.toggle(), t && t.tagName === "A" && l.preventDefault();
 };
-class d extends O {
+class U extends D {
+  static selector = j;
+  static init = F;
+  static getInstance = h;
   /**
    * @param target and `Element` that matches the selector
    * @param config instance options
    */
-  constructor(t, o) {
-    super(t, o);
-    /**
-     * Toggles on/off the event listener(s) of the `Collapse` instance.
-     *
-     * @param add when `true`, the event listener is added
-     */
-    p(this, "_toggleEventListeners", (t) => {
-      const o = t ? G : J, { triggers: s } = this;
-      // istanbul ignore else @preserve
-      s.length && s.forEach(
-        (r) => o(r, N, Y)
-      );
-    });
-    const { element: s, options: r } = this, a = D(s);
-    this.triggers = [...x(y, a)].filter(
-      (c) => w(c) === s
-    ), this.parent = _(r.parent) ? r.parent : q(r.parent) ? w(s) || P(r.parent, a) : null, this._toggleEventListeners(!0);
+  constructor(e, t) {
+    super(e, t);
+    const { element: s, options: a } = this, r = H(s);
+    this.triggers = [...v(L, r)].filter(
+      (i) => C(i) === s
+    ), this.parent = k(a.parent) ? a.parent : q(a.parent) ? C(s) || y(a.parent, r) : null, this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return k;
+    return I;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return R;
+    return z;
   }
   // COLLAPSE PUBLIC METHODS
   // =======================
   /** Hides the collapse. */
   hide() {
-    const { triggers: t, element: o } = this;
-    // istanbul ignore else @preserve
-    if (!i.get(o)) {
-      L(this);
-      // istanbul ignore else @preserve
-      t.length && t.forEach((s) => g(s, `${l}d`));
-    }
+    const { triggers: e, element: t } = this;
+    n.get(t) || (x(this), e.length && e.forEach((s) => c(s, `${o}d`)));
   }
   /** Shows the collapse. */
   show() {
-    const { element: t, parent: o, triggers: s } = this;
-    let r, a;
-    if (o && (r = [
-      ...x(`.${l}.${v}`, o)
-    ].find((c) => m(c)), a = r && m(r)), (!o || !i.get(o)) && !i.get(t)) {
-      a && r !== t && (L(a), a.triggers.forEach((c) => {
-        g(c, `${l}d`);
-      })), X(this);
-      // istanbul ignore else @preserve
-      s.length && s.forEach((c) => h(c, `${l}d`));
-    }
+    const { element: e, parent: t, triggers: s } = this;
+    let a, r;
+    t && (a = [
+      ...v(`.${o}.${u}`, t)
+    ].find((i) => h(i)), r = a && h(a)), (!t || !n.get(t)) && !n.get(e) && (r && a !== e && (x(r), r.triggers.forEach((i) => {
+      c(i, `${o}d`);
+    })), Q(this), s.length && s.forEach((i) => g(i, `${o}d`)));
   }
   /** Toggles the visibility of the collapse. */
   toggle() {
-    M(this.element, v) ? this.hide() : this.show();
+    A(this.element, u) ? this.hide() : this.show();
   }
+  /**
+   * Toggles on/off the event listener(s) of the `Collapse` instance.
+   *
+   * @param add when `true`, the event listener is added
+   */
+  _toggleEventListeners = (e) => {
+    const t = e ? K : M, { triggers: s } = this;
+    s.length && s.forEach(
+      (a) => t(a, P, R)
+    );
+  };
   /** Remove the `Collapse` component from the target `Element`. */
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
-p(d, "selector", Q), p(d, "init", U), p(d, "getInstance", m);
 export {
-  d as default
+  U as default
 };
 //# sourceMappingURL=collapse.mjs.map

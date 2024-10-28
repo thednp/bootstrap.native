@@ -1,164 +1,128 @@
-var Dt = Object.defineProperty;
-var At = (n, e, t) => e in n ? Dt(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var f = (n, e, t) => At(n, typeof e != "symbol" ? e + "" : e, t);
-import { closest as F, hasAttribute as J, getAttribute as k, createCustomEvent as g, getElementsByClassName as ct, dispatchEvent as m, addClass as Q, setAttribute as V, ariaExpanded as X, focus as P, removeClass as Y, mouseclickEvent as O, getInstance as $t, getElementStyle as xt, isRTL as St, hasClass as Z, setElementStyle as H, getDocumentElement as Tt, getBoundingClientRect as Ht, ObjectAssign as tt, getDocument as W, focusEvent as lt, keydownEvent as It, keyupEvent as Lt, isHTMLElement as kt, mousedownEvent as Pt, keyArrowDown as B, keyArrowUp as M, keyEscape as Bt } from "@thednp/shorty";
-import { addListener as at, removeListener as pt } from "@thednp/event-listener";
-import { s as h } from "./showClass-C8hdJfjQ.mjs";
-import { d as ut } from "./dataBsToggle-B84TS15h.mjs";
+import { D as B, M as Q, b as I, B as Dt, j as it, d as f, f as V, s as X, N as P, r as Y, g as Ct, c as h, P as yt, i as At, h as q, K as S, Q as $t, R as xt, O as G, l as O, L as J, m as _, S as at, C as St, U as Tt, u as Ht, V as It, W as k, X as L, Y as Pt } from "./base-component-ylZzLp-h.mjs";
+import { E as dt, r as ct } from "./event-listener-C1-Yf9Z5.mjs";
+import { s as m } from "./showClass-C8hdJfjQ.mjs";
+import { d as lt } from "./dataBsToggle-B84TS15h.mjs";
 import { d as D } from "./dropdownClasses-CdCdZ-PX.mjs";
-import { B as Mt } from "./base-component-DHbs0JQk.mjs";
-const ft = "Dropdown", mt = "dropdown-menu", ht = (n) => {
-  const e = F(n, "A");
+const pt = "Dropdown", ut = "dropdown-menu", ft = (n) => {
+  const t = B(n, "A");
   return n.tagName === "A" && // anchor href starts with #
-  J(n, "href") && k(n, "href").slice(-1) === "#" || // OR a child of an anchor with href starts with #
-  e && J(e, "href") && k(e, "href").slice(-1) === "#";
-}, [p, N, _, j] = D, gt = `[${ut}="${p}"]`, u = (n) => $t(n, ft), Nt = (n) => new y(n), _t = `${mt}-end`, et = [p, N], nt = [_, j], ot = ["A", "BUTTON"], jt = {
+  Q(n, "href") && I(n, "href").slice(-1) === "#" || // OR a child of an anchor with href starts with #
+  t && Q(t, "href") && I(t, "href").slice(-1) === "#";
+}, [p, M, N, j] = D, mt = `[${lt}="${p}"]`, u = (n) => Ct(n, pt), kt = (n) => new Ft(n), Lt = `${ut}-end`, Z = [p, M], tt = [N, j], et = ["A", "BUTTON"], Mt = {
   offset: 5,
   // [number] 5(px)
   display: "dynamic"
   // [dynamic|static]
-}, I = g(
+}, T = h(
   `show.bs.${p}`
-), st = g(
+), nt = h(
   `shown.bs.${p}`
-), L = g(
+), H = h(
   `hide.bs.${p}`
-), rt = g(`hidden.bs.${p}`), Et = g(`updated.bs.${p}`), wt = (n) => {
-  const { element: e, menu: t, parentElement: r, options: i } = n, { offset: o } = i;
-  // istanbul ignore else @preserve: this test requires a navbar
-  if (xt(t, "position") !== "static") {
-    const s = St(e), d = Z(t, _t);
-    ["margin", "top", "bottom", "left", "right"].forEach((a) => {
-      const G = {};
-      G[a] = "", H(t, G);
+), ot = h(`hidden.bs.${p}`), ht = h(`updated.bs.${p}`), gt = (n) => {
+  const { element: t, menu: e, parentElement: r, options: s } = n, { offset: o } = s;
+  if (yt(e, "position") !== "static") {
+    const i = At(t), a = q(e, Lt);
+    ["margin", "top", "bottom", "left", "right"].forEach((c) => {
+      const z = {};
+      z[c] = "", S(e, z);
     });
-    let c = D.find(
-      (a) => Z(r, a)
+    let d = D.find(
+      (c) => q(r, c)
     ) || // istanbul ignore next @preserve: fallback position
     p;
-    const vt = {
+    const Et = {
       dropdown: [o, 0, 0],
       dropup: [0, 0, o],
-      dropstart: s ? [-1, 0, 0, o] : [-1, o, 0],
-      dropend: s ? [-1, o, 0] : [-1, 0, 0, o]
-    }, E = {
+      dropstart: i ? [-1, 0, 0, o] : [-1, o, 0],
+      dropend: i ? [-1, o, 0] : [-1, 0, 0, o]
+    }, g = {
       dropdown: { top: "100%" },
       dropup: { top: "auto", bottom: "100%" },
-      dropstart: s ? { left: "100%", right: "auto" } : { left: "auto", right: "100%" },
-      dropend: s ? { left: "auto", right: "100%" } : { left: "100%", right: "auto" },
-      menuStart: s ? { right: "0", left: "auto" } : { right: "auto", left: "0" },
-      menuEnd: s ? { right: "auto", left: "0" } : { right: "0", left: "auto" }
-    }, { offsetWidth: w, offsetHeight: $ } = t, { clientWidth: R, clientHeight: U } = Tt(e), {
-      left: v,
-      top: x,
-      width: z,
-      height: bt
-    } = Ht(e), S = v - w - o < 0, T = v + w + z + o >= R, Ct = x + $ + o >= U, K = x + $ + bt + o >= U, q = x - $ - o < 0, b = (!s && d || s && !d) && v + z - w < 0, C = (s && d || !s && !d) && v + w >= R;
-    if (nt.includes(c) && S && T && (c = p), c === _ && (s ? T : S) && (c = j), c === j && (s ? S : T) && (c = _), c === N && q && !K && (c = p), c === p && K && !q && (c = N), nt.includes(c) && Ct && tt(E[c], {
+      dropstart: i ? { left: "100%", right: "auto" } : { left: "auto", right: "100%" },
+      dropend: i ? { left: "auto", right: "100%" } : { left: "100%", right: "auto" },
+      menuStart: i ? { right: "0", left: "auto" } : { right: "auto", left: "0" },
+      menuEnd: i ? { right: "auto", left: "0" } : { right: "0", left: "auto" }
+    }, { offsetWidth: E, offsetHeight: y } = e, { clientWidth: F, clientHeight: W } = $t(t), {
+      left: w,
+      top: A,
+      width: R,
+      height: wt
+    } = xt(t), $ = w - E - o < 0, x = w + E + R + o >= F, vt = A + y + o >= W, U = A + y + wt + o >= W, K = A - y - o < 0, v = (!i && a || i && !a) && w + R - E < 0, b = (i && a || !i && !a) && w + E >= F;
+    if (tt.includes(d) && $ && x && (d = p), d === N && (i ? x : $) && (d = j), d === j && (i ? $ : x) && (d = N), d === M && K && !U && (d = p), d === p && U && !K && (d = M), tt.includes(d) && vt && G(g[d], {
       top: "auto",
       bottom: 0
-    }), et.includes(c) && (b || C)) {
-      let a = { left: "auto", right: "auto" };
-      // istanbul ignore else @preserve
-      !b && C && !s && (a = { left: "auto", right: 0 });
-      // istanbul ignore else @preserve
-      b && !C && s && (a = { left: 0, right: "auto" });
-      // istanbul ignore else @preserve
-      a && tt(E[c], a);
+    }), Z.includes(d) && (v || b)) {
+      let c = { left: "auto", right: "auto" };
+      !v && b && !i && (c = { left: "auto", right: 0 }), v && !b && i && (c = { left: 0, right: "auto" }), c && G(g[d], c);
     }
-    const yt = vt[c];
-    if (H(t, {
-      ...E[c],
-      margin: `${yt.map((a) => a && `${a}px`).join(" ")}`
-    }), et.includes(c) && d) {
-      // istanbul ignore else @preserve
-      d && H(t, E[!s && b || s && C ? "menuStart" : "menuEnd"]);
-    }
-    m(r, Et);
+    const bt = Et[d];
+    S(e, {
+      ...g[d],
+      margin: `${bt.map((c) => c && `${c}px`).join(" ")}`
+    }), Z.includes(d) && a && a && S(e, g[!i && v || i && b ? "menuStart" : "menuEnd"]), f(r, ht);
   }
-}, Ft = (n) => [...n.children].map((e) => {
-  if (e && ot.includes(e.tagName)) return e;
-  const { firstElementChild: t } = e;
-  return t && ot.includes(t.tagName) ? t : null;
-}).filter((e) => e), it = (n) => {
-  const { element: e, options: t, menu: r } = n, i = n.open ? at : pt, o = W(e);
-  i(o, O, dt), i(o, lt, dt), i(o, It, Wt), i(o, Lt, Rt);
-  // istanbul ignore else @preserve
-  t.display === "dynamic" && (n.open ? n._observer.observe(r) : n._observer.disconnect());
-}, A = (n) => {
-  const e = [...D, "btn-group", "input-group"].map(
-    (t) => ct(`${t} ${h}`, W(n))
-  ).find((t) => t.length);
-  if (e && e.length)
-    return [...e[0].children].find(
-      (t) => D.some((r) => r === k(t, ut))
+}, Nt = (n) => [...n.children].map((t) => {
+  if (t && et.includes(t.tagName)) return t;
+  const { firstElementChild: e } = t;
+  return e && et.includes(e.tagName) ? e : null;
+}).filter((t) => t), st = (n) => {
+  const { element: t, options: e, menu: r } = n, s = n.open ? dt : ct, o = O(t);
+  s(o, _, rt), s(o, at, rt), s(o, St, Bt), s(o, Tt, Ot), e.display === "dynamic" && (n.open ? n._observer.observe(r) : n._observer.disconnect());
+}, C = (n) => {
+  const t = [...D, "btn-group", "input-group"].map(
+    (e) => it(`${e} ${m}`, O(n))
+  ).find((e) => e.length);
+  if (t && t.length)
+    return [...t[0].children].find(
+      (e) => D.some((r) => r === I(e, lt))
     );
-}, dt = (n) => {
-  const { target: e, type: t } = n;
-  // istanbul ignore else @preserve
-  if (e && kt(e)) {
-    const r = A(e), i = r && u(r);
-    // istanbul ignore else @preserve
-    if (i) {
-      const { parentElement: o, menu: s } = i, d = o && o.contains(e) && (e.tagName === "form" || F(e, "form") !== null);
-      [O, Pt].includes(t) && ht(e) && n.preventDefault();
-      // istanbul ignore else @preserve
-      !d && t !== lt && e !== r && e !== s && i.hide();
+}, rt = (n) => {
+  const { target: t, type: e } = n;
+  if (t && Ht(t)) {
+    const r = C(t), s = r && u(r);
+    if (s) {
+      const { parentElement: o, menu: i } = s, a = o && o.contains(t) && (t.tagName === "form" || B(t, "form") !== null);
+      [_, It].includes(e) && ft(t) && n.preventDefault(), !a && e !== at && t !== r && t !== i && s.hide();
     }
   }
-}, Ot = (n) => {
-  const { target: e } = n, t = e && F(e, gt), r = t && u(t);
-  // istanbul ignore else @preserve
-  if (r) {
-    n.stopPropagation(), r.toggle();
-    // istanbul ignore else @preserve
-    t && ht(t) && n.preventDefault();
-  }
-}, Wt = (n) => {
-  // istanbul ignore else @preserve
-  [B, M].includes(n.code) && n.preventDefault();
+}, jt = (n) => {
+  const { target: t } = n, e = t && B(t, mt), r = e && u(e);
+  r && (n.stopPropagation(), r.toggle(), e && ft(e) && n.preventDefault());
+}, Bt = (n) => {
+  [k, L].includes(n.code) && n.preventDefault();
 };
-function Rt(n) {
-  const { code: e } = n, t = A(this), r = t && u(t), { activeElement: i } = t && W(t);
-  // istanbul ignore else @preserve
-  if (r && i) {
-    const { menu: o, open: s } = r, d = Ft(o);
-    if (d && d.length && [B, M].includes(e)) {
-      let l = d.indexOf(i);
-      // istanbul ignore else @preserve
-      i === t ? l = 0 : e === M ? l = l > 1 ? l - 1 : 0 : e === B && (l = l < d.length - 1 ? l + 1 : l);
-      // istanbul ignore else @preserve
-      d[l] && P(d[l]);
+function Ot(n) {
+  const { code: t } = n, e = C(this), r = e && u(e), { activeElement: s } = e && O(e);
+  if (r && s) {
+    const { menu: o, open: i } = r, a = Nt(o);
+    if (a && a.length && [k, L].includes(t)) {
+      let l = a.indexOf(s);
+      s === e ? l = 0 : t === L ? l = l > 1 ? l - 1 : 0 : t === k && (l = l < a.length - 1 ? l + 1 : l), a[l] && P(a[l]);
     }
-    Bt === e && s && (r.toggle(), P(t));
+    Pt === t && i && (r.toggle(), P(e));
   }
 }
-function Ut(n) {
-  const e = A(n), t = e && u(e);
-  // istanbul ignore else @preserve
-  t && t.open && wt(t);
+function _t(n) {
+  const t = C(n), e = t && u(t);
+  e && e.open && gt(e);
 }
-class y extends Mt {
+class Ft extends Dt {
+  static selector = mt;
+  static init = kt;
+  static getInstance = u;
   /**
    * @param target Element or string selector
    * @param config the instance options
    */
-  constructor(t, r) {
-    super(t, r);
-    /**
-     * Toggles on/off the `click` event listener of the `Dropdown`.
-     *
-     * @param add when `true`, it will add the event listener
-     */
-    f(this, "_toggleEventListeners", (t) => {
-      (t ? at : pt)(this.element, O, Ot);
-    });
-    const { parentElement: i } = this.element, [o] = ct(
-      mt,
-      i
+  constructor(t, e) {
+    super(t, e);
+    const { parentElement: r } = this.element, [s] = it(
+      ut,
+      r
     );
-    o && (this.parentElement = i, this.menu = o, this._observer = new IntersectionObserver(
-      ([s]) => Ut(s.target),
+    s && (this.parentElement = r, this.menu = s, this._observer = new IntersectionObserver(
+      ([o]) => _t(o.target),
       { threshold: 1 }
     ), this._toggleEventListeners(!0));
   }
@@ -166,13 +130,13 @@ class y extends Mt {
    * Returns component name string.
    */
   get name() {
-    return ft;
+    return pt;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return jt;
+    return Mt;
   }
   // DROPDOWN PUBLIC METHODS
   // =======================
@@ -182,32 +146,37 @@ class y extends Mt {
   }
   /** Shows the dropdown menu to the user. */
   show() {
-    const { element: t, open: r, menu: i, parentElement: o } = this;
-    // istanbul ignore else @preserve
-    if (!r) {
-      const s = A(t), d = s && u(s);
-      d && d.hide(), [I, st, Et].forEach(
-        (l) => {
-          l.relatedTarget = t;
+    const { element: t, open: e, menu: r, parentElement: s } = this;
+    if (!e) {
+      const o = C(t), i = o && u(o);
+      i && i.hide(), [T, nt, ht].forEach(
+        (a) => {
+          a.relatedTarget = t;
         }
-      ), m(o, I), I.defaultPrevented || (Q(i, h), Q(o, h), V(t, X, "true"), wt(this), this.open = !r, P(t), it(this), m(o, st));
+      ), f(s, T), T.defaultPrevented || (V(r, m), V(s, m), X(t, J, "true"), gt(this), this.open = !e, P(t), st(this), f(s, nt));
     }
   }
   /** Hides the dropdown menu from the user. */
   hide() {
-    const { element: t, open: r, menu: i, parentElement: o } = this;
-    // istanbul ignore else @preserve
-    r && ([L, rt].forEach((s) => {
-      s.relatedTarget = t;
-    }), m(o, L), L.defaultPrevented || (Y(i, h), Y(o, h), V(t, X, "false"), this.open = !r, it(this), m(o, rt)));
+    const { element: t, open: e, menu: r, parentElement: s } = this;
+    e && ([H, ot].forEach((o) => {
+      o.relatedTarget = t;
+    }), f(s, H), H.defaultPrevented || (Y(r, m), Y(s, m), X(t, J, "false"), this.open = !e, st(this), f(s, ot)));
   }
+  /**
+   * Toggles on/off the `click` event listener of the `Dropdown`.
+   *
+   * @param add when `true`, it will add the event listener
+   */
+  _toggleEventListeners = (t) => {
+    (t ? dt : ct)(this.element, _, jt);
+  };
   /** Removes the `Dropdown` component from the target element. */
   dispose() {
     this.open && this.hide(), this._toggleEventListeners(), super.dispose();
   }
 }
-f(y, "selector", gt), f(y, "init", Nt), f(y, "getInstance", u);
 export {
-  y as default
+  Ft as default
 };
 //# sourceMappingURL=dropdown.mjs.map

@@ -1,71 +1,34 @@
-var qo = Object.defineProperty;
-var Yo = (t, s, e) => s in t ? qo(t, s, { enumerable: !0, configurable: !0, writable: !0, value: e }) : t[s] = e;
-var d = (t, s, e) => Yo(t, typeof s != "symbol" ? s + "" : s, e);
-const Rn = "aria-describedby", ke = "aria-expanded", ve = "aria-hidden", Ne = "aria-modal", Ns = "aria-pressed", Ge = "aria-selected", Uo = "DOMContentLoaded", Ts = "focus", ys = "focusin", Wn = "focusout", Me = "keydown", Zo = "keyup", _ = "click", jn = "mousedown", Jo = "hover", Be = "mouseenter", Cs = "mouseleave", Go = "pointerdown", Qo = "pointermove", ti = "pointerup", xs = "touchstart", ei = "dragstart", si = 'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]', ls = "ArrowDown", ds = "ArrowUp", Ms = "ArrowLeft", Bs = "ArrowRight", Hs = "Escape", ni = "transitionDuration", oi = "transitionDelay", Qe = "transitionend", Vn = "transitionProperty", ii = navigator.userAgentData, Le = ii, { userAgent: ri } = navigator, Ie = ri, Fs = /iPhone|iPad|iPod|Android/i;
-// istanbul ignore else @preserve
-Le ? Le.brands.some((t) => Fs.test(t.brand)) : Fs.test(Ie);
-const Rs = /(iPhone|iPod|iPad)/, ci = Le ? Le.brands.some(
-  (t) => Rs.test(t.brand)
-) : (
-  /* istanbul ignore next @preserve */
-  Rs.test(Ie)
-);
-Ie && Ie.includes("Firefox");
-const { head: Fe } = document;
-["webkitPerspective", "perspective"].some(
-  (t) => t in Fe.style
-);
-const zn = (t, s, e, n) => {
+const bn = "aria-describedby", me = "aria-expanded", se = "aria-hidden", be = "aria-modal", vs = "aria-pressed", Le = "aria-selected", ss = "focus", ns = "focusin", En = "focusout", Ee = "keydown", No = "keyup", N = "click", wn = "mousedown", Oo = "hover", we = "mouseenter", os = "mouseleave", ko = "pointerdown", _o = "pointermove", Mo = "pointerup", is = "touchstart", Bo = "dragstart", Ro = 'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]', je = "ArrowDown", ze = "ArrowUp", bs = "ArrowLeft", Es = "ArrowRight", rs = "Escape", Fo = "transitionDuration", Wo = "transitionDelay", Ne = "transitionend", Tn = "transitionProperty", Vo = () => {
+  const e = /(iPhone|iPod|iPad)/;
+  return navigator?.userAgentData?.brands.some(
+    (t) => e.test(t.brand)
+  ) || /* istanbul ignore next @preserve */
+  e.test(
+    navigator?.userAgent
+  ) || !1;
+}, ve = () => {
+}, jo = (e, t, s, n) => {
   const o = n || !1;
-  t.addEventListener(
+  e.addEventListener(
+    t,
     s,
-    e,
     o
   );
-}, Xn = (t, s, e, n) => {
+}, zo = (e, t, s, n) => {
   const o = n || !1;
-  t.removeEventListener(
+  e.removeEventListener(
+    t,
     s,
-    e,
     o
   );
-}, ai = (t, s, e, n) => {
-  const o = (i) => {
-    // istanbul ignore else @preserve
-    (i.target === t || i.currentTarget === t) && (e.apply(t, [i]), Xn(t, s, o, n));
-  };
-  zn(t, s, o, n);
-}, he = () => {
-};
-(() => {
-  let t = !1;
-  try {
-    const s = Object.defineProperty({}, "passive", {
-      get: () => (t = !0, t)
-    });
-    // istanbul ignore next @preserve
-    ai(document, Uo, he, s);
-  } catch {
-  }
-  return t;
-})();
-["webkitTransform", "transform"].some(
-  (t) => t in Fe.style
-);
-["webkitAnimation", "animation"].some(
-  (t) => t in Fe.style
-);
-["webkitTransition", "transition"].some(
-  (t) => t in Fe.style
-);
-const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t, s, e) => t.setAttribute(s, e), It = (t, s) => t.removeAttribute(s), f = (t, ...s) => {
-  t.classList.add(...s);
-}, b = (t, ...s) => {
-  t.classList.remove(...s);
-}, g = (t, s) => t.classList.contains(s), be = (t) => t != null && typeof t == "object" || !1, A = (t) => be(t) && typeof t.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
-  (s) => t.nodeType === s
-) || !1, y = (t) => A(t) && t.nodeType === 1 || !1, Wt = /* @__PURE__ */ new Map(), Dt = {
-  data: Wt,
+}, et = (e, t) => e.getAttribute(t), Gt = (e, t) => e.hasAttribute(t), O = (e, t, s) => e.setAttribute(t, s), Pt = (e, t) => e.removeAttribute(t), h = (e, ...t) => {
+  e.classList.add(...t);
+}, m = (e, ...t) => {
+  e.classList.remove(...t);
+}, f = (e, t) => e.classList.contains(t), ne = (e) => e != null && typeof e == "object" || !1, H = (e) => ne(e) && typeof e.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
+  (t) => e.nodeType === t
+) || !1, T = (e) => H(e) && e.nodeType === 1 || !1, Bt = /* @__PURE__ */ new Map(), Dt = {
+  data: Bt,
   /**
    * Sets web components data.
    *
@@ -73,10 +36,8 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
    * @param component the component's name or a unique key
    * @param instance the component instance
    */
-  set: (t, s, e) => {
-    if (!y(t)) return;
-    // istanbul ignore else @preserve
-    Wt.has(s) || Wt.set(s, /* @__PURE__ */ new Map()), Wt.get(s).set(t, e);
+  set: (e, t, s) => {
+    T(e) && (Bt.has(t) || Bt.set(t, /* @__PURE__ */ new Map()), Bt.get(t).set(e, s));
   },
   /**
    * Returns all instances for specified component.
@@ -84,7 +45,7 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
    * @param component the component's name or a unique key
    * @returns all the component instances
    */
-  getAllFor: (t) => Wt.get(t) || null,
+  getAllFor: (e) => Bt.get(e) || null,
   /**
    * Returns the instance associated with the target.
    *
@@ -92,10 +53,10 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
    * @param component the component's name or a unique key
    * @returns the instance
    */
-  get: (t, s) => {
-    if (!y(t) || !s) return null;
-    const e = Dt.getAllFor(s);
-    return t && e && e.get(t) || null;
+  get: (e, t) => {
+    if (!T(e) || !t) return null;
+    const s = Dt.getAllFor(t);
+    return e && s && s.get(e) || null;
   },
   /**
    * Removes web components data.
@@ -103,29 +64,26 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
    * @param element target element
    * @param component the component's name or a unique key
    */
-  remove: (t, s) => {
-    const e = Dt.getAllFor(s);
-    if (!e || !y(t)) return;
-    e.delete(t);
-    // istanbul ignore else @preserve
-    e.size === 0 && Wt.delete(s);
+  remove: (e, t) => {
+    const s = Dt.getAllFor(t);
+    !s || !T(e) || (s.delete(e), s.size === 0 && Bt.delete(t));
   }
-}, z = (t, s) => Dt.get(t, s), we = (t) => typeof t == "string" || !1, li = (t) => be(t) && t.constructor.name === "Window" || !1, Kn = (t) => A(t) && t.nodeType === 9 || !1, E = (t) => li(t) ? t.document : Kn(t) ? t : A(t) ? t.ownerDocument : globalThis.document, dt = (t, ...s) => Object.assign(t, ...s), Et = (t) => {
-  if (!t) return;
-  if (we(t))
-    return E().createElement(t);
-  const { tagName: s } = t, e = Et(s);
+}, W = (e, t) => Dt.get(e, t), oe = (e) => typeof e == "string" || !1, Ko = (e) => ne(e) && e.constructor.name === "Window" || !1, $n = (e) => H(e) && e.nodeType === 9 || !1, E = (e) => Ko(e) ? e.document : $n(e) ? e : H(e) ? e.ownerDocument : globalThis.document, ct = (e, ...t) => Object.assign(e, ...t), Et = (e) => {
   if (!e) return;
-  const n = { ...t };
-  return delete n.tagName, dt(e, n);
-}, $ = (t, s) => t.dispatchEvent(s), K = (t, s) => {
-  const e = getComputedStyle(t), n = s.replace("webkit", "Webkit").replace(/([A-Z])/g, "-$1").toLowerCase();
-  return e.getPropertyValue(n);
-}, di = (t) => {
-  const s = K(t, Vn), e = K(t, oi), n = e.includes("ms") ? (
+  if (oe(e))
+    return E().createElement(e);
+  const { tagName: t } = e, s = Et(t);
+  if (!s) return;
+  const n = { ...e };
+  return delete n.tagName, ct(s, n);
+}, b = (e, t) => e.dispatchEvent(t), z = (e, t) => {
+  const s = getComputedStyle(e), n = t.replace("webkit", "Webkit").replace(/([A-Z])/g, "-$1").toLowerCase();
+  return s.getPropertyValue(n);
+}, Uo = (e) => {
+  const t = z(e, Tn), s = z(e, Wo), n = s.includes("ms") ? (
     /* istanbul ignore next */
     1
-  ) : 1e3, o = s && s !== "none" ? parseFloat(e) * n : (
+  ) : 1e3, o = t && t !== "none" ? parseFloat(s) * n : (
     /* istanbul ignore next */
     0
   );
@@ -133,11 +91,11 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
     /* istanbul ignore next */
     0
   ) : o;
-}, $e = (t) => {
-  const s = K(t, Vn), e = K(t, ni), n = e.includes("ms") ? (
+}, ie = (e) => {
+  const t = z(e, Tn), s = z(e, Fo), n = s.includes("ms") ? (
     /* istanbul ignore next */
     1
-  ) : 1e3, o = s && s !== "none" ? parseFloat(e) * n : (
+  ) : 1e3, o = t && t !== "none" ? parseFloat(s) * n : (
     /* istanbul ignore next */
     0
   );
@@ -145,54 +103,50 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
     /* istanbul ignore next */
     0
   ) : o;
-}, D = (t, s) => {
-  let e = 0;
-  const n = new Event(Qe), o = $e(t), i = di(t);
+}, A = (e, t) => {
+  let s = 0;
+  const n = new Event(Ne), o = ie(e), i = Uo(e);
   if (o) {
-    const r = (c) => {
-      // istanbul ignore else @preserve
-      c.target === t && (s.apply(t, [c]), t.removeEventListener(Qe, r), e = 1);
+    const r = (a) => {
+      a.target === e && (t.apply(e, [a]), e.removeEventListener(Ne, r), s = 1);
     };
-    t.addEventListener(Qe, r), setTimeout(() => {
-      // istanbul ignore next @preserve
-      e || $(t, n);
+    e.addEventListener(Ne, r), setTimeout(() => {
+      s || b(e, n);
     }, o + i + 17);
   } else
-    s.apply(t, [n]);
-}, ht = (t, s) => t.focus(s), Ws = (t) => ["true", !0].includes(t) ? !0 : ["false", !1].includes(t) ? !1 : ["null", "", null, void 0].includes(t) ? null : t !== "" && !Number.isNaN(+t) ? +t : t, He = (t) => Object.entries(t), Xt = (t) => t.toLowerCase(), hi = (t, s, e, n) => {
-  const o = { ...e }, i = { ...t.dataset }, r = { ...s }, c = {}, l = "title";
-  return He(i).forEach(([a, h]) => {
-    const p = typeof a == "string" && a.includes(n) ? a.replace(n, "").replace(
+    t.apply(e, [n]);
+}, lt = (e, t) => e.focus(t), ws = (e) => ["true", !0].includes(e) ? !0 : ["false", !1].includes(e) ? !1 : ["null", "", null, void 0].includes(e) ? null : e !== "" && !Number.isNaN(+e) ? +e : e, he = (e) => Object.entries(e), Wt = (e) => e.toLowerCase(), Xo = (e, t, s, n) => {
+  const o = { ...s }, i = { ...e.dataset }, r = { ...t }, a = {}, c = "title";
+  return he(i).forEach(([l, d]) => {
+    const g = typeof l == "string" && l.includes(n) ? l.replace(n, "").replace(
       /[A-Z]/g,
-      (u) => Xt(u)
+      (y) => Wt(y)
     ) : (
       /* istanbul ignore next @preserve */
-      a
+      l
     );
-    c[p] = Ws(h);
-  }), He(o).forEach(([a, h]) => {
-    o[a] = Ws(h);
-  }), He(s).forEach(([a, h]) => {
-    // istanbul ignore else @preserve
-    a in o ? r[a] = o[a] : a in c ? r[a] = c[a] : r[a] = a === l ? st(t, l) : h;
+    a[g] = ws(d);
+  }), he(o).forEach(([l, d]) => {
+    o[l] = ws(d);
+  }), he(t).forEach(([l, d]) => {
+    l in o ? r[l] = o[l] : l in a ? r[l] = a[l] : r[l] = l === c ? et(e, c) : d;
   }), r;
-}, js = (t) => Object.keys(t), T = (t, s) => {
-  const e = new CustomEvent(t, {
+}, Ts = (e) => Object.keys(e), w = (e, t) => {
+  const s = new CustomEvent(e, {
     cancelable: !0,
     bubbles: !0
   });
-  // istanbul ignore else @preserve
-  return be(s) && dt(e, s), e;
-}, ge = { passive: !0 }, Nt = (t) => t.offsetHeight, k = (t, s) => {
-  He(s).forEach(([e, n]) => {
-    if (n && we(e) && e.includes("--"))
-      t.style.setProperty(e, n);
+  return ne(t) && ct(s, t), s;
+}, Jt = { passive: !0 }, Nt = (e) => e.offsetHeight, P = (e, t) => {
+  he(t).forEach(([s, n]) => {
+    if (n && oe(s) && s.includes("--"))
+      e.style.setProperty(s, n);
     else {
       const o = {};
-      o[e] = n, dt(t.style, o);
+      o[s] = n, ct(e.style, o);
     }
   });
-}, hs = (t) => be(t) && t.constructor.name === "Map" || !1, fi = (t) => typeof t == "number" || !1, vt = /* @__PURE__ */ new Map(), m = {
+}, Ke = (e) => ne(e) && e.constructor.name === "Map" || !1, qo = (e) => typeof e == "number" || !1, mt = /* @__PURE__ */ new Map(), p = {
   /**
    * Sets a new timeout timer for an element, or element -> key association.
    *
@@ -201,14 +155,8 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
    * @param delay the execution delay
    * @param key a unique key
    */
-  set: (t, s, e, n) => {
-    if (!y(t)) return;
-    // istanbul ignore else @preserve
-    if (n && n.length) {
-      // istanbul ignore else @preserve
-      vt.has(t) || vt.set(t, /* @__PURE__ */ new Map()), vt.get(t).set(n, setTimeout(s, e));
-    } else
-      vt.set(t, setTimeout(s, e));
+  set: (e, t, s, n) => {
+    T(e) && (n && n.length ? (mt.has(e) || mt.set(e, /* @__PURE__ */ new Map()), mt.get(e).set(n, setTimeout(t, s))) : mt.set(e, setTimeout(t, s)));
   },
   /**
    * Returns the timer associated with the target.
@@ -217,11 +165,11 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
    * @param key a unique
    * @returns the timer
    */
-  get: (t, s) => {
-    if (!y(t)) return null;
-    const e = vt.get(t);
-    return s && e && hs(e) ? e.get(s) || /* istanbul ignore next @preserve */
-    null : fi(e) ? e : null;
+  get: (e, t) => {
+    if (!T(e)) return null;
+    const s = mt.get(e);
+    return t && s && Ke(s) ? s.get(t) || /* istanbul ignore next @preserve */
+    null : qo(s) ? s : null;
   },
   /**
    * Clears the element's timer.
@@ -229,144 +177,120 @@ const st = (t, s) => t.getAttribute(s), fe = (t, s) => t.hasAttribute(s), O = (t
    * @param element target element
    * @param key a unique key
    */
-  clear: (t, s) => {
-    if (!y(t)) return;
-    const e = vt.get(t);
-    if (s && s.length && hs(e)) {
-      clearTimeout(e.get(s)), e.delete(s);
-      // istanbul ignore else @preserve
-      e.size === 0 && vt.delete(t);
-    } else
-      clearTimeout(e), vt.delete(t);
+  clear: (e, t) => {
+    if (!T(e)) return;
+    const s = mt.get(e);
+    t && t.length && Ke(s) ? (clearTimeout(s.get(t)), s.delete(t), s.size === 0 && mt.delete(e)) : (clearTimeout(s), mt.delete(e));
   }
-}, J = (t, s) => (A(s) ? s : E()).querySelectorAll(t), fs = /* @__PURE__ */ new Map();
-function gi(t) {
-  const { shiftKey: s, code: e } = t, n = E(this), o = [
-    ...J(si, this)
+}, Z = (e, t) => (H(t) ? t : E()).querySelectorAll(e), Ue = /* @__PURE__ */ new Map();
+function Yo(e) {
+  const { shiftKey: t, code: s } = e, n = E(this), o = [
+    ...Z(Ro, this)
   ].filter(
-    (c) => !fe(c, "disabled") && !st(c, ve)
+    (a) => !Gt(a, "disabled") && !et(a, se)
   );
   if (!o.length) return;
   const i = o[0], r = o[o.length - 1];
-  // istanbul ignore else @preserve
-  e === "Tab" && (s && n.activeElement === i ? (r.focus(), t.preventDefault()) : !s && n.activeElement === r && (i.focus(), t.preventDefault()));
+  s === "Tab" && (t && n.activeElement === i ? (r.focus(), e.preventDefault()) : !t && n.activeElement === r && (i.focus(), e.preventDefault()));
 }
-const pi = (t) => fs.has(t) === !0, Re = (t) => {
-  const s = pi(t);
-  (s ? Xn : zn)(t, "keydown", gi), s ? fs.delete(t) : fs.set(t, !0);
-}, Ee = (t, s) => {
-  const { width: e, height: n, top: o, right: i, bottom: r, left: c } = t.getBoundingClientRect();
-  let l = 1, a = 1;
-  if (s && y(t)) {
-    const { offsetWidth: h, offsetHeight: p } = t;
-    l = h > 0 ? Math.round(e) / h : (
+const Zo = (e) => Ue.has(e) === !0, Te = (e) => {
+  const t = Zo(e);
+  (t ? zo : jo)(e, "keydown", Yo), t ? Ue.delete(e) : Ue.set(e, !0);
+}, re = (e, t) => {
+  const { width: s, height: n, top: o, right: i, bottom: r, left: a } = e.getBoundingClientRect();
+  let c = 1, l = 1;
+  if (t && T(e)) {
+    const { offsetWidth: d, offsetHeight: g } = e;
+    c = d > 0 ? Math.round(s) / d : (
       /* istanbul ignore next @preserve */
       1
-    ), a = p > 0 ? Math.round(n) / p : (
+    ), l = g > 0 ? Math.round(n) / g : (
       /* istanbul ignore next @preserve */
       1
     );
   }
   return {
-    width: e / l,
-    height: n / a,
-    top: o / a,
-    right: i / l,
-    bottom: r / a,
-    left: c / l,
-    x: c / l,
-    y: o / a
+    width: s / c,
+    height: n / l,
+    top: o / l,
+    right: i / c,
+    bottom: r / l,
+    left: a / c,
+    x: a / c,
+    y: o / l
   };
-}, xt = (t) => E(t).body, it = (t) => E(t).documentElement, qn = (t) => A(t) && t.constructor.name === "ShadowRoot" || !1, ui = (t) => t.nodeName === "HTML" ? t : y(t) && t.assignedSlot || // step into the shadow DOM of the parent of a slotted node
-A(t) && t.parentNode || // DOM Element detected
-qn(t) && t.host || // ShadowRoot detected
-it(t);
-let Vs = 0, zs = 0;
-const jt = /* @__PURE__ */ new Map(), Yn = (t, s) => {
-  let e = s ? Vs : zs;
-  if (s) {
-    const n = Yn(t), o = jt.get(n) || /* @__PURE__ */ new Map();
-    jt.has(n) || jt.set(n, o), hs(o) && !o.has(s) ? (o.set(s, e), Vs += 1) : e = o.get(s);
+}, yt = (e) => E(e).body, dt = (e) => E(e).documentElement, yn = (e) => H(e) && e.constructor.name === "ShadowRoot" || !1, Go = (e) => e.nodeName === "HTML" ? e : T(e) && e.assignedSlot || // step into the shadow DOM of the parent of a slotted node
+H(e) && e.parentNode || // DOM Element detected
+yn(e) && e.host || // ShadowRoot detected
+dt(e);
+let $s = 0, ys = 0;
+const Rt = /* @__PURE__ */ new Map(), Cn = (e, t) => {
+  let s = t ? $s : ys;
+  if (t) {
+    const n = Cn(e), o = Rt.get(n) || /* @__PURE__ */ new Map();
+    Rt.has(n) || Rt.set(n, o), Ke(o) && !o.has(t) ? (o.set(t, s), $s += 1) : s = o.get(t);
   } else {
-    const n = t.id || t;
-    jt.has(n) ? e = jt.get(n) : (jt.set(n, e), zs += 1);
+    const n = e.id || e;
+    Rt.has(n) ? s = Rt.get(n) : (Rt.set(n, s), ys += 1);
   }
-  return e;
-}, mi = (t) => {
-  var s;
-  return t ? Kn(t) ? t.defaultView : A(t) ? (s = t == null ? void 0 : t.ownerDocument) == null ? void 0 : s.defaultView : t : window;
-}, vi = (t) => Array.isArray(t) || !1, Un = (t) => {
-  if (!A(t)) return !1;
-  const { top: s, bottom: e } = Ee(t), { clientHeight: n } = it(t);
-  return s <= n && e >= 0;
-}, bi = (t) => typeof t == "function" || !1, wi = (t) => be(t) && t.constructor.name === "NodeList" || !1, Ct = (t) => it(t).dir === "rtl", $i = (t) => A(t) && ["TABLE", "TD", "TH"].includes(t.nodeName) || !1, N = (t, s) => t ? t.closest(s) || // break out of `ShadowRoot`
-N(t.getRootNode().host, s) : null, S = (t, s) => y(t) ? t : (A(s) ? s : E()).querySelector(t), Ps = (t, s) => (A(s) ? s : E()).getElementsByTagName(
-  t
-), at = (t, s) => (s && A(s) ? s : E()).getElementsByClassName(
-  t
-), Zn = (t, s) => t.matches(s), zt = {}, Jn = (t) => {
-  const { type: s, currentTarget: e } = t;
-  [...zt[s]].forEach(([n, o]) => {
-    /* istanbul ignore else @preserve */
-    e === n && [...o].forEach(([i, r]) => {
-      i.apply(n, [t]), typeof r == "object" && r.once && R(n, s, i, r);
+  return s;
+}, Jo = (e) => e ? $n(e) ? e.defaultView : H(e) ? e?.ownerDocument?.defaultView : e : window, Qo = (e) => Array.isArray(e) || !1, Sn = (e) => {
+  if (!H(e)) return !1;
+  const { top: t, bottom: s } = re(e), { clientHeight: n } = dt(e);
+  return t <= n && s >= 0;
+}, ti = (e) => typeof e == "function" || !1, ei = (e) => ne(e) && e.constructor.name === "NodeList" || !1, $t = (e) => dt(e).dir === "rtl", si = (e) => H(e) && ["TABLE", "TD", "TH"].includes(e.nodeName) || !1, k = (e, t) => e ? e.closest(t) || // break out of `ShadowRoot`
+k(e.getRootNode().host, t) : null, D = (e, t) => T(e) ? e : (H(t) ? t : E()).querySelector(e), as = (e, t) => (H(t) ? t : E()).getElementsByTagName(
+  e
+), rt = (e, t) => (t && H(t) ? t : E()).getElementsByClassName(
+  e
+), xn = (e, t) => e.matches(t), Ft = {}, Dn = (e) => {
+  const { type: t, currentTarget: s } = e;
+  [...Ft[t]].forEach(([n, o]) => {
+    s === n && [...o].forEach(([i, r]) => {
+      i.apply(n, [e]), typeof r == "object" && r.once && B(n, t, i, r);
     });
   });
-}, F = (t, s, e, n) => {
-  /* istanbul ignore else @preserve */
-  zt[s] || (zt[s] = /* @__PURE__ */ new Map());
-  const o = zt[s];
-  /* istanbul ignore else @preserve */
-  o.has(t) || o.set(t, /* @__PURE__ */ new Map());
-  const i = o.get(t), { size: r } = i;
-  i.set(e, n);
-  /* istanbul ignore else @preserve */
-  r || t.addEventListener(s, Jn, n);
-}, R = (t, s, e, n) => {
-  const o = zt[s], i = o && o.get(t), r = i && i.get(e), c = r !== void 0 ? r : n;
-  /* istanbul ignore else @preserve */
-  i && i.has(e) && i.delete(e);
-  /* istanbul ignore else @preserve */
-  o && (!i || !i.size) && o.delete(t);
-  /* istanbul ignore else @preserve */
-  (!o || !o.size) && delete zt[s];
-  /* istanbul ignore else @preserve */
-  (!i || !i.size) && t.removeEventListener(
-    s,
-    Jn,
-    c
+}, M = (e, t, s, n) => {
+  Ft[t] || (Ft[t] = /* @__PURE__ */ new Map());
+  const o = Ft[t];
+  o.has(e) || o.set(e, /* @__PURE__ */ new Map());
+  const i = o.get(e), { size: r } = i;
+  i.set(s, n);
+  r || e.addEventListener(t, Dn, n);
+}, B = (e, t, s, n) => {
+  const o = Ft[t], i = o && o.get(e), r = i && i.get(s), a = r !== void 0 ? r : n;
+  i && i.has(s) && i.delete(s);
+  o && (!i || !i.size) && o.delete(e);
+  (!o || !o.size) && delete Ft[t];
+  (!i || !i.size) && e.removeEventListener(
+    t,
+    Dn,
+    a
   );
-}, B = "fade", v = "show", We = "data-bs-dismiss", je = "alert", Gn = "Alert", Ei = "5.0.15", Ti = Ei;
-class nt {
+}, _ = "fade", u = "show", $e = "data-bs-dismiss", ye = "alert", Hn = "Alert", ni = "5.1.0", oi = ni;
+class st {
   /**
    * @param target `HTMLElement` or selector string
    * @param config component instance options
    */
-  constructor(s, e) {
-    /** just to have something to extend from */
-    // istanbul ignore next @preserve coverage wise this isn't important
-    d(this, "_toggleEventListeners", () => {
-    });
+  constructor(t, s) {
     let n;
     try {
-      if (y(s))
-        n = s;
-      else if (we(s)) {
-        n = S(s);
-        // istanbul ignore else @preserve
-        if (!n) throw Error(`"${s}" is not a valid selector.`);
+      if (T(t))
+        n = t;
+      else if (oe(t)) {
+        if (n = D(t), !n) throw Error(`"${t}" is not a valid selector.`);
       } else
         throw Error("your target is not an instance of HTMLElement.");
     } catch (i) {
       throw Error(`${this.name} Error: ${i.message}`);
     }
     const o = Dt.get(n, this.name);
-    // istanbul ignore else @preserve
-    o && o._toggleEventListeners(), this.element = n, this.options = this.defaults && js(this.defaults).length ? hi(n, this.defaults, e || {}, "bs") : {}, Dt.set(n, this.name, this);
+    o && o._toggleEventListeners(), this.element = n, this.options = this.defaults && Ts(this.defaults).length ? Xo(n, this.defaults, s || {}, "bs") : {}, Dt.set(n, this.name, this);
   }
   // istanbul ignore next @preserve
   get version() {
-    return Ti;
+    return oi;
   }
   // istanbul ignore next @preserve
   get name() {
@@ -376,308 +300,265 @@ class nt {
   get defaults() {
     return {};
   }
+  /** just to have something to extend from */
+  // istanbul ignore next @preserve coverage wise this isn't important
+  _toggleEventListeners = () => {
+  };
   /** Removes component from target element. */
   dispose() {
-    Dt.remove(this.element, this.name), js(this).forEach((s) => {
-      delete this[s];
+    Dt.remove(this.element, this.name), Ts(this).forEach((t) => {
+      delete this[t];
     });
   }
 }
-const yi = `.${je}`, Ci = `[${We}="${je}"]`, xi = (t) => z(t, Gn), Hi = (t) => new ee(t), Xs = T(
-  `close.bs.${je}`
-), Pi = T(
-  `closed.bs.${je}`
-), Ks = (t) => {
-  const { element: s } = t;
-  $(s, Pi), t._toggleEventListeners(), t.dispose(), s.remove();
+const ii = `.${ye}`, ri = `[${$e}="${ye}"]`, ai = (e) => W(e, Hn), ci = (e) => new An(e), Cs = w(
+  `close.bs.${ye}`
+), li = w(
+  `closed.bs.${ye}`
+), Ss = (e) => {
+  const { element: t } = e;
+  b(t, li), e._toggleEventListeners(), e.dispose(), t.remove();
 };
-class ee extends nt {
-  constructor(e) {
-    super(e);
-    d(this, "dismiss");
-    // ALERT PUBLIC METHODS
-    // ====================
-    /**
-     * Public method that hides the `.alert` element from the user,
-     * disposes the instance once animation is complete, then
-     * removes the element from the DOM.
-     */
-    d(this, "close", () => {
-      const { element: e } = this;
-      // istanbul ignore else @preserve
-      e && g(e, v) && ($(e, Xs), Xs.defaultPrevented || (b(e, v), g(e, B) ? D(e, () => Ks(this)) : Ks(this)));
-    });
-    /**
-     * Toggle on / off the `click` event listener.
-     *
-     * @param add when `true`, event listener is added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      const n = e ? F : R, { dismiss: o, close: i } = this;
-      // istanbul ignore else @preserve
-      o && n(o, _, i);
-    });
-    this.dismiss = S(Ci, this.element), this._toggleEventListeners(!0);
+class An extends st {
+  static selector = ii;
+  static init = ci;
+  static getInstance = ai;
+  dismiss;
+  constructor(t) {
+    super(t), this.dismiss = D(ri, this.element), this._toggleEventListeners(!0);
   }
   /** Returns component name string. */
   get name() {
-    return Gn;
+    return Hn;
   }
+  // ALERT PUBLIC METHODS
+  // ====================
+  /**
+   * Public method that hides the `.alert` element from the user,
+   * disposes the instance once animation is complete, then
+   * removes the element from the DOM.
+   */
+  close = () => {
+    const { element: t } = this;
+    t && f(t, u) && (b(t, Cs), Cs.defaultPrevented || (m(t, u), f(t, _) ? A(t, () => Ss(this)) : Ss(this)));
+  };
+  /**
+   * Toggle on / off the `click` event listener.
+   *
+   * @param add when `true`, event listener is added
+   */
+  _toggleEventListeners = (t) => {
+    const s = t ? M : B, { dismiss: n, close: o } = this;
+    n && s(n, N, o);
+  };
   /** Remove the component from target element. */
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
-d(ee, "selector", yi), d(ee, "init", Hi), d(ee, "getInstance", xi);
-const x = "active", rt = "data-bs-toggle", Si = "button", Qn = "Button", Ai = `[${rt}="${Si}"]`, Di = (t) => z(t, Qn), ki = (t) => new se(t);
-class se extends nt {
+const $ = "active", ot = "data-bs-toggle", di = "button", Pn = "Button", hi = `[${ot}="${di}"]`, fi = (e) => W(e, Pn), gi = (e) => new In(e);
+class In extends st {
+  static selector = hi;
+  static init = gi;
+  static getInstance = fi;
+  isActive = !1;
   /**
    * @param target usually a `.btn` element
    */
-  constructor(e) {
-    super(e);
-    d(this, "isActive", !1);
-    // BUTTON PUBLIC METHODS
-    // =====================
-    /**
-     * Toggles the state of the target button.
-     *
-     * @param e usually `click` Event object
-     */
-    d(this, "toggle", (e) => {
-      e && e.preventDefault();
-      const { element: n, isActive: o } = this;
-      !g(n, "disabled") && !st(n, "disabled") && ((o ? b : f)(n, x), O(n, Ns, o ? "false" : "true"), this.isActive = g(n, x));
-    });
-    // BUTTON PRIVATE METHOD
-    // =====================
-    /**
-     * Toggles on/off the `click` event listener.
-     *
-     * @param add when `true`, event listener is added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      (e ? F : R)(this.element, _, this.toggle);
-    });
-    const { element: n } = this;
-    this.isActive = g(n, x), O(n, Ns, String(!!this.isActive)), this._toggleEventListeners(!0);
+  constructor(t) {
+    super(t);
+    const { element: s } = this;
+    this.isActive = f(s, $), O(s, vs, String(!!this.isActive)), this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return Qn;
+    return Pn;
   }
+  // BUTTON PUBLIC METHODS
+  // =====================
+  /**
+   * Toggles the state of the target button.
+   *
+   * @param e usually `click` Event object
+   */
+  toggle = (t) => {
+    t && t.preventDefault();
+    const { element: s, isActive: n } = this;
+    !f(s, "disabled") && !et(s, "disabled") && ((n ? m : h)(s, $), O(s, vs, n ? "false" : "true"), this.isActive = f(s, $));
+  };
+  // BUTTON PRIVATE METHOD
+  // =====================
+  /**
+   * Toggles on/off the `click` event listener.
+   *
+   * @param add when `true`, event listener is added
+   */
+  _toggleEventListeners = (t) => {
+    (t ? M : B)(this.element, N, this.toggle);
+  };
   /** Removes the `Button` component from the target element. */
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
-d(se, "selector", Ai), d(se, "init", ki), d(se, "getInstance", Di);
-const gs = "data-bs-target", kt = "carousel", to = "Carousel", qs = "data-bs-parent", Li = "data-bs-container", Y = (t) => {
-  const s = [gs, qs, Li, "href"], e = E(t);
-  return s.map((n) => {
-    const o = st(t, n);
-    return o ? n === qs ? N(t, o) : S(o, e) : null;
+const Xe = "data-bs-target", Ht = "carousel", Ln = "Carousel", xs = "data-bs-parent", pi = "data-bs-container", U = (e) => {
+  const t = [Xe, xs, pi, "href"], s = E(e);
+  return t.map((n) => {
+    const o = et(e, n);
+    return o ? n === xs ? k(e, o) : D(o, s) : null;
   }).filter((n) => n)[0];
-}, Te = `[data-bs-ride="${kt}"]`, Z = `${kt}-item`, ps = "data-bs-slide-to", $t = "data-bs-slide", Tt = "paused", Ys = {
+}, ae = `[data-bs-ride="${Ht}"]`, Y = `${Ht}-item`, qe = "data-bs-slide-to", bt = "data-bs-slide", wt = "paused", Ds = {
   pause: "hover",
   keyboard: !1,
   touch: !0,
   interval: 5e3
-}, ft = (t) => z(t, to), Ii = (t) => new ne(t);
-let te = 0, Pe = 0, ts = 0;
-const es = T(`slide.bs.${kt}`), us = T(`slid.bs.${kt}`), Us = (t) => {
-  const { index: s, direction: e, element: n, slides: o, options: i } = t;
-  // istanbul ignore else @preserve
-  if (t.isAnimating) {
-    const r = ms(t), c = e === "left" ? "next" : "prev", l = e === "left" ? "start" : "end";
-    f(o[s], x), b(o[s], `${Z}-${c}`), b(o[s], `${Z}-${l}`), b(o[r], x), b(o[r], `${Z}-${l}`), $(n, us), m.clear(n, $t), t.cycle && !E(n).hidden && i.interval && !t.isPaused && t.cycle();
+}, ht = (e) => W(e, Ln), ui = (e) => new On(e);
+let Zt = 0, fe = 0, Oe = 0;
+const ke = w(`slide.bs.${Ht}`), Ye = w(`slid.bs.${Ht}`), Hs = (e) => {
+  const { index: t, direction: s, element: n, slides: o, options: i } = e;
+  if (e.isAnimating) {
+    const r = Ze(e), a = s === "left" ? "next" : "prev", c = s === "left" ? "start" : "end";
+    h(o[t], $), m(o[t], `${Y}-${a}`), m(o[t], `${Y}-${c}`), m(o[r], $), m(o[r], `${Y}-${c}`), b(n, Ye), p.clear(n, bt), e.cycle && !E(n).hidden && i.interval && !e.isPaused && e.cycle();
   }
 };
-function _i() {
-  const t = ft(this);
-  // istanbul ignore else @preserve
-  t && !t.isPaused && !m.get(this, Tt) && f(this, Tt);
+function mi() {
+  const e = ht(this);
+  e && !e.isPaused && !p.get(this, wt) && h(this, wt);
 }
-function Oi() {
-  const t = ft(this);
-  // istanbul ignore else @preserve
-  t && t.isPaused && !m.get(this, Tt) && t.cycle();
+function vi() {
+  const e = ht(this);
+  e && e.isPaused && !p.get(this, wt) && e.cycle();
 }
-function Ni(t) {
-  t.preventDefault();
-  const s = N(this, Te) || Y(this), e = ft(s);
-  // istanbul ignore else @preserve
-  if (e && !e.isAnimating) {
-    const n = +(st(this, ps) || // istanbul ignore next @preserve
+function bi(e) {
+  e.preventDefault();
+  const t = k(this, ae) || U(this), s = ht(t);
+  if (s && !s.isAnimating) {
+    const n = +(et(this, qe) || // istanbul ignore next @preserve
     0);
-    // istanbul ignore else @preserve
-    this && !g(this, x) && // event target is not active
-    !Number.isNaN(n) && e.to(n);
+    this && !f(this, $) && // event target is not active
+    !Number.isNaN(n) && s.to(n);
   }
 }
-function Mi(t) {
-  t.preventDefault();
-  const s = N(this, Te) || Y(this), e = ft(s);
-  // istanbul ignore else @preserve
-  if (e && !e.isAnimating) {
-    const n = st(this, $t);
-    // istanbul ignore else @preserve
-    n === "next" ? e.next() : n === "prev" && e.prev();
+function Ei(e) {
+  e.preventDefault();
+  const t = k(this, ae) || U(this), s = ht(t);
+  if (s && !s.isAnimating) {
+    const n = et(this, bt);
+    n === "next" ? s.next() : n === "prev" && s.prev();
   }
 }
-const Bi = ({ code: t, target: s }) => {
-  const e = E(s), [n] = [...J(Te, e)].filter(
-    (i) => Un(i)
-  ), o = ft(n);
-  // istanbul ignore next @preserve
-  if (o && !o.isAnimating && !/textarea|input/i.test(s.nodeName)) {
-    const i = Ct(n), r = i ? Ms : Bs, c = i ? Bs : Ms;
-    // istanbul ignore else @preserve
-    t === c ? o.prev() : t === r && o.next();
+const wi = ({ code: e, target: t }) => {
+  const s = E(t), [n] = [...Z(ae, s)].filter(
+    (i) => Sn(i)
+  ), o = ht(n);
+  if (o && !o.isAnimating && !/textarea|input/i.test(t.nodeName)) {
+    const i = $t(n);
+    e === (i ? Es : bs) ? o.prev() : e === (i ? bs : Es) && o.next();
   }
 };
-function Zs(t) {
-  const { target: s } = t, e = ft(this);
-  // istanbul ignore next @preserve
-  e && e.isTouch && (e.indicator && !e.indicator.contains(s) || !e.controls.includes(s)) && (t.stopImmediatePropagation(), t.stopPropagation(), t.preventDefault());
+function As(e) {
+  const { target: t } = e, s = ht(this);
+  s && s.isTouch && (s.indicator && !s.indicator.contains(t) || !s.controls.includes(t)) && (e.stopImmediatePropagation(), e.stopPropagation(), e.preventDefault());
 }
-function Fi(t) {
-  const { target: s } = t, e = ft(this);
-  // istanbul ignore else @preserve
-  if (e && !e.isAnimating && !e.isTouch) {
-    const { controls: n, indicators: o } = e;
-    // istanbul ignore else @preserve
-    if (![...n, ...o].every(
-      (i) => i === s || i.contains(s)
-    )) {
-      te = t.pageX;
-      // istanbul ignore else @preserve
-      this.contains(s) && (e.isTouch = !0, eo(e, !0));
-    }
+function Ti(e) {
+  const { target: t } = e, s = ht(this);
+  if (s && !s.isAnimating && !s.isTouch) {
+    const { controls: n, indicators: o } = s;
+    [...n, ...o].every(
+      (i) => i === t || i.contains(t)
+    ) || (Zt = e.pageX, this.contains(t) && (s.isTouch = !0, Nn(s, !0)));
   }
 }
-const Ri = (t) => {
-  Pe = t.pageX;
-}, Wi = (t) => {
-  var o;
-  const { target: s } = t, e = E(s), n = [...J(Te, e)].map((i) => ft(i)).find((i) => i.isTouch);
-  // istanbul ignore else @preserve
+const $i = (e) => {
+  fe = e.pageX;
+}, yi = (e) => {
+  const { target: t } = e, s = E(t), n = [...Z(ae, s)].map((o) => ht(o)).find((o) => o.isTouch);
   if (n) {
-    const { element: i, index: r } = n, c = Ct(i);
-    if (ts = t.pageX, n.isTouch = !1, eo(n), !((o = e.getSelection()) != null && o.toString().length) && i.contains(s) && Math.abs(te - ts) > 120) {
-      // istanbul ignore else @preserve
-      Pe < te ? n.to(r + (c ? -1 : 1)) : Pe > te && n.to(r + (c ? 1 : -1));
-    }
-    te = 0, Pe = 0, ts = 0;
+    const { element: o, index: i } = n, r = $t(o);
+    Oe = e.pageX, n.isTouch = !1, Nn(n), !s.getSelection()?.toString().length && o.contains(t) && Math.abs(Zt - Oe) > 120 && (fe < Zt ? n.to(i + (r ? -1 : 1)) : fe > Zt && n.to(i + (r ? 1 : -1))), Zt = 0, fe = 0, Oe = 0;
   }
-}, ss = (t, s) => {
-  const { indicators: e } = t;
-  [...e].forEach((n) => b(n, x));
-  // istanbul ignore else @preserve
-  t.indicators[s] && f(e[s], x);
-}, eo = (t, s) => {
-  const { element: e } = t, n = s ? F : R;
+}, _e = (e, t) => {
+  const { indicators: s } = e;
+  [...s].forEach((n) => m(n, $)), e.indicators[t] && h(s[t], $);
+}, Nn = (e, t) => {
+  const { element: s } = e, n = t ? M : B;
   n(
-    E(e),
-    Qo,
-    Ri,
-    ge
+    E(s),
+    _o,
+    $i,
+    Jt
   ), n(
-    E(e),
-    ti,
-    Wi,
-    ge
+    E(s),
+    Mo,
+    yi,
+    Jt
   );
-}, ms = (t) => {
-  const { slides: s, element: e } = t, n = S(`.${Z}.${x}`, e);
-  return y(n) ? [...s].indexOf(n) : -1;
+}, Ze = (e) => {
+  const { slides: t, element: s } = e, n = D(`.${Y}.${$}`, s);
+  return T(n) ? [...t].indexOf(n) : -1;
 };
-class ne extends nt {
+class On extends st {
+  static selector = ae;
+  static init = ui;
+  static getInstance = ht;
   /**
    * @param target mostly a `.carousel` element
    * @param config instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    /**
-     * Toggles all event listeners for the `Carousel` instance.
-     *
-     * @param add when `TRUE` event listeners are added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      const { element: n, options: o, slides: i, controls: r, indicators: c } = this, { touch: l, pause: a, interval: h, keyboard: p } = o, u = e ? F : R;
-      a && h && (u(n, Be, _i), u(n, Cs, Oi)), l && i.length > 2 && (u(
-        n,
-        Go,
-        Fi,
-        ge
-      ), u(n, xs, Zs, { passive: !1 }), u(n, ei, Zs, { passive: !1 }));
-      // istanbul ignore else @preserve
-      r.length && r.forEach((C) => {
-        // istanbul ignore else @preserve
-        C && u(C, _, Mi);
-      });
-      // istanbul ignore else @preserve
-      c.length && c.forEach((C) => {
-        u(C, _, Ni);
-      }), p && u(E(n), Me, Bi);
-    });
-    const { element: o } = this;
-    this.direction = Ct(o) ? "right" : "left", this.isTouch = !1, this.slides = at(Z, o);
-    const { slides: i } = this;
-    if (i.length >= 2) {
-      const r = ms(this), c = [...i].find(
-        (h) => Zn(h, `.${Z}-next,.${Z}-next`)
+  constructor(t, s) {
+    super(t, s);
+    const { element: n } = this;
+    this.direction = $t(n) ? "right" : "left", this.isTouch = !1, this.slides = rt(Y, n);
+    const { slides: o } = this;
+    if (o.length >= 2) {
+      const i = Ze(this), r = [...o].find(
+        (l) => xn(l, `.${Y}-next,.${Y}-next`)
       );
-      this.index = r;
-      const l = E(o);
+      this.index = i;
+      const a = E(n);
       this.controls = [
-        ...J(`[${$t}]`, o),
-        ...J(
-          `[${$t}][${gs}="#${o.id}"]`,
-          l
+        ...Z(`[${bt}]`, n),
+        ...Z(
+          `[${bt}][${Xe}="#${n.id}"]`,
+          a
         )
-      ].filter((h, p, u) => p === u.indexOf(h)), this.indicator = S(`.${kt}-indicators`, o), this.indicators = [
-        ...this.indicator ? J(`[${ps}]`, this.indicator) : [],
-        ...J(
-          `[${ps}][${gs}="#${o.id}"]`,
-          l
+      ].filter((l, d, g) => d === g.indexOf(l)), this.indicator = D(`.${Ht}-indicators`, n), this.indicators = [
+        ...this.indicator ? Z(`[${qe}]`, this.indicator) : [],
+        ...Z(
+          `[${qe}][${Xe}="#${n.id}"]`,
+          a
         )
-      ].filter((h, p, u) => p === u.indexOf(h));
-      const { options: a } = this;
-      this.options.interval = a.interval === !0 ? Ys.interval : a.interval;
-      // istanbul ignore next @preserve - impossible to test
-      c ? this.index = [...i].indexOf(c) : r < 0 && (this.index = 0, f(i[0], x), this.indicators.length && ss(this, 0));
-      // istanbul ignore else @preserve
-      this.indicators.length && ss(this, this.index), this._toggleEventListeners(!0), a.interval && this.cycle();
+      ].filter((l, d, g) => d === g.indexOf(l));
+      const { options: c } = this;
+      this.options.interval = c.interval === !0 ? Ds.interval : c.interval, r ? this.index = [...o].indexOf(r) : i < 0 && (this.index = 0, h(o[0], $), this.indicators.length && _e(this, 0)), this.indicators.length && _e(this, this.index), this._toggleEventListeners(!0), c.interval && this.cycle();
     }
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return to;
+    return Ln;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return Ys;
+    return Ds;
   }
   /**
    * Check if instance is paused.
    */
   get isPaused() {
-    return g(this.element, Tt);
+    return f(this.element, wt);
   }
   /**
    * Check if instance is animating.
    */
   get isAnimating() {
-    return S(
-      `.${Z}-next,.${Z}-prev`,
+    return D(
+      `.${Y}-next,.${Y}-prev`,
       this.element
     ) !== null;
   }
@@ -685,37 +566,33 @@ class ne extends nt {
   // =======================
   /** Slide automatically through items. */
   cycle() {
-    const { element: e, options: n, isPaused: o, index: i } = this;
-    m.clear(e, kt), o && (m.clear(e, Tt), b(e, Tt)), m.set(
-      e,
+    const { element: t, options: s, isPaused: n, index: o } = this;
+    p.clear(t, Ht), n && (p.clear(t, wt), m(t, wt)), p.set(
+      t,
       () => {
-        // istanbul ignore else @preserve
-        this.element && !this.isPaused && !this.isTouch && Un(e) && this.to(i + 1);
+        this.element && !this.isPaused && !this.isTouch && Sn(t) && this.to(o + 1);
       },
-      n.interval,
-      kt
+      s.interval,
+      Ht
     );
   }
   /** Pause the automatic cycle. */
   pause() {
-    const { element: e, options: n } = this;
-    // istanbul ignore else @preserve
-    !this.isPaused && n.interval && (f(e, Tt), m.set(
-      e,
+    const { element: t, options: s } = this;
+    !this.isPaused && s.interval && (h(t, wt), p.set(
+      t,
       () => {
       },
       1,
-      Tt
+      wt
     ));
   }
   /** Slide to the next item. */
   next() {
-    // istanbul ignore else @preserve
     this.isAnimating || this.to(this.index + 1);
   }
   /** Slide to the previous item. */
   prev() {
-    // istanbul ignore else @preserve
     this.isAnimating || this.to(this.index - 1);
   }
   /**
@@ -723,297 +600,266 @@ class ne extends nt {
    *
    * @param idx the index of the item to jump to
    */
-  to(e) {
-    const { element: n, slides: o, options: i } = this, r = ms(this), c = Ct(n);
-    let l = e;
-    if (!this.isAnimating && r !== l && !m.get(n, $t)) {
-      // istanbul ignore else @preserve
-      r < l || r === 0 && l === o.length - 1 ? this.direction = c ? "right" : "left" : (r > l || r === o.length - 1 && l === 0) && (this.direction = c ? "left" : "right");
-      const { direction: a } = this;
-      l < 0 ? l = o.length - 1 : l >= o.length && (l = 0);
-      const h = a === "left" ? "next" : "prev", p = a === "left" ? "start" : "end", u = {
-        relatedTarget: o[l],
-        from: r,
-        to: l,
-        direction: a
+  to(t) {
+    const { element: s, slides: n, options: o } = this, i = Ze(this), r = $t(s);
+    let a = t;
+    if (!this.isAnimating && i !== a && !p.get(s, bt)) {
+      i < a || i === 0 && a === n.length - 1 ? this.direction = r ? "right" : "left" : (i > a || i === n.length - 1 && a === 0) && (this.direction = r ? "left" : "right");
+      const { direction: c } = this;
+      a < 0 ? a = n.length - 1 : a >= n.length && (a = 0);
+      const l = c === "left" ? "next" : "prev", d = c === "left" ? "start" : "end", g = {
+        relatedTarget: n[a],
+        from: i,
+        to: a,
+        direction: c
       };
-      dt(es, u), dt(us, u), $(n, es), es.defaultPrevented || (this.index = l, ss(this, l), $e(o[l]) && g(n, "slide") ? m.set(
-        n,
+      ct(ke, g), ct(Ye, g), b(s, ke), ke.defaultPrevented || (this.index = a, _e(this, a), ie(n[a]) && f(s, "slide") ? p.set(
+        s,
         () => {
-          f(o[l], `${Z}-${h}`), Nt(o[l]), f(o[l], `${Z}-${p}`), f(o[r], `${Z}-${p}`), D(
-            o[l],
-            () => this.slides && this.slides.length && Us(this)
+          h(n[a], `${Y}-${l}`), Nt(n[a]), h(n[a], `${Y}-${d}`), h(n[i], `${Y}-${d}`), A(
+            n[a],
+            () => this.slides && this.slides.length && Hs(this)
           );
         },
         0,
-        $t
-      ) : (f(o[l], x), b(o[r], x), m.set(
-        n,
+        bt
+      ) : (h(n[a], $), m(n[i], $), p.set(
+        s,
         () => {
-          m.clear(n, $t);
-          // istanbul ignore else @preserve
-          n && i.interval && !this.isPaused && this.cycle(), $(n, us);
+          p.clear(s, bt), s && o.interval && !this.isPaused && this.cycle(), b(s, Ye);
         },
         0,
-        $t
+        bt
       )));
     }
   }
+  /**
+   * Toggles all event listeners for the `Carousel` instance.
+   *
+   * @param add when `TRUE` event listeners are added
+   */
+  _toggleEventListeners = (t) => {
+    const { element: s, options: n, slides: o, controls: i, indicators: r } = this, { touch: a, pause: c, interval: l, keyboard: d } = n, g = t ? M : B;
+    c && l && (g(s, we, mi), g(s, os, vi)), a && o.length > 2 && (g(
+      s,
+      ko,
+      Ti,
+      Jt
+    ), g(s, is, As, { passive: !1 }), g(s, Bo, As, { passive: !1 })), i.length && i.forEach((y) => {
+      y && g(y, N, Ei);
+    }), r.length && r.forEach((y) => {
+      g(y, N, bi);
+    }), d && g(E(s), Ee, wi);
+  };
   /** Remove `Carousel` component from target. */
   dispose() {
-    const { isAnimating: e } = this, n = {
+    const { isAnimating: t } = this, s = {
       ...this,
-      isAnimating: e
+      isAnimating: t
     };
-    this._toggleEventListeners(), super.dispose();
-    // istanbul ignore next @preserve - impossible to test in playwright
-    n.isAnimating && D(n.slides[n.index], () => {
-      Us(n);
+    this._toggleEventListeners(), super.dispose(), s.isAnimating && A(s.slides[s.index], () => {
+      Hs(s);
     });
   }
 }
-d(ne, "selector", Te), d(ne, "init", Ii), d(ne, "getInstance", ft);
-const _t = "collapsing", q = "collapse", so = "Collapse", ji = `.${q}`, no = `[${rt}="${q}"]`, Vi = { parent: null }, Se = (t) => z(t, so), zi = (t) => new oe(t), Js = T(`show.bs.${q}`), Xi = T(`shown.bs.${q}`), Gs = T(`hide.bs.${q}`), Ki = T(`hidden.bs.${q}`), qi = (t) => {
-  const { element: s, parent: e, triggers: n } = t;
-  $(s, Js), Js.defaultPrevented || (m.set(s, he, 17), e && m.set(e, he, 17), f(s, _t), b(s, q), k(s, { height: `${s.scrollHeight}px` }), D(s, () => {
-    m.clear(s), e && m.clear(e), n.forEach((o) => O(o, ke, "true")), b(s, _t), f(s, q), f(s, v), k(s, { height: "" }), $(s, Xi);
+const It = "collapsing", K = "collapse", kn = "Collapse", Ci = `.${K}`, _n = `[${ot}="${K}"]`, Si = { parent: null }, ge = (e) => W(e, kn), xi = (e) => new Mn(e), Ps = w(`show.bs.${K}`), Di = w(`shown.bs.${K}`), Is = w(`hide.bs.${K}`), Hi = w(`hidden.bs.${K}`), Ai = (e) => {
+  const { element: t, parent: s, triggers: n } = e;
+  b(t, Ps), Ps.defaultPrevented || (p.set(t, ve, 17), s && p.set(s, ve, 17), h(t, It), m(t, K), P(t, { height: `${t.scrollHeight}px` }), A(t, () => {
+    p.clear(t), s && p.clear(s), n.forEach((o) => O(o, me, "true")), m(t, It), h(t, K), h(t, u), P(t, { height: "" }), b(t, Di);
   }));
-}, Qs = (t) => {
-  const { element: s, parent: e, triggers: n } = t;
-  $(s, Gs), Gs.defaultPrevented || (m.set(s, he, 17), e && m.set(e, he, 17), k(s, { height: `${s.scrollHeight}px` }), b(s, q), b(s, v), f(s, _t), Nt(s), k(s, { height: "0px" }), D(s, () => {
-    m.clear(s);
-    // istanbul ignore else @preserve
-    e && m.clear(e), n.forEach((o) => O(o, ke, "false")), b(s, _t), f(s, q), k(s, { height: "" }), $(s, Ki);
+}, Ls = (e) => {
+  const { element: t, parent: s, triggers: n } = e;
+  b(t, Is), Is.defaultPrevented || (p.set(t, ve, 17), s && p.set(s, ve, 17), P(t, { height: `${t.scrollHeight}px` }), m(t, K), m(t, u), h(t, It), Nt(t), P(t, { height: "0px" }), A(t, () => {
+    p.clear(t), s && p.clear(s), n.forEach((o) => O(o, me, "false")), m(t, It), h(t, K), P(t, { height: "" }), b(t, Hi);
   }));
-}, Yi = (t) => {
-  const { target: s } = t, e = s && N(s, no), n = e && Y(e), o = n && Se(n);
-  // istanbul ignore else @preserve
-  o && o.toggle(), e && e.tagName === "A" && t.preventDefault();
+}, Pi = (e) => {
+  const { target: t } = e, s = t && k(t, _n), n = s && U(s), o = n && ge(n);
+  o && o.toggle(), s && s.tagName === "A" && e.preventDefault();
 };
-class oe extends nt {
+class Mn extends st {
+  static selector = Ci;
+  static init = xi;
+  static getInstance = ge;
   /**
    * @param target and `Element` that matches the selector
    * @param config instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    /**
-     * Toggles on/off the event listener(s) of the `Collapse` instance.
-     *
-     * @param add when `true`, the event listener is added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      const n = e ? F : R, { triggers: o } = this;
-      // istanbul ignore else @preserve
-      o.length && o.forEach(
-        (i) => n(i, _, Yi)
-      );
-    });
-    const { element: o, options: i } = this, r = E(o);
-    this.triggers = [...J(no, r)].filter(
-      (c) => Y(c) === o
-    ), this.parent = y(i.parent) ? i.parent : we(i.parent) ? Y(o) || S(i.parent, r) : null, this._toggleEventListeners(!0);
+  constructor(t, s) {
+    super(t, s);
+    const { element: n, options: o } = this, i = E(n);
+    this.triggers = [...Z(_n, i)].filter(
+      (r) => U(r) === n
+    ), this.parent = T(o.parent) ? o.parent : oe(o.parent) ? U(n) || D(o.parent, i) : null, this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return so;
+    return kn;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return Vi;
+    return Si;
   }
   // COLLAPSE PUBLIC METHODS
   // =======================
   /** Hides the collapse. */
   hide() {
-    const { triggers: e, element: n } = this;
-    // istanbul ignore else @preserve
-    if (!m.get(n)) {
-      Qs(this);
-      // istanbul ignore else @preserve
-      e.length && e.forEach((o) => f(o, `${q}d`));
-    }
+    const { triggers: t, element: s } = this;
+    p.get(s) || (Ls(this), t.length && t.forEach((n) => h(n, `${K}d`)));
   }
   /** Shows the collapse. */
   show() {
-    const { element: e, parent: n, triggers: o } = this;
-    let i, r;
-    if (n && (i = [
-      ...J(`.${q}.${v}`, n)
-    ].find((c) => Se(c)), r = i && Se(i)), (!n || !m.get(n)) && !m.get(e)) {
-      r && i !== e && (Qs(r), r.triggers.forEach((c) => {
-        f(c, `${q}d`);
-      })), qi(this);
-      // istanbul ignore else @preserve
-      o.length && o.forEach((c) => b(c, `${q}d`));
-    }
+    const { element: t, parent: s, triggers: n } = this;
+    let o, i;
+    s && (o = [
+      ...Z(`.${K}.${u}`, s)
+    ].find((r) => ge(r)), i = o && ge(o)), (!s || !p.get(s)) && !p.get(t) && (i && o !== t && (Ls(i), i.triggers.forEach((r) => {
+      h(r, `${K}d`);
+    })), Ai(this), n.length && n.forEach((r) => m(r, `${K}d`)));
   }
   /** Toggles the visibility of the collapse. */
   toggle() {
-    g(this.element, v) ? this.hide() : this.show();
+    f(this.element, u) ? this.hide() : this.show();
   }
+  /**
+   * Toggles on/off the event listener(s) of the `Collapse` instance.
+   *
+   * @param add when `true`, the event listener is added
+   */
+  _toggleEventListeners = (t) => {
+    const s = t ? M : B, { triggers: n } = this;
+    n.length && n.forEach(
+      (o) => s(o, N, Pi)
+    );
+  };
   /** Remove the `Collapse` component from the target `Element`. */
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
-d(oe, "selector", ji), d(oe, "init", zi), d(oe, "getInstance", Se);
-const Ot = ["dropdown", "dropup", "dropstart", "dropend"], oo = "Dropdown", io = "dropdown-menu", ro = (t) => {
-  const s = N(t, "A");
-  return t.tagName === "A" && // anchor href starts with #
-  fe(t, "href") && st(t, "href").slice(-1) === "#" || // OR a child of an anchor with href starts with #
-  s && fe(s, "href") && st(s, "href").slice(-1) === "#";
-}, [et, vs, bs, ws] = Ot, co = `[${rt}="${et}"]`, Kt = (t) => z(t, oo), Ui = (t) => new ie(t), Zi = `${io}-end`, tn = [et, vs], en = [bs, ws], sn = ["A", "BUTTON"], Ji = {
+const Lt = ["dropdown", "dropup", "dropstart", "dropend"], Bn = "Dropdown", Rn = "dropdown-menu", Fn = (e) => {
+  const t = k(e, "A");
+  return e.tagName === "A" && // anchor href starts with #
+  Gt(e, "href") && et(e, "href").slice(-1) === "#" || // OR a child of an anchor with href starts with #
+  t && Gt(t, "href") && et(t, "href").slice(-1) === "#";
+}, [tt, Ge, Je, Qe] = Lt, Wn = `[${ot}="${tt}"]`, Vt = (e) => W(e, Bn), Ii = (e) => new zn(e), Li = `${Rn}-end`, Ns = [tt, Ge], Os = [Je, Qe], ks = ["A", "BUTTON"], Ni = {
   offset: 5,
   // [number] 5(px)
   display: "dynamic"
   // [dynamic|static]
-}, ns = T(
-  `show.bs.${et}`
-), nn = T(
-  `shown.bs.${et}`
-), os = T(
-  `hide.bs.${et}`
-), on = T(`hidden.bs.${et}`), ao = T(`updated.bs.${et}`), lo = (t) => {
-  const { element: s, menu: e, parentElement: n, options: o } = t, { offset: i } = o;
-  // istanbul ignore else @preserve: this test requires a navbar
-  if (K(e, "position") !== "static") {
-    const r = Ct(s), c = g(e, Zi);
-    ["margin", "top", "bottom", "left", "right"].forEach((I) => {
-      const pt = {};
-      pt[I] = "", k(e, pt);
+}, Me = w(
+  `show.bs.${tt}`
+), _s = w(
+  `shown.bs.${tt}`
+), Be = w(
+  `hide.bs.${tt}`
+), Ms = w(`hidden.bs.${tt}`), Vn = w(`updated.bs.${tt}`), jn = (e) => {
+  const { element: t, menu: s, parentElement: n, options: o } = e, { offset: i } = o;
+  if (z(s, "position") !== "static") {
+    const r = $t(t), a = f(s, Li);
+    ["margin", "top", "bottom", "left", "right"].forEach((L) => {
+      const gt = {};
+      gt[L] = "", P(s, gt);
     });
-    let a = Ot.find(
-      (I) => g(n, I)
+    let l = Lt.find(
+      (L) => f(n, L)
     ) || // istanbul ignore next @preserve: fallback position
-    et;
-    const h = {
+    tt;
+    const d = {
       dropdown: [i, 0, 0],
       dropup: [0, 0, i],
       dropstart: r ? [-1, 0, 0, i] : [-1, i, 0],
       dropend: r ? [-1, i, 0] : [-1, 0, 0, i]
-    }, p = {
+    }, g = {
       dropdown: { top: "100%" },
       dropup: { top: "auto", bottom: "100%" },
       dropstart: r ? { left: "100%", right: "auto" } : { left: "auto", right: "100%" },
       dropend: r ? { left: "auto", right: "100%" } : { left: "100%", right: "auto" },
       menuStart: r ? { right: "0", left: "auto" } : { right: "auto", left: "0" },
       menuEnd: r ? { right: "auto", left: "0" } : { right: "0", left: "auto" }
-    }, { offsetWidth: u, offsetHeight: C } = e, { clientWidth: j, clientHeight: w } = it(s), {
-      left: M,
-      top: W,
-      width: Bt,
-      height: ct
-    } = Ee(s), H = M - u - i < 0, tt = M + u + Bt + i >= j, ot = W + C + i >= w, V = W + C + ct + i >= w, X = W - C - i < 0, P = (!r && c || r && !c) && M + Bt - u < 0, Ft = (r && c || !r && !c) && M + u >= j;
-    if (en.includes(a) && H && tt && (a = et), a === bs && (r ? tt : H) && (a = ws), a === ws && (r ? H : tt) && (a = bs), a === vs && X && !V && (a = et), a === et && V && !X && (a = vs), en.includes(a) && ot && dt(p[a], {
+    }, { offsetWidth: y, offsetHeight: S } = s, { clientWidth: R, clientHeight: v } = dt(t), {
+      left: V,
+      top: X,
+      width: kt,
+      height: it
+    } = re(t), C = V - y - i < 0, Q = V + y + kt + i >= R, nt = X + S + i >= v, F = X + S + it + i >= v, j = X - S - i < 0, x = (!r && a || r && !a) && V + kt - y < 0, _t = (r && a || !r && !a) && V + y >= R;
+    if (Os.includes(l) && C && Q && (l = tt), l === Je && (r ? Q : C) && (l = Qe), l === Qe && (r ? C : Q) && (l = Je), l === Ge && j && !F && (l = tt), l === tt && F && !j && (l = Ge), Os.includes(l) && nt && ct(g[l], {
       top: "auto",
       bottom: 0
-    }), tn.includes(a) && (P || Ft)) {
-      let I = { left: "auto", right: "auto" };
-      // istanbul ignore else @preserve
-      !P && Ft && !r && (I = { left: "auto", right: 0 });
-      // istanbul ignore else @preserve
-      P && !Ft && r && (I = { left: 0, right: "auto" });
-      // istanbul ignore else @preserve
-      I && dt(p[a], I);
+    }), Ns.includes(l) && (x || _t)) {
+      let L = { left: "auto", right: "auto" };
+      !x && _t && !r && (L = { left: "auto", right: 0 }), x && !_t && r && (L = { left: 0, right: "auto" }), L && ct(g[l], L);
     }
-    const gt = h[a];
-    if (k(e, {
-      ...p[a],
-      margin: `${gt.map((I) => I && `${I}px`).join(" ")}`
-    }), tn.includes(a) && c) {
-      // istanbul ignore else @preserve
-      c && k(e, p[!r && P || r && Ft ? "menuStart" : "menuEnd"]);
-    }
-    $(n, ao);
+    const ft = d[l];
+    P(s, {
+      ...g[l],
+      margin: `${ft.map((L) => L && `${L}px`).join(" ")}`
+    }), Ns.includes(l) && a && a && P(s, g[!r && x || r && _t ? "menuStart" : "menuEnd"]), b(n, Vn);
   }
-}, Gi = (t) => [...t.children].map((s) => {
-  if (s && sn.includes(s.tagName)) return s;
-  const { firstElementChild: e } = s;
-  return e && sn.includes(e.tagName) ? e : null;
-}).filter((s) => s), rn = (t) => {
-  const { element: s, options: e, menu: n } = t, o = t.open ? F : R, i = E(s);
-  o(i, _, cn), o(i, Ts, cn), o(i, Me, tr), o(i, Zo, er);
-  // istanbul ignore else @preserve
-  e.display === "dynamic" && (t.open ? t._observer.observe(n) : t._observer.disconnect());
-}, Ve = (t) => {
-  const s = [...Ot, "btn-group", "input-group"].map(
-    (e) => at(`${e} ${v}`, E(t))
-  ).find((e) => e.length);
-  if (s && s.length)
-    return [...s[0].children].find(
-      (e) => Ot.some((n) => n === st(e, rt))
+}, Oi = (e) => [...e.children].map((t) => {
+  if (t && ks.includes(t.tagName)) return t;
+  const { firstElementChild: s } = t;
+  return s && ks.includes(s.tagName) ? s : null;
+}).filter((t) => t), Bs = (e) => {
+  const { element: t, options: s, menu: n } = e, o = e.open ? M : B, i = E(t);
+  o(i, N, Rs), o(i, ss, Rs), o(i, Ee, _i), o(i, No, Mi), s.display === "dynamic" && (e.open ? e._observer.observe(n) : e._observer.disconnect());
+}, Ce = (e) => {
+  const t = [...Lt, "btn-group", "input-group"].map(
+    (s) => rt(`${s} ${u}`, E(e))
+  ).find((s) => s.length);
+  if (t && t.length)
+    return [...t[0].children].find(
+      (s) => Lt.some((n) => n === et(s, ot))
     );
-}, cn = (t) => {
-  const { target: s, type: e } = t;
-  // istanbul ignore else @preserve
-  if (s && y(s)) {
-    const n = Ve(s), o = n && Kt(n);
-    // istanbul ignore else @preserve
+}, Rs = (e) => {
+  const { target: t, type: s } = e;
+  if (t && T(t)) {
+    const n = Ce(t), o = n && Vt(n);
     if (o) {
-      const { parentElement: i, menu: r } = o, c = i && i.contains(s) && (s.tagName === "form" || N(s, "form") !== null);
-      [_, jn].includes(e) && ro(s) && t.preventDefault();
-      // istanbul ignore else @preserve
-      !c && e !== Ts && s !== n && s !== r && o.hide();
+      const { parentElement: i, menu: r } = o, a = i && i.contains(t) && (t.tagName === "form" || k(t, "form") !== null);
+      [N, wn].includes(s) && Fn(t) && e.preventDefault(), !a && s !== ss && t !== n && t !== r && o.hide();
     }
   }
-}, Qi = (t) => {
-  const { target: s } = t, e = s && N(s, co), n = e && Kt(e);
-  // istanbul ignore else @preserve
-  if (n) {
-    t.stopPropagation(), n.toggle();
-    // istanbul ignore else @preserve
-    e && ro(e) && t.preventDefault();
-  }
-}, tr = (t) => {
-  // istanbul ignore else @preserve
-  [ls, ds].includes(t.code) && t.preventDefault();
+}, ki = (e) => {
+  const { target: t } = e, s = t && k(t, Wn), n = s && Vt(s);
+  n && (e.stopPropagation(), n.toggle(), s && Fn(s) && e.preventDefault());
+}, _i = (e) => {
+  [je, ze].includes(e.code) && e.preventDefault();
 };
-function er(t) {
-  const { code: s } = t, e = Ve(this), n = e && Kt(e), { activeElement: o } = e && E(e);
-  // istanbul ignore else @preserve
+function Mi(e) {
+  const { code: t } = e, s = Ce(this), n = s && Vt(s), { activeElement: o } = s && E(s);
   if (n && o) {
-    const { menu: i, open: r } = n, c = Gi(i);
-    if (c && c.length && [ls, ds].includes(s)) {
-      let l = c.indexOf(o);
-      // istanbul ignore else @preserve
-      o === e ? l = 0 : s === ds ? l = l > 1 ? l - 1 : 0 : s === ls && (l = l < c.length - 1 ? l + 1 : l);
-      // istanbul ignore else @preserve
-      c[l] && ht(c[l]);
+    const { menu: i, open: r } = n, a = Oi(i);
+    if (a && a.length && [je, ze].includes(t)) {
+      let c = a.indexOf(o);
+      o === s ? c = 0 : t === ze ? c = c > 1 ? c - 1 : 0 : t === je && (c = c < a.length - 1 ? c + 1 : c), a[c] && lt(a[c]);
     }
-    Hs === s && r && (n.toggle(), ht(e));
+    rs === t && r && (n.toggle(), lt(s));
   }
 }
-function sr(t) {
-  const s = Ve(t), e = s && Kt(s);
-  // istanbul ignore else @preserve
-  e && e.open && lo(e);
+function Bi(e) {
+  const t = Ce(e), s = t && Vt(t);
+  s && s.open && jn(s);
 }
-class ie extends nt {
+class zn extends st {
+  static selector = Wn;
+  static init = Ii;
+  static getInstance = Vt;
   /**
    * @param target Element or string selector
    * @param config the instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    /**
-     * Toggles on/off the `click` event listener of the `Dropdown`.
-     *
-     * @param add when `true`, it will add the event listener
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      (e ? F : R)(this.element, _, Qi);
-    });
-    const { parentElement: o } = this.element, [i] = at(
-      io,
-      o
+  constructor(t, s) {
+    super(t, s);
+    const { parentElement: n } = this.element, [o] = rt(
+      Rn,
+      n
     );
-    i && (this.parentElement = o, this.menu = i, this._observer = new IntersectionObserver(
-      ([r]) => sr(r.target),
+    o && (this.parentElement = n, this.menu = o, this._observer = new IntersectionObserver(
+      ([i]) => Bi(i.target),
       { threshold: 1 }
     ), this._toggleEventListeners(!0));
   }
@@ -1021,13 +867,13 @@ class ie extends nt {
    * Returns component name string.
    */
   get name() {
-    return oo;
+    return Bn;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return Ji;
+    return Ni;
   }
   // DROPDOWN PUBLIC METHODS
   // =======================
@@ -1037,489 +883,424 @@ class ie extends nt {
   }
   /** Shows the dropdown menu to the user. */
   show() {
-    const { element: e, open: n, menu: o, parentElement: i } = this;
-    // istanbul ignore else @preserve
-    if (!n) {
-      const r = Ve(e), c = r && Kt(r);
-      c && c.hide(), [ns, nn, ao].forEach(
-        (l) => {
-          l.relatedTarget = e;
+    const { element: t, open: s, menu: n, parentElement: o } = this;
+    if (!s) {
+      const i = Ce(t), r = i && Vt(i);
+      r && r.hide(), [Me, _s, Vn].forEach(
+        (a) => {
+          a.relatedTarget = t;
         }
-      ), $(i, ns), ns.defaultPrevented || (f(o, v), f(i, v), O(e, ke, "true"), lo(this), this.open = !n, ht(e), rn(this), $(i, nn));
+      ), b(o, Me), Me.defaultPrevented || (h(n, u), h(o, u), O(t, me, "true"), jn(this), this.open = !s, lt(t), Bs(this), b(o, _s));
     }
   }
   /** Hides the dropdown menu from the user. */
   hide() {
-    const { element: e, open: n, menu: o, parentElement: i } = this;
-    // istanbul ignore else @preserve
-    n && ([os, on].forEach((r) => {
-      r.relatedTarget = e;
-    }), $(i, os), os.defaultPrevented || (b(o, v), b(i, v), O(e, ke, "false"), this.open = !n, rn(this), $(i, on)));
+    const { element: t, open: s, menu: n, parentElement: o } = this;
+    s && ([Be, Ms].forEach((i) => {
+      i.relatedTarget = t;
+    }), b(o, Be), Be.defaultPrevented || (m(n, u), m(o, u), O(t, me, "false"), this.open = !s, Bs(this), b(o, Ms)));
   }
+  /**
+   * Toggles on/off the `click` event listener of the `Dropdown`.
+   *
+   * @param add when `true`, it will add the event listener
+   */
+  _toggleEventListeners = (t) => {
+    (t ? M : B)(this.element, N, ki);
+  };
   /** Removes the `Dropdown` component from the target element. */
   dispose() {
     this.open && this.hide(), this._toggleEventListeners(), super.dispose();
   }
 }
-d(ie, "selector", co), d(ie, "init", Ui), d(ie, "getInstance", Kt);
-const U = "modal", Ss = "Modal", As = "Offcanvas", nr = "fixed-top", or = "fixed-bottom", ho = "sticky-top", fo = "position-sticky", go = (t) => [
-  ...at(nr, t),
-  ...at(or, t),
-  ...at(ho, t),
-  ...at(fo, t),
-  ...at("is-fixed", t)
-], ir = (t) => {
-  const s = xt(t);
-  k(s, {
+const q = "modal", cs = "Modal", ls = "Offcanvas", Ri = "fixed-top", Fi = "fixed-bottom", Kn = "sticky-top", Un = "position-sticky", Xn = (e) => [
+  ...rt(Ri, e),
+  ...rt(Fi, e),
+  ...rt(Kn, e),
+  ...rt(Un, e),
+  ...rt("is-fixed", e)
+], Wi = (e) => {
+  const t = yt(e);
+  P(t, {
     paddingRight: "",
     overflow: ""
   });
-  const e = go(s);
-  // istanbul ignore else @preserve
-  e.length && e.forEach((n) => {
-    k(n, {
+  const s = Xn(t);
+  s.length && s.forEach((n) => {
+    P(n, {
       paddingRight: "",
       marginRight: ""
     });
   });
-}, po = (t) => {
-  const { clientWidth: s } = it(t), { innerWidth: e } = mi(t);
-  return Math.abs(e - s);
-}, uo = (t, s) => {
-  const e = xt(t), n = parseInt(K(e, "paddingRight"), 10), i = K(e, "overflow") === "hidden" && n ? 0 : po(t), r = go(e);
-  // istanbul ignore else @preserve
-  if (s) {
-    k(e, {
-      overflow: "hidden",
-      paddingRight: `${n + i}px`
-    });
-    // istanbul ignore else @preserve
-    r.length && r.forEach((c) => {
-      const l = K(c, "paddingRight");
-      c.style.paddingRight = `${parseInt(l, 10) + i}px`;
-      // istanbul ignore else @preserve
-      if ([ho, fo].some((a) => g(c, a))) {
-        const a = K(c, "marginRight");
-        c.style.marginRight = `${parseInt(a, 10) - i}px`;
-      }
-    });
-  }
-}, G = "offcanvas", yt = Et({
+}, qn = (e) => {
+  const { clientWidth: t } = dt(e), { innerWidth: s } = Jo(e);
+  return Math.abs(s - t);
+}, Yn = (e, t) => {
+  const s = yt(e), n = parseInt(z(s, "paddingRight"), 10), i = z(s, "overflow") === "hidden" && n ? 0 : qn(e), r = Xn(s);
+  t && (P(s, {
+    overflow: "hidden",
+    paddingRight: `${n + i}px`
+  }), r.length && r.forEach((a) => {
+    const c = z(a, "paddingRight");
+    if (a.style.paddingRight = `${parseInt(c, 10) + i}px`, [Kn, Un].some((l) => f(a, l))) {
+      const l = z(a, "marginRight");
+      a.style.marginRight = `${parseInt(l, 10) - i}px`;
+    }
+  }));
+}, G = "offcanvas", Tt = Et({
   tagName: "div",
   className: "popup-container"
-}), mo = (t, s) => {
-  const e = A(s) && s.nodeName === "BODY", n = A(s) && !e ? s : yt, o = e ? s : xt(t);
-  // istanbul ignore else @preserve
-  A(t) && (n === yt && o.append(yt), n.append(t));
-}, vo = (t, s) => {
-  const e = A(s) && s.nodeName === "BODY", n = A(s) && !e ? s : yt;
-  // istanbul ignore else @preserve
-  A(t) && (t.remove(), n === yt && !yt.children.length && yt.remove());
-}, Ds = (t, s) => {
-  const e = A(s) && s.nodeName !== "BODY" ? s : yt;
-  return A(t) && e.contains(t);
-}, bo = "backdrop", an = `${U}-${bo}`, ln = `${G}-${bo}`, wo = `.${U}.${v}`, ks = `.${G}.${v}`, L = Et("div"), Mt = (t) => S(
-  `${wo},${ks}`,
-  E(t)
-), Ls = (t) => {
-  const s = t ? an : ln;
-  [an, ln].forEach((e) => {
-    b(L, e);
-  }), f(L, s);
-}, $o = (t, s, e) => {
-  Ls(e), mo(L, xt(t)), s && f(L, B);
-}, Eo = () => {
-  g(L, v) || (f(L, v), Nt(L));
-}, ze = () => {
-  b(L, v);
-}, To = (t) => {
-  Mt(t) || (b(L, B), vo(L, xt(t)), ir(t));
-}, yo = (t) => y(t) && K(t, "visibility") !== "hidden" && t.offsetParent !== null, rr = `.${U}`, Co = `[${rt}="${U}"]`, cr = `[${We}="${U}"]`, xo = `${U}-static`, ar = {
+}), Zn = (e, t) => {
+  const s = H(t) && t.nodeName === "BODY", n = H(t) && !s ? t : Tt, o = s ? t : yt(e);
+  H(e) && (n === Tt && o.append(Tt), n.append(e));
+}, Gn = (e, t) => {
+  const s = H(t) && t.nodeName === "BODY", n = H(t) && !s ? t : Tt;
+  H(e) && (e.remove(), n === Tt && !Tt.children.length && Tt.remove());
+}, ds = (e, t) => {
+  const s = H(t) && t.nodeName !== "BODY" ? t : Tt;
+  return H(e) && s.contains(e);
+}, Jn = "backdrop", Fs = `${q}-${Jn}`, Ws = `${G}-${Jn}`, Qn = `.${q}.${u}`, hs = `.${G}.${u}`, I = Et("div"), Ot = (e) => D(
+  `${Qn},${hs}`,
+  E(e)
+), fs = (e) => {
+  const t = e ? Fs : Ws;
+  [Fs, Ws].forEach((s) => {
+    m(I, s);
+  }), h(I, t);
+}, to = (e, t, s) => {
+  fs(s), Zn(I, yt(e)), t && h(I, _);
+}, eo = () => {
+  f(I, u) || (h(I, u), Nt(I));
+}, Se = () => {
+  m(I, u);
+}, so = (e) => {
+  Ot(e) || (m(I, _), Gn(I, yt(e)), Wi(e));
+}, no = (e) => T(e) && z(e, "visibility") !== "hidden" && e.offsetParent !== null, Vi = `.${q}`, oo = `[${ot}="${q}"]`, ji = `[${$e}="${q}"]`, io = `${q}-static`, zi = {
   backdrop: !0,
   keyboard: !0
-}, pe = (t) => z(t, Ss), lr = (t) => new re(t), Ae = T(
-  `show.bs.${U}`
-), dn = T(
-  `shown.bs.${U}`
-), is = T(
-  `hide.bs.${U}`
-), hn = T(
-  `hidden.bs.${U}`
-), Ho = (t) => {
-  const { element: s } = t, e = po(s), { clientHeight: n, scrollHeight: o } = it(s), { clientHeight: i, scrollHeight: r } = s, c = i !== r;
-  // istanbul ignore next @preserve: impossible to test?
-  if (!c && e) {
-    const a = { [Ct(s) ? "paddingLeft" : "paddingRight"]: `${e}px` };
-    k(s, a);
+}, Qt = (e) => W(e, cs), Ki = (e) => new co(e), pe = w(
+  `show.bs.${q}`
+), Vs = w(
+  `shown.bs.${q}`
+), Re = w(
+  `hide.bs.${q}`
+), js = w(
+  `hidden.bs.${q}`
+), ro = (e) => {
+  const { element: t } = e, s = qn(t), { clientHeight: n, scrollHeight: o } = dt(t), { clientHeight: i, scrollHeight: r } = t, a = i !== r;
+  if (!a && s) {
+    const l = { [$t(t) ? "paddingLeft" : "paddingRight"]: `${s}px` };
+    P(t, l);
   }
-  uo(s, c || n !== o);
-}, Po = (t, s) => {
-  const e = s ? F : R, { element: n } = t;
-  e(n, _, fr), e(E(n), Me, hr), s ? t._observer.observe(n) : t._observer.disconnect();
-}, fn = (t) => {
-  const { triggers: s, element: e, relatedTarget: n } = t;
-  To(e), k(e, { paddingRight: "", display: "" }), Po(t);
-  const o = Ae.relatedTarget || s.find(yo);
-  // istanbul ignore else @preserve
-  o && ht(o), hn.relatedTarget = n, $(e, hn), Re(e);
-}, gn = (t) => {
-  const { element: s, relatedTarget: e } = t;
-  ht(s), Po(t, !0), dn.relatedTarget = e, $(s, dn), Re(s);
-}, pn = (t) => {
-  const { element: s, hasFade: e } = t;
-  k(s, { display: "block" }), Ho(t);
-  // istanbul ignore else @preserve
-  Mt(s) || k(xt(s), { overflow: "hidden" }), f(s, v), It(s, ve), O(s, Ne, "true"), e ? D(s, () => gn(t)) : gn(t);
-}, un = (t) => {
-  const { element: s, options: e, hasFade: n } = t;
-  e.backdrop && n && g(L, v) && !Mt(s) ? (ze(), D(L, () => fn(t))) : fn(t);
-}, dr = (t) => {
-  const { target: s } = t, e = s && N(s, Co), n = e && Y(e), o = n && pe(n);
-  // istanbul ignore else @preserve
-  if (o) {
-    // istanbul ignore else @preserve
-    e && e.tagName === "A" && t.preventDefault(), o.relatedTarget = e, o.toggle();
-  }
-}, hr = ({ code: t, target: s }) => {
-  const e = S(wo, E(s)), n = e && pe(e);
-  // istanbul ignore else @preserve
+  Yn(t, a || n !== o);
+}, ao = (e, t) => {
+  const s = t ? M : B, { element: n } = e;
+  s(n, N, qi), s(E(n), Ee, Xi), t ? e._observer.observe(n) : e._observer.disconnect();
+}, zs = (e) => {
+  const { triggers: t, element: s, relatedTarget: n } = e;
+  so(s), P(s, { paddingRight: "", display: "" }), ao(e);
+  const o = pe.relatedTarget || t.find(no);
+  o && lt(o), js.relatedTarget = n, b(s, js), Te(s);
+}, Ks = (e) => {
+  const { element: t, relatedTarget: s } = e;
+  lt(t), ao(e, !0), Vs.relatedTarget = s, b(t, Vs), Te(t);
+}, Us = (e) => {
+  const { element: t, hasFade: s } = e;
+  P(t, { display: "block" }), ro(e), Ot(t) || P(yt(t), { overflow: "hidden" }), h(t, u), Pt(t, se), O(t, be, "true"), s ? A(t, () => Ks(e)) : Ks(e);
+}, Xs = (e) => {
+  const { element: t, options: s, hasFade: n } = e;
+  s.backdrop && n && f(I, u) && !Ot(t) ? (Se(), A(I, () => zs(e))) : zs(e);
+}, Ui = (e) => {
+  const { target: t } = e, s = t && k(t, oo), n = s && U(s), o = n && Qt(n);
+  o && (s && s.tagName === "A" && e.preventDefault(), o.relatedTarget = s, o.toggle());
+}, Xi = ({ code: e, target: t }) => {
+  const s = D(Qn, E(t)), n = s && Qt(s);
   if (n) {
     const { options: o } = n;
-    // istanbul ignore else @preserve
-    o.keyboard && t === Hs && // the keyboard option is enabled and the key is 27
-    g(e, v) && (n.relatedTarget = null, n.hide());
+    o.keyboard && e === rs && // the keyboard option is enabled and the key is 27
+    f(s, u) && (n.relatedTarget = null, n.hide());
   }
-}, fr = (t) => {
-  var n, o;
-  const { currentTarget: s } = t, e = s && pe(s);
-  // istanbul ignore else @preserve
-  if (e && s && !m.get(s)) {
-    const { options: i, isStatic: r, modalDialog: c } = e, { backdrop: l } = i, { target: a } = t, h = (o = (n = E(s)) == null ? void 0 : n.getSelection()) == null ? void 0 : o.toString().length, p = c.contains(a), u = a && N(a, cr);
-    // istanbul ignore else @preserve
-    r && !p ? m.set(
-      s,
+}, qi = (e) => {
+  const { currentTarget: t } = e, s = t && Qt(t);
+  if (s && t && !p.get(t)) {
+    const { options: n, isStatic: o, modalDialog: i } = s, { backdrop: r } = n, { target: a } = e, c = E(t)?.getSelection()?.toString().length, l = i.contains(a), d = a && k(a, ji);
+    o && !l ? p.set(
+      t,
       () => {
-        f(s, xo), D(c, () => gr(e));
+        h(t, io), A(i, () => Yi(s));
       },
       17
-    ) : (u || !h && !r && !p && l) && (e.relatedTarget = u || null, e.hide(), t.preventDefault());
+    ) : (d || !c && !o && !l && r) && (s.relatedTarget = d || null, s.hide(), e.preventDefault());
   }
-}, gr = (t) => {
-  const { element: s, modalDialog: e } = t, n = ($e(e) || 0) + 17;
-  b(s, xo), m.set(s, () => m.clear(s), n);
+}, Yi = (e) => {
+  const { element: t, modalDialog: s } = e, n = (ie(s) || 0) + 17;
+  m(t, io), p.set(t, () => p.clear(t), n);
 };
-class re extends nt {
+class co extends st {
+  static selector = Vi;
+  static init = Ki;
+  static getInstance = Qt;
   /**
    * @param target usually the `.modal` element
    * @param config instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    /**
-     * Updates the modal layout.
-     */
-    d(this, "update", () => {
-      // istanbul ignore else @preserve
-      g(this.element, v) && Ho(this);
-    });
-    /**
-     * Toggles on/off the `click` event listener of the `Modal` instance.
-     *
-     * @param add when `true`, event listener(s) is/are added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      const n = e ? F : R, { triggers: o } = this;
-      // istanbul ignore else @preserve
-      o.length && o.forEach(
-        (i) => n(i, _, dr)
-      );
-    });
-    const { element: o } = this, i = S(`.${U}-dialog`, o);
-    // istanbul ignore else @preserve
-    i && (this.modalDialog = i, this.triggers = [
-      ...J(Co, E(o))
+  constructor(t, s) {
+    super(t, s);
+    const { element: n } = this, o = D(`.${q}-dialog`, n);
+    o && (this.modalDialog = o, this.triggers = [
+      ...Z(oo, E(n))
     ].filter(
-      (r) => Y(r) === o
-    ), this.isStatic = this.options.backdrop === "static", this.hasFade = g(o, B), this.relatedTarget = null, this._observer = new ResizeObserver(() => this.update()), this._toggleEventListeners(!0));
+      (i) => U(i) === n
+    ), this.isStatic = this.options.backdrop === "static", this.hasFade = f(n, _), this.relatedTarget = null, this._observer = new ResizeObserver(() => this.update()), this._toggleEventListeners(!0));
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return Ss;
+    return cs;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return ar;
+    return zi;
   }
   // MODAL PUBLIC METHODS
   // ====================
   /** Toggles the visibility of the modal. */
   toggle() {
-    g(this.element, v) ? this.hide() : this.show();
+    f(this.element, u) ? this.hide() : this.show();
   }
   /** Shows the modal to the user. */
   show() {
-    const { element: e, options: n, hasFade: o, relatedTarget: i } = this, { backdrop: r } = n;
-    let c = 0;
-    // istanbul ignore else @preserve
-    if (!g(e, v) && (Ae.relatedTarget = i || void 0, $(e, Ae), !Ae.defaultPrevented)) {
-      const l = Mt(e);
-      // istanbul ignore else @preserve
-      if (l && l !== e) {
-        const a = pe(l) || // istanbul ignore next @preserve
-        z(
-          l,
-          As
+    const { element: t, options: s, hasFade: n, relatedTarget: o } = this, { backdrop: i } = s;
+    let r = 0;
+    if (!f(t, u) && (pe.relatedTarget = o || void 0, b(t, pe), !pe.defaultPrevented)) {
+      const a = Ot(t);
+      if (a && a !== t) {
+        const c = Qt(a) || // istanbul ignore next @preserve
+        W(
+          a,
+          ls
         );
-        // istanbul ignore else @preserve
-        a && a.hide();
+        c && c.hide();
       }
-      if (r)
-        Ds(L) ? Ls(!0) : $o(e, o, !0), c = $e(L), Eo(), setTimeout(() => pn(this), c);
-      else {
-        pn(this);
-        // istanbul ignore else @preserve
-        l && g(L, v) && ze();
-      }
+      i ? (ds(I) ? fs(!0) : to(t, n, !0), r = ie(I), eo(), setTimeout(() => Us(this), r)) : (Us(this), a && f(I, u) && Se());
     }
   }
   /** Hide the modal from the user. */
   hide() {
-    const { element: e, hasFade: n, relatedTarget: o } = this;
-    // istanbul ignore else @preserve
-    if (g(e, v)) {
-      is.relatedTarget = o || void 0, $(e, is);
-      // istanbul ignore else @preserve
-      is.defaultPrevented || (b(e, v), O(e, ve, "true"), It(e, Ne), n ? D(e, () => un(this)) : un(this));
-    }
+    const { element: t, hasFade: s, relatedTarget: n } = this;
+    f(t, u) && (Re.relatedTarget = n || void 0, b(t, Re), Re.defaultPrevented || (m(t, u), O(t, se, "true"), Pt(t, be), s ? A(t, () => Xs(this)) : Xs(this)));
   }
+  /**
+   * Updates the modal layout.
+   */
+  update = () => {
+    f(this.element, u) && ro(this);
+  };
+  /**
+   * Toggles on/off the `click` event listener of the `Modal` instance.
+   *
+   * @param add when `true`, event listener(s) is/are added
+   */
+  _toggleEventListeners = (t) => {
+    const s = t ? M : B, { triggers: n } = this;
+    n.length && n.forEach(
+      (o) => s(o, N, Ui)
+    );
+  };
   /** Removes the `Modal` component from target element. */
   dispose() {
-    const e = { ...this }, { modalDialog: n, hasFade: o } = e, i = () => setTimeout(() => super.dispose(), 17);
-    this.hide(), this._toggleEventListeners(), o ? D(n, i) : i();
+    const t = { ...this }, { modalDialog: s, hasFade: n } = t, o = () => setTimeout(() => super.dispose(), 17);
+    this.hide(), this._toggleEventListeners(), n ? A(s, o) : o();
   }
 }
-d(re, "selector", rr), d(re, "init", lr), d(re, "getInstance", pe);
-const pr = `.${G}`, Is = `[${rt}="${G}"]`, ur = `[${We}="${G}"]`, Xe = `${G}-toggling`, mr = {
+const Zi = `.${G}`, gs = `[${ot}="${G}"]`, Gi = `[${$e}="${G}"]`, xe = `${G}-toggling`, Ji = {
   backdrop: !0,
   // boolean
   keyboard: !0,
   // boolean
   scroll: !1
   // boolean
-}, ue = (t) => z(t, As), vr = (t) => new ce(t), De = T(`show.bs.${G}`), So = T(`shown.bs.${G}`), rs = T(`hide.bs.${G}`), Ao = T(`hidden.bs.${G}`), br = (t) => {
-  const { element: s } = t, { clientHeight: e, scrollHeight: n } = it(s);
-  uo(s, e !== n);
-}, Do = (t, s) => {
-  const e = s ? F : R, n = E(t.element);
-  e(n, Me, Tr), e(n, _, Er);
-}, mn = (t) => {
-  const { element: s, options: e } = t;
-  // istanbul ignore else @preserve
-  e.scroll || (br(t), k(xt(s), { overflow: "hidden" })), f(s, Xe), f(s, v), k(s, { visibility: "visible" }), D(s, () => yr(t));
-}, wr = (t) => {
-  const { element: s, options: e } = t, n = Mt(s);
-  s.blur(), !n && e.backdrop && g(L, v) && ze(), D(s, () => Cr(t));
-}, $r = (t) => {
-  const s = N(t.target, Is), e = s && Y(s), n = e && ue(e);
-  // istanbul ignore else @preserve
-  if (n) {
-    n.relatedTarget = s, n.toggle();
-    // istanbul ignore else @preserve
-    s && s.tagName === "A" && t.preventDefault();
-  }
-}, Er = (t) => {
-  const { target: s } = t, e = S(
-    ks,
-    E(s)
-  ), n = S(
-    ur,
-    e
-  ), o = e && ue(e);
-  // istanbul ignore else @preserve
+}, te = (e) => W(e, ls), Qi = (e) => new go(e), ue = w(`show.bs.${G}`), lo = w(`shown.bs.${G}`), Fe = w(`hide.bs.${G}`), ho = w(`hidden.bs.${G}`), tr = (e) => {
+  const { element: t } = e, { clientHeight: s, scrollHeight: n } = dt(t);
+  Yn(t, s !== n);
+}, fo = (e, t) => {
+  const s = t ? M : B, n = E(e.element);
+  s(n, Ee, or), s(n, N, nr);
+}, qs = (e) => {
+  const { element: t, options: s } = e;
+  s.scroll || (tr(e), P(yt(t), { overflow: "hidden" })), h(t, xe), h(t, u), P(t, { visibility: "visible" }), A(t, () => ir(e));
+}, er = (e) => {
+  const { element: t, options: s } = e, n = Ot(t);
+  t.blur(), !n && s.backdrop && f(I, u) && Se(), A(t, () => rr(e));
+}, sr = (e) => {
+  const t = k(e.target, gs), s = t && U(t), n = s && te(s);
+  n && (n.relatedTarget = t, n.toggle(), t && t.tagName === "A" && e.preventDefault());
+}, nr = (e) => {
+  const { target: t } = e, s = D(
+    hs,
+    E(t)
+  ), n = D(
+    Gi,
+    s
+  ), o = s && te(s);
   if (o) {
-    const { options: i, triggers: r } = o, { backdrop: c } = i, l = N(s, Is), a = E(e).getSelection();
-    // istanbul ignore else: a filter is required here @preserve
-    if (!L.contains(s) || c !== "static") {
-      // istanbul ignore else @preserve
-      !(a && a.toString().length) && (!e.contains(s) && c && // istanbul ignore next @preserve
-      (!l || r.includes(s)) || n && n.contains(s)) && (o.relatedTarget = n && n.contains(s) ? n : null, o.hide());
-      // istanbul ignore next @preserve
-      l && l.tagName === "A" && t.preventDefault();
-    }
+    const { options: i, triggers: r } = o, { backdrop: a } = i, c = k(t, gs), l = E(s).getSelection();
+    (!I.contains(t) || a !== "static") && (!(l && l.toString().length) && (!s.contains(t) && a && // istanbul ignore next @preserve
+    (!c || r.includes(t)) || n && n.contains(t)) && (o.relatedTarget = n && n.contains(t) ? n : null, o.hide()), c && c.tagName === "A" && e.preventDefault());
   }
-}, Tr = ({ code: t, target: s }) => {
-  const e = S(
-    ks,
-    E(s)
-  ), n = e && ue(e);
-  // istanbul ignore else @preserve
-  if (n) {
-    // istanbul ignore else @preserve
-    n.options.keyboard && t === Hs && (n.relatedTarget = null, n.hide());
-  }
-}, yr = (t) => {
-  const { element: s } = t;
-  b(s, Xe), It(s, ve), O(s, Ne, "true"), O(s, "role", "dialog"), $(s, So), Do(t, !0), ht(s), Re(s);
-}, Cr = (t) => {
-  const { element: s, triggers: e } = t;
-  O(s, ve, "true"), It(s, Ne), It(s, "role"), k(s, { visibility: "" });
-  const n = De.relatedTarget || e.find(yo);
-  // istanbul ignore else @preserve
-  n && ht(n), To(s), $(s, Ao), b(s, Xe), Re(s), Mt(s) || Do(t);
+}, or = ({ code: e, target: t }) => {
+  const s = D(
+    hs,
+    E(t)
+  ), n = s && te(s);
+  n && n.options.keyboard && e === rs && (n.relatedTarget = null, n.hide());
+}, ir = (e) => {
+  const { element: t } = e;
+  m(t, xe), Pt(t, se), O(t, be, "true"), O(t, "role", "dialog"), b(t, lo), fo(e, !0), lt(t), Te(t);
+}, rr = (e) => {
+  const { element: t, triggers: s } = e;
+  O(t, se, "true"), Pt(t, be), Pt(t, "role"), P(t, { visibility: "" });
+  const n = ue.relatedTarget || s.find(no);
+  n && lt(n), so(t), b(t, ho), m(t, xe), Te(t), Ot(t) || fo(e);
 };
-class ce extends nt {
+class go extends st {
+  static selector = Zi;
+  static init = Qi;
+  static getInstance = te;
   /**
    * @param target usually an `.offcanvas` element
    * @param config instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    /**
-     * Toggles on/off the `click` event listeners.
-     *
-     * @param self the `Offcanvas` instance
-     * @param add when *true*, listeners are added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      const n = e ? F : R;
-      this.triggers.forEach(
-        (o) => n(o, _, $r)
-      );
-    });
-    const { element: o } = this;
+  constructor(t, s) {
+    super(t, s);
+    const { element: n } = this;
     this.triggers = [
-      ...J(Is, E(o))
+      ...Z(gs, E(n))
     ].filter(
-      (i) => Y(i) === o
+      (o) => U(o) === n
     ), this.relatedTarget = null, this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return As;
+    return ls;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return mr;
+    return Ji;
   }
   // OFFCANVAS PUBLIC METHODS
   // ========================
   /** Shows or hides the offcanvas from the user. */
   toggle() {
-    g(this.element, v) ? this.hide() : this.show();
+    f(this.element, u) ? this.hide() : this.show();
   }
   /** Shows the offcanvas to the user. */
   show() {
-    const { element: e, options: n, relatedTarget: o } = this;
-    let i = 0;
-    if (!g(e, v) && (De.relatedTarget = o || void 0, So.relatedTarget = o || void 0, $(e, De), !De.defaultPrevented)) {
-      const r = Mt(e);
-      if (r && r !== e) {
-        const c = ue(r) || // istanbul ignore next @preserve
-        z(
-          r,
-          Ss
+    const { element: t, options: s, relatedTarget: n } = this;
+    let o = 0;
+    if (!f(t, u) && (ue.relatedTarget = n || void 0, lo.relatedTarget = n || void 0, b(t, ue), !ue.defaultPrevented)) {
+      const i = Ot(t);
+      if (i && i !== t) {
+        const r = te(i) || // istanbul ignore next @preserve
+        W(
+          i,
+          cs
         );
-        // istanbul ignore else @preserve
-        c && c.hide();
+        r && r.hide();
       }
-      if (n.backdrop)
-        Ds(L) ? Ls() : $o(e, !0), i = $e(L), Eo(), setTimeout(() => mn(this), i);
-      else {
-        mn(this);
-        // istanbul ignore next @preserve - this test was done on Modal
-        r && g(L, v) && ze();
-      }
+      s.backdrop ? (ds(I) ? fs() : to(t, !0), o = ie(I), eo(), setTimeout(() => qs(this), o)) : (qs(this), i && f(I, u) && Se());
     }
   }
   /** Hides the offcanvas from the user. */
   hide() {
-    const { element: e, relatedTarget: n } = this;
-    g(e, v) && (rs.relatedTarget = n || void 0, Ao.relatedTarget = n || void 0, $(e, rs), rs.defaultPrevented || (f(e, Xe), b(e, v), wr(this)));
+    const { element: t, relatedTarget: s } = this;
+    f(t, u) && (Fe.relatedTarget = s || void 0, ho.relatedTarget = s || void 0, b(t, Fe), Fe.defaultPrevented || (h(t, xe), m(t, u), er(this)));
   }
+  /**
+   * Toggles on/off the `click` event listeners.
+   *
+   * @param self the `Offcanvas` instance
+   * @param add when *true*, listeners are added
+   */
+  _toggleEventListeners = (t) => {
+    const s = t ? M : B;
+    this.triggers.forEach(
+      (n) => s(n, N, sr)
+    );
+  };
   /** Removes the `Offcanvas` from the target element. */
   dispose() {
-    const { element: e } = this, n = g(e, v), o = () => setTimeout(() => super.dispose(), 1);
-    if (this.hide(), this._toggleEventListeners(), n) {
-      D(e, o);
-      // istanbul ignore next @preserve
-    } else
-      o();
+    const { element: t } = this, s = f(t, u), n = () => setTimeout(() => super.dispose(), 1);
+    this.hide(), this._toggleEventListeners(), s ? A(t, n) : n();
   }
 }
-d(ce, "selector", pr), d(ce, "init", vr), d(ce, "getInstance", ue);
-const Lt = "popover", Ke = "Popover", lt = "tooltip", ko = (t) => {
-  const s = t === lt, e = s ? `${t}-inner` : `${t}-body`, n = s ? "" : `<h3 class="${t}-header"></h3>`, o = `<div class="${t}-arrow"></div>`, i = `<div class="${e}"></div>`;
-  return `<div class="${t}" role="${lt}">${n + o + i}</div>`;
-}, Lo = {
+const At = "popover", De = "Popover", at = "tooltip", po = (e) => {
+  const t = e === at, s = t ? `${e}-inner` : `${e}-body`, n = t ? "" : `<h3 class="${e}-header"></h3>`, o = `<div class="${e}-arrow"></div>`, i = `<div class="${s}"></div>`;
+  return `<div class="${e}" role="${at}">${n + o + i}</div>`;
+}, uo = {
   top: "top",
   bottom: "bottom",
   left: "start",
   right: "end"
-}, $s = (t) => {
-  const s = /\b(top|bottom|start|end)+/, { element: e, tooltip: n, container: o, options: i, arrow: r } = t;
-  // istanbul ignore else @preserve
+}, ts = (e) => {
+  const t = /\b(top|bottom|start|end)+/, { element: s, tooltip: n, container: o, options: i, arrow: r } = e;
   if (n) {
-    const c = { ...Lo }, l = Ct(e);
-    k(n, {
+    const a = { ...uo }, c = $t(s);
+    P(n, {
       // top: '0px', left: '0px', right: '', bottom: '',
       top: "",
       left: "",
       right: "",
       bottom: ""
     });
-    const a = t.name === Ke, { offsetWidth: h, offsetHeight: p } = n, { clientWidth: u, clientHeight: C, offsetWidth: j } = it(e);
-    let { placement: w } = i;
-    const { clientWidth: M, offsetWidth: W } = o, ct = K(
+    const l = e.name === De, { offsetWidth: d, offsetHeight: g } = n, { clientWidth: y, clientHeight: S, offsetWidth: R } = dt(s);
+    let { placement: v } = i;
+    const { clientWidth: V, offsetWidth: X } = o, it = z(
       o,
       "position"
-    ) === "fixed", H = Math.abs(ct ? M - W : u - j), tt = l && ct ? H : 0, ot = u - (l ? 0 : H) - 1, {
-      width: V,
-      height: X,
-      left: P,
-      right: Ft,
-      top: gt
-    } = Ee(e, !0), { x: I, y: pt } = {
-      x: P,
-      y: gt
+    ) === "fixed", C = Math.abs(it ? V - X : y - R), Q = c && it ? C : 0, nt = y - (c ? 0 : C) - 1, {
+      width: F,
+      height: j,
+      left: x,
+      right: _t,
+      top: ft
+    } = re(s, !0), { x: L, y: gt } = {
+      x,
+      y: ft
     };
-    k(r, {
+    P(r, {
       top: "",
       left: "",
       right: "",
       bottom: ""
     });
-    let Ht = 0, Yt = "", ut = 0, Ye = "", Rt = "", Ce = "", Ue = "";
-    const Pt = r.offsetWidth || 0, mt = r.offsetHeight || 0, Ze = Pt / 2;
-    let Ut = gt - p - mt < 0, Zt = gt + p + X + mt >= C, Jt = P - h - Pt < tt, Gt = P + h + V + Pt >= ot;
-    const xe = ["left", "right"], Je = ["top", "bottom"];
-    Ut = xe.includes(w) ? gt + X / 2 - p / 2 - mt < 0 : Ut, Zt = xe.includes(w) ? gt + p / 2 + X / 2 + mt >= C : Zt, Jt = Je.includes(w) ? P + V / 2 - h / 2 < tt : Jt, Gt = Je.includes(w) ? P + h / 2 + V / 2 >= ot : Gt, w = xe.includes(w) && Jt && Gt ? "top" : w, w = w === "top" && Ut ? "bottom" : w, w = w === "bottom" && Zt ? "top" : w, w = w === "left" && Jt ? "right" : w, w = w === "right" && Gt ? "left" : w, n.className.includes(w) || (n.className = n.className.replace(
-      s,
-      c[w]
-    ));
-    // istanbul ignore else @preserve
-    xe.includes(w) ? (w === "left" ? ut = I - h - (a ? Pt : 0) : ut = I + V + (a ? Pt : 0), Ut && Zt ? (Ht = 0, Yt = 0, Rt = gt + X / 2 - mt / 2) : Ut ? (Ht = pt, Yt = "", Rt = X / 2 - Pt) : Zt ? (Ht = pt - p + X, Yt = "", Rt = p - X / 2 - Pt) : (Ht = pt - p / 2 + X / 2, Rt = p / 2 - mt / 2)) : Je.includes(w) && (w === "top" ? Ht = pt - p - (a ? mt : 0) : Ht = pt + X + (a ? mt : 0), Jt ? (ut = 0, Ce = I + V / 2 - Ze) : Gt ? (ut = "auto", Ye = 0, Ue = V / 2 + ot - Ft - Ze) : (ut = I - h / 2 + V / 2, Ce = h / 2 - Ze)), k(n, {
-      top: `${Ht}px`,
-      bottom: Yt === "" ? "" : `${Yt}px`,
-      left: ut === "auto" ? ut : `${ut}px`,
-      right: Ye !== "" ? `${Ye}px` : ""
-    });
-    // istanbul ignore else @preserve
-    y(r) && (Rt !== "" && (r.style.top = `${Rt}px`), Ce !== "" ? r.style.left = `${Ce}px` : Ue !== "" && (r.style.right = `${Ue}px`));
-    const Ko = T(
-      `updated.bs.${Xt(t.name)}`
+    let Ct = 0, zt = "", pt = 0, He = "", Mt = "", le = "", Ae = "";
+    const St = r.offsetWidth || 0, ut = r.offsetHeight || 0, Pe = St / 2;
+    let Kt = ft - g - ut < 0, Ut = ft + g + j + ut >= S, Xt = x - d - St < Q, qt = x + d + F + St >= nt;
+    const de = ["left", "right"], Ie = ["top", "bottom"];
+    Kt = de.includes(v) ? ft + j / 2 - g / 2 - ut < 0 : Kt, Ut = de.includes(v) ? ft + g / 2 + j / 2 + ut >= S : Ut, Xt = Ie.includes(v) ? x + F / 2 - d / 2 < Q : Xt, qt = Ie.includes(v) ? x + d / 2 + F / 2 >= nt : qt, v = de.includes(v) && Xt && qt ? "top" : v, v = v === "top" && Kt ? "bottom" : v, v = v === "bottom" && Ut ? "top" : v, v = v === "left" && Xt ? "right" : v, v = v === "right" && qt ? "left" : v, n.className.includes(v) || (n.className = n.className.replace(
+      t,
+      a[v]
+    )), de.includes(v) ? (v === "left" ? pt = L - d - (l ? St : 0) : pt = L + F + (l ? St : 0), Kt && Ut ? (Ct = 0, zt = 0, Mt = ft + j / 2 - ut / 2) : Kt ? (Ct = gt, zt = "", Mt = j / 2 - St) : Ut ? (Ct = gt - g + j, zt = "", Mt = g - j / 2 - St) : (Ct = gt - g / 2 + j / 2, Mt = g / 2 - ut / 2)) : Ie.includes(v) && (v === "top" ? Ct = gt - g - (l ? ut : 0) : Ct = gt + j + (l ? ut : 0), Xt ? (pt = 0, le = L + F / 2 - Pe) : qt ? (pt = "auto", He = 0, Ae = F / 2 + nt - _t - Pe) : (pt = L - d / 2 + F / 2, le = d / 2 - Pe)), P(n, {
+      top: `${Ct}px`,
+      bottom: zt === "" ? "" : `${zt}px`,
+      left: pt === "auto" ? pt : `${pt}px`,
+      right: He !== "" ? `${He}px` : ""
+    }), T(r) && (Mt !== "" && (r.style.top = `${Mt}px`), le !== "" ? r.style.left = `${le}px` : Ae !== "" && (r.style.right = `${Ae}px`));
+    const Lo = w(
+      `updated.bs.${Wt(e.name)}`
     );
-    $(e, Ko);
+    b(s, Lo);
   }
-}, Es = {
-  template: ko(lt),
+}, es = {
+  template: po(at),
   title: "",
   customClass: "",
   trigger: "hover focus",
@@ -1531,679 +1312,521 @@ const Lt = "popover", Ke = "Popover", lt = "tooltip", ko = (t) => {
   content: "",
   dismissible: !1,
   btnClose: ""
-};
-var xr = Object.defineProperty, Hr = (t, s, e) => s in t ? xr(t, s, { enumerable: !0, configurable: !0, writable: !0, value: e }) : t[s] = e, bt = (t, s, e) => Hr(t, typeof s != "symbol" ? s + "" : s, e);
-const Pr = "DOMContentLoaded", Sr = navigator.userAgentData, _e = Sr, { userAgent: Ar } = navigator, Oe = Ar, vn = /iPhone|iPad|iPod|Android/i;
-// istanbul ignore else @preserve
-_e ? _e.brands.some((t) => vn.test(t.brand)) : vn.test(Oe);
-const bn = /(iPhone|iPod|iPad)/;
-_e ? _e.brands.some(
-  (t) => bn.test(t.brand)
-) : (
-  /* istanbul ignore next @preserve */
-  bn.test(Oe)
-);
-Oe && Oe.includes("Firefox");
-const { head: qe } = document;
-["webkitPerspective", "perspective"].some(
-  (t) => t in qe.style
-);
-const Dr = (t, s, e, n) => {
-  const o = n || !1;
-  t.addEventListener(
-    s,
-    e,
-    o
-  );
-}, kr = (t, s, e, n) => {
-  const o = n || !1;
-  t.removeEventListener(
-    s,
-    e,
-    o
-  );
-}, Lr = (t, s, e, n) => {
-  const o = (i) => {
-    // istanbul ignore else @preserve
-    (i.target === t || i.currentTarget === t) && (e.apply(t, [i]), kr(t, s, o, n));
-  };
-  Dr(t, s, o, n);
-}, Ir = () => {
-};
-(() => {
-  let t = !1;
-  try {
-    const s = Object.defineProperty({}, "passive", {
-      get: () => (t = !0, t)
-    });
-    // istanbul ignore next @preserve
-    Lr(document, Pr, Ir, s);
-  } catch {
-  }
-  return t;
-})();
-["webkitTransform", "transform"].some(
-  (t) => t in qe.style
-);
-["webkitAnimation", "animation"].some(
-  (t) => t in qe.style
-);
-["webkitTransition", "transition"].some(
-  (t) => t in qe.style
-);
-const _r = (t) => t != null && typeof t == "object" || !1, Or = (t) => _r(t) && typeof t.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
-  (s) => t.nodeType === s
-) || !1, Nr = (t) => Or(t) && t.nodeType === 1 || !1, wn = (t, s) => {
-  const { width: e, height: n, top: o, right: i, bottom: r, left: c } = t.getBoundingClientRect();
-  let l = 1, a = 1;
-  return {
-    width: e / l,
-    height: n / a,
-    top: o / a,
-    right: i / l,
-    bottom: r / a,
-    left: c / l,
-    x: c / l,
-    y: o / a
-  };
-}, Mr = (t) => typeof t == "function" || !1, $n = "PositionObserver Error";
-class Io {
+}, ar = (e) => e != null && typeof e == "object" || !1, cr = (e) => ar(e) && typeof e.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
+  (t) => e.nodeType === t
+) || !1, Ys = (e) => cr(e) && e.nodeType === 1 || !1, lr = (e) => typeof e == "function" || !1, Zs = "PositionObserver Error";
+class mo {
+  entries;
+  _tick;
+  _root;
+  _callback;
   /**
-   * The constructor takes a single argument, callback, which is called
-   * whenever the position of an observed element changes. The callback function
-   * should take an array of `PositionObserverEntry` objects as its only argument.
+   * The constructor takes two arguments, a `callback`, which is called
+   * whenever the position of an observed element changes and an `options` object.
+   * The callback function should take an array of `PositionObserverEntry` objects
+   * as its only argument, but it's not required.
    *
    * @param callback the callback that applies to all targets of this observer
+   * @param options the options of this observer
    */
-  constructor(s, e) {
-    if (bt(this, "entries"), bt(this, "_tick"), bt(this, "_root"), bt(this, "_callback"), bt(this, "observe", (n) => {
-      if (!Nr(n))
-        throw new Error(
-          `${$n}: ${n} is not an instance of HTMLElement.`
-        );
-      const { clientWidth: o, clientHeight: i } = this._root, r = wn(n), { left: c, top: l, bottom: a, right: h, width: p, height: u } = r, C = l > 1 - u && c > 1 - p && a <= i + u - 1 && h <= o + p - 1;
-      this.entries.push({ target: n, boundingBox: r, isVisible: C }), this._tick = requestAnimationFrame(this._runCallback);
-    }), bt(this, "unobserve", (n) => {
-      const o = this.entries.findIndex((i) => i.target === n);
-      this.entries.splice(o, 1);
-    }), bt(this, "_runCallback", () => {
-      /* istanbul ignore if @preserve - a guard must be set */
-      if (!this.entries.length) return;
-      const n = [], { clientWidth: o, clientHeight: i } = this._root;
-      this.entries.forEach((r, c) => {
-        const { target: l, boundingBox: a } = r, h = wn(l), { left: p, top: u, bottom: C, right: j, width: w, height: M } = h;
-        if (a.left !== p || a.top !== u || a.right !== j || a.bottom !== C) {
-          const W = u > 1 - M && p > 1 - w && C <= i + M - 1 && j <= o + w - 1;
-          this.entries[c].boundingBox = h, this.entries[c].isVisible = W, n.push({ target: l, boundingBox: h, isVisible: W });
-        }
-      }), n.length && this._callback(n), requestAnimationFrame(this._runCallback);
-    }), bt(this, "disconnect", () => {
-      cancelAnimationFrame(this._tick), this.entries.length = 0, this._tick = 0;
-    }), !Mr(s))
-      throw new Error(`${$n}: ${s} is not a function.`);
-    this.entries = [], this._callback = s, this._root = (e == null ? void 0 : e.root) || (document == null ? void 0 : document.documentElement), this._tick = 0;
+  constructor(t, s) {
+    if (!lr(t))
+      throw new Error(`${Zs}: ${t} is not a function.`);
+    this.entries = [], this._callback = t, this._root = Ys(s?.root) ? s.root : document?.documentElement, this._tick = 0;
   }
+  /**
+   * Start observing the position of the specified element.
+   * If the element is not currently attached to the DOM,
+   * it will NOT be added to the entries.
+   * @param target
+   */
+  observe = (t) => {
+    if (!Ys(t))
+      throw new Error(
+        `${Zs}: ${t} is not an instance of HTMLElement.`
+      );
+    if (!this._root.contains(t)) return;
+    const { clientWidth: s, clientHeight: n } = this._root, o = t.getBoundingClientRect(), { left: i, top: r, bottom: a, right: c, width: l, height: d } = o, g = r > 1 - d && i > 1 - l && a <= n + d - 1 && c <= s + l - 1;
+    this.entries.push({ target: t, boundingBox: o, isVisible: g }), this._tick || (this._tick = requestAnimationFrame(this._runCallback));
+  };
+  /**
+   * Stop observing the position of the specified element.
+   * @param target
+   */
+  unobserve = (t) => {
+    const s = this.entries.findIndex((n) => n.target === t);
+    this.entries.splice(s, 1);
+  };
+  /**
+   * Private method responsible for all the heavy duty.
+   */
+  _runCallback = () => {
+    if (!this.entries.length) return;
+    const t = [], { clientWidth: s, clientHeight: n } = this._root;
+    this.entries.forEach((o, i) => {
+      const { target: r, boundingBox: a } = o, c = r.getBoundingClientRect(), { left: l, top: d, bottom: g, right: y, width: S, height: R } = c;
+      if (a.left !== l || a.top !== d || a.right !== y || a.bottom !== g) {
+        const v = d > 1 - R && l > 1 - S && g <= n + R - 1 && y <= s + S - 1;
+        this.entries[i].boundingBox = c, this.entries[i].isVisible = v, t.push({ target: r, boundingBox: c, isVisible: v });
+      }
+    }), t.length && this._callback(t), requestAnimationFrame(this._runCallback);
+  };
+  /**
+   * Immediately stop observing all elements.
+   */
+  disconnect = () => {
+    cancelAnimationFrame(this._tick), this.entries.length = 0, this._tick = 0;
+  };
 }
-const _o = "data-original-title", St = "Tooltip", wt = (t, s, e) => {
-  // istanbul ignore else @preserve
-  if (we(s) && s.length) {
-    let n = s.trim();
-    bi(e) && (n = e(n));
+const vo = "data-original-title", xt = "Tooltip", vt = (e, t, s) => {
+  if (oe(t) && t.length) {
+    let n = t.trim();
+    ti(s) && (n = s(n));
     const i = new DOMParser().parseFromString(n, "text/html");
-    t.append(...i.body.childNodes);
-  } else y(s) ? t.append(s) : (wi(s) || vi(s) && s.every(A)) && t.append(...s);
-}, Br = (t) => {
-  const s = t.name === St, { id: e, element: n, options: o } = t, {
+    e.append(...i.body.childNodes);
+  } else T(t) ? e.append(t) : (ei(t) || Qo(t) && t.every(H)) && e.append(...t);
+}, dr = (e) => {
+  const t = e.name === xt, { id: s, element: n, options: o } = e, {
     title: i,
     placement: r,
-    template: c,
-    animation: l,
-    customClass: a,
-    sanitizeFn: h,
-    dismissible: p,
-    content: u,
-    btnClose: C
-  } = o, j = s ? lt : Lt, w = { ...Lo };
-  let M = [], W = [];
-  Ct(n) && (w.left = "end", w.right = "start");
-  const Bt = `bs-${j}-${w[r]}`;
-  let ct;
-  if (y(c))
-    ct = c;
+    template: a,
+    animation: c,
+    customClass: l,
+    sanitizeFn: d,
+    dismissible: g,
+    content: y,
+    btnClose: S
+  } = o, R = t ? at : At, v = { ...uo };
+  let V = [], X = [];
+  $t(n) && (v.left = "end", v.right = "start");
+  const kt = `bs-${R}-${v[r]}`;
+  let it;
+  if (T(a))
+    it = a;
   else {
-    const tt = Et("div");
-    wt(tt, c, h), ct = tt.firstChild;
+    const Q = Et("div");
+    vt(Q, a, d), it = Q.firstChild;
   }
-  t.tooltip = y(ct) ? ct.cloneNode(!0) : void 0;
-  const { tooltip: H } = t;
-  // istanbul ignore else @preserve
-  if (H) {
-    O(H, "id", e), O(H, "role", lt);
-    const tt = s ? `${lt}-inner` : `${Lt}-body`, ot = s ? null : S(`.${Lt}-header`, H), V = S(`.${tt}`, H);
-    t.arrow = S(`.${j}-arrow`, H);
-    const { arrow: X } = t;
-    if (y(i)) M = [i.cloneNode(!0)];
+  e.tooltip = T(it) ? it.cloneNode(!0) : void 0;
+  const { tooltip: C } = e;
+  if (C) {
+    O(C, "id", s), O(C, "role", at);
+    const Q = t ? `${at}-inner` : `${At}-body`, nt = t ? null : D(`.${At}-header`, C), F = D(`.${Q}`, C);
+    e.arrow = D(`.${R}-arrow`, C);
+    const { arrow: j } = e;
+    if (T(i)) V = [i.cloneNode(!0)];
     else {
-      const P = Et("div");
-      wt(P, i, h), M = [...P.childNodes];
+      const x = Et("div");
+      vt(x, i, d), V = [...x.childNodes];
     }
-    if (y(u)) W = [u.cloneNode(!0)];
+    if (T(y)) X = [y.cloneNode(!0)];
     else {
-      const P = Et("div");
-      wt(P, u, h), W = [...P.childNodes];
+      const x = Et("div");
+      vt(x, y, d), X = [...x.childNodes];
     }
-    if (p)
+    if (g)
       if (i)
-        if (y(C))
-          M = [...M, C.cloneNode(!0)];
+        if (T(S))
+          V = [...V, S.cloneNode(!0)];
         else {
-          const P = Et("div");
-          wt(P, C, h), M = [...M, P.firstChild];
+          const x = Et("div");
+          vt(x, S, d), V = [...V, x.firstChild];
         }
+      else if (nt && nt.remove(), T(S))
+        X = [...X, S.cloneNode(!0)];
       else {
-        // istanbul ignore else @preserve
-        if (ot && ot.remove(), y(C))
-          W = [...W, C.cloneNode(!0)];
-        else {
-          const P = Et("div");
-          wt(P, C, h), W = [...W, P.firstChild];
-        }
+        const x = Et("div");
+        vt(x, S, d), X = [...X, x.firstChild];
       }
-    // istanbul ignore else @preserve
-    if (s)
-      i && V && wt(V, i, h);
-    else {
-      // istanbul ignore else @preserve
-      i && ot && wt(ot, M, h);
-      // istanbul ignore else @preserve
-      u && V && wt(V, W, h), t.btn = S(".btn-close", H) || void 0;
-    }
-    f(H, "position-fixed"), f(X, "position-absolute");
-    // istanbul ignore else @preserve
-    g(H, j) || f(H, j);
-    // istanbul ignore else @preserve
-    l && !g(H, B) && f(H, B);
-    // istanbul ignore else @preserve
-    a && !g(H, a) && f(H, a);
-    // istanbul ignore else @preserve
-    g(H, Bt) || f(H, Bt);
+    t ? i && F && vt(F, i, d) : (i && nt && vt(nt, V, d), y && F && vt(F, X, d), e.btn = D(".btn-close", C) || void 0), h(C, "position-fixed"), h(j, "position-absolute"), f(C, R) || h(C, R), c && !f(C, _) && h(C, _), l && !f(C, l) && h(C, l), f(C, kt) || h(C, kt);
   }
-}, Fr = (t) => {
-  const s = ["HTML", "BODY"], e = [];
-  let { parentNode: n } = t;
-  for (; n && !s.includes(n.nodeName); ) {
-    n = ui(n);
-    // istanbul ignore else @preserve
-    qn(n) || $i(n) || e.push(n);
-  }
-  return e.find((o, i) => K(o, "position") !== "relative" && e.slice(i + 1).every(
-    (r) => K(r, "position") === "static"
+}, hr = (e) => {
+  const t = ["HTML", "BODY"], s = [];
+  let { parentNode: n } = e;
+  for (; n && !t.includes(n.nodeName); )
+    n = Go(n), yn(n) || si(n) || s.push(n);
+  return s.find((o, i) => z(o, "position") !== "relative" && s.slice(i + 1).every(
+    (r) => z(r, "position") === "static"
   ) ? o : null) || // istanbul ignore next: optional guard
-  E(t).body;
-}, Rr = `[${rt}="${lt}"],[data-tip="${lt}"]`, Oo = "title";
-let En = (t) => z(t, St);
-const Wr = (t) => new At(t), jr = (t) => {
-  const { element: s, tooltip: e, container: n, offsetParent: o } = t;
-  It(s, Rn), vo(
-    e,
+  E(e).body;
+}, fr = `[${ot}="${at}"],[data-tip="${at}"]`, bo = "title";
+let Gs = (e) => W(e, xt);
+const gr = (e) => new ps(e), pr = (e) => {
+  const { element: t, tooltip: s, container: n, offsetParent: o } = e;
+  Pt(t, bn), Gn(
+    s,
     n === o ? n : o
   );
-}, Qt = (t) => {
-  const { tooltip: s, container: e, offsetParent: n } = t;
-  return s && Ds(s, e === n ? e : n);
-}, Vr = (t, s) => {
-  const { element: e } = t;
-  t._toggleEventListeners();
-  // istanbul ignore else @preserve
-  fe(e, _o) && t.name === St && Mo(t);
-  // istanbul ignore else @preserve
-  s && s();
-}, No = (t, s) => {
-  const e = s ? F : R, { element: n } = t;
-  e(
+}, Yt = (e) => {
+  const { tooltip: t, container: s, offsetParent: n } = e;
+  return t && ds(t, s === n ? s : n);
+}, ur = (e, t) => {
+  const { element: s } = e;
+  e._toggleEventListeners(), Gt(s, vo) && e.name === xt && wo(e), t && t();
+}, Eo = (e, t) => {
+  const s = t ? M : B, { element: n } = e;
+  s(
     E(n),
-    xs,
-    t.handleTouch,
-    ge
+    is,
+    e.handleTouch,
+    Jt
   );
-}, Tn = (t) => {
-  const { element: s } = t, e = T(
-    `shown.bs.${Xt(t.name)}`
+}, Js = (e) => {
+  const { element: t } = e, s = w(
+    `shown.bs.${Wt(e.name)}`
   );
-  No(t, !0), $(s, e), m.clear(s, "in");
-}, yn = (t) => {
-  const { element: s } = t, e = T(
-    `hidden.bs.${Xt(t.name)}`
+  Eo(e, !0), b(t, s), p.clear(t, "in");
+}, Qs = (e) => {
+  const { element: t } = e, s = w(
+    `hidden.bs.${Wt(e.name)}`
   );
-  No(t), jr(t), $(s, e), m.clear(s, "out");
-}, Cn = (t, s) => {
-  const e = s ? F : R, { element: n } = t, o = N(n, `.${U}`), i = N(n, `.${G}`);
-  s ? t._observer.observe(t.element) : t._observer.disconnect(), o && e(o, `hide.bs.${U}`, t.handleHide), i && e(i, `hide.bs.${G}`, t.handleHide);
-}, Mo = (t, s) => {
-  const e = [_o, Oo], { element: n } = t;
+  Eo(e), pr(e), b(t, s), p.clear(t, "out");
+}, tn = (e, t) => {
+  const s = t ? M : B, { element: n } = e, o = k(n, `.${q}`), i = k(n, `.${G}`);
+  t ? e._observer.observe(e.element) : e._observer.disconnect(), o && s(o, `hide.bs.${q}`, e.handleHide), i && s(i, `hide.bs.${G}`, e.handleHide);
+}, wo = (e, t) => {
+  const s = [vo, bo], { element: n } = e;
   O(
     n,
-    e[s ? 0 : 1],
-    s || st(n, e[0]) || // istanbul ignore next @preserve
+    s[t ? 0 : 1],
+    t || et(n, s[0]) || // istanbul ignore next @preserve
     ""
-  ), It(n, e[s ? 1 : 0]);
+  ), Pt(n, s[t ? 1 : 0]);
 };
-class At extends nt {
+class ps extends st {
+  static selector = fr;
+  static init = gr;
+  static getInstance = Gs;
+  static styleTip = ts;
   /**
    * @param target the target element
    * @param config the instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    // TOOLTIP PUBLIC METHODS
-    // ======================
-    /** Handles the focus event on iOS. */
-    // istanbul ignore next @preserve - impossible to test without Apple device
-    d(this, "handleFocus", () => ht(this.element));
-    /** Shows the tooltip. */
-    d(this, "handleShow", () => this.show());
-    /** Hides the tooltip. */
-    d(this, "handleHide", () => this.hide());
-    /** Updates the tooltip position. */
-    d(this, "update", () => {
-      $s(this);
-    });
-    /** Toggles the tooltip visibility. */
-    d(this, "toggle", () => {
-      const { tooltip: e } = this;
-      e && !Qt(this) ? this.show() : this.hide();
-    });
-    /**
-     * Handles the `touchstart` event listener for `Tooltip`
-     *
-     * @this {Tooltip}
-     * @param {TouchEvent} e the `Event` object
-     */
-    d(this, "handleTouch", ({ target: e }) => {
-      const { tooltip: n, element: o } = this;
-      // istanbul ignore if @preserve
-      n && n.contains(e) || e === o || e && o.contains(e) || this.hide();
-    });
-    /**
-     * Toggles on/off the `Tooltip` event listeners.
-     *
-     * @param add when `true`, event listeners are added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      const n = e ? F : R, { element: o, options: i, btn: r } = this, { trigger: c } = i, a = !!(this.name !== St && i.dismissible);
-      // istanbul ignore else @preserve
-      c.includes("manual") || (this.enabled = !!e, c.split(" ").forEach((p) => {
-        // istanbul ignore else @preserve
-        if (p === Jo) {
-          n(o, jn, this.handleShow), n(o, Be, this.handleShow);
-          // istanbul ignore else @preserve
-          a || (n(o, Cs, this.handleHide), n(
-            E(o),
-            xs,
-            this.handleTouch,
-            ge
-          ));
-        } else if (p === _)
-          n(o, p, a ? this.handleShow : this.toggle);
-        else if (p === Ts) {
-          n(o, ys, this.handleShow);
-          // istanbul ignore else @preserve
-          a || n(o, Wn, this.handleHide);
-          // istanbul ignore else @preserve
-          ci && n(o, _, this.handleFocus);
-        }
-        // istanbul ignore else @preserve
-        a && r && n(r, _, this.handleHide);
-      }));
-    });
-    const { element: o } = this, i = this.name === St, r = i ? lt : Lt, c = i ? St : Ke;
-    // istanbul ignore next @preserve: this is to set Popover too
-    En = (a) => z(a, c), this.enabled = !0, this.id = `${r}-${Yn(o, r)}`;
-    const { options: l } = this;
-    if (!(!l.title && i || !i && !l.content)) {
-      dt(Es, { titleAttr: "" });
-      // istanbul ignore else @preserve
-      fe(o, Oo) && i && typeof l.title == "string" && Mo(this, l.title), this.container = Fr(o), this.offsetParent = ["sticky", "fixed"].some(
-        (a) => K(this.container, "position") === a
-      ) ? this.container : E(this.element).body, Br(this), this._observer = new Io(() => this.update()), this._toggleEventListeners(!0);
-    }
+  constructor(t, s) {
+    super(t, s);
+    const { element: n } = this, o = this.name === xt, i = o ? at : At, r = o ? xt : De;
+    Gs = (c) => W(c, r), this.enabled = !0, this.id = `${i}-${Cn(n, i)}`;
+    const { options: a } = this;
+    !a.title && o || !o && !a.content || (ct(es, { titleAttr: "" }), Gt(n, bo) && o && typeof a.title == "string" && wo(this, a.title), this.container = hr(n), this.offsetParent = ["sticky", "fixed"].some(
+      (c) => z(this.container, "position") === c
+    ) ? this.container : E(this.element).body, dr(this), this._observer = new mo(() => this.update()), this._toggleEventListeners(!0));
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return St;
+    return xt;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return Es;
+    return es;
   }
+  // TOOLTIP PUBLIC METHODS
+  // ======================
+  /** Handles the focus event on iOS. */
+  // istanbul ignore next @preserve - impossible to test without Apple device
+  handleFocus = () => lt(this.element);
+  /** Shows the tooltip. */
+  handleShow = () => this.show();
   show() {
-    const { options: e, tooltip: n, element: o, container: i, offsetParent: r, id: c } = this, { animation: l } = e, a = m.get(o, "out"), h = i === r ? i : r;
-    m.clear(o, "out"), n && !a && !Qt(this) && m.set(
-      o,
+    const { options: t, tooltip: s, element: n, container: o, offsetParent: i, id: r } = this, { animation: a } = t, c = p.get(n, "out"), l = o === i ? o : i;
+    p.clear(n, "out"), s && !c && !Yt(this) && p.set(
+      n,
       () => {
-        const p = T(
-          `show.bs.${Xt(this.name)}`
+        const d = w(
+          `show.bs.${Wt(this.name)}`
         );
-        $(o, p);
-        // istanbul ignore else @preserve
-        if (!p.defaultPrevented) {
-          mo(n, h), O(o, Rn, `#${c}`), this.update(), Cn(this, !0);
-          // istanbul ignore else @preserve
-          g(n, v) || f(n, v);
-          // istanbul ignore else @preserve
-          l ? D(n, () => Tn(this)) : Tn(this);
-        }
+        b(n, d), d.defaultPrevented || (Zn(s, l), O(n, bn, `#${r}`), this.update(), tn(this, !0), f(s, u) || h(s, u), a ? A(s, () => Js(this)) : Js(this));
       },
       17,
       "in"
     );
   }
+  /** Hides the tooltip. */
+  handleHide = () => this.hide();
   hide() {
-    const { options: e, tooltip: n, element: o } = this, { animation: i, delay: r } = e;
-    m.clear(o, "in");
-    // istanbul ignore else @preserve
-    n && Qt(this) && m.set(
-      o,
+    const { options: t, tooltip: s, element: n } = this, { animation: o, delay: i } = t;
+    p.clear(n, "in"), s && Yt(this) && p.set(
+      n,
       () => {
-        const c = T(
-          `hide.bs.${Xt(this.name)}`
+        const r = w(
+          `hide.bs.${Wt(this.name)}`
         );
-        $(o, c);
-        // istanbul ignore else @preserve
-        if (!c.defaultPrevented) {
-          this.update(), b(n, v), Cn(this);
-          // istanbul ignore else @preserve
-          i ? D(n, () => yn(this)) : yn(this);
-        }
+        b(n, r), r.defaultPrevented || (this.update(), m(s, u), tn(this), o ? A(s, () => Qs(this)) : Qs(this));
       },
-      r + 17,
+      i + 17,
       "out"
     );
   }
+  /** Updates the tooltip position. */
+  update = () => {
+    ts(this);
+  };
+  /** Toggles the tooltip visibility. */
+  toggle = () => {
+    const { tooltip: t } = this;
+    t && !Yt(this) ? this.show() : this.hide();
+  };
   /** Enables the tooltip. */
   enable() {
-    const { enabled: e } = this;
-    // istanbul ignore else @preserve
-    e || (this._toggleEventListeners(!0), this.enabled = !e);
+    const { enabled: t } = this;
+    t || (this._toggleEventListeners(!0), this.enabled = !t);
   }
   /** Disables the tooltip. */
   disable() {
-    const { tooltip: e, enabled: n } = this;
-    // istanbul ignore else @preserve
-    n && (e && Qt(this) && this.hide(), this._toggleEventListeners(), this.enabled = !n);
+    const { tooltip: t, enabled: s } = this;
+    s && (t && Yt(this) && this.hide(), this._toggleEventListeners(), this.enabled = !s);
   }
   /** Toggles the `disabled` property. */
   toggleEnabled() {
     this.enabled ? this.disable() : this.enable();
   }
+  /**
+   * Handles the `touchstart` event listener for `Tooltip`
+   *
+   * @this {Tooltip}
+   * @param {TouchEvent} e the `Event` object
+   */
+  handleTouch = ({ target: t }) => {
+    const { tooltip: s, element: n } = this;
+    s && s.contains(t) || t === n || t && n.contains(t) || this.hide();
+  };
+  /**
+   * Toggles on/off the `Tooltip` event listeners.
+   *
+   * @param add when `true`, event listeners are added
+   */
+  _toggleEventListeners = (t) => {
+    const s = t ? M : B, { element: n, options: o, btn: i } = this, { trigger: r } = o, c = !!(this.name !== xt && o.dismissible);
+    r.includes("manual") || (this.enabled = !!t, r.split(" ").forEach((d) => {
+      d === Oo ? (s(n, wn, this.handleShow), s(n, we, this.handleShow), c || (s(n, os, this.handleHide), s(
+        E(n),
+        is,
+        this.handleTouch,
+        Jt
+      ))) : d === N ? s(n, d, c ? this.handleShow : this.toggle) : d === ss && (s(n, ns, this.handleShow), c || s(n, En, this.handleHide), Vo() && s(n, N, this.handleFocus)), c && i && s(i, N, this.handleHide);
+    }));
+  };
   /** Removes the `Tooltip` from the target element. */
   dispose() {
-    const { tooltip: e, options: n } = this, o = { ...this, name: this.name }, i = () => setTimeout(
-      () => Vr(o, () => super.dispose()),
+    const { tooltip: t, options: s } = this, n = { ...this, name: this.name }, o = () => setTimeout(
+      () => ur(n, () => super.dispose()),
       17
     );
-    n.animation && Qt(o) ? (this.options.delay = 0, this.hide(), D(e, i)) : i();
+    s.animation && Yt(n) ? (this.options.delay = 0, this.hide(), A(t, o)) : o();
   }
 }
-d(At, "selector", Rr), d(At, "init", Wr), d(At, "getInstance", En), d(At, "styleTip", $s);
-const zr = `[${rt}="${Lt}"],[data-tip="${Lt}"]`, Xr = dt({}, Es, {
-  template: ko(Lt),
+const mr = `[${ot}="${At}"],[data-tip="${At}"]`, vr = ct({}, es, {
+  template: po(At),
   content: "",
   dismissible: !1,
   btnClose: '<button class="btn-close" aria-label="Close"></button>'
-}), Kr = (t) => z(t, Ke), qr = (t) => new Vt(t);
-class Vt extends At {
+}), br = (e) => W(e, De), Er = (e) => new To(e);
+class To extends ps {
+  static selector = mr;
+  static init = Er;
+  static getInstance = br;
+  static styleTip = ts;
   /**
    * @param target the target element
    * @param config the instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    /* extend original `show()` */
-    d(this, "show", () => {
-      super.show();
-      const { options: e, btn: n } = this;
-      // istanbul ignore else @preserve
-      e.dismissible && n && setTimeout(() => ht(n), 17);
-    });
+  constructor(t, s) {
+    super(t, s);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return Ke;
+    return De;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return Xr;
+    return vr;
   }
+  /* extend original `show()` */
+  show = () => {
+    super.show();
+    const { options: t, btn: s } = this;
+    t.dismissible && s && setTimeout(() => lt(s), 17);
+  };
 }
-d(Vt, "selector", zr), d(Vt, "init", qr), d(Vt, "getInstance", Kr), d(Vt, "styleTip", $s);
-const Yr = "scrollspy", Bo = "ScrollSpy", Ur = '[data-bs-spy="scroll"]', Zr = {
+const wr = "scrollspy", $o = "ScrollSpy", Tr = '[data-bs-spy="scroll"]', $r = {
   offset: 10,
   target: null
-}, Jr = (t) => z(t, Bo), Gr = (t) => new ae(t), xn = T(`activate.bs.${Yr}`), Qr = (t) => {
-  const { target: s, scrollTarget: e, options: n, itemsLength: o, scrollHeight: i, element: r } = t, { offset: c } = n, l = e !== r, a = s && Ps("A", s), h = E(r), p = e ? Fo(e) : i;
-  t.scrollTop = e.scrollTop;
-  // istanbul ignore else @preserve
-  if (a && (p !== i || o !== a.length)) {
-    let u, C, j;
-    t.items = [], t.targets = [], t.offsets = [], t.scrollHeight = p, t.maxScroll = t.scrollHeight - tc(t), Array.from(a).forEach((w) => {
-      u = st(w, "href"), C = u && u.charAt(0) === "#" && u.slice(-1) !== "#" && S(u, h), C && (t.items.push(w), t.targets.push(C), j = Ee(C), t.offsets.push(
-        (l ? j.top + t.scrollTop : C.offsetTop) - c
+}, yr = (e) => W(e, $o), Cr = (e) => new Co(e), en = w(`activate.bs.${wr}`), Sr = (e) => {
+  const { target: t, scrollTarget: s, options: n, itemsLength: o, scrollHeight: i, element: r } = e, { offset: a } = n, c = s !== r, l = t && as("A", t), d = E(r), g = s.scrollHeight;
+  if (e.scrollTop = s.scrollTop, l && (g !== i || o !== l.length)) {
+    let y, S, R;
+    e.items = [], e.targets = [], e.offsets = [], e.scrollHeight = g, e.maxScroll = e.scrollHeight - Dr(e), Array.from(l).forEach((v) => {
+      y = et(v, "href"), S = y && y.charAt(0) === "#" && y.slice(-1) !== "#" && D(y, d), S && (e.items.push(v), e.targets.push(S), R = re(S), e.offsets.push(
+        (c ? R.top + e.scrollTop : S.offsetTop) - a
       ));
-    }), t.itemsLength = t.items.length;
+    }), e.itemsLength = e.items.length;
   }
-}, Fo = (t) => y(t) ? t.scrollHeight : it(t).scrollHeight, tc = ({ element: t, scrollTarget: s }) => s !== t ? s.clientHeight : Ee(t).height, Ro = (t) => {
-  [...Ps("A", t)].forEach((s) => {
-    g(s, x) && b(s, x);
+}, sn = ({ targets: e, scrollTarget: t, element: s, _observer: n }, o) => {
+  o ? t === s ? e.forEach((i) => n.observe(i)) : n.observe(s) : n.disconnect();
+}, xr = (e) => e.scrollHeight, Dr = ({ element: e, scrollTarget: t }) => t !== e ? t.clientHeight : re(e).height, yo = (e) => {
+  [...as("A", e)].forEach((t) => {
+    f(t, $) && m(t, $);
   });
-}, Hn = (t, s) => {
-  const { target: e, element: n } = t;
-  // istanbul ignore else @preserve
-  y(e) && Ro(e), t.activeItem = s, f(s, x);
+}, nn = (e, t) => {
+  const { target: s, element: n } = e;
+  T(s) && yo(s), e.activeItem = t, h(t, $);
   const o = [];
-  let i = s;
-  for (; i !== xt(n); )
-    i = i.parentElement, (g(i, "nav") || g(i, "dropdown-menu")) && o.push(i);
+  let i = t;
+  for (; i !== yt(n); )
+    i = i.parentElement, (f(i, "nav") || f(i, "dropdown-menu")) && o.push(i);
   o.forEach((r) => {
-    const c = r.previousElementSibling;
-    // istanbul ignore else @preserve
-    c && !g(c, x) && f(c, x);
-  }), xn.relatedTarget = s, $(n, xn);
+    const a = r.previousElementSibling;
+    a && !f(a, $) && h(a, $);
+  }), en.relatedTarget = t, b(n, en);
 };
-class ae extends nt {
+class Co extends st {
+  static selector = Tr;
+  static init = Cr;
+  static getInstance = yr;
   /**
    * @param target the target element
    * @param config the instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    /* eslint-enable */
-    // SCROLLSPY PUBLIC METHODS
-    // ========================
-    /** Updates all items. */
-    d(this, "refresh", () => {
-      const { target: e } = this;
-      // istanbul ignore else @preserve
-      if (y(e) && e.offsetHeight > 0) {
-        Qr(this);
-        const { scrollTop: n, maxScroll: o, itemsLength: i, items: r, activeItem: c } = this;
-        if (n >= o) {
-          const a = r[i - 1];
-          // istanbul ignore else @preserve
-          c !== a && Hn(this, a);
-          return;
-        }
-        const { offsets: l } = this;
-        // istanbul ignore else @preserve
-        if (c && n < l[0] && l[0] > 0) {
-          this.activeItem = null;
-          // istanbul ignore else @preserve
-          e && Ro(e);
-          return;
-        }
-        r.forEach((a, h) => {
-          c !== a && n >= l[h] && (typeof l[h + 1] > "u" || n < l[h + 1]) && Hn(this, a);
-        });
-      }
-    });
-    /**
-     * Toggles on/off the component event listener.
-     *
-     * @param add when `true`, listener is added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      e ? this.scrollTarget === this.element ? this.targets.forEach(
-        (n) => this._observer.observe(n)
-      ) : this._observer.observe(this.element) : this._observer.disconnect();
-    });
-    const { element: o, options: i } = this;
-    this.target = S(
-      i.target,
-      E(o)
-    ), this.target && (this.scrollTarget = o.clientHeight < o.scrollHeight ? o : it(o), this.scrollHeight = Fo(this.scrollTarget), this.refresh(), this._observer = new Io(() => this.refresh(), {
+  constructor(t, s) {
+    super(t, s);
+    const { element: n, options: o } = this;
+    this.target = D(
+      o.target,
+      E(n)
+    ), this.target && (this.scrollTarget = n.clientHeight < n.scrollHeight ? n : dt(n), this.scrollHeight = xr(this.scrollTarget), this.refresh(), this._observer = new mo(() => this.refresh(), {
       root: this.scrollTarget
-    }), this._toggleEventListeners(!0));
+    }), sn(this, !0));
   }
   /* eslint-disable */
   /**
    * Returns component name string.
    */
   get name() {
-    return Bo;
+    return $o;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return Zr;
+    return $r;
   }
-  /** Removes `ScrollSpy` from the target element. */
-  dispose() {
-    this._toggleEventListeners(), super.dispose();
-  }
-}
-d(ae, "selector", Ur), d(ae, "init", Gr), d(ae, "getInstance", Jr);
-const ye = "tab", Wo = "Tab", Pn = `[${rt}="${ye}"]`, jo = (t) => z(t, Wo), ec = (t) => new le(t), cs = T(
-  `show.bs.${ye}`
-), Sn = T(
-  `shown.bs.${ye}`
-), as = T(
-  `hide.bs.${ye}`
-), An = T(
-  `hidden.bs.${ye}`
-), me = /* @__PURE__ */ new Map(), Dn = (t) => {
-  const { tabContent: s, nav: e } = t;
-  // istanbul ignore else @preserve
-  s && g(s, _t) && (s.style.height = "", b(s, _t));
-  // istanbul ignore else @preserve
-  e && m.clear(e);
-}, kn = (t) => {
-  const { element: s, tabContent: e, content: n, nav: o } = t, { tab: i } = y(o) && me.get(o) || // istanbul ignore next @preserve
-  { tab: null };
-  // istanbul ignore else @preserve
-  if (e && n && g(n, B)) {
-    const { currentHeight: r, nextHeight: c } = me.get(s) || // istanbul ignore next @preserve
-    { currentHeight: 0, nextHeight: 0 };
-    // istanbul ignore else @preserve: vitest won't validate this branch
-    r !== c ? setTimeout(() => {
-      e.style.height = `${c}px`, Nt(e), D(e, () => Dn(t));
-    }, 50) : Dn(t);
-  } else o && m.clear(o);
-  Sn.relatedTarget = i, $(s, Sn);
-}, Ln = (t) => {
-  const { element: s, content: e, tabContent: n, nav: o } = t, { tab: i, content: r } = o && me.get(o) || // istanbul ignore next @preserve
-  { tab: null, content: null };
-  let c = 0;
-  // istanbul ignore else @preserve
-  n && e && g(e, B) && ([r, e].forEach((l) => {
-    // istanbul ignore else @preserve
-    y(l) && f(l, "overflow-hidden");
-  }), c = y(r) ? r.scrollHeight : 0), cs.relatedTarget = i, An.relatedTarget = s, $(s, cs);
-  // istanbul ignore else @preserve
-  if (!cs.defaultPrevented) {
-    // istanbul ignore else @preserve
-    e && f(e, x);
-    // istanbul ignore else @preserve
-    r && b(r, x);
-    // istanbul ignore else @preserve
-    if (n && e && g(e, B)) {
-      const l = e.scrollHeight;
-      me.set(s, {
-        currentHeight: c,
-        nextHeight: l,
-        tab: null,
-        content: null
-      }), f(n, _t), n.style.height = `${c}px`, Nt(n), [r, e].forEach((a) => {
-        // istanbul ignore else @preserve
-        a && b(a, "overflow-hidden");
+  /* eslint-enable */
+  // SCROLLSPY PUBLIC METHODS
+  // ========================
+  /** Updates all items. */
+  refresh = () => {
+    const { target: t } = this;
+    if (T(t) && t.offsetHeight > 0) {
+      Sr(this);
+      const { scrollTop: s, maxScroll: n, itemsLength: o, items: i, activeItem: r } = this;
+      if (s >= n) {
+        const c = i[o - 1];
+        r !== c && nn(this, c);
+        return;
+      }
+      const { offsets: a } = this;
+      if (r && s < a[0] && a[0] > 0) {
+        this.activeItem = null, t && yo(t);
+        return;
+      }
+      i.forEach((c, l) => {
+        r !== c && s >= a[l] && (typeof a[l + 1] > "u" || s < a[l + 1]) && nn(this, c);
       });
     }
-    if (e && e && g(e, B))
-      setTimeout(() => {
-        f(e, v), D(e, () => {
-          kn(t);
-        });
-      }, 1);
-    else {
-      // istanbul ignore else @preserve
-      e && f(e, v), kn(t);
-    }
-    // istanbul ignore else @preserve
-    i && $(i, An);
+  };
+  /** Removes `ScrollSpy` from the target element. */
+  dispose() {
+    const t = { ...this };
+    sn(t), super.dispose();
   }
-}, In = (t) => {
-  const { nav: s } = t;
-  // istanbul ignore next @preserve
-  if (!y(s))
+}
+const ce = "tab", So = "Tab", on = `[${ot}="${ce}"]`, xo = (e) => W(e, So), Hr = (e) => new Do(e), We = w(
+  `show.bs.${ce}`
+), rn = w(
+  `shown.bs.${ce}`
+), Ve = w(
+  `hide.bs.${ce}`
+), an = w(
+  `hidden.bs.${ce}`
+), ee = /* @__PURE__ */ new Map(), cn = (e) => {
+  const { tabContent: t, nav: s } = e;
+  t && f(t, It) && (t.style.height = "", m(t, It)), s && p.clear(s);
+}, ln = (e) => {
+  const { element: t, tabContent: s, content: n, nav: o } = e, { tab: i } = T(o) && ee.get(o) || // istanbul ignore next @preserve
+  { tab: null };
+  if (s && n && f(n, _)) {
+    const { currentHeight: r, nextHeight: a } = ee.get(t) || // istanbul ignore next @preserve
+    { currentHeight: 0, nextHeight: 0 };
+    r !== a ? setTimeout(() => {
+      s.style.height = `${a}px`, Nt(s), A(s, () => cn(e));
+    }, 50) : cn(e);
+  } else o && p.clear(o);
+  rn.relatedTarget = i, b(t, rn);
+}, dn = (e) => {
+  const { element: t, content: s, tabContent: n, nav: o } = e, { tab: i, content: r } = o && ee.get(o) || // istanbul ignore next @preserve
+  { tab: null, content: null };
+  let a = 0;
+  if (n && s && f(s, _) && ([r, s].forEach((c) => {
+    T(c) && h(c, "overflow-hidden");
+  }), a = T(r) ? r.scrollHeight : 0), We.relatedTarget = i, an.relatedTarget = t, b(t, We), !We.defaultPrevented) {
+    if (s && h(s, $), r && m(r, $), n && s && f(s, _)) {
+      const c = s.scrollHeight;
+      ee.set(t, {
+        currentHeight: a,
+        nextHeight: c,
+        tab: null,
+        content: null
+      }), h(n, It), n.style.height = `${a}px`, Nt(n), [r, s].forEach((l) => {
+        l && m(l, "overflow-hidden");
+      });
+    }
+    s && s && f(s, _) ? setTimeout(() => {
+      h(s, u), A(s, () => {
+        ln(e);
+      });
+    }, 1) : (s && h(s, u), ln(e)), i && b(i, an);
+  }
+}, hn = (e) => {
+  const { nav: t } = e;
+  if (!T(t))
     return { tab: null, content: null };
-  const e = at(x, s);
+  const s = rt($, t);
   let n = null;
-  // istanbul ignore else @preserve
-  e.length === 1 && !Ot.some(
-    (i) => g(e[0].parentElement, i)
-  ) ? [n] = e : e.length > 1 && (n = e[e.length - 1]);
-  const o = y(n) ? Y(n) : null;
+  s.length === 1 && !Lt.some(
+    (i) => f(s[0].parentElement, i)
+  ) ? [n] = s : s.length > 1 && (n = s[s.length - 1]);
+  const o = T(n) ? U(n) : null;
   return { tab: n, content: o };
-}, _n = (t) => {
-  // istanbul ignore next @preserve
-  if (!y(t)) return null;
-  const s = N(t, `.${Ot.join(",.")}`);
-  return s ? S(`.${Ot[0]}-toggle`, s) : null;
-}, sc = (t) => {
-  const s = jo(t.target);
-  // istanbul ignore else @preserve
-  s && (t.preventDefault(), s.show());
+}, fn = (e) => {
+  if (!T(e)) return null;
+  const t = k(e, `.${Lt.join(",.")}`);
+  return t ? D(`.${Lt[0]}-toggle`, t) : null;
+}, Ar = (e) => {
+  const t = xo(e.target);
+  t && (e.preventDefault(), t.show());
 };
-class le extends nt {
+class Do extends st {
+  static selector = on;
+  static init = Hr;
+  static getInstance = xo;
   /** @param target the target element */
-  constructor(e) {
-    super(e);
-    /**
-     * Toggles on/off the `click` event listener.
-     *
-     * @param add when `true`, event listener is added
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      (e ? F : R)(this.element, _, sc);
-    });
-    const { element: n } = this, o = Y(n);
-    // istanbul ignore else @preserve
-    if (o) {
-      const i = N(n, ".nav"), r = N(o, ".tab-content");
-      this.nav = i, this.content = o, this.tabContent = r, this.dropdown = _n(n);
-      const { tab: c } = In(this);
-      if (i && !c) {
-        const l = S(Pn, i), a = l && Y(l);
-        // istanbul ignore else @preserve
-        a && (f(l, x), f(a, v), f(a, x), O(n, Ge, "true"));
+  constructor(t) {
+    super(t);
+    const { element: s } = this, n = U(s);
+    if (n) {
+      const o = k(s, ".nav"), i = k(n, ".tab-content");
+      this.nav = o, this.content = n, this.tabContent = i, this.dropdown = fn(s);
+      const { tab: r } = hn(this);
+      if (o && !r) {
+        const a = D(on, o), c = a && U(a);
+        c && (h(a, $), h(c, u), h(c, $), O(s, Le, "true"));
       }
       this._toggleEventListeners(!0);
     }
@@ -2212,216 +1835,199 @@ class le extends nt {
    * Returns component name string.
    */
   get name() {
-    return Wo;
+    return So;
   }
   // TAB PUBLIC METHODS
   // ==================
   /** Shows the tab to the user. */
   show() {
-    const { element: e, content: n, nav: o, dropdown: i } = this;
-    // istanbul ignore else @preserve
-    if (!(o && m.get(o)) && !g(e, x)) {
-      const { tab: r, content: c } = In(this);
-      // istanbul ignore else @preserve
-      o && me.set(o, { tab: r, content: c, currentHeight: 0, nextHeight: 0 }), as.relatedTarget = e;
-      // istanbul ignore else @preserve
-      if (y(r)) {
-        $(r, as);
-        // istanbul ignore else @preserve
-        if (!as.defaultPrevented) {
-          f(e, x), O(e, Ge, "true");
-          const l = y(r) && _n(r);
-          l && g(l, x) && b(l, x);
-          // istanbul ignore else @preserve
-          if (o) {
-            const a = () => {
-              // istanbul ignore else @preserve
-              r && (b(r, x), O(r, Ge, "false")), i && !g(i, x) && f(i, x);
-            };
-            c && (g(c, B) || n && g(n, B)) ? m.set(o, a, 1) : a();
-          }
-          // istanbul ignore else @preserve
-          c && (b(c, v), g(c, B) ? D(c, () => Ln(this)) : Ln(this));
+    const { element: t, content: s, nav: n, dropdown: o } = this;
+    if (!(n && p.get(n)) && !f(t, $)) {
+      const { tab: i, content: r } = hn(this);
+      if (n && ee.set(n, { tab: i, content: r, currentHeight: 0, nextHeight: 0 }), Ve.relatedTarget = t, T(i) && (b(i, Ve), !Ve.defaultPrevented)) {
+        h(t, $), O(t, Le, "true");
+        const a = T(i) && fn(i);
+        if (a && f(a, $) && m(a, $), n) {
+          const c = () => {
+            i && (m(i, $), O(i, Le, "false")), o && !f(o, $) && h(o, $);
+          };
+          r && (f(r, _) || s && f(s, _)) ? p.set(n, c, 1) : c();
         }
+        r && (m(r, u), f(r, _) ? A(r, () => dn(this)) : dn(this));
       }
     }
   }
+  /**
+   * Toggles on/off the `click` event listener.
+   *
+   * @param add when `true`, event listener is added
+   */
+  _toggleEventListeners = (t) => {
+    (t ? M : B)(this.element, N, Ar);
+  };
   /** Removes the `Tab` component from the target element. */
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
-d(le, "selector", Pn), d(le, "init", ec), d(le, "getInstance", jo);
-const Q = "toast", Vo = "Toast", nc = `.${Q}`, oc = `[${We}="${Q}"]`, zo = `[${rt}="${Q}"]`, qt = "showing", Xo = "hide", ic = {
+const J = "toast", Ho = "Toast", Pr = `.${J}`, Ir = `[${$e}="${J}"]`, Ao = `[${ot}="${J}"]`, jt = "showing", Po = "hide", Lr = {
   animation: !0,
   autohide: !0,
   delay: 5e3
-}, _s = (t) => z(t, Vo), rc = (t) => new de(t), On = T(
-  `show.bs.${Q}`
-), cc = T(
-  `shown.bs.${Q}`
-), Nn = T(
-  `hide.bs.${Q}`
-), ac = T(
-  `hidden.bs.${Q}`
-), Mn = (t) => {
-  const { element: s, options: e } = t;
-  b(s, qt), m.clear(s, qt), $(s, cc);
-  // istanbul ignore else @preserve
-  e.autohide && m.set(s, () => t.hide(), e.delay, Q);
-}, Bn = (t) => {
-  const { element: s } = t;
-  b(s, qt), b(s, v), f(s, Xo), m.clear(s, Q), $(s, ac);
-}, lc = (t) => {
-  const { element: s, options: e } = t;
-  f(s, qt), e.animation ? (Nt(s), D(s, () => Bn(t))) : Bn(t);
-}, dc = (t) => {
-  const { element: s, options: e } = t;
-  m.set(
-    s,
+}, us = (e) => W(e, Ho), Nr = (e) => new Io(e), gn = w(
+  `show.bs.${J}`
+), Or = w(
+  `shown.bs.${J}`
+), pn = w(
+  `hide.bs.${J}`
+), kr = w(
+  `hidden.bs.${J}`
+), un = (e) => {
+  const { element: t, options: s } = e;
+  m(t, jt), p.clear(t, jt), b(t, Or), s.autohide && p.set(t, () => e.hide(), s.delay, J);
+}, mn = (e) => {
+  const { element: t } = e;
+  m(t, jt), m(t, u), h(t, Po), p.clear(t, J), b(t, kr);
+}, _r = (e) => {
+  const { element: t, options: s } = e;
+  h(t, jt), s.animation ? (Nt(t), A(t, () => mn(e))) : mn(e);
+}, Mr = (e) => {
+  const { element: t, options: s } = e;
+  p.set(
+    t,
     () => {
-      b(s, Xo), Nt(s), f(s, v), f(s, qt), e.animation ? D(s, () => Mn(t)) : Mn(t);
+      m(t, Po), Nt(t), h(t, u), h(t, jt), s.animation ? A(t, () => un(e)) : un(e);
     },
     17,
-    qt
+    jt
   );
-}, hc = (t) => {
-  const { target: s } = t, e = s && N(s, zo), n = e && Y(e), o = n && _s(n);
-  // istanbul ignore else @preserve
-  if (o) {
-    // istanbul ignore else @preserve
-    e && e.tagName === "A" && t.preventDefault(), o.relatedTarget = e, o.show();
-  }
-}, fc = (t) => {
-  const s = t.target, e = _s(s), { type: n, relatedTarget: o } = t;
-  // istanbul ignore else @preserve: a solid filter is required
-  e && s !== o && !s.contains(o) && ([Be, ys].includes(n) ? m.clear(s, Q) : m.set(s, () => e.hide(), e.options.delay, Q));
+}, Br = (e) => {
+  const { target: t } = e, s = t && k(t, Ao), n = s && U(s), o = n && us(n);
+  o && (s && s.tagName === "A" && e.preventDefault(), o.relatedTarget = s, o.show());
+}, Rr = (e) => {
+  const t = e.target, s = us(t), { type: n, relatedTarget: o } = e;
+  s && t !== o && !t.contains(o) && ([we, ns].includes(n) ? p.clear(t, J) : p.set(t, () => s.hide(), s.options.delay, J));
 };
-class de extends nt {
+class Io extends st {
+  static selector = Pr;
+  static init = Nr;
+  static getInstance = us;
   /**
    * @param target the target `.toast` element
    * @param config the instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    // TOAST PUBLIC METHODS
-    // ====================
-    /** Shows the toast. */
-    d(this, "show", () => {
-      const { element: e, isShown: n } = this;
-      // istanbul ignore else @preserve
-      e && !n && ($(e, On), On.defaultPrevented || dc(this));
-    });
-    /** Hides the toast. */
-    d(this, "hide", () => {
-      const { element: e, isShown: n } = this;
-      // istanbul ignore else @preserve
-      e && n && ($(e, Nn), Nn.defaultPrevented || lc(this));
-    });
-    /**
-     * Toggles on/off the `click` event listener.
-     *
-     * @param add when `true`, it will add the listener
-     */
-    d(this, "_toggleEventListeners", (e) => {
-      const n = e ? F : R, { element: o, triggers: i, dismiss: r, options: c, hide: l } = this;
-      // istanbul ignore else @preserve
-      r && n(r, _, l);
-      // istanbul ignore else @preserve
-      c.autohide && [ys, Wn, Be, Cs].forEach(
-        (a) => n(o, a, fc)
-      );
-      // istanbul ignore else @preserve
-      i.length && i.forEach(
-        (a) => n(a, _, hc)
-      );
-    });
-    const { element: o, options: i } = this;
-    i.animation && !g(o, B) ? f(o, B) : !i.animation && g(o, B) && b(o, B), this.dismiss = S(oc, o), this.triggers = [
-      ...J(zo, E(o))
+  constructor(t, s) {
+    super(t, s);
+    const { element: n, options: o } = this;
+    o.animation && !f(n, _) ? h(n, _) : !o.animation && f(n, _) && m(n, _), this.dismiss = D(Ir, n), this.triggers = [
+      ...Z(Ao, E(n))
     ].filter(
-      (r) => Y(r) === o
+      (i) => U(i) === n
     ), this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return Vo;
+    return Ho;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return ic;
+    return Lr;
   }
   /**
    * Returns *true* when toast is visible.
    */
   get isShown() {
-    return g(this.element, v);
+    return f(this.element, u);
   }
+  // TOAST PUBLIC METHODS
+  // ====================
+  /** Shows the toast. */
+  show = () => {
+    const { element: t, isShown: s } = this;
+    t && !s && (b(t, gn), gn.defaultPrevented || Mr(this));
+  };
+  /** Hides the toast. */
+  hide = () => {
+    const { element: t, isShown: s } = this;
+    t && s && (b(t, pn), pn.defaultPrevented || _r(this));
+  };
+  /**
+   * Toggles on/off the `click` event listener.
+   *
+   * @param add when `true`, it will add the listener
+   */
+  _toggleEventListeners = (t) => {
+    const s = t ? M : B, { element: n, triggers: o, dismiss: i, options: r, hide: a } = this;
+    i && s(i, N, a), r.autohide && [ns, En, we, os].forEach(
+      (c) => s(n, c, Rr)
+    ), o.length && o.forEach(
+      (c) => s(c, N, Br)
+    );
+  };
   /** Removes the `Toast` component from the target element. */
   dispose() {
-    const { element: e, isShown: n } = this;
-    this._toggleEventListeners(), m.clear(e, Q), n && b(e, v), super.dispose();
+    const { element: t, isShown: s } = this;
+    this._toggleEventListeners(), p.clear(t, J), s && m(t, u), super.dispose();
   }
 }
-d(de, "selector", nc), d(de, "init", rc), d(de, "getInstance", _s);
-const Os = /* @__PURE__ */ new Map();
+const ms = /* @__PURE__ */ new Map();
 [
-  ee,
-  se,
-  ne,
-  oe,
-  ie,
-  re,
-  ce,
-  Vt,
-  ae,
-  le,
-  de,
-  At
-].forEach((t) => Os.set(t.prototype.name, t));
-const gc = (t, s) => {
-  [...s].forEach((e) => t(e));
-}, pc = (t, s) => {
-  const e = Dt.getAllFor(t);
-  e && [...e].forEach(([n, o]) => {
-    s.contains(n) && o.dispose();
+  An,
+  In,
+  On,
+  Mn,
+  zn,
+  co,
+  go,
+  To,
+  Co,
+  Do,
+  Io,
+  ps
+].forEach((e) => ms.set(e.prototype.name, e));
+const Fr = (e, t) => {
+  [...t].forEach((s) => e(s));
+}, Wr = (e, t) => {
+  const s = Dt.getAllFor(e);
+  s && [...s].forEach(([n, o]) => {
+    t.contains(n) && o.dispose();
   });
-}, Fn = (t) => {
-  const s = t && t.nodeName ? t : document, e = [...Ps("*", s)];
-  Os.forEach((n) => {
+}, vn = (e) => {
+  const t = e && e.nodeName ? e : document, s = [...as("*", t)];
+  ms.forEach((n) => {
     const { init: o, selector: i } = n;
-    gc(
+    Fr(
       o,
-      e.filter((r) => Zn(r, i))
+      s.filter((r) => xn(r, i))
     );
   });
-}, mc = (t) => {
-  const s = t && t.nodeName ? t : document;
-  Os.forEach((e) => {
-    pc(e.prototype.name, s);
+}, Vr = (e) => {
+  const t = e && e.nodeName ? e : document;
+  ms.forEach((s) => {
+    Wr(s.prototype.name, t);
   });
 };
-document.body ? Fn() : F(document, "DOMContentLoaded", () => Fn(), {
+document.body ? vn() : M(document, "DOMContentLoaded", () => vn(), {
   once: !0
 });
 export {
-  ee as Alert,
-  se as Button,
-  ne as Carousel,
-  oe as Collapse,
-  ie as Dropdown,
-  re as Modal,
-  ce as Offcanvas,
-  Vt as Popover,
-  ae as ScrollSpy,
-  le as Tab,
-  de as Toast,
-  At as Tooltip,
-  Fn as initCallback,
-  mc as removeDataAPI
+  An as Alert,
+  In as Button,
+  On as Carousel,
+  Mn as Collapse,
+  zn as Dropdown,
+  co as Modal,
+  go as Offcanvas,
+  To as Popover,
+  Co as ScrollSpy,
+  Do as Tab,
+  Io as Toast,
+  ps as Tooltip,
+  vn as initCallback,
+  Vr as removeDataAPI
 };
 //# sourceMappingURL=bootstrap-native.mjs.map

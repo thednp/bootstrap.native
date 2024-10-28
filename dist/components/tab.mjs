@@ -1,129 +1,92 @@
-var O = Object.defineProperty;
-var Q = (n, e, t) => e in n ? O(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var u = (n, e, t) => Q(n, typeof e != "symbol" ? e + "" : e, t);
-import { createCustomEvent as H, closest as S, querySelector as F, addClass as g, setAttribute as x, ariaSelected as $, Timer as C, hasClass as f, isHTMLElement as d, dispatchEvent as w, removeClass as b, emulateTransitionEnd as k, mouseclickEvent as R, getInstance as U, reflow as G, getElementsByClassName as V } from "@thednp/shorty";
-import { addListener as W, removeListener as X } from "@thednp/event-listener";
-import { c as B } from "./collapsingClass-BxKtDBMH.mjs";
-import { a as l } from "./activeClass-iqaD75Su.mjs";
-import { f as m } from "./fadeClass-CLIYI_zn.mjs";
-import { s as E } from "./showClass-C8hdJfjQ.mjs";
-import { d as I } from "./dropdownClasses-CdCdZ-PX.mjs";
-import { d as Y } from "./dataBsToggle-B84TS15h.mjs";
-import { g as P } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as Z } from "./base-component-DHbs0JQk.mjs";
-const v = "tab", J = "Tab", D = `[${Y}="${v}"]`, K = (n) => U(n, J), tt = (n) => new T(n), L = H(
-  `show.bs.${v}`
-), M = H(
-  `shown.bs.${v}`
-), y = H(
-  `hide.bs.${v}`
-), _ = H(
-  `hidden.bs.${v}`
-), p = /* @__PURE__ */ new Map(), A = (n) => {
-  const { tabContent: e, nav: t } = n;
-  // istanbul ignore else @preserve
-  e && f(e, B) && (e.style.height = "", b(e, B));
-  // istanbul ignore else @preserve
-  t && C.clear(t);
-}, j = (n) => {
-  const { element: e, tabContent: t, content: s, nav: o } = n, { tab: r } = d(o) && p.get(o) || // istanbul ignore next @preserve
+import { B as J, D as $, q as N, f, s as w, T as p, h as l, u as h, d as v, r as b, e as D, g as K, c as C, t as z, j as O, a5 as E, m as Q } from "./base-component-ylZzLp-h.mjs";
+import { E as R, r as U } from "./event-listener-C1-Yf9Z5.mjs";
+import { c as y } from "./collapsingClass-BxKtDBMH.mjs";
+import { a as c } from "./activeClass-iqaD75Su.mjs";
+import { f as d } from "./fadeClass-CLIYI_zn.mjs";
+import { s as T } from "./showClass-C8hdJfjQ.mjs";
+import { d as S } from "./dropdownClasses-CdCdZ-PX.mjs";
+import { d as V } from "./dataBsToggle-B84TS15h.mjs";
+import { g as B } from "./getTargetElement-BFOUI7hP.mjs";
+const u = "tab", F = "Tab", L = `[${V}="${u}"]`, G = (s) => K(s, F), W = (s) => new Y(s), H = C(
+  `show.bs.${u}`
+), P = C(
+  `shown.bs.${u}`
+), x = C(
+  `hide.bs.${u}`
+), k = C(
+  `hidden.bs.${u}`
+), m = /* @__PURE__ */ new Map(), M = (s) => {
+  const { tabContent: e, nav: t } = s;
+  e && l(e, y) && (e.style.height = "", b(e, y)), t && p.clear(t);
+}, _ = (s) => {
+  const { element: e, tabContent: t, content: n, nav: i } = s, { tab: o } = h(i) && m.get(i) || // istanbul ignore next @preserve
   { tab: null };
-  // istanbul ignore else @preserve
-  if (t && s && f(s, m)) {
-    const { currentHeight: i, nextHeight: a } = p.get(e) || // istanbul ignore next @preserve
+  if (t && n && l(n, d)) {
+    const { currentHeight: a, nextHeight: r } = m.get(e) || // istanbul ignore next @preserve
     { currentHeight: 0, nextHeight: 0 };
-    // istanbul ignore else @preserve: vitest won't validate this branch
-    i !== a ? setTimeout(() => {
-      t.style.height = `${a}px`, G(t), k(t, () => A(n));
-    }, 50) : A(n);
-  } else o && C.clear(o);
-  M.relatedTarget = r, w(e, M);
-}, q = (n) => {
-  const { element: e, content: t, tabContent: s, nav: o } = n, { tab: r, content: i } = o && p.get(o) || // istanbul ignore next @preserve
+    a !== r ? setTimeout(() => {
+      t.style.height = `${r}px`, z(t), D(t, () => M(s));
+    }, 50) : M(s);
+  } else i && p.clear(i);
+  P.relatedTarget = o, v(e, P);
+}, j = (s) => {
+  const { element: e, content: t, tabContent: n, nav: i } = s, { tab: o, content: a } = i && m.get(i) || // istanbul ignore next @preserve
   { tab: null, content: null };
-  let a = 0;
-  // istanbul ignore else @preserve
-  s && t && f(t, m) && ([i, t].forEach((c) => {
-    // istanbul ignore else @preserve
-    d(c) && g(c, "overflow-hidden");
-  }), a = d(i) ? i.scrollHeight : 0), L.relatedTarget = r, _.relatedTarget = e, w(e, L);
-  // istanbul ignore else @preserve
-  if (!L.defaultPrevented) {
-    // istanbul ignore else @preserve
-    t && g(t, l);
-    // istanbul ignore else @preserve
-    i && b(i, l);
-    // istanbul ignore else @preserve
-    if (s && t && f(t, m)) {
-      const c = t.scrollHeight;
-      p.set(e, {
-        currentHeight: a,
-        nextHeight: c,
+  let r = 0;
+  if (n && t && l(t, d) && ([a, t].forEach((g) => {
+    h(g) && f(g, "overflow-hidden");
+  }), r = h(a) ? a.scrollHeight : 0), H.relatedTarget = o, k.relatedTarget = e, v(e, H), !H.defaultPrevented) {
+    if (t && f(t, c), a && b(a, c), n && t && l(t, d)) {
+      const g = t.scrollHeight;
+      m.set(e, {
+        currentHeight: r,
+        nextHeight: g,
         tab: null,
         content: null
-      }), g(s, B), s.style.height = `${a}px`, G(s), [i, t].forEach((h) => {
-        // istanbul ignore else @preserve
-        h && b(h, "overflow-hidden");
+      }), f(n, y), n.style.height = `${r}px`, z(n), [a, t].forEach((I) => {
+        I && b(I, "overflow-hidden");
       });
     }
-    if (t && t && f(t, m))
-      setTimeout(() => {
-        g(t, E), k(t, () => {
-          j(n);
-        });
-      }, 1);
-    else {
-      // istanbul ignore else @preserve
-      t && g(t, E), j(n);
-    }
-    // istanbul ignore else @preserve
-    r && w(r, _);
+    t && t && l(t, d) ? setTimeout(() => {
+      f(t, T), D(t, () => {
+        _(s);
+      });
+    }, 1) : (t && f(t, T), _(s)), o && v(o, k);
   }
-}, N = (n) => {
-  const { nav: e } = n;
-  // istanbul ignore next @preserve
-  if (!d(e))
+}, q = (s) => {
+  const { nav: e } = s;
+  if (!h(e))
     return { tab: null, content: null };
-  const t = V(l, e);
-  let s = null;
-  // istanbul ignore else @preserve
-  t.length === 1 && !I.some(
-    (r) => f(t[0].parentElement, r)
-  ) ? [s] = t : t.length > 1 && (s = t[t.length - 1]);
-  const o = d(s) ? P(s) : null;
-  return { tab: s, content: o };
-}, z = (n) => {
-  // istanbul ignore next @preserve
-  if (!d(n)) return null;
-  const e = S(n, `.${I.join(",.")}`);
-  return e ? F(`.${I[0]}-toggle`, e) : null;
-}, et = (n) => {
-  const e = K(n.target);
-  // istanbul ignore else @preserve
-  e && (n.preventDefault(), e.show());
+  const t = O(c, e);
+  let n = null;
+  t.length === 1 && !S.some(
+    (o) => l(t[0].parentElement, o)
+  ) ? [n] = t : t.length > 1 && (n = t[t.length - 1]);
+  const i = h(n) ? B(n) : null;
+  return { tab: n, content: i };
+}, A = (s) => {
+  if (!h(s)) return null;
+  const e = $(s, `.${S.join(",.")}`);
+  return e ? N(`.${S[0]}-toggle`, e) : null;
+}, X = (s) => {
+  const e = G(s.target);
+  e && (s.preventDefault(), e.show());
 };
-class T extends Z {
+class Y extends J {
+  static selector = L;
+  static init = W;
+  static getInstance = G;
   /** @param target the target element */
-  constructor(t) {
-    super(t);
-    /**
-     * Toggles on/off the `click` event listener.
-     *
-     * @param add when `true`, event listener is added
-     */
-    u(this, "_toggleEventListeners", (t) => {
-      (t ? W : X)(this.element, R, et);
-    });
-    const { element: s } = this, o = P(s);
-    // istanbul ignore else @preserve
-    if (o) {
-      const r = S(s, ".nav"), i = S(o, ".tab-content");
-      this.nav = r, this.content = o, this.tabContent = i, this.dropdown = z(s);
-      const { tab: a } = N(this);
-      if (r && !a) {
-        const c = F(D, r), h = c && P(c);
-        // istanbul ignore else @preserve
-        h && (g(c, l), g(h, E), g(h, l), x(s, $, "true"));
+  constructor(e) {
+    super(e);
+    const { element: t } = this, n = B(t);
+    if (n) {
+      const i = $(t, ".nav"), o = $(n, ".tab-content");
+      this.nav = i, this.content = n, this.tabContent = o, this.dropdown = A(t);
+      const { tab: a } = q(this);
+      if (i && !a) {
+        const r = N(L, i), g = r && B(r);
+        g && (f(r, c), f(g, T), f(g, c), w(t, E, "true"));
       }
       this._toggleEventListeners(!0);
     }
@@ -132,47 +95,42 @@ class T extends Z {
    * Returns component name string.
    */
   get name() {
-    return J;
+    return F;
   }
   // TAB PUBLIC METHODS
   // ==================
   /** Shows the tab to the user. */
   show() {
-    const { element: t, content: s, nav: o, dropdown: r } = this;
-    // istanbul ignore else @preserve
-    if (!(o && C.get(o)) && !f(t, l)) {
-      const { tab: i, content: a } = N(this);
-      // istanbul ignore else @preserve
-      o && p.set(o, { tab: i, content: a, currentHeight: 0, nextHeight: 0 }), y.relatedTarget = t;
-      // istanbul ignore else @preserve
-      if (d(i)) {
-        w(i, y);
-        // istanbul ignore else @preserve
-        if (!y.defaultPrevented) {
-          g(t, l), x(t, $, "true");
-          const c = d(i) && z(i);
-          c && f(c, l) && b(c, l);
-          // istanbul ignore else @preserve
-          if (o) {
-            const h = () => {
-              // istanbul ignore else @preserve
-              i && (b(i, l), x(i, $, "false")), r && !f(r, l) && g(r, l);
-            };
-            a && (f(a, m) || s && f(s, m)) ? C.set(o, h, 1) : h();
-          }
-          // istanbul ignore else @preserve
-          a && (b(a, E), f(a, m) ? k(a, () => q(this)) : q(this));
+    const { element: e, content: t, nav: n, dropdown: i } = this;
+    if (!(n && p.get(n)) && !l(e, c)) {
+      const { tab: o, content: a } = q(this);
+      if (n && m.set(n, { tab: o, content: a, currentHeight: 0, nextHeight: 0 }), x.relatedTarget = e, h(o) && (v(o, x), !x.defaultPrevented)) {
+        f(e, c), w(e, E, "true");
+        const r = h(o) && A(o);
+        if (r && l(r, c) && b(r, c), n) {
+          const g = () => {
+            o && (b(o, c), w(o, E, "false")), i && !l(i, c) && f(i, c);
+          };
+          a && (l(a, d) || t && l(t, d)) ? p.set(n, g, 1) : g();
         }
+        a && (b(a, T), l(a, d) ? D(a, () => j(this)) : j(this));
       }
     }
   }
+  /**
+   * Toggles on/off the `click` event listener.
+   *
+   * @param add when `true`, event listener is added
+   */
+  _toggleEventListeners = (e) => {
+    (e ? R : U)(this.element, Q, X);
+  };
   /** Removes the `Tab` component from the target element. */
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
-u(T, "selector", D), u(T, "init", tt), u(T, "getInstance", K);
 export {
-  T as default
+  Y as default
 };
 //# sourceMappingURL=tab.mjs.map

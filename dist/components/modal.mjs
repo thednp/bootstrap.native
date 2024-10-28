@@ -1,186 +1,154 @@
-var oe = Object.defineProperty;
-var ae = (s, t, e) => t in s ? oe(s, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[t] = e;
-var h = (s, t, e) => ae(s, typeof t != "symbol" ? t + "" : t, e);
-import { createCustomEvent as S, querySelector as A, querySelectorAll as ne, getDocument as D, hasClass as g, dispatchEvent as T, getInstance as B, getElementTransitionDuration as I, removeClass as x, setAttribute as R, ariaHidden as P, removeAttribute as q, ariaModal as z, emulateTransitionEnd as p, mouseclickEvent as K, getDocumentElement as ie, isRTL as re, setElementStyle as y, getDocumentBody as le, addClass as N, closest as V, focus as W, toggleFocusTrap as j, keydownEvent as ce, keyEscape as de, Timer as E } from "@thednp/shorty";
-import { addListener as G, removeListener as J } from "@thednp/event-listener";
-import { d as me } from "./dataBsToggle-B84TS15h.mjs";
-import { d as ge } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { f as he } from "./fadeClass-CLIYI_zn.mjs";
+import { B as X, q as F, n as ee, l as y, h as c, d as v, g as _, p as A, r as B, s as I, Z as L, e as h, c as E, Q as te, i as se, K as b, _ as ae, f as x, $ as R, a0 as q, N as P, a1 as K, m as N, C as oe, D as z, Y as ne, T } from "./base-component-ylZzLp-h.mjs";
+import { E as Q, r as V } from "./event-listener-C1-Yf9Z5.mjs";
+import { d as ie } from "./dataBsToggle-B84TS15h.mjs";
+import { d as le } from "./dataBsDismiss-DdNPQYa-.mjs";
+import { f as re } from "./fadeClass-CLIYI_zn.mjs";
 import { s as i } from "./showClass-C8hdJfjQ.mjs";
-import { m as r, h as fe } from "./popupContainer-BitC465I.mjs";
-import { m as Q, g as k, o as pe, a as ue, t as ve, b as f, s as be, h as U, c as Te, d as ye, r as Ee, i as Se, e as De } from "./isVisible-DWDmVrra.mjs";
-import { g as X } from "./getTargetElement-DbfK8LsG.mjs";
-import { B as we } from "./base-component-DHbs0JQk.mjs";
-const ke = `.${r}`, Y = `[${me}="${r}"]`, Ce = `[${ge}="${r}"]`, Z = `${r}-static`, He = {
+import { h as ce, m as l } from "./popupContainer-ymf2oGcv.mjs";
+import { m as W, g as D, a as de, t as ge, s as me, h as Y, b as he, c as fe, o as m, d as pe, r as ue, i as ve, e as be } from "./isVisible-B3gs6dMb.mjs";
+import { g as Z } from "./getTargetElement-BFOUI7hP.mjs";
+const Te = `.${l}`, j = `[${ie}="${l}"]`, ye = `[${le}="${l}"]`, G = `${l}-static`, Ee = {
   backdrop: !0,
   keyboard: !0
-}, u = (s) => B(s, Q), $e = (s) => new b(s), v = S(
-  `show.bs.${r}`
-), $ = S(
-  `shown.bs.${r}`
-), w = S(
-  `hide.bs.${r}`
-), M = S(
-  `hidden.bs.${r}`
-), ee = (s) => {
-  const { element: t } = s, e = Te(t), { clientHeight: o, scrollHeight: a } = ie(t), { clientHeight: n, scrollHeight: l } = t, c = n !== l;
-  // istanbul ignore next @preserve: impossible to test?
-  if (!c && e) {
-    const m = { [re(t) ? "paddingLeft" : "paddingRight"]: `${e}px` };
-    y(t, m);
+}, f = (s) => _(s, W), Se = (s) => new Me(s), u = E(
+  `show.bs.${l}`
+), k = E(
+  `shown.bs.${l}`
+), S = E(
+  `hide.bs.${l}`
+), C = E(
+  `hidden.bs.${l}`
+), J = (s) => {
+  const { element: e } = s, t = he(e), { clientHeight: a, scrollHeight: o } = te(e), { clientHeight: r, scrollHeight: d } = e, n = r !== d;
+  if (!n && t) {
+    const p = { [se(e) ? "paddingLeft" : "paddingRight"]: `${t}px` };
+    b(e, p);
   }
-  ye(t, c || o !== a);
-}, te = (s, t) => {
-  const e = t ? G : J, { element: o } = s;
-  e(o, K, Fe), e(D(o), ce, Oe), t ? s._observer.observe(o) : s._observer.disconnect();
+  fe(e, n || a !== o);
+}, U = (s, e) => {
+  const t = e ? Q : V, { element: a } = s;
+  t(a, N, ke), t(y(a), oe, we), e ? s._observer.observe(a) : s._observer.disconnect();
+}, M = (s) => {
+  const { triggers: e, element: t, relatedTarget: a } = s;
+  ue(t), b(t, { paddingRight: "", display: "" }), U(s);
+  const o = u.relatedTarget || e.find(ve);
+  o && P(o), C.relatedTarget = a, v(t, C), K(t);
+}, $ = (s) => {
+  const { element: e, relatedTarget: t } = s;
+  P(e), U(s, !0), k.relatedTarget = t, v(e, k), K(e);
+}, H = (s) => {
+  const { element: e, hasFade: t } = s;
+  b(e, { display: "block" }), J(s), D(e) || b(ae(e), { overflow: "hidden" }), x(e, i), L(e, R), I(e, q, "true"), t ? h(e, () => $(s)) : $(s);
 }, O = (s) => {
-  const { triggers: t, element: e, relatedTarget: o } = s;
-  Ee(e), y(e, { paddingRight: "", display: "" }), te(s);
-  const a = v.relatedTarget || t.find(Se);
-  // istanbul ignore else @preserve
-  a && W(a), M.relatedTarget = o, T(e, M), j(e);
-}, F = (s) => {
-  const { element: t, relatedTarget: e } = s;
-  W(t), te(s, !0), $.relatedTarget = e, T(t, $), j(t);
-}, L = (s) => {
-  const { element: t, hasFade: e } = s;
-  y(t, { display: "block" }), ee(s);
-  // istanbul ignore else @preserve
-  k(t) || y(le(t), { overflow: "hidden" }), N(t, i), q(t, P), R(t, z, "true"), e ? p(t, () => F(s)) : F(s);
-}, _ = (s) => {
-  const { element: t, options: e, hasFade: o } = s;
-  e.backdrop && o && g(f, i) && !k(t) ? (U(), p(f, () => O(s))) : O(s);
-}, Me = (s) => {
-  const { target: t } = s, e = t && V(t, Y), o = e && X(e), a = o && u(o);
-  // istanbul ignore else @preserve
+  const { element: e, options: t, hasFade: a } = s;
+  t.backdrop && a && c(m, i) && !D(e) ? (Y(), h(m, () => M(s))) : M(s);
+}, De = (s) => {
+  const { target: e } = s, t = e && z(e, j), a = t && Z(t), o = a && f(a);
+  o && (t && t.tagName === "A" && s.preventDefault(), o.relatedTarget = t, o.toggle());
+}, we = ({ code: s, target: e }) => {
+  const t = F(be, y(e)), a = t && f(t);
   if (a) {
-    // istanbul ignore else @preserve
-    e && e.tagName === "A" && s.preventDefault(), a.relatedTarget = e, a.toggle();
+    const { options: o } = a;
+    o.keyboard && s === ne && // the keyboard option is enabled and the key is 27
+    c(t, i) && (a.relatedTarget = null, a.hide());
   }
-}, Oe = ({ code: s, target: t }) => {
-  const e = A(De, D(t)), o = e && u(e);
-  // istanbul ignore else @preserve
-  if (o) {
-    const { options: a } = o;
-    // istanbul ignore else @preserve
-    a.keyboard && s === de && // the keyboard option is enabled and the key is 27
-    g(e, i) && (o.relatedTarget = null, o.hide());
-  }
-}, Fe = (s) => {
-  var o, a;
-  const { currentTarget: t } = s, e = t && u(t);
-  // istanbul ignore else @preserve
-  if (e && t && !E.get(t)) {
-    const { options: n, isStatic: l, modalDialog: c } = e, { backdrop: d } = n, { target: m } = s, se = (a = (o = D(t)) == null ? void 0 : o.getSelection()) == null ? void 0 : a.toString().length, C = c.contains(m), H = m && V(m, Ce);
-    // istanbul ignore else @preserve
-    l && !C ? E.set(
-      t,
+}, ke = (s) => {
+  const { currentTarget: e } = s, t = e && f(e);
+  if (t && e && !T.get(e)) {
+    const { options: a, isStatic: o, modalDialog: r } = t, { backdrop: d } = a, { target: n } = s, g = y(e)?.getSelection()?.toString().length, p = r.contains(n), w = n && z(n, ye);
+    o && !p ? T.set(
+      e,
       () => {
-        N(t, Z), p(c, () => Le(e));
+        x(e, G), h(r, () => Ce(t));
       },
       17
-    ) : (H || !se && !l && !C && d) && (e.relatedTarget = H || null, e.hide(), s.preventDefault());
+    ) : (w || !g && !o && !p && d) && (t.relatedTarget = w || null, t.hide(), s.preventDefault());
   }
-}, Le = (s) => {
-  const { element: t, modalDialog: e } = s, o = (I(e) || 0) + 17;
-  x(t, Z), E.set(t, () => E.clear(t), o);
+}, Ce = (s) => {
+  const { element: e, modalDialog: t } = s, a = (A(t) || 0) + 17;
+  B(e, G), T.set(e, () => T.clear(e), a);
 };
-class b extends we {
+class Me extends X {
+  static selector = Te;
+  static init = Se;
+  static getInstance = f;
   /**
    * @param target usually the `.modal` element
    * @param config instance options
    */
-  constructor(e, o) {
-    super(e, o);
-    /**
-     * Updates the modal layout.
-     */
-    h(this, "update", () => {
-      // istanbul ignore else @preserve
-      g(this.element, i) && ee(this);
-    });
-    /**
-     * Toggles on/off the `click` event listener of the `Modal` instance.
-     *
-     * @param add when `true`, event listener(s) is/are added
-     */
-    h(this, "_toggleEventListeners", (e) => {
-      const o = e ? G : J, { triggers: a } = this;
-      // istanbul ignore else @preserve
-      a.length && a.forEach(
-        (n) => o(n, K, Me)
-      );
-    });
-    const { element: a } = this, n = A(`.${r}-dialog`, a);
-    // istanbul ignore else @preserve
-    n && (this.modalDialog = n, this.triggers = [
-      ...ne(Y, D(a))
+  constructor(e, t) {
+    super(e, t);
+    const { element: a } = this, o = F(`.${l}-dialog`, a);
+    o && (this.modalDialog = o, this.triggers = [
+      ...ee(j, y(a))
     ].filter(
-      (l) => X(l) === a
-    ), this.isStatic = this.options.backdrop === "static", this.hasFade = g(a, he), this.relatedTarget = null, this._observer = new ResizeObserver(() => this.update()), this._toggleEventListeners(!0));
+      (r) => Z(r) === a
+    ), this.isStatic = this.options.backdrop === "static", this.hasFade = c(a, re), this.relatedTarget = null, this._observer = new ResizeObserver(() => this.update()), this._toggleEventListeners(!0));
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return Q;
+    return W;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return He;
+    return Ee;
   }
   // MODAL PUBLIC METHODS
   // ====================
   /** Toggles the visibility of the modal. */
   toggle() {
-    g(this.element, i) ? this.hide() : this.show();
+    c(this.element, i) ? this.hide() : this.show();
   }
   /** Shows the modal to the user. */
   show() {
-    const { element: e, options: o, hasFade: a, relatedTarget: n } = this, { backdrop: l } = o;
-    let c = 0;
-    // istanbul ignore else @preserve
-    if (!g(e, i) && (v.relatedTarget = n || void 0, T(e, v), !v.defaultPrevented)) {
-      const d = k(e);
-      // istanbul ignore else @preserve
-      if (d && d !== e) {
-        const m = u(d) || // istanbul ignore next @preserve
-        B(
-          d,
+    const { element: e, options: t, hasFade: a, relatedTarget: o } = this, { backdrop: r } = t;
+    let d = 0;
+    if (!c(e, i) && (u.relatedTarget = o || void 0, v(e, u), !u.defaultPrevented)) {
+      const n = D(e);
+      if (n && n !== e) {
+        const g = f(n) || // istanbul ignore next @preserve
+        _(
+          n,
           pe
         );
-        // istanbul ignore else @preserve
-        m && m.hide();
+        g && g.hide();
       }
-      if (l)
-        fe(f) ? ve(!0) : ue(e, a, !0), c = I(f), be(), setTimeout(() => L(this), c);
-      else {
-        L(this);
-        // istanbul ignore else @preserve
-        d && g(f, i) && U();
-      }
+      r ? (ce(m) ? ge(!0) : de(e, a, !0), d = A(m), me(), setTimeout(() => H(this), d)) : (H(this), n && c(m, i) && Y());
     }
   }
   /** Hide the modal from the user. */
   hide() {
-    const { element: e, hasFade: o, relatedTarget: a } = this;
-    // istanbul ignore else @preserve
-    if (g(e, i)) {
-      w.relatedTarget = a || void 0, T(e, w);
-      // istanbul ignore else @preserve
-      w.defaultPrevented || (x(e, i), R(e, P, "true"), q(e, z), o ? p(e, () => _(this)) : _(this));
-    }
+    const { element: e, hasFade: t, relatedTarget: a } = this;
+    c(e, i) && (S.relatedTarget = a || void 0, v(e, S), S.defaultPrevented || (B(e, i), I(e, R, "true"), L(e, q), t ? h(e, () => O(this)) : O(this)));
   }
+  /**
+   * Updates the modal layout.
+   */
+  update = () => {
+    c(this.element, i) && J(this);
+  };
+  /**
+   * Toggles on/off the `click` event listener of the `Modal` instance.
+   *
+   * @param add when `true`, event listener(s) is/are added
+   */
+  _toggleEventListeners = (e) => {
+    const t = e ? Q : V, { triggers: a } = this;
+    a.length && a.forEach(
+      (o) => t(o, N, De)
+    );
+  };
   /** Removes the `Modal` component from target element. */
   dispose() {
-    const e = { ...this }, { modalDialog: o, hasFade: a } = e, n = () => setTimeout(() => super.dispose(), 17);
-    this.hide(), this._toggleEventListeners(), a ? p(o, n) : n();
+    const e = { ...this }, { modalDialog: t, hasFade: a } = e, o = () => setTimeout(() => super.dispose(), 17);
+    this.hide(), this._toggleEventListeners(), a ? h(t, o) : o();
   }
 }
-h(b, "selector", ke), h(b, "init", $e), h(b, "getInstance", u);
 export {
-  b as default
+  Me as default
 };
 //# sourceMappingURL=modal.mjs.map

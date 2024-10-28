@@ -1,117 +1,99 @@
-var x = Object.defineProperty;
-var k = (t, e, s) => e in t ? x(t, e, { enumerable: !0, configurable: !0, writable: !0, value: s }) : t[e] = s;
-var h = (t, e, s) => k(t, typeof e != "symbol" ? e + "" : e, s);
-import { createCustomEvent as q, querySelector as S, getDocument as C, getDocumentElement as L, isHTMLElement as d, getInstance as G, getElementsByTagName as _, getAttribute as M, getBoundingClientRect as A, hasClass as u, removeClass as N, addClass as T, getDocumentBody as O, dispatchEvent as R } from "@thednp/shorty";
-import { D as W } from "./index-CmM9Kopf.mjs";
-import { a as f } from "./activeClass-iqaD75Su.mjs";
-import { B as $ } from "./base-component-DHbs0JQk.mjs";
-const j = "scrollspy", w = "ScrollSpy", z = '[data-bs-spy="scroll"]', F = {
+import { B, q as E, l as T, Q as L, u as I, g as D, c as R, a4 as C, b as k, R as b, h as f, r as q, f as y, _ as O, d as G } from "./base-component-ylZzLp-h.mjs";
+import { x as M } from "./index-gZuXW-3_.mjs";
+import { a as p } from "./activeClass-iqaD75Su.mjs";
+const N = "scrollspy", A = "ScrollSpy", Q = '[data-bs-spy="scroll"]', $ = {
   offset: 10,
   target: null
-}, J = (t) => G(t, w), K = (t) => new v(t), b = q(`activate.bs.${j}`), P = (t) => {
-  const { target: e, scrollTarget: s, options: o, itemsLength: n, scrollHeight: r, element: l } = t, { offset: i } = o, a = s !== l, c = e && _("A", e), g = C(l), E = s ? B(s) : r;
-  t.scrollTop = s.scrollTop;
-  // istanbul ignore else @preserve
-  if (c && (E !== r || n !== c.length)) {
-    let p, m, H;
-    t.items = [], t.targets = [], t.offsets = [], t.scrollHeight = E, t.maxScroll = t.scrollHeight - Q(t), Array.from(c).forEach((y) => {
-      p = M(y, "href"), m = p && p.charAt(0) === "#" && p.slice(-1) !== "#" && S(p, g), m && (t.items.push(y), t.targets.push(m), H = A(m), t.offsets.push(
-        (a ? H.top + t.scrollTop : m.offsetTop) - i
+}, j = (t) => D(t, A), z = (t) => new P(t), S = R(`activate.bs.${N}`), F = (t) => {
+  const { target: e, scrollTarget: s, options: o, itemsLength: n, scrollHeight: r, element: a } = t, { offset: c } = o, i = s !== a, l = e && C("A", e), x = T(a), m = s.scrollHeight;
+  if (t.scrollTop = s.scrollTop, l && (m !== r || n !== l.length)) {
+    let h, g, u;
+    t.items = [], t.targets = [], t.offsets = [], t.scrollHeight = m, t.maxScroll = t.scrollHeight - K(t), Array.from(l).forEach((d) => {
+      h = k(d, "href"), g = h && h.charAt(0) === "#" && h.slice(-1) !== "#" && E(h, x), g && (t.items.push(d), t.targets.push(g), u = b(g), t.offsets.push(
+        (i ? u.top + t.scrollTop : g.offsetTop) - c
       ));
     }), t.itemsLength = t.items.length;
   }
-}, B = (t) => d(t) ? t.scrollHeight : L(t).scrollHeight, Q = ({ element: t, scrollTarget: e }) => e !== t ? e.clientHeight : A(t).height, D = (t) => {
-  [..._("A", t)].forEach((e) => {
-    u(e, f) && N(e, f);
+}, v = ({ targets: t, scrollTarget: e, element: s, _observer: o }, n) => {
+  n ? e === s ? t.forEach((r) => o.observe(r)) : o.observe(s) : o.disconnect();
+}, J = (t) => t.scrollHeight, K = ({ element: t, scrollTarget: e }) => e !== t ? e.clientHeight : b(t).height, w = (t) => {
+  [...C("A", t)].forEach((e) => {
+    f(e, p) && q(e, p);
   });
-}, I = (t, e) => {
+}, H = (t, e) => {
   const { target: s, element: o } = t;
-  // istanbul ignore else @preserve
-  d(s) && D(s), t.activeItem = e, T(e, f);
+  I(s) && w(s), t.activeItem = e, y(e, p);
   const n = [];
   let r = e;
   for (; r !== O(o); )
-    r = r.parentElement, (u(r, "nav") || u(r, "dropdown-menu")) && n.push(r);
-  n.forEach((l) => {
-    const i = l.previousElementSibling;
-    // istanbul ignore else @preserve
-    i && !u(i, f) && T(i, f);
-  }), b.relatedTarget = e, R(o, b);
+    r = r.parentElement, (f(r, "nav") || f(r, "dropdown-menu")) && n.push(r);
+  n.forEach((a) => {
+    const c = a.previousElementSibling;
+    c && !f(c, p) && y(c, p);
+  }), S.relatedTarget = e, G(o, S);
 };
-class v extends $ {
+class P extends B {
+  static selector = Q;
+  static init = z;
+  static getInstance = j;
   /**
    * @param target the target element
    * @param config the instance options
    */
-  constructor(s, o) {
-    super(s, o);
-    /* eslint-enable */
-    // SCROLLSPY PUBLIC METHODS
-    // ========================
-    /** Updates all items. */
-    h(this, "refresh", () => {
-      const { target: s } = this;
-      // istanbul ignore else @preserve
-      if (d(s) && s.offsetHeight > 0) {
-        P(this);
-        const { scrollTop: o, maxScroll: n, itemsLength: r, items: l, activeItem: i } = this;
-        if (o >= n) {
-          const c = l[r - 1];
-          // istanbul ignore else @preserve
-          i !== c && I(this, c);
-          return;
-        }
-        const { offsets: a } = this;
-        // istanbul ignore else @preserve
-        if (i && o < a[0] && a[0] > 0) {
-          this.activeItem = null;
-          // istanbul ignore else @preserve
-          s && D(s);
-          return;
-        }
-        l.forEach((c, g) => {
-          i !== c && o >= a[g] && (typeof a[g + 1] > "u" || o < a[g + 1]) && I(this, c);
-        });
-      }
-    });
-    /**
-     * Toggles on/off the component event listener.
-     *
-     * @param add when `true`, listener is added
-     */
-    h(this, "_toggleEventListeners", (s) => {
-      s ? this.scrollTarget === this.element ? this.targets.forEach(
-        (o) => this._observer.observe(o)
-      ) : this._observer.observe(this.element) : this._observer.disconnect();
-    });
-    const { element: n, options: r } = this;
-    this.target = S(
-      r.target,
-      C(n)
-    ), this.target && (this.scrollTarget = n.clientHeight < n.scrollHeight ? n : L(n), this.scrollHeight = B(this.scrollTarget), this.refresh(), this._observer = new W(() => this.refresh(), {
+  constructor(e, s) {
+    super(e, s);
+    const { element: o, options: n } = this;
+    this.target = E(
+      n.target,
+      T(o)
+    ), this.target && (this.scrollTarget = o.clientHeight < o.scrollHeight ? o : L(o), this.scrollHeight = J(this.scrollTarget), this.refresh(), this._observer = new M(() => this.refresh(), {
       root: this.scrollTarget
-    }), this._toggleEventListeners(!0));
+    }), v(this, !0));
   }
   /* eslint-disable */
   /**
    * Returns component name string.
    */
   get name() {
-    return w;
+    return A;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return F;
+    return $;
   }
+  /* eslint-enable */
+  // SCROLLSPY PUBLIC METHODS
+  // ========================
+  /** Updates all items. */
+  refresh = () => {
+    const { target: e } = this;
+    if (I(e) && e.offsetHeight > 0) {
+      F(this);
+      const { scrollTop: s, maxScroll: o, itemsLength: n, items: r, activeItem: a } = this;
+      if (s >= o) {
+        const i = r[n - 1];
+        a !== i && H(this, i);
+        return;
+      }
+      const { offsets: c } = this;
+      if (a && s < c[0] && c[0] > 0) {
+        this.activeItem = null, e && w(e);
+        return;
+      }
+      r.forEach((i, l) => {
+        a !== i && s >= c[l] && (typeof c[l + 1] > "u" || s < c[l + 1]) && H(this, i);
+      });
+    }
+  };
   /** Removes `ScrollSpy` from the target element. */
   dispose() {
-    this._toggleEventListeners(), super.dispose();
+    const e = { ...this };
+    v(e), super.dispose();
   }
 }
-h(v, "selector", z), h(v, "init", K), h(v, "getInstance", J);
 export {
-  v as default
+  P as default
 };
 //# sourceMappingURL=scrollspy.mjs.map

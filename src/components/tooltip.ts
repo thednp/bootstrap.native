@@ -512,7 +512,7 @@ export default class Tooltip extends BaseComponent {
           // istanbul ignore else @preserve
           if (!dismissible) action(element, focusoutEvent, this.handleHide);
           // istanbul ignore else @preserve
-          if (isApple) {
+          if (isApple()) {
             action(element, mouseclickEvent, this.handleFocus);
           }
         }

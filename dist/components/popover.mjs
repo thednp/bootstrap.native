@@ -1,45 +1,44 @@
-var p = Object.defineProperty;
-var c = (t, s, e) => s in t ? p(t, s, { enumerable: !0, configurable: !0, writable: !0, value: e }) : t[s] = e;
-var o = (t, s, e) => c(t, typeof s != "symbol" ? s + "" : s, e);
-import { ObjectAssign as r, focus as m, getInstance as u } from "@thednp/shorty";
-import { d as g } from "./dataBsToggle-B84TS15h.mjs";
-import { t as b, g as f, T as d, s as T, p as l, a as i } from "./tooltip-Dyd4Gul9.mjs";
-const C = `[${g}="${i}"],[data-tip="${i}"]`, I = r({}, b, {
-  template: f(i),
+import { O as n, N as i, g as p } from "./base-component-ylZzLp-h.mjs";
+import { d as r } from "./dataBsToggle-B84TS15h.mjs";
+import { T as l, s as c, p as a, a as o, g as m, t as u } from "./tooltip-B5F6ZNW7.mjs";
+const g = `[${r}="${o}"],[data-tip="${o}"]`, b = n({}, u, {
+  template: m(o),
   content: "",
   dismissible: !1,
   btnClose: '<button class="btn-close" aria-label="Close"></button>'
-}), h = (t) => u(t, l), v = (t) => new a(t);
-class a extends d {
+}), f = (t) => p(t, a), d = (t) => new T(t);
+class T extends l {
+  static selector = g;
+  static init = d;
+  static getInstance = f;
+  static styleTip = c;
   /**
    * @param target the target element
    * @param config the instance options
    */
-  constructor(e, n) {
-    super(e, n);
-    /* extend original `show()` */
-    o(this, "show", () => {
-      super.show();
-      const { options: e, btn: n } = this;
-      // istanbul ignore else @preserve
-      e.dismissible && n && setTimeout(() => m(n), 17);
-    });
+  constructor(e, s) {
+    super(e, s);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return l;
+    return a;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return I;
+    return b;
   }
+  /* extend original `show()` */
+  show = () => {
+    super.show();
+    const { options: e, btn: s } = this;
+    e.dismissible && s && setTimeout(() => i(s), 17);
+  };
 }
-o(a, "selector", C), o(a, "init", v), o(a, "getInstance", h), o(a, "styleTip", T);
 export {
-  a as default
+  T as default
 };
 //# sourceMappingURL=popover.mjs.map
