@@ -117,12 +117,13 @@ const updateSpyTargets = (self: ScrollSpy) => {
  * @param self the ScrollSpy instance
  * @param add when `true`, listener is added
  */
-const toggleObservers = ({ targets, scrollTarget, element, _observer }: ScrollSpy, add?: boolean) => {
+const toggleObservers = (
+  { targets, scrollTarget, element, _observer }: ScrollSpy,
+  add?: boolean,
+) => {
   if (add) {
     if (scrollTarget === element) {
-      targets.forEach((targetItem) =>
-        _observer.observe(targetItem)
-      );
+      targets.forEach((targetItem) => _observer.observe(targetItem));
     } else {
       _observer.observe(element);
     }
@@ -136,7 +137,7 @@ const toggleObservers = ({ targets, scrollTarget, element, _observer }: ScrollSp
  * @return `scrollTarget` height
  */
 const getScrollHeight = (scrollTarget: HTMLElement) => {
-  return scrollTarget.scrollHeight
+  return scrollTarget.scrollHeight;
 };
 
 /**
