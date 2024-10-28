@@ -73,9 +73,9 @@
             <div class="item-bg bg-warning"></div>
             <div class="container d-flex align-items-end h-100">
               <div class="position-relative text-dark text-left mb-5">
-                <h1>A better way to Bootstrap 5</h1>
-                <p>The lighter and more compact set of JavaScript components for Bootstrap, sourced with modern ES6+ codebase and strong TypeScript definitions.<br>
-                  At about half the size of the original and around <b>12kb gZipped</b>, this library does most of Bootstrap & Popper combined.</p>
+                <h1>A What Bootstrap?</h1>
+                <p>The lighter and more compact set of JavaScript components for Bootstrap, sourced with Typescript codebase.<br>
+                  At less than half the size of the original and around <b>15kb gZipped</b>, this library does most of Bootstrap & Popper combined.</p>
                 <p>
                   <a class="btn btn-lg btn-primary me-1" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a>
                   <a class="btn btn-lg btn-secondary" href="https://www.npmjs.com/package/bootstrap.native">NPM</a>
@@ -145,6 +145,7 @@
               <li class="nav-item"><a class="nav-link" href="#componentTab">Tab</a></li>
               <li class="nav-item"><a class="nav-link" href="#componentToast">Toast</a></li>
               <li class="nav-item"><a class="nav-link" href="#componentTooltip">Tooltip</a></li>
+              <li class="nav-item"><a class="nav-link" href="#componentBase">Base Component</a></li>
             </ul>
           </div>
         </div>
@@ -161,30 +162,6 @@
       </section>
       <div class="row">
         <div class="col-md-9" data-bs-spy="scroll" data-bs-target="#side-nav">
-
-          <section id="componentBase">
-            <h2>BaseComponent</h2>
-            <section id="baseInfo">
-              <h3>Info</h3>
-              <p>Following the development of the original library, we implemented the same solution to remove most repetitive actions common
-                to all components; the <b>BaseComponent</b> provides basic functionality generally focused around determining the specific 
-                <code>HTMLElement</code> target or setting instance options.</p>
-                <p>It also throws an error when no target <code>HTMLElement</code> is found and removes existing instances which is important
-                  to prevent memory overflow or breaking the component functionality.</p>
-            </section>
-            <section id="baseMethods">
-              <h3>Base Properties And Methods</h3>
-              <p>The <b>BaseComponent</b> component exposes some getters for all components to use:</p>
-              <h4>instance.name</h4>
-              <p>Returns the name of the component used to initialize the current instance.</p>
-              <h4>instance.defaults</h4>
-              <p>Returns the component default options values.</p>
-              <h4>instance.version</h4>
-              <p>Returns the library version.</p>
-              <h4>instance.dispose()</h4>
-              <p>Removes the component from target element. Components generally extend this method with additional specific functionality.</p>
-            </section>
-          </section>
           <section id="componentAlert">
             <h2>Alert</h2>
             <p>The <b>Alert</b> component covers the specific original events and public methods, but just like the original plugin, does not provide any
@@ -1125,7 +1102,6 @@ myCollapseInit.toggle();
             </section>
           </section>
 
-
           <section id="componentDropdown">
             <h2>Dropdown</h2>
             <p>The <b>Dropdown</b> component covers most of the functionality from the original plugin in terms of original events,
@@ -1442,7 +1418,6 @@ myDropdownInit.dispose();
                 documentation page</a>.</p>
             </section>
           </section>          
-
 
           <section id="componentModal">
             <h2>Modal</h2>
@@ -1884,7 +1859,6 @@ var findModalInitJS = BSN.Modal.getInstance(myModal);
             </section>
           </section>
 
-
           <section id="componentOffcanvas">
             <h2>Offcanvas</h2>
             <p>The <b>Offcanvas</b> component is our newest addition and comes packed with options, events and public methods.</p>
@@ -2255,7 +2229,6 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
               </div>
             </section>
           </section>
-
           
           <section id="componentPopover">
             <h2>Popover</h2>
@@ -2644,7 +2617,6 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
               </div>
             </section>
           </section>
-
 
           <section id="componentScrollspy">
             <h2>Scrollspy</h2>
@@ -3890,16 +3862,33 @@ new BSN.Tooltip('#selector',options).show();
               </iframe>
             </section>
           </section>
+
+          <section id="componentBase">
+            <h2>BaseComponent</h2>
+            <section id="baseInfo">
+              <h3>Info</h3>
+              <p>Following the development of the original library, we implemented the same solution to remove most repetitive actions common
+                to all components; the <b>BaseComponent</b> provides basic functionality generally focused around determining the specific 
+                <code>HTMLElement</code> target or setting instance options.</p>
+                <p>It also throws an error when no target <code>HTMLElement</code> is found and removes existing instances which is important
+                  to prevent memory overflow or breaking the component functionality.</p>
+            </section>
+            <section id="baseMethods">
+              <h3>Base Properties And Methods</h3>
+              <p>The <b>BaseComponent</b> component exposes some getters for all components to use:</p>
+              <h4>instance.name</h4>
+              <p>Returns the name of the component used to initialize the current instance.</p>
+              <h4>instance.defaults</h4>
+              <p>Returns the component default options values.</p>
+              <h4>instance.version</h4>
+              <p>Returns the library version.</p>
+              <h4>instance.dispose()</h4>
+              <p>Removes the component from target element. Components generally extend this method with additional specific functionality.</p>
+            </section>
+          </section>
         </div>
         <div class="col-md-3" id="side-nav">
           <ul id="nav-scrollspy-v5" class="nav nav-stacked d-none d-md-flex flex-column">
-            <li class="nav-item">
-              <a rel="nofollow" class="nav-link" href="#componentBase">BaseComponent</a>
-              <ul class="nav">
-                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#baseInfo">Info</a></li>
-                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#baseMethods">Methods</a></li>
-              </ul>
-            </li>
             <li class="nav-item">
               <a rel="nofollow" class="nav-link" href="#componentAlert">Alert</a>
               <ul class="nav">
@@ -4027,6 +4016,13 @@ new BSN.Tooltip('#selector',options).show();
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipDATA">DATA API</a></li>
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipJS">JavaScript API</a></li>
                 <li class="nav-item"><a rel="nofollow" class="nav-link" href="#tooltipExamples">Examples</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a rel="nofollow" class="nav-link" href="#componentBase">BaseComponent</a>
+              <ul class="nav">
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#baseInfo">Info</a></li>
+                <li class="nav-item"><a rel="nofollow" class="nav-link" href="#baseMethods">Methods</a></li>
               </ul>
             </li>
           </ul>
