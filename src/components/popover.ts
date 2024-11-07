@@ -29,13 +29,13 @@ const popoverDefaults: PopoverOptions = ObjectAssign({}, tooltipDefaults, {
  * Static method which returns an existing `Popover` instance associated
  * to a target `Element`.
  */
-const getPopoverInstance = (element: HTMLElement) =>
+const getPopoverInstance = (element: Element) =>
   getInstance<Popover>(element, popoverComponent);
 
 /**
  * A `Popover` initialization callback.
  */
-const popoverInitCallback = (element: HTMLElement) => new Popover(element);
+const popoverInitCallback = (element: Element) => new Popover(element);
 
 // POPOVER DEFINITION
 // ==================
@@ -51,7 +51,7 @@ export default class Popover extends Tooltip {
    * @param target the target element
    * @param config the instance options
    */
-  constructor(target: HTMLElement | string, config?: Partial<PopoverOptions>) {
+  constructor(target: Element | string, config?: Partial<PopoverOptions>) {
     super(target, config);
   }
   /**

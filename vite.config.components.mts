@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import dts from "vite-plugin-dts";
+import stripComments from "vite-plugin-strip-comments";
 
 const components = ['alert', 'button', 'carousel', 'collapse', 'dropdown', 'modal', 'offcanvas', 'popover', 'scrollspy', 'tab', 'toast', 'tooltip'];
 
@@ -19,22 +20,18 @@ export default defineConfig({
       outDir: 'dist/components',
       copyDtsFiles: true,
       rollupTypes: true,
-    })
+    }),
+    stripComments({ type: 'none' }),
   ],
   build: {
     target: 'ESNext',
+    minify: 'esbuild',
+    outDir: 'dist/components',
     lib: {
       entry: components.map((component) => resolve(__dirname, `src/components/${component}.ts`)),
       formats: ['es', 'cjs'],
       fileName: (format, entry) => componentFile(entry, format),
-      
     },
     sourcemap: true,
-    rollupOptions: {
-      treeshake: true,
-      output: {
-        dir: resolve(__dirname, 'dist/components'),
-      },
-    }
   },
 });

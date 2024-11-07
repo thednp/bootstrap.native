@@ -1,64 +1,61 @@
-import { B as z, n as G, l as f, h as c, d as v, g as B, p as J, f as T, r as D, e as w, c as h, K as O, _ as R, Z as y, $ as I, s as E, a0 as _, N as q, a1 as L, Q as U, C as W, m as N, q as C, D as P, Y as X } from "./base-component-ylZzLp-h.mjs";
-import { E as x, r as K } from "./event-listener-C1-Yf9Z5.mjs";
+import { B as W, c as X, d as f, Y as c, q as m, t as B, i as j, b as O, Z as S, r as $, v as h, F as T, _ as z, X as y, $ as I, Q as w, a0 as P, I as _, a1 as L, S as J, o as M, m as q, R as C, p as x, W as U } from "./base-component-Jx2aafTJ.mjs";
+import { E as N, r as Q } from "./event-listener-CUwvA4j6.mjs";
 import { d as ee } from "./dataBsDismiss-DdNPQYa-.mjs";
 import { d as te } from "./dataBsToggle-B84TS15h.mjs";
 import { s as n } from "./showClass-C8hdJfjQ.mjs";
-import { h as se, o as i } from "./popupContainer-ymf2oGcv.mjs";
-import { d as F, g as S, a as ae, t as oe, s as ne, h as M, o as l, i as ie, r as re, m as ce, c as le, f as Q } from "./isVisible-B3gs6dMb.mjs";
-import { g as V } from "./getTargetElement-BFOUI7hP.mjs";
-const fe = `.${i}`, k = `[${te}="${i}"]`, ge = `[${ee}="${i}"]`, u = `${i}-toggling`, de = {
+import { h as se, o as i } from "./popupContainer-CgZsH2ur.mjs";
+import { d as R, g as D, a as oe, t as ae, s as ne, h as Y, o as l, i as ie, r as re, m as ce, c as le, f as Z } from "./isVisible-D1DWrEcd.mjs";
+import { g as F } from "./getTargetElement-Bv0W3Fir.mjs";
+const fe = `.${i}`, E = `[${te}="${i}"]`, ge = `[${ee}="${i}"]`, p = `${i}-toggling`, de = {
   backdrop: !0,
-  // boolean
   keyboard: !0,
-  // boolean
   scroll: !1
-  // boolean
-}, g = (a) => B(a, F), me = (a) => new ye(a), m = h(`show.bs.${i}`), Y = h(`shown.bs.${i}`), b = h(`hide.bs.${i}`), Z = h(`hidden.bs.${i}`), ve = (a) => {
-  const { element: e } = a, { clientHeight: s, scrollHeight: t } = U(e);
+}, g = (o) => B(o, R), ve = (o) => new ye(o), v = h(`show.bs.${i}`), G = h(`shown.bs.${i}`), b = h(`hide.bs.${i}`), K = h(`hidden.bs.${i}`), me = (o) => {
+  const { element: e } = o, { clientHeight: s, scrollHeight: t } = J(e);
   le(e, s !== t);
-}, j = (a, e) => {
-  const s = e ? x : K, t = f(a.element);
-  s(t, W, be), s(t, N, pe);
-}, A = (a) => {
-  const { element: e, options: s } = a;
-  s.scroll || (ve(a), O(R(e), { overflow: "hidden" })), T(e, u), T(e, n), O(e, { visibility: "visible" }), w(e, () => Te(a));
-}, he = (a) => {
-  const { element: e, options: s } = a, t = S(e);
-  e.blur(), !t && s.backdrop && c(l, n) && M(), w(e, () => Oe(a));
-}, ue = (a) => {
-  const e = P(a.target, k), s = e && V(e), t = s && g(s);
-  t && (t.relatedTarget = e, t.toggle(), e && e.tagName === "A" && a.preventDefault());
-}, pe = (a) => {
-  const { target: e } = a, s = C(
-    Q,
+}, V = (o, e) => {
+  const s = e ? N : Q, t = f(o.element);
+  s(t, M, be), s(t, q, ue);
+}, A = (o) => {
+  const { element: e, options: s } = o;
+  s.scroll || (me(o), T(z(e), { overflow: "hidden" })), O(e, p), O(e, n), T(e, { visibility: "visible" }), $(e, () => Oe(o));
+}, he = (o) => {
+  const { element: e, options: s } = o, t = D(e);
+  e.blur(), !t && s.backdrop && c(l, n) && Y(), $(e, () => Te(o));
+}, pe = (o) => {
+  const e = x(o.target, E), s = e && F(e), t = s && g(s);
+  t && (t.relatedTarget = e, t.toggle(), e?.tagName === "A" && o.preventDefault());
+}, ue = (o) => {
+  const { target: e } = o, s = C(
+    Z,
     f(e)
-  ), t = C(
+  );
+  if (!s) return;
+  const t = C(
     ge,
     s
-  ), o = s && g(s);
-  if (o) {
-    const { options: r, triggers: d } = o, { backdrop: $ } = r, p = P(e, k), H = f(s).getSelection();
-    (!l.contains(e) || $ !== "static") && (!(H && H.toString().length) && (!s.contains(e) && $ && // istanbul ignore next @preserve
-    (!p || d.includes(e)) || t && t.contains(e)) && (o.relatedTarget = t && t.contains(e) ? t : null, o.hide()), p && p.tagName === "A" && a.preventDefault());
-  }
-}, be = ({ code: a, target: e }) => {
+  ), a = g(s);
+  if (!a) return;
+  const { options: r, triggers: d } = a, { backdrop: k } = r, u = x(e, E), H = f(s).getSelection();
+  l.contains(e) && k === "static" || (!(H && H.toString().length) && (!s.contains(e) && k && (!u || d.includes(e)) || t && t.contains(e)) && (a.relatedTarget = t && t.contains(e) ? t : void 0, a.hide()), u && u.tagName === "A" && o.preventDefault());
+}, be = ({ code: o, target: e }) => {
   const s = C(
-    Q,
+    Z,
     f(e)
   ), t = s && g(s);
-  t && t.options.keyboard && a === X && (t.relatedTarget = null, t.hide());
-}, Te = (a) => {
-  const { element: e } = a;
-  D(e, u), y(e, I), E(e, _, "true"), E(e, "role", "dialog"), v(e, Y), j(a, !0), q(e), L(e);
-}, Oe = (a) => {
-  const { element: e, triggers: s } = a;
-  E(e, I, "true"), y(e, _), y(e, "role"), O(e, { visibility: "" });
-  const t = m.relatedTarget || s.find(ie);
-  t && q(t), re(e), v(e, Z), D(e, u), L(e), S(e) || j(a);
+  t && t.options.keyboard && o === U && (t.relatedTarget = void 0, t.hide());
+}, Oe = (o) => {
+  const { element: e } = o;
+  S(e, p), y(e, I), w(e, P, "true"), w(e, "role", "dialog"), m(e, G), V(o, !0), _(e), L(e);
+}, Te = (o) => {
+  const { element: e, triggers: s } = o;
+  w(e, I, "true"), y(e, P), y(e, "role"), T(e, { visibility: "" });
+  const t = v.relatedTarget || s.find(ie);
+  t && _(t), re(e), m(e, K), S(e, p), L(e), D(e) || V(o);
 };
-class ye extends z {
+class ye extends W {
   static selector = fe;
-  static init = me;
+  static init = ve;
   static getInstance = g;
   /**
    * @param target usually an `.offcanvas` element
@@ -68,16 +65,19 @@ class ye extends z {
     super(e, s);
     const { element: t } = this;
     this.triggers = [
-      ...G(k, f(t))
+      ...X(
+        E,
+        f(t)
+      )
     ].filter(
-      (o) => V(o) === t
-    ), this.relatedTarget = null, this._toggleEventListeners(!0);
+      (a) => F(a) === t
+    ), this.relatedTarget = void 0, this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return F;
+    return R;
   }
   /**
    * Returns component default options.
@@ -85,33 +85,26 @@ class ye extends z {
   get defaults() {
     return de;
   }
-  // OFFCANVAS PUBLIC METHODS
-  // ========================
-  /** Shows or hides the offcanvas from the user. */
   toggle() {
     c(this.element, n) ? this.hide() : this.show();
   }
-  /** Shows the offcanvas to the user. */
   show() {
     const { element: e, options: s, relatedTarget: t } = this;
-    let o = 0;
-    if (!c(e, n) && (m.relatedTarget = t || void 0, Y.relatedTarget = t || void 0, v(e, m), !m.defaultPrevented)) {
-      const r = S(e);
-      if (r && r !== e) {
-        const d = g(r) || // istanbul ignore next @preserve
-        B(
-          r,
-          ce
-        );
-        d && d.hide();
-      }
-      s.backdrop ? (se(l) ? oe() : ae(e, !0), o = J(l), ne(), setTimeout(() => A(this), o)) : (A(this), r && c(l, n) && M());
+    let a = 0;
+    if (c(e, n) || (v.relatedTarget = t || void 0, G.relatedTarget = t || void 0, m(e, v), v.defaultPrevented)) return;
+    const r = D(e);
+    if (r && r !== e) {
+      const d = g(r) || B(
+        r,
+        ce
+      );
+      d && d.hide();
     }
+    s.backdrop ? (se(l) ? ae() : oe(e, !0), a = j(l), ne(), setTimeout(() => A(this), a)) : (A(this), r && c(l, n) && Y());
   }
-  /** Hides the offcanvas from the user. */
   hide() {
     const { element: e, relatedTarget: s } = this;
-    c(e, n) && (b.relatedTarget = s || void 0, Z.relatedTarget = s || void 0, v(e, b), b.defaultPrevented || (T(e, u), D(e, n), he(this)));
+    c(e, n) && (b.relatedTarget = s || void 0, K.relatedTarget = s || void 0, m(e, b), !b.defaultPrevented && (O(e, p), S(e, n), he(this)));
   }
   /**
    * Toggles on/off the `click` event listeners.
@@ -120,15 +113,14 @@ class ye extends z {
    * @param add when *true*, listeners are added
    */
   _toggleEventListeners = (e) => {
-    const s = e ? x : K;
+    const s = e ? N : Q;
     this.triggers.forEach(
-      (t) => s(t, N, ue)
+      (t) => s(t, q, pe)
     );
   };
-  /** Removes the `Offcanvas` from the target element. */
   dispose() {
     const { element: e } = this, s = c(e, n), t = () => setTimeout(() => super.dispose(), 1);
-    this.hide(), this._toggleEventListeners(), s ? w(e, t) : t();
+    this.hide(), this._toggleEventListeners(), s ? $(e, t) : t();
   }
 }
 export {

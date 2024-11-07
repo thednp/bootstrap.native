@@ -13,6 +13,7 @@ import {
   isHTMLElement,
   isString,
   mouseclickEvent,
+  MouseEvent,
   noop,
   querySelector,
   querySelectorAll,
@@ -45,13 +46,13 @@ const collapseDefaults = { parent: null };
  * Static method which returns an existing `Collapse` instance associated
  * to a target `Element`.
  */
-const getCollapseInstance = (element: HTMLElement) =>
+const getCollapseInstance = (element: Element) =>
   getInstance<Collapse>(element, collapseComponent);
 
 /**
  * A `Collapse` initialization callback.
  */
-const collapseInitCallback = (element: HTMLElement) => new Collapse(element);
+const collapseInitCallback = (element: Element) => new Collapse(element);
 
 // COLLAPSE CUSTOM EVENTS
 // ======================
@@ -129,7 +130,7 @@ const collapseContent = (self: Collapse) => {
     removeClass(element, showClass);
     addClass(element, collapsingClass);
 
-    reflow(element);
+    reflow(element as HTMLElement);
     setElementStyle(element, { height: "0px" });
 
     emulateTransitionEnd(element, () => {
@@ -156,10 +157,10 @@ const collapseContent = (self: Collapse) => {
  *
  * @param e the `Event` object
  */
-const collapseClickHandler = (e: MouseEvent) => {
+const collapseClickHandler = (e: MouseEvent<HTMLElement>) => {
   const { target } = e; // our target is `HTMLElement`
   const trigger = target &&
-    closest(target as HTMLElement, collapseToggleSelector);
+    closest(target, collapseToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getCollapseInstance(element);
   // istanbul ignore else @preserve
@@ -177,15 +178,16 @@ export default class Collapse extends BaseComponent {
   static selector = collapseSelector;
   static init = collapseInitCallback;
   static getInstance = getCollapseInstance;
+  declare element: HTMLElement;
   declare options: CollapseOptions;
-  declare parent: HTMLElement | null;
-  declare triggers: HTMLElement[];
+  declare parent: Element | null;
+  declare triggers: Element[];
 
   /**
    * @param target and `Element` that matches the selector
    * @param config instance options
    */
-  constructor(target: HTMLElement | string, config?: Partial<CollapseOptions>) {
+  constructor(target: Element | string, config?: Partial<CollapseOptions>) {
     super(target, config);
 
     // initialization element

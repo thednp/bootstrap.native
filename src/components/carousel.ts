@@ -5,6 +5,7 @@ import {
   closest,
   createCustomEvent,
   dispatchEvent,
+  DragEvent,
   dragstartEvent,
   emulateTransitionEnd,
   getAttribute,
@@ -33,6 +34,7 @@ import {
   reflow,
   removeClass,
   Timer,
+  TouchEvent,
   touchstartEvent,
 } from "@thednp/shorty";
 
@@ -47,7 +49,7 @@ import BaseComponent from "./base-component";
 import type { CarouselEvent, CarouselOptions } from "../interface/carousel";
 
 type CarouselEventProperties = {
-  relatedTarget: HTMLElement;
+  relatedTarget: EventTarget & HTMLElement;
   from: number;
   to: number;
   direction: "left" | "right";
@@ -72,13 +74,13 @@ const carouselDefaults: CarouselOptions = {
  * Static method which returns an existing `Carousel` instance associated
  * to a target `Element`.
  */
-const getCarouselInstance = (element: HTMLElement) =>
+const getCarouselInstance = (element: Element) =>
   getInstance<Carousel>(element, carouselComponent);
 
 /**
  * A `Carousel` initialization callback.
  */
-const carouselInitCallback = (element: HTMLElement) => new Carousel(element);
+const carouselInitCallback = (element: Element) => new Carousel(element);
 
 let startX = 0;
 let currentX = 0;
@@ -162,9 +164,8 @@ function carouselResumeHandler(this: HTMLElement) {
  */
 function carouselIndicatorHandler(this: HTMLElement, e: MouseEvent) {
   e.preventDefault();
-  const element =
-    (closest(this, carouselSelector) || getTargetElement(this)) as HTMLElement;
-  const self = getCarouselInstance(element);
+  const element = closest(this, carouselSelector) || getTargetElement(this);
+  const self = getCarouselInstance(element as HTMLElement);
 
   // istanbul ignore else @preserve
   if (self && !self.isAnimating) {
@@ -194,8 +195,8 @@ function carouselIndicatorHandler(this: HTMLElement, e: MouseEvent) {
 function carouselControlsHandler(this: HTMLElement, e: MouseEvent) {
   e.preventDefault();
   const element = closest(this, carouselSelector) ||
-    (getTargetElement(this) as HTMLElement);
-  const self = getCarouselInstance(element);
+    (getTargetElement(this));
+  const self = getCarouselInstance(element as HTMLElement);
 
   // istanbul ignore else @preserve
   if (self && !self.isAnimating) {
@@ -219,9 +220,8 @@ const carouselKeyHandler = (
   { code, target }: KeyboardEvent & { target: Node },
 ) => {
   const doc = getDocument(target);
-  const [element] = [...querySelectorAll(carouselSelector, doc)].filter((x) =>
-    isElementInScrollRange(x)
-  );
+  const [element] = [...querySelectorAll<HTMLElement>(carouselSelector, doc)]
+    .filter((x) => isElementInScrollRange(x));
   const self = getCarouselInstance(element);
 
   // istanbul ignore next @preserve
@@ -243,7 +243,10 @@ const carouselKeyHandler = (
  *
  * @param e the `Event` object
  */
-function carouselDragHandler(this: HTMLElement, e: DragEvent | TouchEvent) {
+function carouselDragHandler<T extends HTMLElement>(
+  this: T,
+  e: Event & (DragEvent<T> | TouchEvent<T>),
+) {
   const { target } = e;
   const self = getCarouselInstance(this);
 
@@ -252,7 +255,7 @@ function carouselDragHandler(this: HTMLElement, e: DragEvent | TouchEvent) {
     self &&
     self.isTouch &&
     ((self.indicator && !self.indicator.contains(target as Node)) ||
-      !self.controls.includes(target as HTMLElement))
+      !self.controls.includes(target))
   ) {
     e.stopImmediatePropagation();
     e.stopPropagation();
@@ -402,6 +405,7 @@ export default class Carousel extends BaseComponent {
   static selector = carouselSelector;
   static init = carouselInitCallback;
   static getInstance = getCarouselInstance;
+  declare element: HTMLElement;
   declare options: CarouselOptions;
   declare direction: "right" | "left";
   declare index: number;
@@ -415,7 +419,7 @@ export default class Carousel extends BaseComponent {
    * @param target mostly a `.carousel` element
    * @param config instance options
    */
-  constructor(target: HTMLElement | string, config?: Partial<CarouselOptions>) {
+  constructor(target: Element | string, config?: Partial<CarouselOptions>) {
     super(target, config);
 
     // initialization element
@@ -444,22 +448,24 @@ export default class Carousel extends BaseComponent {
       const doc = getDocument(element);
 
       this.controls = [
-        ...querySelectorAll(`[${dataBsSlide}]`, element),
-        ...querySelectorAll(
+        ...querySelectorAll<HTMLElement>(`[${dataBsSlide}]`, element),
+        ...querySelectorAll<HTMLElement>(
           `[${dataBsSlide}][${dataBsTarget}="#${element.id}"]`,
           doc,
         ),
       ].filter((c, i, ar) => i === ar.indexOf(c));
 
-      this.indicator = querySelector(`.${carouselString}-indicators`, element);
+      this.indicator = querySelector<HTMLElement>(
+        `.${carouselString}-indicators`,
+        element,
+      );
 
-      // a LIVE collection is prefferable
+      // a LIVE collection is preffered
       this.indicators = [
         ...(this.indicator
-          ? querySelectorAll(`[${dataBsSlideTo}]`, this.indicator)
-          // istanbul ignore next @preserve
-          : []),
-        ...querySelectorAll(
+          ? querySelectorAll<HTMLElement>(`[${dataBsSlideTo}]`, this.indicator)
+          /* istanbul ignore next @preserve */ : []),
+        ...querySelectorAll<HTMLElement>(
           `[${dataBsSlideTo}][${dataBsTarget}="#${element.id}"]`,
           doc,
         ),

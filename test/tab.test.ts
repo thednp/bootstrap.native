@@ -48,7 +48,7 @@ describe("Tab Class Tests", () => {
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-bs-toggle="tab"]'), 200);
 
-    const elements = [...container.querySelectorAll('[data-bs-toggle="tab"]')] as HTMLElement[];
+    const elements = [...container.querySelectorAll<HTMLElement>('[data-bs-toggle="tab"]')];
 
     elements.forEach((element, i) => {
       const instance = Tab.init(element);
@@ -69,8 +69,8 @@ describe("Tab Class Tests", () => {
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-bs-toggle="tab"]'), 200);
 
-    const dropdowns = [...container.querySelectorAll('[data-bs-toggle="dropdown"]')] as HTMLElement[];
-    const elements = [...container.querySelectorAll('[data-bs-toggle="tab"]')] as HTMLElement[];
+    const dropdowns = [...container.querySelectorAll<HTMLElement>('[data-bs-toggle="dropdown"]')];
+    const elements = [...container.querySelectorAll<HTMLButtonElement>('[data-bs-toggle="tab"]')];
 
     const dropdownInstances: Dropdown[] = [];
     const tabInstances: Tab[] = [];
@@ -78,35 +78,35 @@ describe("Tab Class Tests", () => {
     dropdowns.forEach(dropdown => dropdownInstances.push(Dropdown.init(dropdown)));
     elements.forEach(element => tabInstances.push(Tab.init(element)));
 
-    dropdownInstances[0].element.click();
+    (dropdownInstances[0].element as HTMLElement).click();
     await vi.waitFor(() => {
       expect(dropdownInstances[0].menu.className).to.contain('show');
     }, 50);
-    tabInstances[1].element.click();
+    (tabInstances[1].element as HTMLElement).click();
     await vi.waitFor(() => {
       expect(tabInstances[0].content?.className).to.not.contain('show');
       expect(tabInstances[1].content?.className).to.contain('show');
     }, 151);
 
     await new Promise(res => setTimeout(res, 101));
-    dropdownInstances[0].element.click();
+    (dropdownInstances[0].element as HTMLElement).click();
     await vi.waitFor(() => {
       expect(dropdownInstances[0].menu.className).to.contain('show');
     }, 50);
     await new Promise(res => setTimeout(res, 171));
-    tabInstances[2].element.click();
+    (tabInstances[2].element as HTMLElement).click();
     await vi.waitFor(() => {
       expect(tabInstances[1].content?.className).to.not.contain('show');
       expect(tabInstances[2].content?.className).to.contain('show');
     }, 151);
 
     await new Promise(res => setTimeout(res, 101));
-    tabInstances[4].element.click();
+    (tabInstances[4].element as HTMLElement).click();
     await vi.waitFor(() => {
       expect(tabInstances[4].content?.className).to.contain('show');
     }, 151);
 
-    tabInstances[3].element.click();
+    (tabInstances[3].element as HTMLElement).click();
     await vi.waitFor(() => {
       expect(tabInstances[4].content?.className).to.not.contain('show');
       expect(tabInstances[3].content?.className).to.contain('show');

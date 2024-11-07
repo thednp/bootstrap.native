@@ -28,11 +28,11 @@ const buttonSelector = `[${dataBsToggle}="${buttonString}"]`;
  * Static method which returns an existing `Button` instance associated
  * to a target `Element`.
  */
-const getButtonInstance = (element: HTMLElement) =>
+const getButtonInstance = (element: Element) =>
   getInstance<Button>(element, buttonComponent);
 
 /** A `Button` initialization callback. */
-const buttonInitCallback = (element: HTMLElement) => new Button(element);
+const buttonInitCallback = (element: Element) => new Button(element);
 
 // BUTTON DEFINITION
 // =================
@@ -42,12 +42,13 @@ export default class Button extends BaseComponent {
   static init = buttonInitCallback;
   static getInstance = getButtonInstance;
 
-  isActive = false;
+  declare isActive: boolean;
+  declare element: HTMLElement;
 
   /**
    * @param target usually a `.btn` element
    */
-  constructor(target: HTMLElement | string) {
+  constructor(target: Element | string) {
     super(target);
 
     // initialization element

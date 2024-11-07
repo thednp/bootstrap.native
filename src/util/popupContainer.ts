@@ -6,7 +6,7 @@ const popupContainer = createElement({
   className: "popup-container",
 }) as HTMLElement;
 
-const appendPopup = (target: HTMLElement, customContainer?: ParentNode) => {
+const appendPopup = (target: Element, customContainer?: ParentNode) => {
   const containerIsBody = isNode(customContainer) &&
     customContainer.nodeName === "BODY";
   const lookup = isNode(customContainer) && !containerIsBody
@@ -23,7 +23,7 @@ const appendPopup = (target: HTMLElement, customContainer?: ParentNode) => {
   }
 };
 
-const removePopup = (target: HTMLElement, customContainer?: ParentNode) => {
+const removePopup = (target: Element, customContainer?: ParentNode) => {
   const containerIsBody = isNode(customContainer) &&
     customContainer.nodeName === "BODY";
   const lookup = isNode(customContainer) && !containerIsBody
@@ -40,7 +40,7 @@ const removePopup = (target: HTMLElement, customContainer?: ParentNode) => {
   }
 };
 
-const hasPopup = (target: HTMLElement, customContainer?: ParentNode) => {
+const hasPopup = (target: Element, customContainer?: ParentNode) => {
   const lookup = isNode(customContainer) && customContainer.nodeName !== "BODY"
     ? customContainer
     : popupContainer;

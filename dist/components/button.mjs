@@ -1,20 +1,19 @@
-import { B as l, h as n, s as a, a as c, b as g, m as u, g as m, r as d, f as p } from "./base-component-ylZzLp-h.mjs";
-import { E as v, r as b } from "./event-listener-C1-Yf9Z5.mjs";
-import { a as i } from "./activeClass-iqaD75Su.mjs";
-import { d as f } from "./dataBsToggle-B84TS15h.mjs";
-const h = "button", r = "Button", A = `[${f}="${h}"]`, C = (e) => m(e, r), B = (e) => new E(e);
+import { B as l, Y as n, Q as a, a as c, j as g, m, t as u, Z as p, b as d } from "./base-component-Jx2aafTJ.mjs";
+import { E as b, r as f } from "./event-listener-CUwvA4j6.mjs";
+import { a as o } from "./activeClass-iqaD75Su.mjs";
+import { d as h } from "./dataBsToggle-B84TS15h.mjs";
+const v = "button", r = "Button", B = `[${h}="${v}"]`, A = (e) => u(e, r), C = (e) => new E(e);
 class E extends l {
-  static selector = A;
-  static init = B;
-  static getInstance = C;
-  isActive = !1;
+  static selector = B;
+  static init = C;
+  static getInstance = A;
   /**
    * @param target usually a `.btn` element
    */
   constructor(s) {
     super(s);
     const { element: t } = this;
-    this.isActive = n(t, i), a(t, c, String(!!this.isActive)), this._toggleEventListeners(!0);
+    this.isActive = n(t, o), a(t, c, String(!!this.isActive)), this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
@@ -22,8 +21,6 @@ class E extends l {
   get name() {
     return r;
   }
-  // BUTTON PUBLIC METHODS
-  // =====================
   /**
    * Toggles the state of the target button.
    *
@@ -31,20 +28,17 @@ class E extends l {
    */
   toggle = (s) => {
     s && s.preventDefault();
-    const { element: t, isActive: o } = this;
-    !n(t, "disabled") && !g(t, "disabled") && ((o ? d : p)(t, i), a(t, c, o ? "false" : "true"), this.isActive = n(t, i));
+    const { element: t, isActive: i } = this;
+    !n(t, "disabled") && !g(t, "disabled") && ((i ? p : d)(t, o), a(t, c, i ? "false" : "true"), this.isActive = n(t, o));
   };
-  // BUTTON PRIVATE METHOD
-  // =====================
   /**
    * Toggles on/off the `click` event listener.
    *
    * @param add when `true`, event listener is added
    */
   _toggleEventListeners = (s) => {
-    (s ? v : b)(this.element, u, this.toggle);
+    (s ? b : f)(this.element, m, this.toggle);
   };
-  /** Removes the `Button` component from the target element. */
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }

@@ -4,13 +4,14 @@ import {
   getBoundingClientRect,
   getDocumentElement,
   getElementStyle,
+  getNodeScroll,
+  getRectRelativeToOffsetParent,
   isHTMLElement,
   isRTL,
   setElementStyle,
   toLowerCase,
 } from "@thednp/shorty";
 
-import popoverComponent from "../strings/popoverComponent";
 import tipClassPositions from "./tipClassPositions";
 import Tooltip from "../components/tooltip";
 import type { TooltipEvent } from "../interface/tooltip";
@@ -21,32 +22,30 @@ import type { PopoverEvent } from "../interface/popover";
  *
  * @param self the `Popover` / `Tooltip` instance
  */
-const styleTip = <T extends Tooltip>(self: T) => {
-  const tipClasses = /\b(top|bottom|start|end)+/;
-  const { element, tooltip, container, options, arrow } = self;
+const styleTip = (self: Tooltip) => {
+  requestAnimationFrame(() => {
+    const tipClasses = /\b(top|bottom|start|end)+/;
+    const { element, tooltip, container, offsetParent, options, arrow } = self;
 
-  // istanbul ignore else @preserve
-  if (tooltip) {
-    const tipPositions = { ...tipClassPositions };
+    // istanbul ignore if @preserve
+    if (!tooltip) return;
     const RTL = isRTL(element);
+    const { x: scrollLeft, y: scrollTop } = getNodeScroll(offsetParent);
 
     // reset tooltip style (top: 0, left: 0 works best)
     setElementStyle(tooltip, {
-      // top: '0px', left: '0px', right: '', bottom: '',
       top: "",
       left: "",
       right: "",
       bottom: "",
     });
-    const isPopover = self.name === popoverComponent;
     const { offsetWidth: tipWidth, offsetHeight: tipHeight } = tooltip;
     const { clientWidth: htmlcw, clientHeight: htmlch, offsetWidth: htmlow } =
       getDocumentElement(element);
     let { placement } = options;
-    const { clientWidth: parentCWidth, offsetWidth: parentOWidth } =
-      container as HTMLElement;
+    const { clientWidth: parentCWidth, offsetWidth: parentOWidth } = container;
     const parentPosition = getElementStyle(
-      container as HTMLElement,
+      container,
       "position",
     );
     const fixedParent = parentPosition === "fixed";
@@ -54,21 +53,30 @@ const styleTip = <T extends Tooltip>(self: T) => {
       ? Math.abs(parentCWidth - parentOWidth)
       : Math.abs(htmlcw - htmlow);
     const leftBoundry = RTL && fixedParent
-      // istanbul ignore next @preserve
-      ? scrollbarWidth
+      ? /* istanbul ignore next @preserve */ scrollbarWidth
       : 0;
     const rightBoundry = htmlcw - (!RTL ? scrollbarWidth : 0) - 1;
+
+    // reuse observer entry bounding box
+    const observerEntry = self._observer.getEntry(element);
     const {
       width: elemWidth,
       height: elemHeight,
       left: elemRectLeft,
       right: elemRectRight,
       top: elemRectTop,
-    } = getBoundingClientRect(element, true);
-    const { x, y } = {
-      x: elemRectLeft,
-      y: elemRectTop,
-    };
+    } = observerEntry?.boundingClientRect ||
+      getBoundingClientRect(element, true);
+
+    const {
+      x: elemOffsetLeft,
+      y: elemOffsetTop,
+    } = getRectRelativeToOffsetParent(
+      element,
+      offsetParent,
+      { x: scrollLeft, y: scrollTop },
+    );
+
     // reset arrow style
     setElementStyle(arrow as HTMLElement, {
       top: "",
@@ -84,8 +92,8 @@ const styleTip = <T extends Tooltip>(self: T) => {
     let arrowLeft: number | string = "";
     let arrowRight: number | string = "";
 
-    const arrowWidth = (arrow as HTMLElement).offsetWidth || 0;
-    const arrowHeight = (arrow as HTMLElement).offsetHeight || 0;
+    const arrowWidth = arrow.offsetWidth || 0;
+    const arrowHeight = arrow.offsetHeight || 0;
     const arrowAdjust = arrowWidth / 2;
 
     // check placement
@@ -127,10 +135,11 @@ const styleTip = <T extends Tooltip>(self: T) => {
       : placement;
 
     // update tooltip/popover class
+    // istanbul ignore else @preserve
     if (!tooltip.className.includes(placement)) {
       tooltip.className = tooltip.className.replace(
         tipClasses,
-        tipPositions[placement],
+        tipClassPositions[placement],
       );
     }
 
@@ -140,47 +149,47 @@ const styleTip = <T extends Tooltip>(self: T) => {
       // secondary|side positions
       if (placement === "left") {
         // LEFT
-        leftPosition = x - tipWidth - (isPopover ? arrowWidth : 0);
+        leftPosition = elemOffsetLeft - tipWidth - arrowWidth;
       } else {
         // RIGHT
-        leftPosition = x + elemWidth + (isPopover ? arrowWidth : 0);
+        leftPosition = elemOffsetLeft + elemWidth + arrowWidth;
       }
 
       // adjust top and arrow
       if (topExceed && bottomExceed) {
         topPosition = 0;
         bottomPosition = 0;
-        arrowTop = elemRectTop + elemHeight / 2 - arrowHeight / 2;
+        arrowTop = elemOffsetTop + elemHeight / 2 - arrowHeight / 2;
       } else if (topExceed) {
-        topPosition = y;
+        topPosition = elemOffsetTop;
         bottomPosition = "";
         arrowTop = elemHeight / 2 - arrowWidth;
       } else if (bottomExceed) {
-        topPosition = y - tipHeight + elemHeight;
+        topPosition = elemOffsetTop - tipHeight + elemHeight;
         bottomPosition = "";
         arrowTop = tipHeight - elemHeight / 2 - arrowWidth;
       } else {
-        topPosition = y - tipHeight / 2 + elemHeight / 2;
+        topPosition = elemOffsetTop - tipHeight / 2 + elemHeight / 2;
         arrowTop = tipHeight / 2 - arrowHeight / 2;
       }
     } else if (verticals.includes(placement)) {
       if (placement === "top") {
-        topPosition = y - tipHeight - (isPopover ? arrowHeight : 0);
+        topPosition = elemOffsetTop - tipHeight - arrowHeight;
       } else {
         // BOTTOM
-        topPosition = y + elemHeight + (isPopover ? arrowHeight : 0);
+        topPosition = elemOffsetTop + elemHeight + arrowHeight;
       }
 
       // adjust left | right and also the arrow
       if (leftExceed) {
         leftPosition = 0;
-        arrowLeft = x + elemWidth / 2 - arrowAdjust;
+        arrowLeft = elemOffsetLeft + elemWidth / 2 - arrowAdjust;
       } else if (rightExceed) {
         leftPosition = "auto";
         rightPosition = 0;
         arrowRight = elemWidth / 2 + rightBoundry - elemRectRight - arrowAdjust;
       } else {
-        leftPosition = x - tipWidth / 2 + elemWidth / 2;
+        leftPosition = elemOffsetLeft - tipWidth / 2 + elemWidth / 2;
         arrowLeft = tipWidth / 2 - arrowAdjust;
       }
     }
@@ -212,7 +221,7 @@ const styleTip = <T extends Tooltip>(self: T) => {
       `updated.bs.${toLowerCase(self.name)}`,
     );
     dispatchEvent(element, updatedTooltipEvent);
-  }
+  });
 };
 
 export default styleTip;

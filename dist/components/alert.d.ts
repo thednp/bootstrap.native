@@ -1,10 +1,10 @@
 /** Creates a new Alert instance. */
 declare class Alert extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Alert;
-    static getInstance: (element: HTMLElement) => Alert | null;
+    static init: (element: Element) => Alert;
+    static getInstance: (element: Element) => Alert | null;
     dismiss: HTMLElement | null;
-    constructor(target: HTMLElement | string);
+    constructor(target: Element | string);
     /** Returns component name string. */
     get name(): string;
     /**
@@ -26,13 +26,13 @@ export default Alert;
 
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};

@@ -16,7 +16,7 @@ import dataBsContainer from "../strings/dataBsContainer";
  * @param element the target element
  * @returns the query result
  */
-const getTargetElement = (element: HTMLElement) => {
+const getTargetElement = <T extends Element = HTMLElement>(element: T) => {
   const targetAttr = [dataBsTarget, dataBsParent, dataBsContainer, "href"];
   const doc = getDocument(element);
 
@@ -25,8 +25,8 @@ const getTargetElement = (element: HTMLElement) => {
       const attValue = getAttribute(element, att);
       if (attValue) {
         return att === dataBsParent
-          ? closest(element, attValue)
-          : querySelector(attValue, doc);
+          ? closest<T>(element, attValue)
+          : querySelector<T>(attValue, doc);
       }
       return null;
     })

@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import { name } from './package.json';
 import dts from "vite-plugin-dts";
+import stripComments from "vite-plugin-strip-comments";
 
 const getPackageName = () => {
   return (name.includes('@') ? name.split('/')[1] : name).replace('.', '-');
@@ -16,6 +17,7 @@ const mainFile = {
 };
 
 export default defineConfig({
+  base: './',
   resolve: {
     alias: {
       "~": resolve(__dirname, "src"),
@@ -29,18 +31,14 @@ export default defineConfig({
       outDir: 'dist',
       copyDtsFiles: true,
       rollupTypes: true,
-    })
+    }),
+    stripComments({ type: 'none' }),
   ],
-  base: './',
   build: {
-    emptyOutDir: true,
+    minify: 'esbuild',
     target: 'ESNext',
     outDir: 'dist',
-    rollupOptions: {
-      output: {
-        compact: true
-      }
-    },
+    emptyOutDir: true,
     lib: {
       entry: [
         resolve(__dirname, 'src/index.ts'), // main file

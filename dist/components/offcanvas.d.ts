@@ -1,12 +1,12 @@
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -23,16 +23,17 @@ declare interface BaseOptions {
 /** Returns a new `Offcanvas` instance. */
 declare class Offcanvas extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Offcanvas;
-    static getInstance: (element: HTMLElement) => Offcanvas | null;
+    static init: (element: Element) => Offcanvas;
+    static getInstance: (element: Element) => Offcanvas | null;
+    element: HTMLElement;
     options: OffcanvasOptions;
     triggers: HTMLElement[];
-    relatedTarget: HTMLElement | null;
+    relatedTarget: EventTarget & HTMLElement | undefined;
     /**
      * @param target usually an `.offcanvas` element
      * @param config instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<OffcanvasOptions>);
+    constructor(target: Element | string, config?: Partial<OffcanvasOptions>);
     /**
      * Returns component name string.
      */

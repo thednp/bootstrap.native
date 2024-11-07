@@ -14,11 +14,11 @@ import stickyTopClass from "../strings/stickyTopClass";
 import positionStickyClass from "../strings/positionStickyClass";
 
 const getFixedItems = (parent?: ParentNode) => [
-  ...getElementsByClassName(fixedTopClass, parent),
-  ...getElementsByClassName(fixedBottomClass, parent),
-  ...getElementsByClassName(stickyTopClass, parent),
-  ...getElementsByClassName(positionStickyClass, parent),
-  ...getElementsByClassName("is-fixed", parent),
+  ...getElementsByClassName<HTMLElement>(fixedTopClass, parent),
+  ...getElementsByClassName<HTMLElement>(fixedBottomClass, parent),
+  ...getElementsByClassName<HTMLElement>(stickyTopClass, parent),
+  ...getElementsByClassName<HTMLElement>(positionStickyClass, parent),
+  ...getElementsByClassName<HTMLElement>("is-fixed", parent),
 ];
 
 /**
@@ -27,7 +27,7 @@ const getFixedItems = (parent?: ParentNode) => [
  *
  * @param element the target modal/offcanvas
  */
-export const resetScrollbar = (element?: HTMLElement) => {
+export const resetScrollbar = (element?: Element) => {
   const bd = getDocumentBody(element);
   setElementStyle(bd, {
     paddingRight: "",
@@ -54,7 +54,7 @@ export const resetScrollbar = (element?: HTMLElement) => {
  * @param element target element
  * @returns the scrollbar width value
  */
-export const measureScrollbar = (element: HTMLElement) => {
+export const measureScrollbar = (element: Element) => {
   const { clientWidth } = getDocumentElement(element);
   const { innerWidth } = getWindow(element);
   return Math.abs(innerWidth - clientWidth);
@@ -67,7 +67,7 @@ export const measureScrollbar = (element: HTMLElement) => {
  * @param element the target modal/offcanvas
  * @param overflow body does overflow or not
  */
-export const setScrollbar = (element: HTMLElement, overflow?: boolean) => {
+export const setScrollbar = (element: Element, overflow?: boolean) => {
   const bd = getDocumentBody(element);
   const bodyPad = parseInt(getElementStyle(bd, "paddingRight"), 10);
   const isOpen = getElementStyle(bd, "overflow") === "hidden";

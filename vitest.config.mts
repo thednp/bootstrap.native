@@ -12,6 +12,12 @@ export default defineConfig({
       "@vitest/coverage-istanbul"
     ]
   },
+  esbuild: {
+    legalComments: 'inline',
+  },
+  build: {
+    minify: 'esbuild'
+  },
   test: {
     css: true,
     globals: true,

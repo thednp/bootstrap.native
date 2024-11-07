@@ -334,9 +334,8 @@ const markup = {
   scrollspy: `<div class="container p-5">
       <h3>ScrollSpy Examples</h3>
       <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-8">
           <nav class="navbar navbar-dark navbar-expand-md bg-dark px-3">
-            <a class="navbar-brand" href="#">SS Example</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#scrollSpy-nav" aria-controls="scrollSpy-nav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -344,9 +343,9 @@ const markup = {
               <ul id="navbar-example" class="navbar-nav nav-pills">
                 <li class="nav-item"><a class="nav-link active" href="#first">Tumblr farm</a></li>
                 <li class="nav-item"><a class="nav-link" href="#second">Carles aesthetic</a></li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown show">
                   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">More Items <span class="caret"></span></a>
-                  <div class="dropdown-menu" role="menu">
+                  <div class="dropdown-menu show" role="menu">
                     <a class="dropdown-item" href="#one">one</a>
                     <a class="dropdown-item" href="#two">two</a>
                     <a class="dropdown-item" href="#three">three</a>
@@ -385,15 +384,16 @@ const markup = {
       
             <h5 id="three">three</h5>
             <p>Ad leggings keytar, brunch id art party dolor labore. Pitchfork yr enim lo-fi before they sold out qui. Tumblr
-              farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan.</p>
+              farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan. Elit wolf voluptate, lo-fi ea portland
+              before they sold out four loko. Locavore enim nostrud mlkshk brooklyn nesciunt.</p>
           </div>
         </div>
-        <div class="col-md-3">
-          <h2>Navbar</h2>
+        <div class="col-md-4">
+          <h3>Navbar</h3>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-8">
           <div class="row">
             <div class="col-4">
               <nav id="navbar-example3" class="navbar navbar-light bg-light flex-column">
@@ -445,8 +445,8 @@ const markup = {
             </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <h2>Regular Nav</h2>
+        <div class="col-md-4">
+          <h3>Regular Nav</h3>
         </div>
       </div>
     </div>`,

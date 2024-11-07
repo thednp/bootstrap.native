@@ -1,12 +1,12 @@
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -23,8 +23,9 @@ declare interface BaseOptions {
 /** Returns a new Dropdown instance. */
 declare class Dropdown extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Dropdown;
-    static getInstance: (element: HTMLElement) => Dropdown | null;
+    static init: (element: Element) => Dropdown;
+    static getInstance: (element: Element) => Dropdown | null;
+    element: HTMLElement;
     options: DropdownOptions;
     open: boolean;
     parentElement: HTMLElement;
@@ -34,7 +35,7 @@ declare class Dropdown extends BaseComponent {
      * @param target Element or string selector
      * @param config the instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<DropdownOptions>);
+    constructor(target: Element | string, config?: Partial<DropdownOptions>);
     /**
      * Returns component name string.
      */

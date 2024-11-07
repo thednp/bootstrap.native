@@ -83,7 +83,7 @@
     "clean-coverage": "rm -rf coverage .nyc_output",
     "badges": "npx -p dependency-version-badge update-badge typescript vitest vite",
     "build": "pnpm build-vite && pnpm build-components && pnpm copy-docs",
-    "build-vite": "vite build && pnpm copy-docs",
+    "build-vite": "vite build",
     "build-components": "vite build --config vite.config.components.mts",
     "copy-docs": "cp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && cp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "lint": "deno lint src && pnpm check:ts",
@@ -108,12 +108,12 @@
     "typescript"
   ],
   "dependencies": {
-    "@thednp/event-listener": "^2.0.6",
-    "@thednp/position-observer": "^0.0.3",
-    "@thednp/shorty": "^2.0.7"
+    "@thednp/event-listener": "^2.0.8",
+    "@thednp/position-observer": "github:thednp/position-observer",
+    "@thednp/shorty": "github:thednp/shorty"
   },
   "devDependencies": {
-    "@types/node": "^20.17.1",
+    "@types/node": "^20.17.6",
     "@vitest/browser": "^2.1.4",
     "@vitest/coverage-istanbul": "^2.1.4",
     "@vitest/ui": "^2.1.4",
@@ -121,6 +121,7 @@
     "typescript": "^5.6.3",
     "vite": "^5.4.10",
     "vite-plugin-dts": "^4.3.0",
+    "vite-plugin-strip-comments": "^0.0.1",
     "vitest": "^2.1.4"
   },
   "packageManager": "pnpm@8.6.12",

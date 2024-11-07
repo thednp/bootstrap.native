@@ -2,7 +2,7 @@
 ----------------------------------------------------- */
 import {
   Data,
-  isHTMLElement,
+  isElement,
   isString,
   normalizeOptions,
   ObjectKeys,
@@ -14,21 +14,21 @@ import Version from "../version";
 
 /** Returns a new `BaseComponent` instance. */
 export default class BaseComponent {
-  declare element: HTMLElement;
+  declare element: Element;
   declare options?: BaseOptions;
 
   /**
-   * @param target `HTMLElement` or selector string
+   * @param target `Element` or selector string
    * @param config component instance options
    */
-  constructor(target: HTMLElement | string, config?: BaseOptions) {
-    let element: HTMLElement | null;
+  constructor(target: Element | string, config?: BaseOptions) {
+    let element: Element | null;
 
     try {
-      if (isHTMLElement(target)) {
-        element = target;
+      if (isElement(target)) {
+        element = target as Element;
       } else if (isString(target)) {
-        element = querySelector<HTMLElement>(target);
+        element = querySelector(target);
         // istanbul ignore else @preserve
         if (!element) throw Error(`"${target}" is not a valid selector.`);
       } else {
@@ -39,7 +39,7 @@ export default class BaseComponent {
     }
 
     const prevInstance = Data.get<typeof this>(element, this.name);
-    // istanbul ignore else @preserve
+    /* istanbul ignore else @preserve */
     if (prevInstance) {
       // remove previously attached event listeners
       // to avoid memory leaks

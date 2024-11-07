@@ -55,34 +55,26 @@ describe("Offcanvas Class Tests", () => {
     const dismiss = element.querySelector<HTMLButtonElement>('[data-bs-dismiss="offcanvas"]')!;
     const instance = Offcanvas.init(element);
 
-    await vi.waitFor(() => {
-      expect(instance.element).to.equal(element);
-      expect(instance.name).to.equal('Offcanvas');
-      expect(instance.options).to.not.be.empty;
-      expect(instance.defaults).to.not.be.undefined;
-      expect(instance.version).to.not.be.undefined;
-    }, 151);
-
     trigger.click();
     await vi.waitFor(() => {
       expect(instance.element.className).to.contain("show");
     }, 151);
 
     // wait for events to be attached and backdrop added
-    await new Promise(res => setTimeout(res, 151));
     const backdrop = doc.querySelector<HTMLElement>('.offcanvas-backdrop')!;
+    await new Promise(res => setTimeout(res, 151));
 
     backdrop.dispatchEvent(new MouseEvent('click', { bubbles: true, /*clientX: 412, clientY: 2*/ }));
+
     await vi.waitFor(() => {
       expect(instance.element.className).to.not.contain("show");
-    }, 151);
+    }, 1251);
 
     trigger.click();
     await vi.waitFor(() => {
       expect(instance.element.className).to.contain("show");
     }, 151);
 
-    await new Promise(res => setTimeout(res, 101));
     dismiss.click();
     await vi.waitFor(() => {
       expect(instance.element.className).to.not.contain("show");

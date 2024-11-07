@@ -21,11 +21,13 @@ import {
   isRTL,
   keyArrowDown,
   keyArrowUp,
+  KeyboardEvent,
   keydownEvent,
   keyEscape,
   keyupEvent,
   mouseclickEvent,
   mousedownEvent,
+  MouseEvent,
   ObjectAssign,
   removeClass,
   setAttribute,
@@ -54,13 +56,13 @@ const dropdownSelector = `[${dataBsToggle}="${dropdownString}"]`;
  * Static method which returns an existing `Dropdown` instance associated
  * to a target `Element`.
  */
-const getDropdownInstance = (element: HTMLElement) =>
+const getDropdownInstance = (element: Element) =>
   getInstance<Dropdown>(element, dropdownComponent);
 
 /**
  * A `Dropdown` initialization callback.
  */
-const dropdownInitCallback = (element: HTMLElement) => new Dropdown(element);
+const dropdownInitCallback = (element: Element) => new Dropdown(element);
 
 // DROPDOWN PRIVATE GC
 // ===================
@@ -75,7 +77,7 @@ const dropdownDefaults = {
   display: "dynamic", // [dynamic|static]
 };
 
-type DropdownEventProps = { relatedTarget: HTMLElement };
+type DropdownEventProps = { relatedTarget: Element & EventTarget };
 
 // DROPDOWN CUSTOM EVENTS
 // ======================
@@ -254,8 +256,7 @@ const styleDropdown = (self: Dropdown) => {
       if (menuEnd) {
         const endAdjust = (!RTL && leftExceed) || (RTL && rightExceed)
           ? "menuStart"
-          // istanbul ignore next @preserve
-          : "menuEnd";
+          : /* istanbul ignore next @preserve */ "menuEnd";
         setElementStyle(menu, dropdownPosition[endAdjust]);
       }
     }
@@ -271,14 +272,14 @@ const styleDropdown = (self: Dropdown) => {
  * @returns all children of the dropdown menu
  */
 const getMenuItems = (menu: HTMLElement) => {
-  return [...menu.children]
+  return Array.from(menu.children)
     .map((c) => {
-      if (c && menuFocusTags.includes(c.tagName)) return c;
+      if (c && menuFocusTags.includes(c.tagName)) return c as HTMLElement;
       const { firstElementChild } = c;
       if (
         firstElementChild && menuFocusTags.includes(firstElementChild.tagName)
       ) {
-        return firstElementChild;
+        return firstElementChild as HTMLElement;
       }
       return null;
     })
@@ -315,8 +316,8 @@ const toggleDropdownDismiss = (self: Dropdown) => {
  * @returns the query result
  */
 const getCurrentOpenDropdown = (
-  element: HTMLElement,
-): HTMLElement | undefined => {
+  element: Element,
+): Element | undefined => {
   const currentParent = [...dropdownClasses, "btn-group", "input-group"]
     .map((c) =>
       getElementsByClassName(`${c} ${showClass}`, getDocument(element))
@@ -324,7 +325,7 @@ const getCurrentOpenDropdown = (
     .find((x) => x.length);
 
   if (currentParent && currentParent.length) {
-    return [...(currentParent[0].children as HTMLCollectionOf<HTMLElement>)]
+    return [...(currentParent[0].children as HTMLCollectionOf<Element>)]
       .find((x) =>
         dropdownClasses.some((c) => c === getAttribute(x, dataBsToggle))
       );
@@ -342,34 +343,34 @@ const getCurrentOpenDropdown = (
 const dropdownDismissHandler = (e: MouseEvent) => {
   const { target, type } = e;
 
+  // istanbul ignore if @preserve
+  if (!isHTMLElement(target)) return;
+
+  // some weird FF bug #409
+  const element = getCurrentOpenDropdown(target);
+  const self = element && getDropdownInstance(element);
+
+  // istanbul ignore if @preserve
+  if (!self) return;
+
+  const { parentElement, menu } = self;
+
+  const isForm = parentElement &&
+    parentElement.contains(target) &&
+    (target.tagName === "form" || closest(target, "form") !== null);
+
+  if (
+    [mouseclickEvent, mousedownEvent].includes(type) &&
+    isEmptyAnchor(target)
+  ) {
+    e.preventDefault();
+  }
+
   // istanbul ignore else @preserve
-  if (target && isHTMLElement(target)) {
-    // some weird FF bug #409
-    const element = getCurrentOpenDropdown(target);
-    const self = element && getDropdownInstance(element);
-
-    // istanbul ignore else @preserve
-    if (self) {
-      const { parentElement, menu } = self;
-
-      const isForm = parentElement &&
-        parentElement.contains(target) &&
-        (target.tagName === "form" || closest(target, "form") !== null);
-
-      if (
-        [mouseclickEvent, mousedownEvent].includes(type) &&
-        isEmptyAnchor(target)
-      ) {
-        e.preventDefault();
-      }
-
-      // istanbul ignore else @preserve
-      if (
-        !isForm && type !== focusEvent && target !== element && target !== menu
-      ) {
-        self.hide();
-      }
-    }
+  if (
+    !isForm && type !== focusEvent && target !== element && target !== menu
+  ) {
+    self.hide();
   }
 };
 
@@ -378,18 +379,18 @@ const dropdownDismissHandler = (e: MouseEvent) => {
  *
  * @param e event object
  */
-const dropdownClickHandler = (e: MouseEvent) => {
+const dropdownClickHandler = (e: MouseEvent<HTMLElement>) => {
   const { target } = e;
-  const element = target && closest(target as HTMLElement, dropdownSelector);
+  const element = target && closest(target, dropdownSelector);
   const self = element && getDropdownInstance(element);
 
+  // istanbul ignore if @preserve
+  if (!self) return;
+
+  e.stopPropagation();
+  self.toggle();
   // istanbul ignore else @preserve
-  if (self) {
-    e.stopPropagation();
-    self.toggle();
-    // istanbul ignore else @preserve
-    if (element && isEmptyAnchor(element)) e.preventDefault();
-  }
+  if (element && isEmptyAnchor(element)) e.preventDefault();
 };
 
 /**
@@ -407,43 +408,48 @@ const dropdownPreventScroll = (e: KeyboardEvent) => {
  *
  * @param e keyboard key
  */
-function dropdownKeyHandler(this: HTMLElement, e: KeyboardEvent) {
+function dropdownKeyHandler(this: Element, e: KeyboardEvent) {
   const { code } = e;
-  const element = getCurrentOpenDropdown(this);
-  const self = element && getDropdownInstance(element);
-  const { activeElement } = (element && getDocument(element)) as Document;
+  const element = getCurrentOpenDropdown(this) as HTMLElement;
+  /* istanbul ignore if @preserve */
+  if (!element) return;
 
-  // istanbul ignore else @preserve
-  if (self && activeElement) {
-    const { menu, open } = self;
-    const menuItems = getMenuItems(menu);
+  const self = getDropdownInstance(element);
+  const { activeElement } = getDocument(element) as Document & {
+    activeElement: HTMLElement;
+  };
 
-    // arrow up & down
-    if (
-      menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)
-    ) {
-      let idx = menuItems.indexOf(activeElement);
-      // istanbul ignore else @preserve
-      if (activeElement === element) {
-        idx = 0;
-      } else if (code === keyArrowUp) {
-        idx = idx > 1 ? idx - 1 : 0;
-      } else if (code === keyArrowDown) {
-        idx = idx < menuItems.length - 1 ? idx + 1 : idx;
-      }
-      // istanbul ignore else @preserve
-      if (menuItems[idx]) focus(menuItems[idx] as HTMLElement);
+  // istanbul ignore if @preserve
+  if (!self || !activeElement) return;
+
+  const { menu, open } = self;
+  const menuItems = getMenuItems(menu);
+
+  // arrow up & down
+  if (
+    menuItems && menuItems.length && [keyArrowDown, keyArrowUp].includes(code)
+  ) {
+    let idx = menuItems.indexOf(activeElement);
+    // istanbul ignore else @preserve
+    if (activeElement === element) {
+      idx = 0;
+    } else if (code === keyArrowUp) {
+      idx = idx > 1 ? idx - 1 : 0;
+    } else if (code === keyArrowDown) {
+      idx = idx < menuItems.length - 1 ? idx + 1 : idx;
     }
+    // istanbul ignore else @preserve
+    if (menuItems[idx]) focus(menuItems[idx] as HTMLElement);
+  }
 
-    if (keyEscape === code && open) {
-      self.toggle();
-      focus(element);
-    }
+  if (keyEscape === code && open) {
+    self.toggle();
+    focus(element);
   }
 }
 
 /** Handles dropdown layout changes during resize / scroll. */
-function dropdownIntersectionHandler(target: HTMLElement) {
+function dropdownIntersectionHandler(target: Element) {
   const element = getCurrentOpenDropdown(target);
   const self = element && getDropdownInstance(element);
 
@@ -458,6 +464,7 @@ export default class Dropdown extends BaseComponent {
   static selector = dropdownSelector;
   static init = dropdownInitCallback;
   static getInstance = getDropdownInstance;
+  declare element: HTMLElement;
   declare options: DropdownOptions;
   declare open: boolean;
   declare parentElement: HTMLElement;
@@ -468,29 +475,30 @@ export default class Dropdown extends BaseComponent {
    * @param target Element or string selector
    * @param config the instance options
    */
-  constructor(target: HTMLElement | string, config?: Partial<DropdownOptions>) {
+  constructor(target: Element | string, config?: Partial<DropdownOptions>) {
     super(target, config);
 
     // initialization element
     const { parentElement } = this.element;
-    const [menu] = getElementsByClassName(
+    const [menu] = getElementsByClassName<HTMLElement>(
       dropdownMenuClass,
       parentElement as ParentNode,
     );
 
     // invalidate when dropdown-menu is missing
-    if (menu) {
-      // set targets
-      this.parentElement = parentElement as HTMLElement;
-      this.menu = menu;
-      this._observer = new IntersectionObserver(
-        ([entry]) => dropdownIntersectionHandler(entry.target as HTMLElement),
-        { threshold: 1 },
-      );
+    // istanbul ignore if @preserve
+    if (!menu) return;
 
-      // add event listener
-      this._toggleEventListeners(true);
-    }
+    // set targets
+    this.parentElement = parentElement as HTMLElement;
+    this.menu = menu;
+    this._observer = new IntersectionObserver(
+      ([entry]) => dropdownIntersectionHandler(entry.target),
+      { threshold: 1 },
+    );
+
+    // add event listener
+    this._toggleEventListeners(true);
   }
 
   /**
@@ -518,60 +526,61 @@ export default class Dropdown extends BaseComponent {
   show() {
     const { element, open, menu, parentElement } = this;
 
-    // istanbul ignore else @preserve
-    if (!open) {
-      const currentElement = getCurrentOpenDropdown(element);
-      const currentInstance = currentElement &&
-        getDropdownInstance(currentElement);
-      if (currentInstance) currentInstance.hide();
+    // istanbul ignore if @preserve
+    if (open) return;
+    const currentElement = getCurrentOpenDropdown(element);
+    const currentInstance = currentElement &&
+      getDropdownInstance(currentElement);
+    if (currentInstance) currentInstance.hide();
 
-      // dispatch event
-      [showDropdownEvent, shownDropdownEvent, updatedDropdownEvent].forEach(
-        (e) => {
-          e.relatedTarget = element;
-        },
-      );
+    // dispatch event
+    [showDropdownEvent, shownDropdownEvent, updatedDropdownEvent].forEach(
+      (e) => {
+        e.relatedTarget = element;
+      },
+    );
 
-      dispatchEvent(parentElement, showDropdownEvent);
-      if (!showDropdownEvent.defaultPrevented) {
-        addClass(menu, showClass);
-        addClass(parentElement, showClass);
-        setAttribute(element, ariaExpanded, "true");
+    dispatchEvent(parentElement, showDropdownEvent);
+    // istanbul ignore if @preserve
+    if (showDropdownEvent.defaultPrevented) return;
 
-        // change menu position
-        styleDropdown(this);
+    addClass(menu, showClass);
+    addClass(parentElement, showClass);
+    setAttribute(element, ariaExpanded, "true");
 
-        this.open = !open;
+    // change menu position
+    styleDropdown(this);
 
-        focus(element); // focus the element
-        toggleDropdownDismiss(this);
-        dispatchEvent(parentElement, shownDropdownEvent);
-      }
-    }
+    this.open = !open;
+
+    focus(element); // focus the element
+    toggleDropdownDismiss(this);
+    dispatchEvent(parentElement, shownDropdownEvent);
   }
 
   /** Hides the dropdown menu from the user. */
   hide() {
     const { element, open, menu, parentElement } = this;
 
-    // istanbul ignore else @preserve
-    if (open) {
-      [hideDropdownEvent, hiddenDropdownEvent].forEach((e) => {
-        e.relatedTarget = element;
-      });
+    // istanbul ignore if @preserve
+    if (!open) return;
 
-      dispatchEvent(parentElement, hideDropdownEvent);
-      if (!hideDropdownEvent.defaultPrevented) {
-        removeClass(menu, showClass);
-        removeClass(parentElement, showClass);
-        setAttribute(element, ariaExpanded, "false");
+    [hideDropdownEvent, hiddenDropdownEvent].forEach((e) => {
+      e.relatedTarget = element as HTMLElement;
+    });
 
-        this.open = !open;
-        // only re-attach handler if the instance is not disposed
-        toggleDropdownDismiss(this);
-        dispatchEvent(parentElement, hiddenDropdownEvent);
-      }
-    }
+    dispatchEvent(parentElement, hideDropdownEvent);
+    // istanbul ignore if @preserve
+    if (hideDropdownEvent.defaultPrevented) return;
+
+    removeClass(menu, showClass);
+    removeClass(parentElement, showClass);
+    setAttribute(element, ariaExpanded, "false");
+
+    this.open = !open;
+    // only re-attach handler if the instance is not disposed
+    toggleDropdownDismiss(this);
+    dispatchEvent(parentElement, hiddenDropdownEvent);
   }
 
   /**

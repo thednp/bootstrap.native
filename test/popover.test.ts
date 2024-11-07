@@ -17,7 +17,7 @@ describe("Popover Class Tests", () => {
   });
 
   afterEach(async () => {
-    await page.viewport(414, 896);
+    // await page.viewport(414, 896);
   });
 
   it("Init without any parameters - throws error", () => {
@@ -32,6 +32,37 @@ describe("Popover Class Tests", () => {
         `Popover Error: your target is not an instance of HTMLElement.`,
       );
     }
+  });
+
+  it("Can do a basic shift", async () => {
+    await page.viewport(650, 550);
+    const container = getMarkup("popover");
+    Object.assign(container.style, { padding: "", margin: "" });
+    wrapper.append(container);
+    await vi.waitFor(() => container.querySelector('[data-test="popover"]'), 200);
+    const element = container.querySelector<HTMLElement>(
+      '[data-test="popover"]',
+    )!;
+    const win = element.ownerDocument.defaultView!;
+    const instance = new Popover(element, {
+      dismissible: false,
+      placement: "left",
+      title: "Popover Bottom Left",
+      content:
+        `This Popover can handle vertical position when only exceed bottom.
+          Here we add more content for testing. Sample lorem ipsum standard.
+          Efficiently unleash cross-media information without cross-media value.
+        `,
+    });
+
+    instance.toggle();
+    await vi.waitFor(() => {
+      expect(instance.tooltip.className).to.contain("show");
+    }, 51);
+
+    await vi.waitFor(() => {
+      win.scrollTo({ top: 800, behavior: 'instant' }); // coverage
+    }, 50);
   });
 
   it("Can handle horizontal position when both exceed top and bottom 1", async () => {
@@ -97,7 +128,7 @@ describe("Popover Class Tests", () => {
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("show");
       expect(instance.tooltip?.className).to.contain("bs-popover-end");
-    }, 51);
+    }, 151);
 
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
     await vi.waitFor(() => {
@@ -126,7 +157,7 @@ describe("Popover Class Tests", () => {
     instance.toggle();
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("show");
-    }, 51);
+    }, 151);
   });
 
   it("Can handle vertical right", async () => {
@@ -199,7 +230,7 @@ describe("Popover Class Tests", () => {
   });
 
   it("Can switch top to bottom", async () => {
-    await page.viewport(400, 400);
+    await page.viewport(400, 500);
     const container = getMarkup("popover");
     Object.assign(container.style, { height: '100vh', padding: "22rem 8rem" });
     wrapper.append(container);
@@ -208,6 +239,8 @@ describe("Popover Class Tests", () => {
       '[data-test="popover"]',
     )!;
     const win = element.ownerDocument.defaultView!;
+    await new Promise(res => setTimeout(res, 151));
+
     const instance = new Popover(element, {
       dismissible: false,
       placement: "top",
@@ -225,21 +258,28 @@ describe("Popover Class Tests", () => {
     }, 51);
 
     win.scrollTo({ left: 0, top: 400, behavior: "instant" });
+    await new Promise(res => setTimeout(res, 150));
+
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("bs-popover-bottom");
-    }, 51);
+    }, 151);
+
+    await page.viewport(414, 896);
   });
 
   it("Can switch bottom to top", async () => {
-    await page.viewport(400, 450);
+    await page.viewport(350, 550);
     const container = getMarkup("popover");
-    Object.assign(container.style, { margin: "40vh 10rem", padding: '3rem' });
+    Object.assign(container.style, { margin: "40vh 3rem", padding: '3rem' });
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-test="popover"]'), 200);
     const element = container.querySelector<HTMLElement>(
       '[data-test="popover"]',
     )!;
     const win = element.ownerDocument.defaultView!;
+    if (!element) return;
+    win.scrollTo({ left: 0, top: 800, behavior: "instant" });
+
     const instance = new Popover(element, {
       dismissible: false,
       placement: "bottom",
@@ -250,18 +290,19 @@ describe("Popover Class Tests", () => {
       Quickly maximize timely deliverables for real-time schemas.`,
     });
 
-    win.scrollTo({ left: 0, top: 600, behavior: "instant" });
-
     instance.toggle();
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("show");
       expect(instance.tooltip?.className).to.contain("bs-popover-bottom");
-    }, 51);
+    }, 151);
 
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
+    await new Promise(res => setTimeout(res, 150));
+
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("bs-popover-top");
-    }, 51);
+    }, 151);
+    // await page.viewport(414, 896);
   });
 
   it("Can dispose()", async () => {

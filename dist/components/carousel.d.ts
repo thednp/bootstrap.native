@@ -1,12 +1,12 @@
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -23,8 +23,9 @@ declare interface BaseOptions {
 /** Creates a new `Carousel` instance. */
 declare class Carousel extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Carousel;
-    static getInstance: (element: HTMLElement) => Carousel | null;
+    static init: (element: Element) => Carousel;
+    static getInstance: (element: Element) => Carousel | null;
+    element: HTMLElement;
     options: CarouselOptions;
     direction: "right" | "left";
     index: number;
@@ -37,7 +38,7 @@ declare class Carousel extends BaseComponent {
      * @param target mostly a `.carousel` element
      * @param config instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<CarouselOptions>);
+    constructor(target: Element | string, config?: Partial<CarouselOptions>);
     /**
      * Returns component name string.
      */

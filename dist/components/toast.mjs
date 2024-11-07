@@ -1,52 +1,52 @@
-import { B as x, h as p, f as l, r, q as A, n as H, l as P, d, a6 as $, a7 as N, v as y, w as j, T as i, g as z, c as g, t as D, e as b, m as T, D as F } from "./base-component-ylZzLp-h.mjs";
-import { E as G, r as J } from "./event-listener-C1-Yf9Z5.mjs";
-import { f as h } from "./fadeClass-CLIYI_zn.mjs";
-import { s as f } from "./showClass-C8hdJfjQ.mjs";
-import { d as K } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { d as M } from "./dataBsToggle-B84TS15h.mjs";
-import { g as B } from "./getTargetElement-BFOUI7hP.mjs";
-const a = "toast", I = "Toast", O = `.${a}`, Q = `[${K}="${a}"]`, k = `[${M}="${a}"]`, c = "showing", q = "hide", R = {
+import { B as x, Y as u, b as l, Z as r, R as H, c as P, d as R, q as d, a6 as S, a7 as Y, g as y, w as Z, y as i, t as A, v as f, e as b, r as B, m as T, p as N } from "./base-component-Jx2aafTJ.mjs";
+import { E as j, r as z } from "./event-listener-CUwvA4j6.mjs";
+import { f as m } from "./fadeClass-CLIYI_zn.mjs";
+import { s as g } from "./showClass-C8hdJfjQ.mjs";
+import { d as F } from "./dataBsDismiss-DdNPQYa-.mjs";
+import { d as G } from "./dataBsToggle-B84TS15h.mjs";
+import { g as D } from "./getTargetElement-Bv0W3Fir.mjs";
+const a = "toast", k = "Toast", J = `.${a}`, K = `[${F}="${a}"]`, I = `[${G}="${a}"]`, c = "showing", L = "hide", M = {
   animation: !0,
   autohide: !0,
   delay: 5e3
-}, v = (e) => z(e, I), U = (e) => new st(e), E = g(
+}, w = (e) => A(e, k), O = (e) => new st(e), v = f(
   `show.bs.${a}`
-), V = g(
+), Q = f(
   `shown.bs.${a}`
-), w = g(
+), E = f(
   `hide.bs.${a}`
-), W = g(
+), U = f(
   `hidden.bs.${a}`
 ), C = (e) => {
   const { element: t, options: s } = e;
-  r(t, c), i.clear(t, c), d(t, V), s.autohide && i.set(t, () => e.hide(), s.delay, a);
-}, S = (e) => {
+  r(t, c), i.clear(t, c), d(t, Q), s.autohide && i.set(t, () => e.hide(), s.delay, a);
+}, $ = (e) => {
   const { element: t } = e;
-  r(t, c), r(t, f), l(t, q), i.clear(t, a), d(t, W);
-}, X = (e) => {
+  r(t, c), r(t, g), l(t, L), i.clear(t, a), d(t, U);
+}, V = (e) => {
   const { element: t, options: s } = e;
-  l(t, c), s.animation ? (D(t), b(t, () => S(e))) : S(e);
-}, Y = (e) => {
+  l(t, c), s.animation ? (b(t), B(t, () => $(e))) : $(e);
+}, W = (e) => {
   const { element: t, options: s } = e;
   i.set(
     t,
     () => {
-      r(t, q), D(t), l(t, f), l(t, c), s.animation ? b(t, () => C(e)) : C(e);
+      r(t, L), b(t), l(t, g), l(t, c), s.animation ? B(t, () => C(e)) : C(e);
     },
     17,
     c
   );
-}, Z = (e) => {
-  const { target: t } = e, s = t && F(t, k), o = s && B(s), n = o && v(o);
+}, X = (e) => {
+  const { target: t } = e, s = t && N(t, I), o = s && D(s), n = o && w(o);
   n && (s && s.tagName === "A" && e.preventDefault(), n.relatedTarget = s, n.show());
 }, tt = (e) => {
-  const t = e.target, s = v(t), { type: o, relatedTarget: n } = e;
-  s && t !== n && !t.contains(n) && ([y, $].includes(o) ? i.clear(t, a) : i.set(t, () => s.hide(), s.options.delay, a));
+  const t = e.target, s = w(t), { type: o, relatedTarget: n } = e;
+  !s || t === n || t.contains(n) || ([y, S].includes(o) ? i.clear(t, a) : i.set(t, () => s.hide(), s.options.delay, a));
 };
 class st extends x {
-  static selector = O;
-  static init = U;
-  static getInstance = v;
+  static selector = J;
+  static init = O;
+  static getInstance = w;
   /**
    * @param target the target `.toast` element
    * @param config the instance options
@@ -54,41 +54,40 @@ class st extends x {
   constructor(t, s) {
     super(t, s);
     const { element: o, options: n } = this;
-    n.animation && !p(o, h) ? l(o, h) : !n.animation && p(o, h) && r(o, h), this.dismiss = A(Q, o), this.triggers = [
-      ...H(k, P(o))
+    n.animation && !u(o, m) ? l(o, m) : !n.animation && u(o, m) && r(o, m), this.dismiss = H(K, o), this.triggers = [
+      ...P(
+        I,
+        R(o)
+      )
     ].filter(
-      (m) => B(m) === o
+      (h) => D(h) === o
     ), this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
    */
   get name() {
-    return I;
+    return k;
   }
   /**
    * Returns component default options.
    */
   get defaults() {
-    return R;
+    return M;
   }
   /**
    * Returns *true* when toast is visible.
    */
   get isShown() {
-    return p(this.element, f);
+    return u(this.element, g);
   }
-  // TOAST PUBLIC METHODS
-  // ====================
-  /** Shows the toast. */
   show = () => {
     const { element: t, isShown: s } = this;
-    t && !s && (d(t, E), E.defaultPrevented || Y(this));
+    !t || s || (d(t, v), v.defaultPrevented || W(this));
   };
-  /** Hides the toast. */
   hide = () => {
     const { element: t, isShown: s } = this;
-    t && s && (d(t, w), w.defaultPrevented || X(this));
+    !t || !s || (d(t, E), E.defaultPrevented || V(this));
   };
   /**
    * Toggles on/off the `click` event listener.
@@ -96,17 +95,16 @@ class st extends x {
    * @param add when `true`, it will add the listener
    */
   _toggleEventListeners = (t) => {
-    const s = t ? G : J, { element: o, triggers: n, dismiss: m, options: L, hide: _ } = this;
-    m && s(m, T, _), L.autohide && [$, N, y, j].forEach(
-      (u) => s(o, u, tt)
+    const s = t ? j : z, { element: o, triggers: n, dismiss: h, options: _, hide: q } = this;
+    h && s(h, T, q), _.autohide && [S, Y, y, Z].forEach(
+      (p) => s(o, p, tt)
     ), n.length && n.forEach(
-      (u) => s(u, T, Z)
+      (p) => s(p, T, X)
     );
   };
-  /** Removes the `Toast` component from the target element. */
   dispose() {
     const { element: t, isShown: s } = this;
-    this._toggleEventListeners(), i.clear(t, a), s && r(t, f), super.dispose();
+    this._toggleEventListeners(), i.clear(t, a), s && r(t, g), super.dispose();
   }
 }
 export {

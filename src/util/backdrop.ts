@@ -31,7 +31,7 @@ const overlay = createElement("div") as HTMLElement;
  * @param element the context element
  * @returns the requested element
  */
-const getCurrentOpen = (element?: HTMLElement): HTMLElement | null => {
+const getCurrentOpen = (element?: Element) => {
   return querySelector(
     `${modalActiveSelector},${offcanvasActiveSelector}`,
     getDocument(element),
@@ -59,7 +59,7 @@ const toggleOverlayType = (isModal?: boolean) => {
  * @param isModal
  */
 const appendOverlay = (
-  element: HTMLElement,
+  element: Element,
   hasFade: boolean,
   isModal?: boolean,
 ) => {
@@ -90,7 +90,7 @@ const hideOverlay = () => {
  *
  * @param element
  */
-const removeOverlay = (element?: HTMLElement): void => {
+const removeOverlay = (element?: Element): void => {
   if (!getCurrentOpen(element)) {
     removeClass(overlay, fadeClass);
     removePopup(overlay, getDocumentBody(element));

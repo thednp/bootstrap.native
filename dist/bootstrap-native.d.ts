@@ -1,12 +1,13 @@
 import { default as default_2 } from '@thednp/position-observer';
+import { TouchEvent as TouchEvent_2 } from '@thednp/shorty';
 
 /** Creates a new Alert instance. */
 export declare class Alert extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Alert;
-    static getInstance: (element: HTMLElement) => Alert | null;
+    static init: (element: Element) => Alert;
+    static getInstance: (element: Element) => Alert | null;
     dismiss: HTMLElement | null;
-    constructor(target: HTMLElement | string);
+    constructor(target: Element | string);
     /** Returns component name string. */
     get name(): string;
     /**
@@ -27,13 +28,13 @@ export declare class Alert extends BaseComponent {
 
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -50,13 +51,14 @@ declare interface BaseOptions {
 /** Creates a new `Button` instance. */
 export declare class Button extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Button;
-    static getInstance: (element: HTMLElement) => Button | null;
+    static init: (element: Element) => Button;
+    static getInstance: (element: Element) => Button | null;
     isActive: boolean;
+    element: HTMLElement;
     /**
      * @param target usually a `.btn` element
      */
-    constructor(target: HTMLElement | string);
+    constructor(target: Element | string);
     /**
      * Returns component name string.
      */
@@ -80,8 +82,9 @@ export declare class Button extends BaseComponent {
 /** Creates a new `Carousel` instance. */
 export declare class Carousel extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Carousel;
-    static getInstance: (element: HTMLElement) => Carousel | null;
+    static init: (element: Element) => Carousel;
+    static getInstance: (element: Element) => Carousel | null;
+    element: HTMLElement;
     options: CarouselOptions;
     direction: "right" | "left";
     index: number;
@@ -94,7 +97,7 @@ export declare class Carousel extends BaseComponent {
      * @param target mostly a `.carousel` element
      * @param config instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<CarouselOptions>);
+    constructor(target: Element | string, config?: Partial<CarouselOptions>);
     /**
      * Returns component name string.
      */
@@ -145,16 +148,17 @@ declare interface CarouselOptions extends BaseOptions {
 /** Returns a new `Colapse` instance. */
 export declare class Collapse extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Collapse;
-    static getInstance: (element: HTMLElement) => Collapse | null;
+    static init: (element: Element) => Collapse;
+    static getInstance: (element: Element) => Collapse | null;
+    element: HTMLElement;
     options: CollapseOptions;
-    parent: HTMLElement | null;
-    triggers: HTMLElement[];
+    parent: Element | null;
+    triggers: Element[];
     /**
      * @param target and `Element` that matches the selector
      * @param config instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<CollapseOptions>);
+    constructor(target: Element | string, config?: Partial<CollapseOptions>);
     /**
      * Returns component name string.
      */
@@ -188,8 +192,9 @@ declare interface CollapseOptions extends BaseOptions {
 /** Returns a new Dropdown instance. */
 export declare class Dropdown extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Dropdown;
-    static getInstance: (element: HTMLElement) => Dropdown | null;
+    static init: (element: Element) => Dropdown;
+    static getInstance: (element: Element) => Dropdown | null;
+    element: HTMLElement;
     options: DropdownOptions;
     open: boolean;
     parentElement: HTMLElement;
@@ -199,7 +204,7 @@ export declare class Dropdown extends BaseComponent {
      * @param target Element or string selector
      * @param config the instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<DropdownOptions>);
+    constructor(target: Element | string, config?: Partial<DropdownOptions>);
     /**
      * Returns component name string.
      */
@@ -242,20 +247,21 @@ export declare const initCallback: (context?: ParentNode) => void;
 /** Returns a new `Modal` instance. */
 export declare class Modal extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Modal;
-    static getInstance: (element: HTMLElement) => Modal | null;
+    static init: (element: Element) => Modal;
+    static getInstance: (element: Element) => Modal | null;
+    element: HTMLElement;
     options: ModalOptions;
     modalDialog: HTMLElement;
     triggers: HTMLElement[];
     isStatic: boolean;
     hasFade: boolean;
-    relatedTarget: HTMLElement | null;
+    relatedTarget: EventTarget & HTMLElement | null;
     _observer: ResizeObserver;
     /**
      * @param target usually the `.modal` element
      * @param config instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<ModalOptions>);
+    constructor(target: Element | string, config?: Partial<ModalOptions>);
     /**
      * Returns component name string.
      */
@@ -295,16 +301,17 @@ declare interface ModalOptions extends BaseOptions {
 /** Returns a new `Offcanvas` instance. */
 export declare class Offcanvas extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Offcanvas;
-    static getInstance: (element: HTMLElement) => Offcanvas | null;
+    static init: (element: Element) => Offcanvas;
+    static getInstance: (element: Element) => Offcanvas | null;
+    element: HTMLElement;
     options: OffcanvasOptions;
     triggers: HTMLElement[];
-    relatedTarget: HTMLElement | null;
+    relatedTarget: EventTarget & HTMLElement | undefined;
     /**
      * @param target usually an `.offcanvas` element
      * @param config instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<OffcanvasOptions>);
+    constructor(target: Element | string, config?: Partial<OffcanvasOptions>);
     /**
      * Returns component name string.
      */
@@ -342,15 +349,15 @@ declare interface OffcanvasOptions extends BaseOptions {
 /** Returns a new `Popover` instance. */
 export declare class Popover extends Tooltip {
     static selector: string;
-    static init: (element: HTMLElement) => Popover;
-    static getInstance: (element: HTMLElement) => Popover | null;
-    static styleTip: <T extends Tooltip>(self: T) => void;
+    static init: (element: Element) => Popover;
+    static getInstance: (element: Element) => Popover | null;
+    static styleTip: (self: Tooltip) => void;
     options: PopoverOptions;
     /**
      * @param target the target element
      * @param config the instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<PopoverOptions>);
+    constructor(target: Element | string, config?: Partial<PopoverOptions>);
     /**
      * Returns component name string.
      */
@@ -379,8 +386,9 @@ export declare const removeDataAPI: (context?: ParentNode) => void;
 /** Returns a new `ScrollSpy` instance. */
 export declare class ScrollSpy extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => ScrollSpy;
-    static getInstance: (element: HTMLElement) => ScrollSpy | null;
+    static init: (element: Element) => ScrollSpy;
+    static getInstance: (element: Element) => ScrollSpy | null;
+    element: HTMLElement;
     options: ScrollSpyOptions;
     target: HTMLElement | null;
     scrollTarget: HTMLElement;
@@ -397,7 +405,7 @@ export declare class ScrollSpy extends BaseComponent {
      * @param target the target element
      * @param config the instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<ScrollSpyOptions>);
+    constructor(target: Element | string, config?: Partial<ScrollSpyOptions>);
     /**
      * Returns component name string.
      */
@@ -405,7 +413,7 @@ export declare class ScrollSpy extends BaseComponent {
     /**
      * Returns component default options.
      */
-    get defaults(): ScrollSpyOptions;
+    get defaults(): Partial<ScrollSpyOptions>;
     /** Updates all items. */
     refresh: () => void;
     /** Removes `ScrollSpy` from the target element. */
@@ -414,21 +422,22 @@ export declare class ScrollSpy extends BaseComponent {
 
 declare interface ScrollSpyOptions extends BaseOptions {
     offset: number;
-    target: HTMLElement | string | null;
+    target: HTMLElement | string;
 }
 
 /** Creates a new `Tab` instance. */
 export declare class Tab extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Tab;
-    static getInstance: (element: HTMLElement) => Tab | null;
+    static init: (element: Element) => Tab;
+    static getInstance: (element: Element) => Tab | null;
+    element: HTMLElement;
     nav: HTMLElement | null;
     content: HTMLElement | null;
     tabContent: HTMLElement | null;
     nextContent: HTMLElement | null;
     dropdown: HTMLElement | null;
     /** @param target the target element */
-    constructor(target: HTMLElement | string);
+    constructor(target: Element | string);
     /**
      * Returns component name string.
      */
@@ -448,8 +457,9 @@ export declare class Tab extends BaseComponent {
 /** Creates a new `Toast` instance. */
 export declare class Toast extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Toast;
-    static getInstance: (element: HTMLElement) => Toast | null;
+    static init: (element: Element) => Toast;
+    static getInstance: (element: Element) => Toast | null;
+    element: HTMLElement;
     options: ToastOptions;
     dismiss: HTMLElement | null;
     triggers: HTMLElement[];
@@ -458,7 +468,7 @@ export declare class Toast extends BaseComponent {
      * @param target the target `.toast` element
      * @param config the instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<ToastOptions>);
+    constructor(target: Element | string, config?: Partial<ToastOptions>);
     /**
      * Returns component name string.
      */
@@ -498,15 +508,16 @@ declare interface ToastOptions extends BaseOptions {
 /** Creates a new `Tooltip` instance. */
 export declare class Tooltip extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Tooltip;
-    static getInstance: (element: HTMLElement) => Tooltip | null;
-    static styleTip: <T extends Tooltip>(self: T) => void;
+    static init: (element: Element) => Tooltip;
+    static getInstance: (element: Element) => Tooltip | null;
+    static styleTip: (self: Tooltip) => void;
+    element: Element & HTMLOrSVGElement;
     options: TooltipOptions;
     btn?: HTMLElement;
-    tooltip?: HTMLElement;
-    container: ParentNode;
-    arrow?: HTMLElement;
-    offsetParent?: HTMLElement;
+    tooltip: HTMLElement;
+    container: HTMLElement;
+    offsetParent: Element | Window;
+    arrow: HTMLElement;
     enabled: boolean;
     id: string;
     _observer: default_2;
@@ -514,7 +525,7 @@ export declare class Tooltip extends BaseComponent {
      * @param target the target element
      * @param config the instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<TooltipOptions>);
+    constructor(target: Element | string, config?: Partial<TooltipOptions>);
     /**
      * Returns component name string.
      */
@@ -547,7 +558,7 @@ export declare class Tooltip extends BaseComponent {
      * @this {Tooltip}
      * @param {TouchEvent} e the `Event` object
      */
-    handleTouch: ({ target }: TouchEvent) => void;
+    handleTouch: ({ target }: TouchEvent_2) => void;
     /**
      * Toggles on/off the `Tooltip` event listeners.
      *

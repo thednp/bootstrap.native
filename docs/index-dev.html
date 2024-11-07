@@ -75,7 +75,7 @@
               <div class="position-relative text-dark text-left mb-5">
                 <h1>A What Bootstrap?</h1>
                 <p>The lighter and more compact set of JavaScript components for Bootstrap, sourced with Typescript codebase.<br>
-                  At less than half the size of the original and around <b>15kb gZipped</b>, this library does most of Bootstrap & Popper combined.</p>
+                  At half the size of the original and around <b>21kb gZipped</b>, this library does it all.</p>
                 <p>
                   <a class="btn btn-lg btn-primary me-1" href="https://github.com/thednp/bootstrap.native/archive/master.zip">Download</a>
                   <a class="btn btn-lg btn-secondary" href="https://www.npmjs.com/package/bootstrap.native">NPM</a>
@@ -784,7 +784,6 @@ mySpecialCarouselInit.cycle();
             </section>
           </section>
 
-
           <section id="componentCollapse">
             <h2>Collapse</h2>
             <p>The <b>Collapse</b> component covers the original events and methods of the jQuery plugin counterpart. This
@@ -1106,12 +1105,14 @@ myCollapseInit.toggle();
             <h2>Dropdown</h2>
             <p>The <b>Dropdown</b> component covers most of the functionality from the original plugin in terms of original events,
               instance methods and options, but also offers some additional functionality without using any third party library.</p>
-            <p>To get on par with the original plugin, our component now sports automatic repositioning but without the use of Popper.js.</p>
+            <p>To get on par with the original plugin, our component now features automatic repositioning but without the use of Popper.js,
+              but with <a href="https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver">IntersectionObserver</a>
+              to update the menu's position.</p>
             <p>Here's how it works:</p>
             <ul>
               <li>when showing the dropdown menu to the user, the component will calculate all possible positions and update the menu 
                 position so that the it's always displayed fully into the viewport;</li>
-              <li>while the dropdown menu is visible to the user, event listeners will update the position for the dropdown menu,
+              <li>while the dropdown menu is visible to the user, the observer will trigger the update of dropdown menu position,
                 just like when showing it again to the user.</li>
             </ul>
 
@@ -1427,6 +1428,9 @@ myDropdownInit.dispose();
               <code>&lt;nav class="navbar fixed-top"&gt;</code> are also adjusted in the same manner to get the smoothest possible
               transition. Like all components of the library, the component grants access to the initialization object even if 
               your modal is automatically initialized via DATA API.</p>
+            <p>While shown to the user, the component makes use of <a href="https://developer.mozilla.org/en-US/docs/Web/API/ResiezObserver">ResizeObserver</a>
+              to trigger the update of these elements and not rely on the obsolete implementation of <code>resize</code>
+              event listeners.</p>
 
             <section id="modalOptions">
               <h3>Modal Options</h3>
@@ -1690,11 +1694,6 @@ var myModalInit = BSN.Modal.getInstance(myModal);
                     <div class="modal-body">
                       <h4>Text in a modal</h4>
                       <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
-                      <h4>Popover in a modal</h4>
-                      <p>This <button style="margin:-5px 0 0 0" class="btn btn-secondary popover-test"
-                          data-bs-toggle="popover" data-bs-trigger="click"
-                          data-bs-content="And here's some amazing content. It's very engaging. right?"
-                          data-bs-title="A Title">button</button> should trigger a popover on click.</p>
                       <h4>Tooltips in a modal</h4>
                       <p><a href="#" class="tooltip-test" data-bs-toggle="tooltip" title="Tooltip">This link</a> and <a href="#"
                           data-bs-toggle="tooltip" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.
@@ -1714,7 +1713,12 @@ var myModalInit = BSN.Modal.getInstance(myModal);
                         <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
                       </svg>
                       <img class="me-1 img-tip-modal" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
-    
+
+                      <h4>Popover in a modal</h4>
+                      <p>This <button style="margin:-5px 0 0 0" class="btn btn-secondary popover-test"
+                          data-bs-toggle="popover" data-bs-trigger="click"
+                          data-bs-content="And here's some amazing content. It's very engaging. right?"
+                          data-bs-title="A Title">button</button> should trigger a popover on click.</p>
                       <h4>Open modal from modal</h4>
                       <p>Click <a data-bs-toggle="modal" href="#anotherModal">here</a> to open another modal.</p>
                       <h4>Dismissing the modal is prevented!</h4>
@@ -2237,7 +2241,8 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
               since both share the same utilities and functionality except that <b>Popover</b> has a different template and the
               ability to change how events are handled via <a href="#popoverOptions">additional options</a>.</p>
             <p>Our implementation can automatically reposition your popovers when showing them to the user, as well as when 
-              a popover is visible and the <code>resize</code> and <code>scroll</code> events produce layout changes in the page.</p>
+              a popover is visible and layout changes, our new <a href="https://github.com/thednp/position-observer">PositionObserver</a>
+              will trigger the update instead of the previously implemented <code>resize</code> and <code>scroll</code> event listeners.</p>
             <p>On that note, Popover makes use of some <a rel="noreferrer" href="https://floating-ui.com/" target="_blank">floating-ui</a> 
               functionality which have been <a href="https://github.com/thednp/bootstrap.native/issues/158">gradually implemented</a> 
               into our component to always provide an accurate popover position.</p>
@@ -2626,6 +2631,9 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
               public methods, the specific original event, and provides rich JavaScript and DATA APIs.</p>
             <p>The component will initialize for each element with <code>data-bs-spy="scroll"</code> attribute, but will not work if
               the above requirements are not met or the anchors don't reference the containers accordingly.</p>
+            <p>Our implementation uses our new <a href="https://github.com/thednp/position-observer">PositionObserver</a> which is
+              responsible for triggering the update of the menu items instead of the previously inneficient <code>resize</code> and
+              <code>scroll</code> event listeners.</p>
           
             <section id="scrollspyOptions">
               <h3>ScrollSpy Options</h3>
@@ -2885,7 +2893,7 @@ myScrollSpyInit.dispose();
           
                 <h4 id="second">Carles aesthetic</h4>
                 <p>Veniam marfa mustache skateboard, adipisicing fugiat velit pitchfork beard. Freegan beard aliqua cupidatat
-                  mcsweeney's vero. Cupidatat four loko nisi, ea helvetica nulla carles. Tattooed cosby sweater food truck,
+                  mcsweeney's vero. <a href="#second" data-bs-trigger="click" data-bs-toggle="tooltip" title="Sample tooltip">Cupidatat</a> four loko nisi, ea helvetica nulla carles. Tattooed cosby sweater food truck,
                   mcsweeney's quis non freegan vinyl. Lo-fi wes anderson +1 sartorial. Carles non aesthetic exercitation quis
                   gentrify. Brooklyn adipisicing craft beer vice keytar deserunt.</p>
           
@@ -3526,8 +3534,9 @@ myToastInit.dispose();
             <p>Unlike the original plugin, our <b>Tooltip</b> component will initialize right away all elements with the
               <code>data-bs-toggle="tooltip"</code> attribute. Additionally, the component can do automatic placement without any
               options required or third party dependency and covers essential options, methods and original events.</p>
-            <p>Our implementation can automatically reposition your tooltips when shown to the user, as well as when 
-              a tooltip is visible and the <code>resize</code> and <code>scroll</code> events produce layout changes in the page.</p>            
+            <p>Our implementation can automatically reposition your tooltips when needed thanks to our new
+              <a href="https://github.com/thednp/position-observer">PositionObserver</a> that will trigger the update
+              instead of the previously implemented <code>resize</code> and <code>scroll</code> event listeners.</p>
           
             <section id="tooltipOptions">
               <h3>Tooltip Options</h3>
@@ -3839,7 +3848,7 @@ new BSN.Tooltip('#selector',options).show();
                     data-bs-title="&lt;b&gt;Tooltip in static container&lt;/b&gt;&lt;br&gt;This tooltip is added to a position: static container. If the configured container belongs to parent with position: relative, the component will bypass the configuration.">Static</button>
                 </div>
                 <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="me-1 mb-1"
-                  data-bs-toggle="tooltip" data-bs-placement="top"
+                  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="click"
                   data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                   <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                   <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
@@ -3858,7 +3867,7 @@ new BSN.Tooltip('#selector',options).show();
                 <img class="position-absolute absolute-img" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
               </div>
 
-              <iframe src="./tooltip-iframe.html" style="border:none; min-height: 225px; width: 100%; ">
+              <iframe src="./tooltip-iframe.html" class="border rounded-5 p-3 mb-3" style="border:none; min-height: 225px; width: 100%;">
               </iframe>
             </section>
           </section>

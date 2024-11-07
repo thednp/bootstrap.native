@@ -8,7 +8,6 @@ export interface ModalOptions extends BaseOptions {
 
 export interface ModalEvent extends OriginalEvent {
   readonly type:
-    | string
     | "show.bs.modal"
     | "shown.bs.modal"
     | "hide.bs.modal"

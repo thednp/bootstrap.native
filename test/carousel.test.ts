@@ -97,7 +97,33 @@ describe("Carousel Class Tests", () => {
       expect(instance.slides.length).to.equal(1);
       expect(instance.controls).to.be.undefined;
       expect(instance.indicators).to.be.undefined;
-    }, { timeout: 350 });
+    }, 350);
+  });
+
+  it("Can work without indicators and arrows", async () => {
+    const container = getMarkup("carousel");
+    wrapper.append(container);
+    await vi.waitFor(() => container.querySelector('[data-test="carousel"]'), {
+      timeout: 200,
+    });
+    const element = container.querySelector<HTMLElement>(
+      '[data-test="carousel"]',
+    )!;
+    const win = element.ownerDocument.defaultView!;
+    container.getElementsByClassName("carousel-indicators")[0]?.remove();
+    
+    [...container.querySelectorAll(".carousel-control-next,.carousel-control-prev,[data-bs-slide-to],[data-bs-slide]")].map((u) =>
+      u.remove()
+    );
+    await new Promise((res) => setTimeout(res, 150));
+
+    const instance = Carousel.init(element);
+    await vi.waitFor(() => {
+      expect(instance.element).to.be.instanceOf(win.HTMLElement);
+      expect(instance.name).to.equal("Carousel");
+      expect(instance.controls.length).to.equal(0);
+      expect(instance.indicators.length).to.equal(0);
+    }, 350);
   });
 
   it("Can initialize via DATA API", async () => {

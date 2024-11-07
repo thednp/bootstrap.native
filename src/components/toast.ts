@@ -13,6 +13,7 @@ import {
   hasClass,
   mouseclickEvent,
   mouseenterEvent,
+  MouseEvent,
   mouseleaveEvent,
   querySelector,
   querySelectorAll,
@@ -52,13 +53,13 @@ const toastDefaults = {
  * Static method which returns an existing `Toast` instance associated
  * to a target `Element`.
  */
-const getToastInstance = (element: HTMLElement) =>
+const getToastInstance = (element: Element) =>
   getInstance<Toast>(element, toastComponent);
 
 /**
  * A `Toast` initialization callback.
  */
-const toastInitCallback = (element: HTMLElement) => new Toast(element);
+const toastInitCallback = (element: Element) => new Toast(element);
 
 // TOAST CUSTOM EVENTS
 // ===================
@@ -118,7 +119,7 @@ const hideToast = (self: Toast) => {
   addClass(element, showingClass);
 
   if (options.animation) {
-    reflow(element);
+    reflow(element as HTMLElement);
     emulateTransitionEnd(element, () => hideToastComplete(self));
   } else {
     hideToastComplete(self);
@@ -136,7 +137,7 @@ const showToast = (self: Toast) => {
     element,
     () => {
       removeClass(element, hideClass); // B/C
-      reflow(element);
+      reflow(element as HTMLElement);
       addClass(element, showClass);
       addClass(element, showingClass);
 
@@ -165,13 +166,12 @@ const toastClickHandler = (e: Event) => {
   const element = trigger && getTargetElement(trigger);
   const self = element && getToastInstance(element);
 
+  // istanbul ignore if @preserve
+  if (!self) return;
   // istanbul ignore else @preserve
-  if (self) {
-    // istanbul ignore else @preserve
-    if (trigger && trigger.tagName === "A") e.preventDefault();
-    self.relatedTarget = trigger;
-    self.show();
-  }
+  if (trigger && trigger.tagName === "A") e.preventDefault();
+  self.relatedTarget = trigger;
+  self.show();
 };
 
 /**
@@ -180,21 +180,21 @@ const toastClickHandler = (e: Event) => {
  *
  * @param e the `Toast` instance
  */
-const interactiveToastHandler = (e: MouseEvent) => {
-  const element = e.target as HTMLElement;
+const interactiveToastHandler = (e: MouseEvent<HTMLElement>) => {
+  const element = e.target;
   const self = getToastInstance(element);
   const { type, relatedTarget } = e;
 
-  // istanbul ignore else @preserve: a solid filter is required
+  // istanbul ignore if @preserve: a solid filter is required
   if (
-    self && element !== relatedTarget &&
-    !element.contains(relatedTarget as Node)
-  ) {
-    if ([mouseenterEvent, focusinEvent].includes(type)) {
-      Timer.clear(element, toastString);
-    } else {
-      Timer.set(element, () => self.hide(), self.options.delay, toastString);
-    }
+    !self || element === relatedTarget ||
+    element.contains(relatedTarget as Node)
+  ) return;
+
+  if ([mouseenterEvent, focusinEvent].includes(type)) {
+    Timer.clear(element, toastString);
+  } else {
+    Timer.set(element, () => self.hide(), self.options.delay, toastString);
   }
 };
 
@@ -205,6 +205,7 @@ export default class Toast extends BaseComponent {
   static selector = toastSelector;
   static init = toastInitCallback;
   static getInstance = getToastInstance;
+  declare element: HTMLElement;
   declare options: ToastOptions;
   declare dismiss: HTMLElement | null;
   declare triggers: HTMLElement[];
@@ -214,7 +215,7 @@ export default class Toast extends BaseComponent {
    * @param target the target `.toast` element
    * @param config the instance options
    */
-  constructor(target: HTMLElement | string, config?: Partial<ToastOptions>) {
+  constructor(target: Element | string, config?: Partial<ToastOptions>) {
     super(target, config);
     const { element, options } = this;
 
@@ -226,11 +227,14 @@ export default class Toast extends BaseComponent {
     }
 
     // dismiss button
-    this.dismiss = querySelector(toastDismissSelector, element);
+    this.dismiss = querySelector<HTMLElement>(toastDismissSelector, element);
 
     // toast can have multiple triggering elements
     this.triggers = [
-      ...querySelectorAll(toastToggleSelector, getDocument(element)),
+      ...querySelectorAll<HTMLElement>(
+        toastToggleSelector,
+        getDocument(element),
+      ),
     ].filter(
       (btn) => getTargetElement(btn) === element,
     );
@@ -263,26 +267,22 @@ export default class Toast extends BaseComponent {
   show = () => {
     const { element, isShown } = this;
 
-    // istanbul ignore else @preserve
-    if (element && !isShown) {
-      dispatchEvent(element, showToastEvent);
-      if (!showToastEvent.defaultPrevented) {
-        showToast(this);
-      }
-    }
+    // istanbul ignore if @preserve
+    if (!element || isShown) return;
+
+    dispatchEvent(element, showToastEvent);
+    if (!showToastEvent.defaultPrevented) showToast(this);
   };
 
   /** Hides the toast. */
   hide = () => {
     const { element, isShown } = this;
 
-    // istanbul ignore else @preserve
-    if (element && isShown) {
-      dispatchEvent(element, hideToastEvent);
-      if (!hideToastEvent.defaultPrevented) {
-        hideToast(this);
-      }
-    }
+    // istanbul ignore if @preserve
+    if (!element || !isShown) return;
+
+    dispatchEvent(element, hideToastEvent);
+    if (!hideToastEvent.defaultPrevented) hideToast(this);
   };
 
   /**
@@ -319,9 +319,8 @@ export default class Toast extends BaseComponent {
     this._toggleEventListeners();
     Timer.clear(element, toastString);
 
-    if (isShown) {
-      removeClass(element, showClass);
-    }
+    if (isShown) removeClass(element, showClass);
+
     super.dispose();
   }
 }

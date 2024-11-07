@@ -1,30 +1,30 @@
-import { B as p, q as h, h as o, d as c, r as v, e as E, g as f, c as l, m as u } from "./base-component-ylZzLp-h.mjs";
-import { E as C, r as A } from "./event-listener-C1-Yf9Z5.mjs";
+import { B as g, R as f, Y as n, q as l, Z as v, r as h, t as E, v as c, m as u } from "./base-component-Jx2aafTJ.mjs";
+import { E as A, r as C } from "./event-listener-CUwvA4j6.mjs";
 import { f as $ } from "./fadeClass-CLIYI_zn.mjs";
 import { s as i } from "./showClass-C8hdJfjQ.mjs";
-import { d as I } from "./dataBsDismiss-DdNPQYa-.mjs";
-const e = "alert", m = "Alert", L = `.${e}`, S = `[${I}="${e}"]`, _ = (t) => f(t, m), b = (t) => new k(t), r = l(
+import { d as L } from "./dataBsDismiss-DdNPQYa-.mjs";
+const e = "alert", m = "Alert", _ = `.${e}`, b = `[${L}="${e}"]`, B = (t) => E(t, m), I = (t) => new w(t), r = c(
   `close.bs.${e}`
-), B = l(
+), S = c(
   `closed.bs.${e}`
 ), a = (t) => {
   const { element: s } = t;
-  c(s, B), t._toggleEventListeners(), t.dispose(), s.remove();
+  l(s, S), t._toggleEventListeners(), t.dispose(), s.remove();
 };
-class k extends p {
-  static selector = L;
-  static init = b;
-  static getInstance = _;
+class w extends g {
+  static selector = _;
+  static init = I;
+  static getInstance = B;
   dismiss;
   constructor(s) {
-    super(s), this.dismiss = h(S, this.element), this._toggleEventListeners(!0);
+    super(s), this.dismiss = f(
+      b,
+      this.element
+    ), this._toggleEventListeners(!0);
   }
-  /** Returns component name string. */
   get name() {
     return m;
   }
-  // ALERT PUBLIC METHODS
-  // ====================
   /**
    * Public method that hides the `.alert` element from the user,
    * disposes the instance once animation is complete, then
@@ -32,7 +32,7 @@ class k extends p {
    */
   close = () => {
     const { element: s } = this;
-    s && o(s, i) && (c(s, r), r.defaultPrevented || (v(s, i), o(s, $) ? E(s, () => a(this)) : a(this)));
+    s && n(s, i) && (l(s, r), r.defaultPrevented || (v(s, i), n(s, $) ? h(s, () => a(this)) : a(this)));
   };
   /**
    * Toggle on / off the `click` event listener.
@@ -40,15 +40,14 @@ class k extends p {
    * @param add when `true`, event listener is added
    */
   _toggleEventListeners = (s) => {
-    const d = s ? C : A, { dismiss: n, close: g } = this;
-    n && d(n, u, g);
+    const d = s ? A : C, { dismiss: o, close: p } = this;
+    o && d(o, u, p);
   };
-  /** Remove the component from target element. */
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
 export {
-  k as default
+  w as default
 };
 //# sourceMappingURL=alert.mjs.map

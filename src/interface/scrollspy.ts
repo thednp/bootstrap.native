@@ -3,7 +3,7 @@ import { BaseOptions } from "./baseComponent";
 
 export interface ScrollSpyOptions extends BaseOptions {
   offset: number;
-  target: HTMLElement | string | null;
+  target: HTMLElement | string;
 }
 
 export interface ScrollSpyEvent extends OriginalEvent {

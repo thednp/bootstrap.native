@@ -76,6 +76,35 @@ describe("Tooltip Class Tests", () => {
     }, 251);
   });
 
+  it("Can initialize with title", async () => {
+    const container = getMarkup("tooltip");
+    const tooltipTarget = document.createElement('button');
+    tooltipTarget.setAttribute('data-tip', 'tooltip');
+    tooltipTarget.setAttribute('title', 'Sample Title');
+    tooltipTarget.innerText = 'Test button';
+    tooltipTarget.classList.add('btn');
+    container.append(tooltipTarget);
+    wrapper.append(container);
+    await vi.waitFor(() => container.querySelector('[data-tip="tooltip"]'), 200);
+    const element = container.querySelector<HTMLElement>(
+      '[data-tip="tooltip"]',
+    )!;
+    const instance = Tooltip.init(element);
+    expect(instance.element, "element").to.equal(tooltipTarget);
+    expect(Tooltip.getInstance(element), "element").to.equal(instance);
+
+    instance.toggle();
+    await vi.waitFor(() => {
+      expect(instance.tooltip?.className).to.contain("show");
+      expect(element.getAttribute('data-original-title')).to.equal("Sample Title");
+    }, 251);
+
+    instance.dispose();
+    await vi.waitFor(() => {
+      expect(element.hasAttribute('data-original-title')).to.be.false;
+    }, 251);
+  });
+
   it("Can do automatic position on scroll / resize", async () => {
     await page.viewport(1000, 600);
     const container = getMarkup("tooltip");
@@ -259,7 +288,7 @@ describe("Tooltip Class Tests", () => {
       '[data-bs-toggle="tooltip"]',
     )[0]!;
     const modalInstance = new Modal(modalTarget);
-    const instance = new Tooltip(element);
+    const instance = new Tooltip(element, { placement: 'top' });
 
     modalInstance.toggle();
     await vi.waitFor(() => {
@@ -356,7 +385,7 @@ describe("Tooltip Class Tests", () => {
     await vi.waitFor(() => container.querySelector('[data-test="tooltip"]'), 200);
     const element = container.querySelectorAll<HTMLElement>('[data-test="tooltip"]')[1]!;
 
-    const instance = Tooltip.init(element);
+    const instance = new Tooltip(element);
     instance.show();
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("show");

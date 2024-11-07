@@ -1,12 +1,12 @@
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -23,20 +23,21 @@ declare interface BaseOptions {
 /** Returns a new `Modal` instance. */
 declare class Modal extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Modal;
-    static getInstance: (element: HTMLElement) => Modal | null;
+    static init: (element: Element) => Modal;
+    static getInstance: (element: Element) => Modal | null;
+    element: HTMLElement;
     options: ModalOptions;
     modalDialog: HTMLElement;
     triggers: HTMLElement[];
     isStatic: boolean;
     hasFade: boolean;
-    relatedTarget: HTMLElement | null;
+    relatedTarget: EventTarget & HTMLElement | null;
     _observer: ResizeObserver;
     /**
      * @param target usually the `.modal` element
      * @param config instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<ModalOptions>);
+    constructor(target: Element | string, config?: Partial<ModalOptions>);
     /**
      * Returns component name string.
      */

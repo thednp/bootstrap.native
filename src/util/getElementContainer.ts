@@ -15,32 +15,34 @@ import {
  * @param element the target
  * @returns the query result
  */
-const getElementContainer = (element: HTMLElement): ParentNode => {
+const getElementContainer = (element: Element) => {
   const majorBlockTags = ["HTML", "BODY"];
-  const containers: ParentNode[] = [];
-  let { parentNode } = element as Node;
+  const containers: HTMLElement[] = [];
+  let { parentNode } = element;
 
   while (parentNode && !majorBlockTags.includes(parentNode.nodeName)) {
-    parentNode = getParentNode(parentNode) as ParentNode;
+    parentNode = getParentNode(parentNode) as HTMLElement;
     // istanbul ignore else @preserve
     if (!(isShadowRoot(parentNode) || isTableElement(parentNode))) {
-      containers.push(parentNode);
+      containers.push(parentNode as HTMLElement);
     }
   }
 
   return (
     containers.find((c, i) => {
       if (
-        getElementStyle(c as HTMLElement, "position") !== "relative" &&
-        containers.slice(i + 1).every((r) =>
-          getElementStyle(r as HTMLElement, "position") === "static"
-        )
+        ((getElementStyle(c, "position") !== "relative" ||
+          getElementStyle(c, "position") === "relative" &&
+            c.offsetHeight !== c.scrollHeight) &&
+          containers.slice(i + 1).every((r) =>
+            getElementStyle(r, "position") === "static"
+          ))
       ) {
         return c;
       }
       return null;
     }) ||
-    // istanbul ignore next: optional guard
+    /* istanbul ignore next: optional guard */
     getDocument(element).body
   );
 };

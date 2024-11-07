@@ -1,12 +1,12 @@
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -23,16 +23,17 @@ declare interface BaseOptions {
 /** Returns a new `Colapse` instance. */
 declare class Collapse extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Collapse;
-    static getInstance: (element: HTMLElement) => Collapse | null;
+    static init: (element: Element) => Collapse;
+    static getInstance: (element: Element) => Collapse | null;
+    element: HTMLElement;
     options: CollapseOptions;
-    parent: HTMLElement | null;
-    triggers: HTMLElement[];
+    parent: Element | null;
+    triggers: Element[];
     /**
      * @param target and `Element` that matches the selector
      * @param config instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<CollapseOptions>);
+    constructor(target: Element | string, config?: Partial<CollapseOptions>);
     /**
      * Returns component name string.
      */

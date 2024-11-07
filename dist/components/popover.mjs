@@ -1,23 +1,23 @@
-import { O as n, N as i, g as p } from "./base-component-ylZzLp-h.mjs";
+import { N as i, I as p, t as n } from "./base-component-Jx2aafTJ.mjs";
 import { d as r } from "./dataBsToggle-B84TS15h.mjs";
-import { T as l, s as c, p as a, a as o, g as m, t as u } from "./tooltip-B5F6ZNW7.mjs";
-const g = `[${r}="${o}"],[data-tip="${o}"]`, b = n({}, u, {
-  template: m(o),
+import { T as l, s as c, p as a, a as e, g as m, t as u } from "./tooltip-Cxy40RjE.mjs";
+const b = `[${r}="${e}"],[data-tip="${e}"]`, f = i({}, u, {
+  template: m(e),
   content: "",
   dismissible: !1,
   btnClose: '<button class="btn-close" aria-label="Close"></button>'
-}), f = (t) => p(t, a), d = (t) => new T(t);
+}), g = (t) => n(t, a), d = (t) => new T(t);
 class T extends l {
-  static selector = g;
+  static selector = b;
   static init = d;
-  static getInstance = f;
+  static getInstance = g;
   static styleTip = c;
   /**
    * @param target the target element
    * @param config the instance options
    */
-  constructor(e, s) {
-    super(e, s);
+  constructor(o, s) {
+    super(o, s);
   }
   /**
    * Returns component name string.
@@ -29,13 +29,12 @@ class T extends l {
    * Returns component default options.
    */
   get defaults() {
-    return b;
+    return f;
   }
-  /* extend original `show()` */
   show = () => {
     super.show();
-    const { options: e, btn: s } = this;
-    e.dismissible && s && setTimeout(() => i(s), 17);
+    const { options: o, btn: s } = this;
+    o.dismissible && s && setTimeout(() => p(s), 17);
   };
 }
 export {

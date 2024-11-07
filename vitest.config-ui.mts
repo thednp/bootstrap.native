@@ -12,6 +12,12 @@ export default defineConfig({
       "@vitest/coverage-istanbul"
     ]
   },
+  esbuild: {
+    legalComments: 'inline',
+  },
+  build: {
+    minify: 'esbuild'
+  },
   test: {
     css: true,
     globals: true,
@@ -23,7 +29,7 @@ export default defineConfig({
       exclude: ["src/util/init.ts"],
     },
     browser: {
-      // provider: 'webdriverio', // or 'webdriverio'
+      // provider: 'preview', // or 'webdriverio'
       enabled: true,
       headless: false,
       name: 'chromium', // browser name is required

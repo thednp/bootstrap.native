@@ -16,6 +16,7 @@ import {
   getElementStyle,
   getInstance,
   getUID,
+  getWindow,
   hasAttribute,
   hasClass,
   isApple,
@@ -31,6 +32,7 @@ import {
   setAttribute,
   Timer,
   toLowerCase,
+  TouchEvent,
   touchstartEvent,
 } from "@thednp/shorty";
 
@@ -66,13 +68,13 @@ const titleAttr = "title";
  * Static method which returns an existing `Tooltip` instance associated
  * to a target `Element`.
  */
-let getTooltipInstance = (element: HTMLElement) =>
+let getTooltipInstance = (element: Element) =>
   getInstance<Tooltip>(element, tooltipComponent);
 
 /**
  * A `Tooltip` initialization callback.
  */
-const tooltipInitCallback = (element: HTMLElement) => new Tooltip(element);
+const tooltipInitCallback = (element: Element) => new Tooltip(element);
 
 // TOOLTIP PRIVATE METHODS
 // =======================
@@ -82,11 +84,11 @@ const tooltipInitCallback = (element: HTMLElement) => new Tooltip(element);
  * @param self the `Tooltip` instance
  */
 const removeTooltip = (self: Tooltip) => {
-  const { element, tooltip, container, offsetParent } = self;
+  const { element, tooltip, container } = self;
   removeAttribute(element, ariaDescribedBy);
   removePopup(
-    tooltip as HTMLElement,
-    container === offsetParent ? container : offsetParent,
+    tooltip,
+    container,
   );
 };
 
@@ -96,10 +98,10 @@ const removeTooltip = (self: Tooltip) => {
  * @param self Tooltip
  */
 const hasTip = (self: Tooltip): boolean | undefined => {
-  const { tooltip, container, offsetParent } = self;
+  const { tooltip, container } = self;
 
   return tooltip &&
-    hasPopup(tooltip, container === offsetParent ? container : offsetParent);
+    hasPopup(tooltip, container);
 };
 
 /**
@@ -188,13 +190,14 @@ const tooltipHiddenAction = (self: Tooltip) => {
  */
 const toggleTooltipOpenHandlers = (self: Tooltip, add?: boolean) => {
   const action = add ? addListener : removeListener;
-  const { element } = self;
-  // const { offsetHeight, scrollHeight } = container as HTMLElement;
+  const { element, tooltip } = self;
   const parentModal = closest(element, `.${modalString}`);
   const parentOffcanvas = closest(element, `.${offcanvasString}`);
 
-  if (add) self._observer.observe(self.element);
-  else self._observer.disconnect();
+  if (add) {
+    [element, tooltip]
+      .forEach((target) => self._observer.observe(target));
+  } else self._observer.disconnect();
 
   // dismiss tooltips inside modal / offcanvas
   if (parentModal) {
@@ -235,12 +238,13 @@ export default class Tooltip extends BaseComponent {
   static init = tooltipInitCallback;
   static getInstance = getTooltipInstance;
   static styleTip = styleTip;
+  declare element: Element & HTMLOrSVGElement;
   declare options: TooltipOptions;
   declare btn?: HTMLElement;
-  declare tooltip?: HTMLElement;
-  declare container: ParentNode;
-  declare arrow?: HTMLElement;
-  declare offsetParent?: HTMLElement;
+  declare tooltip: HTMLElement;
+  declare container: HTMLElement;
+  declare offsetParent: Element | Window;
+  declare arrow: HTMLElement;
   declare enabled: boolean;
   declare id: string;
   declare _observer: PositionObserver;
@@ -249,7 +253,7 @@ export default class Tooltip extends BaseComponent {
    * @param target the target element
    * @param config the instance options
    */
-  constructor(target: HTMLElement | string, config?: Partial<TooltipOptions>) {
+  constructor(target: Element | string, config?: Partial<TooltipOptions>) {
     super(target, config);
 
     const { element } = this;
@@ -258,7 +262,7 @@ export default class Tooltip extends BaseComponent {
     const tipComponent = isTooltip ? tooltipComponent : popoverComponent;
 
     // istanbul ignore next @preserve: this is to set Popover too
-    getTooltipInstance = <T extends Tooltip>(elem: HTMLElement) =>
+    getTooltipInstance = <T extends Tooltip>(elem: Element) =>
       getInstance<T>(elem, tipComponent);
 
     // additional properties
@@ -270,38 +274,51 @@ export default class Tooltip extends BaseComponent {
     const { options } = this;
 
     // invalidate
-    if (!((!options.title && isTooltip) || (!isTooltip && !options.content))) {
-      // reset default options
-      ObjectAssign(tooltipDefaults, { titleAttr: "" });
-
-      // set title attributes and add event listeners
-      // istanbul ignore else @preserve
-      if (
-        hasAttribute(element, titleAttr) && isTooltip &&
-        typeof options.title === "string"
-      ) {
-        toggleTooltipTitle(this, options.title);
-      }
-
-      // set containers
-      this.container = getElementContainer(element);
-      this.offsetParent = ["sticky", "fixed"].some(
-          (position) =>
-            getElementStyle(this.container as HTMLElement, "position") ===
-              position,
-        )
-        ? (this.container as HTMLElement)
-        : getDocument(this.element).body;
-
-      // create tooltip here
-      createTip(this);
-
-      // create observer
-      this._observer = new PositionObserver(() => this.update());
-
-      // attach events
-      this._toggleEventListeners(true);
+    // istanbul ignore else @preserve
+    if (((!options.title && isTooltip) || (!isTooltip && !options.content))) {
+      return;
     }
+
+    // reset default options
+    ObjectAssign(tooltipDefaults, { titleAttr: "" });
+
+    // set title attributes and add event listeners
+    // istanbul ignore else @preserve
+    if (
+      hasAttribute(element, titleAttr) && isTooltip &&
+      typeof options.title === "string"
+    ) {
+      toggleTooltipTitle(this, options.title);
+    }
+
+    // set containers
+    const container = getElementContainer(element);
+    const offsetParent = ["sticky", "fixed", "relative"].some(
+        (position) =>
+          getElementStyle(container, "position") ===
+            position,
+      )
+      ? container
+      : getWindow(element);
+
+    this.container = container;
+    this.offsetParent = offsetParent;
+
+    // create tooltip here
+    createTip(this);
+
+    /* istanbul ignore if @preserve */
+    if (!this.tooltip) return;
+
+    // create observer
+    this._observer = new PositionObserver((entries) => {
+      /* istanbul ignore else */
+      if (!entries.some((entry) => entry.isVisible)) return;
+      this.update();
+    });
+
+    // attach events
+    this._toggleEventListeners(true);
   }
 
   /**
@@ -321,14 +338,13 @@ export default class Tooltip extends BaseComponent {
   // ======================
   /** Handles the focus event on iOS. */
   // istanbul ignore next @preserve - impossible to test without Apple device
-  handleFocus = () => focus(this.element);
+  handleFocus = () => focus(this.element as HTMLElement);
   /** Shows the tooltip. */
   handleShow = () => this.show();
   show() {
-    const { options, tooltip, element, container, offsetParent, id } = this;
+    const { options, tooltip, element, container, id } = this;
     const { animation } = options;
     const outTimer = Timer.get(element, "out");
-    const tipContainer = container === offsetParent ? container : offsetParent;
 
     Timer.clear(element, "out");
 
@@ -347,7 +363,7 @@ export default class Tooltip extends BaseComponent {
           // istanbul ignore else @preserve
           if (!showTooltipEvent.defaultPrevented) {
             // append to container
-            appendPopup(tooltip, tipContainer);
+            appendPopup(tooltip, container);
 
             setAttribute(element, ariaDescribedBy, `#${id}`);
 
@@ -409,7 +425,7 @@ export default class Tooltip extends BaseComponent {
 
   /** Updates the tooltip position. */
   update = () => {
-    styleTip<Tooltip>(this);
+    styleTip(this);
   };
 
   /** Toggles the tooltip visibility. */
@@ -458,9 +474,9 @@ export default class Tooltip extends BaseComponent {
 
     // istanbul ignore if @preserve
     if (
-      (tooltip && tooltip.contains(target as HTMLElement)) ||
+      (tooltip && tooltip.contains(target)) ||
       target === element ||
-      (target && element.contains(target as HTMLElement))
+      (target && element.contains(target))
     ) {
       // smile for ESLint
     } else {
@@ -537,7 +553,7 @@ export default class Tooltip extends BaseComponent {
     if (options.animation && hasTip(clone)) {
       this.options.delay = 0; // reset delay
       this.hide();
-      emulateTransitionEnd(tooltip as HTMLElement, callback);
+      emulateTransitionEnd(tooltip, callback);
     } else {
       callback();
     }

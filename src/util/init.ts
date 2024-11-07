@@ -67,8 +67,8 @@ type Component =
  * @param collection
  */
 const initComponentDataAPI = (
-  callback: (el: HTMLElement) => Component,
-  collection: HTMLCollectionOf<HTMLElement> | HTMLElement[],
+  callback: (el: Element) => Component,
+  collection: HTMLCollectionOf<Element> | Element[],
 ) => {
   [...collection].forEach((x) => callback(x));
 };
@@ -80,7 +80,7 @@ const initComponentDataAPI = (
  * @param context parent `Node`
  */
 const removeComponentDataAPI = <T>(component: string, context: ParentNode) => {
-  const compData = Data.getAllFor(component) as Map<HTMLElement, T>;
+  const compData = Data.getAllFor(component) as Map<Element, T>;
 
   if (compData) {
     [...compData].forEach(([element, instance]) => {
@@ -98,7 +98,7 @@ const removeComponentDataAPI = <T>(component: string, context: ParentNode) => {
  */
 export const initCallback = (context?: ParentNode) => {
   const lookUp = context && context.nodeName ? context : document;
-  const elemCollection = [...getElementsByTagName("*", lookUp)];
+  const elemCollection = [...getElementsByTagName<Element>("*", lookUp)];
 
   componentsList.forEach((cs) => {
     const { init, selector } = cs;

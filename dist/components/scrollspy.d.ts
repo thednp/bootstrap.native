@@ -2,13 +2,13 @@ import { default as default_2 } from '@thednp/position-observer';
 
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -25,8 +25,9 @@ declare interface BaseOptions {
 /** Returns a new `ScrollSpy` instance. */
 declare class ScrollSpy extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => ScrollSpy;
-    static getInstance: (element: HTMLElement) => ScrollSpy | null;
+    static init: (element: Element) => ScrollSpy;
+    static getInstance: (element: Element) => ScrollSpy | null;
+    element: HTMLElement;
     options: ScrollSpyOptions;
     target: HTMLElement | null;
     scrollTarget: HTMLElement;
@@ -43,7 +44,7 @@ declare class ScrollSpy extends BaseComponent {
      * @param target the target element
      * @param config the instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<ScrollSpyOptions>);
+    constructor(target: Element | string, config?: Partial<ScrollSpyOptions>);
     /**
      * Returns component name string.
      */
@@ -51,7 +52,7 @@ declare class ScrollSpy extends BaseComponent {
     /**
      * Returns component default options.
      */
-    get defaults(): ScrollSpyOptions;
+    get defaults(): Partial<ScrollSpyOptions>;
     /** Updates all items. */
     refresh: () => void;
     /** Removes `ScrollSpy` from the target element. */
@@ -61,7 +62,7 @@ export default ScrollSpy;
 
 declare interface ScrollSpyOptions extends BaseOptions {
     offset: number;
-    target: HTMLElement | string | null;
+    target: HTMLElement | string;
 }
 
 export { }

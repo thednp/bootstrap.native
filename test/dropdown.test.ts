@@ -48,8 +48,8 @@ describe("Dropdown Class Tests", () => {
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-bs-toggle="dropdown"]'), 200);
 
-    const [element] = [...container.querySelectorAll('[data-bs-toggle="dropdown"]')]
-      .slice(-1) as HTMLElement[];
+    const [element] = [...container.querySelectorAll<HTMLElement>('[data-bs-toggle="dropdown"]')]
+      .slice(-1);
     element.parentElement?.querySelector('.dropdown-menu')?.remove();
     const instance = Dropdown.init(element);
     expect(instance.element, 'element').to.equal(element);
@@ -61,7 +61,7 @@ describe("Dropdown Class Tests", () => {
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-bs-toggle="dropdown"]'), 200);
 
-    const elements = [...container.querySelectorAll('[data-bs-toggle="dropdown"]')] as HTMLElement[];
+    const elements = [...container.querySelectorAll<HTMLElement>('[data-bs-toggle="dropdown"]')];
     const instances: Dropdown[] = [];
 
     elements.forEach((element, i) => {
@@ -94,7 +94,7 @@ describe("Dropdown Class Tests", () => {
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-bs-toggle="dropdown"]'), 200);
 
-    const elements = container.querySelectorAll('[data-bs-toggle="dropdown"]') as NodeListOf<HTMLButtonElement>;
+    const elements = container.querySelectorAll<HTMLButtonElement>('[data-bs-toggle="dropdown"]');
     const instance = Dropdown.init(elements[1]);
     const dropdownItems = instance.menu.getElementsByClassName('dropdown-item') as HTMLCollectionOf<HTMLButtonElement>;
     const doc = elements[1].ownerDocument;

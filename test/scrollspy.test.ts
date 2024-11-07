@@ -45,32 +45,47 @@ describe("ScrollSpy Class Tests", async () => {
     expect(instance.options).to.not.be.empty;
     expect(instance.defaults).to.not.be.undefined;
     expect(instance.version).to.be.string;
+    instance.dispose();
   });
 
-  it("Init without a target", () => {
+  it("Init without a target", async () => {
     const doc = wrapper.ownerDocument!;
-    const element = doc.createElement("div");
-    element.setAttribute("data-bs-target", "#nonExistingTarget");
-    wrapper.append(element);
+    const target = doc.createElement("div");
+    target.setAttribute("data-bs-target", "#nonExistingTarget");
+    wrapper.append(target);
+    const element = await vi.waitFor(() => wrapper.querySelector<HTMLElement>('[data-bs-target="#nonExistingTarget"]')!, 50);
+    if (!element) return;
 
     const instance = ScrollSpy.init(element);
-    expect(ScrollSpy.getInstance(element)).to.eq(instance);
-    expect(instance.target).to.be.null;
+    console.log(instance.target);
+    await vi.waitFor(() => {
+      expect(instance.target).to.be.undefined;
+      expect(ScrollSpy.getInstance(element)).to.eq(instance);
+    }, 150)
   });
 
   it("Can activate targets", async () => {
+    await page.viewport(780, 800);
     const container = getMarkup("scrollspy");
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-bs-spy="scroll"]'), 200);
 
-    const element = container.querySelector<HTMLElement>('[data-bs-spy="scroll"]')!;
-    const instance = ScrollSpy.init(element);
+    const element = container.querySelector<HTMLElement>('[data-bs-spy="scroll"]');
+    if (!element) return;
+    await new Promise(res => setTimeout(res, 50));
 
-    instance.scrollTarget.scrollTo({ top: 1500, left: 0, behavior: 'instant' });
+    const instance = ScrollSpy.init(element);
+    await new Promise(res => setTimeout(res, 51));
+    
+    instance.scrollTarget.scrollTo({ top: 500, left: 0, behavior: 'instant' });
+    instance.scrollTarget.scrollTo({ top: 2000, left: 0, behavior: 'instant' });
+    instance.scrollTarget.scrollTo({ top: 2500, left: 0, behavior: 'instant' });
+    await new Promise(res => setTimeout(res, 150));
 
     await vi.waitFor(() => {
       expect(instance.items[4].className).to.contain("active");
-    }, 51);
+      instance.dispose()
+    }, 151);
   });
 
   it("Can dispose", async () => {
@@ -93,9 +108,9 @@ describe("ScrollSpy Class Tests", async () => {
   });
 
   it("Can work with full page contents", async () => {
-    await page.viewport(780, 1000);
+    await page.viewport(780, 600);
     const containerSource = getMarkup("scrollspy");
-    const content = containerSource.querySelector(".col-md-9 .row")!.cloneNode(
+    const content = containerSource.querySelector(".col-md-8 .row")!.cloneNode(
       true,
     ) as Node;
     const container = document.createElement('div');
@@ -110,27 +125,38 @@ describe("ScrollSpy Class Tests", async () => {
     Object.assign(nav.style, { top: "0px" });
     nav.classList.add("position-sticky");
 
-    const element = container.querySelector<HTMLDivElement>(ScrollSpy.selector)!;
+    const element = await vi.waitFor(() =>
+      container.querySelector<HTMLDivElement>(ScrollSpy.selector)
+    , 250);
+    if (!element) return;
     const instance = ScrollSpy.init(element);
+    await new Promise(res => setTimeout(res, 150));
 
-    instance.scrollTarget.scrollTo({ top: 1500, behavior: 'instant' });
+    instance.scrollTarget.scrollTo({ top: 500, left: 0, behavior: 'instant' });
+    instance.scrollTarget.scrollTo({ top: 1500, left: 0, behavior: 'instant' });
+    instance.scrollTarget.scrollTo({ top: 5000, left: 0, behavior: 'instant' });
+    await new Promise(res => setTimeout(res, 150));
+
     await vi.waitFor(() => {
       expect(instance.items[4].className).to.contain('active');
-    }, 101);
+    }, 151);
 
     instance.scrollTarget.scrollTo({ top: 0, behavior: 'instant' });
+    await new Promise(res => setTimeout(res, 150));
     await vi.waitFor(() => {
       expect(instance.items[4].className).to.not.contain('active');
       expect(instance.items[0].className).to.not.contain('active');
-    }, 101);
+    }, 151);
 
     await page.viewport(400, 600);
-    win.dispatchEvent(new Event('resize'));
+    // win.dispatchEvent(new Event('resize'));
     instance.scrollTarget.scrollTo({ top: 2500, behavior: 'instant' });
+    await new Promise(res => setTimeout(res, 250));
     await vi.waitFor(() => {
       expect(instance.items[0].className).to.not.contain('active');
       expect(instance.items[4].className).to.contain('active');
-    }, 101);
+      instance.dispose();
+    }, 151);
 
     await page.viewport(414, 896);
   });

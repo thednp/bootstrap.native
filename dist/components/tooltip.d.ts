@@ -1,14 +1,15 @@
 import { default as default_2 } from '@thednp/position-observer';
+import { TouchEvent as TouchEvent_2 } from '@thednp/shorty';
 
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -25,15 +26,16 @@ declare interface BaseOptions {
 /** Creates a new `Tooltip` instance. */
 declare class Tooltip extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Tooltip;
-    static getInstance: (element: HTMLElement) => Tooltip | null;
-    static styleTip: <T extends Tooltip>(self: T) => void;
+    static init: (element: Element) => Tooltip;
+    static getInstance: (element: Element) => Tooltip | null;
+    static styleTip: (self: Tooltip) => void;
+    element: Element & HTMLOrSVGElement;
     options: TooltipOptions;
     btn?: HTMLElement;
-    tooltip?: HTMLElement;
-    container: ParentNode;
-    arrow?: HTMLElement;
-    offsetParent?: HTMLElement;
+    tooltip: HTMLElement;
+    container: HTMLElement;
+    offsetParent: Element | Window;
+    arrow: HTMLElement;
     enabled: boolean;
     id: string;
     _observer: default_2;
@@ -41,7 +43,7 @@ declare class Tooltip extends BaseComponent {
      * @param target the target element
      * @param config the instance options
      */
-    constructor(target: HTMLElement | string, config?: Partial<TooltipOptions>);
+    constructor(target: Element | string, config?: Partial<TooltipOptions>);
     /**
      * Returns component name string.
      */
@@ -74,7 +76,7 @@ declare class Tooltip extends BaseComponent {
      * @this {Tooltip}
      * @param {TouchEvent} e the `Event` object
      */
-    handleTouch: ({ target }: TouchEvent) => void;
+    handleTouch: ({ target }: TouchEvent_2) => void;
     /**
      * Toggles on/off the `Tooltip` event listeners.
      *

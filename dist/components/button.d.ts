@@ -1,12 +1,12 @@
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
-    element: HTMLElement;
+    element: Element;
     options?: BaseOptions;
     /**
-     * @param target `HTMLElement` or selector string
+     * @param target `Element` or selector string
      * @param config component instance options
      */
-    constructor(target: HTMLElement | string, config?: BaseOptions);
+    constructor(target: Element | string, config?: BaseOptions);
     get version(): string;
     get name(): string;
     get defaults(): {};
@@ -23,13 +23,14 @@ declare interface BaseOptions {
 /** Creates a new `Button` instance. */
 declare class Button extends BaseComponent {
     static selector: string;
-    static init: (element: HTMLElement) => Button;
-    static getInstance: (element: HTMLElement) => Button | null;
+    static init: (element: Element) => Button;
+    static getInstance: (element: Element) => Button | null;
     isActive: boolean;
+    element: HTMLElement;
     /**
      * @param target usually a `.btn` element
      */
-    constructor(target: HTMLElement | string);
+    constructor(target: Element | string);
     /**
      * Returns component name string.
      */

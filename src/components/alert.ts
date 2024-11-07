@@ -31,13 +31,13 @@ const alertDismissSelector = `[${dataBsDismiss}="${alertString}"]`;
  * Static method which returns an existing `Alert` instance associated
  * to a target `Element`.
  */
-const getAlertInstance = (element: HTMLElement) =>
+const getAlertInstance = (element: Element) =>
   getInstance<Alert>(element, alertComponent);
 
 /**
  * An `Alert` initialization callback.
  */
-const alertInitCallback = (element: HTMLElement) => new Alert(element);
+const alertInitCallback = (element: Element) => new Alert(element);
 
 // ALERT CUSTOM EVENTS
 // ===================
@@ -73,11 +73,14 @@ export default class Alert extends BaseComponent {
   static getInstance = getAlertInstance;
   dismiss: HTMLElement | null;
 
-  constructor(target: HTMLElement | string) {
+  constructor(target: Element | string) {
     super(target);
 
     // the dismiss button
-    this.dismiss = querySelector(alertDismissSelector, this.element);
+    this.dismiss = querySelector<HTMLElement>(
+      alertDismissSelector,
+      this.element,
+    );
 
     // add event listener
     this._toggleEventListeners(true);
