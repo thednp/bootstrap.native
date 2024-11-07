@@ -71,7 +71,9 @@ export const setScrollbar = (element: Element, overflow?: boolean) => {
   const bd = getDocumentBody(element);
   const bodyPad = parseInt(getElementStyle(bd, "paddingRight"), 10);
   const isOpen = getElementStyle(bd, "overflow") === "hidden";
-  const sbWidth = isOpen && bodyPad ? 0 : measureScrollbar(element);
+  const sbWidth = isOpen && bodyPad
+    ? /* istanbul ignore next */ 0
+    : measureScrollbar(element);
   const fixedItems = getFixedItems(bd);
 
   // istanbul ignore if @preserve

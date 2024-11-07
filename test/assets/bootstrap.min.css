@@ -11482,7 +11482,7 @@ textarea.form-control-lg {
 .fade,
 .collapsing,
 .carousel-item {
-  transition-duration: 100ms;
+  transition-duration: 50ms;
 }
 
 .modal, .offcanvas, .tooltip, .popover { transition-duration: 0.05s }

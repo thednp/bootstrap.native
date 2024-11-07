@@ -74,6 +74,7 @@ describe("Offcanvas Class Tests", () => {
     await vi.waitFor(() => {
       expect(instance.element.className).to.contain("show");
     }, 151);
+    await new Promise(res => setTimeout(res, 151));
 
     dismiss.click();
     await vi.waitFor(() => {

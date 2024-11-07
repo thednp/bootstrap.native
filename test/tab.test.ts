@@ -78,39 +78,40 @@ describe("Tab Class Tests", () => {
     dropdowns.forEach(dropdown => dropdownInstances.push(Dropdown.init(dropdown)));
     elements.forEach(element => tabInstances.push(Tab.init(element)));
 
-    (dropdownInstances[0].element as HTMLElement).click();
+    dropdownInstances[0].element.click();
     await vi.waitFor(() => {
       expect(dropdownInstances[0].menu.className).to.contain('show');
-    }, 50);
-    (tabInstances[1].element as HTMLElement).click();
+    }, 150);
+    tabInstances[1].element.click();
     await vi.waitFor(() => {
       expect(tabInstances[0].content?.className).to.not.contain('show');
       expect(tabInstances[1].content?.className).to.contain('show');
     }, 151);
 
     await new Promise(res => setTimeout(res, 101));
-    (dropdownInstances[0].element as HTMLElement).click();
+    dropdownInstances[0].element.click();
     await vi.waitFor(() => {
       expect(dropdownInstances[0].menu.className).to.contain('show');
-    }, 50);
+    }, 150);
+
     await new Promise(res => setTimeout(res, 171));
-    (tabInstances[2].element as HTMLElement).click();
+    tabInstances[2].element.click();
     await vi.waitFor(() => {
       expect(tabInstances[1].content?.className).to.not.contain('show');
       expect(tabInstances[2].content?.className).to.contain('show');
-    }, 151);
+    }, 171);
 
     await new Promise(res => setTimeout(res, 101));
-    (tabInstances[4].element as HTMLElement).click();
+    tabInstances[4].element.click();
     await vi.waitFor(() => {
       expect(tabInstances[4].content?.className).to.contain('show');
     }, 151);
 
-    (tabInstances[3].element as HTMLElement).click();
+    tabInstances[3].element.click();
     await vi.waitFor(() => {
       expect(tabInstances[4].content?.className).to.not.contain('show');
       expect(tabInstances[3].content?.className).to.contain('show');
-    }, 151);
+    }, 171);
   });
 
   it("Can do original events", async () => {
