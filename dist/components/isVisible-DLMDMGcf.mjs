@@ -1,12 +1,12 @@
 import { S as I, a2 as w, _ as d, J as c, F as f, Y as y, G as i, a3 as P, R as E, d as B, Z as g, b as h, e as M, f as T } from "./base-component-Jx2aafTJ.mjs";
 import { f as $ } from "./fadeClass-CLIYI_zn.mjs";
 import { s as r } from "./showClass-C8hdJfjQ.mjs";
-import { a as V, m as C, o as R, r as W } from "./popupContainer-CgZsH2ur.mjs";
-const L = "Modal", N = "Offcanvas", A = "fixed-top", F = "fixed-bottom", S = "sticky-top", u = "position-sticky", O = (s) => [
+import { a as V, m as u, o as C, r as W } from "./popupContainer-CgZsH2ur.mjs";
+const L = "Modal", N = "Offcanvas", A = "fixed-top", F = "fixed-bottom", R = "sticky-top", S = "position-sticky", O = (s) => [
   ...i(A, s),
   ...i(F, s),
+  ...i(R, s),
   ...i(S, s),
-  ...i(u, s),
   ...i("is-fixed", s)
 ], G = (s) => {
   const a = d(s);
@@ -31,12 +31,12 @@ const L = "Modal", N = "Offcanvas", A = "fixed-top", F = "fixed-bottom", S = "st
     paddingRight: `${e + l}px`
   }), m.length && m.forEach((n) => {
     const x = c(n, "paddingRight");
-    if (n.style.paddingRight = `${parseInt(x, 10) + l}px`, [S, u].some((p) => y(n, p))) {
+    if (n.style.paddingRight = `${parseInt(x, 10) + l}px`, [R, S].some((p) => y(n, p))) {
       const p = c(n, "marginRight");
       n.style.marginRight = `${parseInt(p, 10) - l}px`;
     }
   }));
-}, k = "backdrop", v = `${C}-${k}`, b = `${R}-${k}`, Z = `.${C}.${r}`, q = `.${R}.${r}`, t = P("div"), J = (s) => E(
+}, k = "backdrop", v = `${u}-${k}`, b = `${C}-${k}`, Z = `.${u}.${r}`, q = `.${C}.${r}`, t = P("div"), J = (s) => E(
   `${Z},${q}`,
   B(s)
 ), _ = (s) => {
@@ -69,4 +69,4 @@ export {
   X as s,
   _ as t
 };
-//# sourceMappingURL=isVisible-D1DWrEcd.mjs.map
+//# sourceMappingURL=isVisible-DLMDMGcf.mjs.map

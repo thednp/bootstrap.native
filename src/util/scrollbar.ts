@@ -74,26 +74,26 @@ export const setScrollbar = (element: Element, overflow?: boolean) => {
   const sbWidth = isOpen && bodyPad ? 0 : measureScrollbar(element);
   const fixedItems = getFixedItems(bd);
 
-  // istanbul ignore else @preserve
-  if (overflow) {
-    setElementStyle(bd, {
-      overflow: "hidden",
-      paddingRight: `${bodyPad + sbWidth}px`,
-    });
+  // istanbul ignore if @preserve
+  if (!overflow) return;
 
+  setElementStyle(bd, {
+    overflow: "hidden",
+    paddingRight: `${bodyPad + sbWidth}px`,
+  });
+
+  // istanbul ignore if @preserve
+  if (!fixedItems.length) return;
+
+  fixedItems.forEach((fixed) => {
+    const itemPadValue = getElementStyle(fixed, "paddingRight");
+    fixed.style.paddingRight = `${parseInt(itemPadValue, 10) + sbWidth}px`;
     // istanbul ignore else @preserve
-    if (fixedItems.length) {
-      fixedItems.forEach((fixed) => {
-        const itemPadValue = getElementStyle(fixed, "paddingRight");
-        fixed.style.paddingRight = `${parseInt(itemPadValue, 10) + sbWidth}px`;
-        // istanbul ignore else @preserve
-        if (
-          [stickyTopClass, positionStickyClass].some((c) => hasClass(fixed, c))
-        ) {
-          const itemMValue = getElementStyle(fixed, "marginRight");
-          fixed.style.marginRight = `${parseInt(itemMValue, 10) - sbWidth}px`;
-        }
-      });
+    if (
+      [stickyTopClass, positionStickyClass].some((c) => hasClass(fixed, c))
+    ) {
+      const itemMValue = getElementStyle(fixed, "marginRight");
+      fixed.style.marginRight = `${parseInt(itemMValue, 10) - sbWidth}px`;
     }
-  }
+  });
 };
