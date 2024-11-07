@@ -1,5 +1,10 @@
 name: ci
-on: push
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - src
 jobs:
   test:
     runs-on: ubuntu-20.04
