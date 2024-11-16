@@ -22,18 +22,17 @@ import {
 
 import { addListener, removeListener } from "@thednp/event-listener";
 
-import collapsingClass from "../strings/collapsingClass";
-import activeClass from "../strings/activeClass";
-import fadeClass from "../strings/fadeClass";
-import showClass from "../strings/showClass";
-import dropdownClasses from "../strings/dropdownClasses";
-import dataBsToggle from "../strings/dataBsToggle";
-import tabString from "../strings/tabString";
-import tabComponent from "../strings/tabComponent";
-
-import getTargetElement from "../util/getTargetElement";
+import collapsingClass from "~/strings/collapsingClass";
+import activeClass from "~/strings/activeClass";
+import fadeClass from "~/strings/fadeClass";
+import showClass from "~/strings/showClass";
+import dropdownClasses from "~/strings/dropdownClasses";
+import dataBsToggle from "~/strings/dataBsToggle";
+import tabString from "~/strings/tabString";
+import tabComponent from "~/strings/tabComponent";
+import getTargetElement from "~/util/getTargetElement";
 import BaseComponent from "./base-component";
-import type { /* TabOptions, */ TabEvent } from "../interface/tab";
+import type { /* TabOptions, */ TabEvent } from "~/interface/tab";
 
 // TAB PRIVATE GC
 // ================
@@ -264,11 +263,13 @@ const getParentDropdown = (element?: HTMLElement) => {
  * @param e the `Event` object
  */
 const tabClickHandler = (e: MouseEvent<Element>) => {
-  const self = getTabInstance(e.target);
-  e.preventDefault();
+  const element = closest(e.target, tabSelector);
+  const self = element && getTabInstance(element);
 
-  // istanbul ignore else @preserve
-  if (self) self.show();
+  // istanbul ignore if @preserve
+  if (!self) return;
+  e.preventDefault();
+  self.show();
 };
 
 // TAB DEFINITION
@@ -308,7 +309,7 @@ export default class Tab extends BaseComponent {
     this.tabContent = container;
 
     // event targets
-    this.dropdown = getParentDropdown(element as HTMLElement);
+    this.dropdown = getParentDropdown(element);
 
     // show first Tab instance of none is shown
     // suggested on #432

@@ -30,17 +30,17 @@ import {
 
 import { addListener, removeListener } from "@thednp/event-listener";
 
-import dataBsDismiss from "../strings/dataBsDismiss";
-import dataBsToggle from "../strings/dataBsToggle";
-import showClass from "../strings/showClass";
-import offcanvasString from "../strings/offcanvasString";
-import offcanvasComponent from "../strings/offcanvasComponent";
-import modalComponent from "../strings/modalComponent";
+import dataBsDismiss from "~/strings/dataBsDismiss";
+import dataBsToggle from "~/strings/dataBsToggle";
+import showClass from "~/strings/showClass";
+import offcanvasString from "~/strings/offcanvasString";
+import offcanvasComponent from "~/strings/offcanvasComponent";
+import modalComponent from "~/strings/modalComponent";
 
-import getTargetElement from "../util/getTargetElement";
-import isVisible from "../util/isVisible";
-import { setScrollbar } from "../util/scrollbar";
-import { hasPopup } from "../util/popupContainer";
+import getTargetElement from "~/util/getTargetElement";
+import isVisible from "~/util/isVisible";
+import { setScrollbar } from "~/util/scrollbar";
+import { hasPopup } from "~/util/popupContainer";
 import {
   appendOverlay,
   getCurrentOpen,
@@ -50,9 +50,10 @@ import {
   removeOverlay,
   showOverlay,
   toggleOverlayType,
-} from "../util/backdrop";
+} from "~/util/backdrop";
+import isDisabled from "~/util/isDisabled";
 import BaseComponent from "./base-component";
-import { OffcanvasEvent, OffcanvasOptions } from "../interface/offcanvas";
+import { OffcanvasEvent, OffcanvasOptions } from "~/interface/offcanvas";
 
 // OFFCANVAS PRIVATE GC
 // ====================
@@ -447,9 +448,11 @@ export default class Offcanvas extends BaseComponent {
    */
   _toggleEventListeners = (add?: boolean) => {
     const action = add ? addListener : removeListener;
-    this.triggers.forEach((btn) =>
-      action(btn, mouseclickEvent, offcanvasTriggerHandler)
-    );
+    this.triggers.forEach((btn) => {
+      if (!isDisabled(btn)) {
+        action(btn, mouseclickEvent, offcanvasTriggerHandler);
+      }
+    });
   };
 
   /** Removes the `Offcanvas` from the target element. */

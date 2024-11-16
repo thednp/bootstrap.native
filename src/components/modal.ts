@@ -34,15 +34,15 @@ import {
 
 import { addListener, removeListener } from "@thednp/event-listener";
 
-import dataBsToggle from "../strings/dataBsToggle";
-import dataBsDismiss from "../strings/dataBsDismiss";
-import fadeClass from "../strings/fadeClass";
-import showClass from "../strings/showClass";
-import modalString from "../strings/modalString";
-import modalComponent from "../strings/modalComponent";
-import offcanvasComponent from "../strings/offcanvasComponent";
-import getTargetElement from "../util/getTargetElement";
-import { measureScrollbar, setScrollbar } from "../util/scrollbar";
+import dataBsToggle from "~/strings/dataBsToggle";
+import dataBsDismiss from "~/strings/dataBsDismiss";
+import fadeClass from "~/strings/fadeClass";
+import showClass from "~/strings/showClass";
+import modalString from "~/strings/modalString";
+import modalComponent from "~/strings/modalComponent";
+import offcanvasComponent from "~/strings/offcanvasComponent";
+import getTargetElement from "~/util/getTargetElement";
+import { measureScrollbar, setScrollbar } from "~/util/scrollbar";
 import {
   appendOverlay,
   getCurrentOpen,
@@ -52,11 +52,12 @@ import {
   removeOverlay,
   showOverlay,
   toggleOverlayType,
-} from "../util/backdrop";
-import isVisible from "../util/isVisible";
+} from "~/util/backdrop";
+import isVisible from "~/util/isVisible";
+import { hasPopup } from "~/util/popupContainer";
+import isDisabled from "~/util/isDisabled";
 import BaseComponent from "./base-component";
-import { ModalEvent, ModalOptions } from "../interface/modal";
-import { hasPopup } from "../util/popupContainer";
+import { ModalEvent, ModalOptions } from "~/interface/modal";
 
 // MODAL PRIVATE GC
 // ================
@@ -497,7 +498,9 @@ export default class Modal extends BaseComponent {
     // istanbul ignore if @preserve
     if (!triggers.length) return;
 
-    triggers.forEach((btn) => action(btn, mouseclickEvent, modalClickHandler));
+    triggers.forEach((btn) => {
+      if (!isDisabled(btn)) action(btn, mouseclickEvent, modalClickHandler);
+    });
   };
 
   /** Removes the `Modal` component from target element. */

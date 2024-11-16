@@ -24,15 +24,16 @@ import {
 
 import { addListener, removeListener } from "@thednp/event-listener";
 
-import fadeClass from "../strings/fadeClass";
-import showClass from "../strings/showClass";
-import dataBsDismiss from "../strings/dataBsDismiss";
-import dataBsToggle from "../strings/dataBsToggle";
-import toastString from "../strings/toastString";
-import toastComponent from "../strings/toastComponent";
-import getTargetElement from "../util/getTargetElement";
+import fadeClass from "~/strings/fadeClass";
+import showClass from "~/strings/showClass";
+import dataBsDismiss from "~/strings/dataBsDismiss";
+import dataBsToggle from "~/strings/dataBsToggle";
+import toastString from "~/strings/toastString";
+import toastComponent from "~/strings/toastComponent";
+import getTargetElement from "~/util/getTargetElement";
+import isDisabled from "~/util/isDisabled";
 import BaseComponent from "./base-component";
-import { ToastEvent, ToastOptions } from "../interface/toast";
+import { ToastEvent, ToastOptions } from "~/interface/toast";
 
 // TOAST PRIVATE GC
 // ================
@@ -307,9 +308,9 @@ export default class Toast extends BaseComponent {
     }
     // istanbul ignore else @preserve
     if (triggers.length) {
-      triggers.forEach((btn) =>
-        action(btn, mouseclickEvent, toastClickHandler)
-      );
+      triggers.forEach((btn) => {
+        if (!isDisabled(btn)) action(btn, mouseclickEvent, toastClickHandler);
+      });
     }
   };
 

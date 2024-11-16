@@ -1,8 +1,8 @@
-import { B as l, Y as n, Q as a, a as c, j as g, m, t as u, Z as p, b as d } from "./base-component-Jx2aafTJ.mjs";
-import { E as b, r as f } from "./event-listener-CUwvA4j6.mjs";
-import { a as o } from "./activeClass-iqaD75Su.mjs";
+import { B as l, t as g, Z as i, Q as a, a as c, Y as u, b as m, E as p, r as v, v as f } from "./base-component-CQAH5ZXF.mjs";
+import { a as n } from "./activeClass-iqaD75Su.mjs";
 import { d as h } from "./dataBsToggle-B84TS15h.mjs";
-const v = "button", r = "Button", B = `[${h}="${v}"]`, A = (e) => u(e, r), C = (e) => new E(e);
+import { i as b } from "./isDisabled-bThyhy2g.mjs";
+const d = "button", r = "Button", B = `[${h}="${d}"]`, A = (e) => g(e, r), C = (e) => new E(e);
 class E extends l {
   static selector = B;
   static init = C;
@@ -13,7 +13,7 @@ class E extends l {
   constructor(s) {
     super(s);
     const { element: t } = this;
-    this.isActive = n(t, o), a(t, c, String(!!this.isActive)), this._toggleEventListeners(!0);
+    this.isActive = i(t, n), a(t, c, String(!!this.isActive)), this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
@@ -28,8 +28,8 @@ class E extends l {
    */
   toggle = (s) => {
     s && s.preventDefault();
-    const { element: t, isActive: i } = this;
-    !n(t, "disabled") && !g(t, "disabled") && ((i ? p : d)(t, o), a(t, c, i ? "false" : "true"), this.isActive = n(t, o));
+    const { element: t, isActive: o } = this;
+    b(t) || ((o ? u : m)(t, n), a(t, c, o ? "false" : "true"), this.isActive = i(t, n));
   };
   /**
    * Toggles on/off the `click` event listener.
@@ -37,7 +37,7 @@ class E extends l {
    * @param add when `true`, event listener is added
    */
   _toggleEventListeners = (s) => {
-    (s ? b : f)(this.element, m, this.toggle);
+    (s ? p : v)(this.element, f, this.toggle);
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();

@@ -1,3 +1,7 @@
+:root {
+  --bs-font-sans-serif: Arial, system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
 /* carousel */
 #myCarousel .carousel-inner > .carousel-item > .item-bg {
     position: absolute;
@@ -42,7 +46,12 @@ svg.carousel-control-next-icon {
   height: auto;
 }
 
+section {
+  margin-bottom: 3rem;
+}
+
 h2 {
+  margin-top: 3rem;
   letter-spacing: -3px;
   font-size: 56px;
   font-weight: bold;

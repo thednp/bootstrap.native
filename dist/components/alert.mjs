@@ -1,9 +1,9 @@
-import { B as g, R as f, Y as n, q as l, Z as v, r as h, t as E, v as c, m as u } from "./base-component-Jx2aafTJ.mjs";
-import { E as A, r as C } from "./event-listener-CUwvA4j6.mjs";
+import { B as g, t as f, R as v, Z as n, q as l, m as c, Y as h, s as u, E, r as A, v as C } from "./base-component-CQAH5ZXF.mjs";
 import { f as $ } from "./fadeClass-CLIYI_zn.mjs";
 import { s as i } from "./showClass-C8hdJfjQ.mjs";
-import { d as L } from "./dataBsDismiss-DdNPQYa-.mjs";
-const e = "alert", m = "Alert", _ = `.${e}`, b = `[${L}="${e}"]`, B = (t) => E(t, m), I = (t) => new w(t), r = c(
+import { d as b } from "./dataBsDismiss-DdNPQYa-.mjs";
+import { i as L } from "./isDisabled-bThyhy2g.mjs";
+const e = "alert", m = "Alert", _ = `.${e}`, B = `[${b}="${e}"]`, D = (t) => f(t, m), I = (t) => new w(t), r = c(
   `close.bs.${e}`
 ), S = c(
   `closed.bs.${e}`
@@ -14,11 +14,11 @@ const e = "alert", m = "Alert", _ = `.${e}`, b = `[${L}="${e}"]`, B = (t) => E(t
 class w extends g {
   static selector = _;
   static init = I;
-  static getInstance = B;
+  static getInstance = D;
   dismiss;
   constructor(s) {
-    super(s), this.dismiss = f(
-      b,
+    super(s), this.dismiss = v(
+      B,
       this.element
     ), this._toggleEventListeners(!0);
   }
@@ -32,7 +32,7 @@ class w extends g {
    */
   close = () => {
     const { element: s } = this;
-    s && n(s, i) && (l(s, r), r.defaultPrevented || (v(s, i), n(s, $) ? h(s, () => a(this)) : a(this)));
+    !s || !n(s, i) || (l(s, r), !r.defaultPrevented && (h(s, i), n(s, $) ? u(s, () => a(this)) : a(this)));
   };
   /**
    * Toggle on / off the `click` event listener.
@@ -40,8 +40,8 @@ class w extends g {
    * @param add when `true`, event listener is added
    */
   _toggleEventListeners = (s) => {
-    const d = s ? A : C, { dismiss: o, close: p } = this;
-    o && d(o, u, p);
+    const d = s ? E : A, { dismiss: o, close: p } = this;
+    o && !L(o) && d(o, C, p);
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();

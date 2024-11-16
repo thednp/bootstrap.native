@@ -14,11 +14,11 @@ const isEmptyAnchor = (element: HTMLElement) => {
     (element.tagName === "A" &&
       // anchor href starts with #
       hasAttribute(element, "href") &&
-      (getAttribute(element, "href") as string).slice(-1) === "#") ||
+      (getAttribute(element, "href"))?.slice(-1) === "#") ||
     // OR a child of an anchor with href starts with #
     (parentAnchor &&
       hasAttribute(parentAnchor, "href") &&
-      (getAttribute(parentAnchor, "href") as string).slice(-1) === "#")
+      (getAttribute(parentAnchor, "href"))?.slice(-1) === "#")
   );
 };
 export default isEmptyAnchor;

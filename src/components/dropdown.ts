@@ -36,15 +36,15 @@ import {
 
 import { addListener, removeListener } from "@thednp/event-listener";
 
-import showClass from "../strings/showClass";
-import dataBsToggle from "../strings/dataBsToggle";
-import dropdownClasses from "../strings/dropdownClasses";
-import dropdownComponent from "../strings/dropdownComponent";
-import dropdownMenuClass from "../strings/dropdownMenuClass";
-
-import isEmptyAnchor from "../util/isEmptyAnchor";
+import showClass from "~/strings/showClass";
+import dataBsToggle from "~/strings/dataBsToggle";
+import dropdownClasses from "~/strings/dropdownClasses";
+import dropdownComponent from "~/strings/dropdownComponent";
+import dropdownMenuClass from "~/strings/dropdownMenuClass";
+import isEmptyAnchor from "~/util/isEmptyAnchor";
+import isDisabled from "~/util/isDisabled";
 import BaseComponent from "./base-component";
-import type { DropdownEvent, DropdownOptions } from "../interface/dropdown";
+import type { DropdownEvent, DropdownOptions } from "~/interface/dropdown";
 
 // DROPDOWN PRIVATE GC
 // ===================
@@ -590,7 +590,10 @@ export default class Dropdown extends BaseComponent {
    */
   _toggleEventListeners = (add?: boolean) => {
     const action = add ? addListener : removeListener;
-    action(this.element, mouseclickEvent, dropdownClickHandler);
+
+    if (!isDisabled(this.element)) {
+      action(this.element, mouseclickEvent, dropdownClickHandler);
+    }
   };
 
   /** Removes the `Dropdown` component from the target element. */

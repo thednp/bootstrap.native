@@ -1,31 +1,51 @@
 {
   // https://janessagarrow.com/blog/typescript-and-esbuild/
- "compilerOptions": {
-   "lib": ["DOM", "ESNext", "DOM.Iterable"],
-  //  "types": ["@types/node", "vite", "vite/client", "@thednp/event-listener", "@thednp/shorty"],
-   "types": ["@thednp/event-listener", "@thednp/shorty"],
-   "rootDir": "./",
-   "baseUrl": "./",
-   "module": "ESNext",
-   "target": "ESNext",
-   "moduleResolution": "Bundler",
-   "allowJs": true,
-   "forceConsistentCasingInFileNames": true,
-   "useDefineForClassFields": true,
-   "strict": true,
-   "sourceMap": true,
-   "resolveJsonModule": true,
-   "esModuleInterop": true,
-   "isolatedModules": true,
-   "noUnusedLocals": true,
-   "noUnusedParameters": true,
-   "noImplicitReturns": true,
-   "removeComments": false,
-   "allowSyntheticDefaultImports": true,
-   "noEmit": true,
-   "checkJs": true,
-   "skipLibCheck": true // allows dts-bundle-generator to import from package.json
- },
- "include": ["src/*", "src/**/*"],
- "exclude": ["node_modules", "experiments", "coverage", "dist"],
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "ESNext",
+      "DOM.Iterable"
+    ],
+    //  "types": ["@types/node", "vite", "vite/client", "@thednp/event-listener", "@thednp/shorty"],
+    "types": [
+      "@thednp/event-listener",
+      "@thednp/shorty"
+    ],
+    "rootDir": "./",
+    "baseUrl": "./",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "removeComments": false,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "checkJs": true,
+    "skipLibCheck": true, // allows dts-bundle-generator to import from package.json
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ],
+    }
+  },
+  "include": [
+    "src/*",
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "experiments",
+    "coverage",
+    "dist"
+  ],
 }

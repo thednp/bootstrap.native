@@ -1,4 +1,5 @@
 import { default as default_2 } from '@thednp/position-observer';
+import { MouseEvent as MouseEvent_2 } from '@thednp/shorty';
 
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
@@ -29,16 +30,11 @@ declare class ScrollSpy extends BaseComponent {
     static getInstance: (element: Element) => ScrollSpy | null;
     element: HTMLElement;
     options: ScrollSpyOptions;
-    target: HTMLElement | null;
+    target: HTMLElement;
     scrollTarget: HTMLElement;
-    scrollTop: number;
-    maxScroll: number;
-    scrollHeight: number;
-    activeItem: HTMLElement | null;
-    items: HTMLElement[];
-    targets: HTMLElement[];
-    itemsLength: number;
-    offsets: number[];
+    _itemsLength: number;
+    _activeItem: HTMLElement | null;
+    _observables: Map<HTMLElement, HTMLElement>;
     _observer: default_2;
     /**
      * @param target the target element
@@ -55,6 +51,19 @@ declare class ScrollSpy extends BaseComponent {
     get defaults(): Partial<ScrollSpyOptions>;
     /** Updates all items. */
     refresh: () => void;
+    /**
+     * This method provides an event handle
+     * for scrollspy
+     * @param e the event listener object
+     */
+    _scrollTo: (e: MouseEvent_2<HTMLAnchorElement>) => void;
+    /**
+     * Toggles on/off the component observer.
+     *
+     * @param self the ScrollSpy instance
+     * @param add when `true`, listener is added
+     */
+    _toggleEventListeners: (add?: boolean) => void;
     /** Removes `ScrollSpy` from the target element. */
     dispose(): void;
 }
@@ -63,6 +72,8 @@ export default ScrollSpy;
 declare interface ScrollSpyOptions extends BaseOptions {
     offset: number;
     target: HTMLElement | string;
+    threshold: number | number[];
+    rootMargin: string;
 }
 
 export { }

@@ -13,14 +13,15 @@ import {
 
 import { addListener, removeListener } from "@thednp/event-listener";
 
-import fadeClass from "../strings/fadeClass";
-import showClass from "../strings/showClass";
-import dataBsDismiss from "../strings/dataBsDismiss";
-import alertString from "../strings/alertString";
-import alertComponent from "../strings/alertComponent";
-import type { AlertEvent } from "../interface/alert";
+import fadeClass from "~/strings/fadeClass";
+import showClass from "~/strings/showClass";
+import dataBsDismiss from "~/strings/dataBsDismiss";
+import alertString from "~/strings/alertString";
+import alertComponent from "~/strings/alertComponent";
+import type { AlertEvent } from "~/interface/alert";
 
 import BaseComponent from "./base-component";
+import isDisabled from "~/util/isDisabled";
 
 // ALERT PRIVATE GC
 // ================
@@ -101,18 +102,17 @@ export default class Alert extends BaseComponent {
   close = () => {
     const { element } = this;
 
-    // istanbul ignore else @preserve
-    if (element && hasClass(element, showClass)) {
-      dispatchEvent(element, closeAlertEvent);
+    // istanbul ignore if @preserve
+    if (!element || !hasClass(element, showClass)) return;
+    dispatchEvent(element, closeAlertEvent);
 
-      if (!closeAlertEvent.defaultPrevented) {
-        removeClass(element, showClass);
+    if (closeAlertEvent.defaultPrevented) return;
 
-        if (hasClass(element, fadeClass)) {
-          emulateTransitionEnd(element, () => alertTransitionEnd(this));
-        } else alertTransitionEnd(this);
-      }
-    }
+    removeClass(element, showClass);
+
+    if (hasClass(element, fadeClass)) {
+      emulateTransitionEnd(element, () => alertTransitionEnd(this));
+    } else alertTransitionEnd(this);
   };
   /**
    * Toggle on / off the `click` event listener.
@@ -123,7 +123,9 @@ export default class Alert extends BaseComponent {
     const action = add ? addListener : removeListener;
     const { dismiss, close } = this;
     // istanbul ignore else @preserve
-    if (dismiss) action(dismiss, mouseclickEvent, close);
+    if (dismiss && !isDisabled(dismiss)) {
+      action(dismiss, mouseclickEvent, close);
+    }
   };
 
   /** Remove the component from target element. */

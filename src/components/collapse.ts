@@ -26,15 +26,15 @@ import {
 
 import { addListener, removeListener } from "@thednp/event-listener";
 
-import dataBsToggle from "../strings/dataBsToggle";
-import collapsingClass from "../strings/collapsingClass";
-import showClass from "../strings/showClass";
-import collapseString from "../strings/collapseString";
-import collapseComponent from "../strings/collapseComponent";
-
-import getTargetElement from "../util/getTargetElement";
+import dataBsToggle from "~/strings/dataBsToggle";
+import collapsingClass from "~/strings/collapsingClass";
+import showClass from "~/strings/showClass";
+import collapseString from "~/strings/collapseString";
+import collapseComponent from "~/strings/collapseComponent";
+import getTargetElement from "~/util/getTargetElement";
 import BaseComponent from "./base-component";
-import type { CollapseEvent, CollapseOptions } from "../interface/collapse";
+import type { CollapseEvent, CollapseOptions } from "~/interface/collapse";
+import isDisabled from "~/util/isDisabled";
 
 // COLLAPSE GC
 // ===========
@@ -163,11 +163,13 @@ const collapseClickHandler = (e: MouseEvent<HTMLElement>) => {
     closest(target, collapseToggleSelector);
   const element = trigger && getTargetElement(trigger);
   const self = element && getCollapseInstance(element);
-  // istanbul ignore else @preserve
-  if (self) self.toggle();
 
+  // istanbul ignore if @preserve
+  if (!self) return;
+
+  self.toggle();
   // event target is anchor link #398
-  if (trigger && trigger.tagName === "A") e.preventDefault();
+  if (trigger?.tagName === "A") e.preventDefault();
 };
 
 // COLLAPSE DEFINITION
@@ -285,9 +287,11 @@ export default class Collapse extends BaseComponent {
 
     // istanbul ignore else @preserve
     if (triggers.length) {
-      triggers.forEach((btn) =>
-        action(btn, mouseclickEvent, collapseClickHandler)
-      );
+      triggers.forEach((btn) => {
+        if (!isDisabled(btn)) {
+          action(btn, mouseclickEvent, collapseClickHandler);
+        }
+      });
     }
   };
 

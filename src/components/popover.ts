@@ -2,16 +2,16 @@
 ---------------------------------------------- */
 import { focus, getInstance, ObjectAssign } from "@thednp/shorty";
 
-import dataBsToggle from "../strings/dataBsToggle";
-import popoverString from "../strings/popoverString";
-import popoverComponent from "../strings/popoverComponent";
+import dataBsToggle from "~/strings/dataBsToggle";
+import popoverString from "~/strings/popoverString";
+import popoverComponent from "~/strings/popoverComponent";
 
-import getTipTemplate from "../util/getTipTemplate";
-import styleTip from "../util/styleTip";
-import tooltipDefaults from "../util/tooltipDefaults";
+import getTipTemplate from "~/util/getTipTemplate";
+import styleTip from "~/util/styleTip";
+import tooltipDefaults from "~/util/tooltipDefaults";
 import Tooltip from "./tooltip";
 
-import type { PopoverOptions /* , PopoverEvent */ } from "../interface/popover";
+import type { PopoverOptions /* , PopoverEvent */ } from "~/interface/popover";
 
 // POPOVER PRIVATE GC
 // ==================

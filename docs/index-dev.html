@@ -29,7 +29,7 @@
           <svg class="d-inline-block align-top" width="40" height="32" viewBox="0 0 118 94" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path fill="currentColor" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
           </svg>
-          <span class="ms-1 hidden-xs">Native JavaScript for Bootstrap</span>
+          <span class="ms-1 hidden-xs">Bootstrap Native</span>
         </a>
         <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -73,7 +73,7 @@
             <div class="item-bg bg-warning"></div>
             <div class="container d-flex align-items-end h-100">
               <div class="position-relative text-dark text-left mb-5">
-                <h1>A What Bootstrap?</h1>
+                <h1>Another Bootstrap?</h1>
                 <p>The lighter and more compact set of JavaScript components for Bootstrap, sourced with Typescript codebase.<br>
                   At half the size of the original and around <b>21kb gZipped</b>, this library does it all.</p>
                 <p>
@@ -152,7 +152,7 @@
       </div>
     </nav>
 
-    <div class="container" id="container">
+    <div class="container" id="container"  data-bs-spy="scroll" data-bs-target="#side-nav" data-bs-root-margin="0px 0px -25%">
       <section id="use">
         <h2>Read First</h2>
         <p>Alright, welcome to the demo page! Please make sure to check the <a href="https://github.com/thednp/bootstrap.native/wiki">Wiki pages</a>, 
@@ -161,7 +161,7 @@
           report <a href="https://github.com/thednp/bootstrap.native/issues">any issues</a>.</p>
       </section>
       <div class="row">
-        <div class="col-md-9" data-bs-spy="scroll" data-bs-target="#side-nav">
+        <div class="col-md-9">
           <section id="componentAlert">
             <h2>Alert</h2>
             <p>The <b>Alert</b> component covers the specific original events and public methods, but just like the original plugin, does not provide any
@@ -1048,12 +1048,12 @@ myCollapseInit.toggle();
 
               <div class="accordion mb-3" id="accordionExample">
                 <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingOne">
+                  <h4 class="accordion-header" id="headingOne">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                       aria-expanded="false" aria-controls="collapseOne">
                       Accordion Item #1
                     </button>
-                  </h2>
+                  </h4>
                   <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <strong>This is the first item's accordion body.</strong> It is hidden by default, until the collapse plugin adds
@@ -1064,11 +1064,11 @@ myCollapseInit.toggle();
                   </div>
                 </div>
                 <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingTwo">
+                  <h4 class="accordion-header" id="headingTwo">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                       Accordion Item #2
                     </button>
-                  </h2>
+                  </h4>
                   <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate
@@ -1079,12 +1079,12 @@ myCollapseInit.toggle();
                   </div>
                 </div>
                 <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingThree">
+                  <h4 class="accordion-header" id="headingThree">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree"
                     aria-expanded="false" aria-controls="collapseThree">
                       Accordion Item #3
                     </button>
-                  </h2>
+                  </h4>
                   <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate
@@ -2625,15 +2625,16 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
 
           <section id="componentScrollspy">
             <h2>Scrollspy</h2>
-            <p>The <b>ScrollSpy</b> component inherits some of the <a rel="noreferrer"
-                href="https://getbootstrap.com/docs/5.0/components/scrollspy/" target="_blank">layout and other requirements</a> from
-              the original jQuery plugin in some cases, while in other cases a special markup is required. The component offers
-              public methods, the specific original event, and provides rich JavaScript and DATA APIs.</p>
+            <p>The <b>ScrollSpy</b> component inherits most of the <a rel="noreferrer"
+                href="https://getbootstrap.com/docs/5.3/components/scrollspy/" target="_blank">layout and other requirements</a> from
+              the original component. This component offers public methods, the specific original event, and provides rich JavaScript
+              and DATA APIs.</p>
             <p>The component will initialize for each element with <code>data-bs-spy="scroll"</code> attribute, but will not work if
-              the above requirements are not met or the anchors don't reference the containers accordingly.</p>
-            <p>Our implementation uses our new <a href="https://github.com/thednp/position-observer">PositionObserver</a> which is
-              responsible for triggering the update of the menu items instead of the previously inneficient <code>resize</code> and
-              <code>scroll</code> event listeners.</p>
+              the above requirements are not met or the anchors don't reference the containers accordingly. In addition, the component
+              will handle click to enable smooth scroll for your targets by default without any additional options.</p>
+            <p>This implementation uses the <a href="https://github.com/thednp/position-observer">PositionObserver</a>
+              which is responsible for triggering the update of the menu items instead of the previously inneficient <code>resize</code>
+              and <code>scroll</code> event listeners.</p>
           
             <section id="scrollspyOptions">
               <h3>ScrollSpy Options</h3>
@@ -2643,7 +2644,7 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                     <tr>
                       <th>Name</th>
                       <th>Type</th>
-                      <th>Default</th>
+                      <th class="col-2">Default</th>
                       <th>Description</th>
                     </tr>
                   </thead>
@@ -2659,10 +2660,9 @@ var popover2 = new BSN.Popover('.popover-via-template', { // where .popover-via-
                     </tr>
                     <tr>
                       <td><code>offset</code></td>
-                      <td><em>number</em></td>
-                      <td>10</td>
-                      <td>Option to set a number of pixels as offset from top when calculating position of scroll. Can be set via
-                        <code>data-bs-offset="NUMBER"</code> attribute or simply <code>offset</code> via JavaScript invokation.</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>This option has been removed in BSN v5.1.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -4037,14 +4037,69 @@ new BSN.Tooltip('#selector',options).show();
           </ul>
         </div>
       </div>
-
-      <footer class="mt-3 pt-3 border-top">
-        <div class="container">
-          <p class="float-end"><a href="#myCarousel">Back to top</a></p>
-          <p><a href="https://github.com/thednp" rel="noreferrer" target="_blank">thednp</a> &copy; 2015-2024.</p>
-        </div>
-      </footer>
     </div>
+
+    <footer>
+      <div class="container">
+        <div class="row border-top mt-3 pt-5">
+          <div class="col-lg-3 mb-3">
+            <a class="d-inline-flex align-items-center mb-2 text-body-emphasis text-decoration-none" href="https://github.com/thednp/bootstrap.native" aria-label="Bootstrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" class="d-block me-2 text-success" viewBox="0 0 118 94" role="img">
+                <title>Bootstrap Native</title>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z" fill="currentColor"></path>
+              </svg>
+              <span class="fs-5">Bootstrap Native</span>
+            </a>
+            <ul class="list-unstyled small">
+              <li class="mb-2">Not affiliated with the original <a class="text-decoration-none" href="https://getbootstrap.com/">Bootstrap</a> and was developed with the help of <a class="text-decoration-none" href="https://github.com/thednp/bootstrap.native/graphs/contributors">our contributors</a>.</li>
+              <li class="mb-2">Code licensed <a class="text-decoration-none" href="https://github.com/thednp/bootstrap.native/blob/master/LICENSE" target="_blank" rel="license noopener">MIT</a>.</li>
+            </ul>
+          </div>
+          <div class="col-6 col-lg-2 offset-lg-1 mb-3">
+            <h5>Bootstrap Native</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/thednp/bootstrap.native">Github</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/thednp/bootstrap.native/issues" target="_blank" rel="noopener">Issues</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/thednp/bootstrap.native/wiki" target="_blank" rel="noopener">Wiki</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://www.jsdelivr.com/package/npm/bootstrap.native" target="_blank" rel="noopener">CDN</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://stackoverflow.com/questions/tagged/bootstrap-native" target="_blank" rel="noopener">Stack Overflow</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-lg-2 mb-3">
+            <h5>Links</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://getbootstrap.com/docs/5.3/" target="_blank" rel="noopener">Docs</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://getbootstrap.com/docs/5.3/examples/" target="_blank" rel="noopener">Examples</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://icons.getbootstrap.com/" target="_blank" rel="noopener">Icons</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://blog.getbootstrap.com/" target="_blank" rel="noopener">Blog</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-lg-2 mb-3">
+            <h5>Guides</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/bootstrap/docs/5.3/getting-started/" target="_blank" rel="noopener">Getting started</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/bootstrap/docs/5.3/examples/starter-template/" target="_blank" rel="noopener">Starter template</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/bootstrap/docs/5.3/getting-started/webpack/" target="_blank" rel="noopener">Webpack</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/bootstrap/docs/5.3/getting-started/parcel/" target="_blank" rel="noopener">Parcel</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/bootstrap/docs/5.3/getting-started/vite/" target="_blank" rel="noopener">Vite</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-lg-2 mb-3">
+            <h5>Projects</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/bootstrap" target="_blank" rel="noopener">Bootstrap 5</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/bootstrap/tree/v4-dev" target="_blank" rel="noopener">Bootstrap 4</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/icons" target="_blank" rel="noopener">Bootstrap Icons</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/rfs" target="_blank" rel="noopener">RFS</a></li>
+              <li class="mb-2"><a class="link-dark text-decoration-none" href="https://github.com/twbs/examples/" target="_blank" rel="noopener">Examples repo</a></li>
+            </ul>
+          </div>
+        </div>
+        <hr />
+        <p class="float-end"><a class="text-decoration-none" href="#myCarousel">Back to top</a></p>
+        <p><a class="text-decoration-none fw-bold" href="https://github.com/thednp" rel="noreferrer" target="_blank">thednp</a> &copy; 2015-2024.</p>
+      </div>
+    </footer>
 
     <script src="./assets/js/custom-button.js"></script>
     <script type="module">

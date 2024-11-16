@@ -9,8 +9,8 @@ import {
   querySelector,
 } from "@thednp/shorty";
 
-import type { BaseOptions } from "../interface/baseComponent";
-import Version from "../version";
+import type { BaseOptions } from "~/interface/baseComponent";
+import Version from "~/version";
 
 /** Returns a new `BaseComponent` instance. */
 export default class BaseComponent {
@@ -49,8 +49,7 @@ export default class BaseComponent {
     this.element = element;
     this.options = this.defaults && ObjectKeys(this.defaults).length
       ? normalizeOptions(element, this.defaults, config || {}, "bs")
-      // istanbul ignore next @preserve
-      : {};
+      : /* istanbul ignore next @preserve */ {};
 
     Data.set(element, this.name, this);
   }

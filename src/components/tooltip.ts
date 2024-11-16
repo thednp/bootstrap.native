@@ -39,24 +39,24 @@ import {
 import { addListener, removeListener } from "@thednp/event-listener";
 import PositionObserver from "@thednp/position-observer";
 
-import dataBsToggle from "../strings/dataBsToggle";
-import dataOriginalTitle from "../strings/dataOriginalTitle";
-import showClass from "../strings/showClass";
-import tooltipString from "../strings/tooltipString";
-import tooltipComponent from "../strings/tooltipComponent";
-import popoverString from "../strings/popoverString";
-import popoverComponent from "../strings/popoverComponent";
-import modalString from "../strings/modalString";
-import offcanvasString from "../strings/offcanvasString";
+import dataBsToggle from "~/strings/dataBsToggle";
+import dataOriginalTitle from "~/strings/dataOriginalTitle";
+import showClass from "~/strings/showClass";
+import tooltipString from "~/strings/tooltipString";
+import tooltipComponent from "~/strings/tooltipComponent";
+import popoverString from "~/strings/popoverString";
+import popoverComponent from "~/strings/popoverComponent";
+import modalString from "~/strings/modalString";
+import offcanvasString from "~/strings/offcanvasString";
 
-import styleTip from "../util/styleTip";
-import createTip from "../util/createTip";
-import { appendPopup, hasPopup, removePopup } from "../util/popupContainer";
-import getElementContainer from "../util/getElementContainer";
-import tooltipDefaults from "../util/tooltipDefaults";
+import styleTip from "~/util/styleTip";
+import createTip from "~/util/createTip";
+import { appendPopup, hasPopup, removePopup } from "~/util/popupContainer";
+import getElementContainer from "~/util/getElementContainer";
+import tooltipDefaults from "~/util/tooltipDefaults";
 import BaseComponent from "./base-component";
-import type { TooltipEvent, TooltipOptions } from "../interface/tooltip";
-import type { PopoverEvent, PopoverOptions } from "../interface/popover";
+import type { TooltipEvent, TooltipOptions } from "~/interface/tooltip";
+import type { PopoverEvent, PopoverOptions } from "~/interface/popover";
 
 // TOOLTIP PRIVATE GC
 // ==================
@@ -311,11 +311,7 @@ export default class Tooltip extends BaseComponent {
     if (!this.tooltip) return;
 
     // create observer
-    this._observer = new PositionObserver((entries) => {
-      /* istanbul ignore else */
-      if (!entries.some((entry) => entry.isVisible)) return;
-      this.update();
-    });
+    this._observer = new PositionObserver(() => this.update());
 
     // attach events
     this._toggleEventListeners(true);

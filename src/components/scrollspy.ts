@@ -2,33 +2,37 @@
 ------------------------------------------------ */
 import {
   addClass,
+  closest,
   createCustomEvent,
   dispatchEvent,
   getAttribute,
   getBoundingClientRect,
   getDocument,
-  getDocumentBody,
   getDocumentElement,
+  getElementById,
   getElementsByTagName,
   getInstance,
   hasClass,
-  isHTMLElement,
+  mouseclickEvent,
+  MouseEvent,
   querySelector,
   removeClass,
 } from "@thednp/shorty";
 
 import PositionObserver from "@thednp/position-observer";
+import { addListener, removeListener } from "@thednp/event-listener";
 
-import activeClass from "../strings/activeClass";
-import scrollspyString from "../strings/scrollspyString";
-import scrollspyComponent from "../strings/scrollspyComponent";
-
+import activeClass from "~/strings/activeClass";
+import scrollspyString from "~/strings/scrollspyString";
+import scrollspyComponent from "~/strings/scrollspyComponent";
+import isDisabled from "~/util/isDisabled";
 import BaseComponent from "./base-component";
-import { ScrollSpyEvent, ScrollSpyOptions } from "../interface/scrollspy";
+import { ScrollSpyEvent, ScrollSpyOptions } from "~/interface/scrollspy";
 
 // SCROLLSPY PRIVATE GC
 // ====================
 const scrollspySelector = '[data-bs-spy="scroll"]';
+const scrollSpyAnchorSelector = "[href]";
 
 const scrollspyDefaults: Partial<ScrollSpyOptions> = {
   offset: 10,
@@ -68,96 +72,28 @@ const activateScrollSpy = createCustomEvent<
 const updateSpyTargets = (self: ScrollSpy) => {
   const {
     target,
-    scrollTarget,
-    options,
-    itemsLength,
-    scrollHeight,
-    element,
-    _observer,
+    _itemsLength,
+    _observables,
   } = self;
-  const { offset } = options;
-  const isRoot = scrollTarget !== element;
 
-  const links = target && getElementsByTagName<HTMLAnchorElement>("A", target);
-  const doc = getDocument(element);
-  const scrollHEIGHT = scrollTarget.scrollHeight;
+  const links = getElementsByTagName<HTMLAnchorElement>("A", target);
+  const doc = getDocument(target);
 
-  self.scrollTop = scrollTarget.scrollTop;
-
-  // only update items/offsets once or with each mutation
+  // only update items once or with each mutation
   // istanbul ignore else @preserve
-  if (
-    links && (scrollHEIGHT !== scrollHeight || itemsLength !== links.length)
-  ) {
-    let href: string | null;
-    let ref: string | undefined;
-    let targetItem: HTMLElement | null;
-    let rect;
+  if (!links.length || _itemsLength === _observables.size) return;
+  // reset arrays & update
+  _observables.clear();
 
-    // reset arrays & update
-    self.items = [];
-    self.targets = [];
-    self.offsets = [];
-    self.scrollHeight = scrollHEIGHT;
-    self.maxScroll = self.scrollHeight - getOffsetHeight(self);
+  Array.from(links).forEach((link) => {
+    const hash = getAttribute(link, "href")?.slice(1);
+    const targetItem = hash?.length ? doc.getElementById(hash) : null;
 
-    Array.from(links).forEach((link) => {
-      href = getAttribute(link, "href");
-      ref = href?.slice(1);
-      targetItem = ref?.length ? doc.getElementById(ref) : null;
-
-      if (targetItem) {
-        self.items.push(link);
-        self.targets.push(targetItem);
-        rect = _observer?.getEntry(targetItem)?.boundingClientRect ||
-          getBoundingClientRect(targetItem);
-        self.offsets.push(
-          (isRoot ? rect.top + self.scrollTop : targetItem.offsetTop) - offset,
-        );
-      }
-    });
-    self.itemsLength = self.items.length;
-  }
-};
-
-/**
- * Toggles on/off the component observer.
- *
- * @param self the ScrollSpy instance
- * @param add when `true`, listener is added
- */
-const toggleObservers = (
-  { targets, scrollTarget, element, _observer }: ScrollSpy,
-  add?: boolean,
-) => {
-  if (add) {
-    if (scrollTarget === element) {
-      targets?.forEach((targetItem) => _observer.observe(targetItem));
-    } else {
-      _observer.observe(element);
+    if (targetItem && !isDisabled(link)) {
+      self._observables.set(targetItem, link);
     }
-  } else _observer.disconnect();
-};
-
-/**
- * Returns the `scrollHeight` property of the scrolling element.
- *
- * @param scrollTarget the `ScrollSpy` instance
- * @return `scrollTarget` height
- */
-const getScrollHeight = (scrollTarget: Element) => {
-  return scrollTarget.scrollHeight;
-};
-
-/**
- * Returns the height property of the scrolling element.
- *
- * @param params the `ScrollSpy` instance
- */
-const getOffsetHeight = ({ element, scrollTarget }: ScrollSpy) => {
-  return scrollTarget !== element
-    ? scrollTarget.clientHeight
-    : getBoundingClientRect(element).height;
+  });
+  self._itemsLength = self._observables.size;
 };
 
 /**
@@ -183,33 +119,42 @@ const activate = (self: ScrollSpy, item: HTMLElement) => {
   const { target, element } = self;
 
   // istanbul ignore else @preserve
-  if (isHTMLElement(target)) clear(target);
+  clear(target);
 
-  self.activeItem = item;
+  self._activeItem = item;
   addClass(item, activeClass);
 
   // activate all parents
-  const parents: HTMLElement[] = [];
   let parentItem = item;
-  while (parentItem !== getDocumentBody(element)) {
+  while (parentItem !== target) {
     parentItem = parentItem.parentElement as HTMLElement;
-    if (hasClass(parentItem, "nav") || hasClass(parentItem, "dropdown-menu")) {
-      parents.push(parentItem);
+    if (
+      ["nav", "dropdown-menu", "list-group"].some((c) =>
+        hasClass(parentItem, c)
+      )
+    ) {
+      const parentLink = parentItem.previousElementSibling as
+        | HTMLElement
+        | null;
+
+      // istanbul ignore else @preserve
+      if (parentLink && !hasClass(parentLink, activeClass)) {
+        addClass(parentLink, activeClass);
+      }
     }
   }
-
-  parents.forEach((menuItem) => {
-    const parentLink = menuItem.previousElementSibling as HTMLElement | null;
-
-    // istanbul ignore else @preserve
-    if (parentLink && !hasClass(parentLink, activeClass)) {
-      addClass(parentLink, activeClass);
-    }
-  });
 
   // dispatch
   activateScrollSpy.relatedTarget = item;
   dispatchEvent(element, activateScrollSpy);
+};
+
+const getOffset = (self: ScrollSpy, target: HTMLElement) => {
+  const { scrollTarget, element, options } = self;
+
+  return (scrollTarget !== element
+    ? getBoundingClientRect(target).top + scrollTarget.scrollTop
+    : target.offsetTop) - (options.offset as number || 10);
 };
 
 // SCROLLSPY DEFINITION
@@ -221,17 +166,12 @@ export default class ScrollSpy extends BaseComponent {
   static getInstance = getScrollSpyInstance;
   declare element: HTMLElement;
   declare options: ScrollSpyOptions;
-  declare target: HTMLElement | null;
+  declare target: HTMLElement;
   declare scrollTarget: HTMLElement;
-  declare scrollTop: number;
-  declare maxScroll: number;
-  declare scrollHeight: number;
-  declare activeItem: HTMLElement | null;
-  declare items: HTMLElement[];
-  declare targets: HTMLElement[];
-  declare itemsLength: number;
-  declare offsets: number[];
-  declare _observer: PositionObserver;
+  declare _itemsLength: number;
+  declare _activeItem: HTMLElement | null;
+  declare _observables: Map<HTMLElement, HTMLElement>;
+  declare _observer: PositionObserver; //| IntersectionObserver;
 
   /**
    * @param target the target element
@@ -260,25 +200,21 @@ export default class ScrollSpy extends BaseComponent {
     this.scrollTarget = element.clientHeight < element.scrollHeight
       ? element
       : getDocumentElement(element);
-    this.scrollHeight = getScrollHeight(this.scrollTarget);
+    this._observables = new Map();
 
     // run an initial burst, we need to know the targets
     this.refresh();
+    // updateSpyTargets(this);
 
     // create observer
-    this._observer = new PositionObserver((entries) => {
-      requestAnimationFrame(() => {
-        // istanbul ignore else @preserve
-        if (entries.some((entry) => entry.isVisible)) {
-          this.refresh();
-        }
-      });
+    this._observer = new PositionObserver(() => {
+      requestAnimationFrame(() => this.refresh());
     }, {
       root: this.scrollTarget,
     });
 
     // add event handlers
-    toggleObservers(this, true);
+    this._toggleEventListeners(true);
   }
 
   /* eslint-disable */
@@ -300,48 +236,101 @@ export default class ScrollSpy extends BaseComponent {
   // ========================
   /** Updates all items. */
   refresh = () => {
-    const { target } = this;
+    const { target, scrollTarget } = this;
     // check if target is visible and invalidate
     // istanbul ignore if @preserve
-    if (!isHTMLElement(target) || target.offsetHeight === 0) return;
+    if (!target || target.offsetHeight === 0) return;
 
     updateSpyTargets(this);
+    const { _itemsLength, _observables, _activeItem } = this;
 
-    const { scrollTop, maxScroll, itemsLength, items, activeItem } = this;
+    // istanbul ignore if @preserve
+    if (!_itemsLength) return;
+    const entries = _observables.entries().toArray();
 
-    if (scrollTop >= maxScroll) {
-      const newActiveItem = items[itemsLength - 1];
+    const { scrollTop, scrollHeight, clientHeight } = scrollTarget;
+
+    if (scrollTop >= scrollHeight - clientHeight) {
+      const newActiveItem = entries[_itemsLength - 1]?.[1];
 
       // istanbul ignore else @preserve
-      if (activeItem !== newActiveItem) activate(this, newActiveItem);
+      if (_activeItem !== newActiveItem) activate(this, newActiveItem);
       return;
     }
 
-    const { offsets } = this;
-
-    // istanbul ignore else @preserve
-    if (activeItem && scrollTop < offsets[0] && offsets[0] > 0) {
-      this.activeItem = null;
-      // istanbul ignore else @preserve
-      if (target) clear(target);
+    const firstOffset = entries[0]?.[0]
+      ? getOffset(this, entries[0][0])
+      : /* istanbul ignore next */ null;
+    if (
+      firstOffset !== null && scrollTop < firstOffset &&
+      firstOffset > 0
+    ) {
+      this._activeItem = null;
+      clear(target);
       return;
     }
 
-    items.forEach((item, i) => {
+    for (let i = 0; i < _itemsLength; i += 1) {
+      const [targetItem, item] = entries[i];
+      const offsetTop = getOffset(this, targetItem);
+      const nextTarget = entries[i + 1]?.[0];
+      const nextOffsetTop = nextTarget
+        ? getOffset(this, nextTarget)
+        : /* istanbul ignore next */ null;
+
+      // istanbul ignore else @preserve
       if (
-        activeItem !== item &&
-        scrollTop >= offsets[i] &&
-        (typeof offsets[i + 1] === "undefined" || scrollTop < offsets[i + 1])
+        _activeItem !== item &&
+        scrollTop >= offsetTop &&
+        (nextOffsetTop === null || scrollTop < nextOffsetTop)
       ) {
         activate(this, item);
+        break;
       }
-    });
+    }
+  };
+
+  /**
+   * This method provides an event handle
+   * for scrollspy
+   * @param e the event listener object
+   */
+  _scrollTo = (e: MouseEvent<HTMLAnchorElement>) => {
+    const item = closest(e.target, scrollSpyAnchorSelector);
+    const hash = item && getAttribute(item, "href")?.slice(1);
+    const targetItem = hash && getElementById(hash, this.target);
+
+    // istanbul ignore else @preserve
+    if (targetItem) {
+      this.scrollTarget.scrollTo({
+        top: targetItem.offsetTop,
+        behavior: "smooth",
+      });
+      e.preventDefault();
+    }
+  };
+
+  /**
+   * Toggles on/off the component observer.
+   *
+   * @param self the ScrollSpy instance
+   * @param add when `true`, listener is added
+   */
+  _toggleEventListeners = (
+    add?: boolean,
+  ) => {
+    const { target, _observables, _observer, _scrollTo } = this;
+    const action = add ? addListener : removeListener;
+    action(target, mouseclickEvent, _scrollTo);
+
+    if (add) {
+      _observables?.forEach((_, targetItem) => _observer.observe(targetItem));
+    } else _observer.disconnect();
   };
 
   /** Removes `ScrollSpy` from the target element. */
   dispose() {
-    const clone = { ...this };
-    toggleObservers(clone);
+    this._toggleEventListeners();
     super.dispose();
   }
 }

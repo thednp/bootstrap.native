@@ -3,7 +3,6 @@
 import {
   addClass,
   ariaPressed,
-  getAttribute,
   getInstance,
   hasClass,
   mouseclickEvent,
@@ -13,12 +12,12 @@ import {
 
 import { addListener, removeListener } from "@thednp/event-listener";
 
-import activeClass from "../strings/activeClass";
-import dataBsToggle from "../strings/dataBsToggle";
-import buttonString from "../strings/buttonString";
-import buttonComponent from "../strings/buttonComponent";
-
+import activeClass from "~/strings/activeClass";
+import dataBsToggle from "~/strings/dataBsToggle";
+import buttonString from "~/strings/buttonString";
+import buttonComponent from "~/strings/buttonComponent";
 import BaseComponent from "./base-component";
+import isDisabled from "~/util/isDisabled";
 
 // BUTTON PRIVATE GC
 // =================
@@ -80,7 +79,7 @@ export default class Button extends BaseComponent {
     if (e) e.preventDefault();
 
     const { element, isActive } = this;
-    if (!hasClass(element, "disabled") && !getAttribute(element, "disabled")) {
+    if (!isDisabled(element)) {
       const action = isActive ? removeClass : addClass;
       action(element, activeClass);
       setAttribute(element, ariaPressed, isActive ? "false" : "true");

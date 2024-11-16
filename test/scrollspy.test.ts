@@ -38,9 +38,10 @@ describe("ScrollSpy Class Tests", async () => {
 
     expect(ScrollSpy.getInstance(element)).to.be.instanceOf(ScrollSpy);
     expect(instance.element).to.equal(element);
-    expect(instance.offsets).to.be.instanceOf(Array).and.have.length.above(0);
-    expect(instance.items).to.be.instanceOf(Array).and.have.length.above(0);
-    expect(instance.items[0].className).to.contain("active");
+    expect(instance._observables).to.be.instanceOf(Map).and.have.property('size').above(0);
+    // expect(instance.items).to.be.instanceOf(Array).and.have.length.above(0);
+    // expect(instance.items[0].className).to.contain("active");
+    expect(Array.from(instance._observables)[0][1].className).to.contain("active");
     expect(instance.name).to.eq("ScrollSpy");
     expect(instance.options).to.not.be.empty;
     expect(instance.defaults).to.not.be.undefined;
@@ -83,7 +84,7 @@ describe("ScrollSpy Class Tests", async () => {
     await new Promise(res => setTimeout(res, 150));
 
     await vi.waitFor(() => {
-      expect(instance.items[4].className).to.contain("active");
+      expect(Array.from(instance._observables)[4][1].className).to.contain("active");
       instance.dispose()
     }, 151);
   });
@@ -101,10 +102,23 @@ describe("ScrollSpy Class Tests", async () => {
     await vi.waitFor(() => {
       expect(instance.element).to.be.undefined;
       expect(instance.scrollTarget).to.be.undefined;
-      expect(instance.scrollHeight).to.be.undefined;
-      expect(instance.items).to.be.undefined;
-      expect(instance.offsets).to.be.undefined;
+      expect(instance._observables).to.be.undefined;
     }, 150);
+  });
+
+  it("Can handle click", async () => {
+    const container = getMarkup("scrollspy");
+    wrapper.append(container);
+    await vi.waitFor(() => container.querySelector('[data-bs-spy="scroll"]'), 200);
+
+    const element = container.querySelector<HTMLElement>('[data-bs-spy="scroll"]')!;
+    const instance = ScrollSpy.init(element);
+
+    await new Promise(res => setTimeout(res, 250));
+    Array.from(instance._observables)[1][1].click();
+    await vi.waitFor(() => {
+      expect(Array.from(instance._observables)[1][1].className).to.contain('active');
+    }, 550);
   });
 
   it("Can work with full page contents", async () => {
@@ -138,14 +152,14 @@ describe("ScrollSpy Class Tests", async () => {
     await new Promise(res => setTimeout(res, 150));
 
     await vi.waitFor(() => {
-      expect(instance.items[4].className).to.contain('active');
+      expect(Array.from(instance._observables)[4][1].className).to.contain('active');
     }, 151);
 
     instance.scrollTarget.scrollTo({ top: 0, behavior: 'instant' });
     await new Promise(res => setTimeout(res, 150));
     await vi.waitFor(() => {
-      expect(instance.items[4].className).to.not.contain('active');
-      expect(instance.items[0].className).to.not.contain('active');
+      expect(Array.from(instance._observables)[4][1].className).to.not.contain('active');
+      expect(Array.from(instance._observables)[0][1].className).to.not.contain('active');
     }, 151);
 
     await page.viewport(400, 600);
@@ -153,8 +167,8 @@ describe("ScrollSpy Class Tests", async () => {
     instance.scrollTarget.scrollTo({ top: 2500, behavior: 'instant' });
     await new Promise(res => setTimeout(res, 250));
     await vi.waitFor(() => {
-      expect(instance.items[0].className).to.not.contain('active');
-      expect(instance.items[4].className).to.contain('active');
+      expect(Array.from(instance._observables)[0][1].className).to.not.contain('active');
+      expect(Array.from(instance._observables)[4][1].className).to.contain('active');
       instance.dispose();
     }, 151);
 
