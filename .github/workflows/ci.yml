@@ -1,10 +1,11 @@
 name: ci
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
     paths:
       - src
+      - package.json
+      - .github/workflows/ci.yml
 jobs:
   test:
     runs-on: ubuntu-20.04
