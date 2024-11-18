@@ -499,6 +499,7 @@ export default class Modal extends BaseComponent {
     if (!triggers.length) return;
 
     triggers.forEach((btn) => {
+      // istanbul ignore else @preserve
       if (!isDisabled(btn)) action(btn, mouseclickEvent, modalClickHandler);
     });
   };

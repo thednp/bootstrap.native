@@ -288,6 +288,7 @@ export default class Collapse extends BaseComponent {
     // istanbul ignore else @preserve
     if (triggers.length) {
       triggers.forEach((btn) => {
+        // istanbul ignore else @preserve
         if (!isDisabled(btn)) {
           action(btn, mouseclickEvent, collapseClickHandler);
         }

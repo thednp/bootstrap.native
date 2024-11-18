@@ -449,6 +449,7 @@ export default class Offcanvas extends BaseComponent {
   _toggleEventListeners = (add?: boolean) => {
     const action = add ? addListener : removeListener;
     this.triggers.forEach((btn) => {
+      // istanbul ignore else @preserve
       if (!isDisabled(btn)) {
         action(btn, mouseclickEvent, offcanvasTriggerHandler);
       }

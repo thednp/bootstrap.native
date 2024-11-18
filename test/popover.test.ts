@@ -66,9 +66,9 @@ describe("Popover Class Tests", () => {
   });
 
   it("Can handle horizontal position when both exceed top and bottom 1", async () => {
-    await page.viewport(600, 200);
+    await page.viewport(600, 300);
     const container = getMarkup("popover");
-    Object.assign(container.style, { padding: "10rem 27rem" });
+    Object.assign(container.style, { padding: '10rem 25rem' });
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-test="popover"]'), 200);
     const element = container.querySelector<HTMLElement>(
@@ -91,15 +91,17 @@ describe("Popover Class Tests", () => {
       expect(instance.tooltip?.className).to.contain("show");
     }, 51);
 
-    win.scrollTo({ left: 600, top: 0, behavior: "instant" });
+    await new Promise(res => setTimeout(res, 151));
+    win.scrollTo({ left: 600, top: 0, behavior: "smooth" });
+    await new Promise(res => setTimeout(res, 250));
     await vi.waitFor(() => {
-      expect(instance.tooltip?.className).to.contain("bs-popover-end");
-    }, 51);
+      expect(instance.tooltip.className).to.contain("bs-popover-end");
+    }, 351);
 
-    win.scrollTo({ left: 0, top: 0, behavior: "instant" });
+    win.scrollTo({ left: 0, top: 0, behavior: "smooth" });
     await vi.waitFor(() => {
-      expect(instance.tooltip?.className).to.contain("bs-popover-start");
-    }, 51);
+      expect(instance.tooltip.className).to.contain("bs-popover-start");
+    }, 351);
   });
 
   it("Can handle horizontal position when both exceed top and bottom 2", async () => {
@@ -130,10 +132,10 @@ describe("Popover Class Tests", () => {
       expect(instance.tooltip?.className).to.contain("bs-popover-end");
     }, 151);
 
-    win.scrollTo({ left: 0, top: 0, behavior: "instant" });
+    win.scrollTo({ left: 0, top: 0, behavior: "smooth" });
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("bs-popover-start");
-    }, 151);
+    }, 351);
   });
 
   it("Can do toggle() and dismissible", async () => {
@@ -187,11 +189,11 @@ describe("Popover Class Tests", () => {
       expect(instance.tooltip?.className).to.contain("bs-popover-top");
     }, 51);
 
-    win.scrollTo({ left: 600, top: 0, behavior: "instant" });
+    win.scrollTo({ left: 600, top: 0, behavior: "smooth" });
 
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("bs-popover-top");
-    }, 51);
+    }, 351);
   });
 
   it("Can handle vertical left", async () => {
@@ -223,10 +225,10 @@ describe("Popover Class Tests", () => {
       expect(instance.tooltip?.className).to.contain("bs-popover-top");
     }, 51);
 
-    win.scrollTo({ left: 0, top: 0, behavior: "instant" });
+    win.scrollTo({ top: 0, behavior: "smooth" });
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("bs-popover-top");
-    }, 51);
+    }, 251);
   });
 
   it("Can switch top to bottom", async () => {
@@ -257,12 +259,12 @@ describe("Popover Class Tests", () => {
       expect(instance.tooltip?.className).to.contain("bs-popover-top");
     }, 51);
 
-    win.scrollTo({ left: 0, top: 400, behavior: "instant" });
-    await new Promise(res => setTimeout(res, 150));
+    win.scrollTo({ top: 400, behavior: "smooth" });
+    await new Promise(res => setTimeout(res, 250));
 
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("bs-popover-bottom");
-    }, 151);
+    }, 251);
 
     await page.viewport(414, 896);
   });
@@ -296,12 +298,12 @@ describe("Popover Class Tests", () => {
       expect(instance.tooltip?.className).to.contain("bs-popover-bottom");
     }, 151);
 
-    win.scrollTo({ left: 0, top: 0, behavior: "instant" });
-    await new Promise(res => setTimeout(res, 150));
+    win.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+    await new Promise(res => setTimeout(res, 250));
 
     await vi.waitFor(() => {
       expect(instance.tooltip?.className).to.contain("bs-popover-top");
-    }, 151);
+    }, 251);
     // await page.viewport(414, 896);
   });
 

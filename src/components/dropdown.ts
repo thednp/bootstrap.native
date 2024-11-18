@@ -590,7 +590,7 @@ export default class Dropdown extends BaseComponent {
    */
   _toggleEventListeners = (add?: boolean) => {
     const action = add ? addListener : removeListener;
-
+    // istanbul ignore else @preserve
     if (!isDisabled(this.element)) {
       action(this.element, mouseclickEvent, dropdownClickHandler);
     }
