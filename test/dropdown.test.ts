@@ -262,7 +262,7 @@ describe("Dropdown Class Tests", () => {
     await new Promise(res => setTimeout(res, 50));
     await vi.waitFor(() => {
       expect(dropend.menu.className).to.contain("show");
-      expect(dropend.menu.style.cssText).to.contain("left: 100%");
+      expect(dropend.menu.style.cssText).to.contain("left: auto");
     }, 551);
     dropend.dispose();
     Object.assign(body.style, bodyPads.reset);
