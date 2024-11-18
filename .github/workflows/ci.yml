@@ -6,6 +6,7 @@ on:
       - src
       - test
       - package.json
+      - pnpm-lock.json
       - .github/workflows/ci.yml
 jobs:
   test:
