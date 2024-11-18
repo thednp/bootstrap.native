@@ -1588,7 +1588,7 @@ const Cr = `[${ot}="${Ht}"],[data-tip="${Ht}"]`, xr = at({}, os, {
   template: Eo(Ht),
   content: "",
   dismissible: !1,
-  btnClose: '<button class="btn-close" aria-label="Close"></button>'
+  btnClose: '<button class="btn-close position-absolute top-0 end-0 m-1" aria-label="Close"></button>'
 }), Sr = (e) => F(e, ws), _r = (e) => new So(e);
 class So extends Es {
   static selector = Cr;

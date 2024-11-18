@@ -1,23 +1,23 @@
 import { N as p, t as i, M as n } from "./base-component-CQAH5ZXF.mjs";
-import { d as r } from "./dataBsToggle-B84TS15h.mjs";
-import { g as l, p as e, t as c, T as m, a, s as u } from "./tooltip-ClBo4cww.mjs";
-const b = `[${r}="${e}"],[data-tip="${e}"]`, f = p({}, c, {
-  template: l(e),
+import { d as l } from "./dataBsToggle-B84TS15h.mjs";
+import { g as r, p as e, t as c, T as m, a, s as u } from "./tooltip-ClBo4cww.mjs";
+const b = `[${l}="${e}"],[data-tip="${e}"]`, d = p({}, c, {
+  template: r(e),
   content: "",
   dismissible: !1,
-  btnClose: '<button class="btn-close" aria-label="Close"></button>'
-}), g = (t) => i(t, a), d = (t) => new T(t);
+  btnClose: '<button class="btn-close position-absolute top-0 end-0 m-1" aria-label="Close"></button>'
+}), f = (t) => i(t, a), g = (t) => new T(t);
 class T extends m {
   static selector = b;
-  static init = d;
-  static getInstance = g;
+  static init = g;
+  static getInstance = f;
   static styleTip = u;
   /**
    * @param target the target element
    * @param config the instance options
    */
-  constructor(o, s) {
-    super(o, s);
+  constructor(s, o) {
+    super(s, o);
   }
   /**
    * Returns component name string.
@@ -29,12 +29,12 @@ class T extends m {
    * Returns component default options.
    */
   get defaults() {
-    return f;
+    return d;
   }
   show = () => {
     super.show();
-    const { options: o, btn: s } = this;
-    o.dismissible && s && setTimeout(() => n(s), 17);
+    const { options: s, btn: o } = this;
+    s.dismissible && o && setTimeout(() => n(o), 17);
   };
 }
 export {

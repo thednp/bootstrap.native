@@ -22,7 +22,8 @@ const popoverDefaults: PopoverOptions = ObjectAssign({}, tooltipDefaults, {
   template: getTipTemplate(popoverString),
   content: "",
   dismissible: false,
-  btnClose: '<button class="btn-close" aria-label="Close"></button>',
+  btnClose:
+    '<button class="btn-close position-absolute top-0 end-0 m-1" aria-label="Close"></button>',
 });
 
 /**
