@@ -1,3 +1,5 @@
+import { PointerEvent as PointerEvent_2 } from '@thednp/shorty';
+
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
     element: Element;
@@ -40,7 +42,7 @@ declare class Button extends BaseComponent {
      *
      * @param e usually `click` Event object
      */
-    toggle: (e?: Event) => void;
+    toggle: (e?: PointerEvent_2<HTMLElement>) => void;
     /**
      * Toggles on/off the `click` event listener.
      *

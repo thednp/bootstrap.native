@@ -234,21 +234,21 @@ const beforeModalHide = (self: Modal) => {
  *
  * @param e the `Event` object
  */
-const modalClickHandler = (e: MouseEvent<HTMLElement>) => {
-  const { target } = e;
-
-  const trigger = target && closest(target, modalToggleSelector);
-  const element = trigger && getTargetElement(trigger);
+function modalClickHandler(this: HTMLElement, e: MouseEvent<HTMLElement>) {
+  const element = getTargetElement(this);
   const self = element && getModalInstance(element);
+
+  // istanbul ignore if @preserve
+  if (isDisabled(this)) return;
 
   // istanbul ignore if @preserve
   if (!self) return;
 
   // istanbul ignore else @preserve
-  if (trigger && trigger.tagName === "A") e.preventDefault();
-  self.relatedTarget = trigger;
+  if (this.tagName === "A") e.preventDefault();
+  self.relatedTarget = this;
   self.toggle();
-};
+}
 
 /**
  * Handles the `keydown` event listener for modal
@@ -500,7 +500,7 @@ export default class Modal extends BaseComponent {
 
     triggers.forEach((btn) => {
       // istanbul ignore else @preserve
-      if (!isDisabled(btn)) action(btn, mouseclickEvent, modalClickHandler);
+      action(btn, mouseclickEvent, modalClickHandler);
     });
   };
 

@@ -2,7 +2,6 @@
 -------------------------------------------- */
 import {
   addClass,
-  closest,
   createCustomEvent,
   dispatchEvent,
   emulateTransitionEnd,
@@ -160,20 +159,19 @@ const showToast = (self: Toast) => {
  *
  * @param e the `Event` object
  */
-const toastClickHandler = (e: Event) => {
-  const { target } = e;
-
-  const trigger = target && closest(target as HTMLElement, toastToggleSelector);
-  const element = trigger && getTargetElement(trigger);
+function toastClickHandler(this: HTMLElement, e: Event) {
+  const element = getTargetElement(this);
   const self = element && getToastInstance(element);
 
   // istanbul ignore if @preserve
+  if (isDisabled(this)) return;
+  // istanbul ignore if @preserve
   if (!self) return;
   // istanbul ignore else @preserve
-  if (trigger && trigger.tagName === "A") e.preventDefault();
-  self.relatedTarget = trigger;
+  if (this.tagName === "A") e.preventDefault();
+  self.relatedTarget = this;
   self.show();
-};
+}
 
 /**
  * Executes when user interacts with the toast without closing it,
@@ -309,8 +307,7 @@ export default class Toast extends BaseComponent {
     // istanbul ignore else @preserve
     if (triggers.length) {
       triggers.forEach((btn) => {
-        // istanbul ignore else @preserve
-        if (!isDisabled(btn)) action(btn, mouseclickEvent, toastClickHandler);
+        action(btn, mouseclickEvent, toastClickHandler);
       });
     }
   };

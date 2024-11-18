@@ -1,3 +1,5 @@
+import { PointerEvent as PointerEvent_2 } from '@thednp/shorty';
+
 /** Creates a new Alert instance. */
 declare class Alert extends BaseComponent {
     static selector: string;
@@ -12,7 +14,7 @@ declare class Alert extends BaseComponent {
      * disposes the instance once animation is complete, then
      * removes the element from the DOM.
      */
-    close: () => void;
+    close: (e: PointerEvent_2<HTMLElement>) => void;
     /**
      * Toggle on / off the `click` event listener.
      *

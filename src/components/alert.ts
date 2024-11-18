@@ -7,6 +7,7 @@ import {
   getInstance,
   hasClass,
   mouseclickEvent,
+  PointerEvent,
   querySelector,
   removeClass,
 } from "@thednp/shorty";
@@ -18,10 +19,10 @@ import showClass from "~/strings/showClass";
 import dataBsDismiss from "~/strings/dataBsDismiss";
 import alertString from "~/strings/alertString";
 import alertComponent from "~/strings/alertComponent";
+import isDisabled from "~/util/isDisabled";
 import type { AlertEvent } from "~/interface/alert";
 
 import BaseComponent from "./base-component";
-import isDisabled from "~/util/isDisabled";
 
 // ALERT PRIVATE GC
 // ================
@@ -99,11 +100,13 @@ export default class Alert extends BaseComponent {
    * disposes the instance once animation is complete, then
    * removes the element from the DOM.
    */
-  close = () => {
-    const { element } = this;
+  close = (e: PointerEvent<HTMLElement>) => {
+    const { element, dismiss } = this;
 
     // istanbul ignore if @preserve
     if (!element || !hasClass(element, showClass)) return;
+    // istanbul ignore if @preserve
+    if (e && dismiss && isDisabled(dismiss)) return;
     dispatchEvent(element, closeAlertEvent);
 
     if (closeAlertEvent.defaultPrevented) return;
@@ -123,7 +126,7 @@ export default class Alert extends BaseComponent {
     const action = add ? addListener : removeListener;
     const { dismiss, close } = this;
     // istanbul ignore else @preserve
-    if (dismiss && !isDisabled(dismiss)) {
+    if (dismiss) {
       action(dismiss, mouseclickEvent, close);
     }
   };

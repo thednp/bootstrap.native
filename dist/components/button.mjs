@@ -29,7 +29,8 @@ class E extends l {
   toggle = (s) => {
     s && s.preventDefault();
     const { element: t, isActive: o } = this;
-    b(t) || ((o ? u : m)(t, n), a(t, c, o ? "false" : "true"), this.isActive = i(t, n));
+    if (b(t)) return;
+    (o ? u : m)(t, n), a(t, c, o ? "false" : "true"), this.isActive = i(t, n);
   };
   /**
    * Toggles on/off the `click` event listener.

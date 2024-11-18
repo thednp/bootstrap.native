@@ -175,20 +175,25 @@ const beforeOffcanvasHide = (self: Offcanvas) => {
  *
  * @param e the `Event` object
  */
-const offcanvasTriggerHandler = (e: MouseEvent<HTMLElement>) => {
-  const trigger = closest(e.target, offcanvasToggleSelector);
-  const element = trigger && getTargetElement(trigger);
+function offcanvasTriggerHandler(
+  this: HTMLElement,
+  e: MouseEvent<HTMLElement>,
+) {
+  const element = getTargetElement(this);
   const self = element && getOffcanvasInstance(element);
+
+  // istanbul ignore if @preserve
+  if (isDisabled(this)) return;
 
   // istanbul ignore if @preserve
   if (!self) return;
 
-  self.relatedTarget = trigger;
+  self.relatedTarget = this;
   self.toggle();
 
   // istanbul ignore else @preserve
-  if (trigger?.tagName === "A") e.preventDefault();
-};
+  if (this.tagName === "A") e.preventDefault();
+}
 
 /**
  * Handles the event listeners that close the offcanvas.
@@ -449,10 +454,7 @@ export default class Offcanvas extends BaseComponent {
   _toggleEventListeners = (add?: boolean) => {
     const action = add ? addListener : removeListener;
     this.triggers.forEach((btn) => {
-      // istanbul ignore else @preserve
-      if (!isDisabled(btn)) {
-        action(btn, mouseclickEvent, offcanvasTriggerHandler);
-      }
+      action(btn, mouseclickEvent, offcanvasTriggerHandler);
     });
   };
 

@@ -1106,8 +1106,7 @@ myCollapseInit.toggle();
             <p>The <b>Dropdown</b> component covers most of the functionality from the original plugin in terms of original events,
               instance methods and options, but also offers some additional functionality without using any third party library.</p>
             <p>To get on par with the original plugin, our component now features automatic repositioning but without the use of Popper.js,
-              but with <a href="https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver">IntersectionObserver</a>
-              to update the menu's position.</p>
+              but with <a href="https://github.com/thednp/position-observer">PositionObserver</a> to update the menu's position.</p>
             <p>Here's how it works:</p>
             <ul>
               <li>when showing the dropdown menu to the user, the component will calculate all possible positions and update the menu 
@@ -1767,7 +1766,7 @@ var myModalInit = BSN.Modal.getInstance(myModal);
                   </div>
                 </div>
               </div>
-              <div id="anotherModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="anotherModalLabel" aria-hidden="true" data-bs-backdrop="false">
+              <div id="anotherModal" class="modal" role="dialog" aria-labelledby="anotherModalLabel" aria-hidden="true" data-bs-backdrop="false">
                 <div class="modal-dialog modal-dialog-scrollable">
                   <div class="modal-content">
                     <div class="modal-header"> 
@@ -2135,16 +2134,16 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                 </div>
               </div>
 
-              <div class="btn-toolbar mb-3">
-                <button class="btn btn-primary me-1 mb-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+              <div class="btn-toolbar gap-1 mb-3">
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
                   <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                     <path d="M610.97 656.333c0 0 361.421-260.813 321.331-559.309-0.87-6.502-3.021-10.906-5.734-13.722-2.765-2.816-7.014-5.018-13.466-5.888-291.686-41.011-546.509 328.806-546.509 328.806-221.082-26.47-205.005 17.613-305.869 259.891-19.302 46.182 11.981 62.106 46.285 49.101 34.304-12.902 109.978-41.523 109.978-41.523l132.608 135.578c0 0-27.955 77.517-40.602 112.589-12.698 35.123 2.816 67.123 48.026 47.411 236.749-103.219 279.859-86.733 253.952-312.934z m51.66-302.899c-30.618-31.386-30.618-82.125 0-113.51 30.618-31.283 80.23-31.283 110.899 0 30.618 31.283 30.618 82.074 0 113.51-30.669 31.283-80.333 31.283-110.899 0z" fill="currentColor"></path>
                   </svg>
                   Scroll
                 </button>
-                <button class="btn btn-primary me-1 mb-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNoBackdrop" aria-controls="offcanvasNoBackdrop">No Backdrop</button>
-                <button class="btn btn-primary me-1 mb-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTopWithBackdrop" aria-controls="offcanvasTopWithBackdrop">Backdrop Top</button>
-                <button class="btn btn-primary mb-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Scrolling & backdrop</button>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNoBackdrop" aria-controls="offcanvasNoBackdrop">No Backdrop</button>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTopWithBackdrop" aria-controls="offcanvasTopWithBackdrop">Backdrop Top</button>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Scrolling & backdrop</button>
               </div>
 
               <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
@@ -2154,14 +2153,14 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                 </div>
                 <div class="offcanvas-body">
                   <p>Try scrolling the rest of the page to see this option in action.</p>
-                  <div class="btn-toolbar">
-                    <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="me-1"
+                  <div class="btn-toolbar gap-1">
+                    <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class=""
                       data-bs-toggle="tooltip" data-bs-placement="top"
                       data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                       <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                       <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
                     </svg>
-                    <img class="me-1" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+                    <img class="" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
                     <button type="button" class="btn btn-secondary" data-bs-toggle="popover" data-bs-trigger="click"
                       data-bs-content="Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Popover</button>
                   </div>
@@ -2175,15 +2174,15 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                 </div>
                 <div class="offcanvas-body">
                   <p>This offcanvas instance uses "static" backdrop.</p>
-                  <div class="btn-toolbar">
-                    <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="me-1 mb-1"
+                  <div class="btn-toolbar gap-1">
+                    <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class=""
                       data-bs-toggle="tooltip" data-bs-placement="top"
                       data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                       <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                       <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
                     </svg>
-                    <img class="me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
-                    <button type="button" class="btn btn-secondary me-1 mb-1" data-bs-toggle="popover" data-bs-trigger="click"
+                    <img class="" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="popover" data-bs-trigger="click"
                       data-bs-content="Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Popover</button>
                   </div>
                 </div>
@@ -2196,15 +2195,15 @@ var myOffcanvasInit = BSN.Offcanvas.getInstance(myOffcanvas);
                 <div class="offcanvas-body">
                   <p>Opening a <b>Modal</b> instance will close this <b>Offcanvas</b> instance.</p>
                   <p>This <b>Offcanvas</b> uses <code>data-bs-backdrop="false"</code> intentionally to test the option independently for each instance.</p>
-                  <div class="btn-toolbar">
-                    <a class="btn btn-primary me-1 mb-1" href="#myModal" data-bs-toggle="modal">Open Modal</a>
-                    <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class="me-1"
+                  <div class="btn-toolbar gap-1">
+                    <a class="btn btn-primary" href="#myModal" data-bs-toggle="modal">Open Modal</a>
+                    <svg viewBox="0 0 80 43" width="80" height="43" xmlns="http://www.w3.org/2000/svg" class=""
                       data-bs-toggle="tooltip" data-bs-placement="top"
                       data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-success'&gt;SVG&lt;/span&gt;&lt;br&gt;Perhaps adding even more content would make the job more difficult? Nope, same as if this was a very very short tooltip. Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">
                       <rect fill="rgba(0,0,0,0.01)" stroke="#ccc" stroke-width="1" width="100%" height="100%" rx="5"></rect>
                       <text direction="ltr" fill="#333" x="25" y="25" font-size="14">SVG</text>
                     </svg>
-                    <img class="me-1 mb-1" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
+                    <img class="" data-bs-toggle="tooltip" data-bs-placement="top"  data-bs-title="&lt;b&gt;Demo Tooltip for &lt;/b&gt; &lt;span class='badge bg-info'&gt;IMG&lt;/span&gt;&lt;br&gt;Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas." alt="Demo Tooltip for IMG" src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODAgNDMiIHdpZHRoPSI4MCIgaGVpZ2h0PSI0MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCiAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9IndoaXRlIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjUiPjwvcmVjdD4NCiAgICAgICAgICAgICAgICAgIDx0ZXh0IGRpcmVjdGlvbj0ibHRyIiBmaWxsPSIjMzMzIiB4PSIyNSIgeT0iMjUiIGZvbnQtc2l6ZT0iMTQiPklNRzwvdGV4dD4NCiAgICAgICAgICAgICAgICA8L3N2Zz4=" />
                     <button type="button" class="btn btn-secondary mb-1" data-bs-toggle="popover" data-bs-trigger="click"
                       data-bs-content="Efficiently unleash cross-media information without cross-media value. Quickly maximize timely deliverables for real-time schemas.">Popover</button>
                   </div>

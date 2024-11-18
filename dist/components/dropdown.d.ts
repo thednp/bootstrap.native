@@ -1,3 +1,5 @@
+import { default as default_2 } from '@thednp/position-observer';
+
 /** Returns a new `BaseComponent` instance. */
 declare class BaseComponent {
     element: Element;
@@ -30,7 +32,7 @@ declare class Dropdown extends BaseComponent {
     open: boolean;
     parentElement: HTMLElement;
     menu: HTMLElement;
-    _observer: IntersectionObserver;
+    _observer: default_2;
     /**
      * @param target Element or string selector
      * @param config the instance options

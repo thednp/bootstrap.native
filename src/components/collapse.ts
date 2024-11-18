@@ -165,6 +165,8 @@ const collapseClickHandler = (e: MouseEvent<HTMLElement>) => {
   const self = element && getCollapseInstance(element);
 
   // istanbul ignore if @preserve
+  if (trigger && isDisabled(trigger)) return;
+  // istanbul ignore if @preserve
   if (!self) return;
 
   self.toggle();
@@ -288,10 +290,7 @@ export default class Collapse extends BaseComponent {
     // istanbul ignore else @preserve
     if (triggers.length) {
       triggers.forEach((btn) => {
-        // istanbul ignore else @preserve
-        if (!isDisabled(btn)) {
-          action(btn, mouseclickEvent, collapseClickHandler);
-        }
+        action(btn, mouseclickEvent, collapseClickHandler);
       });
     }
   };

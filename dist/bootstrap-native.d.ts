@@ -1,5 +1,6 @@
 import { default as default_2 } from '@thednp/position-observer';
 import { MouseEvent as MouseEvent_2 } from '@thednp/shorty';
+import { PointerEvent as PointerEvent_2 } from '@thednp/shorty';
 import { TouchEvent as TouchEvent_2 } from '@thednp/shorty';
 
 /** Creates a new Alert instance. */
@@ -16,7 +17,7 @@ export declare class Alert extends BaseComponent {
      * disposes the instance once animation is complete, then
      * removes the element from the DOM.
      */
-    close: () => void;
+    close: (e: PointerEvent_2<HTMLElement>) => void;
     /**
      * Toggle on / off the `click` event listener.
      *
@@ -69,7 +70,7 @@ export declare class Button extends BaseComponent {
      *
      * @param e usually `click` Event object
      */
-    toggle: (e?: Event) => void;
+    toggle: (e?: PointerEvent_2<HTMLElement>) => void;
     /**
      * Toggles on/off the `click` event listener.
      *
@@ -200,7 +201,7 @@ export declare class Dropdown extends BaseComponent {
     open: boolean;
     parentElement: HTMLElement;
     menu: HTMLElement;
-    _observer: IntersectionObserver;
+    _observer: default_2;
     /**
      * @param target Element or string selector
      * @param config the instance options

@@ -35,6 +35,7 @@ import {
 } from "@thednp/shorty";
 
 import { addListener, removeListener } from "@thednp/event-listener";
+import PositionObserver from "@thednp/position-observer";
 
 import showClass from "~/strings/showClass";
 import dataBsToggle from "~/strings/dataBsToggle";
@@ -379,19 +380,19 @@ const dropdownDismissHandler = (e: MouseEvent) => {
  *
  * @param e event object
  */
-const dropdownClickHandler = (e: MouseEvent<HTMLElement>) => {
-  const { target } = e;
-  const element = target && closest(target, dropdownSelector);
-  const self = element && getDropdownInstance(element);
+function dropdownClickHandler(this: HTMLElement, e: MouseEvent<HTMLElement>) {
+  const self = getDropdownInstance(this);
 
+  // istanbul ignore if @preserve
+  if (isDisabled(this)) return;
   // istanbul ignore if @preserve
   if (!self) return;
 
   e.stopPropagation();
   self.toggle();
   // istanbul ignore else @preserve
-  if (element && isEmptyAnchor(element)) e.preventDefault();
-};
+  if (isEmptyAnchor(this)) e.preventDefault();
+}
 
 /**
  * Prevents scroll when dropdown-menu is visible.
@@ -448,15 +449,6 @@ function dropdownKeyHandler(this: Element, e: KeyboardEvent) {
   }
 }
 
-/** Handles dropdown layout changes during resize / scroll. */
-function dropdownIntersectionHandler(target: Element) {
-  const element = getCurrentOpenDropdown(target);
-  const self = element && getDropdownInstance(element);
-
-  // istanbul ignore else @preserve
-  if (self && self.open) styleDropdown(self);
-}
-
 // DROPDOWN DEFINITION
 // ===================
 /** Returns a new Dropdown instance. */
@@ -469,7 +461,7 @@ export default class Dropdown extends BaseComponent {
   declare open: boolean;
   declare parentElement: HTMLElement;
   declare menu: HTMLElement;
-  declare _observer: IntersectionObserver;
+  declare _observer: PositionObserver;
 
   /**
    * @param target Element or string selector
@@ -492,9 +484,8 @@ export default class Dropdown extends BaseComponent {
     // set targets
     this.parentElement = parentElement as HTMLElement;
     this.menu = menu;
-    this._observer = new IntersectionObserver(
-      ([entry]) => dropdownIntersectionHandler(entry.target),
-      { threshold: 1 },
+    this._observer = new PositionObserver(
+      () => styleDropdown(this),
     );
 
     // add event listener
@@ -590,10 +581,7 @@ export default class Dropdown extends BaseComponent {
    */
   _toggleEventListeners = (add?: boolean) => {
     const action = add ? addListener : removeListener;
-    // istanbul ignore else @preserve
-    if (!isDisabled(this.element)) {
-      action(this.element, mouseclickEvent, dropdownClickHandler);
-    }
+    action(this.element, mouseclickEvent, dropdownClickHandler);
   };
 
   /** Removes the `Dropdown` component from the target element. */

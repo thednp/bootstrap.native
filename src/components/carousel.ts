@@ -169,6 +169,8 @@ function carouselIndicatorHandler(this: HTMLElement, e: MouseEvent) {
   const self = element && getCarouselInstance(element);
 
   // istanbul ignore if @preserve
+  if (isDisabled(this)) return;
+  // istanbul ignore if @preserve
   if (!self || self.isAnimating) return;
 
   const newIndex = +(
@@ -198,6 +200,8 @@ function carouselControlsHandler(this: HTMLElement, e: MouseEvent) {
   const element = closest(this, carouselSelector) || getTargetElement(this);
   const self = element && getCarouselInstance(element);
 
+  // istanbul ignore if @preserve
+  if (isDisabled(this)) return;
   // istanbul ignore if @preserve
   if (!self || self.isAnimating) return;
 
@@ -736,20 +740,14 @@ export default class Carousel extends BaseComponent {
     // istanbul ignore else @preserve
     if (controls.length) {
       controls.forEach((arrow) => {
-        // istanbul ignore else @preserve
-        if (!isDisabled(arrow)) {
-          action(arrow, mouseclickEvent, carouselControlsHandler);
-        }
+        action(arrow, mouseclickEvent, carouselControlsHandler);
       });
     }
 
     // istanbul ignore else @preserve
     if (indicators.length) {
       indicators.forEach((indicator) => {
-        // istanbul ignore else @preserve
-        if (!isDisabled(indicator)) {
-          action(indicator, mouseclickEvent, carouselIndicatorHandler);
-        }
+        action(indicator, mouseclickEvent, carouselIndicatorHandler);
       });
     }
 

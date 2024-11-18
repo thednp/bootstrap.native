@@ -6,6 +6,7 @@ import {
   getInstance,
   hasClass,
   mouseclickEvent,
+  PointerEvent,
   removeClass,
   setAttribute,
 } from "@thednp/shorty";
@@ -75,16 +76,16 @@ export default class Button extends BaseComponent {
    *
    * @param e usually `click` Event object
    */
-  toggle = (e?: Event) => {
+  toggle = (e?: PointerEvent<HTMLElement>) => {
     if (e) e.preventDefault();
 
     const { element, isActive } = this;
-    if (!isDisabled(element)) {
-      const action = isActive ? removeClass : addClass;
-      action(element, activeClass);
-      setAttribute(element, ariaPressed, isActive ? "false" : "true");
-      this.isActive = hasClass(element, activeClass);
-    }
+    // istanbul ignore if @preserve
+    if (isDisabled(element)) return;
+    const action = isActive ? removeClass : addClass;
+    action(element, activeClass);
+    setAttribute(element, ariaPressed, isActive ? "false" : "true");
+    this.isActive = hasClass(element, activeClass);
   };
 
   // BUTTON PRIVATE METHOD
