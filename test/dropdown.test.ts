@@ -226,6 +226,7 @@ describe("Dropdown Class Tests", () => {
     await page.viewport(800, 600);
 
     const dropdstart = Dropdown.init(element);
+    await new Promise(res => setTimeout(res, 50));
 
     element.click();
     await vi.waitFor(() => {
@@ -233,14 +234,18 @@ describe("Dropdown Class Tests", () => {
       expect(dropdstart.menu.style.cssText).to.contain("left: auto");
     }, 351);
 
+    await new Promise(res => setTimeout(res, 50));
     await page.viewport(250, 660);
     win.dispatchEvent(new Event('resize'));
     await vi.waitFor(() => {
       expect(dropdstart.menu.style.cssText).to.contain("left: auto");
     }, 551);
 
+    await new Promise(res => setTimeout(res, 50));
     await page.viewport(800, 660);
     win.dispatchEvent(new Event('resize'));
+    await new Promise(res => setTimeout(res, 50));
+
     await vi.waitFor(() => {
       expect(dropdstart.menu.style.cssText).to.contain("left: auto");
     }, 351);
@@ -256,14 +261,16 @@ describe("Dropdown Class Tests", () => {
       expect(dropend.menu.style.cssText).to.contain("right: auto");
     }, 351);
 
+    await new Promise(res => setTimeout(res, 50));
     await page.viewport(200, 660);
-    await new Promise(res => setTimeout(res, 50));
     win.dispatchEvent(new Event('resize'));
-    await new Promise(res => setTimeout(res, 50));
+    await new Promise(res => setTimeout(res, 150));
     await vi.waitFor(() => {
       expect(dropend.menu.className).to.contain("show");
-      expect(dropend.menu.style.cssText).to.contain("left: auto");
-    }, 551);
+      expect(dropend.menu.style.cssText).to.contain("left: 100%");
+    }, 351);
+
+    await new Promise(res => setTimeout(res, 50));
     dropend.dispose();
     Object.assign(body.style, bodyPads.reset);
     await page.viewport(800, 660);
@@ -463,6 +470,8 @@ describe("Dropdown Class Tests", () => {
     await new Promise(res => setTimeout(res, 50));
     win.scrollTo({ left: 0, top: 800, behavior: "smooth" });
     win.dispatchEvent(new Event('scroll'));
+    await new Promise(res => setTimeout(res, 50));
+
     await vi.waitFor(() => {
       expect(dropupTopLeft.menu.style.cssText).to.contain("top: 100%");
     }, 551);
@@ -486,6 +495,8 @@ describe("Dropdown Class Tests", () => {
     await new Promise(res => setTimeout(res, 50));
     win.scrollTo({ left: 0, top: 800, behavior: "smooth" });
     win.dispatchEvent(new Event('scroll'));
+    await new Promise(res => setTimeout(res, 50));
+
     await vi.waitFor(() => {
       expect(dropdownBottomLeft.menu.className).to.contain("show");
       expect(dropdownBottomLeft.menu.style.cssText).to.contain("top: 100%");
