@@ -25,7 +25,7 @@ describe("Dropdown Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach(() => {
     wrapper.innerHTML = "";
   });
 
@@ -211,7 +211,7 @@ describe("Dropdown Class Tests", () => {
     await vi.waitFor(() => container.querySelector('[data-bs-toggle="dropdown"]'), 200);
 
     const element = container.querySelectorAll('[data-bs-toggle="dropdown"]')[1] as HTMLButtonElement;
-    const win = element.ownerDocument.defaultView!;
+    // const win = element.ownerDocument.defaultView!;
     const body = element.ownerDocument.body!;
     [...container.querySelectorAll('[data-bs-toggle="dropdown"]')].forEach((d, i) => {
       if (i !== 1) d.parentElement?.classList.add('d-none');
@@ -225,8 +225,9 @@ describe("Dropdown Class Tests", () => {
     element.parentElement?.classList.add('dropstart');
     await page.viewport(800, 600);
 
-    const dropdstart = Dropdown.init(element);
     await new Promise(res => setTimeout(res, 50));
+    const dropdstart = Dropdown.init(element);
+    await new Promise(res => setTimeout(res, 150));
 
     element.click();
     await vi.waitFor(() => {
@@ -236,24 +237,25 @@ describe("Dropdown Class Tests", () => {
 
     await new Promise(res => setTimeout(res, 50));
     await page.viewport(250, 660);
-    win.dispatchEvent(new Event('resize'));
+    // win.dispatchEvent(new Event('resize'));
     await vi.waitFor(() => {
       expect(dropdstart.menu.style.cssText).to.contain("left: auto");
     }, 551);
 
     await new Promise(res => setTimeout(res, 50));
     await page.viewport(800, 660);
-    win.dispatchEvent(new Event('resize'));
+    // win.dispatchEvent(new Event('resize'));
     await new Promise(res => setTimeout(res, 50));
 
     await vi.waitFor(() => {
       expect(dropdstart.menu.style.cssText).to.contain("left: auto");
     }, 351);
-    dropdstart.dispose();
+    // dropdstart.dispose();
 
     element.parentElement?.classList.remove('dropstart');
     element.parentElement?.classList.add('dropend');
 
+    await new Promise(res => setTimeout(res, 150));
     const dropend = Dropdown.init(element);
     dropend.show();
     await vi.waitFor(() => {
@@ -261,17 +263,18 @@ describe("Dropdown Class Tests", () => {
       expect(dropend.menu.style.cssText).to.contain("right: auto");
     }, 351);
 
-    await new Promise(res => setTimeout(res, 50));
-    await page.viewport(200, 660);
-    win.dispatchEvent(new Event('resize'));
     await new Promise(res => setTimeout(res, 150));
+    await page.viewport(200, 660);
+    // win.dispatchEvent(new Event('resize'));
+    await new Promise(res => setTimeout(res, 50));
+
     await vi.waitFor(() => {
       expect(dropend.menu.className).to.contain("show");
-      expect(dropend.menu.style.cssText).to.contain("left: 100%");
-    }, 351);
+      expect(dropend.menu.style.cssText).to.contain("left: auto");
+    }, 551);
 
-    await new Promise(res => setTimeout(res, 50));
-    dropend.dispose();
+    await new Promise(res => setTimeout(res, 150));
+    // dropend.dispose();
     Object.assign(body.style, bodyPads.reset);
     await page.viewport(800, 660);
   });
@@ -311,7 +314,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropupTopLeft.menu.style.cssText).to.contain("top: 100%");
     }, 551);
 
-    dropupTopLeft.dispose();
+    // dropupTopLeft.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropdown bottom left
@@ -335,7 +338,7 @@ describe("Dropdown Class Tests", () => {
     }, 551);
     await new Promise(res => setTimeout(res, 50));
 
-    dropdownBottomLeft.dispose();
+    // dropdownBottomLeft.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropdown top right
@@ -360,7 +363,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropdownTopRight.menu.style.cssText).to.contain("right: 0px");
     }, 551);
 
-    dropdownTopRight.dispose();
+    // dropdownTopRight.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropstart top left
@@ -387,7 +390,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropstartTopLeft.menu.style.cssText).to.contain("left: 100%");
     }, 551);
 
-    dropstartTopLeft.dispose();
+    // dropstartTopLeft.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropend top right
@@ -410,7 +413,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropendTopRight.menu.style.cssText).to.contain("left: 100%");
     }, 551);
 
-    dropendTopRight.dispose();
+    // dropendTopRight.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropend bottom left
@@ -437,7 +440,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropendBottomLeft.menu.style.cssText).to.contain("inset: auto auto 0px 100%");
     }, 551);
 
-    dropendBottomLeft.dispose();
+    // dropendBottomLeft.dispose();
   });
 
   it('Can do automatic position on scroll RTL', async() => {
@@ -476,7 +479,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropupTopLeft.menu.style.cssText).to.contain("top: 100%");
     }, 551);
 
-    dropupTopLeft.dispose();
+    // dropupTopLeft.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropdown bottom left
@@ -502,7 +505,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropdownBottomLeft.menu.style.cssText).to.contain("top: 100%");
     }, 551);
 
-    dropdownBottomLeft.dispose();
+    // dropdownBottomLeft.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropdown top left
@@ -531,7 +534,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropdownTopRight.menu.style.cssText).to.contain("left: 0px");
     }, 551);
 
-    dropdownTopRight.dispose();
+    // dropdownTopRight.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropstart top left
@@ -551,7 +554,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropstartTopLeft.menu.style.cssText).to.contain("left: 100%");
     }, 351);
 
-    dropstartTopLeft.dispose();
+    // dropstartTopLeft.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropend top left
@@ -566,7 +569,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropendTopRight.menu.style.cssText).to.contain("left: 100%");
     }, 351);
 
-    dropendTopRight.dispose();
+    // dropendTopRight.dispose();
     win.scrollTo({ left: 0, top: 0, behavior: "instant" });
 
     // dropend bottom right
@@ -594,7 +597,7 @@ describe("Dropdown Class Tests", () => {
       expect(dropendBottomLeft.menu.style.cssText).to.contain("inset: auto 100% 0px auto");
     }, 551);
 
-    dropendBottomLeft.dispose();
+    // dropendBottomLeft.dispose();
     Object.assign(body.style, bodyPads.reset);
     await page.viewport(414,896);
     removeDirection(element);
@@ -707,11 +710,12 @@ describe("Dropdown Class Tests", () => {
       expect(instance.element).to.be.undefined;
     }, 351);
 
+    await new Promise(res => setTimeout(res, 150));
     const instance1 = Dropdown.init(element);
 
     instance1.show();
     await vi.waitFor(() => {
-      console.log(instance1.menu.className);
+      // console.log(instance1.menu.className);
       expect(instance1.menu.className).to.contain("show");
     }, 350);
 

@@ -815,46 +815,43 @@ const Lt = ["dropdown", "dropup", "dropstart", "dropend"], qn = "Dropdown", Yn =
   `hide.bs.${et}`
 ), qs = E(`hidden.bs.${et}`), Xn = E(`updated.bs.${et}`), Ys = (e) => {
   const { element: t, menu: s, parentElement: n, options: o } = e, { offset: i } = o;
-  if (R(s, "position") !== "static") {
-    const r = Tt(t), c = h(s, zi);
-    ["margin", "top", "bottom", "left", "right"].forEach((B) => {
-      const Ct = {};
-      Ct[B] = "", _(s, Ct);
-    });
-    let l = Lt.find(
-      (B) => h(n, B)
-    ) || et;
-    const f = {
-      dropdown: [i, 0, 0],
-      dropup: [0, 0, i],
-      dropstart: r ? [-1, 0, 0, i] : [-1, i, 0],
-      dropend: r ? [-1, i, 0] : [-1, 0, 0, i]
-    }, u = {
-      dropdown: { top: "100%" },
-      dropup: { top: "auto", bottom: "100%" },
-      dropstart: r ? { left: "100%", right: "auto" } : { left: "auto", right: "100%" },
-      dropend: r ? { left: "auto", right: "100%" } : { left: "100%", right: "auto" },
-      menuStart: r ? { right: "0", left: "auto" } : { right: "auto", left: "0" },
-      menuEnd: r ? { right: "auto", left: "0" } : { right: "0", left: "auto" }
-    }, { offsetWidth: $, offsetHeight: N } = s, { clientWidth: q, clientHeight: Z } = dt(t), {
-      left: m,
-      top: K,
-      width: $t,
-      height: yt
-    } = It(t), C = m - $ - i < 0, ft = m + $ + $t + i >= q, it = K + N + i >= Z, J = K + N + yt + i >= Z, Bt = K - N - i < 0, y = (!r && c || r && !c) && m + $t - $ < 0, W = (r && c || !r && !c) && m + $ >= q;
-    if (zs.includes(l) && C && ft && (l = et), l === es && (r ? ft : C) && (l = ss), l === ss && (r ? C : ft) && (l = es), l === ts && Bt && !J && (l = et), l === et && J && !Bt && (l = ts), zs.includes(l) && it && at(u[l], {
-      top: "auto",
-      bottom: 0
-    }), js.includes(l) && (y || W)) {
-      let B = { left: "auto", right: "auto" };
-      !y && W && !r && (B = { left: "auto", right: 0 }), y && !W && r && (B = { left: 0, right: "auto" }), B && at(u[l], B);
-    }
-    const Rt = f[l];
-    _(s, {
-      ...u[l],
-      margin: `${Rt.map((B) => B && `${B}px`).join(" ")}`
-    }), js.includes(l) && c && c && _(s, u[!r && y || r && W ? "menuStart" : "menuEnd"]), b(n, Xn);
+  if (R(s, "position") === "static") return;
+  const r = Tt(t), c = h(s, zi);
+  ["margin", "top", "bottom", "left", "right"].forEach((B) => {
+    const Ct = {};
+    Ct[B] = "", _(s, Ct);
+  });
+  let l = Lt.find((B) => h(n, B)) || et;
+  const f = {
+    dropdown: [i, 0, 0],
+    dropup: [0, 0, i],
+    dropstart: r ? [-1, 0, 0, i] : [-1, i, 0],
+    dropend: r ? [-1, i, 0] : [-1, 0, 0, i]
+  }, u = {
+    dropdown: { top: "100%" },
+    dropup: { top: "auto", bottom: "100%" },
+    dropstart: r ? { left: "100%", right: "auto" } : { left: "auto", right: "100%" },
+    dropend: r ? { left: "auto", right: "100%" } : { left: "100%", right: "auto" },
+    menuStart: r ? { right: "0", left: "auto" } : { right: "auto", left: "0" },
+    menuEnd: r ? { right: "auto", left: "0" } : { right: "0", left: "auto" }
+  }, { offsetWidth: $, offsetHeight: N } = s, { clientWidth: q, clientHeight: Z } = dt(t), {
+    left: m,
+    top: K,
+    width: $t,
+    height: yt
+  } = It(t), C = m - $ - i < 0, ft = m + $ + $t + i >= q, it = K + N + i >= Z, J = K + N + yt + i >= Z, Bt = K - N - i < 0, y = (!r && c || r && !c) && m + $t - $ < 0, W = (r && c || !r && !c) && m + $ >= q;
+  if (zs.includes(l) && C && ft && (l = et), l === es && (r ? ft : C) && (l = ss), l === ss && (r ? C : ft) && (l = es), l === ts && Bt && !J && (l = et), l === et && J && !Bt && (l = ts), zs.includes(l) && it && at(u[l], {
+    top: "auto",
+    bottom: 0
+  }), js.includes(l) && (y || W)) {
+    let B = { left: "auto", right: "auto" };
+    !y && W && !r && (B = { left: "auto", right: 0 }), y && !W && r && (B = { left: 0, right: "auto" }), B && at(u[l], B);
   }
+  const Rt = f[l];
+  _(s, {
+    ...u[l],
+    margin: `${Rt.map((B) => B && `${B}px`).join(" ")}`
+  }), js.includes(l) && c && c && _(s, u[!r && y || r && W ? "menuStart" : "menuEnd"]), b(n, Xn);
 }, Vi = (e) => Array.from(e.children).map((t) => {
   if (t && Ks.includes(t.tagName)) return t;
   const { firstElementChild: s } = t;

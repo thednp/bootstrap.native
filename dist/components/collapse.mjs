@@ -1,21 +1,21 @@
-import { B as D, t as L, d as S, e as v, x as T, y as _, R as q, h as l, q as f, m as u, C as d, F as h, Y as g, b as c, f as P, s as x, Q as k, H, Z as Q, E as R, r as Y, k as Z, v as y } from "./base-component-CQAH5ZXF.mjs";
+import { B as D, d as L, e as v, x as S, y as T, R as _, h as l, b as c, Y as g, Z as q, t as P, m as u, q as f, C as d, F as h, s as x, Q as k, H, f as Q, E as R, r as Y, v as Z, l as y } from "./base-component-DAxvn9am.mjs";
 import { d as A } from "./dataBsToggle-B84TS15h.mjs";
 import { c as m } from "./collapsingClass-BxKtDBMH.mjs";
 import { s as C } from "./showClass-C8hdJfjQ.mjs";
-import { g as E } from "./getTargetElement-v_1VfmtN.mjs";
-import { i as F } from "./isDisabled-bThyhy2g.mjs";
-const n = "collapse", I = "Collapse", N = `.${n}`, B = `[${A}="${n}"]`, O = { parent: null }, p = (a) => L(a, I), j = (a) => new M(a), $ = u(`show.bs.${n}`), z = u(`shown.bs.${n}`), b = u(`hide.bs.${n}`), G = u(`hidden.bs.${n}`), J = (a) => {
+import { g as E } from "./getTargetElement-C1k_p6ls.mjs";
+import { i as F } from "./isDisabled-DRrRkHiq.mjs";
+const n = "collapse", I = "Collapse", N = `.${n}`, B = `[${A}="${n}"]`, O = { parent: null }, p = (a) => P(a, I), j = (a) => new M(a), $ = u(`show.bs.${n}`), z = u(`shown.bs.${n}`), b = u(`hide.bs.${n}`), G = u(`hidden.bs.${n}`), J = (a) => {
   const { element: e, parent: t, triggers: s } = a;
   f(e, $), $.defaultPrevented || (l.set(e, d, 17), t && l.set(t, d, 17), c(e, m), g(e, n), h(e, { height: `${e.scrollHeight}px` }), x(e, () => {
     l.clear(e), t && l.clear(t), s.forEach((o) => k(o, H, "true")), g(e, m), c(e, n), c(e, C), h(e, { height: "" }), f(e, z);
   }));
 }, w = (a) => {
   const { element: e, parent: t, triggers: s } = a;
-  f(e, b), b.defaultPrevented || (l.set(e, d, 17), t && l.set(t, d, 17), h(e, { height: `${e.scrollHeight}px` }), g(e, n), g(e, C), c(e, m), P(e), h(e, { height: "0px" }), x(e, () => {
+  f(e, b), b.defaultPrevented || (l.set(e, d, 17), t && l.set(t, d, 17), h(e, { height: `${e.scrollHeight}px` }), g(e, n), g(e, C), c(e, m), Q(e), h(e, { height: "0px" }), x(e, () => {
     l.clear(e), t && l.clear(t), s.forEach((o) => k(o, H, "false")), g(e, m), c(e, n), h(e, { height: "" }), f(e, G);
   }));
 }, K = (a) => {
-  const { target: e } = a, t = e && Z(e, B), s = t && E(t), o = s && p(s);
+  const { target: e } = a, t = e && y(e, B), s = t && E(t), o = s && p(s);
   t && F(t) || o && (o.toggle(), t?.tagName === "A" && a.preventDefault());
 };
 class M extends D {
@@ -28,10 +28,10 @@ class M extends D {
    */
   constructor(e, t) {
     super(e, t);
-    const { element: s, options: o } = this, i = S(s);
+    const { element: s, options: o } = this, i = L(s);
     this.triggers = [...v(B, i)].filter(
       (r) => E(r) === s
-    ), this.parent = T(o.parent) ? o.parent : _(o.parent) ? E(s) || q(o.parent, i) : null, this._toggleEventListeners(!0);
+    ), this.parent = S(o.parent) ? o.parent : T(o.parent) ? E(s) || _(o.parent, i) : null, this._toggleEventListeners(!0);
   }
   /**
    * Returns component name string.
@@ -59,7 +59,7 @@ class M extends D {
     })), J(this), s.length && s.forEach((r) => g(r, `${n}d`)));
   }
   toggle() {
-    Q(this.element, C) ? this.hide() : this.show();
+    q(this.element, C) ? this.hide() : this.show();
   }
   /**
    * Toggles on/off the event listener(s) of the `Collapse` instance.
@@ -69,7 +69,7 @@ class M extends D {
   _toggleEventListeners = (e) => {
     const t = e ? R : Y, { triggers: s } = this;
     s.length && s.forEach((o) => {
-      t(o, y, K);
+      t(o, Z, K);
     });
   };
   dispose() {

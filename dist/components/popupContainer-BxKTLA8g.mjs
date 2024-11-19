@@ -1,4 +1,4 @@
-import { a5 as c, ah as s, $ as f } from "./base-component-CQAH5ZXF.mjs";
+import { a5 as c, ah as s, a0 as f } from "./base-component-DAxvn9am.mjs";
 const v = "modal", B = "offcanvas", a = c({
   tagName: "div",
   className: "popup-container"
@@ -19,4 +19,4 @@ export {
   B as o,
   i as r
 };
-//# sourceMappingURL=popupContainer-BvxACdvn.mjs.map
+//# sourceMappingURL=popupContainer-BxKTLA8g.mjs.map

@@ -1,11 +1,11 @@
-import { B as A, t as F, k as p, x as d, R, G as z, Z as l, b as g, Q as E, a8 as x, h as v, m as C, q as T, Y as b, s as D, f as Y, E as J, r as K, v as N } from "./base-component-CQAH5ZXF.mjs";
-import { c as k } from "./collapsingClass-BxKtDBMH.mjs";
+import { B as A, l as p, R, b as g, Q as E, h as v, Z as l, x as d, q as T, Y as b, s as D, t as F, m as C, f as Y, G as z, a8 as x, E as J, r as K, v as N } from "./base-component-DAxvn9am.mjs";
+import { c as P } from "./collapsingClass-BxKtDBMH.mjs";
 import { a as c } from "./activeClass-iqaD75Su.mjs";
 import { f as h } from "./fadeClass-CLIYI_zn.mjs";
 import { s as w } from "./showClass-C8hdJfjQ.mjs";
-import { d as P } from "./dropdownClasses-CdCdZ-PX.mjs";
+import { d as k } from "./dropdownClasses-CdCdZ-PX.mjs";
 import { d as O } from "./dataBsToggle-B84TS15h.mjs";
-import { g as y } from "./getTargetElement-v_1VfmtN.mjs";
+import { g as y } from "./getTargetElement-C1k_p6ls.mjs";
 const m = "tab", Z = "Tab", B = `[${O}="${m}"]`, j = (s) => F(s, Z), U = (s) => new W(s), H = C(
   `show.bs.${m}`
 ), L = C(
@@ -16,7 +16,7 @@ const m = "tab", Z = "Tab", B = `[${O}="${m}"]`, j = (s) => F(s, Z), U = (s) => 
   `hidden.bs.${m}`
 ), u = /* @__PURE__ */ new Map(), _ = (s) => {
   const { tabContent: e, nav: t } = s;
-  e && l(e, k) && (e.style.height = "", b(e, k)), t && v.clear(t);
+  e && l(e, P) && (e.style.height = "", b(e, P)), t && v.clear(t);
 }, q = (s) => {
   const { element: e, tabContent: t, content: n, nav: i } = s, { tab: o } = d(i) && u.get(i) || { tab: null };
   if (t && n && l(n, h)) {
@@ -39,7 +39,7 @@ const m = "tab", Z = "Tab", B = `[${O}="${m}"]`, j = (s) => F(s, Z), U = (s) => 
         nextHeight: f,
         tab: null,
         content: null
-      }), g(n, k), n.style.height = `${r}px`, Y(n), [a, t].forEach((I) => {
+      }), g(n, P), n.style.height = `${r}px`, Y(n), [a, t].forEach((I) => {
         I && b(I, "overflow-hidden");
       });
     }
@@ -58,15 +58,15 @@ const m = "tab", Z = "Tab", B = `[${O}="${m}"]`, j = (s) => F(s, Z), U = (s) => 
     e
   );
   let n = null;
-  t.length === 1 && !P.some(
+  t.length === 1 && !k.some(
     (o) => l(t[0].parentElement, o)
   ) ? [n] = t : t.length > 1 && (n = t[t.length - 1]);
   const i = d(n) ? y(n) : null;
   return { tab: n, content: i };
 }, Q = (s) => {
   if (!d(s)) return null;
-  const e = p(s, `.${P.join(",.")}`);
-  return e ? R(`.${P[0]}-toggle`, e) : null;
+  const e = p(s, `.${k.join(",.")}`);
+  return e ? R(`.${k[0]}-toggle`, e) : null;
 }, V = (s) => {
   const e = p(s.target, B), t = e && j(e);
   t && (s.preventDefault(), t.show());

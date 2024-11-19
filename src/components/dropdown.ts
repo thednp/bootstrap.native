@@ -111,159 +111,152 @@ const updatedDropdownEvent = createCustomEvent<
 const styleDropdown = (self: Dropdown) => {
   const { element, menu, parentElement, options } = self;
   const { offset } = options;
-
   // don't apply any style on mobile view
-  // istanbul ignore else @preserve: this test requires a navbar
-  if (getElementStyle(menu, "position") !== "static") {
-    const RTL = isRTL(element);
-    // const menuStart = hasClass(menu, dropdownMenuStartClass);
-    const menuEnd = hasClass(menu, dropdownMenuEndClass);
+  // istanbul ignore if @preserve: this test requires a navbar
+  if (getElementStyle(menu, "position") === "static") return;
 
-    // reset menu offset and position
-    const resetProps = ["margin", "top", "bottom", "left", "right"];
-    resetProps.forEach((p) => {
-      // menu.style[p] = '';
-      const style: { [key: string]: string } = {};
-      style[p] = "";
-      setElementStyle(menu, style);
-    });
+  const RTL = isRTL(element);
+  const menuEnd = hasClass(menu, dropdownMenuEndClass);
 
-    // set initial position class
-    // take into account .btn-group parent as .dropdown
-    // this requires navbar/btn-group/input-group
-    let positionClass = dropdownClasses.find((c) =>
-      hasClass(parentElement, c)
-    ) ||
-      // istanbul ignore next @preserve: fallback position
-      dropdownString;
+  // reset menu offset and position
+  const resetProps = ["margin", "top", "bottom", "left", "right"];
+  resetProps.forEach((p) => {
+    const style: { [key: string]: string } = {};
+    style[p] = "";
+    setElementStyle(menu, style);
+  });
 
-    const dropdownMargin: { [key: string]: number[] } = {
-      dropdown: [offset, 0, 0],
-      dropup: [0, 0, offset],
-      dropstart: RTL ? [-1, 0, 0, offset] : [-1, offset, 0],
-      dropend: RTL ? [-1, offset, 0] : [-1, 0, 0, offset],
-    };
+  // set initial position class
+  // take into account .btn-group parent as .dropdown
+  // this requires navbar/btn-group/input-group
+  let positionClass = dropdownClasses.find((c) => hasClass(parentElement, c)) ||
+    /* istanbul ignore next @preserve: fallback position */
+    dropdownString;
 
-    const dropdownPosition: { [key: string]: Partial<CSS4Declaration> } = {
-      dropdown: { top: "100%" },
-      dropup: { top: "auto", bottom: "100%" },
-      dropstart: RTL
-        ? { left: "100%", right: "auto" }
-        : { left: "auto", right: "100%" },
-      dropend: RTL
-        ? { left: "auto", right: "100%" }
-        : { left: "100%", right: "auto" },
-      menuStart: RTL
-        ? { right: "0", left: "auto" }
-        : { right: "auto", left: "0" },
-      menuEnd: RTL
-        ? { right: "auto", left: "0" }
-        : { right: "0", left: "auto" },
-    };
+  const dropdownMargin: { [key: string]: number[] } = {
+    dropdown: [offset, 0, 0],
+    dropup: [0, 0, offset],
+    dropstart: RTL ? [-1, 0, 0, offset] : [-1, offset, 0],
+    dropend: RTL ? [-1, offset, 0] : [-1, 0, 0, offset],
+  };
 
-    const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menu;
+  const dropdownPosition: { [key: string]: Partial<CSS4Declaration> } = {
+    dropdown: { top: "100%" },
+    dropup: { top: "auto", bottom: "100%" },
+    dropstart: RTL
+      ? { left: "100%", right: "auto" }
+      : { left: "auto", right: "100%" },
+    dropend: RTL
+      ? { left: "auto", right: "100%" }
+      : { left: "100%", right: "auto" },
+    menuStart: RTL
+      ? { right: "0", left: "auto" }
+      : { right: "auto", left: "0" },
+    menuEnd: RTL ? { right: "auto", left: "0" } : { right: "0", left: "auto" },
+  };
 
-    const { clientWidth, clientHeight } = getDocumentElement(element);
-    const {
-      left: targetLeft,
-      top: targetTop,
-      width: targetWidth,
-      height: targetHeight,
-    } = getBoundingClientRect(element);
+  const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menu;
 
-    // dropstart | dropend
-    const leftFullExceed = targetLeft - menuWidth - offset < 0;
-    // dropend
-    const rightFullExceed =
-      targetLeft + menuWidth + targetWidth + offset >= clientWidth;
-    // dropstart | dropend
-    const bottomExceed = targetTop + menuHeight + offset >= clientHeight;
-    // dropdown
-    const bottomFullExceed =
-      targetTop + menuHeight + targetHeight + offset >= clientHeight;
-    // dropup
-    const topExceed = targetTop - menuHeight - offset < 0;
-    // dropdown / dropup
-    const leftExceed = ((!RTL && menuEnd) || (RTL && !menuEnd)) &&
-      targetLeft + targetWidth - menuWidth < 0;
-    const rightExceed = ((RTL && menuEnd) || (!RTL && !menuEnd)) &&
-      targetLeft + menuWidth >= clientWidth;
+  const { clientWidth, clientHeight } = getDocumentElement(element);
+  const {
+    left: targetLeft,
+    top: targetTop,
+    width: targetWidth,
+    height: targetHeight,
+  } = getBoundingClientRect(element);
 
-    // recompute position
-    // handle RTL as well
-    if (
-      horizontalClass.includes(positionClass) && leftFullExceed &&
-      rightFullExceed
-    ) {
-      positionClass = dropdownString;
-    }
-    if (
-      positionClass === dropstartString &&
-      (!RTL ? leftFullExceed : rightFullExceed)
-    ) {
-      positionClass = dropendString;
-    }
-    if (
-      positionClass === dropendString &&
-      (RTL ? leftFullExceed : rightFullExceed)
-    ) {
-      positionClass = dropstartString;
-    }
-    if (positionClass === dropupString && topExceed && !bottomFullExceed) {
-      positionClass = dropdownString;
-    }
-    if (positionClass === dropdownString && bottomFullExceed && !topExceed) {
-      positionClass = dropupString;
-    }
+  // dropstart | dropend
+  const leftFullExceed = targetLeft - menuWidth - offset < 0;
+  // dropend
+  const rightFullExceed =
+    targetLeft + menuWidth + targetWidth + offset >= clientWidth;
+  // dropstart | dropend
+  const bottomExceed = targetTop + menuHeight + offset >= clientHeight;
+  // dropdown
+  const bottomFullExceed =
+    targetTop + menuHeight + targetHeight + offset >= clientHeight;
+  // dropup
+  const topExceed = targetTop - menuHeight - offset < 0;
+  // dropdown / dropup
+  const leftExceed = ((!RTL && menuEnd) || (RTL && !menuEnd)) &&
+    targetLeft + targetWidth - menuWidth < 0;
+  const rightExceed = ((RTL && menuEnd) || (!RTL && !menuEnd)) &&
+    targetLeft + menuWidth >= clientWidth;
 
-    // override position for horizontal classes
-    if (horizontalClass.includes(positionClass) && bottomExceed) {
-      ObjectAssign(dropdownPosition[positionClass], {
-        top: "auto",
-        bottom: 0,
-      });
-    }
-
-    // override position for vertical classes
-    if (verticalClass.includes(positionClass) && (leftExceed || rightExceed)) {
-      // don't realign when menu is wider than window
-      // in both RTL and non-RTL readability is KING
-      let posAjust:
-        | { left: "auto" | number; right: "auto" | number }
-        | undefined = { left: "auto", right: "auto" };
-      // istanbul ignore else @preserve
-      if (!leftExceed && rightExceed && !RTL) {
-        posAjust = { left: "auto", right: 0 };
-      }
-      // istanbul ignore else @preserve
-      if (leftExceed && !rightExceed && RTL) {
-        posAjust = { left: 0, right: "auto" };
-      }
-      // istanbul ignore else @preserve
-      if (posAjust) {
-        ObjectAssign(dropdownPosition[positionClass], posAjust);
-      }
-    }
-
-    const margins: number[] = dropdownMargin[positionClass];
-    setElementStyle(menu, {
-      ...dropdownPosition[positionClass],
-      margin: `${margins.map((x) => (x ? `${x}px` : x)).join(" ")}`,
-    });
-
-    // override dropdown-menu-start | dropdown-menu-end
-    if (verticalClass.includes(positionClass) && menuEnd) {
-      // istanbul ignore else @preserve
-      if (menuEnd) {
-        const endAdjust = (!RTL && leftExceed) || (RTL && rightExceed)
-          ? "menuStart"
-          : /* istanbul ignore next @preserve */ "menuEnd";
-        setElementStyle(menu, dropdownPosition[endAdjust]);
-      }
-    }
-    // trigger updated event
-    dispatchEvent(parentElement, updatedDropdownEvent);
+  // recompute position
+  // handle RTL as well
+  if (
+    horizontalClass.includes(positionClass) && leftFullExceed &&
+    rightFullExceed
+  ) {
+    positionClass = dropdownString;
   }
+  if (
+    positionClass === dropstartString &&
+    (!RTL ? leftFullExceed : rightFullExceed)
+  ) {
+    positionClass = dropendString;
+  }
+  if (
+    positionClass === dropendString &&
+    (RTL ? leftFullExceed : rightFullExceed)
+  ) {
+    positionClass = dropstartString;
+  }
+  if (positionClass === dropupString && topExceed && !bottomFullExceed) {
+    positionClass = dropdownString;
+  }
+  if (positionClass === dropdownString && bottomFullExceed && !topExceed) {
+    positionClass = dropupString;
+  }
+
+  // override position for horizontal classes
+  if (horizontalClass.includes(positionClass) && bottomExceed) {
+    ObjectAssign(dropdownPosition[positionClass], {
+      top: "auto",
+      bottom: 0,
+    });
+  }
+
+  // override position for vertical classes
+  if (verticalClass.includes(positionClass) && (leftExceed || rightExceed)) {
+    // don't realign when menu is wider than window
+    // in both RTL and non-RTL readability is KING
+    let posAjust:
+      | { left: "auto" | number; right: "auto" | number }
+      | undefined = { left: "auto", right: "auto" };
+    /* istanbul ignore else @preserve */
+    if (!leftExceed && rightExceed && !RTL) {
+      posAjust = { left: "auto", right: 0 };
+    }
+    /* istanbul ignore else @preserve */
+    if (leftExceed && !rightExceed && RTL) {
+      posAjust = { left: 0, right: "auto" };
+    }
+    /* istanbul ignore else @preserve */
+    if (posAjust) {
+      ObjectAssign(dropdownPosition[positionClass], posAjust);
+    }
+  }
+
+  const margins: number[] = dropdownMargin[positionClass];
+  setElementStyle(menu, {
+    ...dropdownPosition[positionClass],
+    margin: `${margins.map((x) => (x ? `${x}px` : x)).join(" ")}`,
+  });
+
+  // override dropdown-menu-start | dropdown-menu-end
+  if (verticalClass.includes(positionClass) && menuEnd) {
+    // istanbul ignore else @preserve
+    if (menuEnd) {
+      const endAdjust = (!RTL && leftExceed) || (RTL && rightExceed)
+        ? "menuStart"
+        : /* istanbul ignore next @preserve */ "menuEnd";
+      setElementStyle(menu, dropdownPosition[endAdjust]);
+    }
+  }
+  // trigger updated event
+  dispatchEvent(parentElement, updatedDropdownEvent);
 };
 
 /**
