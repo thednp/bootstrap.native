@@ -1,19 +1,19 @@
-import { B as it, U as C, G as nt, c as ot, d as I, e as T, R as S, b as u, Z as N, h as d, Y as $, D as Y, N as B, q as L, u as at, f as rt, s as K, t as ct, m as Z, E as Q, r as F, w as lt, A as dt, g as O, O as ht, i as ft, j as ut, v as j, k as gt, l as J, n as V, z as mt, I as pt, o as U, p as _ } from "./base-component-DAxvn9am.mjs";
+import { B as it, b as H, R as nt, v as ot, d as T, u as y, H as X, K as u, G as w, c as d, q as $, T as z, C as O, a as K, e as at, m as rt, n as k, X as ct, p as F, E as J, r as Q, h as lt, y as dt, f as R, D as ht, i as ft, j as ut, g as G, l as gt, S as V, k as Y, O as mt, x as pt, s as _, o as j } from "./base-component-LaJIjMhh.mjs";
 import { a as g } from "./activeClass-iqaD75Su.mjs";
-import { d as q, g as W } from "./getTargetElement-C1k_p6ls.mjs";
-import { i as tt } from "./isDisabled-DRrRkHiq.mjs";
-const P = "carousel", et = "Carousel", A = `[data-bs-ride="${P}"]`, h = `${P}-item`, R = "data-bs-slide-to", v = "data-bs-slide", x = "paused", z = {
+import { d as q, g as Z } from "./getTargetElement-D4ALSKV7.mjs";
+import { i as tt } from "./isDisabled-DmmaKYeZ.mjs";
+const P = "carousel", et = "Carousel", I = `[data-bs-ride="${P}"]`, h = `${P}-item`, B = "data-bs-slide-to", v = "data-bs-slide", x = "paused", M = {
   pause: "hover",
   keyboard: !1,
   touch: !0,
   interval: 5e3
-}, m = (i) => ct(i, et), vt = (i) => new Ct(i);
-let y = 0, b = 0, H = 0;
-const w = Z(`slide.bs.${P}`), X = Z(`slid.bs.${P}`), G = (i) => {
+}, m = (i) => ct(i, et), vt = (i) => new Ht(i);
+let C = 0, b = 0, E = 0;
+const S = F(`slide.bs.${P}`), L = F(`slid.bs.${P}`), U = (i) => {
   const { index: s, direction: t, element: e, slides: o, options: a } = i;
   if (i.isAnimating) {
-    const r = k(i), n = t === "left" ? "next" : "prev", l = t === "left" ? "start" : "end";
-    u(o[s], g), $(o[s], `${h}-${n}`), $(o[s], `${h}-${l}`), $(o[r], g), $(o[r], `${h}-${l}`), L(e, X), d.clear(e, v), i.cycle && !I(e).hidden && a.interval && !i.isPaused && i.cycle();
+    const r = N(i), n = t === "left" ? "next" : "prev", l = t === "left" ? "start" : "end";
+    u(o[s], g), $(o[s], `${h}-${n}`), $(o[s], `${h}-${l}`), $(o[r], g), $(o[r], `${h}-${l}`), K(e, L), d.clear(e, v), i.cycle && !T(e).hidden && a.interval && !i.isPaused && i.cycle();
   }
 };
 function xt() {
@@ -26,127 +26,111 @@ function $t() {
 }
 function Pt(i) {
   i.preventDefault();
-  const s = J(this, A) || W(this), t = s && m(s);
+  const s = V(this, I) || Z(this), t = s && m(s);
   if (tt(this) || !t || t.isAnimating) return;
-  const e = +(V(this, R) || 0);
-  this && !N(this, g) && !Number.isNaN(e) && t.to(e);
+  const e = +(Y(this, B) || 0);
+  this && !w(this, g) && !Number.isNaN(e) && t.to(e);
 }
-function It(i) {
+function Tt(i) {
   i.preventDefault();
-  const s = J(this, A) || W(this), t = s && m(s);
+  const s = V(this, I) || Z(this), t = s && m(s);
   if (tt(this) || !t || t.isAnimating) return;
-  const e = V(this, v);
+  const e = Y(this, v);
   e === "next" ? t.next() : e === "prev" && t.prev();
 }
-const Tt = ({ code: i, target: s }) => {
-  const t = I(s), [e] = [...T(A, t)].filter((l) => Y(l)), o = m(e);
+const yt = ({ code: i, target: s }) => {
+  const t = T(s), [e] = [...y(I, t)].filter((l) => z(l)), o = m(e);
   if (!o || o.isAnimating || /textarea|input|select/i.test(s.nodeName)) return;
-  const a = C(e);
-  i === (a ? U : _) ? o.prev() : i === (a ? _ : U) && o.next();
+  const a = H(e);
+  i === (a ? _ : j) ? o.prev() : i === (a ? j : _) && o.next();
 };
-function M(i) {
+function W(i) {
   const { target: s } = i, t = m(this);
   t && t.isTouch && (t.indicator && !t.indicator.contains(s) || !t.controls.includes(s)) && (i.stopImmediatePropagation(), i.stopPropagation(), i.preventDefault());
 }
-function yt(i) {
+function Ct(i) {
   const { target: s } = i, t = m(this);
   if (!t || t.isAnimating || t.isTouch) return;
   const { controls: e, indicators: o } = t;
   [...e, ...o].every(
     (a) => a === s || a.contains(s)
-  ) || (y = i.pageX, this.contains(s) && (t.isTouch = !0, st(t, !0)));
+  ) || (C = i.pageX, this.contains(s) && (t.isTouch = !0, st(t, !0)));
 }
-const At = (i) => {
+const It = (i) => {
   b = i.pageX;
 }, bt = (i) => {
-  const { target: s } = i, t = I(s), e = [...T(A, t)].map((n) => m(n)).find((n) => n.isTouch);
+  const { target: s } = i, t = T(s), e = [...y(I, t)].map((n) => m(n)).find((n) => n.isTouch);
   if (!e) return;
-  const { element: o, index: a } = e, r = C(o);
-  H = i.pageX, e.isTouch = !1, st(e), !t.getSelection()?.toString().length && o.contains(s) && Math.abs(y - H) > 120 && (b < y ? e.to(a + (r ? -1 : 1)) : b > y && e.to(a + (r ? 1 : -1))), y = 0, b = 0, H = 0;
+  const { element: o, index: a } = e, r = H(o);
+  E = i.pageX, e.isTouch = !1, st(e), !t.getSelection()?.toString().length && o.contains(s) && Math.abs(C - E) > 120 && (b < C ? e.to(a + (r ? -1 : 1)) : b > C && e.to(a + (r ? 1 : -1))), C = 0, b = 0, E = 0;
 }, D = (i, s) => {
   const { indicators: t } = i;
   [...t].forEach((e) => $(e, g)), i.indicators[s] && u(t[s], g);
 }, st = (i, s) => {
-  const { element: t } = i, e = s ? Q : F;
+  const { element: t } = i, e = s ? J : Q;
   e(
-    I(t),
+    T(t),
     mt,
-    At,
-    O
+    It,
+    R
   ), e(
-    I(t),
+    T(t),
     pt,
     bt,
-    O
+    R
   );
-}, k = (i) => {
-  const { slides: s, element: t } = i, e = S(
+}, N = (i) => {
+  const { slides: s, element: t } = i, e = X(
     `.${h}.${g}`,
     t
   );
   return e ? [...s].indexOf(e) : -1;
 };
-class Ct extends it {
-  static selector = A;
+class Ht extends it {
+  static selector = I;
   static init = vt;
   static getInstance = m;
-  /**
-   * @param target mostly a `.carousel` element
-   * @param config instance options
-   */
   constructor(s, t) {
     super(s, t);
     const { element: e } = this;
-    this.direction = C(e) ? "right" : "left", this.isTouch = !1, this.slides = nt(h, e);
+    this.direction = H(e) ? "right" : "left", this.isTouch = !1, this.slides = nt(h, e);
     const { slides: o } = this;
     if (o.length < 2) return;
-    const a = k(this), r = [...o].find(
+    const a = N(this), r = [...o].find(
       (f) => ot(f, `.${h}-next`)
     );
     this.index = a;
-    const n = I(e);
+    const n = T(e);
     this.controls = [
-      ...T(`[${v}]`, e),
-      ...T(
+      ...y(`[${v}]`, e),
+      ...y(
         `[${v}][${q}="#${e.id}"]`,
         n
       )
-    ].filter((f, p, c) => p === c.indexOf(f)), this.indicator = S(
+    ].filter((f, p, c) => p === c.indexOf(f)), this.indicator = X(
       `.${P}-indicators`,
       e
     ), this.indicators = [
-      ...this.indicator ? T(`[${R}]`, this.indicator) : [],
-      ...T(
-        `[${R}][${q}="#${e.id}"]`,
+      ...this.indicator ? y(`[${B}]`, this.indicator) : [],
+      ...y(
+        `[${B}][${q}="#${e.id}"]`,
         n
       )
     ].filter((f, p, c) => p === c.indexOf(f));
     const { options: l } = this;
-    this.options.interval = l.interval === !0 ? z.interval : l.interval, r ? this.index = [...o].indexOf(r) : a < 0 && (this.index = 0, u(o[0], g), this.indicators.length && D(this, 0)), this.indicators.length && D(this, this.index), this._toggleEventListeners(!0), l.interval && this.cycle();
+    this.options.interval = l.interval === !0 ? M.interval : l.interval, r ? this.index = [...o].indexOf(r) : a < 0 && (this.index = 0, u(o[0], g), this.indicators.length && D(this, 0)), this.indicators.length && D(this, this.index), this._toggleEventListeners(!0), l.interval && this.cycle();
   }
-  /**
-   * Returns component name string.
-   */
   get name() {
     return et;
   }
-  /**
-   * Returns component default options.
-   */
   get defaults() {
-    return z;
+    return M;
   }
-  /**
-   * Check if instance is paused.
-   */
   get isPaused() {
-    return N(this.element, x);
+    return w(this.element, x);
   }
-  /**
-   * Check if instance is animating.
-   */
   get isAnimating() {
-    return S(
+    return X(
       `.${h}-next,.${h}-prev`,
       this.element
     ) !== null;
@@ -156,7 +140,7 @@ class Ct extends it {
     d.clear(s, P), e && (d.clear(s, x), $(s, x)), d.set(
       s,
       () => {
-        this.element && !this.isPaused && !this.isTouch && Y(s) && this.to(o + 1);
+        this.element && !this.isPaused && !this.isTouch && z(s) && this.to(o + 1);
       },
       t.interval,
       P
@@ -178,13 +162,8 @@ class Ct extends it {
   prev() {
     this.isAnimating || this.to(this.index - 1);
   }
-  /**
-   * Jump to the item with the `idx` index.
-   *
-   * @param idx the index of the item to jump to
-   */
   to(s) {
-    const { element: t, slides: e, options: o } = this, a = k(this), r = C(t);
+    const { element: t, slides: e, options: o } = this, a = N(this), r = H(t);
     let n = s;
     if (this.isAnimating || a === n || d.get(t, v)) return;
     a < n || a === 0 && n === e.length - 1 ? this.direction = r ? "right" : "left" : (a > n || a === e.length - 1 && n === 0) && (this.direction = r ? "left" : "right");
@@ -196,12 +175,12 @@ class Ct extends it {
       to: n,
       direction: l
     };
-    B(w, c), B(X, c), L(t, w), !w.defaultPrevented && (this.index = n, D(this, n), at(e[n]) && N(t, "slide") ? d.set(
+    O(S, c), O(L, c), K(t, S), !S.defaultPrevented && (this.index = n, D(this, n), at(e[n]) && w(t, "slide") ? d.set(
       t,
       () => {
-        u(e[n], `${h}-${f}`), rt(e[n]), u(e[n], `${h}-${p}`), u(e[a], `${h}-${p}`), K(
+        u(e[n], `${h}-${f}`), rt(e[n]), u(e[n], `${h}-${p}`), u(e[a], `${h}-${p}`), k(
           e[n],
-          () => this.slides && this.slides.length && G(this)
+          () => this.slides && this.slides.length && U(this)
         );
       },
       0,
@@ -209,41 +188,36 @@ class Ct extends it {
     ) : (u(e[n], g), $(e[a], g), d.set(
       t,
       () => {
-        d.clear(t, v), t && o.interval && !this.isPaused && this.cycle(), L(t, X);
+        d.clear(t, v), t && o.interval && !this.isPaused && this.cycle(), K(t, L);
       },
       0,
       v
     )));
   }
-  /**
-   * Toggles all event listeners for the `Carousel` instance.
-   *
-   * @param add when `TRUE` event listeners are added
-   */
   _toggleEventListeners = (s) => {
-    const { element: t, options: e, slides: o, controls: a, indicators: r } = this, { touch: n, pause: l, interval: f, keyboard: p } = e, c = s ? Q : F;
+    const { element: t, options: e, slides: o, controls: a, indicators: r } = this, { touch: n, pause: l, interval: f, keyboard: p } = e, c = s ? J : Q;
     l && f && (c(t, lt, xt), c(t, dt, $t)), n && o.length > 2 && (c(
       t,
       ht,
-      yt,
-      O
-    ), c(t, ft, M, { passive: !1 }), c(t, ut, M, { passive: !1 })), a.length && a.forEach((E) => {
-      c(E, j, It);
-    }), r.length && r.forEach((E) => {
-      c(E, j, Pt);
-    }), p && c(I(t), gt, Tt);
+      Ct,
+      R
+    ), c(t, ft, W, { passive: !1 }), c(t, ut, W, { passive: !1 })), a.length && a.forEach((A) => {
+      c(A, G, Tt);
+    }), r.length && r.forEach((A) => {
+      c(A, G, Pt);
+    }), p && c(T(t), gt, yt);
   };
   dispose() {
     const { isAnimating: s } = this, t = {
       ...this,
       isAnimating: s
     };
-    this._toggleEventListeners(), super.dispose(), t.isAnimating && K(t.slides[t.index], () => {
-      G(t);
+    this._toggleEventListeners(), super.dispose(), t.isAnimating && k(t.slides[t.index], () => {
+      U(t);
     });
   }
 }
 export {
-  Ct as default
+  Ht as default
 };
 //# sourceMappingURL=carousel.mjs.map

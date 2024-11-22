@@ -27,12 +27,15 @@ export default defineConfig({
     legalComments: 'none',
   },
   plugins: [
-    dts({
-      outDir: 'dist',
-      copyDtsFiles: true,
-      rollupTypes: true,
-    }),
-    stripComments({ type: 'none' }),
+    {
+      ...dts({
+        outDir: 'dist',
+        copyDtsFiles: true,
+        rollupTypes: true,
+      }),
+      ...stripComments({ type: 'none' }),
+      apply: 'build',
+    }
   ],
   build: {
     minify: 'esbuild',

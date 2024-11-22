@@ -1,23 +1,23 @@
-import { B as f, R as g, Z as i, q as c, Y as u, s as v, t as h, m, E, r as A, v as C } from "./base-component-DAxvn9am.mjs";
+import { B as g, H as f, G as i, a as c, q as u, n as h, X as v, p as m, E, r as A, g as C } from "./base-component-LaJIjMhh.mjs";
 import { f as $ } from "./fadeClass-CLIYI_zn.mjs";
 import { s as r } from "./showClass-C8hdJfjQ.mjs";
 import { d as b } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { i as L } from "./isDisabled-DRrRkHiq.mjs";
-const n = "alert", d = "Alert", _ = `.${n}`, B = `[${b}="${n}"]`, D = (s) => h(s, d), I = (s) => new w(s), a = m(
-  `close.bs.${n}`
-), S = m(
-  `closed.bs.${n}`
+import { i as L } from "./isDisabled-DmmaKYeZ.mjs";
+const o = "alert", d = "Alert", _ = `.${o}`, B = `[${b}="${o}"]`, D = (s) => v(s, d), G = (s) => new S(s), a = m(
+  `close.bs.${o}`
+), I = m(
+  `closed.bs.${o}`
 ), l = (s) => {
   const { element: t } = s;
-  c(t, S), s._toggleEventListeners(), s.dispose(), t.remove();
+  c(t, I), s._toggleEventListeners(), s.dispose(), t.remove();
 };
-class w extends f {
+class S extends g {
   static selector = _;
-  static init = I;
+  static init = G;
   static getInstance = D;
   dismiss;
   constructor(t) {
-    super(t), this.dismiss = g(
+    super(t), this.dismiss = f(
       B,
       this.element
     ), this._toggleEventListeners(!0);
@@ -25,29 +25,19 @@ class w extends f {
   get name() {
     return d;
   }
-  /**
-   * Public method that hides the `.alert` element from the user,
-   * disposes the instance once animation is complete, then
-   * removes the element from the DOM.
-   */
   close = (t) => {
-    const { element: e, dismiss: o } = this;
-    !e || !i(e, r) || t && o && L(o) || (c(e, a), !a.defaultPrevented && (u(e, r), i(e, $) ? v(e, () => l(this)) : l(this)));
+    const { element: e, dismiss: n } = this;
+    !e || !i(e, r) || t && n && L(n) || (c(e, a), !a.defaultPrevented && (u(e, r), i(e, $) ? h(e, () => l(this)) : l(this)));
   };
-  /**
-   * Toggle on / off the `click` event listener.
-   *
-   * @param add when `true`, event listener is added
-   */
   _toggleEventListeners = (t) => {
-    const e = t ? E : A, { dismiss: o, close: p } = this;
-    o && e(o, C, p);
+    const e = t ? E : A, { dismiss: n, close: p } = this;
+    n && e(n, C, p);
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
 export {
-  w as default
+  S as default
 };
 //# sourceMappingURL=alert.mjs.map

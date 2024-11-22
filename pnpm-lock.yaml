@@ -12,11 +12,11 @@ importers:
         specifier: ^2.0.8
         version: 2.0.8
       '@thednp/position-observer':
-        specifier: github:thednp/position-observer
-        version: https://codeload.github.com/thednp/position-observer/tar.gz/ebeff80151b344684848fa5c5124c16f82254802
+        specifier: ^1.0.2
+        version: 1.0.2
       '@thednp/shorty':
-        specifier: github:thednp/shorty
-        version: https://codeload.github.com/thednp/shorty/tar.gz/6d62cceb75a6b1cd3a73cced7a052ef03ae826b2
+        specifier: ^2.0.8
+        version: 2.0.8
     devDependencies:
       '@types/node':
         specifier: ^20.17.6
@@ -26,7 +26,7 @@ importers:
         version: 2.1.5(@types/node@20.17.6)(playwright@1.49.0)(typescript@5.6.3)(vite@5.4.11(@types/node@20.17.6))(vitest@2.1.5)
       '@vitest/coverage-istanbul':
         specifier: ^2.1.5
-        version: 2.1.5(vitest@2.1.5(@types/node@20.17.6)(@vitest/browser@2.1.5)(@vitest/ui@2.1.5)(msw@2.6.5(@types/node@20.17.6)(typescript@5.6.3)))
+        version: 2.1.5(vitest@2.1.5)
       '@vitest/ui':
         specifier: ^2.1.5
         version: 2.1.5(vitest@2.1.5)
@@ -43,8 +43,8 @@ importers:
         specifier: ^4.3.0
         version: 4.3.0(@types/node@20.17.6)(rollup@4.27.3)(typescript@5.6.3)(vite@5.4.11(@types/node@20.17.6))
       vite-plugin-strip-comments:
-        specifier: ^0.0.1
-        version: 0.0.1
+        specifier: ^0.0.3
+        version: 0.0.3
       vitest:
         specifier: ^2.1.5
         version: 2.1.5(@types/node@20.17.6)(@vitest/browser@2.1.5)(@vitest/ui@2.1.5)(msw@2.6.5(@types/node@20.17.6)(typescript@5.6.3))
@@ -315,11 +315,11 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@microsoft/api-extractor-model@7.29.8':
-    resolution: {integrity: sha512-t3Z/xcO6TRbMcnKGVMs4uMzv/gd5j0NhMiJIGjD4cJMeFJ1Hf8wnLSx37vxlRlL0GWlGJhnFgxvnaL6JlS+73g==}
+  '@microsoft/api-extractor-model@7.29.9':
+    resolution: {integrity: sha512-/DaMfUjiswmrnLjHCorVzWGbW5rmeTGDo+H0QcvcarJ14SjNVmFWiRKzscN4B2y9AyllqeXMPgwbtSFAdAkpMQ==}
 
-  '@microsoft/api-extractor@7.47.11':
-    resolution: {integrity: sha512-lrudfbPub5wzBhymfFtgZKuBvXxoSIAdrvS2UbHjoMT2TjIEddq6Z13pcve7A03BAouw0x8sW8G4txdgfiSwpQ==}
+  '@microsoft/api-extractor@7.47.12':
+    resolution: {integrity: sha512-YE/h4vE9T1i3oGtgEZC7pHupH/drtGAuQ36iJ1Ua0gQ8NXmPXNKNilkCqzWnX/QvMnr1xSgEjHppWMXEi5YZKQ==}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.17.0':
@@ -447,8 +447,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@rushstack/node-core-library@5.9.0':
-    resolution: {integrity: sha512-MMsshEWkTbXqxqFxD4gcIUWQOCeBChlGczdZbHfqmNZQFLHB3yWxDFSMHFUdu2/OB9NUk7Awn5qRL+rws4HQNg==}
+  '@rushstack/node-core-library@5.10.0':
+    resolution: {integrity: sha512-2pPLCuS/3x7DCd7liZkqOewGM0OzLyCacdvOe8j6Yrx9LkETGnxul1t7603bIaB8nUAooORcct9fFDOQMbWAgw==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
@@ -458,16 +458,16 @@ packages:
   '@rushstack/rig-package@0.5.3':
     resolution: {integrity: sha512-olzSSjYrvCNxUFZowevC3uz8gvKr3WTpHQ7BkpjtRpA3wK+T0ybep/SRUMfr195gBzJm5gaXw0ZMgjIyHqJUow==}
 
-  '@rushstack/terminal@0.14.2':
-    resolution: {integrity: sha512-2fC1wqu1VCExKC0/L+0noVcFQEXEnoBOtCIex1TOjBzEDWcw8KzJjjj7aTP6mLxepG0XIyn9OufeFb6SFsa+sg==}
+  '@rushstack/terminal@0.14.3':
+    resolution: {integrity: sha512-csXbZsAdab/v8DbU1sz7WC2aNaKArcdS/FPmXMOXEj/JBBZMvDK0+1b4Qao0kkG0ciB1Qe86/Mb68GjH6/TnMw==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
 
-  '@rushstack/ts-command-line@4.23.0':
-    resolution: {integrity: sha512-jYREBtsxduPV6ptNq8jOKp9+yx0ld1Tb/Tkdnlj8gTjazl1sF3DwX2VbluyYrNd0meWIL0bNeer7WDf5tKFjaQ==}
+  '@rushstack/ts-command-line@4.23.1':
+    resolution: {integrity: sha512-40jTmYoiu/xlIpkkRsVfENtBq4CW3R4azbL0Vmda+fMwHWqss6wwf/Cy/UJmMqIzpfYc2OTnjYP1ZLD3CmyeCA==}
 
   '@testing-library/dom@10.4.0':
     resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
@@ -483,13 +483,16 @@ packages:
     resolution: {integrity: sha512-bZY04sWSn2YWAqcuY/fYy03ynARYHwn8xzYgdqqcHBXsBXhOc+bbWwHyLwW28XAA2NjzjMPZZAM3N5D09i+zEQ==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
 
-  '@thednp/position-observer@https://codeload.github.com/thednp/position-observer/tar.gz/ebeff80151b344684848fa5c5124c16f82254802':
-    resolution: {tarball: https://codeload.github.com/thednp/position-observer/tar.gz/ebeff80151b344684848fa5c5124c16f82254802}
-    version: 1.0.2
+  '@thednp/position-observer@1.0.2':
+    resolution: {integrity: sha512-7GaeyM2LlT5yvbL6V5BClyeE1e8Zev0fjKpSkPlub944HtV0knRf39jdFyNavvm1U/jyXjsq0xQjJQ7g8HjcPQ==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
 
-  '@thednp/shorty@https://codeload.github.com/thednp/shorty/tar.gz/6d62cceb75a6b1cd3a73cced7a052ef03ae826b2':
-    resolution: {tarball: https://codeload.github.com/thednp/shorty/tar.gz/6d62cceb75a6b1cd3a73cced7a052ef03ae826b2}
+  '@thednp/shorty@2.0.8':
+    resolution: {integrity: sha512-SFuypeDaLrRmbmEpwIdeWfopLAeib3EqKNU5QOc+ZJgcWJnJZmbpLHRr99Sh27JWzqoaiRlKRsyegur/g31Yxw==}
+    engines: {node: '>=16', pnpm: '>=8.6.0'}
+
+  '@thednp/shorty@https://codeload.github.com/thednp/shorty/tar.gz/9f11a7b428505a265ec6010877a119f6f3801fa7':
+    resolution: {tarball: https://codeload.github.com/thednp/shorty/tar.gz/9f11a7b428505a265ec6010877a119f6f3801fa7}
     version: 2.0.8
     engines: {node: '>=16', pnpm: '>=8.6.0'}
 
@@ -676,8 +679,8 @@ packages:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
 
-  caniuse-lite@1.0.30001680:
-    resolution: {integrity: sha512-rPQy70G6AGUMnbwS1z6Xg+RkHYPAi18ihs47GH0jcxIG7wArmPgY3XbS2sRdBbxJljp3thdT8BIqv9ccCypiPA==}
+  caniuse-lite@1.0.30001683:
+    resolution: {integrity: sha512-iqmNnThZ0n70mNwvxpEC2nBJ037ZHZUoBI5Gorh1Mw6IlEAZujEoU1tXA628iZfzm7R9FvFzxbfdgml82a3k8Q==}
 
   chai@5.1.2:
     resolution: {integrity: sha512-aGtmf24DW6MLHHG5gCx4zaI3uBq3KRtxeVs0DjFH6Z0rDNbsvTxFASFvdj79pxjxZ8/5u3PIiN3IwEIQkiiuPw==}
@@ -755,8 +758,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.5.63:
-    resolution: {integrity: sha512-ddeXKuY9BHo/mw145axlyWjlJ1UBt4WK3AlvkT7W2AbqfRQoacVoRUCF6wL3uIx/8wT9oLKXzI+rFqHHscByaA==}
+  electron-to-chromium@1.5.64:
+    resolution: {integrity: sha512-IXEuxU+5ClW2IGEYFC2T7szbyVgehupCWQe5GNh+H065CD6U6IFN0s4KeAMFGNmQolRU4IV7zGBWSYMmZ8uuqQ==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -1073,8 +1076,8 @@ packages:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
 
-  psl@1.10.0:
-    resolution: {integrity: sha512-KSKHEbjAnpUuAUserOq0FxGXCUrzC3WniuSJhvdbs102rL55266ZcHBqLWOsG30spQMlPdpy7icATiAQehg/iA==}
+  psl@1.13.0:
+    resolution: {integrity: sha512-BFwmFXiJoFqlUpZ5Qssolv15DMyc84gTBds1BjsV1BfXEo1UyyD7GsmN67n7J77uRhoSNW1AXtXKPLcBFQn9Aw==}
 
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -1295,8 +1298,8 @@ packages:
       vite:
         optional: true
 
-  vite-plugin-strip-comments@0.0.1:
-    resolution: {integrity: sha512-P7EzXmL6uoCynzuEVknKI9YR+JnF9gHouPI88cz7QwYVCEnZlmX5rUXxW88+UDiieRt0MoBAUrYR5Chd9w9wtw==}
+  vite-plugin-strip-comments@0.0.3:
+    resolution: {integrity: sha512-lYth5USujjuY+tvmExlttAoJ/tuU/KY24Me4GvK5gqHLOi/F1o4hj3wjU6+nUcgVzZUvDCDQp3fF5+IpMo/+QA==}
     engines: {deno: '>=2.0.4', node: '>=20', pnpm: '>=9.10.0'}
 
   vite@5.4.11:
@@ -1659,23 +1662,23 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@microsoft/api-extractor-model@7.29.8(@types/node@20.17.6)':
+  '@microsoft/api-extractor-model@7.29.9(@types/node@20.17.6)':
     dependencies:
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
-      '@rushstack/node-core-library': 5.9.0(@types/node@20.17.6)
+      '@rushstack/node-core-library': 5.10.0(@types/node@20.17.6)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.47.11(@types/node@20.17.6)':
+  '@microsoft/api-extractor@7.47.12(@types/node@20.17.6)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.29.8(@types/node@20.17.6)
+      '@microsoft/api-extractor-model': 7.29.9(@types/node@20.17.6)
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
-      '@rushstack/node-core-library': 5.9.0(@types/node@20.17.6)
+      '@rushstack/node-core-library': 5.10.0(@types/node@20.17.6)
       '@rushstack/rig-package': 0.5.3
-      '@rushstack/terminal': 0.14.2(@types/node@20.17.6)
-      '@rushstack/ts-command-line': 4.23.0(@types/node@20.17.6)
+      '@rushstack/terminal': 0.14.3(@types/node@20.17.6)
+      '@rushstack/ts-command-line': 4.23.1(@types/node@20.17.6)
       lodash: 4.17.21
       minimatch: 3.0.8
       resolve: 1.22.8
@@ -1779,7 +1782,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.27.3':
     optional: true
 
-  '@rushstack/node-core-library@5.9.0(@types/node@20.17.6)':
+  '@rushstack/node-core-library@5.10.0(@types/node@20.17.6)':
     dependencies:
       ajv: 8.13.0
       ajv-draft-04: 1.0.0(ajv@8.13.0)
@@ -1797,16 +1800,16 @@ snapshots:
       resolve: 1.22.8
       strip-json-comments: 3.1.1
 
-  '@rushstack/terminal@0.14.2(@types/node@20.17.6)':
+  '@rushstack/terminal@0.14.3(@types/node@20.17.6)':
     dependencies:
-      '@rushstack/node-core-library': 5.9.0(@types/node@20.17.6)
+      '@rushstack/node-core-library': 5.10.0(@types/node@20.17.6)
       supports-color: 8.1.1
     optionalDependencies:
       '@types/node': 20.17.6
 
-  '@rushstack/ts-command-line@4.23.0(@types/node@20.17.6)':
+  '@rushstack/ts-command-line@4.23.1(@types/node@20.17.6)':
     dependencies:
-      '@rushstack/terminal': 0.14.2(@types/node@20.17.6)
+      '@rushstack/terminal': 0.14.3(@types/node@20.17.6)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -1830,11 +1833,13 @@ snapshots:
 
   '@thednp/event-listener@2.0.8': {}
 
-  '@thednp/position-observer@https://codeload.github.com/thednp/position-observer/tar.gz/ebeff80151b344684848fa5c5124c16f82254802':
+  '@thednp/position-observer@1.0.2':
     dependencies:
-      '@thednp/shorty': https://codeload.github.com/thednp/shorty/tar.gz/6d62cceb75a6b1cd3a73cced7a052ef03ae826b2
+      '@thednp/shorty': https://codeload.github.com/thednp/shorty/tar.gz/9f11a7b428505a265ec6010877a119f6f3801fa7
 
-  '@thednp/shorty@https://codeload.github.com/thednp/shorty/tar.gz/6d62cceb75a6b1cd3a73cced7a052ef03ae826b2': {}
+  '@thednp/shorty@2.0.8': {}
+
+  '@thednp/shorty@https://codeload.github.com/thednp/shorty/tar.gz/9f11a7b428505a265ec6010877a119f6f3801fa7': {}
 
   '@types/argparse@1.0.38': {}
 
@@ -1873,7 +1878,7 @@ snapshots:
       - utf-8-validate
       - vite
 
-  '@vitest/coverage-istanbul@2.1.5(vitest@2.1.5(@types/node@20.17.6)(@vitest/browser@2.1.5)(@vitest/ui@2.1.5)(msw@2.6.5(@types/node@20.17.6)(typescript@5.6.3)))':
+  '@vitest/coverage-istanbul@2.1.5(vitest@2.1.5)':
     dependencies:
       '@istanbuljs/schema': 0.1.3
       debug: 4.3.7
@@ -2049,14 +2054,14 @@ snapshots:
 
   browserslist@4.24.2:
     dependencies:
-      caniuse-lite: 1.0.30001680
-      electron-to-chromium: 1.5.63
+      caniuse-lite: 1.0.30001683
+      electron-to-chromium: 1.5.64
       node-releases: 2.0.18
       update-browserslist-db: 1.1.1(browserslist@4.24.2)
 
   cac@6.7.14: {}
 
-  caniuse-lite@1.0.30001680: {}
+  caniuse-lite@1.0.30001683: {}
 
   chai@5.1.2:
     dependencies:
@@ -2119,7 +2124,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.5.63: {}
+  electron-to-chromium@1.5.64: {}
 
   emoji-regex@8.0.0: {}
 
@@ -2430,7 +2435,7 @@ snapshots:
       ansi-styles: 5.2.0
       react-is: 17.0.2
 
-  psl@1.10.0:
+  psl@1.13.0:
     dependencies:
       punycode: 2.3.1
 
@@ -2575,7 +2580,7 @@ snapshots:
 
   tough-cookie@4.1.4:
     dependencies:
-      psl: 1.10.0
+      psl: 1.13.0
       punycode: 2.3.1
       universalify: 0.2.0
       url-parse: 1.5.10
@@ -2631,7 +2636,7 @@ snapshots:
 
   vite-plugin-dts@4.3.0(@types/node@20.17.6)(rollup@4.27.3)(typescript@5.6.3)(vite@5.4.11(@types/node@20.17.6)):
     dependencies:
-      '@microsoft/api-extractor': 7.47.11(@types/node@20.17.6)
+      '@microsoft/api-extractor': 7.47.12(@types/node@20.17.6)
       '@rollup/pluginutils': 5.1.3(rollup@4.27.3)
       '@volar/typescript': 2.4.10
       '@vue/language-core': 2.1.6(typescript@5.6.3)
@@ -2648,7 +2653,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-strip-comments@0.0.1: {}
+  vite-plugin-strip-comments@0.0.3: {}
 
   vite@5.4.11(@types/node@20.17.6):
     dependencies:

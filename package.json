@@ -89,7 +89,7 @@
     "copy-docs": "cp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && cp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "lint": "deno lint src && pnpm check:ts",
     "check:ts": "tsc --noEmit",
-    "prepublishOnly": "pnpm up && pnpm lint && deno fmt src && pnpm build && pnpm badges"
+    "prepublishOnly": "pnpm up && pnpm lint && deno fmt src && pnpm build && pnpm copy-docs && pnpm badges"
   },
   "bugs": {
     "url": "https://github.com/thednp/bootstrap.native/issues"
@@ -110,8 +110,8 @@
   ],
   "dependencies": {
     "@thednp/event-listener": "^2.0.8",
-    "@thednp/position-observer": "github:thednp/position-observer",
-    "@thednp/shorty": "github:thednp/shorty"
+    "@thednp/position-observer": "^1.0.2",
+    "@thednp/shorty": "^2.0.8"
   },
   "devDependencies": {
     "@types/node": "^20.17.6",
@@ -122,7 +122,7 @@
     "typescript": "^5.6.3",
     "vite": "^5.4.11",
     "vite-plugin-dts": "^4.3.0",
-    "vite-plugin-strip-comments": "^0.0.1",
+    "vite-plugin-strip-comments": "^0.0.3",
     "vitest": "^2.1.5"
   },
   "packageManager": "pnpm@8.6.12",
