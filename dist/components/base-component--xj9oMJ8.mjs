@@ -212,7 +212,7 @@ const m = /* @__PURE__ */ new Map(), oe = (e, t) => {
     F,
     l
   );
-}, ce = "5.1.0", ue = ce;
+}, ce = "5.1.1", ue = ce;
 class pt {
   constructor(t, s) {
     let n;
@@ -327,4 +327,4 @@ export {
   Ne as y,
   he as z
 };
-//# sourceMappingURL=base-component-LaJIjMhh.mjs.map
+//# sourceMappingURL=base-component--xj9oMJ8.mjs.map

@@ -1,6 +1,6 @@
 const f = (e) => e != null && typeof e == "object" || !1, k = (e) => f(e) && typeof e.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
   (t) => e.nodeType === t
-) || !1, h = (e) => k(e) && e.nodeType === 1 || !1, w = (e) => typeof e == "function" || !1, g = "1.0.2", a = "PositionObserver Error";
+) || !1, h = (e) => k(e) && e.nodeType === 1 || !1, w = (e) => typeof e == "function" || !1, g = "1.0.4", a = "PositionObserver Error";
 class p {
   entries;
   static version = g;
@@ -100,4 +100,4 @@ class p {
 export {
   p as v
 };
-//# sourceMappingURL=index-DXF8ibvt.mjs.map
+//# sourceMappingURL=index-ClQArkrm.mjs.map

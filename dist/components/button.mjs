@@ -1,7 +1,7 @@
-import { B as g, G as i, W as a, I as c, g as l, X as u, q as m, K as p, E as f, r as h } from "./base-component-LaJIjMhh.mjs";
+import { B as g, G as i, W as a, I as c, g as l, X as u, q as m, K as p, E as f, r as h } from "./base-component--xj9oMJ8.mjs";
 import { a as n } from "./activeClass-iqaD75Su.mjs";
 import { d as v } from "./dataBsToggle-B84TS15h.mjs";
-import { i as b } from "./isDisabled-DmmaKYeZ.mjs";
+import { i as b } from "./isDisabled-Dh1obUSx.mjs";
 const d = "button", r = "Button", B = `[${v}="${d}"]`, I = (e) => u(e, r), A = (e) => new C(e);
 class C extends g {
   static selector = B;
