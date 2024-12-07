@@ -1,23 +1,23 @@
-import { B as g, H as f, G as i, a as c, q as u, n as h, X as v, p as m, E, r as A, g as C } from "./base-component--xj9oMJ8.mjs";
-import { f as $ } from "./fadeClass-CLIYI_zn.mjs";
+import { B as f, W as g, _ as i, Z as c, a as u, s as v, t as h, m, E, r as _, v as A } from "./base-component-BMXjNJAi.mjs";
+import { f as C } from "./fadeClass-CLIYI_zn.mjs";
 import { s as r } from "./showClass-C8hdJfjQ.mjs";
-import { d as b } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { i as L } from "./isDisabled-Dh1obUSx.mjs";
-const o = "alert", d = "Alert", _ = `.${o}`, B = `[${b}="${o}"]`, D = (s) => v(s, d), G = (s) => new S(s), a = m(
-  `close.bs.${o}`
-), I = m(
-  `closed.bs.${o}`
+import { d as $ } from "./dataBsDismiss-DdNPQYa-.mjs";
+import { i as b } from "./isDisabled-BG5MoQVt.mjs";
+const n = "alert", d = "Alert", L = `.${n}`, B = `[${$}="${n}"]`, D = (s) => h(s, d), I = (s) => new w(s), a = m(
+  `close.bs.${n}`
+), S = m(
+  `closed.bs.${n}`
 ), l = (s) => {
   const { element: t } = s;
-  c(t, I), s._toggleEventListeners(), s.dispose(), t.remove();
+  c(t, S), s._toggleEventListeners(), s.dispose(), t.remove();
 };
-class S extends g {
-  static selector = _;
-  static init = G;
+class w extends f {
+  static selector = L;
+  static init = I;
   static getInstance = D;
   dismiss;
   constructor(t) {
-    super(t), this.dismiss = f(
+    super(t), this.dismiss = g(
       B,
       this.element
     ), this._toggleEventListeners(!0);
@@ -26,18 +26,18 @@ class S extends g {
     return d;
   }
   close = (t) => {
-    const { element: e, dismiss: n } = this;
-    !e || !i(e, r) || t && n && L(n) || (c(e, a), !a.defaultPrevented && (u(e, r), i(e, $) ? h(e, () => l(this)) : l(this)));
+    const { element: e, dismiss: o } = this;
+    !e || !i(e, r) || t && o && b(o) || (c(e, a), !a.defaultPrevented && (u(e, r), i(e, C) ? v(e, () => l(this)) : l(this)));
   };
   _toggleEventListeners = (t) => {
-    const e = t ? E : A, { dismiss: n, close: p } = this;
-    n && e(n, C, p);
+    const e = t ? E : _, { dismiss: o, close: p } = this;
+    o && e(o, A, p);
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
 export {
-  S as default
+  w as default
 };
 //# sourceMappingURL=alert.mjs.map
