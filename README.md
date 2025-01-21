@@ -4,8 +4,8 @@
 [![NPM Version](https://img.shields.io/npm/v/bootstrap.native.svg)](https://www.npmjs.com/package/bootstrap.native)
 [![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/bootstrap.native)](https://www.jsdelivr.com/package/npm/bootstrap.native)
 [![typescript version](https://img.shields.io/badge/typescript-5.6.3-brightgreen)](https://www.typescriptlang.org/)
-[![vitest version](https://img.shields.io/badge/vitest-2.1.8-brightgreen)](https://vitest.dev/)
-[![vite version](https://img.shields.io/badge/vite-5.4.11-brightgreen)](https://vitejs.dev/)
+[![vitest version](https://img.shields.io/badge/vitest-3.0.2-brightgreen)](https://vitest.dev/)
+[![vite version](https://img.shields.io/badge/vite-6.0.10-brightgreen)](https://vitejs.dev/)
 
 
 The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, sourced with TypeScript and free from major dependecies such as jQuery, Popper.

@@ -1,8 +1,8 @@
-import { H as xt, ab as Dt, x as ct, M as jt, L as Q, P as zt, ac as It, o as P, m as G, ad as K, Z, p as Qt, ae as Gt, af as Kt, ag as Zt, ah as qt, a5 as j, Q as st, W as et, G as S, _ as I, ai as Jt, aj as Ut, ak as Vt, d as ft, B as Yt, t as Ht, al as Xt, T as te, C as Nt, a4 as ee, J as oe, h as W, s as ht, a as se, am as ie, U as ne, w as ae, A as le, g as St, v as dt, R as re, a9 as ce, aa as he, an as de, N as gt, K as pe, $ as Wt, ao as Lt, E as mt, r as ut, f as At } from "./base-component-BMXjNJAi.mjs";
-import { y as fe } from "./index-CnhA8i0D.mjs";
+import { H as xt, ab as Dt, x as ct, M as jt, L as Q, P as zt, ac as It, o as P, m as G, ad as K, Z, p as Qt, ae as Gt, af as Kt, ag as Zt, ah as qt, a5 as j, Q as st, W as et, G as S, _ as I, ai as Jt, aj as Ut, ak as Vt, d as ft, B as Yt, t as Ht, al as Xt, T as te, C as Nt, a4 as ee, J as oe, h as W, s as ht, a as se, am as ie, U as ne, w as ae, A as le, g as St, v as dt, R as re, a9 as ce, aa as he, an as de, N as gt, K as pe, $ as Wt, ao as Lt, E as mt, r as ut, f as At } from "./base-component-DdvmGdVr.mjs";
+import { y as fe } from "./index-CqJ2yo-u.mjs";
 import { d as me } from "./dataBsToggle-B84TS15h.mjs";
 import { s as pt } from "./showClass-C8hdJfjQ.mjs";
-import { a as ue, h as ge, m as bt, o as vt, r as be } from "./popupContainer-BY58HXTH.mjs";
+import { a as ue, h as ge, m as bt, o as vt, r as be } from "./popupContainer-tX_ZgWRQ.mjs";
 import { f as $t } from "./fadeClass-CLIYI_zn.mjs";
 const ot = "popover", ve = "Popover", v = "tooltip", $e = (s) => {
   const t = s === v, e = t ? `${s}-inner` : `${s}-body`, o = t ? "" : `<h3 class="${s}-header"></h3>`, n = `<div class="${s}-arrow"></div>`, a = `<div class="${e}"></div>`;
@@ -32,7 +32,7 @@ const ot = "popover", ve = "Popover", v = "tooltip", $e = (s) => {
       width: l,
       height: b,
       left: U,
-      right: kt,
+      right: Mt,
       top: V
     } = it?.boundingClientRect || zt(e, !0), {
       x: Y,
@@ -50,12 +50,12 @@ const ot = "popover", ve = "Popover", v = "tooltip", $e = (s) => {
     });
     let H = 0, R = "", T = 0, nt = "", _ = "", X = "", at = "";
     const N = r.offsetWidth || 0, y = r.offsetHeight || 0, lt = N / 2;
-    let M = V - f - y < 0, k = V + f + b + y >= E, F = U - m - N < x, D = U + m + l + N >= w;
+    let k = V - f - y < 0, M = V + f + b + y >= E, F = U - m - N < x, D = U + m + l + N >= w;
     const tt = ["left", "right"], rt = ["top", "bottom"];
-    M = tt.includes(i) ? V + b / 2 - f / 2 - y < 0 : M, k = tt.includes(i) ? V + f / 2 + b / 2 + y >= E : k, F = rt.includes(i) ? U + l / 2 - m / 2 < x : F, D = rt.includes(i) ? U + m / 2 + l / 2 >= w : D, i = tt.includes(i) && F && D ? "top" : i, i = i === "top" && M ? "bottom" : i, i = i === "bottom" && k ? "top" : i, i = i === "left" && F ? "right" : i, i = i === "right" && D ? "left" : i, o.className.includes(i) || (o.className = o.className.replace(
+    k = tt.includes(i) ? V + b / 2 - f / 2 - y < 0 : k, M = tt.includes(i) ? V + f / 2 + b / 2 + y >= E : M, F = rt.includes(i) ? U + l / 2 - m / 2 < x : F, D = rt.includes(i) ? U + m / 2 + l / 2 >= w : D, i = tt.includes(i) && F && D ? "top" : i, i = i === "top" && k ? "bottom" : i, i = i === "bottom" && M ? "top" : i, i = i === "left" && F ? "right" : i, i = i === "right" && D ? "left" : i, o.className.includes(i) || (o.className = o.className.replace(
       t,
       _t[i]
-    )), tt.includes(i) ? (i === "left" ? T = Y - m - N : T = Y + l + N, M && k ? (H = 0, R = 0, _ = A + b / 2 - y / 2) : M ? (H = A, R = "", _ = b / 2 - N) : k ? (H = A - f + b, R = "", _ = f - b / 2 - N) : (H = A - f / 2 + b / 2, _ = f / 2 - y / 2)) : rt.includes(i) && (i === "top" ? H = A - f - y : H = A + b + y, F ? (T = 0, X = Y + l / 2 - lt) : D ? (T = "auto", nt = 0, at = l / 2 + w - kt - lt) : (T = Y - m / 2 + l / 2, X = m / 2 - lt)), ct(o, {
+    )), tt.includes(i) ? (i === "left" ? T = Y - m - N : T = Y + l + N, k && M ? (H = 0, R = 0, _ = A + b / 2 - y / 2) : k ? (H = A, R = "", _ = b / 2 - N) : M ? (H = A - f + b, R = "", _ = f - b / 2 - N) : (H = A - f / 2 + b / 2, _ = f / 2 - y / 2)) : rt.includes(i) && (i === "top" ? H = A - f - y : H = A + b + y, F ? (T = 0, X = Y + l / 2 - lt) : D ? (T = "auto", nt = 0, at = l / 2 + w - Mt - lt) : (T = Y - m / 2 + l / 2, X = m / 2 - lt)), ct(o, {
       top: `${H}px`,
       bottom: R === "" ? "" : `${R}px`,
       left: T === "auto" ? T : `${T}px`,
@@ -164,7 +164,7 @@ const Ce = (s) => new xe(s), Pe = (s) => {
   return t && ge(t, e);
 }, Ee = (s, t) => {
   const { element: e } = s;
-  s._toggleEventListeners(), Nt(e, Bt) && s.name === L && Mt(s), t && t();
+  s._toggleEventListeners(), Nt(e, Bt) && s.name === L && kt(s), t();
 }, Rt = (s, t) => {
   const e = t ? mt : ut, { element: o } = s;
   e(
@@ -186,7 +186,7 @@ const Ce = (s) => new xe(s), Pe = (s) => {
 }, Et = (s, t) => {
   const e = t ? mt : ut, { element: o, tooltip: n } = s, a = gt(o, `.${bt}`), h = gt(o, `.${vt}`);
   t ? [o, n].forEach((r) => s._observer.observe(r)) : s._observer.disconnect(), a && e(a, `hide.bs.${bt}`, s.handleHide), h && e(h, `hide.bs.${vt}`, s.handleHide);
-}, Mt = (s, t) => {
+}, kt = (s, t) => {
   const e = [Bt, Ot], { element: o } = s;
   st(
     o,
@@ -206,7 +206,7 @@ class xe extends Yt {
     const { options: r } = this;
     if (!r.title && n || !n && !r.content)
       return;
-    te(Tt, { titleAttr: "" }), Nt(o, Ot) && n && typeof r.title == "string" && Mt(this, r.title);
+    te(Tt, { titleAttr: "" }), Nt(o, Ot) && n && typeof r.title == "string" && kt(this, r.title);
     const p = Te(o), $ = ["sticky", "fixed", "relative"].some(
       (c) => Q(p, "position") === c
     ) ? p : ee(o);
@@ -298,4 +298,4 @@ export {
   wt as s,
   Tt as t
 };
-//# sourceMappingURL=tooltip-DS8L4mHj.mjs.map
+//# sourceMappingURL=tooltip-BnTU8SFO.mjs.map

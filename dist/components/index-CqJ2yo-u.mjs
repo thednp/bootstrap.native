@@ -71,8 +71,8 @@ class y {
         }) => {
           this._root.contains(o) && this._new(o).then(({ boundingClientRect: h, isIntersecting: d }) => {
             if (!d) return;
-            const { left: g, top: f } = h;
-            if (c.top !== f || c.left !== g || _ !== t || b !== i) {
+            const { left: f, top: g } = h;
+            if (c.top !== g || c.left !== f || _ !== t || b !== i) {
               const l = {
                 target: o,
                 boundingClientRect: h,
@@ -119,4 +119,4 @@ class y {
 export {
   y
 };
-//# sourceMappingURL=index-CnhA8i0D.mjs.map
+//# sourceMappingURL=index-CqJ2yo-u.mjs.map

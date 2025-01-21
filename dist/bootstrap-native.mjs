@@ -1,4 +1,4 @@
-const xn = "aria-describedby", Ee = "aria-expanded", re = "aria-hidden", $e = "aria-modal", Cs = "aria-pressed", ke = "aria-selected", is = "focus", rs = "focusin", Sn = "focusout", ye = "keydown", Ro = "keyup", D = "click", Hn = "mousedown", Wo = "hover", Ce = "mouseenter", cs = "mouseleave", Fo = "pointerdown", jo = "pointermove", zo = "pointerup", as = "touchstart", Ko = "dragstart", Vo = 'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]', Xe = "ArrowDown", qe = "ArrowUp", xs = "ArrowLeft", Ss = "ArrowRight", ls = "Escape", Xo = "transitionDuration", qo = "transitionDelay", Oe = "transitionend", _n = "transitionProperty", Uo = () => {
+const xn = "aria-describedby", Ee = "aria-expanded", re = "aria-hidden", $e = "aria-modal", Cs = "aria-pressed", Le = "aria-selected", is = "focus", rs = "focusin", Sn = "focusout", ye = "keydown", Ro = "keyup", D = "click", Hn = "mousedown", Wo = "hover", Ce = "mouseenter", as = "mouseleave", Fo = "pointerdown", jo = "pointermove", zo = "pointerup", cs = "touchstart", Ko = "dragstart", Vo = 'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"]', Xe = "ArrowDown", qe = "ArrowUp", xs = "ArrowLeft", Ss = "ArrowRight", ls = "Escape", Xo = "transitionDuration", qo = "transitionDelay", Oe = "transitionend", _n = "transitionProperty", Uo = () => {
   const e = /(iPhone|iPod|iPad)/;
   return navigator?.userAgentData?.brands.some(
     (t) => e.test(t.brand)
@@ -18,11 +18,11 @@ const xn = "aria-describedby", Ee = "aria-expanded", re = "aria-hidden", $e = "a
     s,
     !1
   );
-}, Y = (e, t) => e.getAttribute(t), Jt = (e, t) => e.hasAttribute(t), L = (e, t, s) => e.setAttribute(t, s), Dt = (e, t) => e.removeAttribute(t), d = (e, ...t) => {
+}, Y = (e, t) => e.getAttribute(t), Jt = (e, t) => e.hasAttribute(t), k = (e, t, s) => e.setAttribute(t, s), Dt = (e, t) => e.removeAttribute(t), d = (e, ...t) => {
   e.classList.add(...t);
 }, v = (e, ...t) => {
   e.classList.remove(...t);
-}, h = (e, t) => e.classList.contains(t), ce = (e) => e != null && typeof e == "object" || !1, A = (e) => ce(e) && typeof e.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
+}, h = (e, t) => e.classList.contains(t), ae = (e) => e != null && typeof e == "object" || !1, A = (e) => ae(e) && typeof e.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
   (t) => e.nodeType === t
 ) || !1, U = (e) => A(e) && e.nodeType === 1 || !1, jt = /* @__PURE__ */ new Map(), _t = {
   data: jt,
@@ -42,14 +42,14 @@ const xn = "aria-describedby", Ee = "aria-expanded", re = "aria-hidden", $e = "a
 }, F = (e, t) => _t.get(e, t), Hs = (e) => e?.trim().replace(
   /(?:^\w|[A-Z]|\b\w)/g,
   (t, s) => s === 0 ? t.toLowerCase() : t.toUpperCase()
-).replace(/\s+/g, ""), ae = (e) => typeof e == "string" || !1, An = (e) => ce(e) && e.constructor.name === "Window" || !1, Pn = (e) => A(e) && e.nodeType === 9 || !1, w = (e) => Pn(e) ? e : A(e) ? e.ownerDocument : An(e) ? e.document : globalThis.document, at = (e, ...t) => Object.assign(e, ...t), bt = (e) => {
+).replace(/\s+/g, ""), ce = (e) => typeof e == "string" || !1, An = (e) => ae(e) && e.constructor.name === "Window" || !1, Pn = (e) => A(e) && e.nodeType === 9 || !1, w = (e) => Pn(e) ? e : A(e) ? e.ownerDocument : An(e) ? e.document : globalThis.document, ct = (e, ...t) => Object.assign(e, ...t), bt = (e) => {
   if (!e) return;
-  if (ae(e))
+  if (ce(e))
     return w().createElement(e);
   const { tagName: t } = e, s = bt(t);
   if (!s) return;
   const n = { ...e };
-  return delete n.tagName, at(s, n);
+  return delete n.tagName, ct(s, n);
 }, b = (e, t) => e.dispatchEvent(t), W = (e, t, s) => {
   const n = getComputedStyle(e, s), o = t.replace("webkit", "Webkit").replace(/([A-Z])/g, "-$1").toLowerCase();
   return n.getPropertyValue(o);
@@ -63,8 +63,8 @@ const xn = "aria-describedby", Ee = "aria-expanded", re = "aria-hidden", $e = "a
   let s = 0;
   const n = new Event(Oe), o = le(e), i = Qo(e);
   if (o) {
-    const r = (c) => {
-      c.target === e && (t.apply(e, [c]), e.removeEventListener(Oe, r), s = 1);
+    const r = (a) => {
+      a.target === e && (t.apply(e, [a]), e.removeEventListener(Oe, r), s = 1);
     };
     e.addEventListener(Oe, r), setTimeout(() => {
       s || b(e, n);
@@ -73,31 +73,31 @@ const xn = "aria-describedby", Ee = "aria-expanded", re = "aria-hidden", $e = "a
     t.apply(e, [n]);
 }, lt = (e, t) => e.focus(t), _s = (e) => ["true", !0].includes(e) ? !0 : ["false", !1].includes(e) ? !1 : ["null", "", null, void 0].includes(e) ? null : e !== "" && !Number.isNaN(+e) ? +e : e, pe = (e) => Object.entries(e), Go = (e, t, s, n) => {
   if (!U(e)) return t;
-  const o = { ...s }, i = { ...e.dataset }, r = { ...t }, c = {}, a = "title";
+  const o = { ...s }, i = { ...e.dataset }, r = { ...t }, a = {}, c = "title";
   return pe(i).forEach(([l, f]) => {
     const u = typeof l == "string" && l.includes(n) ? Hs(l.replace(n, "")) : Hs(l);
-    c[u] = _s(f);
+    a[u] = _s(f);
   }), pe(o).forEach(([l, f]) => {
     o[l] = _s(f);
   }), pe(t).forEach(([l, f]) => {
-    l in o ? r[l] = o[l] : l in c ? r[l] = c[l] : r[l] = l === a ? Y(e, a) : f;
+    l in o ? r[l] = o[l] : l in a ? r[l] = a[l] : r[l] = l === c ? Y(e, c) : f;
   }), r;
 }, As = (e) => Object.keys(e), E = (e, t) => {
   const s = new CustomEvent(e, {
     cancelable: !0,
     bubbles: !0
   });
-  return ce(t) && at(s, t), s;
+  return ae(t) && ct(s, t), s;
 }, te = { passive: !0 }, Ot = (e) => e.offsetHeight, H = (e, t) => {
   pe(t).forEach(([s, n]) => {
-    if (n && ae(s) && s.includes("--"))
+    if (n && ce(s) && s.includes("--"))
       e.style.setProperty(s, n);
     else {
       const o = {};
-      o[s] = n, at(e.style, o);
+      o[s] = n, ct(e.style, o);
     }
   });
-}, Ue = (e) => ce(e) && e.constructor.name === "Map" || !1, Jo = (e) => typeof e == "number" || !1, pt = /* @__PURE__ */ new Map(), g = {
+}, Ue = (e) => ae(e) && e.constructor.name === "Map" || !1, Jo = (e) => typeof e == "number" || !1, pt = /* @__PURE__ */ new Map(), g = {
   set: (e, t, s, n) => {
     U(e) && (n && n.length ? (pt.has(e) || pt.set(e, /* @__PURE__ */ new Map()), pt.get(e).set(n, setTimeout(t, s))) : pt.set(e, setTimeout(t, s)));
   },
@@ -116,7 +116,7 @@ function Dn(e) {
   const { shiftKey: t, code: s } = e, n = w(this), o = [
     ...q(Vo, this)
   ].filter(
-    (c) => !Jt(c, "disabled") && !Y(c, re)
+    (a) => !Jt(a, "disabled") && !Y(a, re)
   );
   if (!o.length) return;
   const i = o[0], r = o[o.length - 1];
@@ -129,26 +129,26 @@ const hs = (e) => ds.has(e) === !0, ti = (e) => {
 }, xe = (e) => {
   hs(e) ? ei(e) : ti(e);
 }, _ = (e) => U(e) && "offsetWidth" in e || !1, It = (e, t) => {
-  const { width: s, height: n, top: o, right: i, bottom: r, left: c } = e.getBoundingClientRect();
-  let a = 1, l = 1;
+  const { width: s, height: n, top: o, right: i, bottom: r, left: a } = e.getBoundingClientRect();
+  let c = 1, l = 1;
   if (t && _(e)) {
     const { offsetWidth: f, offsetHeight: u } = e;
-    a = f > 0 ? Math.round(s) / f : 1, l = u > 0 ? Math.round(n) / u : 1;
+    c = f > 0 ? Math.round(s) / f : 1, l = u > 0 ? Math.round(n) / u : 1;
   }
   return {
-    width: s / a,
+    width: s / c,
     height: n / l,
     top: o / l,
-    right: i / a,
+    right: i / c,
     bottom: r / l,
-    left: c / a,
-    x: c / a,
+    left: a / c,
+    x: a / c,
     y: o / l
   };
 }, Nt = (e) => w(e).body, dt = (e) => w(e).documentElement, si = (e) => {
   const t = An(e), s = t ? e.scrollX : e.scrollLeft, n = t ? e.scrollY : e.scrollTop;
   return { x: s, y: n };
-}, In = (e) => A(e) && e.constructor.name === "ShadowRoot" || !1, ni = (e) => e.nodeName === "HTML" ? e : U(e) && e.assignedSlot || A(e) && e.parentNode || In(e) && e.host || dt(e), Ln = (e) => e ? Pn(e) ? e.defaultView : A(e) ? e?.ownerDocument?.defaultView : e : window, oi = (e) => A(e) && ["TABLE", "TD", "TH"].includes(e.nodeName) || !1, kn = (e, t) => e.matches(t), ii = (e) => {
+}, In = (e) => A(e) && e.constructor.name === "ShadowRoot" || !1, ni = (e) => e.nodeName === "HTML" ? e : U(e) && e.assignedSlot || A(e) && e.parentNode || In(e) && e.host || dt(e), kn = (e) => e ? Pn(e) ? e.defaultView : A(e) ? e?.ownerDocument?.defaultView : e : window, oi = (e) => A(e) && ["TABLE", "TD", "TH"].includes(e.nodeName) || !1, Ln = (e, t) => e.matches(t), ii = (e) => {
   if (!_(e)) return !1;
   const { width: t, height: s } = It(e), { offsetWidth: n, offsetHeight: o } = e;
   return Math.round(t) !== n || Math.round(s) !== o;
@@ -179,11 +179,11 @@ const zt = /* @__PURE__ */ new Map(), On = (e, t) => {
     zt.has(n) ? s = zt.get(n) : (zt.set(n, s), Ds += 1);
   }
   return s;
-}, ci = (e) => Array.isArray(e) || !1, Nn = (e) => {
+}, ai = (e) => Array.isArray(e) || !1, Nn = (e) => {
   if (!A(e)) return !1;
   const { top: t, bottom: s } = It(e), { clientHeight: n } = dt(e);
   return t <= n && s >= 0;
-}, ai = (e) => typeof e == "function" || !1, li = (e) => ce(e) && e.constructor.name === "NodeList" || !1, Tt = (e) => dt(e).dir === "rtl", M = (e, t) => !e || !t ? null : e.closest(t) || M(e.getRootNode().host, t) || null, x = (e, t) => U(e) ? e : (U(t) ? t : w()).querySelector(e), fs = (e, t) => (A(t) ? t : w()).getElementsByTagName(
+}, ci = (e) => typeof e == "function" || !1, li = (e) => ae(e) && e.constructor.name === "NodeList" || !1, Tt = (e) => dt(e).dir === "rtl", M = (e, t) => !e || !t ? null : e.closest(t) || M(e.getRootNode().host, t) || null, x = (e, t) => U(e) ? e : (U(t) ? t : w()).querySelector(e), fs = (e, t) => (A(t) ? t : w()).getElementsByTagName(
   e
 ), di = (e, t) => w(t).getElementById(e), rt = (e, t) => (t && A(t) ? t : w()).getElementsByClassName(
   e
@@ -194,7 +194,7 @@ const zt = /* @__PURE__ */ new Map(), On = (e, t) => {
       r.apply(o, [e]), typeof i == "object" && i.once && O(o, t, r, i);
     });
   });
-}, k = (e, t, s, n) => {
+}, L = (e, t, s, n) => {
   Kt[t] || (Kt[t] = /* @__PURE__ */ new Map());
   const o = Kt[t];
   o.has(e) || o.set(e, /* @__PURE__ */ new Map());
@@ -207,11 +207,11 @@ const zt = /* @__PURE__ */ new Map(), On = (e, t) => {
     n
   );
 }, O = (e, t, s, n) => {
-  const o = Kt[t], i = o && o.get(e), r = i && i.get(s), c = r !== void 0 ? r : n;
+  const o = Kt[t], i = o && o.get(e), r = i && i.get(s), a = r !== void 0 ? r : n;
   i && i.has(s) && i.delete(s), o && (!i || !i.size) && o.delete(e), (!o || !o.size) && delete Kt[t], (!i || !i.size) && e.removeEventListener(
     t,
     Mn,
-    c
+    a
   );
 }, N = "fade", p = "show", Se = "data-bs-dismiss", He = "alert", Bn = "Alert", nt = (e) => h(e, "disabled") || Y(e, "disabled") === "true", hi = "5.1.2", fi = hi;
 class st {
@@ -220,7 +220,7 @@ class st {
     try {
       if (U(t))
         n = t;
-      else if (ae(t)) {
+      else if (ce(t)) {
         if (n = x(t), !n) throw Error(`"${t}" is not a valid selector.`);
       } else
         throw Error("your target is not an instance of HTMLElement.");
@@ -251,7 +251,7 @@ const ui = `.${He}`, gi = `[${Se}="${He}"]`, pi = (e) => F(e, Bn), mi = (e) => n
   `close.bs.${He}`
 ), vi = E(
   `closed.bs.${He}`
-), Ls = (e) => {
+), ks = (e) => {
   const { element: t } = e;
   b(t, vi), e._toggleEventListeners(), e.dispose(), t.remove();
 };
@@ -271,10 +271,10 @@ class Rn extends st {
   }
   close = (t) => {
     const { element: s, dismiss: n } = this;
-    !s || !h(s, p) || t && n && nt(n) || (b(s, Is), !Is.defaultPrevented && (v(s, p), h(s, N) ? S(s, () => Ls(this)) : Ls(this)));
+    !s || !h(s, p) || t && n && nt(n) || (b(s, Is), !Is.defaultPrevented && (v(s, p), h(s, N) ? S(s, () => ks(this)) : ks(this)));
   };
   _toggleEventListeners = (t) => {
-    const s = t ? k : O, { dismiss: n, close: o } = this;
+    const s = t ? L : O, { dismiss: n, close: o } = this;
     n && s(n, D, o);
   };
   dispose() {
@@ -289,7 +289,7 @@ class Fn extends st {
   constructor(t) {
     super(t);
     const { element: s } = this;
-    this.isActive = h(s, T), L(s, Cs, String(!!this.isActive)), this._toggleEventListeners(!0);
+    this.isActive = h(s, T), k(s, Cs, String(!!this.isActive)), this._toggleEventListeners(!0);
   }
   get name() {
     return Wn;
@@ -298,20 +298,20 @@ class Fn extends st {
     t && t.preventDefault();
     const { element: s, isActive: n } = this;
     if (nt(s)) return;
-    (n ? v : d)(s, T), L(s, Cs, n ? "false" : "true"), this.isActive = h(s, T);
+    (n ? v : d)(s, T), k(s, Cs, n ? "false" : "true"), this.isActive = h(s, T);
   };
   _toggleEventListeners = (t) => {
-    (t ? k : O)(this.element, D, this.toggle);
+    (t ? L : O)(this.element, D, this.toggle);
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
-const Ye = "data-bs-target", At = "carousel", jn = "Carousel", ks = "data-bs-parent", $i = "data-bs-container", K = (e) => {
-  const t = [Ye, ks, $i, "href"], s = w(e);
+const Ye = "data-bs-target", At = "carousel", jn = "Carousel", Ls = "data-bs-parent", $i = "data-bs-container", K = (e) => {
+  const t = [Ye, Ls, $i, "href"], s = w(e);
   return t.map((n) => {
     const o = Y(e, n);
-    return o ? n === ks ? M(e, o) : x(o, s) : null;
+    return o ? n === Ls ? M(e, o) : x(o, s) : null;
   }).filter((n) => n)[0];
 }, de = `[data-bs-ride="${At}"]`, tt = `${At}-item`, Ze = "data-bs-slide-to", vt = "data-bs-slide", wt = "paused", Os = {
   pause: "hover",
@@ -323,8 +323,8 @@ let Gt = 0, me = 0, Ne = 0;
 const Me = E(`slide.bs.${At}`), Qe = E(`slid.bs.${At}`), Ns = (e) => {
   const { index: t, direction: s, element: n, slides: o, options: i } = e;
   if (e.isAnimating) {
-    const r = Ge(e), c = s === "left" ? "next" : "prev", a = s === "left" ? "start" : "end";
-    d(o[t], T), v(o[t], `${tt}-${c}`), v(o[t], `${tt}-${a}`), v(o[r], T), v(o[r], `${tt}-${a}`), b(n, Qe), g.clear(n, vt), e.cycle && !w(n).hidden && i.interval && !e.isPaused && e.cycle();
+    const r = Ge(e), a = s === "left" ? "next" : "prev", c = s === "left" ? "start" : "end";
+    d(o[t], T), v(o[t], `${tt}-${a}`), v(o[t], `${tt}-${c}`), v(o[r], T), v(o[r], `${tt}-${c}`), b(n, Qe), g.clear(n, vt), e.cycle && !w(n).hidden && i.interval && !e.isPaused && e.cycle();
   }
 };
 function Ci() {
@@ -350,7 +350,7 @@ function Hi(e) {
   n === "next" ? s.next() : n === "prev" && s.prev();
 }
 const _i = ({ code: e, target: t }) => {
-  const s = w(t), [n] = [...q(de, s)].filter((a) => Nn(a)), o = ht(n);
+  const s = w(t), [n] = [...q(de, s)].filter((c) => Nn(c)), o = ht(n);
   if (!o || o.isAnimating || /textarea|input|select/i.test(t.nodeName)) return;
   const i = Tt(n);
   e === (i ? Ss : xs) ? o.prev() : e === (i ? xs : Ss) && o.next();
@@ -370,7 +370,7 @@ function Ai(e) {
 const Pi = (e) => {
   me = e.pageX;
 }, Di = (e) => {
-  const { target: t } = e, s = w(t), n = [...q(de, s)].map((c) => ht(c)).find((c) => c.isTouch);
+  const { target: t } = e, s = w(t), n = [...q(de, s)].map((a) => ht(a)).find((a) => a.isTouch);
   if (!n) return;
   const { element: o, index: i } = n, r = Tt(o);
   Ne = e.pageX, n.isTouch = !1, zn(n), !s.getSelection()?.toString().length && o.contains(t) && Math.abs(Gt - Ne) > 120 && (me < Gt ? n.to(i + (r ? -1 : 1)) : me > Gt && n.to(i + (r ? 1 : -1))), Gt = 0, me = 0, Ne = 0;
@@ -378,7 +378,7 @@ const Pi = (e) => {
   const { indicators: s } = e;
   [...s].forEach((n) => v(n, T)), e.indicators[t] && d(s[t], T);
 }, zn = (e, t) => {
-  const { element: s } = e, n = t ? k : O;
+  const { element: s } = e, n = t ? L : O;
   n(
     w(s),
     jo,
@@ -408,15 +408,15 @@ class Kn extends st {
     const { slides: o } = this;
     if (o.length < 2) return;
     const i = Ge(this), r = [...o].find(
-      (l) => kn(l, `.${tt}-next`)
+      (l) => Ln(l, `.${tt}-next`)
     );
     this.index = i;
-    const c = w(n);
+    const a = w(n);
     this.controls = [
       ...q(`[${vt}]`, n),
       ...q(
         `[${vt}][${Ye}="#${n.id}"]`,
-        c
+        a
       )
     ].filter((l, f, u) => f === u.indexOf(l)), this.indicator = x(
       `.${At}-indicators`,
@@ -425,11 +425,11 @@ class Kn extends st {
       ...this.indicator ? q(`[${Ze}]`, this.indicator) : [],
       ...q(
         `[${Ze}][${Ye}="#${n.id}"]`,
-        c
+        a
       )
     ].filter((l, f, u) => f === u.indexOf(l));
-    const { options: a } = this;
-    this.options.interval = a.interval === !0 ? Os.interval : a.interval, r ? this.index = [...o].indexOf(r) : i < 0 && (this.index = 0, d(o[0], T), this.indicators.length && Be(this, 0)), this.indicators.length && Be(this, this.index), this._toggleEventListeners(!0), a.interval && this.cycle();
+    const { options: c } = this;
+    this.options.interval = c.interval === !0 ? Os.interval : c.interval, r ? this.index = [...o].indexOf(r) : i < 0 && (this.index = 0, d(o[0], T), this.indicators.length && Be(this, 0)), this.indicators.length && Be(this, this.index), this._toggleEventListeners(!0), c.interval && this.cycle();
   }
   get name() {
     return jn;
@@ -475,28 +475,28 @@ class Kn extends st {
   }
   to(t) {
     const { element: s, slides: n, options: o } = this, i = Ge(this), r = Tt(s);
-    let c = t;
-    if (this.isAnimating || i === c || g.get(s, vt)) return;
-    i < c || i === 0 && c === n.length - 1 ? this.direction = r ? "right" : "left" : (i > c || i === n.length - 1 && c === 0) && (this.direction = r ? "left" : "right");
-    const { direction: a } = this;
-    c < 0 ? c = n.length - 1 : c >= n.length && (c = 0);
-    const l = a === "left" ? "next" : "prev", f = a === "left" ? "start" : "end", u = {
-      relatedTarget: n[c],
+    let a = t;
+    if (this.isAnimating || i === a || g.get(s, vt)) return;
+    i < a || i === 0 && a === n.length - 1 ? this.direction = r ? "right" : "left" : (i > a || i === n.length - 1 && a === 0) && (this.direction = r ? "left" : "right");
+    const { direction: c } = this;
+    a < 0 ? a = n.length - 1 : a >= n.length && (a = 0);
+    const l = c === "left" ? "next" : "prev", f = c === "left" ? "start" : "end", u = {
+      relatedTarget: n[a],
       from: i,
-      to: c,
-      direction: a
+      to: a,
+      direction: c
     };
-    at(Me, u), at(Qe, u), b(s, Me), !Me.defaultPrevented && (this.index = c, Be(this, c), le(n[c]) && h(s, "slide") ? g.set(
+    ct(Me, u), ct(Qe, u), b(s, Me), !Me.defaultPrevented && (this.index = a, Be(this, a), le(n[a]) && h(s, "slide") ? g.set(
       s,
       () => {
-        d(n[c], `${tt}-${l}`), Ot(n[c]), d(n[c], `${tt}-${f}`), d(n[i], `${tt}-${f}`), S(
-          n[c],
+        d(n[a], `${tt}-${l}`), Ot(n[a]), d(n[a], `${tt}-${f}`), d(n[i], `${tt}-${f}`), S(
+          n[a],
           () => this.slides && this.slides.length && Ns(this)
         );
       },
       0,
       vt
-    ) : (d(n[c], T), v(n[i], T), g.set(
+    ) : (d(n[a], T), v(n[i], T), g.set(
       s,
       () => {
         g.clear(s, vt), s && o.interval && !this.isPaused && this.cycle(), b(s, Qe);
@@ -506,13 +506,13 @@ class Kn extends st {
     )));
   }
   _toggleEventListeners = (t) => {
-    const { element: s, options: n, slides: o, controls: i, indicators: r } = this, { touch: c, pause: a, interval: l, keyboard: f } = n, u = t ? k : O;
-    a && l && (u(s, Ce, Ci), u(s, cs, xi)), c && o.length > 2 && (u(
+    const { element: s, options: n, slides: o, controls: i, indicators: r } = this, { touch: a, pause: c, interval: l, keyboard: f } = n, u = t ? L : O;
+    c && l && (u(s, Ce, Ci), u(s, as, xi)), a && o.length > 2 && (u(
       s,
       Fo,
       Ai,
       te
-    ), u(s, as, Ms, { passive: !1 }), u(s, Ko, Ms, { passive: !1 })), i.length && i.forEach(($) => {
+    ), u(s, cs, Ms, { passive: !1 }), u(s, Ko, Ms, { passive: !1 })), i.length && i.forEach(($) => {
       u($, D, Hi);
     }), r.length && r.forEach(($) => {
       u($, D, Si);
@@ -528,15 +528,15 @@ class Kn extends st {
     });
   }
 }
-const Lt = "collapsing", z = "collapse", Vn = "Collapse", Ii = `.${z}`, Xn = `[${ot}="${z}"]`, Li = { parent: null }, ve = (e) => F(e, Vn), ki = (e) => new qn(e), Bs = E(`show.bs.${z}`), Oi = E(`shown.bs.${z}`), Rs = E(`hide.bs.${z}`), Ni = E(`hidden.bs.${z}`), Mi = (e) => {
+const kt = "collapsing", z = "collapse", Vn = "Collapse", Ii = `.${z}`, Xn = `[${ot}="${z}"]`, ki = { parent: null }, ve = (e) => F(e, Vn), Li = (e) => new qn(e), Bs = E(`show.bs.${z}`), Oi = E(`shown.bs.${z}`), Rs = E(`hide.bs.${z}`), Ni = E(`hidden.bs.${z}`), Mi = (e) => {
   const { element: t, parent: s, triggers: n } = e;
-  b(t, Bs), Bs.defaultPrevented || (g.set(t, Te, 17), s && g.set(s, Te, 17), d(t, Lt), v(t, z), H(t, { height: `${t.scrollHeight}px` }), S(t, () => {
-    g.clear(t), s && g.clear(s), n.forEach((o) => L(o, Ee, "true")), v(t, Lt), d(t, z), d(t, p), H(t, { height: "" }), b(t, Oi);
+  b(t, Bs), Bs.defaultPrevented || (g.set(t, Te, 17), s && g.set(s, Te, 17), d(t, kt), v(t, z), H(t, { height: `${t.scrollHeight}px` }), S(t, () => {
+    g.clear(t), s && g.clear(s), n.forEach((o) => k(o, Ee, "true")), v(t, kt), d(t, z), d(t, p), H(t, { height: "" }), b(t, Oi);
   }));
 }, Ws = (e) => {
   const { element: t, parent: s, triggers: n } = e;
-  b(t, Rs), Rs.defaultPrevented || (g.set(t, Te, 17), s && g.set(s, Te, 17), H(t, { height: `${t.scrollHeight}px` }), v(t, z), v(t, p), d(t, Lt), Ot(t), H(t, { height: "0px" }), S(t, () => {
-    g.clear(t), s && g.clear(s), n.forEach((o) => L(o, Ee, "false")), v(t, Lt), d(t, z), H(t, { height: "" }), b(t, Ni);
+  b(t, Rs), Rs.defaultPrevented || (g.set(t, Te, 17), s && g.set(s, Te, 17), H(t, { height: `${t.scrollHeight}px` }), v(t, z), v(t, p), d(t, kt), Ot(t), H(t, { height: "0px" }), S(t, () => {
+    g.clear(t), s && g.clear(s), n.forEach((o) => k(o, Ee, "false")), v(t, kt), d(t, z), H(t, { height: "" }), b(t, Ni);
   }));
 }, Bi = (e) => {
   const { target: t } = e, s = t && M(t, Xn), n = s && K(s), o = n && ve(n);
@@ -544,20 +544,20 @@ const Lt = "collapsing", z = "collapse", Vn = "Collapse", Ii = `.${z}`, Xn = `[$
 };
 class qn extends st {
   static selector = Ii;
-  static init = ki;
+  static init = Li;
   static getInstance = ve;
   constructor(t, s) {
     super(t, s);
     const { element: n, options: o } = this, i = w(n);
     this.triggers = [...q(Xn, i)].filter(
       (r) => K(r) === n
-    ), this.parent = _(o.parent) ? o.parent : ae(o.parent) ? K(n) || x(o.parent, i) : null, this._toggleEventListeners(!0);
+    ), this.parent = _(o.parent) ? o.parent : ce(o.parent) ? K(n) || x(o.parent, i) : null, this._toggleEventListeners(!0);
   }
   get name() {
     return Vn;
   }
   get defaults() {
-    return Li;
+    return ki;
   }
   hide() {
     const { triggers: t, element: s } = this;
@@ -576,7 +576,7 @@ class qn extends st {
     h(this.element, p) ? this.hide() : this.show();
   }
   _toggleEventListeners = (t) => {
-    const s = t ? k : O, { triggers: n } = this;
+    const s = t ? L : O, { triggers: n } = this;
     n.length && n.forEach((o) => {
       s(o, D, Bi);
     });
@@ -652,14 +652,14 @@ class us {
       this.entries.forEach(
         ({
           target: r,
-          boundingClientRect: c,
-          clientWidth: a,
+          boundingClientRect: a,
+          clientWidth: c,
           clientHeight: l
         }) => {
           this._root.contains(r) && this._new(r).then(({ boundingClientRect: f, isIntersecting: u }) => {
             if (!u) return;
             const { left: $, top: I } = f;
-            if (c.top !== I || c.left !== $ || a !== t || l !== s) {
+            if (a.top !== I || a.left !== $ || c !== t || l !== s) {
               const B = {
                 target: r,
                 boundingClientRect: f,
@@ -703,10 +703,10 @@ class us {
     cancelAnimationFrame(this._tick), this.entries.clear(), this._tick = 0;
   };
 }
-const kt = ["dropdown", "dropup", "dropstart", "dropend"], Un = "Dropdown", Yn = "dropdown-menu", Zn = (e) => {
+const Lt = ["dropdown", "dropup", "dropstart", "dropend"], Un = "Dropdown", Yn = "dropdown-menu", Zn = (e) => {
   const t = M(e, "A");
   return e.tagName === "A" && Jt(e, "href") && Y(e, "href")?.slice(-1) === "#" || t && Jt(t, "href") && Y(t, "href")?.slice(-1) === "#";
-}, [et, Je, ts, es] = kt, zi = `[${ot}="${et}"]`, se = (e) => F(e, Un), Ki = (e) => new Gn(e), Vi = `${Yn}-end`, zs = [et, Je], Ks = [ts, es], Vs = ["A", "BUTTON"], Xi = {
+}, [et, Je, ts, es] = Lt, zi = `[${ot}="${et}"]`, se = (e) => F(e, Un), Ki = (e) => new Gn(e), Vi = `${Yn}-end`, zs = [et, Je], Ks = [ts, es], Vs = ["A", "BUTTON"], Xi = {
   offset: 5,
   display: "dynamic"
 }, Re = E(
@@ -718,12 +718,12 @@ const kt = ["dropdown", "dropup", "dropstart", "dropend"], Un = "Dropdown", Yn =
 ), qs = E(`hidden.bs.${et}`), Qn = E(`updated.bs.${et}`), Us = (e) => {
   const { element: t, menu: s, parentElement: n, options: o } = e, { offset: i } = o;
   if (W(s, "position") === "static") return;
-  const r = Tt(t), c = h(s, Vi);
+  const r = Tt(t), a = h(s, Vi);
   ["margin", "top", "bottom", "left", "right"].forEach((R) => {
     const Ct = {};
     Ct[R] = "", H(s, Ct);
   });
-  let l = kt.find((R) => h(n, R)) || et;
+  let l = Lt.find((R) => h(n, R)) || et;
   const f = {
     dropdown: [i, 0, 0],
     dropup: [0, 0, i],
@@ -741,41 +741,41 @@ const kt = ["dropdown", "dropup", "dropstart", "dropend"], Un = "Dropdown", Yn =
     top: V,
     width: $t,
     height: yt
-  } = It(t), C = m - $ - i < 0, ft = m + $ + $t + i >= B, it = V + I + i >= G, J = V + I + yt + i >= G, Bt = V - I - i < 0, y = (!r && c || r && !c) && m + $t - $ < 0, j = (r && c || !r && !c) && m + $ >= B;
-  if (Ks.includes(l) && C && ft && (l = et), l === ts && (r ? ft : C) && (l = es), l === es && (r ? C : ft) && (l = ts), l === Je && Bt && !J && (l = et), l === et && J && !Bt && (l = Je), Ks.includes(l) && it && at(u[l], {
+  } = It(t), C = m - $ - i < 0, ft = m + $ + $t + i >= B, it = V + I + i >= G, J = V + I + yt + i >= G, Bt = V - I - i < 0, y = (!r && a || r && !a) && m + $t - $ < 0, j = (r && a || !r && !a) && m + $ >= B;
+  if (Ks.includes(l) && C && ft && (l = et), l === ts && (r ? ft : C) && (l = es), l === es && (r ? C : ft) && (l = ts), l === Je && Bt && !J && (l = et), l === et && J && !Bt && (l = Je), Ks.includes(l) && it && ct(u[l], {
     top: "auto",
     bottom: 0
   }), zs.includes(l) && (y || j)) {
     let R = { left: "auto", right: "auto" };
-    !y && j && !r && (R = { left: "auto", right: 0 }), y && !j && r && (R = { left: 0, right: "auto" }), R && at(u[l], R);
+    !y && j && !r && (R = { left: "auto", right: 0 }), y && !j && r && (R = { left: 0, right: "auto" }), R && ct(u[l], R);
   }
   const Rt = f[l];
   H(s, {
     ...u[l],
     margin: `${Rt.map((R) => R && `${R}px`).join(" ")}`
-  }), zs.includes(l) && c && c && H(s, u[!r && y || r && j ? "menuStart" : "menuEnd"]), b(n, Qn);
+  }), zs.includes(l) && a && a && H(s, u[!r && y || r && j ? "menuStart" : "menuEnd"]), b(n, Qn);
 }, qi = (e) => Array.from(e.children).map((t) => {
   if (t && Vs.includes(t.tagName)) return t;
   const { firstElementChild: s } = t;
   return s && Vs.includes(s.tagName) ? s : null;
 }).filter((t) => t), Ys = (e) => {
-  const { element: t, options: s, menu: n } = e, o = e.open ? k : O, i = w(t);
+  const { element: t, options: s, menu: n } = e, o = e.open ? L : O, i = w(t);
   o(i, D, Zs), o(i, is, Zs), o(i, ye, Yi), o(i, Ro, Zi), s.display === "dynamic" && (e.open ? e._observer.observe(n) : e._observer.disconnect());
 }, gs = (e) => {
-  const t = [...kt, "btn-group", "input-group"].map(
+  const t = [...Lt, "btn-group", "input-group"].map(
     (s) => rt(`${s} ${p}`, w(e))
   ).find((s) => s.length);
   if (t && t.length)
     return [...t[0].children].find(
-      (s) => kt.some((n) => n === Y(s, ot))
+      (s) => Lt.some((n) => n === Y(s, ot))
     );
 }, Zs = (e) => {
   const { target: t, type: s } = e;
   if (!_(t)) return;
   const n = gs(t), o = n && se(n);
   if (!o) return;
-  const { parentElement: i, menu: r } = o, c = i && i.contains(t) && (t.tagName === "form" || M(t, "form") !== null);
-  [D, Hn].includes(s) && Zn(t) && e.preventDefault(), !c && s !== is && t !== n && t !== r && o.hide();
+  const { parentElement: i, menu: r } = o, a = i && i.contains(t) && (t.tagName === "form" || M(t, "form") !== null);
+  [D, Hn].includes(s) && Zn(t) && e.preventDefault(), !a && s !== is && t !== n && t !== r && o.hide();
 };
 function Ui(e) {
   const t = se(this);
@@ -789,10 +789,10 @@ function Zi(e) {
   if (!s) return;
   const n = se(s), { activeElement: o } = w(s);
   if (!n || !o) return;
-  const { menu: i, open: r } = n, c = qi(i);
-  if (c && c.length && [Xe, qe].includes(t)) {
-    let a = c.indexOf(o);
-    o === s ? a = 0 : t === qe ? a = a > 1 ? a - 1 : 0 : t === Xe && (a = a < c.length - 1 ? a + 1 : a), c[a] && lt(c[a]);
+  const { menu: i, open: r } = n, a = qi(i);
+  if (a && a.length && [Xe, qe].includes(t)) {
+    let c = a.indexOf(o);
+    o === s ? c = 0 : t === qe ? c = c > 1 ? c - 1 : 0 : t === Xe && (c = c < a.length - 1 ? c + 1 : c), a[c] && lt(a[c]);
   }
   ls === t && r && (n.toggle(), lt(s));
 }
@@ -824,19 +824,19 @@ class Gn extends st {
     if (s) return;
     const i = gs(t), r = i && se(i);
     r && r.hide(), [Re, Xs, Qn].forEach(
-      (c) => {
-        c.relatedTarget = t;
+      (a) => {
+        a.relatedTarget = t;
       }
-    ), b(o, Re), !Re.defaultPrevented && (d(n, p), d(o, p), L(t, Ee, "true"), Us(this), this.open = !s, lt(t), Ys(this), b(o, Xs));
+    ), b(o, Re), !Re.defaultPrevented && (d(n, p), d(o, p), k(t, Ee, "true"), Us(this), this.open = !s, lt(t), Ys(this), b(o, Xs));
   }
   hide() {
     const { element: t, open: s, menu: n, parentElement: o } = this;
     s && ([We, qs].forEach((i) => {
       i.relatedTarget = t;
-    }), b(o, We), !We.defaultPrevented && (v(n, p), v(o, p), L(t, Ee, "false"), this.open = !s, Ys(this), b(o, qs)));
+    }), b(o, We), !We.defaultPrevented && (v(n, p), v(o, p), k(t, Ee, "false"), this.open = !s, Ys(this), b(o, qs)));
   }
   _toggleEventListeners = (t) => {
-    (t ? k : O)(this.element, D, Ui);
+    (t ? L : O)(this.element, D, Ui);
   };
   dispose() {
     this.open && this.hide(), this._toggleEventListeners(), super.dispose();
@@ -862,18 +862,18 @@ const X = "modal", ps = "Modal", ms = "Offcanvas", Qi = "fixed-top", Gi = "fixed
     });
   });
 }, so = (e) => {
-  const { clientWidth: t } = dt(e), { innerWidth: s } = Ln(e);
+  const { clientWidth: t } = dt(e), { innerWidth: s } = kn(e);
   return Math.abs(s - t);
 }, no = (e, t) => {
   const s = Nt(e), n = parseInt(W(s, "paddingRight"), 10), i = W(s, "overflow") === "hidden" && n ? 0 : so(e), r = eo(s);
   t && (H(s, {
     overflow: "hidden",
     paddingRight: `${n + i}px`
-  }), r.length && r.forEach((c) => {
-    const a = W(c, "paddingRight");
-    if (c.style.paddingRight = `${parseInt(a, 10) + i}px`, [Jn, to].some((l) => h(c, l))) {
-      const l = W(c, "marginRight");
-      c.style.marginRight = `${parseInt(l, 10) - i}px`;
+  }), r.length && r.forEach((a) => {
+    const c = W(a, "paddingRight");
+    if (a.style.paddingRight = `${parseInt(c, 10) + i}px`, [Jn, to].some((l) => h(a, l))) {
+      const l = W(a, "marginRight");
+      a.style.marginRight = `${parseInt(l, 10) - i}px`;
     }
   }));
 }, Z = "offcanvas", Et = bt({
@@ -888,15 +888,15 @@ const X = "modal", ps = "Modal", ms = "Offcanvas", Qi = "fixed-top", Gi = "fixed
 }, vs = (e, t) => {
   const s = A(t) && t.nodeName !== "BODY" ? t : Et;
   return A(e) && s.contains(e);
-}, ro = "backdrop", Qs = `${X}-${ro}`, Gs = `${Z}-${ro}`, co = `.${X}.${p}`, bs = `.${Z}.${p}`, P = bt("div"), Mt = (e) => x(
-  `${co},${bs}`,
+}, ro = "backdrop", Qs = `${X}-${ro}`, Gs = `${Z}-${ro}`, ao = `.${X}.${p}`, bs = `.${Z}.${p}`, P = bt("div"), Mt = (e) => x(
+  `${ao},${bs}`,
   w(e)
 ), ws = (e) => {
   const t = e ? Qs : Gs;
   [Qs, Gs].forEach((s) => {
     v(P, s);
   }), d(P, t);
-}, ao = (e, t, s) => {
+}, co = (e, t, s) => {
   ws(s), oo(P, Nt(e)), t && d(P, N);
 }, lo = () => {
   h(P, p) || (d(P, p), Ot(P));
@@ -916,15 +916,15 @@ const X = "modal", ps = "Modal", ms = "Offcanvas", Qi = "fixed-top", Gi = "fixed
 ), tn = E(
   `hidden.bs.${X}`
 ), go = (e) => {
-  const { element: t } = e, s = so(t), { clientHeight: n, scrollHeight: o } = dt(t), { clientHeight: i, scrollHeight: r } = t, c = i !== r;
-  if (!c && s) {
+  const { element: t } = e, s = so(t), { clientHeight: n, scrollHeight: o } = dt(t), { clientHeight: i, scrollHeight: r } = t, a = i !== r;
+  if (!a && s) {
     const l = { [Tt(t) ? "paddingLeft" : "paddingRight"]: `${s}px` };
     H(t, l);
   }
-  no(t, c || n !== o);
+  no(t, a || n !== o);
 }, po = (e, t) => {
-  const s = t ? k : O, { element: n } = e;
-  s(n, D, cr), s(w(n), ye, rr), t ? e._observer.observe(n) : e._observer.disconnect();
+  const s = t ? L : O, { element: n } = e;
+  s(n, D, ar), s(w(n), ye, rr), t ? e._observer.observe(n) : e._observer.disconnect();
 }, en = (e) => {
   const { triggers: t, element: s, relatedTarget: n } = e;
   ho(s), H(s, { paddingRight: "", display: "" }), po(e);
@@ -935,7 +935,7 @@ const X = "modal", ps = "Modal", ms = "Offcanvas", Qi = "fixed-top", Gi = "fixed
   lt(t), po(e, !0), Js.relatedTarget = s || void 0, b(t, Js), xe(t);
 }, nn = (e) => {
   const { element: t, hasFade: s } = e;
-  H(t, { display: "block" }), go(e), Mt(t) || H(Nt(t), { overflow: "hidden" }), d(t, p), Dt(t, re), L(t, $e, "true"), s ? S(t, () => sn(e)) : sn(e);
+  H(t, { display: "block" }), go(e), Mt(t) || H(Nt(t), { overflow: "hidden" }), d(t, p), Dt(t, re), k(t, $e, "true"), s ? S(t, () => sn(e)) : sn(e);
 }, on = (e) => {
   const { element: t, options: s, hasFade: n } = e;
   s.backdrop && n && h(P, p) && !Mt(t) ? (_e(), S(P, () => en(e))) : en(e);
@@ -945,22 +945,22 @@ function ir(e) {
   nt(this) || s && (this.tagName === "A" && e.preventDefault(), s.relatedTarget = this, s.toggle());
 }
 const rr = ({ code: e, target: t }) => {
-  const s = x(co, w(t)), n = s && ne(s);
+  const s = x(ao, w(t)), n = s && ne(s);
   if (!n) return;
   const { options: o } = n;
   o.keyboard && e === ls && h(s, p) && (n.relatedTarget = null, n.hide());
-}, cr = (e) => {
+}, ar = (e) => {
   const { currentTarget: t } = e, s = t && ne(t);
   if (!s || !t || g.get(t)) return;
-  const { options: n, isStatic: o, modalDialog: i } = s, { backdrop: r } = n, { target: c } = e, a = w(t)?.getSelection()?.toString().length, l = i.contains(c), f = c && M(c, sr);
+  const { options: n, isStatic: o, modalDialog: i } = s, { backdrop: r } = n, { target: a } = e, c = w(t)?.getSelection()?.toString().length, l = i.contains(a), f = a && M(a, sr);
   o && !l ? g.set(
     t,
     () => {
-      d(t, uo), S(i, () => ar(s));
+      d(t, uo), S(i, () => cr(s));
     },
     17
-  ) : (f || !a && !o && !l && r) && (s.relatedTarget = f || null, s.hide(), e.preventDefault());
-}, ar = (e) => {
+  ) : (f || !c && !o && !l && r) && (s.relatedTarget = f || null, s.hide(), e.preventDefault());
+}, cr = (e) => {
   const { element: t, modalDialog: s } = e, n = (le(s) || 0) + 17;
   v(t, uo), g.set(t, () => g.clear(t), n);
 };
@@ -996,25 +996,25 @@ class mo extends st {
     const { element: t, options: s, hasFade: n, relatedTarget: o } = this, { backdrop: i } = s;
     let r = 0;
     if (h(t, p) || (be.relatedTarget = o || void 0, b(t, be), be.defaultPrevented)) return;
-    const c = Mt(t);
-    if (c && c !== t) {
-      const a = ne(c) || F(
-        c,
+    const a = Mt(t);
+    if (a && a !== t) {
+      const c = ne(a) || F(
+        a,
         ms
       );
-      a && a.hide();
+      c && c.hide();
     }
-    i ? (vs(P) ? ws(!0) : ao(t, n, !0), r = le(P), lo(), setTimeout(() => nn(this), r)) : (nn(this), c && h(P, p) && _e());
+    i ? (vs(P) ? ws(!0) : co(t, n, !0), r = le(P), lo(), setTimeout(() => nn(this), r)) : (nn(this), a && h(P, p) && _e());
   }
   hide() {
     const { element: t, hasFade: s, relatedTarget: n } = this;
-    h(t, p) && (Fe.relatedTarget = n || void 0, b(t, Fe), !Fe.defaultPrevented && (v(t, p), L(t, re, "true"), Dt(t, $e), s ? S(t, () => on(this)) : on(this)));
+    h(t, p) && (Fe.relatedTarget = n || void 0, b(t, Fe), !Fe.defaultPrevented && (v(t, p), k(t, re, "true"), Dt(t, $e), s ? S(t, () => on(this)) : on(this)));
   }
   update = () => {
     h(this.element, p) && go(this);
   };
   _toggleEventListeners = (t) => {
-    const s = t ? k : O, { triggers: n } = this;
+    const s = t ? L : O, { triggers: n } = this;
     n.length && n.forEach((o) => {
       s(o, D, ir);
     });
@@ -1032,7 +1032,7 @@ const lr = `.${Z}`, vo = `[${ot}="${Z}"]`, dr = `[${Se}="${Z}"]`, Ae = `${Z}-tog
   const { element: t } = e, { clientHeight: s, scrollHeight: n } = dt(t);
   no(t, s !== n);
 }, Eo = (e, t) => {
-  const s = t ? k : O, n = w(e.element);
+  const s = t ? L : O, n = w(e.element);
   s(n, ye, vr), s(n, D, mr);
 }, rn = (e) => {
   const { element: t, options: s } = e;
@@ -1056,8 +1056,8 @@ const mr = (e) => {
     s
   ), o = oe(s);
   if (!o) return;
-  const { options: i, triggers: r } = o, { backdrop: c } = i, a = M(t, vo), l = w(s).getSelection();
-  P.contains(t) && c === "static" || (!(l && l.toString().length) && (!s.contains(t) && c && (!a || r.includes(t)) || n && n.contains(t)) && (o.relatedTarget = n && n.contains(t) ? n : void 0, o.hide()), a && a.tagName === "A" && e.preventDefault());
+  const { options: i, triggers: r } = o, { backdrop: a } = i, c = M(t, vo), l = w(s).getSelection();
+  P.contains(t) && a === "static" || (!(l && l.toString().length) && (!s.contains(t) && a && (!c || r.includes(t)) || n && n.contains(t)) && (o.relatedTarget = n && n.contains(t) ? n : void 0, o.hide()), c && c.tagName === "A" && e.preventDefault());
 }, vr = ({ code: e, target: t }) => {
   const s = x(
     bs,
@@ -1066,10 +1066,10 @@ const mr = (e) => {
   n && n.options.keyboard && e === ls && (n.relatedTarget = void 0, n.hide());
 }, br = (e) => {
   const { element: t } = e;
-  v(t, Ae), Dt(t, re), L(t, $e, "true"), L(t, "role", "dialog"), b(t, bo), Eo(e, !0), lt(t), xe(t);
+  v(t, Ae), Dt(t, re), k(t, $e, "true"), k(t, "role", "dialog"), b(t, bo), Eo(e, !0), lt(t), xe(t);
 }, wr = (e) => {
   const { element: t, triggers: s } = e;
-  L(t, re, "true"), Dt(t, $e), Dt(t, "role"), H(t, { visibility: "" });
+  k(t, re, "true"), Dt(t, $e), Dt(t, "role"), H(t, { visibility: "" });
   const n = we.relatedTarget || s.find(fo);
   n && lt(n), ho(t), b(t, wo), v(t, Ae), xe(t), Mt(t) || Eo(e);
 };
@@ -1110,14 +1110,14 @@ class To extends st {
       );
       r && r.hide();
     }
-    s.backdrop ? (vs(P) ? ws() : ao(t, !0), o = le(P), lo(), setTimeout(() => rn(this), o)) : (rn(this), i && h(P, p) && _e());
+    s.backdrop ? (vs(P) ? ws() : co(t, !0), o = le(P), lo(), setTimeout(() => rn(this), o)) : (rn(this), i && h(P, p) && _e());
   }
   hide() {
     const { element: t, relatedTarget: s } = this;
     h(t, p) && (je.relatedTarget = s || void 0, wo.relatedTarget = s || void 0, b(t, je), !je.defaultPrevented && (d(t, Ae), v(t, p), gr(this)));
   }
   _toggleEventListeners = (t) => {
-    const s = t ? k : O;
+    const s = t ? L : O;
     this.triggers.forEach((n) => {
       s(n, D, pr);
     });
@@ -1127,9 +1127,9 @@ class To extends st {
     this.hide(), this._toggleEventListeners(), s ? S(t, n) : n();
   }
 }
-const Pt = "popover", Es = "Popover", ct = "tooltip", $o = (e) => {
-  const t = e === ct, s = t ? `${e}-inner` : `${e}-body`, n = t ? "" : `<h3 class="${e}-header"></h3>`, o = `<div class="${e}-arrow"></div>`, i = `<div class="${s}"></div>`;
-  return `<div class="${e}" role="${ct}">${n + o + i}</div>`;
+const Pt = "popover", Es = "Popover", at = "tooltip", $o = (e) => {
+  const t = e === at, s = t ? `${e}-inner` : `${e}-body`, n = t ? "" : `<h3 class="${e}-header"></h3>`, o = `<div class="${e}-arrow"></div>`, i = `<div class="${s}"></div>`;
+  return `<div class="${e}" role="${at}">${n + o + i}</div>`;
 }, yo = {
   top: "top",
   bottom: "bottom",
@@ -1137,9 +1137,9 @@ const Pt = "popover", Es = "Popover", ct = "tooltip", $o = (e) => {
   right: "end"
 }, ss = (e) => {
   requestAnimationFrame(() => {
-    const t = /\b(top|bottom|start|end)+/, { element: s, tooltip: n, container: o, offsetParent: i, options: r, arrow: c } = e;
+    const t = /\b(top|bottom|start|end)+/, { element: s, tooltip: n, container: o, offsetParent: i, options: r, arrow: a } = e;
     if (!n) return;
-    const a = Tt(s), { x: l, y: f } = si(i);
+    const c = Tt(s), { x: l, y: f } = si(i);
     H(n, {
       top: "",
       left: "",
@@ -1151,7 +1151,7 @@ const Pt = "popover", Es = "Popover", ct = "tooltip", $o = (e) => {
     const { clientWidth: V, offsetWidth: $t } = o, C = W(
       o,
       "position"
-    ) === "fixed", ft = Math.abs(C ? V - $t : I - G), it = a && C ? ft : 0, J = I - (a ? 0 : ft) - 1, Bt = e._observer.getEntry(s), {
+    ) === "fixed", ft = Math.abs(C ? V - $t : I - G), it = c && C ? ft : 0, J = I - (c ? 0 : ft) - 1, Bt = e._observer.getEntry(s), {
       width: y,
       height: j,
       left: Rt,
@@ -1165,32 +1165,32 @@ const Pt = "popover", Es = "Popover", ct = "tooltip", $o = (e) => {
       i,
       { x: l, y: f }
     );
-    H(c, {
+    H(a, {
       top: "",
       left: "",
       right: "",
       bottom: ""
     });
     let xt = 0, Xt = "", ut = 0, Pe = "", Ft = "", ue = "", De = "";
-    const St = c.offsetWidth || 0, gt = c.offsetHeight || 0, Ie = St / 2;
+    const St = a.offsetWidth || 0, gt = a.offsetHeight || 0, Ie = St / 2;
     let qt = Ct - $ - gt < 0, Ut = Ct + $ + j + gt >= B, Yt = Rt - u - St < it, Zt = Rt + u + y + St >= J;
-    const ge = ["left", "right"], Le = ["top", "bottom"];
-    qt = ge.includes(m) ? Ct + j / 2 - $ / 2 - gt < 0 : qt, Ut = ge.includes(m) ? Ct + $ / 2 + j / 2 + gt >= B : Ut, Yt = Le.includes(m) ? Rt + y / 2 - u / 2 < it : Yt, Zt = Le.includes(m) ? Rt + u / 2 + y / 2 >= J : Zt, m = ge.includes(m) && Yt && Zt ? "top" : m, m = m === "top" && qt ? "bottom" : m, m = m === "bottom" && Ut ? "top" : m, m = m === "left" && Yt ? "right" : m, m = m === "right" && Zt ? "left" : m, n.className.includes(m) || (n.className = n.className.replace(
+    const ge = ["left", "right"], ke = ["top", "bottom"];
+    qt = ge.includes(m) ? Ct + j / 2 - $ / 2 - gt < 0 : qt, Ut = ge.includes(m) ? Ct + $ / 2 + j / 2 + gt >= B : Ut, Yt = ke.includes(m) ? Rt + y / 2 - u / 2 < it : Yt, Zt = ke.includes(m) ? Rt + u / 2 + y / 2 >= J : Zt, m = ge.includes(m) && Yt && Zt ? "top" : m, m = m === "top" && qt ? "bottom" : m, m = m === "bottom" && Ut ? "top" : m, m = m === "left" && Yt ? "right" : m, m = m === "right" && Zt ? "left" : m, n.className.includes(m) || (n.className = n.className.replace(
       t,
       yo[m]
-    )), ge.includes(m) ? (m === "left" ? ut = fe - u - St : ut = fe + y + St, qt && Ut ? (xt = 0, Xt = 0, Ft = Wt + j / 2 - gt / 2) : qt ? (xt = Wt, Xt = "", Ft = j / 2 - St) : Ut ? (xt = Wt - $ + j, Xt = "", Ft = $ - j / 2 - St) : (xt = Wt - $ / 2 + j / 2, Ft = $ / 2 - gt / 2)) : Le.includes(m) && (m === "top" ? xt = Wt - $ - gt : xt = Wt + j + gt, Yt ? (ut = 0, ue = fe + y / 2 - Ie) : Zt ? (ut = "auto", Pe = 0, De = y / 2 + J - R - Ie) : (ut = fe - u / 2 + y / 2, ue = u / 2 - Ie)), H(n, {
+    )), ge.includes(m) ? (m === "left" ? ut = fe - u - St : ut = fe + y + St, qt && Ut ? (xt = 0, Xt = 0, Ft = Wt + j / 2 - gt / 2) : qt ? (xt = Wt, Xt = "", Ft = j / 2 - St) : Ut ? (xt = Wt - $ + j, Xt = "", Ft = $ - j / 2 - St) : (xt = Wt - $ / 2 + j / 2, Ft = $ / 2 - gt / 2)) : ke.includes(m) && (m === "top" ? xt = Wt - $ - gt : xt = Wt + j + gt, Yt ? (ut = 0, ue = fe + y / 2 - Ie) : Zt ? (ut = "auto", Pe = 0, De = y / 2 + J - R - Ie) : (ut = fe - u / 2 + y / 2, ue = u / 2 - Ie)), H(n, {
       top: `${xt}px`,
       bottom: Xt === "" ? "" : `${Xt}px`,
       left: ut === "auto" ? ut : `${ut}px`,
       right: Pe !== "" ? `${Pe}px` : ""
-    }), _(c) && (Ft !== "" && (c.style.top = `${Ft}px`), ue !== "" ? c.style.left = `${ue}px` : De !== "" && (c.style.right = `${De}px`));
+    }), _(a) && (Ft !== "" && (a.style.top = `${Ft}px`), ue !== "" ? a.style.left = `${ue}px` : De !== "" && (a.style.right = `${De}px`));
     const Bo = E(
       `updated.bs.${ee(e.name)}`
     );
     b(s, Bo);
   });
 }, ns = {
-  template: $o(ct),
+  template: $o(at),
   title: "",
   customClass: "",
   trigger: "hover focus",
@@ -1203,39 +1203,39 @@ const Pt = "popover", Es = "Popover", ct = "tooltip", $o = (e) => {
   dismissible: !1,
   btnClose: ""
 }, Co = "data-original-title", Ht = "Tooltip", mt = (e, t, s) => {
-  if (ae(t) && t.length) {
+  if (ce(t) && t.length) {
     let n = t.trim();
-    ai(s) && (n = s(n));
+    ci(s) && (n = s(n));
     const i = new DOMParser().parseFromString(n, "text/html");
     e.append(...i.body.childNodes);
-  } else _(t) ? e.append(t) : (li(t) || ci(t) && t.every(A)) && e.append(...t);
+  } else _(t) ? e.append(t) : (li(t) || ai(t) && t.every(A)) && e.append(...t);
 }, Er = (e) => {
   const t = e.name === Ht, { id: s, element: n, options: o } = e, {
     title: i,
     placement: r,
-    template: c,
-    animation: a,
+    template: a,
+    animation: c,
     customClass: l,
     sanitizeFn: f,
     dismissible: u,
     content: $,
     btnClose: I
-  } = o, B = t ? ct : Pt, G = { ...yo };
+  } = o, B = t ? at : Pt, G = { ...yo };
   let m = [], V = [];
   Tt(n) && (G.left = "end", G.right = "start");
   const $t = `bs-${B}-${G[r]}`;
   let yt;
-  if (_(c))
-    yt = c;
+  if (_(a))
+    yt = a;
   else {
     const y = bt("div");
-    mt(y, c, f), yt = y.firstChild;
+    mt(y, a, f), yt = y.firstChild;
   }
   if (!_(yt)) return;
   e.tooltip = yt.cloneNode(!0);
   const { tooltip: C } = e;
-  L(C, "id", s), L(C, "role", ct);
-  const ft = t ? `${ct}-inner` : `${Pt}-body`, it = t ? null : x(`.${Pt}-header`, C), J = x(`.${ft}`, C);
+  k(C, "id", s), k(C, "role", at);
+  const ft = t ? `${at}-inner` : `${Pt}-body`, it = t ? null : x(`.${Pt}-header`, C), J = x(`.${ft}`, C);
   e.arrow = x(
     `.${B}-arrow`,
     C
@@ -1265,7 +1265,7 @@ const Pt = "popover", Es = "Popover", ct = "tooltip", $o = (e) => {
       const y = bt("div");
       mt(y, I, f), V = [...V, y.firstChild];
     }
-  t ? i && J && mt(J, i, f) : (i && it && mt(it, m, f), $ && J && mt(J, V, f), e.btn = x(".btn-close", C) || void 0), d(C, "position-absolute"), d(Bt, "position-absolute"), h(C, B) || d(C, B), a && !h(C, N) && d(C, N), l && !h(C, l) && d(C, l), h(C, $t) || d(C, $t);
+  t ? i && J && mt(J, i, f) : (i && it && mt(it, m, f), $ && J && mt(J, V, f), e.btn = x(".btn-close", C) || void 0), d(C, "position-absolute"), d(Bt, "position-absolute"), h(C, B) || d(C, B), c && !h(C, N) && d(C, N), l && !h(C, l) && d(C, l), h(C, $t) || d(C, $t);
 }, Tr = (e) => {
   const t = ["HTML", "BODY"], s = [];
   let { parentNode: n } = e;
@@ -1274,8 +1274,8 @@ const Pt = "popover", Es = "Popover", ct = "tooltip", $o = (e) => {
   return s.find((o, i) => (W(o, "position") !== "relative" || W(o, "position") === "relative" && o.offsetHeight !== o.scrollHeight) && s.slice(i + 1).every(
     (r) => W(r, "position") === "static"
   ) ? o : null) || w(e).body;
-}, $r = `[${ot}="${ct}"],[data-tip="${ct}"]`, xo = "title";
-let cn = (e) => F(e, Ht);
+}, $r = `[${ot}="${at}"],[data-tip="${at}"]`, xo = "title";
+let an = (e) => F(e, Ht);
 const yr = (e) => new Ts(e), Cr = (e) => {
   const { element: t, tooltip: s, container: n } = e;
   Dt(t, xn), io(
@@ -1287,16 +1287,16 @@ const yr = (e) => new Ts(e), Cr = (e) => {
   return t && vs(t, s);
 }, xr = (e, t) => {
   const { element: s } = e;
-  e._toggleEventListeners(), Jt(s, Co) && e.name === Ht && Ho(e), t && t();
+  e._toggleEventListeners(), Jt(s, Co) && e.name === Ht && Ho(e), t();
 }, So = (e, t) => {
-  const s = t ? k : O, { element: n } = e;
+  const s = t ? L : O, { element: n } = e;
   s(
     w(n),
-    as,
+    cs,
     e.handleTouch,
     te
   );
-}, an = (e) => {
+}, cn = (e) => {
   const { element: t } = e, s = E(
     `shown.bs.${ee(e.name)}`
   );
@@ -1307,11 +1307,11 @@ const yr = (e) => new Ts(e), Cr = (e) => {
   );
   So(e), Cr(e), b(t, s), g.clear(t, "out");
 }, dn = (e, t) => {
-  const s = t ? k : O, { element: n, tooltip: o } = e, i = M(n, `.${X}`), r = M(n, `.${Z}`);
-  t ? [n, o].forEach((c) => e._observer.observe(c)) : e._observer.disconnect(), i && s(i, `hide.bs.${X}`, e.handleHide), r && s(r, `hide.bs.${Z}`, e.handleHide);
+  const s = t ? L : O, { element: n, tooltip: o } = e, i = M(n, `.${X}`), r = M(n, `.${Z}`);
+  t ? [n, o].forEach((a) => e._observer.observe(a)) : e._observer.disconnect(), i && s(i, `hide.bs.${X}`, e.handleHide), r && s(r, `hide.bs.${Z}`, e.handleHide);
 }, Ho = (e, t) => {
   const s = [Co, xo], { element: n } = e;
-  L(
+  k(
     n,
     s[t ? 0 : 1],
     t || Y(n, s[0]) || ""
@@ -1320,20 +1320,20 @@ const yr = (e) => new Ts(e), Cr = (e) => {
 class Ts extends st {
   static selector = $r;
   static init = yr;
-  static getInstance = cn;
+  static getInstance = an;
   static styleTip = ss;
   constructor(t, s) {
     super(t, s);
-    const { element: n } = this, o = this.name === Ht, i = o ? ct : Pt, r = o ? Ht : Es;
-    cn = (f) => F(f, r), this.enabled = !0, this.id = `${i}-${On(n, i)}`;
-    const { options: c } = this;
-    if (!c.title && o || !o && !c.content)
+    const { element: n } = this, o = this.name === Ht, i = o ? at : Pt, r = o ? Ht : Es;
+    an = (f) => F(f, r), this.enabled = !0, this.id = `${i}-${On(n, i)}`;
+    const { options: a } = this;
+    if (!a.title && o || !o && !a.content)
       return;
-    at(ns, { titleAttr: "" }), Jt(n, xo) && o && typeof c.title == "string" && Ho(this, c.title);
-    const a = Tr(n), l = ["sticky", "fixed", "relative"].some(
-      (f) => W(a, "position") === f
-    ) ? a : Ln(n);
-    this.container = a, this.offsetParent = l, Er(this), this.tooltip && (this._observer = new us(() => this.update()), this._toggleEventListeners(!0));
+    ct(ns, { titleAttr: "" }), Jt(n, xo) && o && typeof a.title == "string" && Ho(this, a.title);
+    const c = Tr(n), l = ["sticky", "fixed", "relative"].some(
+      (f) => W(c, "position") === f
+    ) ? c : kn(n);
+    this.container = c, this.offsetParent = l, Er(this), this.tooltip && (this._observer = new us(() => this.update()), this._toggleEventListeners(!0));
   }
   get name() {
     return Ht;
@@ -1344,14 +1344,14 @@ class Ts extends st {
   handleFocus = () => lt(this.element);
   handleShow = () => this.show();
   show() {
-    const { options: t, tooltip: s, element: n, container: o, id: i } = this, { animation: r } = t, c = g.get(n, "out");
-    g.clear(n, "out"), s && !c && !Qt(this) && g.set(
+    const { options: t, tooltip: s, element: n, container: o, id: i } = this, { animation: r } = t, a = g.get(n, "out");
+    g.clear(n, "out"), s && !a && !Qt(this) && g.set(
       n,
       () => {
-        const a = E(
+        const c = E(
           `show.bs.${ee(this.name)}`
         );
-        b(n, a), a.defaultPrevented || (oo(s, o), L(n, xn, `#${i}`), this.update(), dn(this, !0), h(s, p) || d(s, p), r ? S(s, () => an(this)) : an(this));
+        b(n, c), c.defaultPrevented || (oo(s, o), k(n, xn, `#${i}`), this.update(), dn(this, !0), h(s, p) || d(s, p), r ? S(s, () => cn(this)) : cn(this));
       },
       17,
       "in"
@@ -1395,14 +1395,14 @@ class Ts extends st {
     s && s.contains(t) || t === n || t && n.contains(t) || this.hide();
   };
   _toggleEventListeners = (t) => {
-    const s = t ? k : O, { element: n, options: o, btn: i } = this, { trigger: r } = o, a = !!(this.name !== Ht && o.dismissible);
+    const s = t ? L : O, { element: n, options: o, btn: i } = this, { trigger: r } = o, c = !!(this.name !== Ht && o.dismissible);
     r.includes("manual") || (this.enabled = !!t, r.split(" ").forEach((f) => {
-      f === Wo ? (s(n, Hn, this.handleShow), s(n, Ce, this.handleShow), a || (s(n, cs, this.handleHide), s(
+      f === Wo ? (s(n, Hn, this.handleShow), s(n, Ce, this.handleShow), c || (s(n, as, this.handleHide), s(
         w(n),
-        as,
+        cs,
         this.handleTouch,
         te
-      ))) : f === D ? s(n, f, a ? this.handleShow : this.toggle) : f === is && (s(n, rs, this.handleShow), a || s(n, Sn, this.handleHide), Uo() && s(n, D, this.handleFocus)), a && i && s(i, D, this.handleHide);
+      ))) : f === D ? s(n, f, c ? this.handleShow : this.toggle) : f === is && (s(n, rs, this.handleShow), c || s(n, Sn, this.handleHide), Uo() && s(n, D, this.handleFocus)), c && i && s(i, D, this.handleHide);
     }));
   };
   dispose() {
@@ -1413,7 +1413,7 @@ class Ts extends st {
     s.animation && Qt(n) ? (this.options.delay = 0, this.hide(), S(t, o)) : o();
   }
 }
-const Sr = `[${ot}="${Pt}"],[data-tip="${Pt}"]`, Hr = at({}, ns, {
+const Sr = `[${ot}="${Pt}"],[data-tip="${Pt}"]`, Hr = ct({}, ns, {
   template: $o(Pt),
   content: "",
   dismissible: !1,
@@ -1439,18 +1439,18 @@ class _o extends Ts {
     t.dismissible && s && setTimeout(() => lt(s), 17);
   };
 }
-const Pr = "scrollspy", Ao = "ScrollSpy", Dr = '[data-bs-spy="scroll"]', Ir = "[href]", Lr = {
+const Pr = "scrollspy", Ao = "ScrollSpy", Dr = '[data-bs-spy="scroll"]', Ir = "[href]", kr = {
   offset: 10,
   target: void 0
-}, kr = (e) => F(e, Ao), Or = (e) => new Do(e), hn = E(`activate.bs.${Pr}`), Nr = (e) => {
+}, Lr = (e) => F(e, Ao), Or = (e) => new Do(e), hn = E(`activate.bs.${Pr}`), Nr = (e) => {
   const {
     target: t,
     _itemsLength: s,
     _observables: n
   } = e, o = fs("A", t), i = w(t);
   !o.length || s === n.size || (n.clear(), Array.from(o).forEach((r) => {
-    const c = Y(r, "href")?.slice(1), a = c?.length ? i.getElementById(c) : null;
-    a && !nt(r) && e._observables.set(a, r);
+    const a = Y(r, "href")?.slice(1), c = a?.length ? i.getElementById(a) : null;
+    c && !nt(r) && e._observables.set(c, r);
   }), e._itemsLength = e._observables.size);
 }, Po = (e) => {
   Array.from(fs("A", e)).forEach(
@@ -1477,7 +1477,7 @@ const Pr = "scrollspy", Ao = "ScrollSpy", Dr = '[data-bs-spy="scroll"]', Ir = "[
 class Do extends st {
   static selector = Dr;
   static init = Or;
-  static getInstance = kr;
+  static getInstance = Lr;
   constructor(t, s) {
     super(t, s);
     const { element: n, options: o } = this, i = x(
@@ -1494,7 +1494,7 @@ class Do extends st {
     return Ao;
   }
   get defaults() {
-    return Lr;
+    return kr;
   }
   refresh = () => {
     const { target: t, scrollTarget: s } = this;
@@ -1502,20 +1502,20 @@ class Do extends st {
     Nr(this);
     const { _itemsLength: n, _observables: o, _activeItem: i } = this;
     if (!n) return;
-    const r = o.entries().toArray(), { scrollTop: c, scrollHeight: a, clientHeight: l } = s;
-    if (c >= a - l) {
+    const r = o.entries().toArray(), { scrollTop: a, scrollHeight: c, clientHeight: l } = s;
+    if (a >= c - l) {
       const u = r[n - 1]?.[1];
       i !== u && fn(this, u);
       return;
     }
     const f = r[0]?.[0] ? ze(this, r[0][0]) : null;
-    if (f !== null && c < f && f > 0) {
+    if (f !== null && a < f && f > 0) {
       this._activeItem = null, Po(t);
       return;
     }
     for (let u = 0; u < n; u += 1) {
       const [$, I] = r[u], B = ze(this, $), G = r[u + 1]?.[0], m = G ? ze(this, G) : null;
-      if (i !== I && c >= B && (m === null || c < m)) {
+      if (i !== I && a >= B && (m === null || a < m)) {
         fn(this, I);
         break;
       }
@@ -1530,13 +1530,13 @@ class Do extends st {
   };
   _toggleEventListeners = (t) => {
     const { target: s, _observables: n, _observer: o, _scrollTo: i } = this;
-    (t ? k : O)(s, D, i), t ? n?.forEach((c, a) => o.observe(a)) : o.disconnect();
+    (t ? L : O)(s, D, i), t ? n?.forEach((a, c) => o.observe(c)) : o.disconnect();
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();
   }
 }
-const he = "tab", Io = "Tab", os = `[${ot}="${he}"]`, Lo = (e) => F(e, Io), Mr = (e) => new ko(e), Ke = E(
+const he = "tab", Io = "Tab", os = `[${ot}="${he}"]`, ko = (e) => F(e, Io), Mr = (e) => new Lo(e), Ke = E(
   `show.bs.${he}`
 ), un = E(
   `shown.bs.${he}`
@@ -1546,30 +1546,30 @@ const he = "tab", Io = "Tab", os = `[${ot}="${he}"]`, Lo = (e) => F(e, Io), Mr =
   `hidden.bs.${he}`
 ), ie = /* @__PURE__ */ new Map(), pn = (e) => {
   const { tabContent: t, nav: s } = e;
-  t && h(t, Lt) && (t.style.height = "", v(t, Lt)), s && g.clear(s);
+  t && h(t, kt) && (t.style.height = "", v(t, kt)), s && g.clear(s);
 }, mn = (e) => {
   const { element: t, tabContent: s, content: n, nav: o } = e, { tab: i } = _(o) && ie.get(o) || { tab: null };
   if (s && n && h(n, N)) {
-    const { currentHeight: r, nextHeight: c } = ie.get(t) || { currentHeight: 0, nextHeight: 0 };
-    r !== c ? setTimeout(() => {
-      s.style.height = `${c}px`, Ot(s), S(s, () => pn(e));
+    const { currentHeight: r, nextHeight: a } = ie.get(t) || { currentHeight: 0, nextHeight: 0 };
+    r !== a ? setTimeout(() => {
+      s.style.height = `${a}px`, Ot(s), S(s, () => pn(e));
     }, 50) : pn(e);
   } else o && g.clear(o);
   un.relatedTarget = i, b(t, un);
 }, vn = (e) => {
   const { element: t, content: s, tabContent: n, nav: o } = e, { tab: i, content: r } = o && ie.get(o) || { tab: null, content: null };
-  let c = 0;
-  if (n && s && h(s, N) && ([r, s].forEach((a) => {
-    a && d(a, "overflow-hidden");
-  }), c = r ? r.scrollHeight : 0), Ke.relatedTarget = i, gn.relatedTarget = t, b(t, Ke), !Ke.defaultPrevented) {
+  let a = 0;
+  if (n && s && h(s, N) && ([r, s].forEach((c) => {
+    c && d(c, "overflow-hidden");
+  }), a = r ? r.scrollHeight : 0), Ke.relatedTarget = i, gn.relatedTarget = t, b(t, Ke), !Ke.defaultPrevented) {
     if (s && d(s, T), r && v(r, T), n && s && h(s, N)) {
-      const a = s.scrollHeight;
+      const c = s.scrollHeight;
       ie.set(t, {
-        currentHeight: c,
-        nextHeight: a,
+        currentHeight: a,
+        nextHeight: c,
         tab: null,
         content: null
-      }), d(n, Lt), n.style.height = `${c}px`, Ot(n), [r, s].forEach((l) => {
+      }), d(n, kt), n.style.height = `${a}px`, Ot(n), [r, s].forEach((l) => {
         l && v(l, "overflow-hidden");
       });
     }
@@ -1588,23 +1588,23 @@ const he = "tab", Io = "Tab", os = `[${ot}="${he}"]`, Lo = (e) => F(e, Io), Mr =
     t
   );
   let n = null;
-  s.length === 1 && !kt.some(
+  s.length === 1 && !Lt.some(
     (i) => h(s[0].parentElement, i)
   ) ? [n] = s : s.length > 1 && (n = s[s.length - 1]);
   const o = _(n) ? K(n) : null;
   return { tab: n, content: o };
 }, wn = (e) => {
   if (!_(e)) return null;
-  const t = M(e, `.${kt.join(",.")}`);
-  return t ? x(`.${kt[0]}-toggle`, t) : null;
+  const t = M(e, `.${Lt.join(",.")}`);
+  return t ? x(`.${Lt[0]}-toggle`, t) : null;
 }, Br = (e) => {
-  const t = M(e.target, os), s = t && Lo(t);
+  const t = M(e.target, os), s = t && ko(t);
   s && (e.preventDefault(), s.show());
 };
-class ko extends st {
+class Lo extends st {
   static selector = os;
   static init = Mr;
-  static getInstance = Lo;
+  static getInstance = ko;
   constructor(t) {
     super(t);
     const { element: s } = this, n = K(s);
@@ -1616,8 +1616,8 @@ class ko extends st {
     this.nav = o, this.content = n, this.tabContent = i, this.dropdown = wn(s);
     const { tab: r } = bn(this);
     if (o && !r) {
-      const c = x(os, o), a = c && K(c);
-      a && (d(c, T), d(a, p), d(a, T), L(s, ke, "true"));
+      const a = x(os, o), c = a && K(a);
+      c && (d(a, T), d(c, p), d(c, T), k(s, Le, "true"));
     }
     this._toggleEventListeners(!0);
   }
@@ -1629,18 +1629,18 @@ class ko extends st {
     if (n && g.get(n) || h(t, T)) return;
     const { tab: i, content: r } = bn(this);
     if (n && i && ie.set(n, { tab: i, content: r, currentHeight: 0, nextHeight: 0 }), Ve.relatedTarget = t, !_(i) || (b(i, Ve), Ve.defaultPrevented)) return;
-    d(t, T), L(t, ke, "true");
-    const c = _(i) && wn(i);
-    if (c && h(c, T) && v(c, T), n) {
-      const a = () => {
-        i && (v(i, T), L(i, ke, "false")), o && !h(o, T) && d(o, T);
+    d(t, T), k(t, Le, "true");
+    const a = _(i) && wn(i);
+    if (a && h(a, T) && v(a, T), n) {
+      const c = () => {
+        i && (v(i, T), k(i, Le, "false")), o && !h(o, T) && d(o, T);
       };
-      r && (h(r, N) || s && h(s, N)) ? g.set(n, a, 1) : a();
+      r && (h(r, N) || s && h(s, N)) ? g.set(n, c, 1) : c();
     }
     r && (v(r, p), h(r, N) ? S(r, () => vn(this)) : vn(this));
   }
   _toggleEventListeners = (t) => {
-    (t ? k : O)(this.element, D, Br);
+    (t ? L : O)(this.element, D, Br);
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();
@@ -1720,11 +1720,11 @@ class Mo extends st {
     !t || !s || (b(t, Tn), Tn.defaultPrevented || Xr(this));
   };
   _toggleEventListeners = (t) => {
-    const s = t ? k : O, { element: n, triggers: o, dismiss: i, options: r, hide: c } = this;
-    i && s(i, D, c), r.autohide && [rs, Sn, Ce, cs].forEach(
-      (a) => s(n, a, Yr)
-    ), o.length && o.forEach((a) => {
-      s(a, D, Ur);
+    const s = t ? L : O, { element: n, triggers: o, dismiss: i, options: r, hide: a } = this;
+    i && s(i, D, a), r.autohide && [rs, Sn, Ce, as].forEach(
+      (c) => s(n, c, Yr)
+    ), o.length && o.forEach((c) => {
+      s(c, D, Ur);
     });
   };
   dispose() {
@@ -1743,7 +1743,7 @@ const ys = /* @__PURE__ */ new Map();
   To,
   _o,
   Do,
-  ko,
+  Lo,
   Mo,
   Ts
 ].forEach((e) => ys.set(e.prototype.name, e));
@@ -1760,7 +1760,7 @@ const Zr = (e, t) => {
     const { init: o, selector: i } = n;
     Zr(
       o,
-      s.filter((r) => kn(r, i))
+      s.filter((r) => Ln(r, i))
     );
   });
 }, Gr = (e) => {
@@ -1769,7 +1769,7 @@ const Zr = (e, t) => {
     Qr(s.prototype.name, t);
   });
 };
-document.body ? Cn() : k(document, "DOMContentLoaded", () => Cn(), {
+document.body ? Cn() : L(document, "DOMContentLoaded", () => Cn(), {
   once: !0
 });
 export {
@@ -1782,7 +1782,7 @@ export {
   To as Offcanvas,
   _o as Popover,
   Do as ScrollSpy,
-  ko as Tab,
+  Lo as Tab,
   Mo as Toast,
   Ts as Tooltip,
   Cn as initCallback,
