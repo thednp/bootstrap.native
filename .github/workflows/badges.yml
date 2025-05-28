@@ -10,6 +10,16 @@ on:
       - README.md
       - package.json
       - .github/workflows/badges.yml
+  pull_request:
+    # update README badge only if the README file changes
+    # or if the package.json file changes, or this file changes
+    # IMPORTANT: branches must match
+    branches:
+      - master
+    paths:
+      - README.md
+      - package.json
+      - .github/workflows/badges.yml
 
 jobs:
   badges:
