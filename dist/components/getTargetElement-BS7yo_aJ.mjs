@@ -1,4 +1,4 @@
-import { d as e, K as c, N as d, W as g } from "./base-component-DdvmGdVr.mjs";
+import { d as e, K as c, N as d, W as g } from "./base-component-BqNxSX4W.mjs";
 const i = "data-bs-target", s = "data-bs-parent", u = "data-bs-container", p = (a) => {
   const n = [i, s, u, "href"], o = e(a);
   return n.map((t) => {
@@ -10,4 +10,4 @@ export {
   i as d,
   p as g
 };
-//# sourceMappingURL=getTargetElement-PcSFNllf.mjs.map
+//# sourceMappingURL=getTargetElement-BS7yo_aJ.mjs.map

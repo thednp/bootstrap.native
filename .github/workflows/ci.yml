@@ -6,12 +6,18 @@ on:
       - src
       - test
       - package.json
-      - pnpm-lock.json
+      - .github/workflows/ci.yml
+  pull_request:
+    branches: [ master ]
+    paths:
+      - src
+      - test
+      - package.json
       - .github/workflows/ci.yml
 jobs:
   test:
-    runs-on: ubuntu-20.04
-    name: Test on Node 20
+    runs-on: ubuntu-24.04
+    name: Test on Node
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,7 +33,7 @@ jobs:
       - name: Node Setup
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - name: Install Dependencies

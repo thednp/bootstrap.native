@@ -1,8 +1,8 @@
-import { B as l, _ as i, Q as a, F as c, v as g, t as u, a as m, G as p, E as v, r as f } from "./base-component-DdvmGdVr.mjs";
+import { B as l, t as g, _ as i, Q as a, F as c, a as u, G as m, E as p, r as v, v as f } from "./base-component-BqNxSX4W.mjs";
 import { a as n } from "./activeClass-iqaD75Su.mjs";
 import { d as h } from "./dataBsToggle-B84TS15h.mjs";
-import { i as b } from "./isDisabled-C26LKsNR.mjs";
-const d = "button", r = "Button", B = `[${h}="${d}"]`, _ = (e) => u(e, r), A = (e) => new C(e);
+import { i as b } from "./isDisabled-CYinJ77M.mjs";
+const d = "button", r = "Button", B = `[${h}="${d}"]`, _ = (e) => g(e, r), A = (e) => new C(e);
 class C extends l {
   static selector = B;
   static init = A;
@@ -19,10 +19,10 @@ class C extends l {
     s && s.preventDefault();
     const { element: t, isActive: o } = this;
     if (b(t)) return;
-    (o ? m : p)(t, n), a(t, c, o ? "false" : "true"), this.isActive = i(t, n);
+    (o ? u : m)(t, n), a(t, c, o ? "false" : "true"), this.isActive = i(t, n);
   };
   _toggleEventListeners = (s) => {
-    (s ? v : f)(this.element, g, this.toggle);
+    (s ? p : v)(this.element, f, this.toggle);
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();

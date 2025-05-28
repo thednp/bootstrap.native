@@ -1,9 +1,9 @@
-import { B as f, W as g, _ as i, Z as c, a as u, s as v, t as h, m, E, r as _, v as A } from "./base-component-DdvmGdVr.mjs";
+import { B as f, t as g, W as u, _ as i, Z as c, m, a as v, s as h, E, r as _, v as A } from "./base-component-BqNxSX4W.mjs";
 import { f as C } from "./fadeClass-CLIYI_zn.mjs";
 import { s as r } from "./showClass-C8hdJfjQ.mjs";
 import { d as $ } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { i as b } from "./isDisabled-C26LKsNR.mjs";
-const n = "alert", d = "Alert", L = `.${n}`, B = `[${$}="${n}"]`, D = (s) => h(s, d), I = (s) => new w(s), a = m(
+import { i as b } from "./isDisabled-CYinJ77M.mjs";
+const n = "alert", d = "Alert", L = `.${n}`, B = `[${$}="${n}"]`, D = (s) => g(s, d), I = (s) => new w(s), a = m(
   `close.bs.${n}`
 ), S = m(
   `closed.bs.${n}`
@@ -17,7 +17,7 @@ class w extends f {
   static getInstance = D;
   dismiss;
   constructor(t) {
-    super(t), this.dismiss = g(
+    super(t), this.dismiss = u(
       B,
       this.element
     ), this._toggleEventListeners(!0);
@@ -27,7 +27,7 @@ class w extends f {
   }
   close = (t) => {
     const { element: e, dismiss: o } = this;
-    !e || !i(e, r) || t && o && b(o) || (c(e, a), !a.defaultPrevented && (u(e, r), i(e, C) ? v(e, () => l(this)) : l(this)));
+    !e || !i(e, r) || t && o && b(o) || (c(e, a), !a.defaultPrevented && (v(e, r), i(e, C) ? h(e, () => l(this)) : l(this)));
   };
   _toggleEventListeners = (t) => {
     const e = t ? E : _, { dismiss: o, close: p } = this;

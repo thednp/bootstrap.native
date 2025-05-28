@@ -1,11 +1,11 @@
-import { B as q, N as p, W as Q, G as f, Q as E, h as v, _ as l, o as d, Z as T, a as b, s as y, t as z, m as C, e as W, j as F, a8 as H, E as J, r as K, v as O } from "./base-component-DdvmGdVr.mjs";
+import { B as q, t as z, N as p, W as Q, G as f, Q as E, h as v, _ as l, m as C, o as d, Z as T, a as b, s as y, E as F, r as J, a8 as H, v as K, j as O, e as W } from "./base-component-BqNxSX4W.mjs";
 import { c as _ } from "./collapsingClass-BxKtDBMH.mjs";
 import { a as c } from "./activeClass-iqaD75Su.mjs";
 import { f as h } from "./fadeClass-CLIYI_zn.mjs";
 import { s as w } from "./showClass-C8hdJfjQ.mjs";
 import { d as B } from "./dropdownClasses-CdCdZ-PX.mjs";
 import { d as R } from "./dataBsToggle-B84TS15h.mjs";
-import { g as P } from "./getTargetElement-PcSFNllf.mjs";
+import { g as P } from "./getTargetElement-BS7yo_aJ.mjs";
 const m = "tab", Z = "Tab", j = `[${R}="${m}"]`, A = (s) => z(s, Z), U = (s) => new X(s), x = C(
   `show.bs.${m}`
 ), I = C(
@@ -53,7 +53,7 @@ const m = "tab", Z = "Tab", j = `[${R}="${m}"]`, A = (s) => z(s, Z), U = (s) => 
   const { nav: e } = s;
   if (!d(e))
     return { tab: null, content: null };
-  const t = F(
+  const t = O(
     c,
     e
   );
@@ -110,7 +110,7 @@ class X extends q {
     a && (b(a, w), l(a, h) ? y(a, () => G(this)) : G(this));
   }
   _toggleEventListeners = (e) => {
-    (e ? J : K)(this.element, O, V);
+    (e ? F : J)(this.element, K, V);
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();

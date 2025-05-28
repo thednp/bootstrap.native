@@ -1,7 +1,7 @@
-import { M as w, a4 as I, a0 as d, L as c, x as f, _ as y, j as i, a5 as P, W, d as E, a as g, G as h, e as M, o as B } from "./base-component-DdvmGdVr.mjs";
+import { M as w, a4 as I, a2 as d, L as c, j as i, x as f, _ as y, a5 as P, W, d as E, G as g, a as h, e as M, o as B } from "./base-component-BqNxSX4W.mjs";
 import { f as $ } from "./fadeClass-CLIYI_zn.mjs";
 import { s as r } from "./showClass-C8hdJfjQ.mjs";
-import { a as T, m as u, o as C, r as V } from "./popupContainer-tX_ZgWRQ.mjs";
+import { m as u, o as C, a as T, r as V } from "./popupContainer-Bc3AH1lu.mjs";
 const N = "Modal", Q = "Offcanvas", j = "fixed-top", A = "fixed-bottom", S = "sticky-top", x = "position-sticky", O = (s) => [
   ...i(j, s),
   ...i(A, s),
@@ -42,22 +42,22 @@ const N = "Modal", Q = "Offcanvas", j = "fixed-top", A = "fixed-bottom", S = "st
 ), q = (s) => {
   const a = s ? v : b;
   [v, b].forEach((o) => {
-    g(t, o);
-  }), h(t, a);
+    h(t, o);
+  }), g(t, a);
 }, X = (s, a, o) => {
-  q(o), T(t, d(s)), a && h(t, $);
+  q(o), T(t, d(s)), a && g(t, $);
 }, Y = () => {
-  y(t, r) || (h(t, r), M(t));
+  y(t, r) || (g(t, r), M(t));
 }, ss = () => {
-  g(t, r);
+  h(t, r);
 }, os = (s) => {
-  Z(s) || (g(t, $), V(t, d(s)), G(s));
+  Z(s) || (h(t, $), V(t, d(s)), G(s));
 }, as = (s) => B(s) && c(s, "visibility") !== "hidden" && s.offsetParent !== null;
 export {
   X as a,
-  _ as b,
-  U as c,
-  Q as d,
+  Q as b,
+  _ as c,
+  U as d,
   F as e,
   L as f,
   Z as g,
@@ -69,4 +69,4 @@ export {
   Y as s,
   q as t
 };
-//# sourceMappingURL=isVisible-CSzcZ9NF.mjs.map
+//# sourceMappingURL=isVisible-D1f6U8y0.mjs.map

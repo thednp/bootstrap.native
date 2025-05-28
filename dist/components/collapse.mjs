@@ -1,17 +1,17 @@
-import { B as D, d as H, c as v, o as L, p as S, W as T, h as l, G as c, a as g, _ as k, t as G, m as C, Z as f, q as d, x as h, s as x, Q as _, y as I, e as P, E as Q, r as W, v as Z, N as q } from "./base-component-DdvmGdVr.mjs";
+import { B as D, t as H, d as L, c as v, W as S, o as T, p as k, h as l, G as c, a as g, _ as G, E as P, r as Q, v as W, Z as f, m as C, q as d, x as h, e as Z, s as x, Q as _, y as I, N as q } from "./base-component-BqNxSX4W.mjs";
 import { d as y } from "./dataBsToggle-B84TS15h.mjs";
 import { c as m } from "./collapsingClass-BxKtDBMH.mjs";
 import { s as u } from "./showClass-C8hdJfjQ.mjs";
-import { g as E } from "./getTargetElement-PcSFNllf.mjs";
-import { i as A } from "./isDisabled-C26LKsNR.mjs";
-const n = "collapse", N = "Collapse", O = `.${n}`, B = `[${y}="${n}"]`, j = { parent: null }, p = (a) => G(a, N), z = (a) => new R(a), $ = C(`show.bs.${n}`), F = C(`shown.bs.${n}`), b = C(`hide.bs.${n}`), J = C(`hidden.bs.${n}`), K = (a) => {
+import { g as E } from "./getTargetElement-BS7yo_aJ.mjs";
+import { i as A } from "./isDisabled-CYinJ77M.mjs";
+const n = "collapse", N = "Collapse", O = `.${n}`, B = `[${y}="${n}"]`, j = { parent: null }, p = (a) => H(a, N), z = (a) => new R(a), $ = C(`show.bs.${n}`), F = C(`shown.bs.${n}`), b = C(`hide.bs.${n}`), J = C(`hidden.bs.${n}`), K = (a) => {
   const { element: e, parent: t, triggers: s } = a;
   f(e, $), $.defaultPrevented || (l.set(e, d, 17), t && l.set(t, d, 17), c(e, m), g(e, n), h(e, { height: `${e.scrollHeight}px` }), x(e, () => {
     l.clear(e), t && l.clear(t), s.forEach((o) => _(o, I, "true")), g(e, m), c(e, n), c(e, u), h(e, { height: "" }), f(e, F);
   }));
 }, w = (a) => {
   const { element: e, parent: t, triggers: s } = a;
-  f(e, b), b.defaultPrevented || (l.set(e, d, 17), t && l.set(t, d, 17), h(e, { height: `${e.scrollHeight}px` }), g(e, n), g(e, u), c(e, m), P(e), h(e, { height: "0px" }), x(e, () => {
+  f(e, b), b.defaultPrevented || (l.set(e, d, 17), t && l.set(t, d, 17), h(e, { height: `${e.scrollHeight}px` }), g(e, n), g(e, u), c(e, m), Z(e), h(e, { height: "0px" }), x(e, () => {
     l.clear(e), t && l.clear(t), s.forEach((o) => _(o, I, "false")), g(e, m), c(e, n), h(e, { height: "" }), f(e, J);
   }));
 }, M = (a) => {
@@ -24,10 +24,10 @@ class R extends D {
   static getInstance = p;
   constructor(e, t) {
     super(e, t);
-    const { element: s, options: o } = this, i = H(s);
+    const { element: s, options: o } = this, i = L(s);
     this.triggers = [...v(B, i)].filter(
       (r) => E(r) === s
-    ), this.parent = L(o.parent) ? o.parent : S(o.parent) ? E(s) || T(o.parent, i) : null, this._toggleEventListeners(!0);
+    ), this.parent = T(o.parent) ? o.parent : k(o.parent) ? E(s) || S(o.parent, i) : null, this._toggleEventListeners(!0);
   }
   get name() {
     return N;
@@ -49,12 +49,12 @@ class R extends D {
     })), K(this), s.length && s.forEach((r) => g(r, `${n}d`)));
   }
   toggle() {
-    k(this.element, u) ? this.hide() : this.show();
+    G(this.element, u) ? this.hide() : this.show();
   }
   _toggleEventListeners = (e) => {
-    const t = e ? Q : W, { triggers: s } = this;
+    const t = e ? P : Q, { triggers: s } = this;
     s.length && s.forEach((o) => {
-      t(o, Z, M);
+      t(o, W, M);
     });
   };
   dispose() {

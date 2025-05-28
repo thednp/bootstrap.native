@@ -1,17 +1,17 @@
-import { T as p, J as i, t as n } from "./base-component-DdvmGdVr.mjs";
+import { T as p, t as i, J as n } from "./base-component-BqNxSX4W.mjs";
 import { d as l } from "./dataBsToggle-B84TS15h.mjs";
-import { T as r, s as c, p as a, a as e, g as m, t as u } from "./tooltip-BnTU8SFO.mjs";
-const b = `[${l}="${e}"],[data-tip="${e}"]`, d = p({}, u, {
-  template: m(e),
+import { g as r, t as c, T as m, p as e, s as u, a } from "./tooltip-CTF-MOxD.mjs";
+const b = `[${l}="${e}"],[data-tip="${e}"]`, d = p({}, c, {
+  template: r(e),
   content: "",
   dismissible: !1,
   btnClose: '<button class="btn-close position-absolute top-0 end-0 m-1" aria-label="Close"></button>'
-}), f = (t) => n(t, a), g = (t) => new T(t);
-class T extends r {
+}), f = (t) => i(t, a), g = (t) => new T(t);
+class T extends m {
   static selector = b;
   static init = g;
   static getInstance = f;
-  static styleTip = c;
+  static styleTip = u;
   constructor(s, o) {
     super(s, o);
   }
@@ -24,7 +24,7 @@ class T extends r {
   show = () => {
     super.show();
     const { options: s, btn: o } = this;
-    s.dismissible && o && setTimeout(() => i(o), 17);
+    s.dismissible && o && setTimeout(() => n(o), 17);
   };
 }
 export {
