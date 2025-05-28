@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
@@ -109,9 +109,9 @@
     "typescript"
   ],
   "dependencies": {
-    "@thednp/event-listener": "^2.0.8",
-    "@thednp/position-observer": "^1.0.7",
-    "@thednp/shorty": "^2.0.10"
+    "@thednp/event-listener": "^2.0.10",
+    "@thednp/position-observer": "^1.0.8",
+    "@thednp/shorty": "^2.0.11"
   },
   "devDependencies": {
     "@types/node": "^22.15.23",
@@ -119,7 +119,7 @@
     "@vitest/coverage-istanbul": "^3.1.4",
     "@vitest/ui": "^3.1.4",
     "playwright": "^1.52.0",
-    "typescript": "5.8.3",
+    "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-strip-comments": "^0.0.5",

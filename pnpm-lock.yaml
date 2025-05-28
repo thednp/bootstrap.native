@@ -6,14 +6,14 @@ settings:
 
 dependencies:
   '@thednp/event-listener':
-    specifier: ^2.0.8
-    version: 2.0.8
-  '@thednp/position-observer':
-    specifier: ^1.0.7
-    version: 1.0.7
-  '@thednp/shorty':
     specifier: ^2.0.10
     version: 2.0.10
+  '@thednp/position-observer':
+    specifier: ^1.0.8
+    version: 1.0.8
+  '@thednp/shorty':
+    specifier: ^2.0.11
+    version: 2.0.11
 
 devDependencies:
   '@types/node':
@@ -32,7 +32,7 @@ devDependencies:
     specifier: ^1.52.0
     version: 1.52.0
   typescript:
-    specifier: 5.8.3
+    specifier: ^5.8.3
     version: 5.8.3
   vite:
     specifier: ^6.3.5
@@ -782,20 +782,20 @@ packages:
       '@testing-library/dom': 10.4.0
     dev: true
 
-  /@thednp/event-listener@2.0.8:
-    resolution: {integrity: sha512-bZY04sWSn2YWAqcuY/fYy03ynARYHwn8xzYgdqqcHBXsBXhOc+bbWwHyLwW28XAA2NjzjMPZZAM3N5D09i+zEQ==}
+  /@thednp/event-listener@2.0.10:
+    resolution: {integrity: sha512-TH7YVKmoKg6GBLqZB+ETXObofcqJ/Tp5ycheolvYZMjLbMpzYf6MmOWTcBtx8+zrhWy8deV0hYkPvDFioDXdVQ==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
     dev: false
 
-  /@thednp/position-observer@1.0.7:
-    resolution: {integrity: sha512-MkUAMMgqZPxy71hpcrKr9ZtedMk+oIFbFs5B8uKD857iuYKRJxgJtC1Itus14EEM4qMyeN0x47AUZJmZJQyXbQ==}
+  /@thednp/position-observer@1.0.8:
+    resolution: {integrity: sha512-NZ1cKuGBwWXZjpJvmipet8GyYnV+lUyOyiyzfuzO2Y5lqAPvep0P2QHkKMqe6V5+yEqwhRLhKoQO23z5PPgZ1w==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
     dependencies:
-      '@thednp/shorty': 2.0.10
+      '@thednp/shorty': 2.0.11
     dev: false
 
-  /@thednp/shorty@2.0.10:
-    resolution: {integrity: sha512-H+hs1lw3Yc1NfwG0b7F7YmVjxQZ31NO2+6zx+I+9XabHxdwPKjvYJnkKKXr7bSItgm2AFrfOn5+3veB6W4iauw==}
+  /@thednp/shorty@2.0.11:
+    resolution: {integrity: sha512-D+rLHt1l7c608yCuzXYJ75aDNWeMVbor+m1HO/XibhiWRbCpD8r6TUv3ayJI+feVfCnBNfrH+p6LSDn9l99uBA==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
     dev: false
 

@@ -32,7 +32,9 @@ export default defineConfig({
       provider: 'playwright', // or 'webdriverio'
       enabled: true,
       headless: true,
-      name: 'chromium', // browser name is required
+      instances: [
+        { browser: "chromium" }
+      ]
     },
   },
 });

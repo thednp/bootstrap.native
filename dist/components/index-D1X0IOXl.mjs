@@ -1,6 +1,6 @@
 const k = (e) => e != null && typeof e == "object" || !1, m = (e) => k(e) && typeof e.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
   (t) => e.nodeType === t
-) || !1, a = (e) => m(e) && e.nodeType === 1 || !1, w = (e) => typeof e == "function" || !1, p = "1.0.7", u = "PositionObserver Error";
+) || !1, a = (e) => m(e) && e.nodeType === 1 || !1, w = (e) => typeof e == "function" || !1, p = "1.0.8", _ = "PositionObserver Error";
 class y {
   entries;
   static version = p;
@@ -18,7 +18,7 @@ class y {
    */
   constructor(t, i) {
     if (!w(t))
-      throw new Error(`${u}: ${t} is not a function.`);
+      throw new Error(`${_}: ${t} is not a function.`);
     this.entries = /* @__PURE__ */ new Map(), this._callback = t, this._root = a(i?.root) ? i.root : document?.documentElement, this._tick = 0;
   }
   /**
@@ -31,7 +31,7 @@ class y {
   observe = (t) => {
     if (!a(t))
       throw new Error(
-        `${u}: ${t} is not an instance of Element.`
+        `${_}: ${t} is not an instance of Element.`
       );
     this._root.contains(t) && this._new(t).then(({ boundingClientRect: i }) => {
       if (i && !this.getEntry(t)) {
@@ -66,13 +66,13 @@ class y {
         ({
           target: o,
           boundingClientRect: c,
-          clientWidth: _,
-          clientHeight: b
+          clientWidth: u,
+          clientHeight: f
         }) => {
-          this._root.contains(o) && this._new(o).then(({ boundingClientRect: h, isIntersecting: d }) => {
-            if (!d) return;
-            const { left: f, top: g } = h;
-            if (c.top !== g || c.left !== f || _ !== t || b !== i) {
+          this._root.contains(o) && this._new(o).then(({ boundingClientRect: h, isIntersecting: b }) => {
+            if (!b) return;
+            const { left: d, top: g } = h;
+            if (c.top !== g || c.left !== d || u !== t || f !== i) {
               const l = {
                 target: o,
                 boundingClientRect: h,
@@ -119,4 +119,4 @@ class y {
 export {
   y
 };
-//# sourceMappingURL=index-CqJ2yo-u.mjs.map
+//# sourceMappingURL=index-D1X0IOXl.mjs.map

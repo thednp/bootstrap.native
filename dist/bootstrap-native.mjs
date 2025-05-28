@@ -213,7 +213,7 @@ const zt = /* @__PURE__ */ new Map(), On = (e, t) => {
     Mn,
     a
   );
-}, N = "fade", p = "show", Se = "data-bs-dismiss", He = "alert", Bn = "Alert", nt = (e) => h(e, "disabled") || Y(e, "disabled") === "true", hi = "5.1.3", fi = hi;
+}, N = "fade", p = "show", Se = "data-bs-dismiss", He = "alert", Bn = "Alert", nt = (e) => h(e, "disabled") || Y(e, "disabled") === "true", hi = "5.1.4", fi = hi;
 class st {
   constructor(t, s) {
     let n;
@@ -587,7 +587,7 @@ class qn extends st {
 }
 const Ri = (e) => e != null && typeof e == "object" || !1, Wi = (e) => Ri(e) && typeof e.nodeType == "number" && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].some(
   (t) => e.nodeType === t
-) || !1, Fs = (e) => Wi(e) && e.nodeType === 1 || !1, Fi = (e) => typeof e == "function" || !1, ji = "1.0.7", js = "PositionObserver Error";
+) || !1, Fs = (e) => Wi(e) && e.nodeType === 1 || !1, Fi = (e) => typeof e == "function" || !1, ji = "1.0.8", js = "PositionObserver Error";
 class us {
   entries;
   static version = ji;
