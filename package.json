@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "5.1.4",
+  "version": "5.1.5",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
@@ -79,13 +79,13 @@
     "pre-test": "pnpm clean-coverage",
     "dev": "vite --open ./docs/index-dev.html --port 8577",
     "serve": "vite --open ./docs/index.html --port 8577",
-    "test": "pnpm pre-test && vitest --config vitest.config.mts",
-    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.mts --browser=chrome",
+    "test": "pnpm pre-test && vitest --config vitest.config.ts",
+    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.ts --browser=chrome",
     "clean-coverage": "rm -rf coverage .nyc_output",
     "badges": "npx -p dependency-version-badge update-badge typescript vitest vite",
     "build": "pnpm build-vite && pnpm build-components && pnpm copy-docs",
     "build-vite": "vite build",
-    "build-components": "vite build --config vite.config.components.mts",
+    "build-components": "vite build --config vite.config.components.ts",
     "copy-docs": "cp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && cp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
     "lint": "deno lint src && pnpm check:ts",
     "check:ts": "tsc --noEmit",
@@ -110,20 +110,20 @@
   ],
   "dependencies": {
     "@thednp/event-listener": "^2.0.10",
-    "@thednp/position-observer": "^1.0.8",
+    "@thednp/position-observer": "^1.1.0",
     "@thednp/shorty": "^2.0.11"
   },
   "devDependencies": {
-    "@types/node": "^22.15.23",
-    "@vitest/browser": "^3.1.4",
-    "@vitest/coverage-istanbul": "^3.1.4",
-    "@vitest/ui": "^3.1.4",
-    "playwright": "^1.52.0",
+    "@types/node": "^24.0.0",
+    "@vitest/browser": "^3.2.3",
+    "@vitest/coverage-istanbul": "^3.2.3",
+    "@vitest/ui": "^3.2.3",
+    "playwright": "^1.53.0",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-strip-comments": "^0.0.5",
-    "vitest": "^3.1.4"
+    "vite-plugin-strip-comments": "^0.0.6",
+    "vitest": "^3.2.3"
   },
   "packageManager": "pnpm@8.6.12",
   "engines": {

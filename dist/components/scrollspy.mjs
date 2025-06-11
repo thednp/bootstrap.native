@@ -1,24 +1,24 @@
-import { B as H, t as x, W as C, d as T, M as B, N as D, K as d, a6 as O, E as k, r as z, v as G, a7 as S, G as b, _ as p, m as M, Z as N, P as W, a as Z } from "./base-component-BO-nCUu-.mjs";
-import { y as $ } from "./index-D1X0IOXl.mjs";
+import { B as H, t as x, W as C, d as T, M as O, N as B, K as d, a6 as D, E as P, r as k, v as z, a7 as S, G as b, _ as p, m as G, Z as M, P as N, a as W } from "./base-component-MKkLYOoi.mjs";
+import { P as Z } from "./index-CwctZXUT.mjs";
 import { a as f } from "./activeClass-iqaD75Su.mjs";
-import { i as q } from "./isDisabled-BnHBewNm.mjs";
-const F = "scrollspy", I = "ScrollSpy", K = '[data-bs-spy="scroll"]', P = "[href]", Q = {
+import { i as q } from "./isDisabled-C2t7TiGY.mjs";
+const F = "scrollspy", I = "ScrollSpy", K = '[data-bs-spy="scroll"]', Q = "[href]", $ = {
   offset: 10,
   target: void 0
-}, j = (o) => x(o, I), J = (o) => new U(o), _ = M(`activate.bs.${F}`), R = (o) => {
+}, j = (o) => x(o, I), J = (o) => new U(o), _ = G(`activate.bs.${F}`), R = (o) => {
   const {
     target: t,
     _itemsLength: r,
     _observables: e
   } = o, s = S("A", t), n = T(t);
-  !s.length || r === e.size || (e.clear(), Array.from(s).forEach((l) => {
-    const a = d(l, "href")?.slice(1), i = a?.length ? n.getElementById(a) : null;
-    i && !q(l) && o._observables.set(i, l);
+  !s.length || r === e.size || (e.clear(), Array.from(s).forEach((a) => {
+    const l = d(a, "href")?.slice(1), i = l?.length ? n.getElementById(l) : null;
+    i && !q(a) && o._observables.set(i, a);
   }), o._itemsLength = o._observables.size);
 }, E = (o) => {
   Array.from(S("A", o)).forEach(
     (t) => {
-      p(t, f) && Z(t, f);
+      p(t, f) && W(t, f);
     }
   );
 }, y = (o, t) => {
@@ -32,10 +32,10 @@ const F = "scrollspy", I = "ScrollSpy", K = '[data-bs-spy="scroll"]', P = "[href
       const n = s.previousElementSibling;
       n && !p(n, f) && b(n, f);
     }
-  _.relatedTarget = t, N(e, _);
+  _.relatedTarget = t, M(e, _);
 }, g = (o, t) => {
   const { scrollTarget: r, element: e, options: s } = o;
-  return (r !== e ? W(t).top + r.scrollTop : t.offsetTop) - (s.offset || 10);
+  return (r !== e ? N(t).top + r.scrollTop : t.offsetTop) - (s.offset || 10);
 };
 class U extends H {
   static selector = K;
@@ -47,7 +47,7 @@ class U extends H {
       s.target,
       T(e)
     );
-    n && (this.target = n, this.scrollTarget = e.clientHeight < e.scrollHeight ? e : B(e), this._observables = /* @__PURE__ */ new Map(), this.refresh(), this._observer = new $(() => {
+    n && (this.target = n, this.scrollTarget = e.clientHeight < e.scrollHeight ? e : O(e), this._observables = /* @__PURE__ */ new Map(), this.refresh(), this._observer = new Z(() => {
       requestAnimationFrame(() => this.refresh());
     }, {
       root: this.scrollTarget
@@ -57,7 +57,7 @@ class U extends H {
     return I;
   }
   get defaults() {
-    return Q;
+    return $;
   }
   refresh = () => {
     const { target: t, scrollTarget: r } = this;
@@ -65,27 +65,27 @@ class U extends H {
     R(this);
     const { _itemsLength: e, _observables: s, _activeItem: n } = this;
     if (!e) return;
-    const l = s.entries().toArray(), { scrollTop: a, scrollHeight: i, clientHeight: A } = r;
-    if (a >= i - A) {
-      const c = l[e - 1]?.[1];
+    const a = s.entries().toArray(), { scrollTop: l, scrollHeight: i, clientHeight: A } = r;
+    if (l >= i - A) {
+      const c = a[e - 1]?.[1];
       n !== c && y(this, c);
       return;
     }
-    const h = l[0]?.[0] ? g(this, l[0][0]) : null;
-    if (h !== null && a < h && h > 0) {
+    const h = a[0]?.[0] ? g(this, a[0][0]) : null;
+    if (h !== null && l < h && h > 0) {
       this._activeItem = null, E(t);
       return;
     }
     for (let c = 0; c < e; c += 1) {
-      const [w, m] = l[c], L = g(this, w), u = l[c + 1]?.[0], v = u ? g(this, u) : null;
-      if (n !== m && a >= L && (v === null || a < v)) {
+      const [w, m] = a[c], L = g(this, w), u = a[c + 1]?.[0], v = u ? g(this, u) : null;
+      if (n !== m && l >= L && (v === null || l < v)) {
         y(this, m);
         break;
       }
     }
   };
   _scrollTo = (t) => {
-    const r = D(t.target, P), e = r && d(r, "href")?.slice(1), s = e && O(e, this.target);
+    const r = B(t.target, Q), e = r && d(r, "href")?.slice(1), s = e && D(e, this.target);
     s && (this.scrollTarget.scrollTo({
       top: s.offsetTop,
       behavior: "smooth"
@@ -93,7 +93,7 @@ class U extends H {
   };
   _toggleEventListeners = (t) => {
     const { target: r, _observables: e, _observer: s, _scrollTo: n } = this;
-    (t ? k : z)(r, G, n), t ? e?.forEach((a, i) => s.observe(i)) : s.disconnect();
+    (t ? P : k)(r, z, n), t ? e?.forEach((l, i) => s.observe(i)) : s.disconnect();
   };
   dispose() {
     this._toggleEventListeners(), super.dispose();
