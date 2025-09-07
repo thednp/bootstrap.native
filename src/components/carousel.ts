@@ -65,7 +65,7 @@ const dataBsSlideTo = "data-bs-slide-to";
 const dataBsSlide = "data-bs-slide";
 const pausedClass = "paused";
 const touchEvent = isMobile() ? touchstartEvent : pointerdownEvent;
-console.log({ isMobile: isMobile(), touchEvent })
+console.log({ isMobile: isMobile(), touchEvent });
 
 const carouselDefaults: CarouselOptions = {
   pause: "hover",

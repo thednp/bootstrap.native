@@ -5,7 +5,7 @@
 [![jsDeliver](https://img.shields.io/jsdelivr/npm/hw/bootstrap.native)](https://www.jsdelivr.com/package/npm/bootstrap.native)
 [![typescript version](https://img.shields.io/badge/typescript-5.9.2-brightgreen)](https://www.typescriptlang.org/)
 [![vitest version](https://img.shields.io/badge/vitest-3.2.4-brightgreen)](https://vitest.dev/)
-[![vite version](https://img.shields.io/badge/vite-7.1.3-brightgreen)](https://vitejs.dev/)
+[![vite version](https://img.shields.io/badge/vite-7.1.4-brightgreen)](https://vitejs.dev/)
 
 
 The faster, lighter and more compact set of JavaScript components for **Bootstrap 5**, sourced with TypeScript and free from major dependecies such as jQuery, Popper.
