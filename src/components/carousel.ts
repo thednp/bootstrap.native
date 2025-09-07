@@ -15,6 +15,7 @@ import {
   getInstance,
   hasClass,
   isElementInScrollRange,
+  isMobile,
   isRTL,
   keyArrowLeft,
   keyArrowRight,
@@ -63,6 +64,8 @@ const carouselItem = `${carouselString}-item`;
 const dataBsSlideTo = "data-bs-slide-to";
 const dataBsSlide = "data-bs-slide";
 const pausedClass = "paused";
+const touchEvent = isMobile() ? touchstartEvent : pointerdownEvent;
+console.log({ isMobile: isMobile(), touchEvent })
 
 const carouselDefaults: CarouselOptions = {
   pause: "hover",
@@ -256,15 +259,16 @@ function carouselDragHandler<T extends HTMLElement>(
   const { target } = e;
   const self = getCarouselInstance(this);
 
+  // Only prevent default if we're touching the carousel content
+  // but not the controls or indicators
   // istanbul ignore next @preserve
   if (
     self &&
     self.isTouch &&
-    ((self.indicator && !self.indicator.contains(target)) ||
-      !self.controls.includes(target))
+    !self.controls.includes(target as HTMLElement) &&
+    !self.controls.includes(target?.parentElement as HTMLElement) &&
+    (!self.indicator || !self.indicator.contains(target))
   ) {
-    e.stopImmediatePropagation();
-    e.stopPropagation();
     e.preventDefault();
   }
 }
@@ -287,20 +291,25 @@ function carouselPointerDownHandler(
   if (!self || self.isAnimating || self.isTouch) return;
 
   // filter pointer event on controls & indicators
-  const { controls, indicators } = self;
+  const { controls, indicator } = self;
   // istanbul ignore else @preserve
   if (
-    ![...controls, ...indicators].every((el) =>
-      el === target || el.contains(target)
-    )
+    ![...controls, indicator].every((el) =>
+      el && (el === target || el.contains(target))
+    ) && this.contains(target)
   ) {
     startX = e.pageX;
 
     // istanbul ignore else @preserve
-    if (this.contains(target)) {
-      self.isTouch = true;
-      toggleCarouselTouchHandlers(self, true);
-    }
+    // if (this.contains(target)) {
+    self.isTouch = true;
+    toggleCarouselTouchHandlers(self, true);
+    // }
+  } else {
+    // e.stopImmediatePropagation();
+
+    // e.stopPropagation();
+    // e.preventDefault();
   }
 }
 

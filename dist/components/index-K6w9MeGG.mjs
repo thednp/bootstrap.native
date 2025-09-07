@@ -1,4 +1,4 @@
-import { ae as m, ap as o } from "./base-component-MKkLYOoi.mjs";
+import { af as m, aq as o } from "./base-component-BazRqYWL.mjs";
 var l = "1.1.0";
 const d = [
   "all",
@@ -83,8 +83,8 @@ var v = class {
               return;
             }
           }
-          const { left: u, top: f } = n.boundingClientRect;
-          (c.top !== f || c.left !== u || this._w !== t || this._h !== e) && (this.entries.set(h, n), r.push(n));
+          const { left: f, top: u } = n.boundingClientRect;
+          (c.top !== u || c.left !== f || this._w !== t || this._h !== e) && (this.entries.set(h, n), r.push(n));
         });
       }), this._w = t, this._h = e, s(r);
     });
@@ -125,4 +125,4 @@ var v = class {
 export {
   v as P
 };
-//# sourceMappingURL=index-CwctZXUT.mjs.map
+//# sourceMappingURL=index-K6w9MeGG.mjs.map

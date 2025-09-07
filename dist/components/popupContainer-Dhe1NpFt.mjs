@@ -1,22 +1,22 @@
-import { a5 as c, ah as s, a2 as f } from "./base-component-MKkLYOoi.mjs";
-const v = "modal", B = "offcanvas", a = c({
+import { a6 as c, ai as s, a3 as f } from "./base-component-BazRqYWL.mjs";
+const i = "modal", v = "offcanvas", a = c({
   tagName: "div",
   className: "popup-container"
-}), h = (p, o) => {
+}), B = (p, o) => {
   const n = s(o) && o.nodeName === "BODY", e = s(o) && !n ? o : a, d = n ? o : f(p);
   s(p) && (e === a && d.append(a), e.append(p));
-}, i = (p, o) => {
+}, N = (p, o) => {
   const n = s(o) && o.nodeName === "BODY", e = s(o) && !n ? o : a;
   s(p) && (p.remove(), e === a && !a.children.length && a.remove());
-}, N = (p, o) => {
+}, h = (p, o) => {
   const n = s(o) && o.nodeName !== "BODY" ? o : a;
   return s(p) && n.contains(p);
 };
 export {
-  h as a,
-  N as h,
-  v as m,
-  B as o,
-  i as r
+  B as a,
+  h,
+  i as m,
+  v as o,
+  N as r
 };
-//# sourceMappingURL=popupContainer-BV1c3Kz1.mjs.map
+//# sourceMappingURL=popupContainer-Dhe1NpFt.mjs.map

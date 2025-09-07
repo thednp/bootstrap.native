@@ -1,10 +1,10 @@
-import { B as k, t as x, _ as p, G as l, a as r, W as G, c as H, d as P, Z as m, m as g, E as W, r as Z, a9 as S, aa as N, w as b, A as j, h as a, v as T, e as D, s as _ } from "./base-component-MKkLYOoi.mjs";
+import { B as k, t as x, _ as p, G as l, a as r, W as G, e as H, d as P, Z as m, m as g, E as W, r as Z, aa as b, ab as N, w as S, A as j, h as a, v as T, f as D, s as _ } from "./base-component-BazRqYWL.mjs";
 import { f as d } from "./fadeClass-CLIYI_zn.mjs";
 import { s as f } from "./showClass-C8hdJfjQ.mjs";
 import { d as q } from "./dataBsDismiss-DdNPQYa-.mjs";
 import { d as z } from "./dataBsToggle-B84TS15h.mjs";
-import { g as y } from "./getTargetElement-DnMrEHif.mjs";
-import { i as F } from "./isDisabled-C2t7TiGY.mjs";
+import { g as y } from "./getTargetElement-DX_B2QXD.mjs";
+import { i as F } from "./isDisabled-CipSDrHr.mjs";
 const o = "toast", B = "Toast", J = `.${o}`, K = `[${q}="${o}"]`, M = `[${z}="${o}"]`, c = "showing", A = "hide", O = {
   animation: !0,
   autohide: !0,
@@ -43,7 +43,7 @@ function Y(e) {
 }
 const tt = (e) => {
   const t = e.target, s = w(t), { type: n, relatedTarget: i } = e;
-  !s || t === i || t.contains(i) || ([b, S].includes(n) ? a.clear(t, o) : a.set(t, () => s.hide(), s.options.delay, o));
+  !s || t === i || t.contains(i) || ([S, b].includes(n) ? a.clear(t, o) : a.set(t, () => s.hide(), s.options.delay, o));
 };
 class st extends k {
   static selector = J;
@@ -80,7 +80,7 @@ class st extends k {
   };
   _toggleEventListeners = (t) => {
     const s = t ? W : Z, { element: n, triggers: i, dismiss: h, options: I, hide: L } = this;
-    h && s(h, T, L), I.autohide && [S, N, b, j].forEach(
+    h && s(h, T, L), I.autohide && [b, N, S, j].forEach(
       (u) => s(n, u, tt)
     ), i.length && i.forEach((u) => {
       s(u, T, Y);

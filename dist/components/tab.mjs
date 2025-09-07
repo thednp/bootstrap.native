@@ -1,11 +1,11 @@
-import { B as q, t as z, N as p, W as Q, G as f, Q as E, h as v, _ as l, m as C, o as d, Z as T, a as b, s as y, E as F, r as J, a8 as H, v as K, j as O, e as W } from "./base-component-MKkLYOoi.mjs";
+import { B as q, t as z, N as p, W as Q, G as g, Q as E, h as v, _ as l, m as C, o as d, Z as T, a as b, s as y, E as F, r as J, a9 as H, v as K, j as O, f as W } from "./base-component-BazRqYWL.mjs";
 import { c as _ } from "./collapsingClass-BxKtDBMH.mjs";
 import { a as c } from "./activeClass-iqaD75Su.mjs";
 import { f as h } from "./fadeClass-CLIYI_zn.mjs";
 import { s as w } from "./showClass-C8hdJfjQ.mjs";
 import { d as B } from "./dropdownClasses-CdCdZ-PX.mjs";
 import { d as R } from "./dataBsToggle-B84TS15h.mjs";
-import { g as P } from "./getTargetElement-DnMrEHif.mjs";
+import { g as P } from "./getTargetElement-DX_B2QXD.mjs";
 const m = "tab", Z = "Tab", j = `[${R}="${m}"]`, A = (s) => z(s, Z), U = (s) => new X(s), x = C(
   `show.bs.${m}`
 ), I = C(
@@ -29,25 +29,25 @@ const m = "tab", Z = "Tab", j = `[${R}="${m}"]`, A = (s) => z(s, Z), U = (s) => 
 }, G = (s) => {
   const { element: e, content: t, tabContent: n, nav: i } = s, { tab: o, content: a } = i && u.get(i) || { tab: null, content: null };
   let r = 0;
-  if (n && t && l(t, h) && ([a, t].forEach((g) => {
-    g && f(g, "overflow-hidden");
+  if (n && t && l(t, h) && ([a, t].forEach((f) => {
+    f && g(f, "overflow-hidden");
   }), r = a ? a.scrollHeight : 0), x.relatedTarget = o, L.relatedTarget = e, T(e, x), !x.defaultPrevented) {
-    if (t && f(t, c), a && b(a, c), n && t && l(t, h)) {
-      const g = t.scrollHeight;
+    if (t && g(t, c), a && b(a, c), n && t && l(t, h)) {
+      const f = t.scrollHeight;
       u.set(e, {
         currentHeight: r,
-        nextHeight: g,
+        nextHeight: f,
         tab: null,
         content: null
-      }), f(n, _), n.style.height = `${r}px`, W(n), [a, t].forEach((D) => {
+      }), g(n, _), n.style.height = `${r}px`, W(n), [a, t].forEach((D) => {
         D && b(D, "overflow-hidden");
       });
     }
     t && t && l(t, h) ? setTimeout(() => {
-      f(t, w), y(t, () => {
+      g(t, w), y(t, () => {
         k(s);
       });
-    }, 1) : (t && f(t, w), k(s)), o && T(o, L);
+    }, 1) : (t && g(t, w), k(s)), o && T(o, L);
   }
 }, M = (s) => {
   const { nav: e } = s;
@@ -86,8 +86,8 @@ class X extends q {
     this.nav = i, this.content = n, this.tabContent = o, this.dropdown = N(t);
     const { tab: a } = M(this);
     if (i && !a) {
-      const r = Q(j, i), g = r && P(r);
-      g && (f(r, c), f(g, w), f(g, c), E(t, H, "true"));
+      const r = Q(j, i), f = r && P(r);
+      f && (g(r, c), g(f, w), g(f, c), E(t, H, "true"));
     }
     this._toggleEventListeners(!0);
   }
@@ -99,13 +99,13 @@ class X extends q {
     if (n && v.get(n) || l(e, c)) return;
     const { tab: o, content: a } = M(this);
     if (n && o && u.set(n, { tab: o, content: a, currentHeight: 0, nextHeight: 0 }), $.relatedTarget = e, !d(o) || (T(o, $), $.defaultPrevented)) return;
-    f(e, c), E(e, H, "true");
+    g(e, c), E(e, H, "true");
     const r = d(o) && N(o);
     if (r && l(r, c) && b(r, c), n) {
-      const g = () => {
-        o && (b(o, c), E(o, H, "false")), i && !l(i, c) && f(i, c);
+      const f = () => {
+        o && (b(o, c), E(o, H, "false")), i && !l(i, c) && g(i, c);
       };
-      a && (l(a, h) || t && l(t, h)) ? v.set(n, g, 1) : g();
+      a && (l(a, h) || t && l(t, h)) ? v.set(n, f, 1) : f();
     }
     a && (b(a, w), l(a, h) ? y(a, () => G(this)) : G(this));
   }
