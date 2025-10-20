@@ -21,7 +21,7 @@ devDependencies:
     version: 24.3.1
   '@vitest/browser':
     specifier: ^3.2.4
-    version: 3.2.4(playwright@1.55.0)(vite@7.1.4)(vitest@3.2.4)
+    version: 3.2.4(playwright@1.55.1)(vite@7.1.4)(vitest@3.2.4)
   '@vitest/coverage-istanbul':
     specifier: ^3.2.4
     version: 3.2.4(vitest@3.2.4)
@@ -30,7 +30,7 @@ devDependencies:
     version: 3.2.4(vitest@3.2.4)
   playwright:
     specifier: ^1.55.0
-    version: 1.55.0
+    version: 1.55.1
   typescript:
     specifier: ^5.9.2
     version: 5.9.2
@@ -853,7 +853,7 @@ packages:
       undici-types: 7.10.0
     dev: true
 
-  /@vitest/browser@3.2.4(playwright@1.55.0)(vite@7.1.4)(vitest@3.2.4):
+  /@vitest/browser@3.2.4(playwright@1.55.1)(vite@7.1.4)(vitest@3.2.4):
     resolution: {integrity: sha512-tJxiPrWmzH8a+w9nLKlQMzAKX/7VjFs50MWgcAj7p9XQ7AQ9/35fByFYptgPELyLw+0aixTnC4pUWV+APcZ/kw==}
     peerDependencies:
       playwright: '*'
@@ -873,7 +873,7 @@ packages:
       '@vitest/mocker': 3.2.4(vite@7.1.4)
       '@vitest/utils': 3.2.4
       magic-string: 0.30.18
-      playwright: 1.55.0
+      playwright: 1.55.1
       sirv: 3.0.2
       tinyrainbow: 2.0.0
       vitest: 3.2.4(@types/node@24.3.1)(@vitest/browser@3.2.4)(@vitest/ui@3.2.4)
@@ -1725,18 +1725,18 @@ packages:
       pathe: 2.0.3
     dev: true
 
-  /playwright-core@1.55.0:
-    resolution: {integrity: sha512-GvZs4vU3U5ro2nZpeiwyb0zuFaqb9sUiAJuyrWpcGouD8y9/HLgGbNRjIph7zU9D3hnPaisMl9zG9CgFi/biIg==}
+  /playwright-core@1.55.1:
+    resolution: {integrity: sha512-Z6Mh9mkwX+zxSlHqdr5AOcJnfp+xUWLCt9uKV18fhzA8eyxUd8NUWzAjxUh55RZKSYwDGX0cfaySdhZJGMoJ+w==}
     engines: {node: '>=18'}
     hasBin: true
     dev: true
 
-  /playwright@1.55.0:
-    resolution: {integrity: sha512-sdCWStblvV1YU909Xqx0DhOjPZE4/5lJsIS84IfN9dAZfcl/CIZ5O8l3o0j7hPMjDvqoTF8ZUcc+i/GL5erstA==}
+  /playwright@1.55.1:
+    resolution: {integrity: sha512-cJW4Xd/G3v5ovXtJJ52MAOclqeac9S/aGGgRzLabuF8TnIb6xHvMzKIa6JmrRzUkeXJgfL1MhukP0NK6l39h3A==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
-      playwright-core: 1.55.0
+      playwright-core: 1.55.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
@@ -2180,7 +2180,7 @@ packages:
     dependencies:
       '@types/chai': 5.2.2
       '@types/node': 24.3.1
-      '@vitest/browser': 3.2.4(playwright@1.55.0)(vite@7.1.4)(vitest@3.2.4)
+      '@vitest/browser': 3.2.4(playwright@1.55.1)(vite@7.1.4)(vitest@3.2.4)
       '@vitest/expect': 3.2.4
       '@vitest/mocker': 3.2.4(vite@7.1.4)
       '@vitest/pretty-format': 3.2.4
