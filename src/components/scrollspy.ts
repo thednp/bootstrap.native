@@ -208,7 +208,7 @@ export default class ScrollSpy extends BaseComponent {
 
     // create observer
     this._observer = new PositionObserver(() => {
-      requestAnimationFrame(() => this.refresh());
+      requestAnimationFrame(() => this.refresh?.());
     }, {
       root: this.scrollTarget,
     });
