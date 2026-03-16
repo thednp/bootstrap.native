@@ -1,133 +1,106 @@
-import { B as J, t as _, W as F, e as U, d as S, _ as d, m as y, Z as v, u as L, a as P, Q as x, a0 as B, s as m, E as I, r as A, a1 as N, a2 as R, v as W, y as b, a3 as Y, G, P as ee, H as te, L as K, a4 as Q, k as se, h as T, N as oe, $ as ae } from "./base-component-BazRqYWL.mjs";
-import { d as ne } from "./dataBsToggle-B84TS15h.mjs";
-import { d as ie } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { f as re } from "./fadeClass-CLIYI_zn.mjs";
-import { s as i } from "./showClass-C8hdJfjQ.mjs";
-import { m as r, h as le } from "./popupContainer-Dhe1NpFt.mjs";
-import { m as Z, g as D, a as de, t as ce, s as ge, o as h, h as z, b as he, c as me, d as fe, r as pe, i as ue, e as ve } from "./isVisible-DPm_sCau.mjs";
-import { g as V } from "./getTargetElement-DX_B2QXD.mjs";
-import { i as be } from "./isDisabled-CipSDrHr.mjs";
-const Te = `.${r}`, Se = `[${ne}="${r}"]`, ye = `[${ie}="${r}"]`, X = `${r}-static`, we = {
-  backdrop: !0,
-  keyboard: !0
-}, f = (s) => _(s, Z), De = (s) => new Me(s), u = y(
-  `show.bs.${r}`
-), H = y(
-  `shown.bs.${r}`
-), w = y(
-  `hide.bs.${r}`
-), $ = y(
-  `hidden.bs.${r}`
-), j = (s) => {
-  const { element: e } = s, t = me(e), { clientHeight: o, scrollHeight: a } = ee(e), { clientHeight: l, scrollHeight: c } = e, n = l !== c;
-  if (!n && t) {
-    const p = { [te(e) ? "paddingLeft" : "paddingRight"]: `${t}px` };
-    b(e, p);
-  }
-  fe(e, n || o !== a);
-}, q = (s, e) => {
-  const t = e ? I : A, { element: o } = s;
-  t(o, W, $e), t(S(o), se, He), e ? s._observer.observe(o) : s._observer.disconnect();
-}, k = (s) => {
-  const { triggers: e, element: t, relatedTarget: o } = s;
-  pe(t), b(t, { paddingRight: "", display: "" }), q(s);
-  const a = u.relatedTarget || e.find(ue);
-  a && K(a), $.relatedTarget = o || void 0, v(t, $), Q(t);
-}, M = (s) => {
-  const { element: e, relatedTarget: t } = s;
-  K(e), q(s, !0), H.relatedTarget = t || void 0, v(e, H), Q(e);
-}, C = (s) => {
-  const { element: e, hasFade: t } = s;
-  b(e, { display: "block" }), j(s), D(e) || b(Y(e), { overflow: "hidden" }), G(e, i), B(e, N), x(e, R, "true"), t ? m(e, () => M(s)) : M(s);
-}, O = (s) => {
-  const { element: e, options: t, hasFade: o } = s;
-  t.backdrop && o && d(h, i) && !D(e) ? (z(), m(h, () => k(s))) : k(s);
+import { $ as e, A as t, E as n, F as r, I as i, K as a, L as o, P as s, R as c, T as l, X as u, a as d, d as f, ft as p, h as ee, ht as m, m as h, n as g, ot as _, pt as v, q as te, r as y, t as b, v as x, vt as S, x as C, yt as ne, z as w } from "./base-component-Bm8KwB_I.mjs";
+import { t as re } from "./fadeClass-Bzjdr13Y.mjs";
+import { t as T } from "./showClass-CH6sh0pm.mjs";
+import { t as E } from "./dataBsDismiss-D_m2Bp4t.mjs";
+import { t as D } from "./isDisabled-CA05SUmE.mjs";
+import { t as O } from "./dataBsToggle-CeJMDTHb.mjs";
+import { t as k } from "./getTargetElement-CNLJ8Fpo.mjs";
+import { a as A, n as ie } from "./popupContainer-cXLEqUgV.mjs";
+import { a as ae, c as oe, d as se, f as ce, i as j, l as le, m as M, n as ue, r as N, s as P, t as F, u as I } from "./isVisible-Bwf_dI1N.mjs";
+//#region src/components/modal.ts
+var L = `.${A}`, R = `[${O}="${A}"]`, z = `[${E}="${A}"]`, B = `${A}-static`, V = {
+	backdrop: !0,
+	keyboard: !0
+}, H = (e) => v(e, M), de = (e) => new $(e), U = _(`show.bs.${A}`), W = _(`shown.bs.${A}`), G = _(`hide.bs.${A}`), K = _(`hidden.bs.${A}`), q = (e) => {
+	let { element: t } = e, n = se(t), { clientHeight: r, scrollHeight: i } = ne(t), { clientHeight: a, scrollHeight: o } = t, s = a !== o;
+	!s && n && f(t, { [ee(t) ? "paddingLeft" : "paddingRight"]: `${n}px` }), ce(t, s || r !== i);
+}, J = (e, t) => {
+	let n = t ? g : y, { element: r } = e;
+	n(r, S, me), n(a(r), u, pe), t ? e._observer.observe(r) : e._observer.disconnect();
+}, Y = (e) => {
+	let { triggers: t, element: n, relatedTarget: r } = e;
+	oe(n), f(n, {
+		paddingRight: "",
+		display: ""
+	}), J(e);
+	let a = U.relatedTarget || t.find(F);
+	a && w(a), K.relatedTarget = r || void 0, i(n, K), d(n);
+}, X = (e) => {
+	let { element: t, relatedTarget: n } = e;
+	w(t), J(e, !0), W.relatedTarget = n || void 0, i(t, W), d(t);
+}, Z = (e) => {
+	let { element: i, hasFade: a } = e;
+	f(i, { display: "block" }), q(e), N(i) || f(t(i), { overflow: "hidden" }), h(i, T), x(i, r), n(i, l, "true"), a ? p(i, () => X(e)) : X(e);
+}, Q = (e) => {
+	let { element: t, options: n, hasFade: r } = e;
+	n.backdrop && r && c(P, "show") && !N(t) ? (j(), p(P, () => Y(e))) : Y(e);
 };
-function Ee(s) {
-  const e = V(this), t = e && f(e);
-  be(this) || t && (this.tagName === "A" && s.preventDefault(), t.relatedTarget = this, t.toggle());
+function fe(e) {
+	let t = k(this), n = t && H(t);
+	D(this) || n && (this.tagName === "A" && e.preventDefault(), n.relatedTarget = this, n.toggle());
 }
-const He = ({ code: s, target: e }) => {
-  const t = F(ve, S(e)), o = t && f(t);
-  if (!o) return;
-  const { options: a } = o;
-  a.keyboard && s === ae && d(t, i) && (o.relatedTarget = null, o.hide());
-}, $e = (s) => {
-  const { currentTarget: e } = s, t = e && f(e);
-  if (!t || !e || T.get(e)) return;
-  const { options: o, isStatic: a, modalDialog: l } = t, { backdrop: c } = o, { target: n } = s, g = S(e)?.getSelection()?.toString().length, p = l.contains(n), E = n && oe(n, ye);
-  a && !p ? T.set(
-    e,
-    () => {
-      G(e, X), m(l, () => ke(t));
-    },
-    17
-  ) : (E || !g && !a && !p && c) && (t.relatedTarget = E || null, t.hide(), s.preventDefault());
-}, ke = (s) => {
-  const { element: e, modalDialog: t } = s, o = (L(t) || 0) + 17;
-  P(e, X), T.set(e, () => T.clear(e), o);
+var pe = ({ code: e, target: t }) => {
+	let n = s(ae, a(t)), r = n && H(n);
+	if (!r) return;
+	let { options: i } = r;
+	i.keyboard && e === "Escape" && c(n, "show") && (r.relatedTarget = null, r.hide());
+}, me = (t) => {
+	let { currentTarget: n } = t, r = n && H(n);
+	if (!r || !n || e.get(n)) return;
+	let { options: i, isStatic: o, modalDialog: s } = r, { backdrop: c } = i, { target: l } = t, u = a(n)?.getSelection()?.toString().length, d = s.contains(l), f = l && C(l, z);
+	o && !d ? e.set(n, () => {
+		h(n, B), p(s, () => he(r));
+	}, 17) : (f || !u && !o && !d && c) && (r.relatedTarget = f || null, r.hide(), t.preventDefault());
+}, he = (t) => {
+	let { element: n, modalDialog: r } = t, i = (m(r) || 0) + 17;
+	o(n, B), e.set(n, () => e.clear(n), i);
+}, $ = class extends b {
+	static selector = L;
+	static init = de;
+	static getInstance = H;
+	constructor(e, t) {
+		super(e, t);
+		let { element: n } = this, r = s(`.${A}-dialog`, n);
+		r && (this.modalDialog = r, this.triggers = [...te(R, a(n))].filter((e) => k(e) === n), this.isStatic = this.options.backdrop === "static", this.hasFade = c(n, re), this.relatedTarget = null, this._observer = new ResizeObserver(() => this.update()), this._toggleEventListeners(!0));
+	}
+	get name() {
+		return M;
+	}
+	get defaults() {
+		return V;
+	}
+	toggle() {
+		c(this.element, "show") ? this.hide() : this.show();
+	}
+	show() {
+		let { element: e, options: t, hasFade: n, relatedTarget: r } = this, { backdrop: a } = t, o = 0;
+		if (c(e, "show") || (U.relatedTarget = r || void 0, i(e, U), U.defaultPrevented)) return;
+		let s = N(e);
+		if (s && s !== e) {
+			let e = H(s) || v(s, "Offcanvas");
+			e && e.hide();
+		}
+		a ? (ie(P) ? I(!0) : ue(e, n, !0), o = m(P), le(), setTimeout(() => Z(this), o)) : (Z(this), s && c(P, "show") && j());
+	}
+	hide() {
+		let { element: e, hasFade: t, relatedTarget: a } = this;
+		c(e, "show") && (G.relatedTarget = a || void 0, i(e, G), !G.defaultPrevented && (o(e, T), n(e, r, "true"), x(e, l), t ? p(e, () => Q(this)) : Q(this)));
+	}
+	update = () => {
+		c(this.element, "show") && q(this);
+	};
+	_toggleEventListeners = (e) => {
+		let t = e ? g : y, { triggers: n } = this;
+		n.length && n.forEach((e) => {
+			t(e, S, fe);
+		});
+	};
+	dispose() {
+		let { modalDialog: e, hasFade: t } = { ...this }, n = () => setTimeout(() => super.dispose(), 17);
+		this.hide(), this._toggleEventListeners(), t ? p(e, n) : n();
+	}
 };
-class Me extends J {
-  static selector = Te;
-  static init = De;
-  static getInstance = f;
-  constructor(e, t) {
-    super(e, t);
-    const { element: o } = this, a = F(
-      `.${r}-dialog`,
-      o
-    );
-    a && (this.modalDialog = a, this.triggers = [
-      ...U(
-        Se,
-        S(o)
-      )
-    ].filter(
-      (l) => V(l) === o
-    ), this.isStatic = this.options.backdrop === "static", this.hasFade = d(o, re), this.relatedTarget = null, this._observer = new ResizeObserver(() => this.update()), this._toggleEventListeners(!0));
-  }
-  get name() {
-    return Z;
-  }
-  get defaults() {
-    return we;
-  }
-  toggle() {
-    d(this.element, i) ? this.hide() : this.show();
-  }
-  show() {
-    const { element: e, options: t, hasFade: o, relatedTarget: a } = this, { backdrop: l } = t;
-    let c = 0;
-    if (d(e, i) || (u.relatedTarget = a || void 0, v(e, u), u.defaultPrevented)) return;
-    const n = D(e);
-    if (n && n !== e) {
-      const g = f(n) || _(
-        n,
-        he
-      );
-      g && g.hide();
-    }
-    l ? (le(h) ? ce(!0) : de(e, o, !0), c = L(h), ge(), setTimeout(() => C(this), c)) : (C(this), n && d(h, i) && z());
-  }
-  hide() {
-    const { element: e, hasFade: t, relatedTarget: o } = this;
-    d(e, i) && (w.relatedTarget = o || void 0, v(e, w), !w.defaultPrevented && (P(e, i), x(e, N, "true"), B(e, R), t ? m(e, () => O(this)) : O(this)));
-  }
-  update = () => {
-    d(this.element, i) && j(this);
-  };
-  _toggleEventListeners = (e) => {
-    const t = e ? I : A, { triggers: o } = this;
-    o.length && o.forEach((a) => {
-      t(a, W, Ee);
-    });
-  };
-  dispose() {
-    const e = { ...this }, { modalDialog: t, hasFade: o } = e, a = () => setTimeout(() => super.dispose(), 17);
-    this.hide(), this._toggleEventListeners(), o ? m(t, a) : a();
-  }
-}
-export {
-  Me as default
-};
+//#endregion
+export { $ as default };
+
 //# sourceMappingURL=modal.mjs.map

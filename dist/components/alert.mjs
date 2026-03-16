@@ -1,43 +1,36 @@
-import { B as f, t as g, W as u, _ as i, Z as c, m, a as v, s as h, E, r as _, v as A } from "./base-component-BazRqYWL.mjs";
-import { f as C } from "./fadeClass-CLIYI_zn.mjs";
-import { s as r } from "./showClass-C8hdJfjQ.mjs";
-import { d as $ } from "./dataBsDismiss-DdNPQYa-.mjs";
-import { i as b } from "./isDisabled-CipSDrHr.mjs";
-const n = "alert", d = "Alert", L = `.${n}`, B = `[${$}="${n}"]`, D = (s) => g(s, d), I = (s) => new w(s), a = m(
-  `close.bs.${n}`
-), S = m(
-  `closed.bs.${n}`
-), l = (s) => {
-  const { element: t } = s;
-  c(t, S), s._toggleEventListeners(), s.dispose(), t.remove();
+import { I as e, L as t, P as n, R as r, ft as i, n as a, ot as o, pt as s, r as c, t as l, vt as u } from "./base-component-Bm8KwB_I.mjs";
+import "./fadeClass-Bzjdr13Y.mjs";
+import { t as d } from "./showClass-CH6sh0pm.mjs";
+import { t as f } from "./dataBsDismiss-D_m2Bp4t.mjs";
+import { t as p } from "./isDisabled-CA05SUmE.mjs";
+//#region src/strings/alertString.ts
+var m = "alert", h = "Alert", g = `.${m}`, _ = `[${f}="${m}"]`, v = (e) => s(e, h), y = (e) => new C(e), b = o(`close.bs.${m}`), x = o(`closed.bs.${m}`), S = (t) => {
+	let { element: n } = t;
+	e(n, x), t._toggleEventListeners(), t.dispose(), n.remove();
+}, C = class extends l {
+	static selector = g;
+	static init = y;
+	static getInstance = v;
+	dismiss;
+	constructor(e) {
+		super(e), this.dismiss = n(_, this.element), this._toggleEventListeners(!0);
+	}
+	get name() {
+		return h;
+	}
+	close = (n) => {
+		let { element: a, dismiss: o } = this;
+		!a || !r(a, "show") || n && o && p(o) || (e(a, b), !b.defaultPrevented && (t(a, d), r(a, "fade") ? i(a, () => S(this)) : S(this)));
+	};
+	_toggleEventListeners = (e) => {
+		let t = e ? a : c, { dismiss: n, close: r } = this;
+		n && t(n, u, r);
+	};
+	dispose() {
+		this._toggleEventListeners(), super.dispose();
+	}
 };
-class w extends f {
-  static selector = L;
-  static init = I;
-  static getInstance = D;
-  dismiss;
-  constructor(t) {
-    super(t), this.dismiss = u(
-      B,
-      this.element
-    ), this._toggleEventListeners(!0);
-  }
-  get name() {
-    return d;
-  }
-  close = (t) => {
-    const { element: e, dismiss: o } = this;
-    !e || !i(e, r) || t && o && b(o) || (c(e, a), !a.defaultPrevented && (v(e, r), i(e, C) ? h(e, () => l(this)) : l(this)));
-  };
-  _toggleEventListeners = (t) => {
-    const e = t ? E : _, { dismiss: o, close: p } = this;
-    o && e(o, A, p);
-  };
-  dispose() {
-    this._toggleEventListeners(), super.dispose();
-  }
-}
-export {
-  w as default
-};
+//#endregion
+export { C as default };
+
 //# sourceMappingURL=alert.mjs.map

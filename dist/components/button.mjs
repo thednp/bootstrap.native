@@ -1,34 +1,33 @@
-import { B as l, t as g, _ as i, Q as a, F as c, a as u, G as m, E as p, r as v, v as f } from "./base-component-BazRqYWL.mjs";
-import { a as n } from "./activeClass-iqaD75Su.mjs";
-import { d as h } from "./dataBsToggle-B84TS15h.mjs";
-import { i as b } from "./isDisabled-CipSDrHr.mjs";
-const d = "button", r = "Button", B = `[${h}="${d}"]`, _ = (e) => g(e, r), A = (e) => new C(e);
-class C extends l {
-  static selector = B;
-  static init = A;
-  static getInstance = _;
-  constructor(s) {
-    super(s);
-    const { element: t } = this;
-    this.isActive = i(t, n), a(t, c, String(!!this.isActive)), this._toggleEventListeners(!0);
-  }
-  get name() {
-    return r;
-  }
-  toggle = (s) => {
-    s && s.preventDefault();
-    const { element: t, isActive: o } = this;
-    if (b(t)) return;
-    (o ? u : m)(t, n), a(t, c, o ? "false" : "true"), this.isActive = i(t, n);
-  };
-  _toggleEventListeners = (s) => {
-    (s ? p : v)(this.element, f, this.toggle);
-  };
-  dispose() {
-    this._toggleEventListeners(), super.dispose();
-  }
-}
-export {
-  C as default
+import { E as e, L as t, R as n, m as r, n as i, p as a, pt as o, r as s, t as c, vt as l } from "./base-component-Bm8KwB_I.mjs";
+import { t as u } from "./isDisabled-CA05SUmE.mjs";
+import { t as d } from "./activeClass-LUKCeUHG.mjs";
+import { t as f } from "./dataBsToggle-CeJMDTHb.mjs";
+//#region src/strings/buttonString.ts
+var p = "button", m = "Button", h = `[${f}="${p}"]`, g = (e) => o(e, m), _ = (e) => new v(e), v = class extends c {
+	static selector = h;
+	static init = _;
+	static getInstance = g;
+	constructor(t) {
+		super(t);
+		let { element: r } = this;
+		this.isActive = n(r, d), e(r, a, String(!!this.isActive)), this._toggleEventListeners(!0);
+	}
+	get name() {
+		return m;
+	}
+	toggle = (i) => {
+		i && i.preventDefault();
+		let { element: o, isActive: s } = this;
+		u(o) || ((s ? t : r)(o, d), e(o, a, s ? "false" : "true"), this.isActive = n(o, d));
+	};
+	_toggleEventListeners = (e) => {
+		(e ? i : s)(this.element, l, this.toggle);
+	};
+	dispose() {
+		this._toggleEventListeners(), super.dispose();
+	}
 };
+//#endregion
+export { v as default };
+
 //# sourceMappingURL=button.mjs.map

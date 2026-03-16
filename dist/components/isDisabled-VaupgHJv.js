@@ -1,0 +1,2 @@
+const e=require(`./base-component-LPll9cLQ.js`);var t=t=>e.R(t,`disabled`)||e._(t,`disabled`)===`true`;Object.defineProperty(exports,`t`,{enumerable:!0,get:function(){return t}});
+//# sourceMappingURL=isDisabled-VaupgHJv.js.map
