@@ -1,11 +1,11 @@
 /*!
-* Bootstrap Native Scrollspy v5.1.8 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Scrollspy v5.1.7 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-BJPu_NYF.mjs";
+import "./chunk-CxmY2HU4.mjs";
 import { Data, ObjectKeys, addClass, closest, createCustomEvent, dispatchEvent, getAttribute, getBoundingClientRect, getDocument, getDocumentElement, getElementById, getElementsByTagName, getInstance, hasClass, isElement, isString, mouseclickEvent, normalizeOptions, querySelector, removeClass } from "@thednp/shorty";
 import PositionObserver from "@thednp/position-observer";
 import { addListener, removeListener } from "@thednp/event-listener";
@@ -34,7 +34,7 @@ const isDisabled = (target) => {
 };
 //#endregion
 //#region src/version.ts
-const Version = "5.1.8";
+const Version = "5.1.7";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */

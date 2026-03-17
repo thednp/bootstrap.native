@@ -1,11 +1,11 @@
 /*!
-* Bootstrap Native Modal v5.1.8 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Modal v5.1.7 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-FTedGr_q.mjs";
+import "./chunk-Dofknl3q.mjs";
 import { Data, ObjectKeys, Timer, addClass, ariaHidden, ariaModal, closest, createCustomEvent, createElement, dispatchEvent, emulateTransitionEnd, focus, getAttribute, getDocument, getDocumentBody, getDocumentElement, getElementStyle, getElementTransitionDuration, getElementsByClassName, getInstance, getWindow, hasClass, isElement, isHTMLElement, isNode, isRTL, isString, keyEscape, keydownEvent, mouseclickEvent, normalizeOptions, querySelector, querySelectorAll, reflow, removeAttribute, removeClass, setAttribute, setElementStyle, toggleFocusTrap } from "@thednp/shorty";
 import { addListener, removeListener } from "@thednp/event-listener";
 //#region src/strings/dataBsToggle.ts
@@ -292,7 +292,7 @@ const isDisabled = (target) => {
 };
 //#endregion
 //#region src/version.ts
-const Version = "5.1.8";
+const Version = "5.1.7";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */

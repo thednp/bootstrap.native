@@ -1,11 +1,11 @@
 /*!
-* Bootstrap Native Button v5.1.8 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Button v5.1.7 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-D709uj-t.mjs";
+import "./chunk-Taz2P06C.mjs";
 import { Data, ObjectKeys, addClass, ariaPressed, getAttribute, getInstance, hasClass, isElement, isString, mouseclickEvent, normalizeOptions, querySelector, removeClass, setAttribute } from "@thednp/shorty";
 import { addListener, removeListener } from "@thednp/event-listener";
 //#region src/strings/activeClass.ts
@@ -29,7 +29,7 @@ const buttonString = "button";
 const buttonComponent = "Button";
 //#endregion
 //#region src/version.ts
-const Version = "5.1.8";
+const Version = "5.1.7";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */

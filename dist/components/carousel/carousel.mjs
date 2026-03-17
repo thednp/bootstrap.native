@@ -1,11 +1,11 @@
 /*!
-* Bootstrap Native Carousel v5.1.8 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Carousel v5.1.7 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-DbDgeaVl.mjs";
+import "./chunk-CZOVRMN9.mjs";
 import { Data, ObjectAssign, ObjectKeys, Timer, addClass, closest, createCustomEvent, dispatchEvent, dragstartEvent, emulateTransitionEnd, getAttribute, getDocument, getElementTransitionDuration, getElementsByClassName, getInstance, hasClass, isElement, isElementInScrollRange, isRTL, isString, keyArrowLeft, keyArrowRight, keydownEvent, matches, mouseclickEvent, mouseenterEvent, mouseleaveEvent, normalizeOptions, passiveHandler, pointerdownEvent, pointermoveEvent, pointerupEvent, querySelector, querySelectorAll, reflow, removeClass, touchstartEvent } from "@thednp/shorty";
 import { addListener, removeListener } from "@thednp/event-listener";
 //#region src/strings/activeClass.ts
@@ -74,7 +74,7 @@ const isDisabled = (target) => {
 };
 //#endregion
 //#region src/version.ts
-const Version = "5.1.8";
+const Version = "5.1.7";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */
