@@ -23,9 +23,6 @@ export default defineConfig({
       "~": resolve(__dirname, "src"),
     },
   },
-  esbuild: {
-    legalComments: 'none',
-  },
   plugins: [
     dts({
       outDir: 'dist',
@@ -35,7 +32,7 @@ export default defineConfig({
     stripComments({ type: 'none' }),
   ],
   build: {
-    minify: 'esbuild',
+    minify: 'oxc',
     target: 'ESNext',
     outDir: 'dist',
     emptyOutDir: true,

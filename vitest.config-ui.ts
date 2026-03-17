@@ -29,7 +29,6 @@ export default defineConfig({
       exclude: ["src/util/init.ts"],
     },
     browser: {
-      // provider: 'preview', // or 'webdriverio'
       enabled: true,
       headless: false,
       instances: [

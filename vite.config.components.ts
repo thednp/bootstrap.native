@@ -17,9 +17,6 @@ export default defineConfig({
       "~": resolve(__dirname, "src"),
     },
   },
-  esbuild: {
-    legalComments: 'none',
-  },
   plugins: [
     dts({
       outDir: 'dist/components',
@@ -30,7 +27,7 @@ export default defineConfig({
   ],
   build: {
     target: 'ESNext',
-    minify: 'esbuild',
+    minify: 'oxc',
     outDir: 'dist/components',
     lib: {
       entry: components.map((component) => resolve(__dirname, `src/components/${component}.ts`)),

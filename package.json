@@ -80,7 +80,7 @@
     "dev": "vite --open ./docs/index-dev.html --port 8577",
     "serve": "vite --open ./docs/index.html --port 8577",
     "test": "pnpm pre-test && vitest --config vitest.config.ts",
-    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.ts --browser=chrome",
+    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.ts --browser=chromium",
     "clean-coverage": "rm -rf coverage .nyc_output",
     "badges": "npx -p dependency-version-badge update-badge typescript vitest vite",
     "build": "pnpm build-vite && pnpm build-components && pnpm copy-docs",
@@ -94,6 +94,9 @@
   "bugs": {
     "url": "https://github.com/thednp/bootstrap.native/issues"
   },
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -109,20 +112,20 @@
     "typescript"
   ],
   "dependencies": {
-    "@thednp/event-listener": "^2.0.10",
+    "@thednp/event-listener": "^2.0.12",
     "@thednp/position-observer": "^1.1.0",
     "@thednp/shorty": "^2.0.11"
   },
   "devDependencies": {
-    "@types/node": "^24.3.1",
+    "@types/node": "^25.5.0",
     "@vitest/browser": "^3.2.4",
     "@vitest/coverage-istanbul": "^3.2.4",
     "@vitest/ui": "^3.2.4",
-    "playwright": "^1.55.0",
-    "typescript": "^5.9.2",
+    "playwright": "^1.58.2",
+    "typescript": "^5.9.3",
     "vite": "^7.1.4",
     "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-strip-comments": "^0.0.6",
+    "vite-plugin-strip-comments": "^0.0.9",
     "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@8.6.12",

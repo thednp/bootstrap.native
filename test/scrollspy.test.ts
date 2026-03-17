@@ -12,6 +12,7 @@ describe("ScrollSpy Class Tests", async () => {
 
   beforeEach(async () => {
     wrapper.innerHTML = "";
+    await page.viewport(800, 600);
   });
 
   it("Init without any parameters - throws error", () => {
@@ -32,6 +33,7 @@ describe("ScrollSpy Class Tests", async () => {
     const container = getMarkup("scrollspy");
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-bs-spy="scroll"]'), 200);
+    await new Promise(res => setTimeout(res, 250));
 
     const element = container.querySelector<HTMLElement>('[data-bs-spy="scroll"]')!;
     const instance = ScrollSpy.init(element);
@@ -41,7 +43,9 @@ describe("ScrollSpy Class Tests", async () => {
     expect(instance._observables).to.be.instanceOf(Map).and.have.property('size').above(0);
     // expect(instance.items).to.be.instanceOf(Array).and.have.length.above(0);
     // expect(instance.items[0].className).to.contain("active");
-    expect(Array.from(instance._observables)[0][1].className).to.contain("active");
+    await vi.waitFor(() => {
+      expect(Array.from(instance._observables)[0][1].className).to.contain("active");
+    }, 350);
     expect(instance.name).to.eq("ScrollSpy");
     expect(instance.options).to.not.be.empty;
     expect(instance.defaults).to.not.be.undefined;
@@ -75,7 +79,7 @@ describe("ScrollSpy Class Tests", async () => {
 
     await new Promise(res => setTimeout(res, 250));
     const instance = ScrollSpy.init(element);
-    
+
     await new Promise(res => setTimeout(res, 251));
     instance.scrollTarget.scrollTo({ top: 2500, behavior: 'smooth' });
     await new Promise(res => setTimeout(res, 251));
@@ -89,6 +93,7 @@ describe("ScrollSpy Class Tests", async () => {
     const container = getMarkup("scrollspy");
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector('[data-bs-spy="scroll"]'), 200);
+    await new Promise(res => setTimeout(res, 250));
 
     const element = container.querySelector<HTMLElement>('[data-bs-spy="scroll"]')!;
     const instance = ScrollSpy.init(element);
