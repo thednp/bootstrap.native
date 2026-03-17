@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { page } from '@vitest/browser/context';
-import getMarkup from "./fixtures/getMarkup";
-import Dropdown from "../src/components/dropdown";
+import { page } from 'vitest/browser';
+import getMarkup from "./fixtures/getMarkup.ts";
+import Dropdown from "../src/components/dropdown.ts";
+import { changeDirection, removeDirection } from "./fixtures/changeDirection.js";
 
 import "./assets/bootstrap.min.css";
 
-import { changeDirection, removeDirection } from "./fixtures/changeDirection";
 
 const bodyPads = {
   top: { paddingTop: "35vh", paddingBottom: "70vh" },
@@ -30,9 +30,10 @@ describe("Dropdown Class Tests", () => {
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new Dropdown(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);
@@ -64,7 +65,7 @@ describe("Dropdown Class Tests", () => {
     const elements = [...container.querySelectorAll<HTMLElement>('[data-bs-toggle="dropdown"]')];
     const instances: Dropdown[] = [];
 
-    elements.forEach((element, i) => {
+    elements.forEach((element, _i) => {
       const instance = Dropdown.init(element);
       instances.push(instance);
       expect(instance.element, 'element').to.equal(element);

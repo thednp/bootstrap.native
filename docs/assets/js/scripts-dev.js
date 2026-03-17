@@ -1,5 +1,5 @@
-// import * as BSN from "./bootstrap-native";
-import * as BSN from '~/index';
+// import * as BSN from "./bootstrap-native.js";
+import * as BSN from '../../../src/index.ts';
 
 
 // MISC

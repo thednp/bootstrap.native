@@ -28,23 +28,22 @@ const getElementContainer = (element: Element) => {
     }
   }
 
-  return (
-    containers.find((c, i) => {
-      if (
-        ((getElementStyle(c, "position") !== "relative" ||
-          getElementStyle(c, "position") === "relative" &&
-            c.offsetHeight !== c.scrollHeight) &&
-          containers.slice(i + 1).every((r) =>
-            getElementStyle(r, "position") === "static"
-          ))
-      ) {
-        return c;
-      }
-      return null;
-    }) ||
-    /* istanbul ignore next: optional guard */
-    getDocument(element).body
-  );
+  const knownContainer = containers.find((c, i) => {
+    if (
+      ((getElementStyle(c, "position") !== "relative" ||
+        getElementStyle(c, "position") === "relative" &&
+          c.offsetHeight !== c.scrollHeight) &&
+        containers.slice(i + 1).every((r) =>
+          getElementStyle(r, "position") === "static"
+        ))
+    ) {
+      return c;
+    }
+    return null;
+  });
+
+  // istanbul ignore next @preserve
+  return knownContainer || getDocument(element).body;
 };
 
 export default getElementContainer;

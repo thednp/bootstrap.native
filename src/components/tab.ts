@@ -152,9 +152,8 @@ const triggerTabHide = (self: Tab) => {
       // istanbul ignore else @preserve
       if (c) addClass(c, "overflow-hidden");
     });
-    currentHeight = content
-      ? content.scrollHeight
-      : /* istanbul ignore next @preserve */ 0;
+    // istanbul ignore next @preserve
+    currentHeight = content ? content.scrollHeight : 0;
   }
 
   // update relatedTarget and dispatch event

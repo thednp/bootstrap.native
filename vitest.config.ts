@@ -1,5 +1,6 @@
 import { defineConfig } from "vitest/config";
 import { resolve } from 'node:path';
+import { playwright } from "@vitest/browser-playwright";
 
 export default defineConfig({
   resolve: {
@@ -7,16 +8,9 @@ export default defineConfig({
       "~": resolve(__dirname, "src"),
     },
   },
-  optimizeDeps: {
-    include: [
-      "@vitest/coverage-istanbul"
-    ]
-  },
-  esbuild: {
-    legalComments: 'inline',
-  },
+
   build: {
-    minify: 'esbuild'
+    minify: 'oxc',
   },
   test: {
     css: true,
@@ -28,13 +22,13 @@ export default defineConfig({
       include: ["src/**/*.{ts,tsx}"],
       exclude: ["src/util/init.ts"],
     },
+
     browser: {
-      provider: 'playwright', // or 'webdriverio'
       enabled: true,
+      provider: playwright({}),
+      instances: [{ browser: "chromium" }],
+      ui: false,
       headless: true,
-      instances: [
-        { browser: "chromium" }
-      ]
     },
   },
 });

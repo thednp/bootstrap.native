@@ -100,7 +100,7 @@ export default class Alert extends BaseComponent {
    * disposes the instance once animation is complete, then
    * removes the element from the DOM.
    */
-  close = (e: PointerEvent<HTMLElement>) => {
+  close = (e?: PointerEvent<HTMLElement>) => {
     const { element, dismiss } = this;
 
     // istanbul ignore if @preserve

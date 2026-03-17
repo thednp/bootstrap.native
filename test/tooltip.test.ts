@@ -1,20 +1,21 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { page } from '@vitest/browser/context';
-import getMarkup from "./fixtures/getMarkup";
+import { page } from 'vitest/browser';
+import getMarkup from "./fixtures/getMarkup.ts";
 
-import Tooltip from "../src/components/tooltip";
-import Modal from "../src/components/modal";
-import Offcanvas from "../src/components/offcanvas";
-import Popover from "../src/components/popover";
+import Tooltip from "../src/components/tooltip.ts";
+import Modal from "../src/components/modal.ts";
+import Offcanvas from "../src/components/offcanvas.ts";
+import Popover from "../src/components/popover.ts";
 
-import { changeDirection, removeDirection } from "./fixtures/changeDirection";
+import { changeDirection, removeDirection } from "./fixtures/changeDirection.js";
+
 import "./assets/bootstrap.min.css";
 
 describe("Tooltip Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach( () => {
     wrapper.innerHTML = "";
     const popContainer = document.body.querySelector('.popup-container');
     if (popContainer) popContainer.innerHTML = '';
@@ -24,9 +25,10 @@ describe("Tooltip Class Tests", () => {
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new Tooltip(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);
@@ -456,7 +458,7 @@ describe("Tooltip Class Tests", () => {
   it("Can work with RTL", async () => {
     const container = getMarkup("tooltip");
     wrapper.append(container);
-    const doc = wrapper.ownerDocument!;
+    // const doc = wrapper.ownerDocument!;
     await vi.waitFor(() => container.querySelector('[data-test="tooltip"]'), 200);
     changeDirection(wrapper, "rtl"); // added template without tooltip class for coverage
 
@@ -478,7 +480,7 @@ describe("Tooltip Class Tests", () => {
   it("Can do custom events", async () => {
     const container = getMarkup("tooltip");
     wrapper.append(container);
-    const doc = wrapper.ownerDocument!;
+    // const doc = wrapper.ownerDocument!;
     await vi.waitFor(() => container.querySelector('[data-test="tooltip"]'), 200);
 
     const element = container.querySelector<HTMLElement>('[data-test="tooltip"]')!;

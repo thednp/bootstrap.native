@@ -15,7 +15,7 @@ import {
   getInstance,
   hasClass,
   isElementInScrollRange,
-  isMobile,
+  // isMobile,
   isRTL,
   keyArrowLeft,
   keyArrowRight,
@@ -64,8 +64,8 @@ const carouselItem = `${carouselString}-item`;
 const dataBsSlideTo = "data-bs-slide-to";
 const dataBsSlide = "data-bs-slide";
 const pausedClass = "paused";
-const touchEvent = isMobile() ? touchstartEvent : pointerdownEvent;
-console.log({ isMobile: isMobile(), touchEvent });
+// const touchEvent = isMobile() ? touchstartEvent : pointerdownEvent;
+// console.log({ isMobile: isMobile(), touchEvent });
 
 const carouselDefaults: CarouselOptions = {
   pause: "hover",
@@ -176,10 +176,10 @@ function carouselIndicatorHandler(this: HTMLElement, e: MouseEvent) {
   // istanbul ignore if @preserve
   if (!self || self.isAnimating) return;
 
-  const newIndex = +(
-    getAttribute(this, dataBsSlideTo) ||
+  const newIndex = Number(
     // istanbul ignore next @preserve
-    0
+    getAttribute(this, dataBsSlideTo) ||
+      0,
   );
 
   // istanbul ignore else @preserve

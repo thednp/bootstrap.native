@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import getMarkup from "./fixtures/getMarkup";
-import Button from "../src/components/button";
+import getMarkup from "./fixtures/getMarkup.ts";
+import Button from "../src/components/button.ts";
 
 import "./assets/bootstrap.min.css";
 
@@ -8,14 +8,15 @@ describe("Button Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach(() => {
     wrapper.innerHTML = "";
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - testing
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - testing
       new Button(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);
@@ -37,7 +38,7 @@ describe("Button Class Tests", () => {
       );
     }
     try {
-      // @ts-expect-error
+      // @ts-expect-error - testing
       new Button({});
     } catch (error) {
       expect(error).to.be.instanceOf(Error);

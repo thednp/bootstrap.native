@@ -258,9 +258,8 @@ export default class ScrollSpy extends BaseComponent {
       return;
     }
 
-    const firstOffset = entries[0]?.[0]
-      ? getOffset(this, entries[0][0])
-      : /* istanbul ignore next */ null;
+    /* istanbul ignore next @preserve */
+    const firstOffset = entries[0]?.[0] ? getOffset(this, entries[0][0]) : null;
     if (
       firstOffset !== null && scrollTop < firstOffset &&
       firstOffset > 0
@@ -276,7 +275,7 @@ export default class ScrollSpy extends BaseComponent {
       const nextTarget = entries[i + 1]?.[0];
       const nextOffsetTop = nextTarget
         ? getOffset(this, nextTarget)
-        : /* istanbul ignore next */ null;
+        : /* istanbul ignore next @preserve */ null;
 
       // istanbul ignore else @preserve
       if (

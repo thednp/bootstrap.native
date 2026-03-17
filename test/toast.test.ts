@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import getMarkup from "./fixtures/getMarkup";
-import Toast from "../src/components/toast";
+import getMarkup from "./fixtures/getMarkup.ts";
+import Toast from "../src/components/toast.ts";
 
 import "./assets/bootstrap.min.css";
 
@@ -8,14 +8,15 @@ describe("Toast Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach( () => {
     wrapper.innerHTML = "";
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new Toast(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);

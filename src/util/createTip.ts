@@ -136,6 +136,7 @@ const createTip = (self: Tooltip | Popover) => {
       setHtml(tooltipBody, contentParts, sanitizeFn);
     }
     // set btn
+    // istanbul ignore next @preserve
     self.btn = querySelector<HTMLButtonElement>(".btn-close", tooltip) ||
       undefined;
   } else if (title && tooltipBody) setHtml(tooltipBody, title, sanitizeFn);

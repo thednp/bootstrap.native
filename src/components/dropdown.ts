@@ -129,8 +129,8 @@ const styleDropdown = (self: Dropdown) => {
   // set initial position class
   // take into account .btn-group parent as .dropdown
   // this requires navbar/btn-group/input-group
+  // istanbul ignore next @preserve - fallback position
   let positionClass = dropdownClasses.find((c) => hasClass(parentElement, c)) ||
-    /* istanbul ignore next @preserve: fallback position */
     dropdownString;
 
   const dropdownMargin: { [key: string]: number[] } = {
@@ -249,9 +249,10 @@ const styleDropdown = (self: Dropdown) => {
   if (verticalClass.includes(positionClass) && menuEnd) {
     // istanbul ignore else @preserve
     if (menuEnd) {
+      // istanbul ignore next @preserve
       const endAdjust = (!RTL && leftExceed) || (RTL && rightExceed)
         ? "menuStart"
-        : /* istanbul ignore next @preserve */ "menuEnd";
+        : "menuEnd";
       setElementStyle(menu, dropdownPosition[endAdjust]);
     }
   }

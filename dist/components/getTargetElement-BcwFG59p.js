@@ -1,2 +1,0 @@
-const e=require(`./base-component-BWIz5j3V.js`);var t=`data-bs-target`,n=`data-bs-parent`,r=`data-bs-container`,i=i=>{let a=[t,n,r,`href`],o=e.K(i);return a.map(t=>{let n=e._(i,t);return n?t===`data-bs-parent`?e.x(i,n):e.P(n,o):null}).filter(e=>e)[0]};Object.defineProperty(exports,`n`,{enumerable:!0,get:function(){return t}}),Object.defineProperty(exports,`t`,{enumerable:!0,get:function(){return i}});
-//# sourceMappingURL=getTargetElement-BcwFG59p.js.map

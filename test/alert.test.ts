@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import getMarkup from "./fixtures/getMarkup";
-import Alert from "../src/components/alert";
+import getMarkup from "./fixtures/getMarkup.ts";
+import Alert from "../src/components/alert.ts";
 
 import "./assets/bootstrap.min.css";
 
@@ -8,14 +8,15 @@ describe("Alert Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach( () => {
     wrapper.innerHTML = "";
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - this is testing
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - this is testing
       new Alert(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);

@@ -1,21 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import getMarkup from "./fixtures/getMarkup";
+import getMarkup from "./fixtures/getMarkup.ts";
+import Offcanvas from "../src/components/offcanvas.ts";
 
 import "./assets/bootstrap.min.css";
-import Offcanvas from "../src/components/offcanvas";
 
 describe("Offcanvas Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach( () => {
     wrapper.innerHTML = "";
   });
 
-  it("Init without any parameters - throws error", async () => {
+  it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new Offcanvas(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);
@@ -290,7 +291,7 @@ describe("Offcanvas Class Tests", () => {
     const element = container.querySelector<HTMLElement>(
       '[data-test="offcanvas"]',
     )!;
-    const doc = element.ownerDocument!;
+    // const doc = element.ownerDocument!;
     const instance = new Offcanvas(element);
     element.addEventListener("show.bs.offcanvas", function testShow(e) {
       if (!element.innerText.includes("Holy")) {

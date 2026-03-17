@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import getMarkup from "./fixtures/getMarkup";
-import Collapse from "../src/components/collapse";
+import getMarkup from "./fixtures/getMarkup.ts";
+import Collapse from "../src/components/collapse.ts";
 
 import "./assets/bootstrap.min.css";
 
@@ -8,14 +8,15 @@ describe("Collapse Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach(() => {
     wrapper.innerHTML = "";
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new Collapse(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);
@@ -142,7 +143,7 @@ describe("Collapse Class Tests", () => {
         e.preventDefault();
       }
     });
-    element.addEventListener("shown.bs.collapse", function handle(e) {
+    element.addEventListener("shown.bs.collapse", function handle(_e) {
       console.log("shown was triggered");
     });
     element.addEventListener("hide.bs.collapse", function handle(e) {
@@ -155,7 +156,7 @@ describe("Collapse Class Tests", () => {
         e.preventDefault();
       }
     });
-    element.addEventListener("hidden.bs.collapse", function handle(e) {
+    element.addEventListener("hidden.bs.collapse", function handle(_e) {
       console.log("hidden was triggered");
     });
 

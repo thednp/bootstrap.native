@@ -223,26 +223,26 @@ const offcanvasDismissHandler = (e: MouseEvent<HTMLElement>) => {
   const trigger = closest(target, offcanvasToggleSelector);
   const selection = getDocument(element).getSelection();
 
-  // istanbul ignore if: a filter is required here @preserve
+  // istanbul ignore if @preserve - a filter is required here
   if (overlay.contains(target) && backdrop === "static") return;
 
-  // istanbul ignore else @preserve
+  const isOwnTrigger = triggers.includes(target);
+  const isOwnTarget = offCanvasDismiss?.contains(target) || false;
+
+  // istanbul ignore if @preserve - unfortunately ignore won't work with this many conditions
   if (
     !(selection && selection.toString().length) &&
     ((!element.contains(target) &&
-      backdrop &&
-      // istanbul ignore next @preserve
-      (!trigger || triggers.includes(target))) ||
-      (offCanvasDismiss &&
-        offCanvasDismiss.contains(target)))
+      backdrop && (!trigger || isOwnTrigger)) ||
+      isOwnTarget)
   ) {
-    self.relatedTarget = offCanvasDismiss && offCanvasDismiss.contains(target)
+    self.relatedTarget = offCanvasDismiss && isOwnTarget
       ? offCanvasDismiss
       : undefined;
     self.hide();
   }
 
-  // istanbul ignore next @preserve
+  // istanbul ignore next @preserve - we don't usually use Anchor for dismissers
   if (trigger && trigger.tagName === "A") e.preventDefault();
 };
 
@@ -400,8 +400,8 @@ export default class Offcanvas extends BaseComponent {
     // we elegantly hide any opened modal/offcanvas
     const currentOpen = getCurrentOpen(element);
     if (currentOpen && currentOpen !== element) {
+      // istanbul ignore next @preserve
       const that = getOffcanvasInstance(currentOpen) ||
-        // istanbul ignore next @preserve
         getInstance<typeof BaseComponent & { hide: () => void }>(
           currentOpen,
           modalComponent,

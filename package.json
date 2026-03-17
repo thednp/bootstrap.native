@@ -5,91 +5,42 @@
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
   "homepage": "https://thednp.github.io/bootstrap.native/",
+  "type": "module",
   "source": "./src/index.ts",
-  "main": "./dist/bootstrap-native.js",
-  "module": "./dist/bootstrap-native.mjs",
+  "types": "./dist/module/index.d.cts",
   "exports": {
-    ".": {
-      "types": "./dist/bootstrap-native.d.ts",
-      "require": "./dist/bootstrap-native.cjs",
-      "import": "./dist/bootstrap-native.mjs"
-    },
-    "./alert": {
-      "types": "./dist/components/alert.d.ts",
-      "require": "./dist/components/alert.cjs",
-      "import": "./dist/components/alert.mjs"
-    },
-    "./button": {
-      "types": "./dist/components/button.d.ts",
-      "require": "./dist/components/button.cjs",
-      "import": "./dist/components/button.mjs"
-    },
-    "./carousel": {
-      "types": "./dist/components/carousel.d.ts",
-      "require": "./dist/components/carousel.cjs",
-      "import": "./dist/components/carousel.mjs"
-    },
-    "./collapse": {
-      "types": "./dist/components/collapse.d.ts",
-      "require": "./dist/components/collapse.cjs",
-      "import": "./dist/components/collapse.mjs"
-    },
-    "./dropdown": {
-      "types": "./dist/components/dropdown.d.ts",
-      "require": "./dist/components/dropdown.cjs",
-      "import": "./dist/components/dropdown.mjs"
-    },
-    "./modal": {
-      "types": "./dist/components/modal.d.ts",
-      "require": "./dist/components/modal.cjs",
-      "import": "./dist/components/modal.mjs"
-    },
-    "./offcanvas": {
-      "types": "./dist/components/offcanvas.d.ts",
-      "require": "./dist/components/offcanvas.cjs",
-      "import": "./dist/components/offcanvas.mjs"
-    },
-    "./popover": {
-      "types": "./dist/components/popover.d.ts",
-      "require": "./dist/components/popover.cjs",
-      "import": "./dist/components/popover.mjs"
-    },
-    "./scrollspy": {
-      "types": "./dist/components/scrollspy.d.ts",
-      "require": "./dist/components/scrollspy.cjs",
-      "import": "./dist/components/scrollspy.mjs"
-    },
-    "./tab": {
-      "types": "./dist/components/tab.d.ts",
-      "require": "./dist/components/tab.cjs",
-      "import": "./dist/components/tab.mjs"
-    },
-    "./toast": {
-      "types": "./dist/components/toast.d.ts",
-      "require": "./dist/components/toast.cjs",
-      "import": "./dist/components/toast.mjs"
-    },
-    "./tooltip": {
-      "types": "./dist/components/tooltip.d.ts",
-      "require": "./dist/components/tooltip.cjs",
-      "import": "./dist/components/tooltip.mjs"
-    }
+    ".": "./dist/module/index.mjs",
+    "./alert": "./dist/alert.mjs",
+    "./button": "./dist/button.mjs",
+    "./carousel": "./dist/carousel.mjs",
+    "./collapse": "./dist/collapse.mjs",
+    "./dropdown": "./dist/dropdown.mjs",
+    "./modal": "./dist/modal.mjs",
+    "./offcanvas": "./dist/offcanvas.mjs",
+    "./popover": "./dist/popover.mjs",
+    "./scrollspy": "./dist/scrollspy.mjs",
+    "./tab": "./dist/tab.mjs",
+    "./toast": "./dist/toast.mjs",
+    "./tooltip": "./dist/tooltip.mjs",
+    "./package.json": "./package.json"
   },
   "scripts": {
     "pre-test": "pnpm clean-coverage",
     "dev": "vite --open ./docs/index-dev.html --port 8577",
     "serve": "vite --open ./docs/index.html --port 8577",
-    "test": "pnpm pre-test && vitest --config vitest.config.ts",
-    "test-ui": "pnpm pre-test && vitest --config vitest.config-ui.ts --browser=chromium",
+    "test": "pnpm pre-test && vitest --browser.headless",
+    "test-ui": "pnpm pre-test && vitest --browser --ui",
     "clean-coverage": "rm -rf coverage .nyc_output",
     "badges": "npx -p dependency-version-badge update-badge typescript vitest vite",
-    "build": "pnpm build-vite && pnpm build-components && pnpm copy-docs",
+    "build": "tsdown && pnpm copy-docs",
+    "build_": "pnpm build-vite && pnpm build-components && pnpm copy-docs",
     "build-vite": "vite build",
     "build-components": "vite build --config vite.config.components.ts",
-    "copy-docs": "cp dist/bootstrap-native.js docs/assets/js/bootstrap-native.js && cp dist/bootstrap-native.js.map docs/assets/js/bootstrap-native.js.map",
-    "lint": "deno lint src && pnpm check:ts",
+    "copy-docs": "cp dist/bootstrap-native.min.js docs/assets/js/bootstrap-native.min.js && cp dist/bootstrap-native.min.js.map docs/assets/js/bootstrap-native.min.js.map",
+    "lint": "deno lint src",
+    "fix:ts": "deno lint src --fix",
     "check:ts": "tsc --noEmit",
-    "prepublishOnly": "pnpm update --latest && pnpm lint && deno fmt src && pnpm build && pnpm copy-docs && pnpm badges"
+    "prepublishOnly": "pnpm update --latest && pnpm lint && deno fmt src && pnpm build && pnpm copy-docs"
   },
   "bugs": {
     "url": "https://github.com/thednp/bootstrap.native/issues"
@@ -119,9 +70,11 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "@vitest/browser": "^4.1.0",
+    "@vitest/browser-playwright": "^4.1.0",
     "@vitest/coverage-istanbul": "^4.1.0",
     "@vitest/ui": "^4.1.0",
     "playwright": "^1.58.2",
+    "tsdown": "^0.21.4",
     "typescript": "^5.9.3",
     "vite": "^8.0.0",
     "vite-plugin-dts": "^4.5.4",
@@ -132,5 +85,10 @@
   "engines": {
     "node": ">=16",
     "pnpm": ">=8.6.0"
+  },
+  "inlinedDependencies": {
+    "@thednp/event-listener": "2.0.12",
+    "@thednp/position-observer": "1.1.0",
+    "@thednp/shorty": "2.0.11"
   }
 }

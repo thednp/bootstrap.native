@@ -24,6 +24,7 @@ const getTargetElement = <T extends Element = HTMLElement>(element: T) => {
     .map((att) => {
       const attValue = getAttribute(element, att);
       if (attValue) {
+        // istanbul ignore next @preserve
         return att === dataBsParent
           ? closest<T>(element, attValue)
           : querySelector<T>(attValue, doc);

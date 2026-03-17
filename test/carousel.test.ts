@@ -1,24 +1,25 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import Carousel from "../src/components/carousel";
-import getMarkup from "./fixtures/getMarkup";
-import { changeDirection, removeDirection } from "./fixtures/changeDirection";
-import selectText from "./fixtures/selectText";
+import Carousel from "../src/components/carousel.ts";
+import getMarkup from "./fixtures/getMarkup.ts";
+import { changeDirection, removeDirection } from "./fixtures/changeDirection.js";
+import selectText from "./fixtures/selectText.js";
+import swipe from "./fixtures/swipe.ts";
 
 import "./assets/bootstrap.min.css";
-import swipe from "./fixtures/swipe";
 
 describe("Carousel Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach( () => {
     wrapper.innerHTML = "";
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new Carousel(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);
@@ -673,15 +674,16 @@ describe("Carousel Class Tests", () => {
     const element = container.querySelector<HTMLElement>(
       '[data-test="carousel"]',
     )!;
-    const doc = element.ownerDocument;
-    const buttonArrows = [
-      ...container.querySelectorAll<HTMLButtonElement>("[data-bs-slide]"), // arrows
-    ];
-    const buttonPages = [
-      ...container.querySelectorAll<HTMLButtonElement>("[data-bs-slide-to]"), // pages
-    ];
+    // const doc = element.ownerDocument;
+    // const buttonArrows = [
+    //   ...container.querySelectorAll<HTMLButtonElement>("[data-bs-slide]"), // arrows
+    // ];
+    // const buttonPages = [
+    //   ...container.querySelectorAll<HTMLButtonElement>("[data-bs-slide-to]"), // pages
+    // ];
 
-    const instance = new Carousel(element, { interval: false });
+    // const instance =
+    new Carousel(element, { interval: false });
     element.addEventListener("dragstart", function handle(e) {
       console.log("dragstart " + e.target + " is prevented");
     });
@@ -713,18 +715,18 @@ describe("Carousel Class Tests", () => {
     )!;
 
     element.addEventListener("slide.bs.carousel", function handle(e) {
-      // @ts-ignore
+      // @ts-ignore - test
       if (e.from === 0) {
-        // @ts-expect-error
+        // @ts-expect-error - test
         console.log("slide from 0 to " + e.to + " is allowed");
       } else {
-        // @ts-expect-error
+        // @ts-expect-error - test
         console.log("slide from " + e.from + " to " + e.to + " is prevented");
         e.preventDefault();
       }
     });
     element.addEventListener("slid.bs.carousel", function handle(e) {
-      // @ts-expect-error
+      // @ts-expect-error - test
       console.log("slid from 0 to " + e.to + " is triggered");
     });
     const instance = new Carousel(element, { interval: false });

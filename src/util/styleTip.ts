@@ -52,9 +52,8 @@ const styleTip = (self: Tooltip) => {
     const scrollbarWidth = fixedParent
       ? Math.abs(parentCWidth - parentOWidth)
       : Math.abs(htmlcw - htmlow);
-    const leftBoundry = RTL && fixedParent
-      ? /* istanbul ignore next @preserve */ scrollbarWidth
-      : 0;
+    /* istanbul ignore next @preserve */
+    const leftBoundry = RTL && fixedParent ? scrollbarWidth : 0;
     const rightBoundry = htmlcw - (!RTL ? scrollbarWidth : 0) - 1;
 
     // reuse observer entry bounding box

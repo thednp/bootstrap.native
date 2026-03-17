@@ -1,3 +1,5 @@
+// @ts-nocheck - test
+
 /**
  * Returns an `Array` with all `#text` nodes in a Node.
  * @param {Node} target root node
@@ -8,10 +10,12 @@ function getTextNodes(target) {
     return [target];
   }
 
+  /** @type {Node[]} */
   let nodes = [];
   const doc = target.ownerDocument;
-  const win = doc.defaultView;
-  const walk = doc.createTreeWalker(target, win.NodeFilter.SHOW_TEXT, null);
+  const win = doc?.defaultView;
+  const walk = doc?.createTreeWalker(target, win?.NodeFilter.SHOW_TEXT, null);
+  /** @type {Node | undefined | null} */
   let node;
 
   while (node = walk.nextNode()) {
@@ -33,7 +37,8 @@ export default function selectText(target) {
     ...textNodes.slice(-1),
   ];
   const doc = target.ownerDocument;
-  const win = doc.defaultView;
+  /** @type {globalThis | undefined} */
+  const win = doc?.defaultView;
 
   const range = new win.Range();
   range.setStart(startNode, 0);

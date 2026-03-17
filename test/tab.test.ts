@@ -1,24 +1,24 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { page } from '@vitest/browser/context';
-import getMarkup from "./fixtures/getMarkup";
+import getMarkup from "./fixtures/getMarkup.ts";
+import Tab from "../src/components/tab.ts";
+import Dropdown from "../src/components/dropdown.ts";
 
 import "./assets/bootstrap.min.css";
 
-import Tab from "../src/components/tab";
-import Dropdown from "../src/components/dropdown";
 
 describe("Tab Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach( () => {
     wrapper.innerHTML = "";
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new Tab(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);
@@ -50,7 +50,7 @@ describe("Tab Class Tests", () => {
 
     const elements = [...container.querySelectorAll<HTMLElement>('[data-bs-toggle="tab"]')];
 
-    elements.forEach((element, i) => {
+    elements.forEach((element, _i) => {
       const instance = Tab.init(element);
       expect(instance.element, 'element').to.equal(element);
       expect(instance.nav, 'nav').to.exist;

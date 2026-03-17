@@ -1,29 +1,29 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { page } from '@vitest/browser/context';
-import getMarkup from "./fixtures/getMarkup";
+import { /*afterEach, */ beforeEach, describe, expect, it, vi } from "vitest";
+import { page } from 'vitest/browser';
+import getMarkup from "./fixtures/getMarkup.ts";
+import Popover from "../src/components/popover.ts";
 
 import "./assets/bootstrap.min.css";
-
-import Popover from "../src/components/popover";
 
 describe("Popover Class Tests", () => {
   const wrapper = document.createElement("div");
   document.body.append(wrapper);
 
-  beforeEach(async () => {
+  beforeEach( () => {
     wrapper.innerHTML = "";
     const popContainer = document.body.querySelector('.popup-container');
     if (popContainer) popContainer.innerHTML = '';
   });
 
-  afterEach(async () => {
-    // await page.viewport(414, 896);
-  });
+  // afterEach(async () => {
+  //   // await page.viewport(414, 896);
+  // });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new Popover(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);

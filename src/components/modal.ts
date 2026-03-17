@@ -428,8 +428,8 @@ export default class Modal extends BaseComponent {
 
     // istanbul ignore else @preserve
     if (currentOpen && currentOpen !== element) {
+      // istanbul ignore next @preserve
       const that = getModalInstance(currentOpen) ||
-        // istanbul ignore next @preserve
         getInstance<typeof BaseComponent & { hide: () => void }>(
           currentOpen,
           offcanvasComponent,

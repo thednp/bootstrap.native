@@ -1,1 +1,0 @@
-{"version":3,"file":"fadeClass-DAfX8y06.js","names":[],"sources":["../../src/strings/fadeClass.ts"],"sourcesContent":["/**\n * Global namespace for most components `fade` class.\n */\nconst fadeClass = \"fade\";\nexport default fadeClass;\n"],"mappings":"AACA,IAAG,EAAO"}

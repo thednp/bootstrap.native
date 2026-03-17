@@ -1,12 +1,12 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import dts from "vite-plugin-dts";
-import stripComments from "vite-plugin-strip-comments";
+import strip from "vite-plugin-strip-comments";
 
 const components = ['alert', 'button', 'carousel', 'collapse', 'dropdown', 'modal', 'offcanvas', 'popover', 'scrollspy', 'tab', 'toast', 'tooltip'];
 
 const componentFile = (entry: string, format: string) => {
-  const ext = format === 'iife' ? 'js' : format === 'es' ? 'mjs' : format;
+  const ext = format === 'umd' ? 'js' : format === 'es' ? 'mjs' : format;
   return `${entry}.${ext}` 
 };
 
@@ -23,7 +23,7 @@ export default defineConfig({
       copyDtsFiles: true,
       rollupTypes: true,
     }),
-    stripComments({ type: 'none' }),
+    strip({ type: 'keep-jsdoc' }),
   ],
   build: {
     target: 'ESNext',

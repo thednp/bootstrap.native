@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { page } from '@vitest/browser/context';
-import getMarkup from "./fixtures/getMarkup";
+import { page } from 'vitest/browser';
+import getMarkup from "./fixtures/getMarkup.ts";
+import ScrollSpy from "../src/components/scrollspy.ts";
+
 import "./assets/bootstrap.min.css";
 
-import ScrollSpy from "../src/components/scrollspy";
 
 describe("ScrollSpy Class Tests", async () => {
   await page.viewport(800, 600);
@@ -16,9 +17,10 @@ describe("ScrollSpy Class Tests", async () => {
   });
 
   it("Init without any parameters - throws error", () => {
+    // @ts-expect-error - test
     const args = [];
     try {
-      // @ts-expect-error
+      // @ts-expect-error - test
       new ScrollSpy(...args);
     } catch (error) {
       expect(error).to.be.instanceOf(Error);
@@ -131,7 +133,7 @@ describe("ScrollSpy Class Tests", async () => {
     ) as Node;
     const container = document.createElement('div');
     container.append(content);
-    const win = wrapper.ownerDocument.defaultView!;
+    // const win = wrapper.ownerDocument.defaultView!;
     Object.assign(container.style, { padding: "5rem 0" });
     wrapper.append(container);
     await vi.waitFor(() => container.querySelector("#disposableSpy"), 200);

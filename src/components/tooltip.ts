@@ -222,9 +222,9 @@ const toggleTooltipTitle = (self: Tooltip, content?: string) => {
   setAttribute(
     element,
     titleAtt[content ? 0 : 1],
+    // istanbul ignore next @preserve
     content ||
       getAttribute(element, titleAtt[0]) ||
-      // istanbul ignore next @preserve
       "",
   );
   removeAttribute(element, titleAtt[content ? 1 : 0]);
