@@ -1,0 +1,1 @@
+{"version":3,"file":"dropdownClasses-D0wJUlik.js","names":[],"sources":["../../src/strings/dropdownClasses.ts"],"sourcesContent":["/**\n * Global namespace for `Dropdown` types / classes.\n */\nconst dropdownMenuClasses = [\"dropdown\", \"dropup\", \"dropstart\", \"dropend\"];\nexport default dropdownMenuClasses;\n"],"mappings":"AACA,IAAG,EAAsB,CAAA,WAAgB,SAAS,YAAA,UAAA"}

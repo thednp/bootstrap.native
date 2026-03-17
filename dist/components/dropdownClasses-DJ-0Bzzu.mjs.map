@@ -1,0 +1,1 @@
+{"version":3,"file":"dropdownClasses-DJ-0Bzzu.mjs","names":[],"sources":["../../src/strings/dropdownClasses.ts"],"sourcesContent":["/**\n * Global namespace for `Dropdown` types / classes.\n */\nconst dropdownMenuClasses = [\"dropdown\", \"dropup\", \"dropstart\", \"dropend\"];\nexport default dropdownMenuClasses;\n"],"mappings":";AACA,IAAG,IAAsB;CAAA;CAAgB;CAAS;CAAA;CAAA"}
