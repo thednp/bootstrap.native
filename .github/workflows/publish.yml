@@ -35,6 +35,9 @@ jobs:
       # - name: Build (not needed, it's included in prepublishOnly)
       #   run: pnpm build # Optional
 
+      - name: Install Playwright
+        run: pnpm exec playwright install
+
       - name: Test (optional but recommended)
         run: pnpm test
 
