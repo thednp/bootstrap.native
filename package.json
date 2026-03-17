@@ -46,7 +46,9 @@
     "url": "https://github.com/thednp/bootstrap.native/issues"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public",
