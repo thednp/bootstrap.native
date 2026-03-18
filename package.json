@@ -1,6 +1,6 @@
 {
   "name": "bootstrap.native",
-  "version": "5.1.7",
+  "version": "5.1.8",
   "author": "thednp",
   "license": "MIT",
   "description": "Bootstrap components build with Typescript",
@@ -10,7 +10,7 @@
   "source": "./src/index.ts",
   "types": "./dist/module/index.d.cts",
   "exports": {
-    ".": "./dist/module/index.mjs",
+    ".": "./dist/module/index.js",
     "./alert": "./dist/alert.mjs",
     "./button": "./dist/button.mjs",
     "./carousel": "./dist/carousel.mjs",
@@ -67,9 +67,9 @@
     "typescript"
   ],
   "dependencies": {
-    "@thednp/event-listener": "^2.0.12",
-    "@thednp/position-observer": "^1.1.0",
-    "@thednp/shorty": "^2.0.11"
+    "@thednp/event-listener": "^2.0.14",
+    "@thednp/position-observer": "^1.1.1",
+    "@thednp/shorty": "^2.0.13"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
@@ -91,8 +91,8 @@
     "pnpm": ">=8.6.0"
   },
   "inlinedDependencies": {
-    "@thednp/event-listener": "2.0.12",
-    "@thednp/position-observer": "1.1.0",
-    "@thednp/shorty": "2.0.11"
+    "@thednp/event-listener": "2.0.14",
+    "@thednp/position-observer": "1.1.1",
+    "@thednp/shorty": "2.0.13"
   }
 }

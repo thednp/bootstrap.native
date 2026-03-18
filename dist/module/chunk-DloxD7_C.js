@@ -1,11 +1,10 @@
 /*!
-* Bootstrap Native Offcanvas v5.1.7 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native ESM v5.1.8 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import { createRequire } from "node:module";
 (() => {
 	var table = new Uint8Array(128);
 	for (var i = 0; i < 64; i++) table[i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i * 4 - 205] = i;
@@ -21,6 +20,8 @@ import { createRequire } from "node:module";
 		return bytes;
 	};
 })();
-createRequire(import.meta.url);
+((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, { get: (a, b) => (typeof require !== "undefined" ? require : a)[b] }) : x)(function(x) {
+	if (typeof require !== "undefined") return require.apply(this, arguments);
+	throw Error("Calling `require` for \"" + x + "\" in an environment that doesn't expose the `require` function. See https://rolldown.rs/in-depth/bundling-cjs#require-external-modules for more details.");
+});
 //#endregion
-export {};

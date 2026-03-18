@@ -1,11 +1,11 @@
 /*!
-* Bootstrap Native Tab v5.1.7 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Tab v5.1.8 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-CWbycfRS.mjs";
+import "./chunk-xMk8egnZ.mjs";
 import { Data, ObjectKeys, Timer, addClass, ariaSelected, closest, createCustomEvent, dispatchEvent, emulateTransitionEnd, getAttribute, getDocument, getElementsByClassName, getInstance, hasClass, isElement, isHTMLElement, isString, mouseclickEvent, normalizeOptions, querySelector, reflow, removeClass, setAttribute } from "@thednp/shorty";
 import { addListener, removeListener } from "@thednp/event-listener";
 //#region src/strings/collapsingClass.ts
@@ -86,7 +86,7 @@ const getTargetElement = (element) => {
 };
 //#endregion
 //#region src/version.ts
-const Version = "5.1.7";
+const Version = "5.1.8";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */

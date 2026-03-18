@@ -1,5 +1,5 @@
 /*!
-* Bootstrap Native Toast v5.1.7 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Toast v5.1.8 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */

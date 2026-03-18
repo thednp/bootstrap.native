@@ -1,5 +1,5 @@
 /*!
-* Bootstrap Native ESM v5.1.7 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native ESM v5.1.8 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
@@ -626,4 +626,4 @@ declare const initCallback: (context?: ParentNode) => void;
 declare const removeDataAPI: (context?: ParentNode) => void;
 //#endregion
 export { Alert, Button, Carousel, Collapse, Dropdown, Modal, Offcanvas, Popover, ScrollSpy, Tab, Toast, Tooltip, initCallback, removeDataAPI };
-//# sourceMappingURL=index.d.mts.map
+//# sourceMappingURL=index.d.ts.map

@@ -231,6 +231,7 @@ const offcanvasDismissHandler = (e: MouseEvent<HTMLElement>) => {
 
   // istanbul ignore if @preserve - unfortunately ignore won't work with this many conditions
   if (
+    /* istanbul ignore next @preserve */
     !(selection && selection.toString().length) &&
     ((!element.contains(target) &&
       backdrop && (!trigger || isOwnTrigger)) ||

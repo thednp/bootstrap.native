@@ -1,11 +1,11 @@
 /*!
-* Bootstrap Native Offcanvas v5.1.7 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Offcanvas v5.1.8 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-C9LxCeVO.mjs";
+import "./chunk-CebGTFa2.mjs";
 import { Data, ObjectKeys, addClass, ariaHidden, ariaModal, closest, createCustomEvent, createElement, dispatchEvent, emulateTransitionEnd, focus, getAttribute, getDocument, getDocumentBody, getDocumentElement, getElementStyle, getElementTransitionDuration, getElementsByClassName, getInstance, getWindow, hasClass, isElement, isHTMLElement, isNode, isString, keyEscape, keydownEvent, mouseclickEvent, normalizeOptions, querySelector, querySelectorAll, reflow, removeAttribute, removeClass, setAttribute, setElementStyle, toggleFocusTrap } from "@thednp/shorty";
 import { addListener, removeListener } from "@thednp/event-listener";
 //#region src/strings/dataBsDismiss.ts
@@ -292,7 +292,7 @@ const isDisabled = (target) => {
 };
 //#endregion
 //#region src/version.ts
-const Version = "5.1.7";
+const Version = "5.1.8";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */

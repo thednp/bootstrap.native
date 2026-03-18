@@ -6,14 +6,14 @@ settings:
 
 dependencies:
   '@thednp/event-listener':
-    specifier: ^2.0.12
-    version: 2.0.12
+    specifier: ^2.0.14
+    version: 2.0.14
   '@thednp/position-observer':
-    specifier: ^1.1.0
-    version: 1.1.0
+    specifier: ^1.1.1
+    version: 1.1.1
   '@thednp/shorty':
-    specifier: ^2.0.11
-    version: 2.0.11
+    specifier: ^2.0.13
+    version: 2.0.13
 
 devDependencies:
   '@types/node':
@@ -602,20 +602,20 @@ packages:
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
     dev: true
 
-  /@thednp/event-listener@2.0.12:
-    resolution: {integrity: sha512-PbW05+EwNfGVy2uwz0vL2xbEmcLhpuBZ2nm0pdLT088gjmY9dySfJOZUtWCmzSPJcVFn3BkgH1m1MiS11AubJA==}
+  /@thednp/event-listener@2.0.14:
+    resolution: {integrity: sha512-DctB5pHYVg1Gw19wtweh+4YDJIlEkoi1LNMTaPVNaK25VB9nnMY16TgtMmbxakeUIjMchQDog5wBEY9gyUeJrg==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
     dev: false
 
-  /@thednp/position-observer@1.1.0:
-    resolution: {integrity: sha512-WgldP6Dltp2hJkSwp3+IVu05ClK/2IF33iftiQLb7UHcuO6eydjXiIUeOCClgCy3FDCGau2l/LRVg3oOO3Ytcg==}
+  /@thednp/position-observer@1.1.1:
+    resolution: {integrity: sha512-UWstsVpe+U91CGzksDBGQ/1Plvpq2BpEcbilQ6IwI7gGWdaO7xv83TnfhIRVbCiF+MgWPlPSpA7BsA43Rp95pw==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
     dependencies:
-      '@thednp/shorty': 2.0.11
+      '@thednp/shorty': 2.0.13
     dev: false
 
-  /@thednp/shorty@2.0.11:
-    resolution: {integrity: sha512-D+rLHt1l7c608yCuzXYJ75aDNWeMVbor+m1HO/XibhiWRbCpD8r6TUv3ayJI+feVfCnBNfrH+p6LSDn9l99uBA==}
+  /@thednp/shorty@2.0.13:
+    resolution: {integrity: sha512-gteebgdf01ugz7IyVQQhyAHtmHJufd/b6m7SQSsZgqRvCpWYNvGDkdbGHG30jI8Nm1CM+yPh4csaZNQsE1mYLQ==}
     engines: {node: '>=16', pnpm: '>=8.6.0'}
     dev: false
 
@@ -962,7 +962,7 @@ packages:
     dependencies:
       baseline-browser-mapping: 2.10.8
       caniuse-lite: 1.0.30001780
-      electron-to-chromium: 1.5.313
+      electron-to-chromium: 1.5.321
       node-releases: 2.0.36
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
     dev: true
@@ -1037,8 +1037,8 @@ packages:
         optional: true
     dev: true
 
-  /electron-to-chromium@1.5.313:
-    resolution: {integrity: sha512-QBMrTWEf00GXZmJyx2lbYD45jpI3TUFnNIzJ5BBc8piGUDwMPa1GV6HJWTZVvY/eiN3fSopl7NRbgGp9sZ9LTA==}
+  /electron-to-chromium@1.5.321:
+    resolution: {integrity: sha512-L2C7Q279W2D/J4PLZLk7sebOILDSWos7bMsMNN06rK482umHUrh/3lM8G7IlHFOYip2oAg5nha1rCMxr/rs6ZQ==}
     dev: true
 
   /empathic@2.0.0:

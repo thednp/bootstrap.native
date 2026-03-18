@@ -40,6 +40,7 @@ export default defineConfig([
     ...baseConfig,
     clean: true,
     banner: banner.replace("$package", "ESM"),
+    platform: "neutral",
     entry: {
       index: "src/index.ts",
     },
@@ -68,6 +69,7 @@ export default defineConfig([
     exports: false,
     minify: true,
     // target: "ES2020" as UserConfig["target"],
+    platform: "browser",
     format: "umd",
     globalName: "BSN",
     deps: {
@@ -77,7 +79,6 @@ export default defineConfig([
         '@thednp/event-listener',
         '@thednp/position-observer',
       ],
-
     },
     // noExternal: [],
     banner: miniBanner.replace("$package", "UMD"),
