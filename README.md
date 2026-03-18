@@ -20,7 +20,7 @@ npm i bootstrap.native
 ```
 
 ```bash
-yarn add bootstrap.native
+bun add bootstrap.native
 ```
 
 ```bash
