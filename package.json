@@ -34,7 +34,6 @@
     "clean-coverage": "rm -rf coverage .nyc_output",
     "badges": "npx -p dependency-version-badge update-badge typescript vitest vite",
     "build": "tsdown && pnpm copy-docs",
-    "build_": "pnpm build-vite && pnpm build-components && pnpm copy-docs",
     "build-vite": "vite build",
     "build-components": "vite build --config vite.config.components.ts",
     "copy-docs": "cp dist/bootstrap-native.min.js docs/assets/js/bootstrap-native.min.js && cp dist/bootstrap-native.min.js.map docs/assets/js/bootstrap-native.min.js.map",

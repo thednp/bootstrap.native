@@ -1,6 +1,6 @@
 // import * as BSN from "./bootstrap-native.js";
+// import * as BSN from '~/index.ts';
 import * as BSN from '../../../src/index.ts';
-
 
 // MISC
 // scrollTo
@@ -344,6 +344,9 @@ function toggleScrollSpy() {
     this.classList.add('btn-outline-danger');
   }
 }
+const toggleScrollSpyBtn = document.getElementById('toggleScrollSpy');
+toggleScrollSpyBtn.addEventListener("click", toggleScrollSpy)
+
 
 // offcanvas
 const offcanvasExample = document.getElementById('offcanvasExample');
