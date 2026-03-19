@@ -24,7 +24,7 @@ bun add bootstrap.native
 ```
 
 ```bash
-pnpm install bootstrap.native
+pnpm add bootstrap.native
 ```
 
 ```bash
