@@ -1,11 +1,10 @@
 /*!
-* Bootstrap Native Tooltip v5.1.9 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Tooltip v5.1.10 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-DyC6HSRX.mjs";
 import { Data, ObjectAssign, ObjectKeys, Timer, addClass, ariaDescribedBy, closest, createCustomEvent, createElement, dispatchEvent, emulateTransitionEnd, focus, focusEvent, focusinEvent, focusoutEvent, getAttribute, getBoundingClientRect, getDocument, getDocumentBody, getDocumentElement, getElementStyle, getInstance, getNodeScroll, getParentNode, getRectRelativeToOffsetParent, getUID, getWindow, hasAttribute, hasClass, isApple, isArray, isElement, isFunction, isHTMLElement, isNode, isNodeList, isRTL, isShadowRoot, isString, isTableElement, mouseclickEvent, mousedownEvent, mouseenterEvent, mousehoverEvent, mouseleaveEvent, normalizeOptions, passiveHandler, querySelector, removeAttribute, removeClass, setAttribute, setElementStyle, toLowerCase, touchstartEvent } from "@thednp/shorty";
 import { addListener, removeListener } from "@thednp/event-listener";
 import PositionObserver from "@thednp/position-observer";
@@ -357,7 +356,7 @@ const tooltipDefaults = {
 };
 //#endregion
 //#region src/version.ts
-const Version = "5.1.9";
+const Version = "5.1.10";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */

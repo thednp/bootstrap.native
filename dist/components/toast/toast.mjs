@@ -1,11 +1,10 @@
 /*!
-* Bootstrap Native Toast v5.1.9 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Toast v5.1.10 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-Du3YDaRD.mjs";
 import { Data, ObjectKeys, Timer, addClass, closest, createCustomEvent, dispatchEvent, emulateTransitionEnd, focusinEvent, focusoutEvent, getAttribute, getDocument, getInstance, hasClass, isElement, isString, mouseclickEvent, mouseenterEvent, mouseleaveEvent, normalizeOptions, querySelector, querySelectorAll, reflow, removeClass } from "@thednp/shorty";
 import { addListener, removeListener } from "@thednp/event-listener";
 //#region src/strings/fadeClass.ts
@@ -92,7 +91,7 @@ const isDisabled = (target) => {
 };
 //#endregion
 //#region src/version.ts
-const Version = "5.1.9";
+const Version = "5.1.10";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */

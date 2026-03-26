@@ -30,7 +30,7 @@ const baseConfig: UserConfig = {
   },
   sourcemap: true,
   globalName: "BSN",
-  plugins: [strip({ type: "keep-jsdoc" })],
+  // plugins: [strip({ type: "keep-jsdoc" })],
 };
 
 
@@ -41,6 +41,7 @@ export default defineConfig([
     clean: true,
     banner: banner.replace("$package", "ESM"),
     platform: "neutral",
+    plugins: [strip({ type: "keep-jsdoc" })],
     entry: {
       index: "src/index.ts",
     },
@@ -48,8 +49,6 @@ export default defineConfig([
     deps: {
       skipNodeModulesBundle: true,
       neverBundle: [
-        "node",
-        "node:module",
         "@thednp/shorty",
         '@thednp/event-listener',
         '@thednp/position-observer',
@@ -69,6 +68,7 @@ export default defineConfig([
     exports: false,
     minify: true,
     // target: "ES2020" as UserConfig["target"],
+    plugins: [strip({ type: "none" })],
     platform: "browser",
     format: "umd",
     globalName: "BSN",
@@ -98,23 +98,19 @@ export default defineConfig([
       ...baseConfig,
       exports: true,
       banner: banner.replace("$package", capitalize(name)),
+      plugins: [strip({ type: "keep-jsdoc" })],
       entry: {
         [name]: `src/components/${name}.ts`,
       },
       deps: {
         skipNodeModulesBundle: true,
         neverBundle: [
-          "node",
-          "node:module",
           "@thednp/shorty",
           '@thednp/event-listener',
           '@thednp/position-observer',
         ]
       },
       format: "esm" as UserConfig["format"],
-      // external: [],
-      // outDir: "dist/components",
-      // globalName: capitalize(name),
       outputOptions: {
         dir: "dist/components/" + name,
         codeSplitting: true,

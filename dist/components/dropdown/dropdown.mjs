@@ -1,11 +1,10 @@
 /*!
-* Bootstrap Native Dropdown v5.1.9 (https://thednp.github.io/bootstrap.native/)
+* Bootstrap Native Dropdown v5.1.10 (https://thednp.github.io/bootstrap.native/)
 * Copyright 2026 © thednp
 * Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 */
 "use strict";
 
-import "./chunk-BqBDu4t7.mjs";
 import { Data, ObjectAssign, ObjectKeys, addClass, ariaExpanded, closest, createCustomEvent, dispatchEvent, focus, focusEvent, getAttribute, getBoundingClientRect, getDocument, getDocumentElement, getElementStyle, getElementsByClassName, getInstance, hasAttribute, hasClass, isElement, isHTMLElement, isRTL, isString, keyArrowDown, keyArrowUp, keyEscape, keydownEvent, keyupEvent, mouseclickEvent, mousedownEvent, normalizeOptions, querySelector, removeClass, setAttribute, setElementStyle } from "@thednp/shorty";
 import { addListener, removeListener } from "@thednp/event-listener";
 import PositionObserver from "@thednp/position-observer";
@@ -66,7 +65,7 @@ const isDisabled = (target) => {
 };
 //#endregion
 //#region src/version.ts
-const Version = "5.1.9";
+const Version = "5.1.10";
 //#endregion
 //#region src/components/base-component.ts
 /** Returns a new `BaseComponent` instance. */
